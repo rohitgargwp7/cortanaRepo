@@ -167,6 +167,7 @@ namespace windows_client.View
                 frmBlockedList = true;
                 hideSmsContacts = true;
                 blockedSet = new HashSet<string>();
+                TAP_MSG = AppResources.Block_Tap_Txt;
             }
 
             if (isGroupChat)
@@ -310,10 +311,11 @@ namespace windows_client.View
             }
             else if (frmBlockedList)
             {
+                contactsListBox.Tap += contactBlockUnblock_Click;
             }
             else
             {
-                contactsListBox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(contactSelected_Click);
+                contactsListBox.Tap += contactSelected_Click;
             }
         }
 
@@ -588,7 +590,15 @@ namespace windows_client.View
                     gl[26][0].Name = charsEntered;
                     if (charsEntered.Length >= 1 && charsEntered.Length <= 15)
                     {
-                        gl[26][0].Msisdn = TAP_MSG;
+                        if(frmBlockedList)
+                        {
+                            if(blockedSet.Contains(Utils.NormalizeNumber(gl[26][0].Name)))
+                                gl[26][0].Msisdn = string.Format(TAP_MSG,AppResources.UnBlock_Txt.ToLower());
+                            else
+                                gl[26][0].Msisdn = string.Format(TAP_MSG, AppResources.Block_Txt.ToLower());
+                        }
+                        else
+                            gl[26][0].Msisdn = TAP_MSG;
                     }
                     else
                     {
@@ -684,7 +694,16 @@ namespace windows_client.View
                 list[26][0].Name = charsEntered;
                 if (Utils.IsNumberValid(charsEntered))
                 {
-                    list[26][0].Msisdn = TAP_MSG;
+                    if (frmBlockedList)
+                    {
+                        if (blockedSet.Contains(Utils.NormalizeNumber(charsEntered)))
+                            list[26][0].Msisdn = string.Format(TAP_MSG, AppResources.UnBlock_Txt.ToLower());
+                        else
+                            list[26][0].Msisdn = string.Format(TAP_MSG, AppResources.Block_Txt.ToLower());
+                        list[26][0].IsInvited = true; // this is done to hide block/unblock button
+                    }
+                    else
+                        list[26][0].Msisdn = TAP_MSG;
                 }
                 else
                 {
@@ -1147,6 +1166,7 @@ namespace windows_client.View
             ContactInfo ci = btn.DataContext as ContactInfo;
             if (ci == null)
                 return;
+            
             if (btn.Content.Equals(AppResources.Block_Txt)) // block request
             {
                 btn.Content = AppResources.UnBlock_Txt;
@@ -1157,6 +1177,30 @@ namespace windows_client.View
                 btn.Content = AppResources.Block_Txt;
                 App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, ci);
             }           
+        }
+
+        private void contactBlockUnblock_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
+            if (contact == null || contact.Msisdn == AppResources.SelectUser_EnterValidNo_Txt || contact.Msisdn == App.MSISDN)
+                return;
+            if (!contact.IsInvited) // this is handled by block unblock button
+                return;
+            string tapStr = contact.Msisdn;
+            ContactInfo c = new ContactInfo(contact);
+            c.Msisdn = Utils.NormalizeNumber(contact.Name);
+            c.Name = c.Msisdn;
+
+            if (tapStr.Contains(AppResources.UnBlock_Txt.ToLower())) // unblock request
+            {
+                contact.Msisdn = string.Format(TAP_MSG, AppResources.Block_Txt.ToLower());
+                App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, c);
+            }
+            else // block request
+            {
+                contact.Msisdn = string.Format(TAP_MSG,AppResources.UnBlock_Txt.ToLower());
+                App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, c);
+            }
         }
 
         private void Invite_Tap(object sender, System.Windows.Input.GestureEventArgs e)

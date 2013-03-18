@@ -22,7 +22,14 @@ namespace windows_client.DbUtils
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.InsertOnSubmit(userBlocked);
-                SubmitWithConflictResolve(context);
+                try
+                {
+                    SubmitWithConflictResolve(context);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("UsersTable :: Block user {0} , Exception : {1}", msisdn, e.StackTrace);
+                }
             }
         }
 

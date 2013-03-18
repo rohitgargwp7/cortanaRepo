@@ -196,6 +196,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tap to {0} this person.
+        /// </summary>
+        public static string Block_Tap_Txt {
+            get {
+                return ResourceManager.GetString("Block_Tap_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Block.
         /// </summary>
         public static string Block_Txt {

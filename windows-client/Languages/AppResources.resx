@@ -1258,9 +1258,6 @@
   <data name="SharedContactNotFoundCaptionText" xml:space="preserve">
     <value>Refresh Contact List</value>
   </data>
-  <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
-    <value>Confirm your number</value>
-    </data>
   <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
     <value>Added you as a friend!</value>
     <comment>for friend requests in wp8</comment>
@@ -1442,10 +1439,9 @@
     <value>Message {0} on Hike</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
-
   <data name="Nux_Skip_btnTxt" xml:space="preserve">
     <value>Skip</value>
-</data>
+  </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
     <value>{0} has added you as a friend.</value>
     <comment>{0} will be replaced by username</comment>
@@ -1481,13 +1477,12 @@
   <data name="Conversations_Contacts_on_hike" xml:space="preserve">
     <value>CONTACTS ON HIKE</value>
   </data>
-
   <data name="Profile_BlockedUser_Blk1" xml:space="preserve">
     <value>You have blocked</value>
   </data>
   <data name="Profile_BlockedUser_Blk3" xml:space="preserve">
     <value>Unblock to send a message.</value>
-</data>
+  </data>
   <data name="Status_Update_Txt" xml:space="preserve">
     <value>Status Update</value>
     <comment>Used in convlist last msg</comment>
@@ -1495,5 +1490,9 @@
   <data name="Share_With_Txt" xml:space="preserve">
     <value>SHARE</value>
     <comment>Used in share photo</comment>
+  </data>
+  <data name="Block_Tap_Txt" xml:space="preserve">
+    <value>Tap to {0} this person</value>
+    <comment>Used in add to block functionality, {0} will be replaced by block/unblock</comment>
   </data>
 </root>

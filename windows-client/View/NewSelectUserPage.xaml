@@ -83,7 +83,11 @@
                         <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
                     </StackPanel>
                 </StackPanel>
-                <Button Content="{Binding Path= LocalizedResources.Block_Txt, Source={StaticResource LocalizedStrings}}" Background="#e9ecee" Foreground="#595959" Height="65" Width="120" FontSize="20" Grid.Column="1" Visibility="Visible" HorizontalAlignment="Right" BorderThickness="0" Tap="Block_Tap"/>
+                <Button Content="{Binding Path= LocalizedResources.Block_Txt, Source={StaticResource LocalizedStrings}}" 
+                        Background="#e9ecee" Foreground="#595959" 
+                        Height="65" Width="120" FontSize="20" Grid.Column="1" 
+                        Visibility="{Binding InviteButtonVisible}" HorizontalAlignment="Right" 
+                        BorderThickness="0" Tap="Block_Tap"/>
             </Grid>
         </DataTemplate>
         

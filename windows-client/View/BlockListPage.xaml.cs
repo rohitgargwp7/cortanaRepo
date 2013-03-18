@@ -78,7 +78,8 @@ namespace windows_client.View
                     ContactInfo c = obj as ContactInfo;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        blockedList.Add(c);
+                        if(!blockedList.Contains(c))
+                            blockedList.Add(c);
                         if (txtEmptyScreen.Visibility == Visibility.Visible)
                         {
                             txtEmptyScreen.Visibility = Visibility.Collapsed;
@@ -95,7 +96,7 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         blockedList.Remove(c);
-                        if (txtEmptyScreen.Visibility == Visibility.Collapsed)
+                        if (blockedList.Count == 0)
                         {
                             txtEmptyScreen.Visibility = Visibility.Visible;
                             ContentPanel.Visibility = Visibility.Collapsed;
