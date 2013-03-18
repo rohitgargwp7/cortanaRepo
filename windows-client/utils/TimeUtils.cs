@@ -170,5 +170,14 @@ namespace windows_client.utils
             else
                 return 2;
         }
+
+        public static string GetOnHikeSinceDisplay(long timestamp)
+        {
+            long ticks = timestamp * 10000000;
+            ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
+            DateTime messageTime = new DateTime(ticks);
+            return messageTime.ToString("MMM yy");
+        }
+
     }
 }
