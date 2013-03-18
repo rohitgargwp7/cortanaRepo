@@ -76,8 +76,15 @@ namespace windows_client.View
                 if (obj is ContactInfo)
                 {
                     ContactInfo c = obj as ContactInfo;
+                    
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        if (blockedList == null)
+                        {
+                            blockedList = new ObservableCollection<ContactInfo>();
+                            blockedListBox.ItemsSource = blockedList;
+                        }
+
                         if(!blockedList.Contains(c))
                             blockedList.Add(c);
                         if (blockedList.Count > 0)
@@ -131,7 +138,7 @@ namespace windows_client.View
                 bw.RunWorkerCompleted += (s, a) =>
                 {
                     blockedListBox.ItemsSource = blockedList;
-                    if (blockedList.Count == 0)
+                    if (blockedList == null || blockedList.Count == 0)
                     {
                         txtEmptyScreen.Visibility = Visibility.Visible;
                         ContentPanel.Visibility = Visibility.Collapsed;
@@ -144,18 +151,15 @@ namespace windows_client.View
 
         private ObservableCollection<ContactInfo> FilterUnBlockedUsers(List<Blocked> blockedList, List<ContactInfo> allContactsList)
         {
-
-            if (allContactsList == null || allContactsList.Count == 0)
+            if (blockedList == null || blockedList.Count == 0)
                 return null;
-            else if (blockedList == null || blockedList.Count == 0)
-                return new ObservableCollection<ContactInfo>(allContactsList);
 
             HashSet<string> hashBlocked = new HashSet<string>();
             foreach (Blocked bl in blockedList)
                 hashBlocked.Add(bl.Msisdn);
 
             ObservableCollection<ContactInfo> blockedContacts = new ObservableCollection<ContactInfo>();
-            for (int i = 0; i < allContactsList.Count; i++)
+            for (int i = 0; i < (allContactsList != null?allContactsList.Count:0); i++)
             {
                 ContactInfo c = allContactsList[i];
                 if (hashBlocked.Contains(c.Msisdn))
