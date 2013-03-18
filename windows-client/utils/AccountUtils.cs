@@ -152,7 +152,7 @@ namespace windows_client.utils
         private enum RequestType
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
-            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS
+            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS,GET_ONHIKE_DATE
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -522,6 +522,13 @@ namespace windows_client.utils
             }
             postStream.Close();
             req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
+        }
+
+        public static void GetOnhikeDate(string msisdn, postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/profile/" + msisdn)) as HttpWebRequest;
+            addToken(req);
+            req.BeginGetResponse(GetRequestCallback, new object[] { req,finalCallbackFunction });
         }
 
         public static void createGetRequest(string requestUrl, postResponseFunction callback, bool isRelativeUrl)
