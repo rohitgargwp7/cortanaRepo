@@ -80,7 +80,7 @@ namespace windows_client.View
                     {
                         if(!blockedList.Contains(c))
                             blockedList.Add(c);
-                        if (txtEmptyScreen.Visibility == Visibility.Visible)
+                        if (blockedList.Count > 0)
                         {
                             txtEmptyScreen.Visibility = Visibility.Collapsed;
                             ContentPanel.Visibility = Visibility.Visible;
