@@ -167,7 +167,6 @@ namespace windows_client.View
                         if (isInAddressBook)
                         {
                             statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
-                            statusList = new ObservableCollection<StatusUpdateBox>();
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 if (statusMessagesFromDB != null)
@@ -543,7 +542,6 @@ namespace windows_client.View
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (ss, ee) =>
             {
-                statusList = new ObservableCollection<StatusUpdateBox>();
                 if (statusMessagesFromDB != null)
                 {
                     for (int i = 0; i < statusMessagesFromDB.Count; i++)
