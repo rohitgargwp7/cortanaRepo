@@ -37,7 +37,7 @@ namespace windows_client.View
         bool isFirstLoad = true;
         string nameToShow = null;
         bool isOnHike = false;
-        private ObservableCollection<StatusUpdateBox> statusList=new ObservableCollection<StatusUpdateBox>();
+        private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
         private ApplicationBar appBar;
         ApplicationBarIconButton editProfile_button;
         bool isInvited;
@@ -498,7 +498,7 @@ namespace windows_client.View
                 {
                     MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
                     StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
-                        serverId, TimeUtils.getCurrentTimeStamp(), -1,true);
+                        serverId, TimeUtils.getCurrentTimeStamp(), -1, true);
                     StatusMsgsTable.InsertStatusMsg(sm);
                     App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                 }
@@ -1199,6 +1199,7 @@ namespace windows_client.View
                 txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, nameToShow);
                 seeUpdatesTxtBlk1.Text = string.Format(AppResources.Profile_YouCanNowSeeUpdates, nameToShow);
                 isOnHike = contactInfo.OnHike;
+                btnInvite.Tap -= addUser_Click;
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                 {
                     App.ViewModel.ConvMap[msisdn].ContactName = contactInfo.Name;
