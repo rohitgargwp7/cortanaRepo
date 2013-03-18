@@ -37,7 +37,7 @@ namespace windows_client.View
         bool isFirstLoad = true;
         string nameToShow = null;
         bool isOnHike = false;
-        private ObservableCollection<StatusUpdateBox> statusList;
+        private ObservableCollection<StatusUpdateBox> statusList=new ObservableCollection<StatusUpdateBox>();
         private ApplicationBar appBar;
         ApplicationBarIconButton editProfile_button;
         bool isInvited;
@@ -97,6 +97,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(sm, false, null, null, enlargePic_Tap));
+                    this.statusLLS.ItemsSource = statusList;
                     gridHikeUser.Visibility = Visibility.Visible;
                     gridSmsUser.Visibility = Visibility.Collapsed;
                 });
@@ -137,7 +138,6 @@ namespace windows_client.View
                     case FriendsTableUtils.FriendStatusEnum.FRIENDS:
 
                         List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
-                        statusList = new ObservableCollection<StatusUpdateBox>();
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
                             if (statusMessagesFromDB != null)
