@@ -42,12 +42,12 @@ namespace windows_client.DbUtils
                             store.CreateDirectory(FRIENDS_DIRECTORY);
                         }
                         long ts = 0;
-                        using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite,FileShare.ReadWrite))
+                        using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
                         {
                             if (file.Length > 0)
                             {
                                 FriendStatusEnum friendStatusDb = FriendStatusEnum.NOT_SET;
-                                using (var reader = new BinaryReader(file,Encoding.UTF8,true))
+                                using (var reader = new BinaryReader(file, Encoding.UTF8, true))
                                 {
                                     try
                                     {
@@ -67,7 +67,7 @@ namespace windows_client.DbUtils
                                     }
                                 }
 
-                                if (friendStatus == FriendStatusEnum.UNFRIENDED_BY_HIM && friendStatusDb != FriendsTableUtils.FriendStatusEnum.FRIENDS)                                  
+                                if (friendStatus == FriendStatusEnum.UNFRIENDED_BY_HIM && friendStatusDb != FriendsTableUtils.FriendStatusEnum.FRIENDS)
                                 {
                                     friendStatus = FriendStatusEnum.NOT_SET;
                                 }
@@ -84,8 +84,8 @@ namespace windows_client.DbUtils
                                     friendStatus = FriendStatusEnum.FRIENDS;
                                 }
                             }
-                            
-                           
+
+
                             using (BinaryWriter writer = new BinaryWriter(file))
                             {
                                 writer.Seek(0, SeekOrigin.Begin);
@@ -137,7 +137,7 @@ namespace windows_client.DbUtils
             return friendStatus;
         }
 
-        public static FriendStatusEnum GetFriendInfo(string msisdn,out long ts)
+        public static FriendStatusEnum GetFriendInfo(string msisdn, out long ts)
         {
             ts = 0;
             FriendStatusEnum friendStatus = FriendStatusEnum.NOT_SET;
@@ -231,7 +231,7 @@ namespace windows_client.DbUtils
                         {
                             if (file.Length > 0)
                             {
-                                using (var reader = new BinaryReader(file))
+                                using (var reader = new BinaryReader(file,Encoding.UTF8,true))
                                 {
                                     try
                                     {
