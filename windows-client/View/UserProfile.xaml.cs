@@ -252,10 +252,17 @@ namespace windows_client.View
                         return;
                     if (msisdn != recMsisdn)
                         return;
+                    timeOfJoin = FriendsTableUtils.GetFriendOnHIke(msisdn);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-
-                        txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
+                        if (timeOfJoin == 0)
+                        {
+                            AccountUtils.GetOnhikeDate(msisdn, new AccountUtils.postResponseFunction(GetHikeStatus_Callback));
+                        }
+                        else
+                        {
+                            txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, TimeUtils.GetOnHikeSinceDisplay(timeOfJoin));
+                        }
                         ShowAddAsFriends();
                     });
                 }
@@ -368,7 +375,6 @@ namespace windows_client.View
                 }
                 else
                 {
-                    txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
                     InitHikeUserProfile();
                 }
                 isFirstLoad = false;
@@ -766,10 +772,14 @@ namespace windows_client.View
                 return;
             }
 
-            friendStatus = FriendsTableUtils.GetFriendInfo(msisdn,out timeOfJoin);
+            friendStatus = FriendsTableUtils.GetFriendInfo(msisdn, out timeOfJoin);
             if (timeOfJoin == 0)
             {
                 AccountUtils.GetOnhikeDate(msisdn, new AccountUtils.postResponseFunction(GetHikeStatus_Callback));
+            }
+            else
+            {
+                txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, TimeUtils.GetOnHikeSinceDisplay(timeOfJoin));
             }
 
             if (friendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
@@ -849,7 +859,7 @@ namespace windows_client.View
                 long time = (long)j["jointime"];
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    //TODO : Rohit handle the UI
+                    txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, TimeUtils.GetOnHikeSinceDisplay(time));
                 });
                 FriendsTableUtils.SetJoiningTime(msisdn, time);
             }
@@ -1237,6 +1247,7 @@ namespace windows_client.View
             });
         }
         #endregion
+
 
     }
 }

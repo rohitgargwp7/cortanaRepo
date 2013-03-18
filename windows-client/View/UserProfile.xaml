@@ -57,7 +57,7 @@
             </Grid>
             <StackPanel Grid.Row="2" Margin="24,24,24,0" Orientation="Vertical" >
                 <TextBlock Name="txtUserName" HorizontalAlignment="Left" FontSize="34" FontFamily="Segoe WP" Foreground="White"/>
-                <TextBlock Name="txtOnHikeSmsTime" Text="{Binding Path= LocalizedResources.OnHIkeSince_Txt, Source={StaticResource LocalizedStrings}}"  HorizontalAlignment="Left" FontSize="15"  FontFamily="Segoe WP" Foreground="White"  />
+                <TextBlock Name="txtOnHikeSmsTime" HorizontalAlignment="Left" FontSize="15"  FontFamily="Segoe WP" Foreground="White"  />
             </StackPanel>
 
 
