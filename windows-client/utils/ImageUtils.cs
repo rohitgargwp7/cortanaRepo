@@ -56,6 +56,7 @@ namespace windows_client.utils
         private BitmapImage nudgeReceived;
         private BitmapImage textStatusImage;
         private BitmapImage friendRequestImage;
+        private BitmapImage profilePicStatusImage;
         private BitmapImage noNewNotificationImage;
         private BitmapImage newNotificationImage;
         private BitmapImage contactIcon;
@@ -595,6 +596,16 @@ namespace windows_client.utils
                 if (friendRequestImage == null)
                     friendRequestImage = new BitmapImage(new Uri("/View/images/timeline_friend.png", UriKind.Relative));
                 return friendRequestImage;
+            }
+        }
+
+        public BitmapImage ProfilePicStatusImage
+        {
+            get
+            {
+                if (profilePicStatusImage == null)
+                    profilePicStatusImage = new BitmapImage(new Uri("/View/images/timeline_photo.png", UriKind.Relative));
+                return profilePicStatusImage;
             }
         }
 

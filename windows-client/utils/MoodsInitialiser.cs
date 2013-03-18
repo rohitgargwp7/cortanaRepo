@@ -85,13 +85,10 @@ namespace windows_client.utils
             {
                 Initialise();
             }
-
             if (listMoods != null && moodId < 0 || moodId > listMoods.Count - 1)
                 return null;
-
             return listMoods[moodId].MoodIcon;
         }
-
     }
     class Mood
     {

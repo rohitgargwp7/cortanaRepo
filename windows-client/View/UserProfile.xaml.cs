@@ -95,7 +95,7 @@ namespace windows_client.View
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(sm, null, null, enlargePic_Tap));
+                    statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(sm, false, null, null, enlargePic_Tap));
                     gridHikeUser.Visibility = Visibility.Visible;
                     gridSmsUser.Visibility = Visibility.Collapsed;
                 });
@@ -143,7 +143,8 @@ namespace windows_client.View
                             {
                                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                                 {
-                                    statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], null, null, enlargePic_Tap));
+                                    statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null, 
+                                        null, enlargePic_Tap));
                                 }
                             }
                             if (statusList.Count == 0)
@@ -172,7 +173,8 @@ namespace windows_client.View
                                 {
                                     for (int i = 0; i < statusMessagesFromDB.Count; i++)
                                     {
-                                        statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], null, null, enlargePic_Tap));
+                                        statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null, 
+                                            null, enlargePic_Tap));
                                     }
                                 }
                                 if (statusList.Count == 0)
@@ -489,7 +491,7 @@ namespace windows_client.View
                 {
                     MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
                     StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
-                        serverId, TimeUtils.getCurrentTimeStamp(), true,-1);
+                        serverId, TimeUtils.getCurrentTimeStamp(), true, -1);
                     StatusMsgsTable.InsertStatusMsg(sm);
                     App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                 }
@@ -517,7 +519,6 @@ namespace windows_client.View
                 isProfilePicTapped = false;
             });
         }
-
         #endregion
 
         #region STATUS MESSAGES
@@ -528,33 +529,34 @@ namespace windows_client.View
             List<StatusMessage> statusMessagesFromDB = null;
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (ss, ee) =>
-               {
+            {
 
-                   statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
-               };
+                statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
+            };
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (ss, ee) =>
+            {
+                statusList = new ObservableCollection<StatusUpdateBox>();
+                if (statusMessagesFromDB != null)
                 {
-                    statusList = new ObservableCollection<StatusUpdateBox>();
-                    if (statusMessagesFromDB != null)
+                    for (int i = 0; i < statusMessagesFromDB.Count; i++)
                     {
-                        for (int i = 0; i < statusMessagesFromDB.Count; i++)
-                        {
-                            statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], null, null, enlargePic_Tap));
-                        }
+                        statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null, 
+                            null, enlargePic_Tap));
                     }
-                    if (statusList.Count == 0)
-                    {
-                        ShowEmptyStatus();
-                    }
-                    else
-                    {
-                        gridSmsUser.Visibility = Visibility.Collapsed;
-                        gridHikeUser.Visibility = Visibility.Visible;
-                    }
-                    this.statusLLS.ItemsSource = statusList;
-                    shellProgress.IsVisible = false;
-                };
+                }
+                if (statusList.Count == 0)
+                {
+                    ShowEmptyStatus();
+                }
+                else
+                {
+                    gridSmsUser.Visibility = Visibility.Collapsed;
+                    gridHikeUser.Visibility = Visibility.Visible;
+                }
+                this.statusLLS.ItemsSource = statusList;
+                shellProgress.IsVisible = false;
+            };
         }
 
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)

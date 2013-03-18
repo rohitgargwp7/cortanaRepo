@@ -126,7 +126,6 @@ namespace windows_client.Controls.StatusUpdate
             if (GetType() != obj.GetType())
                 return false;
             StatusUpdateBox otherSb = (StatusUpdateBox)obj;
-
             return this._serverId.Equals(otherSb._serverId);
         }
     }

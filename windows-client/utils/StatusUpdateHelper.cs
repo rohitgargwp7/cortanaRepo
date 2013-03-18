@@ -37,7 +37,8 @@ namespace windows_client.utils
             }
         }
 
-        public StatusUpdateBox createStatusUIObject(StatusMessage status, EventHandler<System.Windows.Input.GestureEventArgs> statusBoxTap,
+        public StatusUpdateBox createStatusUIObject(StatusMessage status, bool isShowOnTimeline,
+            EventHandler<System.Windows.Input.GestureEventArgs> statusBoxTap,
             EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap,
             EventHandler<System.Windows.Input.GestureEventArgs> enlargePic_Tap)
         {
@@ -79,8 +80,8 @@ namespace windows_client.utils
                     byte[] statusImageBytes = null;
                     bool isThumbnail;
                     MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.ServerId, out statusImageBytes, out isThumbnail);
-                    statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.ServerId,
-                        UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp, status.IsUnread, statusBubbleImageTap);
+                    statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status, isShowOnTimeline,
+                        UI_Utils.Instance.createImageFromBytes(statusImageBytes), statusBubbleImageTap);
                     if (isThumbnail)
                     {
                         object[] statusObjects = new object[2];
@@ -93,8 +94,7 @@ namespace windows_client.utils
                         (statusUpdateBox as ImageStatusUpdate).statusImage.Tap += enlargePic_Tap;
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
-                    statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.ServerId, status.Message,
-                        status.Timestamp, status.IsUnread, status.Status_Type, statusBubbleImageTap);
+                    statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status, isShowOnTimeline, statusBubbleImageTap);
                     break;
             }
             if (statusBoxTap != null)
