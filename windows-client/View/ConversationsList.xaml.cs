@@ -1547,7 +1547,12 @@ namespace windows_client.View
                 ConversationListObject cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, contactInfo.Avatar);
                 hikeContactList.Remove(contactInfo);
                 App.ViewModel.FavList.Add(cObj);
+                MiscDBUtil.SaveFavourites();
                 MiscDBUtil.SaveFavourites(cObj);
+                int count = 0;
+                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+      
                 if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
                 {
                     emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
