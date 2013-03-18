@@ -165,7 +165,7 @@ namespace windows_client.utils
         {
             if (DateTime.Now.Hour >= 4 && DateTime.Now.Hour < 12)
                 return 0;
-            else if (DateTime.Now.Hour >= 12 && DateTime.Now.Hour < 8)
+            else if (DateTime.Now.Hour >= 12 && DateTime.Now.Hour < 20)
                 return 1;
             else
                 return 2;
