@@ -60,18 +60,6 @@ namespace windows_client.Model
         {
         }
 
-        public StatusMessage(string msisdn, string id1, StatusType statusType, string id2, long p1, bool p2, int p3)
-        {
-            // TODO: Complete member initialization
-            this.Msisdn = msisdn;
-            this.id1 = id1;
-            this.statusType = statusType;
-            this.id2 = id2;
-            this.p1 = p1;
-            this.p2 = p2;
-            this.p3 = p3;
-        }
-
         [Column(IsVersion = true)]
         private Binary version;
 
@@ -242,13 +230,7 @@ namespace windows_client.Model
         #region INotifyPropertyChanging Members
 
         public event PropertyChangingEventHandler PropertyChanging;
-        private string id1;
-        private StatusType statusType;
-        private string id2;
-        private long p1;
-        private bool p2;
-        private int p3;
-
+        
         // Used to notify that a property is about to change
         private void NotifyPropertyChanging(string propertyName)
         {

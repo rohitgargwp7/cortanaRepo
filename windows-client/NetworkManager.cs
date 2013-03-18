@@ -1088,7 +1088,7 @@ namespace windows_client
                             id = idToken.ToString();
 
 
-                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp(), StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1);
+                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp(), StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn),-1,null,true);
 
                         idToken = null;
                         if (iconBase64 != null)
@@ -1113,7 +1113,7 @@ namespace windows_client
                         if (data.TryGetValue(HikeConstants.MOOD, out idToken) && idToken != null && string.IsNullOrEmpty(idToken.ToString()))
                             sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, idToken.ToString(), true);
                         else
-                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1);
+                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1,null,true);
 
                         StatusMsgsTable.InsertStatusMsg(sm);
                     }
@@ -1137,7 +1137,7 @@ namespace windows_client
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Network Manager :: Exception in REWARDS : " + e.StackTrace);
+                    Debug.WriteLine("Network Manager :: Exception in STATUS UPDATES : " + e.StackTrace);
                 }
             }
             #endregion
