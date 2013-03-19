@@ -774,17 +774,25 @@ namespace windows_client.View
             #region ADD TO PENDING
             else if (HikePubSub.ADD_TO_PENDING == type)
             {
+                
+                if (!App.ViewModel.IsPendingListLoaded)
+                    return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     ConversationListObject co = (ConversationListObject)obj;
                     if (co != null)
                     {
-                        FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
+                        // if pending list is not loaded simply ignore this packet , as then this packet will
+                        // be shown twice , one here and one from DB.
+                        if (App.ViewModel.IsPendingListLoaded)
+                        {
+                            FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
+                            App.ViewModel.StatusList.Insert(0, frs);
+                        }                      
                         if (launchPagePivot.SelectedIndex != 3)
                         {
                             UnreadFriendRequests++;
                         }
-                        App.ViewModel.StatusList.Insert(0, frs);
                     }
                 });
             }
@@ -866,8 +874,11 @@ namespace windows_client.View
                     if (sm.Msisdn == App.MSISDN)
                     {
                         App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
-                        App.ViewModel.StatusList.Insert(count, StatusUpdateHelper.Instance.createStatusUIObject(sm, true,
-                            statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
+                        // if status list is not loaded simply ignore this packet , as then this packet will
+                        // be shown twice , one here and one from DB.
+                        if (isStatusMessagesLoaded)
+                            App.ViewModel.StatusList.Insert(count, StatusUpdateHelper.Instance.createStatusUIObject(sm, true,
+                                statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                     }
                     else
                     {
@@ -880,8 +891,11 @@ namespace windows_client.View
                         }
                         else
                         {
-                            App.ViewModel.StatusList.Insert(count, StatusUpdateHelper.Instance.createStatusUIObject(sm, true,
-                                statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
+                            // if status list is not loaded simply ignore this packet , as then this packet will
+                            // be shown twice , one here and one from DB.
+                            if (isStatusMessagesLoaded)
+                                App.ViewModel.StatusList.Insert(count, StatusUpdateHelper.Instance.createStatusUIObject(sm, true,
+                                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                         }
                         RefreshBarCount++;//persist in this.State. it will be cleared 
                     }
@@ -1855,12 +1869,13 @@ namespace windows_client.View
         private void loadStatuses()
         {
             MiscDBUtil.LoadPendingRequests();
-            App.ViewModel.IsPendingListLoaded = true;
+
             foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
             {
                 FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                 App.ViewModel.StatusList.Add(frs);
             }
+            App.ViewModel.IsPendingListLoaded = true;
             //TODO - MG - handle case when you receive unread status from 1 way friend. Since, we are showing only 2-way su on timeline
             //corresponding counters should be handled for eg unread count
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgsForTimeline();
@@ -1880,11 +1895,5 @@ namespace windows_client.View
 
         #endregion
 
-        //private void Button_Tap_2(object sender, System.Windows.Input.GestureEventArgs e)
-        //{
-        //    PhoneApplicationService.Current.State["HIKE_FRIENDS"] = true;
-        //    string uri = "/View/InviteUsers.xaml";
-        //    NavigationService.Navigate(new Uri(uri, UriKind.Relative));
-        //}
     }
 }
