@@ -572,7 +572,11 @@ namespace windows_client.View
             ImageStatusUpdate imgStUp = statusLLS.SelectedItem as ImageStatusUpdate;
             if (imgStUp == null)
                 return;
-            PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = imgStUp;
+            string[] statusImageInfo = new string[2];
+            ImageStatusUpdate statusUpdate = (statusLLS.SelectedItem as ImageStatusUpdate);
+            statusImageInfo[0] = statusUpdate.Msisdn;
+            statusImageInfo[1] = statusUpdate.serverId;
+            PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = statusImageInfo;
             Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
         }

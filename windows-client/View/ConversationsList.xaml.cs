@@ -45,7 +45,7 @@ namespace windows_client.View
 
         ApplicationBarIconButton groupChatIconButton;
         ApplicationBarIconButton addFriendIconButton;
-        
+
         private bool isShowFavTute = true;
         private bool isStatusMessagesLoaded = false;
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
@@ -1552,7 +1552,7 @@ namespace windows_client.View
                 int count = 0;
                 App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
-      
+
                 if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
                 {
                     emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
@@ -1792,8 +1792,11 @@ namespace windows_client.View
         {
             if (statusLLS.SelectedItem != null && statusLLS.SelectedItem is ImageStatusUpdate)
             {
-                PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = (statusLLS.SelectedItem as
-                    ImageStatusUpdate);
+                string[] statusImageInfo = new string[2];
+                ImageStatusUpdate statusUpdate = (statusLLS.SelectedItem as ImageStatusUpdate);
+                statusImageInfo[0] = statusUpdate.Msisdn;
+                statusImageInfo[1] = statusUpdate.serverId;
+                PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = statusImageInfo;
                 Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
                 NavigationService.Navigate(nextPage);
             }
