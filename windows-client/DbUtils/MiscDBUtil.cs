@@ -19,6 +19,7 @@ namespace windows_client.DbUtils
         private static object favReadWriteLock = new object();
         private static object pendingReadWriteLock = new object();
         private static object profilePicLock = new object();
+        private static object statusImageLock = new object();
 
         public static string FAVOURITES_FILE = "favFile";
         public static string MISC_DIR = "Misc_Dir";
@@ -192,7 +193,7 @@ namespace windows_client.DbUtils
 
         public static void getStatusUpdateImage(string msisdn, string serverId, out byte[] imageBytes, out bool isThumbnail)
         {
-            lock (profilePicLock)
+            lock (statusImageLock)
             {
                 isThumbnail = false;
                 msisdn = msisdn.Replace(":", "_");
