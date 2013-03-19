@@ -51,9 +51,7 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             MoodsInitialiser.Instance.Initialise();
             moodList.ItemsSource = MoodsInitialiser.Instance.listMoods;
-            string name;
-            App.appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
-            txtStatus.Hint = "What's up," + (name != null ? name : string.Empty) + "?";
+          
             userImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
         }
 
@@ -199,6 +197,13 @@ namespace windows_client.View
         {
             txtStatus.SelectionStart = 0;
             txtStatus.SelectionLength = txtStatus.Text.Length;
+        }
+
+        private void txtStatus_GotFocus_1(object sender, RoutedEventArgs e)
+        {
+            string name;
+            App.appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
+            txtStatus.Hint = "What's up," + (name != null ? name : string.Empty) + "?";
         }
     }
 }
