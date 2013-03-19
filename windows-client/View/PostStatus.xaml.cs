@@ -24,7 +24,9 @@ namespace windows_client.View
         private bool isFacebookPost = false;
         private bool isTwitterPost = false;
         private int moodId = -1; //TODO Rohit set this on mood selection
-
+        //bool isMoodText = true;
+        //string previousText = string.Empty;
+        string lastMoodText = string.Empty;
         public PostStatus()
         {
             InitializeComponent();
@@ -49,14 +51,17 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             MoodsInitialiser.Instance.Initialise();
             moodList.ItemsSource = MoodsInitialiser.Instance.listMoods;
+            string name;
+            App.appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
+            txtStatus.Hint = "What's up," + (name != null ? name : string.Empty) + "?";
             userImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
         }
 
         private void btnPostStatus_Click(object sender, EventArgs e)
         {
             postStatusIcon.IsEnabled = false;
-            string statusText = txtStatus.Text;
-            if (statusText.Trim() == string.Empty)
+            string statusText = txtStatus.Text.Trim();
+            if (statusText == string.Empty)
             {
                 postStatusIcon.IsEnabled = true;
                 return;
@@ -124,6 +129,14 @@ namespace windows_client.View
                     }
                 });
             }
+            else
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+               {
+                   MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, "Status Not Posted", MessageBoxButton.OK);
+                   postStatusIcon.IsEnabled = true;
+               });
+            }
         }
 
         private void FbIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -148,7 +161,12 @@ namespace windows_client.View
             if (mood == null)
                 return;
             moodId = moodList.SelectedIndex;
-            txtStatus.Text = mood.DisplayText;
+            if (txtStatus.Text == string.Empty || lastMoodText == txtStatus.Text)
+            {
+                string displayText = mood.DisplayText;
+                txtStatus.Text = displayText == string.Empty ? mood.Name : displayText;
+                lastMoodText = txtStatus.Text;
+            }
             postedMood.Source = mood.MoodIcon;
             postedMood.Visibility = Visibility.Visible;
             gridMood.Visibility = Visibility.Collapsed;
@@ -161,9 +179,26 @@ namespace windows_client.View
             {
                 gridMood.Visibility = Visibility.Collapsed;
                 e.Cancel = true;
+                this.appBar.IsVisible = true;
                 return;
             }
             base.OnBackKeyPress(e);
+        }
+
+        //private void txtStatus_SelectionChanged(object sender, RoutedEventArgs e)
+        //{
+        //    string currentText = txtStatus.Text.Trim();
+        //    if (currentText == previousText)
+        //        return;
+        //    previousText = currentText;
+        //    if (currentText.Length > 0)
+        //        isMoodText = false;
+        //}
+
+        private void txtStatus_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            txtStatus.SelectionStart = 0;
+            txtStatus.SelectionLength = txtStatus.Text.Length;
         }
     }
 }
