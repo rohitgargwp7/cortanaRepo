@@ -349,6 +349,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update status.
+        /// </summary>
+        public static string Conversations_BtnUpdateStatus_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_BtnUpdateStatus_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CIRCLE OF FRIENDS.
         /// </summary>
         public static string Conversations_Circle_Of_friends_txt {
@@ -408,6 +417,33 @@ namespace windows_client.Languages {
         public static string Conversations_EditProfile_Txt {
             get {
                 return ResourceManager.GetString("Conversations_EditProfile_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Looks like you haven&apos;t posted any status update yet..
+        /// </summary>
+        public static string Conversations_EmptyStatus_AskPostStatus_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_EmptyStatus_AskPostStatus_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hey {0}!.
+        /// </summary>
+        public static string Conversations_EmptyStatus_Hey_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_EmptyStatus_Hey_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Team Hike.
+        /// </summary>
+        public static string Conversations_EmptyStatus_TeamHike_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_EmptyStatus_TeamHike_Txt", resourceCulture);
             }
         }
         

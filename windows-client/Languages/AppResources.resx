@@ -1495,4 +1495,17 @@
     <value>Tap to {0} this person</value>
     <comment>Used in add to block functionality, {0} will be replaced by block/unblock</comment>
   </data>
+  <data name="Conversations_BtnUpdateStatus_Txt" xml:space="preserve">
+    <value>Update status</value>
+  </data>
+  <data name="Conversations_EmptyStatus_AskPostStatus_Txt" xml:space="preserve">
+    <value>Looks like you haven't posted any status update yet.</value>
+  </data>
+  <data name="Conversations_EmptyStatus_Hey_Txt" xml:space="preserve">
+    <value>Hey {0}!</value>
+    <comment>{0} replaced by user name</comment>
+  </data>
+  <data name="Conversations_EmptyStatus_TeamHike_Txt" xml:space="preserve">
+    <value>Team Hike</value>
+  </data>
 </root>
