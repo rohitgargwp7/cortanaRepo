@@ -1374,4 +1374,7 @@
   <data name="Block_Tap_Txt" xml:space="preserve">
     <value />
   </data>
+  <data name="Update_Profile_Pic_txt" xml:space="preserve">
+    <value />
+  </data>
 </root>

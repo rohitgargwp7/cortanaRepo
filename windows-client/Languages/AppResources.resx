@@ -1509,4 +1509,8 @@
     <value>What's up, {0}?</value>
     <comment>{0} replaced by user name </comment>
   </data>
+  <data name="Update_Profile_Pic_txt" xml:space="preserve">
+    <value>Updated profile picture</value>
+    <comment>Used to show for pp update in last msg of convlist</comment>
+  </data>
 </root>

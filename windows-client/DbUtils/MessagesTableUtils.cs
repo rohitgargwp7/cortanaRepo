@@ -346,7 +346,7 @@ namespace windows_client.DbUtils
                 #region STATUS UPDATES
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
-                    obj.LastMessage = AppResources.Status_Update_Txt;
+                    obj.LastMessage = "\""+convMsg.Message+"\"";
                 }
                 #endregion
                 #region NO_INFO or OTHER MSGS
@@ -364,8 +364,11 @@ namespace windows_client.DbUtils
 
                 if (convMsg.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                     obj.MessageStatus = convMsg.MessageStatus;
-                else
-                    obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
+                else // its for status msg
+                {
+                    if(obj.MessageStatus != ConvMessage.State.RECEIVED_UNREAD)
+                        obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
+                }
                 obj.TimeStamp = convMsg.Timestamp;
                 obj.LastMsgId = convMsg.MessageId;
                 Stopwatch st = Stopwatch.StartNew();
