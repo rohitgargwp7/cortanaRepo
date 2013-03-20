@@ -1508,4 +1508,8 @@
   <data name="Conversations_EmptyStatus_TeamHike_Txt" xml:space="preserve">
     <value>Team Hike</value>
   </data>
+  <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
+    <value>What's up, {0}?</value>
+    <comment>{0} replaced by user name </comment>
+  </data>
 </root>

@@ -44,6 +44,7 @@ namespace windows_client.View
             postStatusIcon.IsEnabled = true;
             appBar.Buttons.Add(postStatusIcon);
             postStatusPage.ApplicationBar = appBar;
+
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -51,7 +52,7 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             MoodsInitialiser.Instance.Initialise();
             moodList.ItemsSource = MoodsInitialiser.Instance.listMoods;
-          
+
             userImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
         }
 
@@ -199,11 +200,11 @@ namespace windows_client.View
             txtStatus.SelectionLength = txtStatus.Text.Length;
         }
 
-        private void txtStatus_GotFocus_1(object sender, RoutedEventArgs e)
+        private void txtStatus_GotFocus(object sender, RoutedEventArgs e)
         {
             string name;
             App.appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
-            txtStatus.Hint = "What's up," + (name != null ? name : string.Empty) + "?";
+            txtStatus.Hint = string.Format(AppResources.PostStatus_WhatsUp_Hint_txt, (name != null ? name : string.Empty));
         }
     }
 }

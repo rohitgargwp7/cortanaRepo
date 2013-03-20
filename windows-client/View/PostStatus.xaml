@@ -12,34 +12,34 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
-    shell:SystemTray.IsVisible="True" Name="postStatusPage">
+    shell:SystemTray.IsVisible="False" Name="postStatusPage">
 
     <phone:PhoneApplicationPage.Resources>
         <Style TargetType="ContentControl" x:Key="HintCustomStyle">
-            <Setter Property="Height" Value="170"></Setter>
+            <Setter Property="Height" Value="125"></Setter>
             <Setter Property="Width" Value="310"></Setter>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="VerticalContentAlignment" Value="Top"/>
         </Style>
     </phone:PhoneApplicationPage.Resources>
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="#333333">
+    <Grid x:Name="LayoutRoot" Background="#444444">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="txtStatusHeader" Margin="24, 40, 24, 0" Text="{Binding Path= LocalizedResources.NewStatus_Txt, Source={StaticResource LocalizedStrings}}"  Grid.Row="0" HorizontalAlignment="Left" FontSize="22" FontFamily="Segoe WP Regular" Foreground="White"  />
-        <Grid Grid.Row="1" Height="220" VerticalAlignment="Top" Background="Black" Margin="24 12 24 0">
+        <TextBlock x:Name="txtStatusHeader" Margin="25, 35, 24, 5" Text="{Binding Path= LocalizedResources.NewStatus_Txt, Source={StaticResource LocalizedStrings}}"  Grid.Row="0" HorizontalAlignment="Left" FontSize="22" FontFamily="Segoe WP Regular" Foreground="White"  />
+        <Grid Grid.Row="1" Height="210" VerticalAlignment="Top" Background="Black" Margin="24 12 24 0">
             <Grid.RowDefinitions>
                 <RowDefinition  Height="Auto"/>
                 <RowDefinition  Height="*"/>
             </Grid.RowDefinitions>
-            <Rectangle VerticalAlignment="Top" HorizontalAlignment="Left" Width="455" Height="180" Grid.Row="0" Fill="White"/>
-            <StackPanel Orientation="Horizontal" Background="White" VerticalAlignment="Top" HorizontalAlignment="Left" Width="455" Height="160" Grid.Row="0" >
+            <Rectangle VerticalAlignment="Top" HorizontalAlignment="Left" Width="455" Height="155" Grid.Row="0" Fill="White"/>
+            <StackPanel Orientation="Horizontal" Background="White" VerticalAlignment="Top" HorizontalAlignment="Left" Width="455" Height="155" Grid.Row="0" >
                 <Image Name="userImage"  Height="80" Width="80" VerticalAlignment="Top" Margin="15"/>
-                <Image Name="postedMood"  Height="30" Width="30" VerticalAlignment="Top" Margin="10 20 0 0" Visibility="Collapsed"/>
-                <toolkit:PhoneTextBox InputScope="Text"  VerticalAlignment="Top" x:Name="txtStatus" HorizontalAlignment="Left" Width="310" Height="200" Background="White" BorderThickness="0"  Grid.Row="0" TextWrapping="Wrap" HintStyle="{StaticResource HintCustomStyle}" VerticalContentAlignment="Top" Tap="txtStatus_Tap" GotFocus="txtStatus_GotFocus_1" />
+                <Image Name="postedMood"  Height="30" Width="30" VerticalAlignment="Top" Margin="10 22 0 0" Visibility="Collapsed"/>
+                <toolkit:PhoneTextBox InputScope="Text"  VerticalAlignment="Top" x:Name="txtStatus" HorizontalAlignment="Left" Width="310" Height="155" Background="White" BorderThickness="0"  Grid.Row="0" TextWrapping="Wrap" HintStyle="{StaticResource HintCustomStyle}" VerticalContentAlignment="Top" Tap="txtStatus_Tap" GotFocus="txtStatus_GotFocus" />
             </StackPanel>
 
             <Grid Grid.Row="1" Margin="0 5 0 0">
@@ -48,15 +48,15 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Height="50" Width="50" Margin="30 0 0 0" Grid.Column="0" Tap="FbIcon_Tap">
+                <StackPanel Height="50" Width="50" Margin="30 10 0 0" Grid.Column="0" Tap="FbIcon_Tap" >
                     <Image Source="/View/images/fb_icon.png" VerticalAlignment="Center" HorizontalAlignment="Left" Width="31" Height="30" ></Image>
                 </StackPanel>
-                <StackPanel Height="50" Width="50" Margin="30 0 0 0" Grid.Column="1" Tap="TwitterIcon_Tap" HorizontalAlignment="Left" >
+                <StackPanel Height="50" Width="50" Margin="30 10 0 0" Grid.Column="1" Tap="TwitterIcon_Tap" HorizontalAlignment="Left" >
                     <Image Source="/View/images/tw_icon.png" Grid.Column="1" VerticalAlignment="Center" Width="31" Height="30" ></Image>
                 </StackPanel>
-                <StackPanel Margin="0 0 30 0" Grid.Column="2" >
-                    <Button VerticalAlignment="Top" HorizontalAlignment="Center" Width="70" Height="70" Margin="-10" BorderThickness="0" Padding="0" VerticalContentAlignment="Top" Background="Transparent" Tap="Mood_Tap">
-                        <Image Source="/View/images/emoticons/emo_im_01_bigsmile.png" Width="30" >
+                <StackPanel Margin="0 10 10 0" Grid.Column="2" >
+                    <Button VerticalAlignment="Top" HorizontalAlignment="Center" Width="70" Height="70" Margin="-15 -10" BorderThickness="0" Padding="0" VerticalContentAlignment="Top" Background="Transparent" Tap="Mood_Tap">
+                        <Image Source="/View/images/moods/sleepy.png" Width="30" >
                         </Image>
                     </Button>
                 </StackPanel>
@@ -67,14 +67,14 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="SELECT MOOD" FontSize="22" FontFamily="Segoe WP Regular"  Margin="26 12 12 12" Foreground="Gray"></TextBlock>
-            <ListBox  Name="moodList" BorderThickness="18,0,0,0" Grid.Row="1" Margin="12" Tap="moodList_Tap">
+            <TextBlock Grid.Row="0" Text="SELECT MOOD" FontSize="22" FontFamily="Segoe WP Regular"  Margin="26 40 12 12" Foreground="Gray"></TextBlock>
+            <ListBox  Name="moodList" BorderThickness="18,0,0,0" Grid.Row="1" Margin="12 0 12 0" Tap="moodList_Tap">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal" Margin="0 12 0 0">
+                        <StackPanel Orientation="Horizontal" Margin="0 24 0 0">
                             <Image Height="40" Width="40" Source="{Binding MoodIcon}">
                             </Image>
-                            <TextBlock Text="{Binding Name}" FontSize="22" FontFamily="Segoe WP Regular" Foreground="Gray" VerticalAlignment="Bottom" Margin="12 0 0 0" ></TextBlock>
+                            <TextBlock Text="{Binding Name}" FontSize="24" VerticalAlignment="Center" FontFamily="Segoe WP Regular" Foreground="Gray" Margin="12 0 0 0" ></TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

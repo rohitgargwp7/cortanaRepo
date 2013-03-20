@@ -2140,6 +2140,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to What&apos;s up, {0}?.
+        /// </summary>
+        public static string PostStatus_WhatsUp_Hint_txt {
+            get {
+                return ResourceManager.GetString("PostStatus_WhatsUp_Hint_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to What&apos;s up,{0}?.
         /// </summary>
         public static string PostStatus_WhatsUp_Txt {
