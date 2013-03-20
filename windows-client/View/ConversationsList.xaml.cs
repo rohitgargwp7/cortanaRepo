@@ -449,7 +449,7 @@ namespace windows_client.View
             editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = rewardsTxtBlk.Foreground = UI_Utils.Instance.EditProfileForeground;
             string lastStatus;
             App.appSettings.TryGetValue<string>(HikeConstants.LAST_STATUS, out lastStatus);
-            if (lastStatus != string.Empty)
+            if (!string.IsNullOrEmpty(lastStatus))
             {
                 txtStatus.Text = lastStatus;
                 int moodId;
@@ -461,8 +461,8 @@ namespace windows_client.View
             else
             {
                 statusImage.Source = UI_Utils.Instance.TextStatusImage;
-                txtStatus.Text = "Post Mood";
-                //todo:show default status 
+                txtStatus.Text = AppResources.Conversations_DefaultStatus_Txt;
+                //todo:change default status
             }
             int rew_val = 0;
             App.appSettings.TryGetValue<int>(HikeConstants.REWARDS_VALUE, out rew_val);
@@ -894,13 +894,11 @@ namespace windows_client.View
                     int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
                     if (sm.Msisdn == App.MSISDN)
                     {
-                        App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
-                        App.appSettings[HikeConstants.LAST_STATUS_MOOD_ID] = sm.MoodId;
+                        App.WriteToIsoStorageSettings(HikeConstants.LAST_STATUS, sm.Message);
+                        App.WriteToIsoStorageSettings(HikeConstants.LAST_STATUS_MOOD_ID, sm.MoodId);
                         //update profile status
                         if (sm.MoodId > -1)
-                        {
                             statusImage.Source = MoodsInitialiser.Instance.getMoodImage(sm.MoodId);
-                        }
                         else
                             statusImage.Source = UI_Utils.Instance.TextStatusImage;
 

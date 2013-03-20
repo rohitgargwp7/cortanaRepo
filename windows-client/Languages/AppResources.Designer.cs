@@ -376,6 +376,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Post Status.
+        /// </summary>
+        public static string Conversations_DefaultStatus_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_DefaultStatus_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete All Chats.
         /// </summary>
         public static string Conversations_DelAllChats_Txt {
