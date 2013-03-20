@@ -15,6 +15,7 @@ namespace windows_client.Controls
             this.statusMessageTxtBlk.Text = this.Text = cm.Message;
             this.statusTimestampTxtBlk.Text = this.TimeStamp = TimeUtils.getRelativeTime(cm.Timestamp);
             this.statusTypeImage.Source = UI_Utils.Instance.TextStatusImage;
+            this.MetaDataString = cm.MetaDataString;
         }
 
         public StatusChatBubble(ConvMessage cm,BitmapImage img)
@@ -23,6 +24,7 @@ namespace windows_client.Controls
             this.statusMessageTxtBlk.Text = this.Text = AppResources.PicUpdate_StatusTxt;
             this.statusTimestampTxtBlk.Text = this.TimeStamp = TimeUtils.getRelativeTime(cm.Timestamp);
             this.statusTypeImage.Source = img;
+            this.MetaDataString = cm.MetaDataString;
         }
     }
 }
