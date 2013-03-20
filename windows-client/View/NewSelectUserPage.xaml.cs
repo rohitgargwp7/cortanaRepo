@@ -473,7 +473,7 @@ namespace windows_client.View
             contactInfoObj = contactsListBox.SelectedItem as ContactInfo;
             if (contactInfoObj == null)
                 return;
-            MessageBoxResult mr = MessageBox.Show(string.Format(AppResources.ShareContact_ConfirmationText, contactInfoObj.Name), AppResources.ShareContact_ConfirmationCaption, MessageBoxButton.OKCancel);
+            MessageBoxResult mr = MessageBox.Show(string.Format(AppResources.ShareContact_ConfirmationText, contactInfoObj.Name), AppResources.ShareContact_Txt, MessageBoxButton.OKCancel);
             if (mr == MessageBoxResult.OK)
             {
                 string searchNumber = contactInfoObj.Msisdn;
