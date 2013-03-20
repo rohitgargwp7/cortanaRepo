@@ -2,16 +2,22 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using windows_client.Languages;
 using windows_client.Model;
+using windows_client.Misc;
 
 namespace windows_client.DbUtils
 {
     class StatusMsgsTable
     {
+        public static string LAST_STATUS_FILENAME = "_Last_Status";
+        public static object readWriteLock = new object();
+
         /// <summary>
         /// Add single status msg
         /// </summary>
@@ -128,6 +134,106 @@ namespace windows_client.DbUtils
                 {
                     smsg.MsgId = sm.MsgId;
                     context.SubmitChanges();
+                }
+            }
+        }
+
+        public static void SaveLastStatusMessage(string message, int moodId)
+        {
+            if (!string.IsNullOrEmpty(message))
+            {
+                lock (readWriteLock)
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        string fileName = LAST_STATUS_FILENAME;
+                        try
+                        {
+                            if (store.FileExists(fileName))
+                                store.DeleteFile(fileName);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("StatusMsgTable :: SaveLastStatusMessage: delete file, Exception : " + ex.StackTrace);
+                        }
+                        try
+                        {
+                            using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
+                            {
+                                using (BinaryWriter writer = new BinaryWriter(file))
+                                {
+                                    writer.Seek(0, SeekOrigin.Begin);
+                                    writer.WriteStringBytes(message);
+                                    writer.Write(moodId);
+                                    writer.Flush();
+                                    writer.Close();
+                                }
+                                file.Close();
+                                file.Dispose();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("StatusMsgTable :: SaveLastStatusMessage : write file, Exception : " + ex.StackTrace);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static string GetLastStatusMessage(out int moodId)
+        {
+            string message = null;
+            int retMoodId = -1;
+            lock (readWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                {
+                    try
+                    {
+                        if (store.FileExists(LAST_STATUS_FILENAME))
+                        {
+
+                            using (var file = store.OpenFile(LAST_STATUS_FILENAME, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            {
+                                using (BinaryReader reader = new BinaryReader(file))
+                                {
+                                    int count = reader.ReadInt32();
+                                    message = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                                    retMoodId = reader.ReadInt32();
+                                    reader.Close();
+                                }
+                                file.Close();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("UserTableUtils :: GetContactsFromFile : read file, Exception : " + ex.StackTrace);
+                    }
+                }
+            }
+            moodId = retMoodId;
+            return message;
+        }
+
+        public static void DeleteLastStatusFile()
+        {
+            lock (readWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                {
+                    try
+                    {
+                        if (store.FileExists(LAST_STATUS_FILENAME))
+                        {
+                            store.DeleteFile(LAST_STATUS_FILENAME);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("StatusMsgTable :: DeleteLastStatusFile : delete file, Exception : " + ex.StackTrace);
+                    }
                 }
             }
         }

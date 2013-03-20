@@ -447,13 +447,12 @@ namespace windows_client.View
                 rewardsPanel.Visibility = Visibility.Visible;
 
             editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = rewardsTxtBlk.Foreground = UI_Utils.Instance.EditProfileForeground;
-            string lastStatus;
-            App.appSettings.TryGetValue<string>(HikeConstants.LAST_STATUS, out lastStatus);
+            int moodId;
+            string lastStatus = StatusMsgsTable.GetLastStatusMessage(out moodId);
             if (!string.IsNullOrEmpty(lastStatus))
             {
                 txtStatus.Text = lastStatus;
-                int moodId;
-                if (App.appSettings.TryGetValue(HikeConstants.LAST_STATUS_MOOD_ID, out moodId))
+                if (moodId > -1)
                     statusImage.Source = MoodsInitialiser.Instance.getMoodImage(moodId);
                 else
                     statusImage.Source = UI_Utils.Instance.TextStatusImage;
@@ -894,8 +893,7 @@ namespace windows_client.View
                     int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
                     if (sm.Msisdn == App.MSISDN)
                     {
-                        App.WriteToIsoStorageSettings(HikeConstants.LAST_STATUS, sm.Message);
-                        App.WriteToIsoStorageSettings(HikeConstants.LAST_STATUS_MOOD_ID, sm.MoodId);
+                        StatusMsgsTable.SaveLastStatusMessage(sm.Message, sm.MoodId);
                         //update profile status
                         if (sm.MoodId > -1)
                             statusImage.Source = MoodsInitialiser.Instance.getMoodImage(sm.MoodId);
