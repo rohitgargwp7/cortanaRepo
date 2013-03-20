@@ -392,6 +392,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.STATUS_DELETED, this);
             mPubSub.addListener(HikePubSub.REMOVE_FRIENDS, this);
             mPubSub.addListener(HikePubSub.ADD_FRIENDS, this);
+            mPubSub.addListener(HikePubSub.BLOCK_USER, this);
         }
 
         private void removeListeners()
@@ -412,6 +413,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.STATUS_DELETED, this);
                 mPubSub.removeListener(HikePubSub.REMOVE_FRIENDS, this);
                 mPubSub.removeListener(HikePubSub.ADD_FRIENDS, this);
+                mPubSub.removeListener(HikePubSub.BLOCK_USER, this);
             }
             catch (Exception ex)
             {
@@ -774,7 +776,7 @@ namespace windows_client.View
             #region ADD TO PENDING
             else if (HikePubSub.ADD_TO_PENDING == type)
             {
-                
+
                 if (!App.ViewModel.IsPendingListLoaded)
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -788,7 +790,7 @@ namespace windows_client.View
                         {
                             FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                             App.ViewModel.StatusList.Insert(0, frs);
-                        }                      
+                        }
                         if (launchPagePivot.SelectedIndex != 3)
                         {
                             UnreadFriendRequests++;
@@ -873,7 +875,7 @@ namespace windows_client.View
                     int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
                     if (sm.Msisdn == App.MSISDN)
                     {
-                        App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
+                        App.WriteToIsoStorageSettings(HikeConstants.LAST_STATUS, sm.Message);
                         // if status list is not loaded simply ignore this packet , as then this packet will
                         // be shown twice , one here and one from DB.
                         if (isStatusMessagesLoaded)
@@ -1007,6 +1009,40 @@ namespace windows_client.View
                 }
 
 
+            }
+            #endregion
+            #region BLOCK_USER
+            else if (HikePubSub.BLOCK_USER == type)
+            {
+                if (isStatusMessagesLoaded && App.ViewModel.IsPendingListLoaded)
+                {
+                    if (obj is ContactInfo)
+                    {
+                        ContactInfo c = obj as ContactInfo;
+                        // if this user has pending request
+                        if (App.ViewModel.IsPending(c.Msisdn) && App.ViewModel.StatusList != null)
+                        {
+                            for (int i = 0; i < App.ViewModel.StatusList.Count; i++)
+                            {
+                                if (App.ViewModel.StatusList[i] is FriendRequestStatus)
+                                {
+                                    FriendRequestStatus f = App.ViewModel.StatusList[i] as FriendRequestStatus;
+                                    if (f.Msisdn == c.Msisdn)
+                                    {
+                                        Dispatcher.BeginInvoke(() =>
+                                        {
+                                            App.ViewModel.StatusList.RemoveAt(i);
+                                        });
+                                        break;
+                                    }
+
+                                }
+                                else
+                                    break;
+                            }
+                        }
+                    }
+                }
             }
             #endregion
         }
@@ -1865,15 +1901,26 @@ namespace windows_client.View
 
         private void loadStatuses()
         {
-            MiscDBUtil.LoadPendingRequests();
+            if (!App.ViewModel.IsPendingListLoaded)
+                MiscDBUtil.LoadPendingRequests();
 
+            List<Blocked> blockedList = UsersTableUtils.getBlockList();
+            HashSet<string> hashBlocked = null;
+            if (blockedList != null)
+            {
+                hashBlocked = new HashSet<string>();
+                foreach (Blocked bl in blockedList)
+                    hashBlocked.Add(bl.Msisdn);
+            }
             foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
             {
-                FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
-                App.ViewModel.StatusList.Add(frs);
+                if (hashBlocked != null && !hashBlocked.Contains(co.Msisdn))
+                {
+                    FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
+                    App.ViewModel.StatusList.Add(frs);
+                }
             }
             App.ViewModel.IsPendingListLoaded = true;
-            //TODO - MG - handle case when you receive unread status from 1 way friend. Since, we are showing only 2-way su on timeline
             //corresponding counters should be handled for eg unread count
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgsForTimeline();
             if (statusMessagesFromDB != null)

@@ -972,6 +972,9 @@ namespace windows_client
                     string ms = (string)jsonObj[HikeConstants.FROM];
                     if (ms == null)
                         return;
+                    // if user is blocked simply ignore the request. This shlould also be done from server
+                    if (UsersTableUtils.isUserBlocked(ms))
+                        return;
                     FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(ms, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
                     App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
                     if (App.ViewModel.Isfavourite(ms)) // already favourite
