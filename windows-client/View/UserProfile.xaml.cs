@@ -537,7 +537,6 @@ namespace windows_client.View
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (ss, ee) =>
             {
-
                 statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
             };
             bw.RunWorkerAsync();
@@ -728,7 +727,6 @@ namespace windows_client.View
             this.appBar.IsVisible = true;
             this.appBar.IsMenuEnabled = true;
             UserProfilePage.ApplicationBar = appBar;
-
         }
 
         private void InitSelfProfile()
@@ -749,7 +747,7 @@ namespace windows_client.View
                 nameToShow = name;
             isOnHike = true;
             changePic.Visibility = Visibility.Visible;
-
+            txtOnHikeSmsTime.Visibility = Visibility.Visible;
             this.txtProfileHeader.Text = AppResources.MyProfileheader_Txt;
             ApplicationBarIconButton postStatusButton = new ApplicationBarIconButton();
             postStatusButton.IconUri = new Uri("/View/images/icon_status.png", UriKind.Relative);
@@ -768,21 +766,17 @@ namespace windows_client.View
 
         private void InitHikeUserProfile()
         {
+            friendStatus = FriendsTableUtils.GetFriendInfo(msisdn, out timeOfJoin);
+            if (timeOfJoin == 0)
+                AccountUtils.GetOnhikeDate(msisdn, new AccountUtils.postResponseFunction(GetHikeStatus_Callback));
+            else
+                txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, TimeUtils.GetOnHikeSinceDisplay(timeOfJoin));
+
             //handled self profile
             if (App.MSISDN == msisdn)
             {
                 LoadStatuses();
                 return;
-            }
-
-            friendStatus = FriendsTableUtils.GetFriendInfo(msisdn, out timeOfJoin);
-            if (timeOfJoin == 0)
-            {
-                AccountUtils.GetOnhikeDate(msisdn, new AccountUtils.postResponseFunction(GetHikeStatus_Callback));
-            }
-            else
-            {
-                txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, TimeUtils.GetOnHikeSinceDisplay(timeOfJoin));
             }
 
             if (friendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
