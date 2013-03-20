@@ -1252,9 +1252,6 @@
   <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
     <value>Confirm your number</value>
   </data>
-  <data name="ShareContact_ConfirmationCaption" xml:space="preserve">
-    <value>Share Contact</value>
-  </data>
   <data name="SharedContactNotFoundCaptionText" xml:space="preserve">
     <value>Refresh Contact List</value>
   </data>
