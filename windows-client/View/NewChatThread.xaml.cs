@@ -2616,6 +2616,18 @@ namespace windows_client.View
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
 
+                if (convMessage.Msisdn != mContactNumber || (convMessage.MetaDataString != null &&
+                    convMessage.MetaDataString.Contains("poke")))
+                {
+                    bool isVibrateEnabled = true;
+                    App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
+                    if (isVibrateEnabled)
+                    {
+                        VibrateController vibrate = VibrateController.Default;
+                        vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
+                    }
+                }
+
                 /* Check if this is the same user for which this message is recieved*/
                 if (convMessage.Msisdn == mContactNumber)
                 {
@@ -2672,13 +2684,6 @@ namespace windows_client.View
                         toast.Show();
 
                     });
-                    bool isVibrateEnabled = true;
-                    App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
-                    if (isVibrateEnabled)
-                    {
-                        VibrateController vibrate = VibrateController.Default;
-                        vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
-                    }
                 }
             }
 
