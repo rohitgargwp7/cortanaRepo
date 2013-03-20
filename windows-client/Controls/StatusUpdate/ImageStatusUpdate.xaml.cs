@@ -69,7 +69,7 @@ namespace windows_client.Controls.StatusUpdate
             {
                 if (sm.MoodId > 0) //For profile pic update. Mood id won't be received. Kept this for future.
                 {
-                    this.userProfileImage.Source = MoodsInitialiser.Instance.getMoodImage(sm.MoodId);
+                    this.userProfileImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
                 }
                 else
                 {

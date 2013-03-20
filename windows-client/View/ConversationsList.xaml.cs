@@ -452,7 +452,7 @@ namespace windows_client.View
             {
                 txtStatus.Text = lastStatus;
                 if (moodId > -1)
-                    statusImage.Source = MoodsInitialiser.Instance.getMoodImage(moodId);
+                    statusImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(moodId);
                 else
                     statusImage.Source = UI_Utils.Instance.TextStatusImage;
             }
@@ -863,7 +863,7 @@ namespace windows_client.View
                         StatusMsgsTable.SaveLastStatusMessage(sm.Message, sm.MoodId);
                         //update profile status
                         if (sm.MoodId > -1)
-                            statusImage.Source = MoodsInitialiser.Instance.getMoodImage(sm.MoodId);
+                            statusImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
                         else
                             statusImage.Source = UI_Utils.Instance.TextStatusImage;
 
