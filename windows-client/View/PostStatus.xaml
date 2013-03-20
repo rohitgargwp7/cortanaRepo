@@ -72,9 +72,8 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="0 24 0 0">
-                            <Image Height="40" Width="40" Source="{Binding MoodIcon}">
-                            </Image>
-                            <TextBlock Text="{Binding Name}" FontSize="24" VerticalAlignment="Center" FontFamily="Segoe WP Regular" Foreground="Gray" Margin="12 0 0 0" ></TextBlock>
+                            <Image Height="40" Width="40" Source="{Binding MoodImage}"/>
+                            <TextBlock Text="{Binding MoodText}" FontSize="24" VerticalAlignment="Center" FontFamily="Segoe WP Regular" Foreground="Gray" Margin="12 0 0 0" ></TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
