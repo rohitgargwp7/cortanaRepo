@@ -31,7 +31,7 @@ namespace windows_client.Model
         private bool _isOnhike;
         private ConvMessage.State _messageStatus;
         private byte[] _avatar;
-        private bool _isFirstMsg = false; // this is used in GC , when you want to show joined msg for SMS and DND users.
+        private bool _isFirstMsg = false; // not used anywhere
         private long _lastMsgId;
         private int _muteVal = -1; // this is used to track mute (added in version 1.5.0.0)
         private BitmapImage empImage = null;
