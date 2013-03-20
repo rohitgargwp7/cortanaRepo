@@ -83,7 +83,7 @@ namespace windows_client.View
             if (moodId > -1)
             {
                 statusJSON["mood"] = moodId;
-                statusJSON["timeofday"] = TimeUtils.GetTimeIntervalDay();
+                statusJSON["timeofday"] = (int)TimeUtils.GetTimeIntervalDay();
             }
             AccountUtils.postStatus(statusJSON, postStatus_Callback);
         }
