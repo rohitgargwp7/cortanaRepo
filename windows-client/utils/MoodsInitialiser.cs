@@ -110,9 +110,9 @@ namespace windows_client.utils
             {
                 get
                 {
-                    if (string.IsNullOrEmpty(MoodsInitialiser.Instance.moodInfo[_moodId - 1, (int)TimeUtils.GetTimeIntervalDay()]))
+                    if (!string.IsNullOrEmpty(MoodsInitialiser.Instance.moodInfo[_moodId - 1, (int)TimeUtils.GetTimeIntervalDay() + 2]))
                     {
-                        return MoodsInitialiser.Instance.moodInfo[_moodId - 1, (int)TimeUtils.GetTimeIntervalDay()];
+                        return MoodsInitialiser.Instance.moodInfo[_moodId - 1, (int)TimeUtils.GetTimeIntervalDay() + 2];
                     }
                     return MoodsInitialiser.Instance.moodInfo[_moodId - 1, 1]; //if there is no text then return name
                 }
