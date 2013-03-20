@@ -68,7 +68,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="SELECT MOOD" FontSize="22" FontFamily="Segoe WP Regular"  Margin="26 40 12 12" Foreground="Gray"></TextBlock>
-            <ListBox  Name="moodList" BorderThickness="18,0,0,0" Grid.Row="1" Margin="12 0 12 0" Tap="moodList_Tap">
+            <ListBox  Name="moodListBox" BorderThickness="18,0,0,0" Grid.Row="1" Margin="12 0 12 0" Tap="moodList_Tap">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="0 24 0 0">

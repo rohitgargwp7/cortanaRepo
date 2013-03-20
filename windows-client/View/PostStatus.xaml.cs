@@ -50,8 +50,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            MoodsInitialiser.Instance.Initialise();
-            moodList.ItemsSource = MoodsInitialiser.Instance.listMoods;
+            moodListBox.ItemsSource = MoodsInitialiser.Instance.MoodCompleteList;
 
             userImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
         }
@@ -156,17 +155,18 @@ namespace windows_client.View
 
         private void moodList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            Mood mood = moodList.SelectedItem as Mood;
+            windows_client.utils.MoodsInitialiser.Moods mood = this.moodListBox.SelectedItem as windows_client.utils.MoodsInitialiser.Moods;
             if (mood == null)
                 return;
-            moodId = moodList.SelectedIndex;
-            if (txtStatus.Text == string.Empty || lastMoodText == txtStatus.Text)
-            {
-                string displayText = mood.DisplayText;
-                txtStatus.Text = displayText == string.Empty ? mood.Name : displayText;
-                lastMoodText = txtStatus.Text;
-            }
-            postedMood.Source = mood.MoodIcon;
+            moodId = moodListBox.SelectedIndex;
+            //if (txtStatus.Text == string.Empty || lastMoodText == txtStatus.Text)
+            //{
+            //    string displayText = mood.MoodText;
+            //    txtStatus.Text = displayText == string.Empty ? mood.Name : displayText;
+            //    lastMoodText = txtStatus.Text;
+            //}
+            lastMoodText = mood.MoodText;
+            postedMood.Source = mood.MoodImage;
             postedMood.Visibility = Visibility.Visible;
             gridMood.Visibility = Visibility.Collapsed;
             this.appBar.IsVisible = true;
