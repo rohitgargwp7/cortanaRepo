@@ -884,10 +884,16 @@ namespace windows_client.Model
                 case ParticipantInfoState.STATUS_UPDATE:
                     JObject data = (JObject)jsonObj[HikeConstants.DATA];
                     JToken val;
-                    if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null)
-                        this.Message = val.ToString();
-                    else // this is to handle profile pic update
-                        this.Message = "pu";
+
+                    // this is to handle profile pic update
+                    if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
+                        this.Message = AppResources.Update_Profile_Pic_txt;
+                    else  // status , moods update
+                    {
+                        if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                            this.Message = val.ToString();
+                    }
+
                     data.Remove(HikeConstants.THUMBNAIL);
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;

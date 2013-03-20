@@ -2168,7 +2168,19 @@ namespace windows_client.View
                 }
                 else if (lastMessageBubble is StatusChatBubble)
                 {
-                    obj.LastMessage = AppResources.Status_Update_Txt;
+                    StatusChatBubble sb = (lastMessageBubble as StatusChatBubble);
+                    JObject data = JObject.Parse(sb.MetaDataString)[HikeConstants.DATA] as JObject;
+                    JToken val;
+
+                    // Profile Pic update
+                    if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
+                    {
+                        obj.LastMessage = "\"" + AppResources.Update_Profile_Pic_txt + "\"";
+                    }
+                    else // status, moods update
+                    {
+                        obj.LastMessage = "\""+sb.statusMessageTxtBlk.Text+"\"";
+                    }                   
                     obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
                     obj.TimeStamp = lastMessageBubble.TimeStampLong;
                 }

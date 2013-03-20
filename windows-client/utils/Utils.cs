@@ -35,6 +35,8 @@ namespace windows_client.utils
 
         public static bool isGroupConversation(string msisdn)
         {
+            if (msisdn == HikeConstants.MY_PROFILE_PIC)
+                return false;
             return !msisdn.StartsWith("+");
         }
 
@@ -372,5 +374,6 @@ namespace windows_client.utils
         }
 
         private static Version TargetedVersion = new Version(8, 0);
+
     }
 }

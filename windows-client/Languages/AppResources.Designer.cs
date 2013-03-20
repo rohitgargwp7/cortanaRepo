@@ -2995,15 +2995,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Status Update.
-        /// </summary>
-        public static string Status_Update_Txt {
-            get {
-                return ResourceManager.GetString("Status_Update_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Changed profile picture.
         /// </summary>
         public static string StatusUpdate_Photo {
@@ -3189,6 +3180,15 @@ namespace windows_client.Languages {
         public static string Unlink_Txt {
             get {
                 return ResourceManager.GetString("Unlink_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updated profile picture.
+        /// </summary>
+        public static string Update_Profile_Pic_txt {
+            get {
+                return ResourceManager.GetString("Update_Profile_Pic_txt", resourceCulture);
             }
         }
         
