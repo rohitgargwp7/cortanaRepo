@@ -66,11 +66,8 @@ namespace windows_client.View
 
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
-                    postStatusIcon.IsEnabled = true;
-                });
+                MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
+                postStatusIcon.IsEnabled = true;
                 return;
             }
             JObject statusJSON = new JObject();
