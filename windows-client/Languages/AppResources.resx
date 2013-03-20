@@ -1509,4 +1509,7 @@
     <value>What's up, {0}?</value>
     <comment>{0} replaced by user name </comment>
   </data>
+  <data name="Conversations_DefaultStatus_Txt" xml:space="preserve">
+    <value>Post Status</value>
+  </data>
 </root>
