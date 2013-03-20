@@ -61,8 +61,7 @@ namespace windows_client.View
             if (isShowFavTute)
                 showTutorial();
             App.ViewModel.ConversationListPage = this;
-            string lastStatus = "";
-            App.appSettings.TryGetValue<string>(HikeConstants.LAST_STATUS, out lastStatus);
+
             App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out _totalUnreadStatuses);
             App.appSettings.TryGetValue(HikeConstants.REFRESH_BAR, out _refreshBarCount);
             App.appSettings.TryGetValue(HikeConstants.UNREAD_FRIEND_REQUESTS, out _unreadFriendRequests);
@@ -448,7 +447,15 @@ namespace windows_client.View
                 rewardsPanel.Visibility = Visibility.Visible;
 
             editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = rewardsTxtBlk.Foreground = UI_Utils.Instance.EditProfileForeground;
-
+            string lastStatus;
+            App.appSettings.TryGetValue<string>(HikeConstants.LAST_STATUS, out lastStatus);
+            if (lastStatus != string.Empty)
+            {
+                txtStatus.Text = lastStatus;
+            }
+            //todo:show default status
+            statusImage.Source = UI_Utils.Instance.TextStatusImage;
+            //todo:Add mood image if mood
             int rew_val = 0;
             App.appSettings.TryGetValue<int>(HikeConstants.REWARDS_VALUE, out rew_val);
             if (rew_val <= 0)
@@ -880,6 +887,13 @@ namespace windows_client.View
                     if (sm.Msisdn == App.MSISDN)
                     {
                         App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
+                        //update profile status
+                        if (sm.MoodId > -1)
+                            statusImage.Source = MoodsInitialiser.Instance.getMoodImage(sm.MoodId);
+                        else
+                            statusImage.Source = UI_Utils.Instance.TextStatusImage;
+
+                        txtStatus.Text = sm.Message;
                         // if status list is not loaded simply ignore this packet , as then this packet will
                         // be shown twice , one here and one from DB.
                         if (isStatusMessagesLoaded)
@@ -1935,6 +1949,5 @@ namespace windows_client.View
 
 
         #endregion
-
     }
 }
