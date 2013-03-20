@@ -50,8 +50,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            moodListBox.ItemsSource = MoodsInitialiser.Instance.MoodCompleteList;
-
+            moodListBox.ItemsSource = MoodsInitialiser.Instance.MoodList;
             userImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
         }
 
@@ -152,6 +151,7 @@ namespace windows_client.View
             gridMood.Visibility = Visibility.Visible;
             this.appBar.IsVisible = false;
         }
+
 
         private void moodList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {

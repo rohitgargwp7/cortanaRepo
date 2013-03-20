@@ -74,7 +74,7 @@ namespace windows_client.utils
 
         private List<Moods> _moodList;
 
-        public List<Moods> MoodCompleteList
+        public List<Moods> MoodList
         {
             get
             {
@@ -83,7 +83,7 @@ namespace windows_client.utils
                     _moodList = new List<Moods>();
                     for (int i = 0; i < moodInfo.Length; i++)
                     {
-                        _moodList[i] = new Moods(i + 1);
+                        _moodList.Add(new Moods(i + 1));
                     }
                 }
                 return this._moodList;
