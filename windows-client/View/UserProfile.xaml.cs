@@ -1,7 +1,5 @@
 ﻿﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
@@ -14,7 +12,6 @@ using System.Windows.Media.Imaging;
 using windows_client.utils;
 using windows_client.Languages;
 using windows_client.Controls.StatusUpdate;
-using System.Windows.Documents;
 using Microsoft.Phone.Tasks;
 using System.Net.NetworkInformation;
 using Newtonsoft.Json.Linq;
