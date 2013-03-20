@@ -790,11 +790,18 @@ namespace windows_client.View
                         {
                             FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                             App.ViewModel.StatusList.Insert(0, frs);
+
+                            if (emptyStatusPlaceHolder.Visibility == Visibility.Visible)
+                            {
+                                emptyStatusPlaceHolder.Visibility = Visibility.Collapsed;
+                                statusLLS.Visibility = Visibility.Visible;
+                            }
                         }
                         if (launchPagePivot.SelectedIndex != 3)
                         {
                             UnreadFriendRequests++;
                         }
+
                     }
                 });
             }
@@ -879,8 +886,15 @@ namespace windows_client.View
                         // if status list is not loaded simply ignore this packet , as then this packet will
                         // be shown twice , one here and one from DB.
                         if (isStatusMessagesLoaded)
+                        {
                             App.ViewModel.StatusList.Insert(count, StatusUpdateHelper.Instance.createStatusUIObject(sm, true,
                                 statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
+                            if (emptyStatusPlaceHolder.Visibility == Visibility.Visible)
+                            {
+                                emptyStatusPlaceHolder.Visibility = Visibility.Collapsed;
+                                statusLLS.Visibility = Visibility.Visible;
+                            }
+                        }
                     }
                     else
                     {
@@ -896,12 +910,20 @@ namespace windows_client.View
                             // if status list is not loaded simply ignore this packet , as then this packet will
                             // be shown twice , one here and one from DB.
                             if (isStatusMessagesLoaded)
+                            {
                                 App.ViewModel.StatusList.Insert(count, StatusUpdateHelper.Instance.createStatusUIObject(sm, true,
                                     statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
+                                if (emptyStatusPlaceHolder.Visibility == Visibility.Visible)
+                                {
+                                    emptyStatusPlaceHolder.Visibility = Visibility.Collapsed;
+                                    statusLLS.Visibility = Visibility.Visible;
+                                }
+                            }
                         }
                         RefreshBarCount++;//persist in this.State. it will be cleared 
                     }
                     TotalUnreadStatuses++;
+
                 });
             }
             #endregion
@@ -926,7 +948,12 @@ namespace windows_client.View
                         if (sb.IsUnread)
                             _totalUnreadStatuses -= 1;
 
-                        //todo: Rohit handle ui for handling zero status
+                        if (App.ViewModel.StatusList.Count == 0)
+                        {
+                            emptyStatusPlaceHolder.Visibility = Visibility.Visible;
+                            txtEmptyStatusBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
+                            statusLLS.Visibility = Visibility.Collapsed;
+                        }
                     }
                 });
             }
@@ -1757,6 +1784,11 @@ namespace windows_client.View
                     StatusUpdateHelper.Instance.createStatusUIObject(FreshStatusUpdates[i], true,
                     statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
             }
+            if (emptyStatusPlaceHolder.Visibility == Visibility.Visible)
+            {
+                emptyStatusPlaceHolder.Visibility = Visibility.Collapsed;
+                statusLLS.Visibility = Visibility.Visible;
+            }
             statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count]);
             RefreshBarCount = 0;
         }
@@ -1934,8 +1966,21 @@ namespace windows_client.View
                 }
             }
             this.statusLLS.ItemsSource = App.ViewModel.StatusList;
+            if (App.ViewModel.StatusList.Count == 0)
+            {
+                emptyStatusPlaceHolder.Visibility = Visibility.Visible;
+                txtEmptyStatusBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
+                statusLLS.Visibility = Visibility.Collapsed;
+            }
             isStatusMessagesLoaded = true;
         }
+
+        private void UpdateStatus_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
+            NavigationService.Navigate(nextPage);
+        }
+
 
         #endregion
 
