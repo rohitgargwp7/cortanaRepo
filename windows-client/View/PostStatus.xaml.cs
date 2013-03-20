@@ -159,13 +159,8 @@ namespace windows_client.View
             if (mood == null)
                 return;
             moodId = moodListBox.SelectedIndex;
-            //if (txtStatus.Text == string.Empty || lastMoodText == txtStatus.Text)
-            //{
-            //    string displayText = mood.MoodText;
-            //    txtStatus.Text = displayText == string.Empty ? mood.Name : displayText;
-            //    lastMoodText = txtStatus.Text;
-            //}
-            lastMoodText = mood.MoodText;
+            if (string.IsNullOrWhiteSpace(txtStatus.Text) || lastMoodText == txtStatus.Text)
+                lastMoodText = txtStatus.Text = mood.MoodText;
             postedMood.Source = mood.MoodImage;
             postedMood.Visibility = Visibility.Visible;
             gridMood.Visibility = Visibility.Collapsed;
