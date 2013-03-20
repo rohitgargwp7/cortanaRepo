@@ -61,8 +61,7 @@ namespace windows_client.View
             if (isShowFavTute)
                 showTutorial();
             App.ViewModel.ConversationListPage = this;
-            string lastStatus = "";
-            App.appSettings.TryGetValue<string>(HikeConstants.LAST_STATUS, out lastStatus);
+
             App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out _totalUnreadStatuses);
             App.appSettings.TryGetValue(HikeConstants.REFRESH_BAR, out _refreshBarCount);
             App.appSettings.TryGetValue(HikeConstants.UNREAD_FRIEND_REQUESTS, out _unreadFriendRequests);
@@ -450,7 +449,22 @@ namespace windows_client.View
                 rewardsPanel.Visibility = Visibility.Visible;
 
             editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = rewardsTxtBlk.Foreground = UI_Utils.Instance.EditProfileForeground;
-
+            int moodId;
+            string lastStatus = StatusMsgsTable.GetLastStatusMessage(out moodId);
+            if (!string.IsNullOrEmpty(lastStatus))
+            {
+                txtStatus.Text = lastStatus;
+                if (moodId > -1)
+                    statusImage.Source = MoodsInitialiser.Instance.getMoodImage(moodId);
+                else
+                    statusImage.Source = UI_Utils.Instance.TextStatusImage;
+            }
+            else
+            {
+                statusImage.Source = UI_Utils.Instance.TextStatusImage;
+                txtStatus.Text = AppResources.Conversations_DefaultStatus_Txt;
+                //todo:change default status
+            }
             int rew_val = 0;
             App.appSettings.TryGetValue<int>(HikeConstants.REWARDS_VALUE, out rew_val);
             if (rew_val <= 0)
@@ -882,7 +896,14 @@ namespace windows_client.View
                     int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
                     if (sm.Msisdn == App.MSISDN)
                     {
-                        App.WriteToIsoStorageSettings(HikeConstants.LAST_STATUS, sm.Message);
+                        StatusMsgsTable.SaveLastStatusMessage(sm.Message, sm.MoodId);
+                        //update profile status
+                        if (sm.MoodId > -1)
+                            statusImage.Source = MoodsInitialiser.Instance.getMoodImage(sm.MoodId);
+                        else
+                            statusImage.Source = UI_Utils.Instance.TextStatusImage;
+
+                        txtStatus.Text = sm.Message;
                         // if status list is not loaded simply ignore this packet , as then this packet will
                         // be shown twice , one here and one from DB.
                         if (isStatusMessagesLoaded)
@@ -1983,6 +2004,5 @@ namespace windows_client.View
 
 
         #endregion
-
     }
 }

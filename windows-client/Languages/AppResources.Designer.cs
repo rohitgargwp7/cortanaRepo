@@ -376,6 +376,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Post Status.
+        /// </summary>
+        public static string Conversations_DefaultStatus_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_DefaultStatus_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete All Chats.
         /// </summary>
         public static string Conversations_DelAllChats_Txt {
@@ -2982,15 +2991,6 @@ namespace windows_client.Languages {
         public static string Something_Wrong_Txt {
             get {
                 return ResourceManager.GetString("Something_Wrong_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Status Update.
-        /// </summary>
-        public static string Status_Update_Txt {
-            get {
-                return ResourceManager.GetString("Status_Update_Txt", resourceCulture);
             }
         }
         

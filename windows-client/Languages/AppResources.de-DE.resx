@@ -1364,10 +1364,6 @@
   <data name="UpgradingApp_Text" xml:space="preserve">
     <value>Bitte warten, deine App wird aktualisiert...</value>
   </data>
-  <data name="Status_Update_Txt" xml:space="preserve">
-    <value />
-    <comment>Used in convlist last msg</comment>
-  </data>
   <data name="Share_With_Txt" xml:space="preserve">
     <value />
   </data>
