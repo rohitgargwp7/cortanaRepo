@@ -81,7 +81,7 @@ namespace windows_client.utils
                 if (_moodList == null)
                 {
                     _moodList = new List<Moods>();
-                    for (int i = 0; i < moodInfo.Length; i++)
+                    for (int i = 0; i < moodImages.Length; i++)
                     {
                         _moodList.Add(new Moods(i + 1));
                     }
