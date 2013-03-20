@@ -452,10 +452,18 @@ namespace windows_client.View
             if (lastStatus != string.Empty)
             {
                 txtStatus.Text = lastStatus;
+                int moodId;
+                if (App.appSettings.TryGetValue(HikeConstants.LAST_STATUS_MOOD_ID, out moodId))
+                    statusImage.Source = MoodsInitialiser.Instance.getMoodImage(moodId);
+                else
+                    statusImage.Source = UI_Utils.Instance.TextStatusImage;
             }
-            //todo:show default status
-            statusImage.Source = UI_Utils.Instance.TextStatusImage;
-            //todo:Add mood image if mood
+            else
+            {
+                statusImage.Source = UI_Utils.Instance.TextStatusImage;
+                txtStatus.Text = "Post Mood";
+                //todo:show default status 
+            }
             int rew_val = 0;
             App.appSettings.TryGetValue<int>(HikeConstants.REWARDS_VALUE, out rew_val);
             if (rew_val <= 0)
@@ -887,9 +895,12 @@ namespace windows_client.View
                     if (sm.Msisdn == App.MSISDN)
                     {
                         App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
+                        App.appSettings[HikeConstants.LAST_STATUS_MOOD_ID] = sm.MoodId;
                         //update profile status
                         if (sm.MoodId > -1)
+                        {
                             statusImage.Source = MoodsInitialiser.Instance.getMoodImage(sm.MoodId);
+                        }
                         else
                             statusImage.Source = UI_Utils.Instance.TextStatusImage;
 
