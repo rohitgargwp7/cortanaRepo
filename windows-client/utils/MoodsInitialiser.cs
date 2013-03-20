@@ -62,14 +62,14 @@ namespace windows_client.utils
         {
             if (moodId < 1 || moodId > moodImages.Length)
                 return null;
-            if (moodImages[moodId] == null)
+            if (moodImages[moodId - 1] == null)
             {
                 BitmapImage moodImg = new BitmapImage();
                 moodImg.CreateOptions = BitmapCreateOptions.BackgroundCreation;
-                moodImg.UriSource = new Uri(moodInfo[moodId, 0], UriKind.Relative);
-                moodImages[moodId] = moodImg;
+                moodImg.UriSource = new Uri(moodInfo[moodId - 1, 0], UriKind.Relative);
+                moodImages[moodId - 1] = moodImg;
             }
-            return moodImages[moodId];
+            return moodImages[moodId - 1];
         }
 
         private List<Moods> _moodList;
@@ -110,11 +110,11 @@ namespace windows_client.utils
             {
                 get
                 {
-                    if (string.IsNullOrEmpty(MoodsInitialiser.Instance.moodInfo[_moodId, (int)TimeUtils.GetTimeIntervalDay()]))
+                    if (string.IsNullOrEmpty(MoodsInitialiser.Instance.moodInfo[_moodId - 1, (int)TimeUtils.GetTimeIntervalDay()]))
                     {
-                        return MoodsInitialiser.Instance.moodInfo[_moodId, (int)TimeUtils.GetTimeIntervalDay()];
+                        return MoodsInitialiser.Instance.moodInfo[_moodId - 1, (int)TimeUtils.GetTimeIntervalDay()];
                     }
-                    return MoodsInitialiser.Instance.moodInfo[_moodId, 1]; //if there is no text then return name
+                    return MoodsInitialiser.Instance.moodInfo[_moodId - 1, 1]; //if there is no text then return name
                 }
             }
         }
