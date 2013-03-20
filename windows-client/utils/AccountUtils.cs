@@ -24,7 +24,6 @@ namespace windows_client.utils
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
-        //private static readonly string STAGING_HOST = "migration.im.hike.in";
         private static readonly string STAGING_HOST = "staging.im.hike.in";
 
         private static readonly string MQTT_HOST_SERVER = "mqtt.im.hike.in";
@@ -39,18 +38,8 @@ namespace windows_client.utils
         {
             get
             {
-                //bool isStaging;
-                //if (!App.appSettings.TryGetValue<bool>(HikeConstants.STAGING_SERVER, out isStaging))
-                //    isStaging = !IS_PRODUCTION;
                 return App.IS_MARKETPLACE ? true : IS_PRODUCTION;
             }
-            //set
-            //{
-            //    bool isStaging;
-            //    App.appSettings.TryGetValue(HikeConstants.STAGING_SERVER, out isStaging);
-            //    if (value != isStaging)
-            //        App.WriteToIsoStorageSettings(HikeConstants.STAGING_SERVER,value);
-            //}
         }
 
         #region MQTT RELATED
