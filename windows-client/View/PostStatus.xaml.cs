@@ -152,7 +152,7 @@ namespace windows_client.View
 
         private void moodList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            windows_client.utils.MoodsInitialiser.Moods mood = this.moodListBox.SelectedItem as windows_client.utils.MoodsInitialiser.Moods;
+            windows_client.utils.MoodsInitialiser.Mood mood = this.moodListBox.SelectedItem as windows_client.utils.MoodsInitialiser.Mood;
             if (mood == null)
                 return;
             moodId = moodListBox.SelectedIndex;

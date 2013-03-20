@@ -72,28 +72,28 @@ namespace windows_client.utils
             return moodImages[moodId - 1];
         }
 
-        private List<Moods> _moodList;
+        private List<Mood> _moodList;
 
-        public List<Moods> MoodList
+        public List<Mood> MoodList
         {
             get
             {
                 if (_moodList == null)
                 {
-                    _moodList = new List<Moods>();
+                    _moodList = new List<Mood>();
                     for (int i = 0; i < moodImages.Length; i++)
                     {
-                        _moodList.Add(new Moods(i + 1));
+                        _moodList.Add(new Mood(i + 1));
                     }
                 }
                 return this._moodList;
             }
         }
 
-        public class Moods
+        public class Mood
         {
             int _moodId;
-            public Moods(int moodId)
+            public Mood(int moodId)
             {
                 this._moodId = moodId;
             }
