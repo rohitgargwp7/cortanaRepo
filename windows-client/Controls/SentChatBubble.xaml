@@ -12,6 +12,7 @@
 
     <!--<Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Right">-->
     <Grid x:Name="LayoutRoot" Background="Transparent" Margin="44,12,24,10" HorizontalAlignment="Right">
+
         <Grid d:LayoutOverrides="Width">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
