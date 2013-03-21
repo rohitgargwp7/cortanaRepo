@@ -77,7 +77,7 @@ namespace windows_client.Controls.StatusUpdate
             {
                 if (sm.MoodId > 0)
                 {
-                    this.userProfileImage.Source = MoodsInitialiser.Instance.getMoodImage(sm.MoodId);
+                    this.userProfileImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
                 }
                 else
                 {

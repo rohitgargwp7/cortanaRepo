@@ -90,13 +90,22 @@ namespace windows_client.View
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.STATUS_IMAGE_TO_DISPLAY))
             {
-                ImageStatusUpdate imageStatus = (ImageStatusUpdate)PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY];
+                string[] statusImageInfo = (string[])PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY];
                 byte[] statusImageBytes = null;
                 bool isThumbnail;
-                MiscDBUtil.getStatusUpdateImage(imageStatus.Msisdn, imageStatus.serverId, out statusImageBytes, out isThumbnail);
+                MiscDBUtil.getStatusUpdateImage(statusImageInfo[0], statusImageInfo[1], out statusImageBytes, out isThumbnail);
                 this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(statusImageBytes);
+                if (isThumbnail)
+                {
+                    string msisdn = statusImageInfo[0].Replace(":", "_");
+                    string serverId = statusImageInfo[1].Replace(":", "_");
+                    string fullFilePath = MiscDBUtil.STATUS_UPDATE_LARGE + "/" + msisdn + "/" + serverId;
+                    AccountUtils.createGetRequest(AccountUtils.BASE + "/user/status/" + statusImageInfo[1] + "?only_image=true",
+                        onStatusImageDownloaded, true, fullFilePath);
+                }
             }
         }
+
         public void getProfilePic_Callback(byte[] fullBytes, object fName)
         {
             string fileName = fName as string;
@@ -111,6 +120,20 @@ namespace windows_client.View
                     this.FileImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
             });
         }
+
+        private void onStatusImageDownloaded(byte[] fileBytes, object filePath)
+        {
+            if (fileBytes != null && fileBytes.Length > 0)
+            {
+                MiscDBUtil.storeFileInIsolatedStorage(filePath as string, fileBytes);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    loadingProgress.Opacity = 0;
+                    this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fileBytes);
+                });
+            }
+        }
+
         #endregion
 
         #region PINCH AND ZOOM

@@ -82,14 +82,6 @@ namespace windows_client.utils
                     MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.ServerId, out statusImageBytes, out isThumbnail);
                     statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status, isShowOnTimeline,
                         UI_Utils.Instance.createImageFromBytes(statusImageBytes), statusBubbleImageTap);
-                    if (isThumbnail)
-                    {
-                        object[] statusObjects = new object[2];
-                        statusObjects[0] = status;
-                        statusObjects[1] = statusUpdateBox;
-                        AccountUtils.createGetRequest(AccountUtils.BASE + "/user/status/" + status.Message + "?only_image=true",
-                            onStatusImageDownloaded, true, statusObjects);
-                    }
                     if (enlargePic_Tap != null)
                         (statusUpdateBox as ImageStatusUpdate).statusImage.Tap += enlargePic_Tap;
                     break;
@@ -102,21 +94,6 @@ namespace windows_client.utils
                 statusUpdateBox.Tap += statusBoxTap;
             }
             return statusUpdateBox;
-        }
-
-        private void onStatusImageDownloaded(byte[] fileBytes, object status)
-        {
-            object[] vars = status as object[];
-            StatusMessage statusMessage = vars[0] as StatusMessage;
-            ImageStatusUpdate statusMessageUI = vars[1] as ImageStatusUpdate;
-            if (fileBytes != null && fileBytes.Length > 0)
-            {
-                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.ServerId, fileBytes);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    statusMessageUI.StatusImage = UI_Utils.Instance.createImageFromBytes(fileBytes);
-                });
-            }
         }
 
         public void deleteMyStatus(StatusUpdateBox sb)
