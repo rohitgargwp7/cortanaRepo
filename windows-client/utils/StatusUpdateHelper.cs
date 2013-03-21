@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using windows_client.Controls.StatusUpdate;
 using windows_client.DbUtils;
+using windows_client.Languages;
 using windows_client.Model;
 
 namespace windows_client.utils
@@ -116,5 +117,47 @@ namespace windows_client.utils
         {
             return FriendsTableUtils.GetFriendStatus(msisdn) == FriendsTableUtils.FriendStatusEnum.FRIENDS;
         }
+
+        public void postStatus_Callback(JObject obj)
+        {
+            string stat = "";
+            if (obj != null)
+            {
+                JToken statusToken;
+                obj.TryGetValue(HikeConstants.STAT, out statusToken);
+                stat = statusToken.ToString();
+            }
+            if (stat == HikeConstants.OK)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    JToken statusData;
+                    obj.TryGetValue(HikeConstants.Extras.DATA, out statusData);
+                    try
+                    {
+                        string statusId = statusData["statusid"].ToString();
+                        string message = statusData["msg"].ToString();
+                        // status should be in read state when posted yourself
+                        StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
+                            TimeUtils.getCurrentTimeStamp(), -1, true);
+                        StatusMsgsTable.InsertStatusMsg(sm);
+                        App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
+                    }
+                    catch (Exception ex)
+                    {
+//                        Debug.WriteLine("PostStatus:: postStatus_Callback, Exception : " + ex.StackTrace);
+                    }
+                });
+            }
+            else
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, "Status Not Posted", MessageBoxButton.OK);
+//                    postStatusIcon.IsEnabled = true;
+                });
+            }
+        }
+
     }
 }
