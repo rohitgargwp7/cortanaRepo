@@ -1854,12 +1854,12 @@ namespace windows_client.View
             if (launchPagePivot.SelectedIndex != 1)
             {
                 launchPagePivot.SelectedIndex = 1;
-                //scroll to latest unread status
-                if (App.ViewModel.StatusList.Count > App.ViewModel.PendingRequests.Count && RefreshBarCount > 0) 
-                    statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count]);
                 //if no new status scroll to latest unseen friends request
-                else if (UnreadFriendRequests > 0)
+                if (UnreadFriendRequests > 0)
                     statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count - UnreadFriendRequests]);
+                //scroll to latest unread status
+                else if (App.ViewModel.StatusList.Count > App.ViewModel.PendingRequests.Count && RefreshBarCount > 0) 
+                    statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count]);
             }
         }
 
