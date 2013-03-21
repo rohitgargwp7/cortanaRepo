@@ -1,7 +1,5 @@
 ﻿﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
@@ -14,7 +12,6 @@ using System.Windows.Media.Imaging;
 using windows_client.utils;
 using windows_client.Languages;
 using windows_client.Controls.StatusUpdate;
-using System.Windows.Documents;
 using Microsoft.Phone.Tasks;
 using System.Net.NetworkInformation;
 using Newtonsoft.Json.Linq;
@@ -571,7 +568,11 @@ namespace windows_client.View
             ImageStatusUpdate imgStUp = statusLLS.SelectedItem as ImageStatusUpdate;
             if (imgStUp == null)
                 return;
-            PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = imgStUp;
+            string[] statusImageInfo = new string[2];
+            ImageStatusUpdate statusUpdate = (statusLLS.SelectedItem as ImageStatusUpdate);
+            statusImageInfo[0] = statusUpdate.Msisdn;
+            statusImageInfo[1] = statusUpdate.serverId;
+            PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = statusImageInfo;
             Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
         }

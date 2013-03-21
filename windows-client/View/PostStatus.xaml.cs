@@ -50,9 +50,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            MoodsInitialiser.Instance.Initialise();
-            moodList.ItemsSource = MoodsInitialiser.Instance.listMoods;
-
+            moodListBox.ItemsSource = MoodsInitialiser.Instance.MoodList;
             userImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
         }
 
@@ -68,11 +66,8 @@ namespace windows_client.View
 
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
-                    postStatusIcon.IsEnabled = true;
-                });
+                MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
+                postStatusIcon.IsEnabled = true;
                 return;
             }
             JObject statusJSON = new JObject();
@@ -84,7 +79,7 @@ namespace windows_client.View
             if (moodId > -1)
             {
                 statusJSON["mood"] = moodId;
-                statusJSON["timeofday"] = TimeUtils.GetTimeIntervalDay();
+                statusJSON["timeofday"] = (int)TimeUtils.GetTimeIntervalDay();
             }
             AccountUtils.postStatus(statusJSON, postStatus_Callback);
         }
@@ -154,19 +149,16 @@ namespace windows_client.View
             this.appBar.IsVisible = false;
         }
 
+
         private void moodList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            Mood mood = moodList.SelectedItem as Mood;
+            windows_client.utils.MoodsInitialiser.Mood mood = this.moodListBox.SelectedItem as windows_client.utils.MoodsInitialiser.Mood;
             if (mood == null)
                 return;
-            moodId = moodList.SelectedIndex;
-            if (txtStatus.Text == string.Empty || lastMoodText == txtStatus.Text)
-            {
-                string displayText = mood.DisplayText;
-                txtStatus.Text = displayText == string.Empty ? mood.Name : displayText;
-                lastMoodText = txtStatus.Text;
-            }
-            postedMood.Source = mood.MoodIcon;
+            moodId = moodListBox.SelectedIndex;
+            if (string.IsNullOrWhiteSpace(txtStatus.Text) || lastMoodText == txtStatus.Text)
+                lastMoodText = txtStatus.Text = mood.MoodText;
+            postedMood.Source = mood.MoodImage;
             postedMood.Visibility = Visibility.Visible;
             gridMood.Visibility = Visibility.Collapsed;
             this.appBar.IsVisible = true;

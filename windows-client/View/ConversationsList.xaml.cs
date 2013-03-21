@@ -39,12 +39,11 @@ namespace windows_client.View
         private ApplicationBar appBar;
         private BitmapImage _avatarImageBitmap = new BitmapImage();
         ApplicationBarMenuItem delConvsMenu;
+
         ApplicationBarIconButton composeIconButton;
-
         ApplicationBarIconButton postStatusIconButton;
-
         ApplicationBarIconButton groupChatIconButton;
-        ApplicationBarIconButton addFriendIconButton;
+        //ApplicationBarIconButton addFriendIconButton;
 
         private bool isShowFavTute = true;
         private bool isStatusMessagesLoaded = false;
@@ -310,6 +309,13 @@ namespace windows_client.View
             appBar.IsMenuEnabled = false;
 
             /* Add icons */
+            groupChatIconButton = new ApplicationBarIconButton();
+            groupChatIconButton.IconUri = new Uri("/View/images/icon_group.png", UriKind.Relative);
+            groupChatIconButton.Text = AppResources.GrpChat_Txt;
+            groupChatIconButton.Click += createGroup_Click;
+            groupChatIconButton.IsEnabled = true;
+            appBar.Buttons.Add(groupChatIconButton);
+            
             composeIconButton = new ApplicationBarIconButton();
             composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
             composeIconButton.Text = AppResources.Conversations_NewChat_AppBar_Btn;
@@ -322,20 +328,13 @@ namespace windows_client.View
             postStatusIconButton.Text = AppResources.Conversations_PostStatus_AppBar;
             postStatusIconButton.Click += new EventHandler(postStatusBtn_Click);
             postStatusIconButton.IsEnabled = true;
-            //appBar.Buttons.Add(composeIconButton);
+            appBar.Buttons.Add(postStatusIconButton);
 
-            groupChatIconButton = new ApplicationBarIconButton();
-            groupChatIconButton.IconUri = new Uri("/View/images/icon_group.png", UriKind.Relative);
-            groupChatIconButton.Text = AppResources.GrpChat_Txt;
-            groupChatIconButton.Click += createGroup_Click;
-            groupChatIconButton.IsEnabled = true;
-            appBar.Buttons.Add(groupChatIconButton);
-
-            addFriendIconButton = new ApplicationBarIconButton();
-            addFriendIconButton.IconUri = new Uri("/View/images/appbar_addfriend.png", UriKind.Relative);
-            addFriendIconButton.Text = AppResources.Favorites_AddMore;
-            addFriendIconButton.Click += addFriend_Click;
-            addFriendIconButton.IsEnabled = true;
+            //addFriendIconButton = new ApplicationBarIconButton();
+            //addFriendIconButton.IconUri = new Uri("/View/images/appbar_addfriend.png", UriKind.Relative);
+            //addFriendIconButton.Text = AppResources.Favorites_AddMore;
+            //addFriendIconButton.Click += addFriend_Click;
+            //addFriendIconButton.IsEnabled = true;
 
             delConvsMenu = new ApplicationBarMenuItem();
             delConvsMenu.Text = AppResources.Conversations_DelAllChats_Txt;
@@ -455,7 +454,7 @@ namespace windows_client.View
             {
                 txtStatus.Text = lastStatus;
                 if (moodId > -1)
-                    statusImage.Source = MoodsInitialiser.Instance.getMoodImage(moodId);
+                    statusImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(moodId);
                 else
                     statusImage.Source = UI_Utils.Instance.TextStatusImage;
             }
@@ -595,42 +594,18 @@ namespace windows_client.View
             var selectedIndex = panorama.SelectedIndex;
             if (selectedIndex == 0)
             {
-                if (!appBar.Buttons.Contains(composeIconButton))
-                    appBar.Buttons.Add(composeIconButton);
-                if (!appBar.Buttons.Contains(groupChatIconButton))
-                    appBar.Buttons.Add(groupChatIconButton);
                 if (!appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Insert(0, delConvsMenu);
-                if (appBar.Buttons.Contains(addFriendIconButton))
-                    appBar.Buttons.Remove(addFriendIconButton);
-                if (appBar.Buttons.Contains(postStatusIconButton))
-                    appBar.Buttons.Remove(postStatusIconButton);
             }
             else if (selectedIndex == 1)
             {
-                if (!appBar.Buttons.Contains(composeIconButton))
-                    appBar.Buttons.Add(composeIconButton);
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
-                if (appBar.Buttons.Contains(addFriendIconButton))
-                    appBar.Buttons.Remove(addFriendIconButton);
-                if (!appBar.Buttons.Contains(groupChatIconButton))
-                    appBar.Buttons.Add(groupChatIconButton);
-                if (appBar.Buttons.Contains(postStatusIconButton))
-                    appBar.Buttons.Remove(postStatusIconButton);
             }
             else if (selectedIndex == 2) // favourite
             {
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
-                //if (!appBar.Buttons.Contains(addFriendIconButton))
-                //    appBar.Buttons.Add(addFriendIconButton);
-                if (!appBar.Buttons.Contains(postStatusIconButton))
-                    appBar.Buttons.Add(postStatusIconButton);
-                if (appBar.Buttons.Contains(composeIconButton))
-                    appBar.Buttons.Remove(composeIconButton);
-                if (appBar.Buttons.Contains(groupChatIconButton))
-                    appBar.Buttons.Remove(groupChatIconButton);
                 // there will be two background workers that will independently load three sections
                 #region FAVOURITES
 
@@ -678,14 +653,6 @@ namespace windows_client.View
             }
             else if (selectedIndex == 3)
             {
-                if (appBar.Buttons.Contains(composeIconButton))
-                    appBar.Buttons.Remove(composeIconButton);
-                if (appBar.Buttons.Contains(groupChatIconButton))
-                    appBar.Buttons.Remove(groupChatIconButton);
-                if (!appBar.Buttons.Contains(postStatusIconButton))
-                    appBar.Buttons.Add(postStatusIconButton);
-                if (appBar.Buttons.Contains(addFriendIconButton))
-                    appBar.Buttons.Remove(addFriendIconButton);
                 if (!isStatusMessagesLoaded)
                     loadStatuses();
                 RefreshBarCount = 0;
@@ -741,11 +708,11 @@ namespace windows_client.View
                 App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
                 if (isVibrateEnabled)
                 {
-                    //if (App.newChatThreadPage == null || App.newChatThreadPage.mContactNumber != mObj.Msisdn)
-                    //{
-                    VibrateController vibrate = VibrateController.Default;
-                    vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
-                    //                    }
+                    if (App.newChatThreadPage == null)
+                    {
+                        VibrateController vibrate = VibrateController.Default;
+                        vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
+                    }
                 }
             }
             #endregion
@@ -899,7 +866,7 @@ namespace windows_client.View
                         StatusMsgsTable.SaveLastStatusMessage(sm.Message, sm.MoodId);
                         //update profile status
                         if (sm.MoodId > -1)
-                            statusImage.Source = MoodsInitialiser.Instance.getMoodImage(sm.MoodId);
+                            statusImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
                         else
                             statusImage.Source = UI_Utils.Instance.TextStatusImage;
 
@@ -1895,8 +1862,11 @@ namespace windows_client.View
         {
             if (statusLLS.SelectedItem != null && statusLLS.SelectedItem is ImageStatusUpdate)
             {
-                PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = (statusLLS.SelectedItem as
-                    ImageStatusUpdate);
+                string[] statusImageInfo = new string[2];
+                ImageStatusUpdate statusUpdate = (statusLLS.SelectedItem as ImageStatusUpdate);
+                statusImageInfo[0] = statusUpdate.Msisdn;
+                statusImageInfo[1] = statusUpdate.serverId;
+                PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = statusImageInfo;
                 Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
                 NavigationService.Navigate(nextPage);
             }

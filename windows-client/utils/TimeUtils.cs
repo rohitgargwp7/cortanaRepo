@@ -6,6 +6,13 @@ namespace windows_client.utils
 {
     public class TimeUtils
     {
+        public enum TimeIntervalOfDay
+        { 
+            MORNING,
+            NOON,
+            NIGHT
+        };
+
         //used on conversation list
         public static string getTimeString(long timestamp)
         {
@@ -156,19 +163,14 @@ namespace windows_client.utils
             return ticks;
         }
 
-        public static int MonthsDifference(DateTime start, DateTime end)
-        {
-            return (start.Year * 12 + start.Month) - (end.Year * 12 + end.Month);
-        }
-
-        public static int GetTimeIntervalDay()
+        public static TimeIntervalOfDay GetTimeIntervalDay()
         {
             if (DateTime.Now.Hour >= 4 && DateTime.Now.Hour < 12)
-                return 0;
+                return TimeIntervalOfDay.MORNING;
             else if (DateTime.Now.Hour >= 12 && DateTime.Now.Hour < 20)
-                return 1;
+                return TimeIntervalOfDay.NOON;
             else
-                return 2;
+                return TimeIntervalOfDay.NIGHT;
         }
 
         public static string GetOnHikeSinceDisplay(long timestamp)
