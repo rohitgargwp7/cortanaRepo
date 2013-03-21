@@ -247,7 +247,7 @@ namespace windows_client
         public static readonly string IMAGE = "image";
         public static readonly string CONTACT = "contact";
         public static readonly string CT_CONTACT = "contact/share";
-
+        public static readonly string POKE = "poke";
 
         public static readonly string OK = "ok";
         public static readonly string STAT = "stat";
