@@ -315,7 +315,7 @@ namespace windows_client.View
             groupChatIconButton.Click += createGroup_Click;
             groupChatIconButton.IsEnabled = true;
             appBar.Buttons.Add(groupChatIconButton);
-            
+
             composeIconButton = new ApplicationBarIconButton();
             composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
             composeIconButton.Text = AppResources.Conversations_NewChat_AppBar_Btn;
@@ -1937,7 +1937,7 @@ namespace windows_client.View
             }
             foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
             {
-                if (hashBlocked != null && !hashBlocked.Contains(co.Msisdn))
+                if (blockedList == null || (hashBlocked != null && !hashBlocked.Contains(co.Msisdn)))
                 {
                     FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                     App.ViewModel.StatusList.Add(frs);
