@@ -28,11 +28,11 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Rectangle Width="Auto" Height="2" Margin="0,0,0,15" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Fill="#e5e5e5"/>
-            <Image x:Name="statusTypeImage" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" MaxHeight="30" Margin="0,5,0,0" VerticalAlignment="Top"/>
-            <TextBlock x:Name="statusMessageTxtBlk" Grid.Row="1" Grid.Column="1" Margin="12,0,0,0" FontSize="21" Foreground="#4f4f4f"/>
-            <TextBlock x:Name="statusTimestampTxtBlk" Grid.Row="2" Grid.Column="1"  Margin="12,12,0,0" FontSize="15" Foreground="#888888"/>
-            <Rectangle Width="Auto" Height="2" Margin="0,15,0,0" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Fill="#e5e5e5"/>
+            <Rectangle Width="Auto" Height="1" Margin="0,0,0,15" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Fill="#e5e5e5"/>
+            <Image x:Name="statusTypeImage" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" MaxHeight="30" Margin="20,5,0,0" VerticalAlignment="Top"/>
+            <TextBlock x:Name="statusMessageTxtBlk" Grid.Row="1" Grid.Column="1" Margin="12,0,0,0" FontSize="21" />
+            <TextBlock x:Name="statusTimestampTxtBlk" Grid.Row="2" Grid.Column="1"  Margin="12,12,0,0" FontSize="15" />
+            <Rectangle Width="Auto" Height="1" Margin="0,15,0,0" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Fill="#e5e5e5"/>
         </Grid>
     </Grid>
 </local:MyChatBubble>
