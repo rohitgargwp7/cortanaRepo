@@ -698,6 +698,7 @@ namespace windows_client.View
 
         private void UnblockUser_Tap(object sender, EventArgs e)
         {
+            App.ViewModel.BlockedHashset.Remove(msisdn);
             App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, msisdn);
             addToFavBtn.Visibility = Visibility.Collapsed;
             addToFavBtn.Tap -= UnblockUser_Tap;

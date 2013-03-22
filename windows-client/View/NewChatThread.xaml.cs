@@ -1316,6 +1316,7 @@ namespace windows_client.View
                 }
                 else
                 {
+                    App.ViewModel.BlockedHashset.Remove(mContactNumber);
                     mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
                     emoticonsIconButton.IsEnabled = true;
                     sendIconButton.IsEnabled = true;

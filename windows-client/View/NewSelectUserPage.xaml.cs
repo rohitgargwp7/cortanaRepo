@@ -1170,12 +1170,14 @@ namespace windows_client.View
             if (btn.Content.Equals(AppResources.Block_Txt)) // block request
             {
                 btn.Content = AppResources.UnBlock_Txt;
+                App.ViewModel.BlockedHashset.Add(ci.Msisdn);
                 App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, ci);
                 FriendsTableUtils.SetFriendStatus(ci.Msisdn, FriendsTableUtils.FriendStatusEnum.NOT_SET);
             }
             else // unblock request
             {
                 btn.Content = AppResources.Block_Txt;
+                App.ViewModel.BlockedHashset.Remove(ci.Msisdn);
                 App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, ci);
             }           
         }
@@ -1195,11 +1197,13 @@ namespace windows_client.View
             if (tapStr.Contains(AppResources.UnBlock_Txt.ToLower())) // unblock request
             {
                 contact.Msisdn = string.Format(TAP_MSG, AppResources.Block_Txt.ToLower());
+                App.ViewModel.BlockedHashset.Remove(c.Msisdn);
                 App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, c);
             }
             else // block request
             {
                 contact.Msisdn = string.Format(TAP_MSG,AppResources.UnBlock_Txt.ToLower());
+                App.ViewModel.BlockedHashset.Add(c.Msisdn);
                 App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, c);
                 FriendsTableUtils.SetFriendStatus(c.Msisdn, FriendsTableUtils.FriendStatusEnum.NOT_SET);
             }
