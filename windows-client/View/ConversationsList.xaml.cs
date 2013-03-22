@@ -236,6 +236,8 @@ namespace windows_client.View
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
                 Utils.requestAccountInfo();
+                //TODO - GK - please place it in a position such that App.appInitialize is called after writing isolated storage setting
+                App.WriteToIsoStorageSettings(App.APP_UPDATE_POSTPENDING, true);
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
                 App.RemoveKeyFromAppSettings(HikeConstants.IS_NEW_INSTALLATION);
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE);

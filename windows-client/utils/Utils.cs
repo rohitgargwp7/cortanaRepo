@@ -278,7 +278,10 @@ namespace windows_client.utils
             info["_carrier"] = DeviceNetworkInformation.CellularMobileOperator;
             info["device_id"] = getHashedDeviceId();
             info["_os_version"] = getOSVersion();
-            info["_os"] = "windows";
+            if (IsWP8)
+                info["_os"] = "win8";
+            else
+                info["_os"] = "win7";
             JObject infoPacket = new JObject();
             infoPacket[HikeConstants.DATA] = info;
             infoPacket[HikeConstants.TYPE] = HikeConstants.LOG_EVENT;

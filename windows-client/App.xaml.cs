@@ -42,6 +42,7 @@ namespace windows_client
         public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
         public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
         public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
+        public static readonly string APP_UPDATE_POSTPENDING = "updatePost";
 
         public static readonly string INVITED = "invited";
         public static readonly string INVITED_JOINED = "invitedJoined";
@@ -395,6 +396,10 @@ namespace windows_client
             {
                 PushHelper.Instance.registerPushnotifications();
             }
+            bool isAppUpdatePostPending = true;
+            appSettings.TryGetValue<bool>(App.APP_UPDATE_POSTPENDING, out isAppUpdatePostPending);
+            if (isAppUpdatePostPending)
+                UpdatePostHelper.Instance.postAppInfo();
             #endregion
         }
 
