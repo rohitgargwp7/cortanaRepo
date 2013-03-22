@@ -1155,6 +1155,8 @@ namespace windows_client
                 JObject data = null;
                 try
                 {
+                    if (App.ViewModel.BlockedHashset.Contains(msisdn)) // if this user is blocked simply ignore him 
+                        return;
                     data = (JObject)jsonObj[HikeConstants.DATA];
                     string id = (string)data[HikeConstants.STATUS_ID];
                     long msgId = StatusMsgsTable.DeleteStatusMsg(id);
