@@ -44,7 +44,7 @@
 
 
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="HikeTitle" Orientation="Vertical" HorizontalAlignment="Left" Width="480" DoubleTap="MessageList_DoubleTap">
+        <StackPanel x:Name="HikeTitle" Orientation="Vertical" HorizontalAlignment="Left" DoubleTap="MessageList_DoubleTap">
             <StackPanel Orientation="Vertical" Margin="0,0,0,0">
                 <Grid x:Name="gcMuteGrid" Visibility="Collapsed" Background="#414141">
                     <Grid.ColumnDefinitions>
@@ -54,7 +54,7 @@
                     <TextBlock Grid.Column="0" Margin="24,0,0,0" Text="{Binding Path= LocalizedResources.ChatThread_GCMute, Source={StaticResource LocalizedStrings}}" FontSize="18" VerticalAlignment="Center" Foreground="White"/>
                     <Image Grid.Column="1" Source="images\mute_icon_main.png" Margin="0,0,24,0" VerticalAlignment="Center" HorizontalAlignment="Right" Height="26" Width="25"/>
                 </Grid>
-                <StackPanel Orientation="Horizontal" Margin="24,0,20,10" Tap="userHeader_Tap">
+                <StackPanel Name="userHeader" Orientation="Horizontal" Margin="24,0,20,10">
                     <Image Name="userImage" Height="50" ></Image>
                     <TextBlock x:Name="userName" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="50" Margin="18,-4,0,0" Width="Auto" />
                 </StackPanel>

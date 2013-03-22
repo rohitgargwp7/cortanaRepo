@@ -142,7 +142,7 @@ namespace finalmqtt.Msg
         {
             if (bytesToWrite > data.Length - this.Size())
             {
-                byte[] temp = new byte[data.Length * 2];
+                byte[] temp = new byte[this.Size() + bytesToWrite + 1];
                 int bytesBeforeRotation = data.Length - startIndex;
 
                 Buffer.BlockCopy(data, startIndex, temp, 0, bytesBeforeRotation);
