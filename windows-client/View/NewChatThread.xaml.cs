@@ -639,9 +639,9 @@ namespace windows_client.View
             }
 
             if (groupOwner != null)
-                mUserIsBlocked = UsersTableUtils.isUserBlocked(groupOwner);
+                mUserIsBlocked = App.ViewModel.BlockedHashset.Contains(groupOwner);
             else
-                mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
+                mUserIsBlocked = App.ViewModel.BlockedHashset.Contains(mContactNumber);
             initAppBar(isGroupChat, isAddUser);
             if (!isOnHike)
             {

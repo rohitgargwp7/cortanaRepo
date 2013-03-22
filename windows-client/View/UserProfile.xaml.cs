@@ -356,7 +356,7 @@ namespace windows_client.View
                 txtUserName.Text = nameToShow;
 
                 //if blocked user show block ui and return
-                if (msisdn != App.MSISDN && UsersTableUtils.isUserBlocked(msisdn))
+                if (msisdn != App.MSISDN && App.ViewModel.BlockedHashset.Contains(msisdn))
                 {
                     isBlocked = true;
                     ShowBlockedUser();
