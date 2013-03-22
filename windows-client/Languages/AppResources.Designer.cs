@@ -3328,6 +3328,42 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Status Updates Notification.
+        /// </summary>
+        public static string Settings_StatusNotification_SwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_StatusNotification_SwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every Hour.
+        /// </summary>
+        public static string Settings_StatusUpdate_Every1Hour_txt {
+            get {
+                return ResourceManager.GetString("Settings_StatusUpdate_Every1Hour_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every {0} Hour.
+        /// </summary>
+        public static string Settings_StatusUpdate_EveryXHour_txt {
+            get {
+                return ResourceManager.GetString("Settings_StatusUpdate_EveryXHour_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Immediate.
+        /// </summary>
+        public static string Settings_StatusUpdate_Immediate_Txt {
+            get {
+                return ResourceManager.GetString("Settings_StatusUpdate_Immediate_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Vibrate.
         /// </summary>
         public static string Settings_VibrateToggleSwitchHeader {

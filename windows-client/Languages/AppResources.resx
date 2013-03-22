@@ -1686,7 +1686,20 @@
   <data name="Mood_TV_Noon_Txt" xml:space="preserve">
     <value>Watching TV...</value>
   </data>
+  <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
+    <value>Status Updates Notification</value>
+  </data>
   <data name="String2" xml:space="preserve">
     <value />
+  </data>
+  <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
+    <value>Every Hour</value>
+  </data>
+  <data name="Settings_StatusUpdate_EveryXHour_txt" xml:space="preserve">
+    <value>Every {0} Hour</value>
+    <comment>{0} replaced by number of hours</comment>
+  </data>
+  <data name="Settings_StatusUpdate_Immediate_Txt" xml:space="preserve">
+    <value>Immediate</value>
   </data>
 </root>

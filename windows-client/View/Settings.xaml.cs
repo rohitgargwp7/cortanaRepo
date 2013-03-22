@@ -20,10 +20,12 @@ namespace windows_client.View
 {
     public partial class Settings : PhoneApplicationPage
     {
+        bool isPageLoaded;//on page load on setting checked=true, checked event used to get called
         public Settings()
         {
             InitializeComponent();
             initializeBaseOnState();
+            isPageLoaded = true;
         }
 
         private void initializeBaseOnState()
@@ -35,7 +37,7 @@ namespace windows_client.View
                 this.pushNotifications.Content = AppResources.On;
             else
                 this.pushNotifications.Content = AppResources.Off;
-            
+
             bool isVibrateEnabled = true;
             App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
             this.vibrate.IsChecked = isVibrateEnabled;
@@ -51,45 +53,149 @@ namespace windows_client.View
                 this.showFreeSMSToggle.Content = AppResources.On;
             else
                 this.showFreeSMSToggle.Content = AppResources.Off;
+
+            List<string> listSettingsValue = new List<string>();
+            //by default immediate is to be shown
+            listSettingsValue.Add(AppResources.Settings_StatusUpdate_Immediate_Txt);
+            byte firstSetting;
+            if (App.appSettings.TryGetValue(App.STATUS_UPDATE_FIRST_SETTING, out firstSetting) && firstSetting > 0)
+            {
+                if (firstSetting == 1)
+                    listSettingsValue.Add(AppResources.Settings_StatusUpdate_Every1Hour_txt);
+                else
+                    listSettingsValue.Add(string.Format(AppResources.Settings_StatusUpdate_EveryXHour_txt, firstSetting));
+            }
+
+            if (App.appSettings.TryGetValue(App.STATUS_UPDATE_SECOND_SETTING, out firstSetting) && firstSetting > 0)
+            {
+                if (firstSetting == 1)
+                    listSettingsValue.Add(AppResources.Settings_StatusUpdate_Every1Hour_txt);
+                else
+                    listSettingsValue.Add(string.Format(AppResources.Settings_StatusUpdate_EveryXHour_txt, firstSetting));
+            }
+            byte statusSettingsValue;
+            if (App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue))
+            {
+                if (statusSettingsValue > 0)
+                {
+                    statusUpdateNotificationToggle.IsChecked = true;
+                    statusUpdateNotificationToggle.Content = AppResources.On;
+                }
+                else
+                {
+                    statusUpdateNotificationToggle.IsChecked = false;
+                    statusUpdateNotificationToggle.Content = AppResources.Off;
+                    listBoxStatusSettings.IsEnabled = false;
+                }
+            }
+            listBoxStatusSettings.ItemsSource = listSettingsValue;
+            listBoxStatusSettings.SelectedIndex = statusSettingsValue == 0 ? 0 : statusSettingsValue - 1;
         }
 
         private void pushNotifications_Checked(object sender, RoutedEventArgs e)
         {
-            this.pushNotifications.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED,true);
-            PushHelper.Instance.registerPushnotifications();
+            if (isPageLoaded)
+            {
+                this.pushNotifications.Content = AppResources.On;
+                App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED, true);
+                PushHelper.Instance.registerPushnotifications();
+            }
         }
 
         private void pushNotifications_Unchecked(object sender, RoutedEventArgs e)
         {
-            this.pushNotifications.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED,false);
-            PushHelper.Instance.closePushnotifications();
-
+            if (isPageLoaded)
+            {
+                this.pushNotifications.Content = AppResources.Off;
+                App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED, false);
+                PushHelper.Instance.closePushnotifications();
+            }
         }
 
         private void vibrate_Checked(object sender, RoutedEventArgs e)
         {
-            this.vibrate.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(App.VIBRATE_PREF, true);
+            if (isPageLoaded)
+            {
+                this.vibrate.Content = AppResources.On;
+                App.WriteToIsoStorageSettings(App.VIBRATE_PREF, true);
+            }
         }
 
         private void vibrate_Unchecked(object sender, RoutedEventArgs e)
         {
-            this.vibrate.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.VIBRATE_PREF, false);
+            if (isPageLoaded)
+            {
+                this.vibrate.Content = AppResources.Off;
+                App.WriteToIsoStorageSettings(App.VIBRATE_PREF, false);
+            }
         }
 
         private void showFreeSMSToggle_Checked(object sender, RoutedEventArgs e)
         {
-            this.showFreeSMSToggle.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
+            if (isPageLoaded)
+            {
+                this.showFreeSMSToggle.Content = AppResources.On;
+                App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
+            }
         }
 
         private void showFreeSMSToggle_Unchecked(object sender, RoutedEventArgs e)
         {
-            this.showFreeSMSToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
+            if (isPageLoaded)
+            {
+                this.showFreeSMSToggle.Content = AppResources.Off;
+                App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
+            }
+        }
+
+        private void statusUpdateNotification_Checked(object sender, RoutedEventArgs e)
+        {
+            if (isPageLoaded)
+            {
+                this.statusUpdateNotificationToggle.Content = AppResources.On;
+                listBoxStatusSettings.IsEnabled = true;
+                App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)1);
+                JObject obj = new JObject();
+
+                obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+                JObject data = new JObject();
+                data.Add(HikeConstants.PUSH_SU, 0);
+                obj.Add(HikeConstants.DATA, data);
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            }
+        }
+
+        private void statusUpdateNotification_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (isPageLoaded)
+            {
+                this.statusUpdateNotificationToggle.Content = AppResources.Off;
+                listBoxStatusSettings.IsEnabled = false;
+                listBoxStatusSettings.SelectedIndex = 0;
+                App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)0);
+
+                JObject obj = new JObject();
+                obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+                JObject data = new JObject();
+                data.Add(HikeConstants.PUSH_SU, -1);
+                obj.Add(HikeConstants.DATA, data);
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            }
+        }
+
+        private void lpkStatusSettings_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (isPageLoaded)
+            {
+                App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)(listBoxStatusSettings.SelectedIndex + 1));
+
+                JObject obj = new JObject();
+                obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+                JObject data = new JObject();
+                data.Add(HikeConstants.PUSH_SU, listBoxStatusSettings.SelectedIndex);
+                obj.Add(HikeConstants.DATA, data);
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            }
         }
     }
 }
