@@ -28,34 +28,33 @@ namespace windows_client.utils
         {
         }
 
-        private BitmapImage[] moodImages = new BitmapImage[24];
+        private BitmapImage[] moodImages = new BitmapImage[23];
 
         private string[,] moodInfo = new string[,]
         {
             {"/View/images/moods/apple.png",   AppResources.Mood_Food_Txt,       AppResources.Mood_Food_Morning_Txt,	AppResources.Mood_Food_Noon_Txt,	AppResources.Mood_Food_Night_Txt},
-            {"/View/images/moods/beer.png",    AppResources.Mood_Beer_Txt,       AppResources.Mood_Beer_Morning_Txt,	AppResources.Mood_Beer_Noon_Txt,	AppResources.Mood_Beer_Night_Txt},
-            {"/View/images/moods/busy.png",    AppResources.Mood_Busy_Txt,       "",	"",	""},
-            {"/View/images/moods/camera.png",  AppResources.Mood_Photography_Txt,"",	"",	""},
-            {"/View/images/moods/car.png",     AppResources.Mood_Car_Txt,        AppResources.Mood_Car_Morning_Txt,	AppResources.Mood_Car_Noon_Txt,	AppResources.Mood_Car_Night_Txt},
-            {"/View/images/moods/confused.png",AppResources.Mood_Exhausted_Txt,  "",	"",	""},
-            {"/View/images/moods/dumble.png",  AppResources.Mood_Gym_Txt,        AppResources.Mood_Gym_Morning_Txt,	AppResources.Mood_Gym_Noon_Txt,	AppResources.Mood_Gym_Night_Txt},
-            {"/View/images/moods/game.png",    AppResources.Mood_Game_Txt,       "",	"",	""},
-            {"/View/images/moods/happy.png",   AppResources.Mood_Happy_Txt,      "",	"",	""},
-            {"/View/images/moods/heart.png",   AppResources.Mood_Love_Txt,       "",	"",	""},
-            {"/View/images/moods/hungover.png",AppResources.Mood_Sick_Txt,       "",	"",	""},
-            {"/View/images/moods/laugh.png",   AppResources.Mood_LOL_Txt,        "",	"",	""},
-            {"/View/images/moods/music.png",   AppResources.Mood_Music_Txt,      "",	"",	""},
-            {"/View/images/moods/pop_corn.png",AppResources.Mood_Popcorn_Txt,    AppResources.Mood_Popcorn_Morning_Txt,	AppResources.Mood_Popcorn_Noon_Txt,	AppResources.Mood_Popcorn_Night_Txt},
-            {"/View/images/moods/rain.png",    AppResources.Mood_Rainy_Txt,      AppResources.Mood_Rainy_Morning_Txt,	AppResources.Mood_Rainy_Noon_Txt,	AppResources.Mood_Rainy_Night_Txt},
-            {"/View/images/moods/reader.png",  AppResources.Mood_Reading_Txt,    "",	"",	""},
-            {"/View/images/moods/sad.png",     AppResources.Mood_Sad_Txt,        "",	"",	""},
-            {"/View/images/moods/scooter.png", AppResources.Mood_Bike_Txt,       AppResources.Mood_Bike_Morning_Txt,	AppResources.Mood_Bike_Noon_Txt,	AppResources.Mood_Bike_Night_Txt},
-            {"/View/images/moods/sleepy.png",  AppResources.Mood_Sleep_Txt,      AppResources.Mood_Sleep_Morning_Txt,	AppResources.Mood_Sleep_Noon_Txt,	AppResources.Mood_Sleep_Night_Txt},
             {"/View/images/moods/sun.png",     AppResources.Mood_Sunny_Txt,      AppResources.Mood_Sunny_Morning_Txt,	AppResources.Mood_Sunny_Noon_Txt,	AppResources.Mood_Sunny_Night_Txt},
-            {"/View/images/moods/surprise.png",AppResources.Mood_OMG_Txt,        "",	"",	""},
+            {"/View/images/moods/rain.png",    AppResources.Mood_Rainy_Txt,      AppResources.Mood_Rainy_Morning_Txt,	AppResources.Mood_Rainy_Noon_Txt,	AppResources.Mood_Rainy_Night_Txt},
+            {"/View/images/moods/sleepy.png",  AppResources.Mood_Sleep_Txt,      AppResources.Mood_Sleep_Morning_Txt,	AppResources.Mood_Sleep_Noon_Txt,	AppResources.Mood_Sleep_Night_Txt},
             {"/View/images/moods/tea.png",     AppResources.Mood_Coffee_Txt,     AppResources.Mood_Coffee_Morning_Txt,	AppResources.Mood_Coffee_Noon_Txt,	AppResources.Mood_Coffee_Night_Txt},
+            {"/View/images/moods/pop_corn.png",AppResources.Mood_Popcorn_Txt,    AppResources.Mood_Popcorn_Morning_Txt,	AppResources.Mood_Popcorn_Noon_Txt,	AppResources.Mood_Popcorn_Night_Txt},
+            {"/View/images/moods/dumble.png",  AppResources.Mood_Gym_Txt,        AppResources.Mood_Gym_Morning_Txt,	AppResources.Mood_Gym_Noon_Txt,	AppResources.Mood_Gym_Night_Txt},
+            {"/View/images/moods/car.png",     AppResources.Mood_Car_Txt,        AppResources.Mood_Car_Morning_Txt,	AppResources.Mood_Car_Noon_Txt,	AppResources.Mood_Car_Night_Txt},
+            {"/View/images/moods/scooter.png", AppResources.Mood_Bike_Txt,       AppResources.Mood_Bike_Morning_Txt,	AppResources.Mood_Bike_Noon_Txt,	AppResources.Mood_Bike_Night_Txt},
             {"/View/images/moods/tv.png",      AppResources.Mood_TV_Txt,         AppResources.Mood_TV_Morning_Txt,	AppResources.Mood_TV_Noon_Txt,	AppResources.Mood_TV_Night_Txt},
-            {"/View/images/moods/write.png",   AppResources.Mood_Writing_Txt,    "",	"",	""}
+            {"/View/images/moods/beer.png",    AppResources.Mood_Beer_Txt,       AppResources.Mood_Beer_Morning_Txt,	AppResources.Mood_Beer_Noon_Txt,	AppResources.Mood_Beer_Night_Txt},
+            {"/View/images/moods/hungover.png",AppResources.Mood_Sick_Txt,       "",	"",	""},
+            {"/View/images/moods/game.png",    AppResources.Mood_Game_Txt,       "",	"",	""},
+            {"/View/images/moods/music.png",   AppResources.Mood_Music_Txt,      "",	"",	""},
+            {"/View/images/moods/reader.png",  AppResources.Mood_Reading_Txt,    "",	"",	""},
+            {"/View/images/moods/heart.png",   AppResources.Mood_Love_Txt,       "",	"",	""},
+            {"/View/images/moods/write.png",   AppResources.Mood_Writing_Txt,    "",	"",	""},
+            {"/View/images/moods/happy.png",   AppResources.Mood_Happy_Txt,      "",	"",	""},
+            {"/View/images/moods/sad.png",     AppResources.Mood_Sad_Txt,        "",	"",	""},
+            {"/View/images/moods/confused.png",AppResources.Mood_Exhausted_Txt,  "",	"",	""},
+            {"/View/images/moods/surprise.png",AppResources.Mood_OMG_Txt,        "",	"",	""},
+            {"/View/images/moods/laugh.png",   AppResources.Mood_LOL_Txt,        "",	"",	""},
+            {"/View/images/moods/busy.png",    AppResources.Mood_Busy_Txt,       "",	"",	""}
         };
 
 
