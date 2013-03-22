@@ -315,7 +315,7 @@ namespace windows_client.View
             groupChatIconButton.Click += createGroup_Click;
             groupChatIconButton.IsEnabled = true;
             appBar.Buttons.Add(groupChatIconButton);
-            
+
             composeIconButton = new ApplicationBarIconButton();
             composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
             composeIconButton.Text = AppResources.Conversations_NewChat_AppBar_Btn;
@@ -391,6 +391,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.REMOVE_FRIENDS, this);
             mPubSub.addListener(HikePubSub.ADD_FRIENDS, this);
             mPubSub.addListener(HikePubSub.BLOCK_USER, this);
+            mPubSub.addListener(HikePubSub.UNBLOCK_USER, this);
         }
 
         private void removeListeners()
@@ -412,6 +413,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.REMOVE_FRIENDS, this);
                 mPubSub.removeListener(HikePubSub.ADD_FRIENDS, this);
                 mPubSub.removeListener(HikePubSub.BLOCK_USER, this);
+                mPubSub.removeListener(HikePubSub.UNBLOCK_USER, this);
             }
             catch (Exception ex)
             {
@@ -628,10 +630,16 @@ namespace windows_client.View
                         if (hikeContactList != null)
                         {
                             int count = tempHikeContactList.Count;
+                            // this loop will filter out already added fav and blocked contacts from hike user list
                             for (int i = count - 1; i >= 0; i--)
                             {
-                                if (!App.ViewModel.Isfavourite(tempHikeContactList[i].Msisdn))
+                                // if user is not fav and is not blocked then add to hike contacts
+                                if (!App.ViewModel.Isfavourite(tempHikeContactList[i].Msisdn) && !App.ViewModel.BlockedHashset.Contains(tempHikeContactList[i].Msisdn))
+                                {
                                     hikeContactList.Add(tempHikeContactList[i]);
+                                    if (!App.ViewModel.ContactsCache.ContainsKey(tempHikeContactList[i].Msisdn))
+                                        App.ViewModel.ContactsCache[tempHikeContactList[i].Msisdn] = tempHikeContactList[i];
+                                }
                             }
                         }
                     };
@@ -1029,13 +1037,20 @@ namespace windows_client.View
             #region BLOCK_USER
             else if (HikePubSub.BLOCK_USER == type)
             {
-                if (isStatusMessagesLoaded && App.ViewModel.IsPendingListLoaded)
+                if (isStatusMessagesLoaded)
                 {
+                    bool isFriendReqRemoved = false;
                     if (obj is ContactInfo)
                     {
                         ContactInfo c = obj as ContactInfo;
-                        // if this user has pending request
-                        if (App.ViewModel.IsPending(c.Msisdn) && App.ViewModel.StatusList != null)
+
+                        // ignore if not onhike or not in addressbook
+                        if (!c.OnHike || string.IsNullOrEmpty(c.Name))
+                            return;
+
+                        #region removing friend request
+                        // UI and Data is decoupled by pubsub , so have to remove from UI here
+                        if (App.ViewModel.StatusList != null)
                         {
                             for (int i = 0; i < App.ViewModel.StatusList.Count; i++)
                             {
@@ -1047,6 +1062,7 @@ namespace windows_client.View
                                         Dispatcher.BeginInvoke(() =>
                                         {
                                             App.ViewModel.StatusList.RemoveAt(i);
+                                            isFriendReqRemoved = true;
                                         });
                                         break;
                                     }
@@ -1056,6 +1072,35 @@ namespace windows_client.View
                                     break;
                             }
                         }
+                        #endregion
+                        if (!isFriendReqRemoved && c.OnHike && !string.IsNullOrEmpty(c.Name)) // if friend request is not there , try to remove from contacts
+                        {
+                            Dispatcher.BeginInvoke(() =>
+                            {
+                                hikeContactList.Remove(c);
+                            });
+                        }
+                    }
+                }
+            }
+            #endregion
+            #region UNBLOCK_USER
+            else if (HikePubSub.UNBLOCK_USER == type)
+            {
+                if (isStatusMessagesLoaded)
+                {
+                    if (obj is ContactInfo)
+                    {
+                        ContactInfo c = obj as ContactInfo;
+
+                        // ignore if not onhike or not in addressbook
+                        if (!c.OnHike || string.IsNullOrEmpty(c.Name))
+                            return;
+
+                        Dispatcher.BeginInvoke(() =>
+                        {
+                            hikeContactList.Add(c);
+                        });
                     }
                 }
             }
@@ -1127,7 +1172,6 @@ namespace windows_client.View
                     // if this user is on hike and contact is stored in DB then add it to contacts on hike list
                     if (convObj.IsOnhike && !string.IsNullOrEmpty(convObj.ContactName))
                     {
-
                         ContactInfo c = null;
                         if (App.ViewModel.ContactsCache.ContainsKey(convObj.Msisdn))
                             c = App.ViewModel.ContactsCache[convObj.Msisdn];
@@ -1927,21 +1971,10 @@ namespace windows_client.View
             if (!App.ViewModel.IsPendingListLoaded)
                 MiscDBUtil.LoadPendingRequests();
 
-            List<Blocked> blockedList = UsersTableUtils.getBlockList();
-            HashSet<string> hashBlocked = null;
-            if (blockedList != null)
-            {
-                hashBlocked = new HashSet<string>();
-                foreach (Blocked bl in blockedList)
-                    hashBlocked.Add(bl.Msisdn);
-            }
             foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
             {
-                if (hashBlocked != null && !hashBlocked.Contains(co.Msisdn))
-                {
-                    FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
-                    App.ViewModel.StatusList.Add(frs);
-                }
+                FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
+                App.ViewModel.StatusList.Add(frs);
             }
             App.ViewModel.IsPendingListLoaded = true;
             //corresponding counters should be handled for eg unread count
