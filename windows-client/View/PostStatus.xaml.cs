@@ -23,7 +23,7 @@ namespace windows_client.View
         private ApplicationBarIconButton postStatusIcon;
         private bool isFacebookPost = false;
         private bool isTwitterPost = false;
-        private int moodId = -1; //TODO Rohit set this on mood selection
+        private int moodId = 0; //TODO Rohit set this on mood selection
         //bool isMoodText = true;
         //string previousText = string.Empty;
         string lastMoodText = string.Empty;
@@ -76,7 +76,7 @@ namespace windows_client.View
                 statusJSON["fb"] = true;
             if (isTwitterPost)
                 statusJSON["twitter"] = true;
-            if (moodId > -1)
+            if (moodId > 0)
             {
                 statusJSON["mood"] = moodId;
                 statusJSON["timeofday"] = (int)TimeUtils.GetTimeIntervalDay();
@@ -155,7 +155,7 @@ namespace windows_client.View
             windows_client.utils.MoodsInitialiser.Mood mood = this.moodListBox.SelectedItem as windows_client.utils.MoodsInitialiser.Mood;
             if (mood == null)
                 return;
-            moodId = moodListBox.SelectedIndex;
+            moodId = moodListBox.SelectedIndex + 1;
             if (string.IsNullOrWhiteSpace(txtStatus.Text) || lastMoodText == txtStatus.Text)
                 lastMoodText = txtStatus.Text = mood.MoodText;
             postedMood.Source = mood.MoodImage;
