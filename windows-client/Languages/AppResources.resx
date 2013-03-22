@@ -1505,12 +1505,188 @@
     <value>What's up, {0}?</value>
     <comment>{0} replaced by user name </comment>
   </data>
-
   <data name="Update_Profile_Pic_txt" xml:space="preserve">
     <value>Updated profile picture</value>
     <comment>Used to show for pp update in last msg of convlist</comment>
-</data>
+  </data>
   <data name="Conversations_DefaultStatus_Txt" xml:space="preserve">
     <value>Post Status</value>
+  </data>
+  <data name="Mood_Beer_Txt" xml:space="preserve">
+    <value>Beer</value>
+  </data>
+  <data name="Mood_Bike_Txt" xml:space="preserve">
+    <value>Bike</value>
+  </data>
+  <data name="Mood_Busy_Txt" xml:space="preserve">
+    <value>Busy</value>
+  </data>
+  <data name="Mood_Car_Txt" xml:space="preserve">
+    <value>Car</value>
+  </data>
+  <data name="Mood_Coffee_Txt" xml:space="preserve">
+    <value>Coffee</value>
+  </data>
+  <data name="Mood_Exhausted_Txt" xml:space="preserve">
+    <value>Exhausted</value>
+  </data>
+  <data name="Mood_Food_Txt" xml:space="preserve">
+    <value>Food</value>
+  </data>
+  <data name="Mood_Game_Txt" xml:space="preserve">
+    <value>Game</value>
+  </data>
+  <data name="Mood_Gym_Txt" xml:space="preserve">
+    <value>Gym</value>
+  </data>
+  <data name="Mood_Happy_Txt" xml:space="preserve">
+    <value>Happy</value>
+  </data>
+  <data name="Mood_LOL_Txt" xml:space="preserve">
+    <value>LOL</value>
+  </data>
+  <data name="Mood_Love_Txt" xml:space="preserve">
+    <value>Love</value>
+  </data>
+  <data name="Mood_Music_Txt" xml:space="preserve">
+    <value>Music</value>
+  </data>
+  <data name="Mood_OMG_Txt" xml:space="preserve">
+    <value>OMG</value>
+  </data>
+  <data name="Mood_Popcorn_Txt" xml:space="preserve">
+    <value>Popcorn</value>
+  </data>
+  <data name="Mood_Rainy_Txt" xml:space="preserve">
+    <value>Rainy</value>
+  </data>
+  <data name="Mood_Reading_Txt" xml:space="preserve">
+    <value>Reading</value>
+  </data>
+  <data name="Mood_Sad_Txt" xml:space="preserve">
+    <value>Sad</value>
+  </data>
+  <data name="Mood_Sick_Txt" xml:space="preserve">
+    <value>Sick</value>
+  </data>
+  <data name="Mood_Sleep_Txt" xml:space="preserve">
+    <value>Sleep</value>
+  </data>
+  <data name="Mood_Sunny_Txt" xml:space="preserve">
+    <value>Sunny</value>
+  </data>
+  <data name="Mood_TV_Txt" xml:space="preserve">
+    <value>TV</value>
+  </data>
+  <data name="Mood_Writing_Txt" xml:space="preserve">
+    <value>Writing</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Mood_Beer_Morning_Txt" xml:space="preserve">
+    <value>Have no fear, I've got beer...</value>
+  </data>
+  <data name="Mood_Beer_Night_Txt" xml:space="preserve">
+    <value>Where there’s life, there’s Beer...</value>
+  </data>
+  <data name="Mood_Beer_Noon_Txt" xml:space="preserve">
+    <value>Have no fear, I've got beer...</value>
+  </data>
+  <data name="Mood_Bike_Morning_Txt" xml:space="preserve">
+    <value>If wheels could fly, I'd be scooterman...</value>
+  </data>
+  <data name="Mood_Bike_Night_Txt" xml:space="preserve">
+    <value>If wheels could fly, I'd be scooterman...</value>
+  </data>
+  <data name="Mood_Bike_Noon_Txt" xml:space="preserve">
+    <value>If wheels could fly, I'd be scooterman...</value>
+  </data>
+  <data name="Mood_Car_Morning_Txt" xml:space="preserve">
+    <value>On the road...</value>
+  </data>
+  <data name="Mood_Car_Night_Txt" xml:space="preserve">
+    <value>On the road...</value>
+  </data>
+  <data name="Mood_Car_Noon_Txt" xml:space="preserve">
+    <value>On the road...</value>
+  </data>
+  <data name="Mood_Coffee_Morning_Txt" xml:space="preserve">
+    <value>My favorite morning pick me up.</value>
+  </data>
+  <data name="Mood_Coffee_Night_Txt" xml:space="preserve">
+    <value>Caffeinated...</value>
+  </data>
+  <data name="Mood_Coffee_Noon_Txt" xml:space="preserve">
+    <value>Caffeinated...</value>
+  </data>
+  <data name="Mood_Food_Morning_Txt" xml:space="preserve">
+    <value>A healthy food, for a wealthy mood!</value>
+  </data>
+  <data name="Mood_Food_Night_Txt" xml:space="preserve">
+    <value>Eating a delicious meal.</value>
+  </data>
+  <data name="Mood_Food_Noon_Txt" xml:space="preserve">
+    <value>Eating a delicious meal.</value>
+  </data>
+  <data name="Mood_Gym_Morning_Txt" xml:space="preserve">
+    <value>No pain, no gain.</value>
+  </data>
+  <data name="Mood_Gym_Night_Txt" xml:space="preserve">
+    <value>Too fit to quit!</value>
+  </data>
+  <data name="Mood_Gym_Noon_Txt" xml:space="preserve">
+    <value>No pain, no gain.</value>
+  </data>
+  <data name="Mood_Photography_Txt" xml:space="preserve">
+    <value>Photography</value>
+  </data>
+  <data name="Mood_Popcorn_Morning_Txt" xml:space="preserve">
+    <value>Movie time!</value>
+  </data>
+  <data name="Mood_Popcorn_Night_Txt" xml:space="preserve">
+    <value>Movie time!</value>
+  </data>
+  <data name="Mood_Popcorn_Noon_Txt" xml:space="preserve">
+    <value>Movie time!</value>
+  </data>
+  <data name="Mood_Rainy_Morning_Txt" xml:space="preserve">
+    <value>Its raining, its pouring...</value>
+  </data>
+  <data name="Mood_Rainy_Night_Txt" xml:space="preserve">
+    <value>Its raining, its pouring...</value>
+  </data>
+  <data name="Mood_Rainy_Noon_Txt" xml:space="preserve">
+    <value>Its raining, its pouring...</value>
+  </data>
+  <data name="Mood_Sleep_Morning_Txt" xml:space="preserve">
+    <value>Sleeeepppyyy...</value>
+  </data>
+  <data name="Mood_Sleep_Night_Txt" xml:space="preserve">
+    <value>Yawnnn...</value>
+  </data>
+  <data name="Mood_Sleep_Noon_Txt" xml:space="preserve">
+    <value>Sleeeepppyyy...</value>
+  </data>
+  <data name="Mood_Sunny_Morning_Txt" xml:space="preserve">
+    <value>What a beautiful morning</value>
+  </data>
+  <data name="Mood_Sunny_Night_Txt" xml:space="preserve">
+    <value>What a beautiful day</value>
+  </data>
+  <data name="Mood_Sunny_Noon_Txt" xml:space="preserve">
+    <value>What a beautiful day</value>
+  </data>
+  <data name="Mood_TV_Morning_Txt" xml:space="preserve">
+    <value>Watching TV...</value>
+  </data>
+  <data name="Mood_TV_Night_Txt" xml:space="preserve">
+    <value>Watching prime time!</value>
+  </data>
+  <data name="Mood_TV_Noon_Txt" xml:space="preserve">
+    <value>Watching TV...</value>
+  </data>
+  <data name="String2" xml:space="preserve">
+    <value />
   </data>
 </root>
