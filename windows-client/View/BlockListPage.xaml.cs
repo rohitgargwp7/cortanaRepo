@@ -186,7 +186,7 @@ namespace windows_client.View
                 return;
             shellProgress.IsVisible = true;
             App.ViewModel.BlockedHashset.Remove(c.Msisdn);
-            App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, c.Msisdn);
+            App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, c);
             blockedList.Remove(c);
             if (blockedList.Count == 0)
             {
