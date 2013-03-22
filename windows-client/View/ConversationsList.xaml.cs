@@ -662,9 +662,27 @@ namespace windows_client.View
             else if (selectedIndex == 3)
             {
                 if (!isStatusMessagesLoaded)
-                    loadStatuses();
-                RefreshBarCount = 0;
-                UnreadFriendRequests = 0;
+                {
+                    isStatusMessagesLoaded = true;
+                    BackgroundWorker statusBw = new BackgroundWorker();
+                    statusBw.DoWork += (sf, ef) =>
+                    {
+                        loadStatuses();
+                    };
+                    statusBw.RunWorkerAsync();
+                    statusBw.RunWorkerCompleted += (ss, ee) =>
+                    {
+                        this.statusLLS.ItemsSource = App.ViewModel.StatusList;
+                        if (App.ViewModel.StatusList.Count == 0)
+                        {
+                            emptyStatusPlaceHolder.Visibility = Visibility.Visible;
+                            txtEmptyStatusBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
+                            statusLLS.Visibility = Visibility.Collapsed;
+                        }
+                        RefreshBarCount = 0;
+                        UnreadFriendRequests = 0;
+                    };
+                }
             }
             if (selectedIndex != 3)
             {
@@ -1983,20 +2001,15 @@ namespace windows_client.View
             {
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
+                    // if this user is blocked dont show his/her statuses
+                    if (App.ViewModel.BlockedHashset.Contains(statusMessagesFromDB[i].Msisdn))
+                        continue;
                     if (i < TotalUnreadStatuses)
                         statusMessagesFromDB[i].IsUnread = true;
                     App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], true,
                         statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                 }
             }
-            this.statusLLS.ItemsSource = App.ViewModel.StatusList;
-            if (App.ViewModel.StatusList.Count == 0)
-            {
-                emptyStatusPlaceHolder.Visibility = Visibility.Visible;
-                txtEmptyStatusBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
-                statusLLS.Visibility = Visibility.Collapsed;
-            }
-            isStatusMessagesLoaded = true;
         }
 
         private void UpdateStatus_Tap(object sender, System.Windows.Input.GestureEventArgs e)
