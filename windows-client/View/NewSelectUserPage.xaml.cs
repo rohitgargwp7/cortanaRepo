@@ -1171,6 +1171,7 @@ namespace windows_client.View
             {
                 btn.Content = AppResources.UnBlock_Txt;
                 App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, ci);
+                FriendsTableUtils.SetFriendStatus(ci.Msisdn, FriendsTableUtils.FriendStatusEnum.NOT_SET);
             }
             else // unblock request
             {
@@ -1200,6 +1201,7 @@ namespace windows_client.View
             {
                 contact.Msisdn = string.Format(TAP_MSG,AppResources.UnBlock_Txt.ToLower());
                 App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, c);
+                FriendsTableUtils.SetFriendStatus(c.Msisdn, FriendsTableUtils.FriendStatusEnum.NOT_SET);
             }
         }
 
