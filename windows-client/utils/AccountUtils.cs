@@ -140,7 +140,7 @@ namespace windows_client.utils
         private enum RequestType
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
-            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE
+            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_INFO_ON_APP_UPDATE
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -275,6 +275,15 @@ namespace windows_client.utils
             req.Method = "POST";
             req.ContentType = "application/json";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_PUSHNOTIFICATION_DATA, uri, finalCallbackFunction });
+        }
+
+        public static void postUpdateInfo(postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/update")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_INFO_ON_APP_UPDATE, finalCallbackFunction });
         }
 
         public static void uploadFile(byte[] dataBytes, postUploadPhotoFunction finalCallbackFunction, ConvMessage convMessage,
@@ -443,6 +452,17 @@ namespace windows_client.utils
                     data.Add("dev_type", "windows");
                     break;
                 #endregion
+                case RequestType.POST_INFO_ON_APP_UPDATE:
+                    finalCallbackFunction = vars[2] as postResponseFunction;
+                    if (Utils.IsWP8)
+                        data["_os"] = "win8";
+                    else
+                        data["_os"] = "win7";
+                    data["_os_version"] = Utils.getOSVersion();
+                    data["deviceversion"] = Utils.getDeviceModel();
+                    data["app_version"] = Utils.getAppVersion();
+                    data["dev_type"] = "windows";
+                    break;
                 #region UPLOAD FILE
                 case RequestType.UPLOAD_FILE:
                     byte[] dataBytes = (byte[])vars[2];
