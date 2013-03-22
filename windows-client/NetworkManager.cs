@@ -669,6 +669,30 @@ namespace windows_client
                         App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, rew.ToObject<bool>());
                         pubSub.publish(HikePubSub.REWARDS_TOGGLE, null);
                     }
+                    JToken pushStatus;
+                    if (data.TryGetValue(HikeConstants.ENABLE_PUSH_BATCH_SU, out pushStatus))
+                    {
+                        try
+                        {
+                            JArray jArray = (JArray)pushStatus;
+                            if (jArray != null)
+                            {
+                                if (jArray.Count > 1)
+                                {
+                                    App.appSettings[App.STATUS_UPDATE_FIRST_SETTING] = (byte)jArray[0];
+                                    App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SECOND_SETTING, (byte)jArray[1]);
+                                }
+                                else if (jArray.Count == 1)
+                                {
+                                    App.WriteToIsoStorageSettings(App.STATUS_UPDATE_FIRST_SETTING, (byte)jArray[0]);
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("NetworkManager ::  onMessage :  ACCOUNT CONFIG, enable push notification, Exception : " + ex.StackTrace);
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {

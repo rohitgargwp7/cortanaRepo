@@ -9,7 +9,7 @@ namespace windows_client.Misc
     {
         public static class FacebookSettings
         {
-            public static string AppID = "437603502965046";
+            public static string AppID = "425850510764995";
             public static string AppSecret = "35f194aebd97e1ce527997c457b5b0c5";
         }
 

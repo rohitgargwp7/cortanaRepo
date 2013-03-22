@@ -10,7 +10,7 @@
 	d:DesignWidth="372" d:DesignHeight="86"
     DataContext="{Binding RelativeSource={RelativeSource Self}, Mode=OneTime}">
 
-    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,0,90,14" HorizontalAlignment="Left">
+    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24,0,90,14" HorizontalAlignment="Left">
         <Grid d:LayoutOverrides="Width">
             <Grid.RowDefinitions>
                 <RowDefinition Height="14" />
