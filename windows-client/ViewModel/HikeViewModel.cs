@@ -90,10 +90,14 @@ namespace windows_client.ViewModel
 
         private object readWriteLock = new object();
 
+        private bool isBlockedSetLoaded = false;
         public HashSet<string> BlockedHashset
         {
             get
             {
+                // optimization to avoid lock acquire again and again
+                if (isBlockedSetLoaded)
+                    return _blockedHashSet;
                 lock (readWriteLock)
                 {
                     if (_blockedHashSet == null)
@@ -105,6 +109,7 @@ namespace windows_client.ViewModel
                             for (int i = 0; i < blockList.Count; i++)
                                 _blockedHashSet.Add(blockList[i].Msisdn);
                         }
+                        isBlockedSetLoaded = true;
                     }
                     return _blockedHashSet;
                 }
