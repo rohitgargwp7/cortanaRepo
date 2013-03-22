@@ -517,10 +517,14 @@ namespace windows_client
                                                     bool thrAreFavs = false;
                                                     KeyValuePair<string, JToken> fkkvv;
                                                     IEnumerator<KeyValuePair<string, JToken>> kVals = favJSON.GetEnumerator();
-                                                    while (kVals.MoveNext())
+                                                    while (kVals.MoveNext()) // this will iterate throught the list
                                                     {
                                                         bool isFav = true; // true for fav , false for pending
                                                         fkkvv = kVals.Current; // kkvv contains favourites MSISDN
+
+                                                        if (App.ViewModel.BlockedHashset.Contains(fkkvv.Key)) // if this user is blocked ignore him
+                                                            continue;
+
                                                         JObject pendingJSON = fkkvv.Value.ToObject<JObject>();
                                                         JToken pToken;
                                                         if (pendingJSON.TryGetValue(HikeConstants.REQUEST_PENDING, out pToken))
@@ -969,24 +973,21 @@ namespace windows_client
             {
                 try
                 {
-                    string ms = (string)jsonObj[HikeConstants.FROM];
-                    if (ms == null)
+                    // if user is blocked simply ignore the request.
+                    if (App.ViewModel.BlockedHashset.Contains(msisdn))
                         return;
-                    // if user is blocked simply ignore the request. This shlould also be done from server
-                    if (UsersTableUtils.isUserBlocked(ms))
-                        return;
-                    FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(ms, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
+                    FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
                     App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
-                    if (App.ViewModel.Isfavourite(ms)) // already favourite
+                    if (App.ViewModel.Isfavourite(msisdn)) // already favourite
                         return;
-                    if (App.ViewModel.IsPending(ms))
+                    if (App.ViewModel.IsPending(msisdn))
                         return;
 
                     try
                     {
                         ConversationListObject favObj;
-                        if (App.ViewModel.ConvMap.ContainsKey(ms))
-                            favObj = App.ViewModel.ConvMap[ms];
+                        if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                            favObj = App.ViewModel.ConvMap[msisdn];
                         else
                         {
                             ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
@@ -1004,10 +1005,10 @@ namespace windows_client
                             }
                             else
                                 name = ci.Name;
-                            favObj = new ConversationListObject(ms, name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
+                            favObj = new ConversationListObject(msisdn, name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
                         }
                         // this will ensure there will be one pending request for a particular msisdn
-                        App.ViewModel.PendingRequests[ms] = favObj;
+                        App.ViewModel.PendingRequests[msisdn] = favObj;
                         MiscDBUtil.SavePendingRequests();
                         this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
                     }
