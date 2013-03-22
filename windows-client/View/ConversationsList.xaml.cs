@@ -667,14 +667,39 @@ namespace windows_client.View
                 if (!isStatusMessagesLoaded)
                 {
                     isStatusMessagesLoaded = true;
+                    List<StatusMessage> statusMessagesFromDB = null;
                     BackgroundWorker statusBw = new BackgroundWorker();
                     statusBw.DoWork += (sf, ef) =>
                     {
-                        loadStatuses();
+                        if (!App.ViewModel.IsPendingListLoaded)
+                            MiscDBUtil.LoadPendingRequests();
+                        App.ViewModel.IsPendingListLoaded = true;
+                        //corresponding counters should be handled for eg unread count
+                        statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgsForTimeline();
+
                     };
                     statusBw.RunWorkerAsync();
                     statusBw.RunWorkerCompleted += (ss, ee) =>
                     {
+                        foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
+                        {
+                            FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
+                            App.ViewModel.StatusList.Add(frs);
+                        }
+
+                        if (statusMessagesFromDB != null)
+                        {
+                            for (int i = 0; i < statusMessagesFromDB.Count; i++)
+                            {
+                                // if this user is blocked dont show his/her statuses
+                                if (App.ViewModel.BlockedHashset.Contains(statusMessagesFromDB[i].Msisdn))
+                                    continue;
+                                if (i < TotalUnreadStatuses)
+                                    statusMessagesFromDB[i].IsUnread = true;
+                                App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], true,
+                                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
+                            }
+                        }
                         this.statusLLS.ItemsSource = App.ViewModel.StatusList;
                         if (App.ViewModel.StatusList.Count == 0)
                         {
@@ -1058,17 +1083,15 @@ namespace windows_client.View
             #region BLOCK_USER
             else if (HikePubSub.BLOCK_USER == type)
             {
-                if (isStatusMessagesLoaded)
+                if (obj is ContactInfo)
                 {
-                    bool isFriendReqRemoved = false;
-                    if (obj is ContactInfo)
+                    ContactInfo c = obj as ContactInfo;
+
+                    // ignore if not onhike or not in addressbook
+                    if (!c.OnHike || string.IsNullOrEmpty(c.Name))
+                        return;
+                    if (isStatusMessagesLoaded)
                     {
-                        ContactInfo c = obj as ContactInfo;
-
-                        // ignore if not onhike or not in addressbook
-                        if (!c.OnHike || string.IsNullOrEmpty(c.Name))
-                            return;
-
                         #region removing friend request
                         // UI and Data is decoupled by pubsub , so have to remove from UI here
                         if (App.ViewModel.StatusList != null)
@@ -1083,7 +1106,6 @@ namespace windows_client.View
                                         Dispatcher.BeginInvoke(() =>
                                         {
                                             App.ViewModel.StatusList.RemoveAt(i);
-                                            isFriendReqRemoved = true;
                                         });
                                         break;
                                     }
@@ -1094,13 +1116,14 @@ namespace windows_client.View
                             }
                         }
                         #endregion
-                        if (!isFriendReqRemoved && c.OnHike && !string.IsNullOrEmpty(c.Name)) // if friend request is not there , try to remove from contacts
+                    }
+
+                    if (c.OnHike && !string.IsNullOrEmpty(c.Name)) // if friend request is not there , try to remove from contacts
+                    {
+                        Dispatcher.BeginInvoke(() =>
                         {
-                            Dispatcher.BeginInvoke(() =>
-                            {
-                                hikeContactList.Remove(c);
-                            });
-                        }
+                            hikeContactList.Remove(c);
+                        });
                     }
                 }
             }
@@ -1108,21 +1131,18 @@ namespace windows_client.View
             #region UNBLOCK_USER
             else if (HikePubSub.UNBLOCK_USER == type)
             {
-                if (isStatusMessagesLoaded)
+                if (obj is ContactInfo)
                 {
-                    if (obj is ContactInfo)
+                    ContactInfo c = obj as ContactInfo;
+
+                    // ignore if not onhike or not in addressbook
+                    if (!c.OnHike || string.IsNullOrEmpty(c.Name))
+                        return;
+
+                    Dispatcher.BeginInvoke(() =>
                     {
-                        ContactInfo c = obj as ContactInfo;
-
-                        // ignore if not onhike or not in addressbook
-                        if (!c.OnHike || string.IsNullOrEmpty(c.Name))
-                            return;
-
-                        Dispatcher.BeginInvoke(() =>
-                        {
-                            hikeContactList.Add(c);
-                        });
-                    }
+                        hikeContactList.Add(c);
+                    });
                 }
             }
             #endregion
@@ -1984,34 +2004,6 @@ namespace windows_client.View
                     }
                 }
                 NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
-            }
-        }
-
-        private void loadStatuses()
-        {
-            if (!App.ViewModel.IsPendingListLoaded)
-                MiscDBUtil.LoadPendingRequests();
-
-            foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
-            {
-                FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
-                App.ViewModel.StatusList.Add(frs);
-            }
-            App.ViewModel.IsPendingListLoaded = true;
-            //corresponding counters should be handled for eg unread count
-            List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgsForTimeline();
-            if (statusMessagesFromDB != null)
-            {
-                for (int i = 0; i < statusMessagesFromDB.Count; i++)
-                {
-                    // if this user is blocked dont show his/her statuses
-                    if (App.ViewModel.BlockedHashset.Contains(statusMessagesFromDB[i].Msisdn))
-                        continue;
-                    if (i < TotalUnreadStatuses)
-                        statusMessagesFromDB[i].IsUnread = true;
-                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], true,
-                        statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
-                }
             }
         }
 
