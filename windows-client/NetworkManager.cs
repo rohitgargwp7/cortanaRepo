@@ -1070,6 +1070,10 @@ namespace windows_client
             #region STATUS UPDATE
             else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
             {
+                // if this user is already blocked simply ignore his status
+                if(App.ViewModel.BlockedHashset.Contains(msisdn))
+                    return;
+
                 JObject data = null;
                 try
                 {
