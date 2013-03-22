@@ -666,7 +666,7 @@ namespace windows_client
                         pubSub.publish(HikePubSub.REWARDS_TOGGLE, null);
                     }
                     JToken pushStatus;
-                    if (data.TryGetValue(HikeConstants.ENABLE_PUSH_BATCH_FOR_SU, out pushStatus))
+                    if (data.TryGetValue(HikeConstants.ENABLE_PUSH_BATCH_SU, out pushStatus))
                     {
                         try
                         {

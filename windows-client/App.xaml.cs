@@ -36,9 +36,9 @@ namespace windows_client
         public static readonly string UID_SETTING = "uid";
         public static readonly string SMS_SETTING = "smscredits";
         public static readonly string SHOW_FREE_SMS_SETTING = "freeSMS";
-        public static readonly string STATUS_UPDATE_SETTING = "statusUpdateSetting";
-        public static readonly string STATUS_UPDATE_FIRST_SETTING = "statusUpdateFirstSetting";
-        public static readonly string STATUS_UPDATE_SECOND_SETTING = "statusUpdateSecondSetting";
+        public static readonly string STATUS_UPDATE_SETTING = "stUpSet";
+        public static readonly string STATUS_UPDATE_FIRST_SETTING = "stUpFirSet";
+        public static readonly string STATUS_UPDATE_SECOND_SETTING = "stUpSecSet";
         public static readonly string SHOW_FAVORITES_TUTORIAL = "favoritesTute";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string LATEST_PUSH_TOKEN = "pushToken";
