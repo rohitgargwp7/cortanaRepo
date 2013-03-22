@@ -64,6 +64,7 @@ namespace windows_client.Controls
 
             spProgress.Visibility = Visibility.Visible;
             Grid.SetRow(spProgress, 0);
+            Grid.SetRowSpan(spProgress, grid.RowDefinitions.Count);
             grid.Children.Add(spProgress);
 
             txtProgressText.Text = text;
