@@ -88,13 +88,13 @@ namespace windows_client.ViewModel
 
         private HashSet<string> _blockedHashSet = null;
 
-        private object instantiateLock = new object();
+        private object readWriteLock = new object();
 
         public HashSet<string> BlockedHashset
         {
             get
             {
-                lock (instantiateLock)
+                lock (readWriteLock)
                 {
                     if (_blockedHashSet == null)
                     {
@@ -259,7 +259,6 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.addListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.addListener(HikePubSub.USER_LEFT, this);
             App.HikePubSubInstance.addListener(HikePubSub.BLOCK_USER, this);
-            App.HikePubSubInstance.addListener(HikePubSub.UNBLOCK_USER, this);
         }
 
         private void RemoveListeners()
@@ -268,7 +267,6 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.removeListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.removeListener(HikePubSub.USER_LEFT, this);
             App.HikePubSubInstance.removeListener(HikePubSub.BLOCK_USER, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.UNBLOCK_USER, this);
         }
 
         public void onEventReceived(string type, object obj)
@@ -322,8 +320,7 @@ namespace windows_client.ViewModel
                         msisdn = (obj as ContactInfo).Msisdn;
                     else
                         msisdn = (string)obj;
-                    if (_blockedHashSet != null)
-                        _blockedHashSet.Add(msisdn);
+
                     if (!IsPendingListLoaded)
                         MiscDBUtil.LoadPendingRequests();
                     if (_pendingReq != null && _pendingReq.Remove(msisdn))
@@ -336,25 +333,6 @@ namespace windows_client.ViewModel
                 catch (Exception e)
                 {
                     Debug.WriteLine("HikeViewModel :: OnEventReceived : BLOCK USER , Exception : ", e.StackTrace);
-                }
-            }
-            #endregion
-            #region UNBLOCK_USER
-            else if ((HikePubSub.UNBLOCK_USER == type))
-            {
-                try
-                {
-                    string msisdn = null;
-                    if (obj is ContactInfo)
-                        msisdn = (obj as ContactInfo).Msisdn;
-                    else
-                        msisdn = (string)obj;
-                    if (_blockedHashSet != null)
-                        _blockedHashSet.Remove(msisdn);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine("HikeViewModel :: OnEventReceived : UNBLOCK USER , Exception : ", e.StackTrace);
                 }
             }
             #endregion
