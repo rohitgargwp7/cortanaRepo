@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using windows_client.Languages;
 
 namespace windows_client.utils
 {
@@ -27,34 +28,33 @@ namespace windows_client.utils
         {
         }
 
-        private BitmapImage[] moodImages = new BitmapImage[24];
+        private BitmapImage[] moodImages = new BitmapImage[23];
 
         private string[,] moodInfo = new string[,]
         {
-            {"/View/images/moods/apple.png","Food", "A healthy food, for a wealthy mood!","Eating a delicious meal.","Eating a delicious meal."},
-            {"/View/images/moods/beer.png","Beer","Have no fear, I've got beer...","Have no fear, I've got beer...","Where there’s life, there’s Beer..."},
-            {"/View/images/moods/busy.png","Busy","","",""},
-            {"/View/images/moods/camera.png","","","",""},
-            {"/View/images/moods/car.png","Car","On the road...","On the road...","On the road..."},
-            {"/View/images/moods/confused.png","Exhausted","","",""},
-            {"/View/images/moods/dumble.png","Gym","No pain, no gain.","No pain, no gain.","Too fit to quit!"},
-            {"/View/images/moods/game.png","Game","","",""},
-            {"/View/images/moods/happy.png","Happy","","",""},
-            {"/View/images/moods/heart.png","Love","","",""},
-            {"/View/images/moods/hungover.png","Sick","","",""},
-            {"/View/images/moods/laugh.png","LOL","","",""},
-            {"/View/images/moods/music.png","Music","","",""},
-            {"/View/images/moods/pop_corn.png","Popcorn","Movie time!","Movie time!","Movie time!"},
-            {"/View/images/moods/rain.png","Rainy","Its raining, its pouring...","Its raining, its pouring...","Its raining, its pouring..."},
-            {"/View/images/moods/reader.png","Reading","","",""},
-            {"/View/images/moods/sad.png","Sad","","",""},
-            {"/View/images/moods/scooter.png","Bike","If wheels could fly, I'd be scooterman...","If wheels could fly, I'd be scooterman...","If wheels could fly, I'd be scooterman..."},
-            {"/View/images/moods/sleepy.png","Sleep","Sleeeepppyyy...","Sleeeepppyyy...","Yawnnn..."},
-            {"/View/images/moods/sun.png","Sunny","What a beautiful morning","What a beautiful day","What a beautiful day"},
-            {"/View/images/moods/surprise.png","OMG","","",""},
-            {"/View/images/moods/tea.png","Coffee","My favorite morning pick me up.","Caffeinated...","Caffeinated..."},
-            {"/View/images/moods/tv.png","TV","Watching TV...","Watching TV...","Watching Prime Time..."},
-            {"/View/images/moods/write.png","Writing","","",""}
+            {"/View/images/moods/apple.png",   AppResources.Mood_Food_Txt,       AppResources.Mood_Food_Morning_Txt,	AppResources.Mood_Food_Noon_Txt,	AppResources.Mood_Food_Night_Txt},
+            {"/View/images/moods/sun.png",     AppResources.Mood_Sunny_Txt,      AppResources.Mood_Sunny_Morning_Txt,	AppResources.Mood_Sunny_Noon_Txt,	AppResources.Mood_Sunny_Night_Txt},
+            {"/View/images/moods/rain.png",    AppResources.Mood_Rainy_Txt,      AppResources.Mood_Rainy_Morning_Txt,	AppResources.Mood_Rainy_Noon_Txt,	AppResources.Mood_Rainy_Night_Txt},
+            {"/View/images/moods/sleepy.png",  AppResources.Mood_Sleep_Txt,      AppResources.Mood_Sleep_Morning_Txt,	AppResources.Mood_Sleep_Noon_Txt,	AppResources.Mood_Sleep_Night_Txt},
+            {"/View/images/moods/tea.png",     AppResources.Mood_Coffee_Txt,     AppResources.Mood_Coffee_Morning_Txt,	AppResources.Mood_Coffee_Noon_Txt,	AppResources.Mood_Coffee_Night_Txt},
+            {"/View/images/moods/pop_corn.png",AppResources.Mood_Popcorn_Txt,    AppResources.Mood_Popcorn_Morning_Txt,	AppResources.Mood_Popcorn_Noon_Txt,	AppResources.Mood_Popcorn_Night_Txt},
+            {"/View/images/moods/dumble.png",  AppResources.Mood_Gym_Txt,        AppResources.Mood_Gym_Morning_Txt,	AppResources.Mood_Gym_Noon_Txt,	AppResources.Mood_Gym_Night_Txt},
+            {"/View/images/moods/car.png",     AppResources.Mood_Car_Txt,        AppResources.Mood_Car_Morning_Txt,	AppResources.Mood_Car_Noon_Txt,	AppResources.Mood_Car_Night_Txt},
+            {"/View/images/moods/scooter.png", AppResources.Mood_Bike_Txt,       AppResources.Mood_Bike_Morning_Txt,	AppResources.Mood_Bike_Noon_Txt,	AppResources.Mood_Bike_Night_Txt},
+            {"/View/images/moods/tv.png",      AppResources.Mood_TV_Txt,         AppResources.Mood_TV_Morning_Txt,	AppResources.Mood_TV_Noon_Txt,	AppResources.Mood_TV_Night_Txt},
+            {"/View/images/moods/beer.png",    AppResources.Mood_Beer_Txt,       AppResources.Mood_Beer_Morning_Txt,	AppResources.Mood_Beer_Noon_Txt,	AppResources.Mood_Beer_Night_Txt},
+            {"/View/images/moods/hungover.png",AppResources.Mood_Sick_Txt,       "",	"",	""},
+            {"/View/images/moods/game.png",    AppResources.Mood_Game_Txt,       "",	"",	""},
+            {"/View/images/moods/music.png",   AppResources.Mood_Music_Txt,      "",	"",	""},
+            {"/View/images/moods/reader.png",  AppResources.Mood_Reading_Txt,    "",	"",	""},
+            {"/View/images/moods/heart.png",   AppResources.Mood_Love_Txt,       "",	"",	""},
+            {"/View/images/moods/write.png",   AppResources.Mood_Writing_Txt,    "",	"",	""},
+            {"/View/images/moods/happy.png",   AppResources.Mood_Happy_Txt,      "",	"",	""},
+            {"/View/images/moods/sad.png",     AppResources.Mood_Sad_Txt,        "",	"",	""},
+            {"/View/images/moods/confused.png",AppResources.Mood_Exhausted_Txt,  "",	"",	""},
+            {"/View/images/moods/surprise.png",AppResources.Mood_OMG_Txt,        "",	"",	""},
+            {"/View/images/moods/laugh.png",   AppResources.Mood_LOL_Txt,        "",	"",	""},
+            {"/View/images/moods/busy.png",    AppResources.Mood_Busy_Txt,       "",	"",	""}
         };
 
 
@@ -117,6 +117,15 @@ namespace windows_client.utils
                     return MoodsInitialiser.Instance.moodInfo[_moodId - 1, 1]; //if there is no text then return name
                 }
             }
+
+            public string MoodName
+            {
+                get
+                {
+                    return MoodsInitialiser.Instance.moodInfo[_moodId - 1, 1];
+                }
+            }
+
         }
 
     }

@@ -29,9 +29,11 @@
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="17,30,0,0" Background="Transparent">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="17,20,0,0" Background="Transparent">
 
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -43,6 +45,9 @@
                                   Header="{Binding Path= LocalizedResources.Settings_VibrateToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="vibrate_Checked" Unchecked="vibrate_Unchecked"/>
             <toolkit:ToggleSwitch Grid.Row="2" x:Name="showFreeSMSToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                   Header="{Binding Path= LocalizedResources.Settings_FreeSMSToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="showFreeSMSToggle_Checked" Unchecked="showFreeSMSToggle_Unchecked"/>
+            <toolkit:ToggleSwitch Grid.Row="3" x:Name="statusUpdateNotificationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                  Header="{Binding Path= LocalizedResources.Settings_StatusNotification_SwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="statusUpdateNotification_Checked" Unchecked="statusUpdateNotification_Unchecked"/>
+            <toolkit:ListPicker Grid.Row="4" x:Name="listBoxStatusSettings" SelectionChanged="lpkStatusSettings_SelectionChanged" Margin="0 -5 0 0"/>
         </Grid>
     </Grid>
 

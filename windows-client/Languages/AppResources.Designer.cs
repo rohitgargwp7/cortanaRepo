@@ -1861,6 +1861,519 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Have no fear, I&apos;ve got beer....
+        /// </summary>
+        public static string Mood_Beer_Morning_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Beer_Morning_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Where there’s life, there’s Beer....
+        /// </summary>
+        public static string Mood_Beer_Night_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Beer_Night_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Have no fear, I&apos;ve got beer....
+        /// </summary>
+        public static string Mood_Beer_Noon_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Beer_Noon_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Beer.
+        /// </summary>
+        public static string Mood_Beer_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Beer_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If wheels could fly, I&apos;d be scooterman....
+        /// </summary>
+        public static string Mood_Bike_Morning_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Bike_Morning_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If wheels could fly, I&apos;d be scooterman....
+        /// </summary>
+        public static string Mood_Bike_Night_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Bike_Night_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If wheels could fly, I&apos;d be scooterman....
+        /// </summary>
+        public static string Mood_Bike_Noon_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Bike_Noon_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bike.
+        /// </summary>
+        public static string Mood_Bike_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Bike_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Busy.
+        /// </summary>
+        public static string Mood_Busy_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Busy_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On the road....
+        /// </summary>
+        public static string Mood_Car_Morning_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Car_Morning_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On the road....
+        /// </summary>
+        public static string Mood_Car_Night_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Car_Night_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On the road....
+        /// </summary>
+        public static string Mood_Car_Noon_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Car_Noon_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Car.
+        /// </summary>
+        public static string Mood_Car_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Car_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My favorite morning pick me up..
+        /// </summary>
+        public static string Mood_Coffee_Morning_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Coffee_Morning_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Caffeinated....
+        /// </summary>
+        public static string Mood_Coffee_Night_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Coffee_Night_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Caffeinated....
+        /// </summary>
+        public static string Mood_Coffee_Noon_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Coffee_Noon_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Coffee.
+        /// </summary>
+        public static string Mood_Coffee_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Coffee_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exhausted.
+        /// </summary>
+        public static string Mood_Exhausted_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Exhausted_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A healthy food, for a wealthy mood!.
+        /// </summary>
+        public static string Mood_Food_Morning_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Food_Morning_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eating a delicious meal..
+        /// </summary>
+        public static string Mood_Food_Night_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Food_Night_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eating a delicious meal..
+        /// </summary>
+        public static string Mood_Food_Noon_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Food_Noon_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Food.
+        /// </summary>
+        public static string Mood_Food_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Food_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game.
+        /// </summary>
+        public static string Mood_Game_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Game_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No pain, no gain..
+        /// </summary>
+        public static string Mood_Gym_Morning_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Gym_Morning_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too fit to quit!.
+        /// </summary>
+        public static string Mood_Gym_Night_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Gym_Night_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No pain, no gain..
+        /// </summary>
+        public static string Mood_Gym_Noon_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Gym_Noon_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gym.
+        /// </summary>
+        public static string Mood_Gym_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Gym_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Happy.
+        /// </summary>
+        public static string Mood_Happy_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Happy_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LOL.
+        /// </summary>
+        public static string Mood_LOL_Txt {
+            get {
+                return ResourceManager.GetString("Mood_LOL_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Love.
+        /// </summary>
+        public static string Mood_Love_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Love_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Music.
+        /// </summary>
+        public static string Mood_Music_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Music_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OMG.
+        /// </summary>
+        public static string Mood_OMG_Txt {
+            get {
+                return ResourceManager.GetString("Mood_OMG_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Photography.
+        /// </summary>
+        public static string Mood_Photography_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Photography_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Movie time!.
+        /// </summary>
+        public static string Mood_Popcorn_Morning_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Popcorn_Morning_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Movie time!.
+        /// </summary>
+        public static string Mood_Popcorn_Night_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Popcorn_Night_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Movie time!.
+        /// </summary>
+        public static string Mood_Popcorn_Noon_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Popcorn_Noon_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Popcorn.
+        /// </summary>
+        public static string Mood_Popcorn_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Popcorn_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Its raining, its pouring....
+        /// </summary>
+        public static string Mood_Rainy_Morning_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Rainy_Morning_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Its raining, its pouring....
+        /// </summary>
+        public static string Mood_Rainy_Night_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Rainy_Night_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Its raining, its pouring....
+        /// </summary>
+        public static string Mood_Rainy_Noon_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Rainy_Noon_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rainy.
+        /// </summary>
+        public static string Mood_Rainy_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Rainy_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading.
+        /// </summary>
+        public static string Mood_Reading_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Reading_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sad.
+        /// </summary>
+        public static string Mood_Sad_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Sad_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sick.
+        /// </summary>
+        public static string Mood_Sick_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Sick_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sleeeepppyyy....
+        /// </summary>
+        public static string Mood_Sleep_Morning_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Sleep_Morning_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yawnnn....
+        /// </summary>
+        public static string Mood_Sleep_Night_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Sleep_Night_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sleeeepppyyy....
+        /// </summary>
+        public static string Mood_Sleep_Noon_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Sleep_Noon_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sleep.
+        /// </summary>
+        public static string Mood_Sleep_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Sleep_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What a beautiful morning.
+        /// </summary>
+        public static string Mood_Sunny_Morning_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Sunny_Morning_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What a beautiful day.
+        /// </summary>
+        public static string Mood_Sunny_Night_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Sunny_Night_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What a beautiful day.
+        /// </summary>
+        public static string Mood_Sunny_Noon_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Sunny_Noon_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sunny.
+        /// </summary>
+        public static string Mood_Sunny_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Sunny_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Watching TV....
+        /// </summary>
+        public static string Mood_TV_Morning_Txt {
+            get {
+                return ResourceManager.GetString("Mood_TV_Morning_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Watching prime time!.
+        /// </summary>
+        public static string Mood_TV_Night_Txt {
+            get {
+                return ResourceManager.GetString("Mood_TV_Night_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Watching TV....
+        /// </summary>
+        public static string Mood_TV_Noon_Txt {
+            get {
+                return ResourceManager.GetString("Mood_TV_Noon_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TV.
+        /// </summary>
+        public static string Mood_TV_Txt {
+            get {
+                return ResourceManager.GetString("Mood_TV_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Writing.
+        /// </summary>
+        public static string Mood_Writing_Txt {
+            get {
+                return ResourceManager.GetString("Mood_Writing_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to More than 1 contacts found for number : {0}.
         /// </summary>
         public static string MORE_THAN_1_CONTACT_FOUND {
@@ -2815,6 +3328,42 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Status Updates Notification.
+        /// </summary>
+        public static string Settings_StatusNotification_SwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_StatusNotification_SwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every Hour.
+        /// </summary>
+        public static string Settings_StatusUpdate_Every1Hour_txt {
+            get {
+                return ResourceManager.GetString("Settings_StatusUpdate_Every1Hour_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every {0} Hour.
+        /// </summary>
+        public static string Settings_StatusUpdate_EveryXHour_txt {
+            get {
+                return ResourceManager.GetString("Settings_StatusUpdate_EveryXHour_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Immediate.
+        /// </summary>
+        public static string Settings_StatusUpdate_Immediate_Txt {
+            get {
+                return ResourceManager.GetString("Settings_StatusUpdate_Immediate_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Vibrate.
         /// </summary>
         public static string Settings_VibrateToggleSwitchHeader {
@@ -3045,6 +3594,24 @@ namespace windows_client.Languages {
         public static string Stop_Txt {
             get {
                 return ResourceManager.GetString("Stop_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string String2 {
+            get {
+                return ResourceManager.GetString("String2", resourceCulture);
             }
         }
         

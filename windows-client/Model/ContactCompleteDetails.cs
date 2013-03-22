@@ -146,14 +146,15 @@ namespace windows_client.Model
         {
             ContactCompleteDetails con = new ContactCompleteDetails();
 
-
-            if (!string.IsNullOrEmpty(c.CompleteName.FirstName))
-                con.name = c.CompleteName.FirstName;
-            if (!string.IsNullOrEmpty(c.CompleteName.MiddleName))
-                con.name += " " + c.CompleteName.MiddleName;
-            if (!string.IsNullOrEmpty(c.CompleteName.LastName))
-                con.name += " " + c.CompleteName.LastName;
-
+            if (c.CompleteName != null)
+            {
+                if (!string.IsNullOrEmpty(c.CompleteName.FirstName))
+                    con.name = c.CompleteName.FirstName;
+                if (!string.IsNullOrEmpty(c.CompleteName.MiddleName))
+                    con.name += " " + c.CompleteName.MiddleName;
+                if (!string.IsNullOrEmpty(c.CompleteName.LastName))
+                    con.name += " " + c.CompleteName.LastName;
+            }
             foreach (ContactPhoneNumber ph in c.PhoneNumbers)
             {
                 if (ph.Kind == PhoneNumberKind.Mobile)
