@@ -151,6 +151,8 @@ namespace windows_client
 
         public static readonly string UPDATE_GRP_PIC = "up_grp_pic";
 
+        public static readonly string DEC_NOTIFICATION_COUNT = "decNotCount"
+
         private readonly Thread mThread;
 
         private readonly BlockingQueue mQueue;

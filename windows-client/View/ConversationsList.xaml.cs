@@ -392,6 +392,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.BLOCK_USER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_USER, this);
             mPubSub.addListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
+            mPubSub.addListener(HikePubSub.DEC_NOTIFICATION_COUNT, this);
         }
 
         private void removeListeners()
@@ -414,6 +415,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.BLOCK_USER, this);
                 mPubSub.removeListener(HikePubSub.UNBLOCK_USER, this);
                 mPubSub.removeListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
+                mPubSub.removeListener(HikePubSub.DEC_NOTIFICATION_COUNT, this);
             }
             catch (Exception ex)
             {
@@ -1171,6 +1173,22 @@ namespace windows_client.View
                     {
                         emptyScreenImage.Opacity = 1;
                         emptyScreenTip.Opacity = 1;
+                    }
+                });
+            }
+            #endregion
+            #region DECREASE NOTIFICATION COUNT
+            else if (HikePubSub.DEC_NOTIFICATION_COUNT == type)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    bool shouldDecreasCount = (bool)obj;
+                    // TODO : Madhur Garg : Use this bool to dec count etc
+                    if (isStatusMessagesLoaded)
+                    {
+                    }
+                    else
+                    {
                     }
                 });
             }
