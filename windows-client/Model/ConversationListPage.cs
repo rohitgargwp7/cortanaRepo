@@ -208,7 +208,7 @@ namespace windows_client.Model
             }
         }
 
-        public bool IsStatusUpdate
+        public bool IsLastMsgStatusUpdate
         {
             get
             {
