@@ -537,6 +537,13 @@ namespace windows_client.View
 
         private void createGroup_Click(object sender, EventArgs e)
         {
+            if (TutorialStatusUpdate.Visibility == Visibility.Visible)
+            {
+                overlay.Visibility = Visibility.Collapsed;
+                TutorialStatusUpdate.Visibility = Visibility.Collapsed;
+                App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
+                return;
+            }
             App.AnalyticsInstance.addEvent(Analytics.GROUP_CHAT);
             PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
@@ -553,6 +560,13 @@ namespace windows_client.View
         /* Start or continue the conversation*/
         private void selectUserBtn_Click(object sender, EventArgs e)
         {
+            if (TutorialStatusUpdate.Visibility == Visibility.Visible)
+            {
+                overlay.Visibility = Visibility.Collapsed;
+                TutorialStatusUpdate.Visibility = Visibility.Collapsed;
+                App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
+                return;
+            }
             App.AnalyticsInstance.addEvent(Analytics.COMPOSE);
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
@@ -656,15 +670,27 @@ namespace windows_client.View
             }
             else if (selectedIndex == 3)
             {
+
                 if (!isStatusMessagesLoaded)
                     loadStatuses();
                 RefreshBarCount = 0;
                 UnreadFriendRequests = 0;
+                if (appSettings.Contains(App.SHOW_STATUS_UPDATES_TUTORIAL))
+                {
+                    overlay.Visibility = Visibility.Visible;
+                    TutorialStatusUpdate.Visibility = Visibility.Visible;
+                }
             }
             if (selectedIndex != 3)
             {
                 if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
                     TotalUnreadStatuses = 0;
+                if (TutorialStatusUpdate.Visibility == Visibility.Visible)
+                {
+                    overlay.Visibility = Visibility.Collapsed;
+                    TutorialStatusUpdate.Visibility = Visibility.Collapsed;
+                    App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
+                }
             }
         }
 
@@ -1025,8 +1051,6 @@ namespace windows_client.View
                         }
                     }
                 }
-
-
             }
             #endregion
             #region BLOCK_USER
@@ -1785,6 +1809,12 @@ namespace windows_client.View
         }
         private void postStatusBtn_Click(object sender, EventArgs e)
         {
+            if (TutorialStatusUpdate.Visibility == Visibility.Visible)
+            {
+                overlay.Visibility = Visibility.Collapsed;
+                TutorialStatusUpdate.Visibility = Visibility.Collapsed;
+                App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
+            }
             Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
         }
@@ -1977,5 +2007,12 @@ namespace windows_client.View
 
 
         #endregion
+
+        private void DismissStatusUpdateTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            overlay.Visibility = Visibility.Collapsed;
+            TutorialStatusUpdate.Visibility = Visibility.Collapsed;
+            App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
+        }
     }
 }

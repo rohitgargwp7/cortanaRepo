@@ -228,7 +228,7 @@
             </controls:PivotItem>
         </controls:Pivot>
 
-        <Rectangle x:Name="overlay" Visibility="Collapsed" Grid.Row="0" Opacity="0.75" Grid.RowSpan="2" Fill="#000000"></Rectangle>
+        <Rectangle x:Name="overlay" Visibility="Collapsed" Grid.Row="0" Opacity="0.85" Grid.RowSpan="2" Fill="#000000"></Rectangle>
 
         <Grid x:Name="TutorialsGrid" Visibility="Collapsed" Grid.Row="1"  VerticalAlignment="Center" Margin="0,-60,0,0">
             <Grid.RowDefinitions>
@@ -273,6 +273,20 @@
                     </Grid>
                 </controls:PivotItem>
             </controls:Pivot>
+        </Grid>
+        <Grid x:Name="TutorialStatusUpdate" Grid.Row="1" Visibility="Collapsed" Tap="DismissStatusUpdateTutorial_Tap">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Status Updates" FontSize="24" FontFamily="Segoe WP Regular" Margin="0 50 0 0" Foreground="White" TextAlignment="Center" Tap="DismissStatusUpdateTutorial_Tap"></TextBlock>
+            <TextBlock Grid.Row="1" Text="Only your 'friends on hike' can see your status updates" Margin=" 0 5 0 20" FontSize="18" FontFamily="Segoe WP Semilight" Foreground="White" TextAlignment="Center" Tap="DismissStatusUpdateTutorial_Tap"></TextBlock>
+            <Image Grid.Row="2"  Source="/View/images/tutorial_preview.png" VerticalAlignment="Top"  HorizontalAlignment="Center" Width="350" Height="80" Tap="DismissStatusUpdateTutorial_Tap"></Image>
+            <TextBlock Grid.Row="3" Text="Tap on this icon to post a new status" FontSize="18" FontFamily="Segoe WP Semilight" Foreground="White" TextAlignment="Center" Tap="DismissStatusUpdateTutorial_Tap"></TextBlock>
+            <Image Grid.Row="4"  Source="/View/images/tutorial_arrow.png"   HorizontalAlignment="Right"  VerticalAlignment="Bottom" Width="20" Height="50" Margin="0 10 140 5" Tap="DismissStatusUpdateTutorial_Tap"></Image>
         </Grid>
     </Grid>
 
