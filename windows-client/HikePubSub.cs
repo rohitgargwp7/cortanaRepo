@@ -128,9 +128,7 @@ namespace windows_client
 
         public static readonly string DELETE_CONVERSATION = "deleteConversation";
 
-        public static readonly string DELETE_ALL_CONVERSATIONS = "deleteAllConversations";
-
-        public static readonly string DELETED_ALL_CONVERSATIONS = "deletedAllConversations";
+        public static readonly string DELETE_STATUS_AND_CONV = "delConvStatus";
 
         public static readonly string ATTACHMENT_RESEND = "resendOrForward";
 
