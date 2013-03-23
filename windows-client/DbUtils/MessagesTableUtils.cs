@@ -224,7 +224,7 @@ namespace windows_client.DbUtils
             else
             {
                 obj = App.ViewModel.ConvMap[convMsg.Msisdn];
-                obj.IsStatusUpdate = false;
+                obj.IsLastMsgStatusUpdate = false;
                 #region PARTICIPANT_JOINED
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
                 {
@@ -347,7 +347,7 @@ namespace windows_client.DbUtils
                 #region STATUS UPDATES
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
-                    obj.IsStatusUpdate = true;
+                    obj.IsLastMsgStatusUpdate = true;
                     obj.LastMessage = "\""+convMsg.Message+"\"";
                 }
                 #endregion
