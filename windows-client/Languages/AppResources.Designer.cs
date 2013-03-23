@@ -592,6 +592,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Status Updates.
+        /// </summary>
+        public static string Conversations_Status_Tutorials_Header {
+            get {
+                return ResourceManager.GetString("Conversations_Status_Tutorials_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only your &apos;friends on hike&apos; can see your status updates.
+        /// </summary>
+        public static string Conversations_StatusTutorials_Info_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_StatusTutorials_Info_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap on this icon to post a new status.
+        /// </summary>
+        public static string Conversations_StatusTutorials_TapMsg {
+            get {
+                return ResourceManager.GetString("Conversations_StatusTutorials_TapMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have no friends right now..
         /// </summary>
         public static string Conversations_TapYesToAdd_Txt {
