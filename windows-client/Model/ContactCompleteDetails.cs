@@ -155,6 +155,7 @@ namespace windows_client.Model
                 if (!string.IsNullOrEmpty(c.CompleteName.LastName))
                     con.name += " " + c.CompleteName.LastName;
             }
+
             foreach (ContactPhoneNumber ph in c.PhoneNumbers)
             {
                 if (ph.Kind == PhoneNumberKind.Mobile)
@@ -220,7 +221,7 @@ namespace windows_client.Model
 
             return string.Join(", ", listAddress);
         }
-        
+
         public static ContactCompleteDetails GetContactDetails(JObject jsonOnj)
         {
             ContactCompleteDetails con = new ContactCompleteDetails();

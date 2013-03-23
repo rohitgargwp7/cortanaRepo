@@ -52,7 +52,7 @@
                     </Image>
                     <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenTip" Width="295" Height="76" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,4,10">
                     </Image>
-                    <ListBox Grid.Row="0" Grid.Column="0" Height="500" x:Name="myListBox" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Tap" Margin="15,10,5,5" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
+                    <ListBox Grid.Row="0" Grid.Column="0" x:Name="myListBox" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Tap" Margin="15,10,5,5" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                             </DataTemplate>
@@ -229,9 +229,9 @@
 
         </controls:Pivot>
 
-        <Rectangle x:Name="overlay" Visibility="Collapsed" Grid.Row="0" Opacity="0.75" Grid.RowSpan="2" Fill="#000000"></Rectangle>
+        <Rectangle x:Name="overlay" Visibility="Collapsed" Grid.Row="0" Opacity="0.85" Grid.RowSpan="2" Fill="#000000"></Rectangle>
 
-        <Grid x:Name="TutorialsGrid" Visibility="Collapsed" Grid.Row="1"  VerticalAlignment="Center" Margin="0,-60,0,0">
+        <Grid x:Name="TutorialsGrid" Visibility="Collapsed" Grid.Row="1"  VerticalAlignment="Center" Margin="0,-60,0,0" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -274,6 +274,20 @@
                     </Grid>
                 </controls:PivotItem>
             </controls:Pivot>
+        </Grid>
+        <Grid x:Name="TutorialStatusUpdate" Grid.Row="1" Visibility="Collapsed" Tap="DismissStatusUpdateTutorial_Tap">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="{Binding Path= LocalizedResources.Conversations_Status_Tutorials_Header, Source={StaticResource LocalizedStrings}}" FontSize="24" FontFamily="Segoe WP Regular" Margin="0 50 0 0" Foreground="White" TextAlignment="Center" ></TextBlock>
+            <TextBlock Grid.Row="1" Text="{Binding Path= LocalizedResources.Conversations_StatusTutorials_Info_Txt, Source={StaticResource LocalizedStrings}}" Margin=" 0 5 0 20" FontSize="18" FontFamily="Segoe WP Semilight" Foreground="White" TextAlignment="Center"></TextBlock>
+            <Image Grid.Row="2"  Source="/View/images/tutorial_preview.png" VerticalAlignment="Top"  HorizontalAlignment="Center" Width="350" Height="80" ></Image>
+            <TextBlock Grid.Row="3" Text="{Binding Path= LocalizedResources.Conversations_StatusTutorials_TapMsg, Source={StaticResource LocalizedStrings}}" FontSize="18" FontFamily="Segoe WP Semilight" Foreground="White" TextAlignment="Center" ></TextBlock>
+            <Image Grid.Row="4"  Source="/View/images/tutorial_arrow.png"   HorizontalAlignment="Right"  VerticalAlignment="Bottom" Width="20" Height="50" Margin="0 10 140 5" ></Image>
         </Grid>
     </Grid>
 

@@ -78,14 +78,17 @@ namespace windows_client.Controls.StatusUpdate
                 if (sm.MoodId > 0)
                 {
                     this.userProfileImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
+                    this.userProfileImage.Source = UI_Utils.Instance.TextStatusImage;
+                    this.userProfileImage.MaxHeight = 60;
                 }
                 else
                 {
-                    this.userProfileImage.Source = UI_Utils.Instance.TextStatusImage;
+                    this.userProfileImage.Visibility = System.Windows.Visibility.Collapsed;
+                    statusTypeImage.Source = UI_Utils.Instance.TextStatusImage;
+                    statusTypeImage.Visibility = System.Windows.Visibility.Visible;
+                    userNameTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
                 }
-                this.userProfileImage.Source = UI_Utils.Instance.TextStatusImage;
-                this.userProfileImage.MaxHeight = 60;
-                statusTypeImage.Visibility = System.Windows.Visibility.Collapsed;
+             
             }
         }
 

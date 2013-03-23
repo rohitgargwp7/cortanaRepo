@@ -1510,7 +1510,7 @@
     <comment>Used to show for pp update in last msg of convlist</comment>
   </data>
   <data name="Conversations_DefaultStatus_Txt" xml:space="preserve">
-    <value>Post Status</value>
+    <value>Tap here to update your status.</value>
   </data>
   <data name="Mood_Beer_Txt" xml:space="preserve">
     <value>Beer</value>
@@ -1701,5 +1701,14 @@
   </data>
   <data name="Settings_StatusUpdate_Immediate_Txt" xml:space="preserve">
     <value>Immediate</value>
+  </data>
+  <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
+    <value>Only your 'friends on hike' can see your status updates</value>
+  </data>
+  <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
+    <value>Tap on this icon to post a new status</value>
+  </data>
+  <data name="Conversations_Status_Tutorials_Header" xml:space="preserve">
+    <value>Status Updates</value>
   </data>
 </root>

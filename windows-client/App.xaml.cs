@@ -41,6 +41,7 @@ namespace windows_client
         public static readonly string STATUS_UPDATE_SECOND_SETTING = "stUpSecSet";
         public static readonly string SHOW_FAVORITES_TUTORIAL = "favoritesTute";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
+        public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
         public static readonly string LATEST_PUSH_TOKEN = "pushToken";
         public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
         public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
