@@ -437,6 +437,7 @@ namespace windows_client.View
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_black.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite_dark.png", UriKind.Relative));
                 rewards.Source = new BitmapImage(new Uri("images/rewards_link_dark.png", UriKind.Relative));
+                blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon_white.png", UriKind.Relative));
             }
             else
             {
@@ -444,6 +445,8 @@ namespace windows_client.View
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_white.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite.png", UriKind.Relative));
                 rewards.Source = new BitmapImage(new Uri("images/rewards_link.png", UriKind.Relative));
+                blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon.png", UriKind.Relative));
+
             }
             bool showRewards;
             if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
@@ -455,7 +458,7 @@ namespace windows_client.View
             if (!string.IsNullOrEmpty(lastStatus))
             {
                 txtStatus.Text = lastStatus;
-                if (moodId > -1)
+                if (moodId > 0)
                     statusImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(moodId);
                 else
                     statusImage.Source = UI_Utils.Instance.TextStatusImage;
@@ -866,7 +869,7 @@ namespace windows_client.View
                     {
                         StatusMsgsTable.SaveLastStatusMessage(sm.Message, sm.MoodId);
                         //update profile status
-                        if (sm.MoodId > -1)
+                        if (sm.MoodId > 0)
                             statusImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
                         else
                             statusImage.Source = UI_Utils.Instance.TextStatusImage;

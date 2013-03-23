@@ -31,7 +31,7 @@ namespace windows_client.DbUtils
 
         public static void clearDatabase()
         {
-            #region DELETE CONVS,CHAT MSGS, GROUPS, GROUP MEMBERS,THUMBNAILS,SAVED PIC UPDATES, STATUS MSGS
+            #region DELETE CONVS,CHAT MSGS, GROUPS, GROUP MEMBERS,THUMBNAILS,SAVED PIC UPDATES, STATUS MSGS , LAST STATUS
 
             ConversationTableUtils.deleteAllConversations();
             DeleteAllThumbnails();
@@ -39,6 +39,7 @@ namespace windows_client.DbUtils
             DeleteAllPicUpdates();
             DeleteAllLargeStatusImages();
             StatusMsgsTable.DeleteAllStatusMsgs();
+            StatusMsgsTable.DeleteLastStatusFile();
             GroupManager.Instance.DeleteAllGroups();
             FriendsTableUtils.DeleteAllFriends();
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))

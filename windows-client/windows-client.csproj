@@ -494,6 +494,8 @@
     <Content Include="View\images\avatars\Sneakers.png" />
     <Content Include="View\images\avatars\Space.png" />
     <Content Include="View\images\avatars\TealPeople.png" />
+    <Content Include="View\images\block_list_icon.png" />
+    <Content Include="View\images\block_list_icon_white.png" />
     <Content Include="View\images\change_pic.png" />
     <Content Include="View\images\chat_sms_error.png" />
     <Content Include="View\images\connected_tick.png" />
@@ -509,6 +511,8 @@
     <Content Include="View\images\favorites_tour_02.jpg" />
     <Content Include="View\images\fbSignUp.png" />
     <Content Include="View\images\fb_icon.png" />
+    <Content Include="View\images\fb_status.png" />
+    <Content Include="View\images\fb_status_disabled.png" />
     <Content Include="View\images\group_name_changed.png" />
     <Content Include="View\images\hike_favorite.png" />
     <Content Include="View\images\hike_users.png" />
@@ -550,9 +554,13 @@
     <Content Include="View\images\moods\tea.png" />
     <Content Include="View\images\moods\tv.png" />
     <Content Include="View\images\moods\write.png" />
+    <Content Include="View\images\moods_status_icon.png" />
+    <Content Include="View\images\moods_status_icon_disabled.png" />
     <Content Include="View\images\notification_read.png" />
     <Content Include="View\images\notification_unread.png" />
     <Content Include="View\images\timeline_photo.png" />
+    <Content Include="View\images\twitter_status.png" />
+    <Content Include="View\images\twitter_status_disabled.png" />
     <Content Include="View\images\user_invite.png" />
     <Content Include="View\images\user_lock.png" />
     <Content Include="View\images\menu_camera_icon.png" />
