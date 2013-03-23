@@ -123,20 +123,14 @@ namespace windows_client.ViewModel
             set;
         }
 
-        private object pendingLockObj = new object();
-
         public Dictionary<string, ConversationListObject> PendingRequests
         {
             get
             {
-                if (_pendingReq != null)
+                if (IsPendingListLoaded)
                     return _pendingReq;
-                lock (pendingLockObj)
-                {
-                    if (_pendingReq == null)
-                        _pendingReq = new Dictionary<string, ConversationListObject>();
-                    return _pendingReq;
-                }
+                MiscDBUtil.LoadPendingRequests();
+                return _pendingReq;
             }
         }
 
