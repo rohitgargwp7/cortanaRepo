@@ -1200,6 +1200,7 @@ namespace windows_client
                     long msgId = StatusMsgsTable.DeleteStatusMsg(id);
                     if (msgId > 0) // delete only if msgId is greater than 0
                     {
+                        MessagesTableUtils.deleteMessage(msgId);
                         // if conversation from this user exists
                         if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                         {
@@ -1269,11 +1270,12 @@ namespace windows_client
                                 }
                                 else // there are no msgs left remove the conversation from db and map
                                 {
+                                    ConversationTableUtils.deleteConversation(msisdn);
+                                    pubSub.publish(HikePubSub.DELETE_STATUS_AND_CONV, App.ViewModel.ConvMap[msisdn]);
                                     App.ViewModel.ConvMap.Remove(msisdn);
                                 }
                             }
-                        }
-                        MessagesTableUtils.deleteMessage(msgId);
+                        }                      
                     }
                 }
                 catch (Exception e)
