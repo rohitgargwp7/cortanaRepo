@@ -357,9 +357,13 @@ namespace windows_client.utils
                     data.Add("set_cookie", "0");
                     data.Add("devicetype", "windows");
                     data[HikeConstants.DEVICE_ID] = Utils.getHashedDeviceId();
-                    //data[HikeConstants.DEVICE_TOKEN] = Utils.getDeviceId();//for push notifications
                     data[HikeConstants.DEVICE_VERSION] = Utils.getDeviceModel();
                     data[HikeConstants.APP_VERSION] = Utils.getAppVersion();
+                    if (Utils.IsWP8)
+                        data[HikeConstants.OS_NAME] = "win8";
+                    else
+                        data[HikeConstants.OS_NAME] = "win7";
+                    data[HikeConstants.OS_VERSION] = Utils.getOSVersion();
                     string inviteToken = "";
                     if (!string.IsNullOrEmpty(inviteToken))
                         data[HikeConstants.INVITE_TOKEN_KEY] = inviteToken;
@@ -468,19 +472,19 @@ namespace windows_client.utils
                     string uri = (string)vars[2];
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     data.Add("dev_token", uri);
-                    data.Add("dev_type", "windows");
+                    data.Add(HikeConstants.DEVICE_TYPE_KEY, "windows");
                     break;
                 #endregion
                 case RequestType.POST_INFO_ON_APP_UPDATE:
                     finalCallbackFunction = vars[2] as postResponseFunction;
                     if (Utils.IsWP8)
-                        data["_os"] = "win8";
+                        data[HikeConstants.OS_NAME] = "win8";
                     else
-                        data["_os"] = "win7";
-                    data["_os_version"] = Utils.getOSVersion();
-                    data["deviceversion"] = Utils.getDeviceModel();
-                    data["app_version"] = Utils.getAppVersion();
-                    data["dev_type"] = "windows";
+                        data[HikeConstants.OS_NAME] = "win7";
+                    data[HikeConstants.OS_VERSION] = Utils.getOSVersion();
+                    data[HikeConstants.DEVICE_VERSION] = Utils.getDeviceModel();
+                    data[HikeConstants.APP_VERSION] = Utils.getAppVersion();
+                    data[HikeConstants.DEVICE_TYPE_KEY] = "windows";
                     break;
                 #region UPLOAD FILE
                 case RequestType.UPLOAD_FILE:
