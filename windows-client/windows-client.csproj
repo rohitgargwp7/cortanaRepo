@@ -209,6 +209,7 @@
     <Compile Include="utils\RelativeAnimatingContentControl.cs" />
     <Compile Include="utils\SmileyParser.cs" />
     <Compile Include="utils\StatusUpdateHelper.cs" />
+    <Compile Include="utils\UpdatePostHelper.cs" />
     <Compile Include="utils\Utils.cs" />
     <Compile Include="ViewModel\HikeViewModel.cs" />
     <Compile Include="View\BlockListPage.xaml.cs">
@@ -467,6 +468,9 @@
     <Content Include="hike-symbol-app-icon_130x202.png" />
     <Content Include="hike_lock_bubble.png" />
     <Content Include="README_FIRST.txt" />
+    <Content Include="SplashScreenImage.screen-720p.jpg" />
+    <Content Include="SplashScreenImage.screen-WVGA.jpg" />
+    <Content Include="SplashScreenImage.screen-WXGA.jpg" />
     <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
@@ -800,7 +804,6 @@
     <Content Include="View\images\trying_icon.png" />
     <Content Include="View\images\typing.png" />
     <Content Include="View\images\key.jpg" />
-    <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Languages\AppResources.de-DE.resx">

@@ -499,7 +499,7 @@ namespace windows_client.Model
                 metadata[HikeConstants.FILES_DATA] = filesData;
                 data[HikeConstants.METADATA] = metadata;
             }
-            else if (this.MetaDataString != null && this.MetaDataString.Contains("poke"))
+            else if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
             {
                 data["poke"] = true;
             }
