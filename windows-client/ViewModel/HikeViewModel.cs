@@ -86,24 +86,57 @@ namespace windows_client.ViewModel
             }
         }
 
+        private HashSet<string> _blockedHashSet = null;
+
+        private object readWriteLock = new object();
+
+        private bool isBlockedSetLoaded = false;
+
+        public HashSet<string> BlockedHashset
+        {
+            get
+            {
+                // optimization to avoid lock acquire again and again
+                if (isBlockedSetLoaded)
+                    return _blockedHashSet;
+                lock (readWriteLock)
+                {
+                    if (_blockedHashSet == null)
+                    {
+                        _blockedHashSet = new HashSet<string>();
+                        List<Blocked> blockList = UsersTableUtils.getBlockList();
+                        if (blockList != null)
+                        {
+                            for (int i = 0; i < blockList.Count; i++)
+                                _blockedHashSet.Add(blockList[i].Msisdn);
+                        }
+                        isBlockedSetLoaded = true;
+                    }
+                    return _blockedHashSet;
+                }
+            }
+        }
+
         public bool IsPendingListLoaded
         {
             get;
             set;
         }
 
+        private object pendingLockObj = new object();
+
         public Dictionary<string, ConversationListObject> PendingRequests
         {
             get
             {
-                if (_pendingReq == null)
-                    _pendingReq = new Dictionary<string, ConversationListObject>();
-                return _pendingReq;
-            }
-            set
-            {
-                if (value != _pendingReq)
-                    _pendingReq = value;
+                if (_pendingReq != null)
+                    return _pendingReq;
+                lock (pendingLockObj)
+                {
+                    if (_pendingReq == null)
+                        _pendingReq = new Dictionary<string, ConversationListObject>();
+                    return _pendingReq;
+                }
             }
         }
 
@@ -159,6 +192,29 @@ namespace windows_client.ViewModel
             RegisterListeners();
         }
 
+        public void RemoveAndSaveFromFavList(string msisdn)
+        {
+            if (_favList != null && _favList.Count > 0)
+            {
+                for (int i = _favList.Count - 1; i > 0; i--)
+                {
+                    if (_favList[i].Msisdn == msisdn)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            _favList.RemoveAt(i);
+                        });
+                        MiscDBUtil.SaveFavourites();
+                        MiscDBUtil.DeleteFavourite(msisdn);
+                        int count = 0;
+                        App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                        App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
+                        break;
+                    }
+                }
+            }
+        }
+
         public bool Isfavourite(string mContactNumber)
         {
             if (_favList.Count == 0)
@@ -210,6 +266,7 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_RECEIVED, this);
             App.HikePubSubInstance.addListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.addListener(HikePubSub.USER_LEFT, this);
+            App.HikePubSubInstance.addListener(HikePubSub.BLOCK_USER, this);
         }
 
         private void RemoveListeners()
@@ -217,10 +274,12 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
             App.HikePubSubInstance.removeListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.removeListener(HikePubSub.USER_LEFT, this);
+            App.HikePubSubInstance.removeListener(HikePubSub.BLOCK_USER, this);
         }
 
         public void onEventReceived(string type, object obj)
         {
+
             #region MESSAGE_RECEIVED
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
@@ -256,6 +315,32 @@ namespace windows_client.ViewModel
                 catch (Exception ex)
                 {
                     Debug.WriteLine("HikeViewModel:: onEventReceived, Exception : " + ex.StackTrace);
+                }
+            }
+            #endregion
+            #region BLOCK_USER
+            else if ((HikePubSub.BLOCK_USER == type))
+            {
+                try
+                {
+                    string msisdn = null;
+                    if (obj is ContactInfo)
+                        msisdn = (obj as ContactInfo).Msisdn;
+                    else
+                        msisdn = (string)obj;
+
+                    if (!IsPendingListLoaded)
+                        MiscDBUtil.LoadPendingRequests();
+                    if (_pendingReq != null && _pendingReq.Remove(msisdn))
+                    {
+                        MiscDBUtil.SavePendingRequests();
+                    }
+                    if (_favList != null) // this will remove from UI too
+                        RemoveAndSaveFromFavList(msisdn);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("HikeViewModel :: OnEventReceived : BLOCK USER , Exception : ", e.StackTrace);
                 }
             }
             #endregion

@@ -639,9 +639,9 @@ namespace windows_client.View
             }
 
             if (groupOwner != null)
-                mUserIsBlocked = UsersTableUtils.isUserBlocked(groupOwner);
+                mUserIsBlocked = App.ViewModel.BlockedHashset.Contains(groupOwner);
             else
-                mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
+                mUserIsBlocked = App.ViewModel.BlockedHashset.Contains(mContactNumber);
             initAppBar(isGroupChat, isAddUser);
             if (!isOnHike)
             {
@@ -1316,6 +1316,7 @@ namespace windows_client.View
                 }
                 else
                 {
+                    App.ViewModel.BlockedHashset.Remove(mContactNumber);
                     mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
                     emoticonsIconButton.IsEnabled = true;
                     sendIconButton.IsEnabled = true;
@@ -2184,7 +2185,6 @@ namespace windows_client.View
                         obj.LastMessage = "\""+sb.statusMessageTxtBlk.Text+"\"";
                     }                   
                     obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
-                    obj.TimeStamp = lastMessageBubble.TimeStampLong;
                 }
                 else
                 {

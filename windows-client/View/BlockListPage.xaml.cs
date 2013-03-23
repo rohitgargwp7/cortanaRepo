@@ -131,8 +131,7 @@ namespace windows_client.View
                 bw.DoWork += (s, a) =>
                 {
                     List<ContactInfo> allContactsList = UsersTableUtils.getAllContactsByGroup();
-                    List<Blocked> listBlocked = UsersTableUtils.getBlockList();
-                    blockedList = FilterUnBlockedUsers(listBlocked, allContactsList);
+                    blockedList = FilterUnBlockedUsers(allContactsList);
                 };
                 bw.RunWorkerAsync();
                 bw.RunWorkerCompleted += (s, a) =>
@@ -149,15 +148,15 @@ namespace windows_client.View
             }
         }
 
-        private ObservableCollection<ContactInfo> FilterUnBlockedUsers(List<Blocked> blockedList, List<ContactInfo> allContactsList)
+        private ObservableCollection<ContactInfo> FilterUnBlockedUsers(List<ContactInfo> allContactsList)
         {
-            if (blockedList == null || blockedList.Count == 0)
+            HashSet<string> blockedhashSet = App.ViewModel.BlockedHashset;
+
+            if (blockedhashSet == null || blockedhashSet.Count == 0)
                 return null;
 
-            HashSet<string> hashBlocked = new HashSet<string>();
-            foreach (Blocked bl in blockedList)
-                hashBlocked.Add(bl.Msisdn);
-
+            // this is used to avoid removing msisdn from original blocked hashset
+            HashSet<string> hashBlocked = new HashSet<string>(blockedhashSet);
             ObservableCollection<ContactInfo> blockedContacts = new ObservableCollection<ContactInfo>();
             for (int i = 0; i < (allContactsList != null?allContactsList.Count:0); i++)
             {
@@ -186,7 +185,8 @@ namespace windows_client.View
             if (c == null)
                 return;
             shellProgress.IsVisible = true;
-            App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, c.Msisdn);
+            App.ViewModel.BlockedHashset.Remove(c.Msisdn);
+            App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, c);
             blockedList.Remove(c);
             if (blockedList.Count == 0)
             {

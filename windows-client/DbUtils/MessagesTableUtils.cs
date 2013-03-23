@@ -224,6 +224,7 @@ namespace windows_client.DbUtils
             else
             {
                 obj = App.ViewModel.ConvMap[convMsg.Msisdn];
+                obj.IsLastMsgStatusUpdate = false;
                 #region PARTICIPANT_JOINED
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
                 {
@@ -346,6 +347,7 @@ namespace windows_client.DbUtils
                 #region STATUS UPDATES
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
+                    obj.IsLastMsgStatusUpdate = true;
                     obj.LastMessage = "\""+convMsg.Message+"\"";
                 }
                 #endregion
@@ -363,13 +365,15 @@ namespace windows_client.DbUtils
                 Debug.WriteLine("Time to add chat msg : {0}", msec1);
 
                 if (convMsg.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
-                    obj.MessageStatus = convMsg.MessageStatus;
-                else // its for status msg
                 {
-                    if(obj.MessageStatus != ConvMessage.State.RECEIVED_UNREAD)
+                    obj.MessageStatus = convMsg.MessageStatus;
+                    obj.TimeStamp = convMsg.Timestamp;
+                }
+                else if (obj.MessageStatus != ConvMessage.State.RECEIVED_UNREAD)// its for status msg
+                {
                         obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
                 }
-                obj.TimeStamp = convMsg.Timestamp;
+                
                 obj.LastMsgId = convMsg.MessageId;
                 Stopwatch st = Stopwatch.StartNew();
                 ConversationTableUtils.updateConversation(obj);

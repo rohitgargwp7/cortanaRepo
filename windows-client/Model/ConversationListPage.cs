@@ -208,6 +208,19 @@ namespace windows_client.Model
             }
         }
 
+        public bool IsLastMsgStatusUpdate
+        {
+            get
+            {
+                return _isFirstMsg;
+            }
+            set
+            {
+                if (value != _isFirstMsg)
+                    _isFirstMsg = value;
+            }
+        }
+
         public string NameToShow
         {
             get

@@ -218,19 +218,42 @@ namespace windows_client.Model
             }
         }
 
+        public int TimeOfDay
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_moodInfo))
+                    return 0;
+                else
+                {
+                    string[] vals = _moodInfo.Split(':');
+                    int res = 0;
+                    Int32.TryParse(vals[1], out res);
+                    return res;
+                }
+            }
+        }
+
         public int MoodId
         {
             get
             {
-                int _moodId;
-                return int.TryParse(_moodInfo, out _moodId) ? _moodId : -1;
+                if (string.IsNullOrWhiteSpace(_moodInfo))
+                    return 0;
+                else
+                {
+                    string[] vals = _moodInfo.Split(':');
+                    int res = 0;
+                    Int32.TryParse(vals[0], out res);
+                    return res;
+                }
             }
         }
 
         #region INotifyPropertyChanging Members
 
         public event PropertyChangingEventHandler PropertyChanging;
-        
+
         // Used to notify that a property is about to change
         private void NotifyPropertyChanging(string propertyName)
         {
