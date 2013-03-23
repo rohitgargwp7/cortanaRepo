@@ -115,7 +115,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (launchPagePivot.SelectedIndex == 1)
+            if (launchPagePivot.SelectedIndex == 3)
             {
                 RefreshBarCount = 0;
                 UnreadFriendRequests = 0;
@@ -599,7 +599,7 @@ namespace windows_client.View
                 if (!appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Insert(0, delConvsMenu);
             }
-            else if (selectedIndex == 3) // favourite
+            else if (selectedIndex == 1) // favourite
             {
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
@@ -650,7 +650,7 @@ namespace windows_client.View
                 }
                 #endregion
             }
-            else if (selectedIndex == 1)
+            else if (selectedIndex == 3)
             {
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
@@ -659,7 +659,7 @@ namespace windows_client.View
                 RefreshBarCount = 0;
                 UnreadFriendRequests = 0;
             }
-            if (selectedIndex != 1)
+            if (selectedIndex != 3)
             {
                 if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
                     TotalUnreadStatuses = 0;
@@ -779,7 +779,7 @@ namespace windows_client.View
                                 statusLLS.Visibility = Visibility.Visible;
                             }
                         }
-                        if (launchPagePivot.SelectedIndex != 1)
+                        if (launchPagePivot.SelectedIndex != 3)
                         {
                             UnreadFriendRequests++;
                         }
@@ -890,7 +890,7 @@ namespace windows_client.View
                         if (!sm.ShowOnTimeline)
                             return;
                         // here we have to check 2 way firendship
-                        if (launchPagePivot.SelectedIndex == 1)
+                        if (launchPagePivot.SelectedIndex == 3)
                         {
                             FreshStatusUpdates.Add(sm);
                         }
@@ -1669,7 +1669,7 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        if (launchPagePivot.SelectedIndex == 1)
+                        if (launchPagePivot.SelectedIndex == 3)
                         {
                             if (_refreshBarCount == 0 && value > 0)
                             {
@@ -1853,9 +1853,9 @@ namespace windows_client.View
 
         private void notification_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (launchPagePivot.SelectedIndex != 1)
+            if (launchPagePivot.SelectedIndex != 3)
             {
-                launchPagePivot.SelectedIndex = 1;
+                launchPagePivot.SelectedIndex = 3;
                 //if no new status scroll to latest unseen friends request
                 if (UnreadFriendRequests > 0)
                     statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count - UnreadFriendRequests]);
