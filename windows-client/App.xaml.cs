@@ -471,8 +471,8 @@ namespace windows_client
             }
             e.Cancel = true;
 
-            // if not new install && current version is less than version 2.0.0.0  and upgrade is done for wp8 device
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.0.0.0") == -1 && Utils.IsWP8)
+            // if not new install && current version is less than equal to version 1.8.0.0  and upgrade is done for wp8 device
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "1.8.0.0") != 1 && Utils.IsWP8)
             {
                 instantiateClasses(true);
                 RootFrame.Dispatcher.BeginInvoke(delegate

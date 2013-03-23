@@ -139,8 +139,14 @@ namespace windows_client.DbUtils
                     // add Address column to the table corresponding to the Person class
                     // IMPORTANT: update database schema version before calling Execute
                     schemaUpdater.DatabaseSchemaVersion = MqttDb_Latest_Version;
-                    // execute changes to database schema
-                    schemaUpdater.Execute();
+                    try
+                    {
+                        // execute changes to database schema
+                        schemaUpdater.Execute();
+                    }
+                    catch (Exception e)
+                    {
+                    }
                 }
             }
         }

@@ -41,8 +41,8 @@ namespace windows_client.View
                     #endregion
                 }
 
-                // if current version is less than 2.0.0.0 then upgrade Chats DB to add statusMessages table
-                if (Utils.compareVersion(App.CURRENT_VERSION, "2.0.0.0") == -1)
+                // if current version is less than equal to 1.8.0.0 then upgrade Chats DB to add statusMessages table
+                if (Utils.compareVersion(App.CURRENT_VERSION, "1.8.0.0") != 1)
                     StatusMsgsTable.MessagesDbUpdateToLatestVersion();
                 if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                     MqttDBUtils.MqttDbUpdateToLatestVersion();

@@ -257,8 +257,14 @@ namespace windows_client.DbUtils
                     
                     // IMPORTANT: update database schema version before calling Execute
                     schemaUpdater.DatabaseSchemaVersion = MessagesDb_Latest_Version;
-                    // execute changes to database schema
-                    schemaUpdater.Execute();
+                    try
+                    {
+                        // execute changes to database schema
+                        schemaUpdater.Execute();
+                    }
+                    catch (Exception e)
+                    {
+                    }
                 }
             }
         }
