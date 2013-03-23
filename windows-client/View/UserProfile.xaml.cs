@@ -1003,6 +1003,7 @@ namespace windows_client.View
             if (App.ViewModel.ConvMap.ContainsKey(msisdn))
             {
                 cObj = App.ViewModel.ConvMap[msisdn];
+                cObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.RemFromFav_Txt;
             }
             else
             {
