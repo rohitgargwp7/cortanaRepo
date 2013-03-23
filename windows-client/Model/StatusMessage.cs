@@ -222,19 +222,14 @@ namespace windows_client.Model
         {
             get
             {
-                if (_moodInfo == null || string.IsNullOrWhiteSpace(_moodInfo))
+                if (string.IsNullOrWhiteSpace(_moodInfo))
                     return 0;
                 else
                 {
                     string[] vals = _moodInfo.Split(':');
-                    try
-                    {
-                        return Int32.Parse(vals[1]);
-                    }
-                    catch
-                    {
-                        return 0;
-                    }
+                    int res = 0;
+                    Int32.TryParse(vals[1], out res);
+                    return res;
                 }
             }
         }
@@ -243,19 +238,14 @@ namespace windows_client.Model
         {
             get
             {
-                if (_moodInfo == null || string.IsNullOrWhiteSpace(_moodInfo))
+                if (string.IsNullOrWhiteSpace(_moodInfo))
                     return 0;
                 else
                 {
                     string[] vals = _moodInfo.Split(':');
-                    try
-                    {
-                        return Int32.Parse(vals[0]);
-                    }
-                    catch
-                    {
-                        return 0;
-                    }
+                    int res = 0;
+                    Int32.TryParse(vals[0], out res);
+                    return res;
                 }
             }
         }
@@ -263,7 +253,7 @@ namespace windows_client.Model
         #region INotifyPropertyChanging Members
 
         public event PropertyChangingEventHandler PropertyChanging;
-        
+
         // Used to notify that a property is about to change
         private void NotifyPropertyChanging(string propertyName)
         {
