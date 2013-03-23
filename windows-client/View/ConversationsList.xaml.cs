@@ -1184,12 +1184,7 @@ namespace windows_client.View
                 {
                     bool shouldDecreasCount = (bool)obj;
                     // TODO : Madhur Garg : Use this bool to dec count etc
-                    if (isStatusMessagesLoaded)
-                    {
-                    }
-                    else
-                    {
-                    }
+                    
                 });
             }
             #endregion
