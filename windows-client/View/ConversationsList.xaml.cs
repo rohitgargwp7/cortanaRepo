@@ -236,6 +236,8 @@ namespace windows_client.View
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
                 Utils.requestAccountInfo();
+                //TODO - GK - please place it in a position such that App.appInitialize is called after writing isolated storage setting
+                App.WriteToIsoStorageSettings(App.APP_UPDATE_POSTPENDING, true);
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
                 App.RemoveKeyFromAppSettings(HikeConstants.IS_NEW_INSTALLATION);
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE);
@@ -602,13 +604,10 @@ namespace windows_client.View
                 if (!appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Insert(0, delConvsMenu);
             }
-            else if (selectedIndex == 1)
+            else if (selectedIndex == 1) // favourite
             {
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
-            }
-            else if (selectedIndex == 2) // favourite
-            {
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
                 // there will be two background workers that will independently load three sections
@@ -664,6 +663,8 @@ namespace windows_client.View
             }
             else if (selectedIndex == 3)
             {
+                if (appBar.MenuItems.Contains(delConvsMenu))
+                    appBar.MenuItems.Remove(delConvsMenu);
                 if (!isStatusMessagesLoaded)
                 {
                     isStatusMessagesLoaded = true;
@@ -1940,6 +1941,12 @@ namespace windows_client.View
             if (launchPagePivot.SelectedIndex != 3)
             {
                 launchPagePivot.SelectedIndex = 3;
+                //if no new status scroll to latest unseen friends request
+                if (UnreadFriendRequests > 0)
+                    statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count - UnreadFriendRequests]);
+                //scroll to latest unread status
+                else if (App.ViewModel.StatusList.Count > App.ViewModel.PendingRequests.Count && RefreshBarCount > 0) 
+                    statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count]);
             }
         }
 

@@ -162,7 +162,7 @@ namespace windows_client.Controls
                 messageString = string.IsNullOrEmpty(cm.FileAttachment.FileName) ? "contact" : cm.FileAttachment.FileName;
             bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
                 cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
-            bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains("poke");
+            bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains(HikeConstants.POKE);
 
             Rectangle BubbleBg = new Rectangle();
             if (!isNudge)

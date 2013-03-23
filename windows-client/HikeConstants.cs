@@ -97,7 +97,7 @@ namespace windows_client
         private static readonly string TERMS_AND_CONDITIONS_BLACK = "http://hike.in/terms/wp7/black.html";
         private static readonly string FAQS_LINK_BLACK = "http://get.hike.in/help/wp7/black.html";
         //private static readonly string CONTACT_US_LINK = "http://support.hike.in";
-        public static readonly string UPDATE_URL = AccountUtils.IsProd ? "http://get.hike.in/updates/wp7" : "http://staging.im.hike.in:8080/updates/wp7";
+        public static readonly string UPDATE_URL = AccountUtils.IsProd ? "http://get.hike.in/updates/wp8" : "http://staging.im.hike.in:8080/updates/wp8";
         public static readonly string SYSTEM_HEALTH_LINK = "http://twitter.com/hikestatus/";
 
         //for device info
@@ -209,7 +209,8 @@ namespace windows_client
         public static string COUNTRY_SELECTED = "country_selected";
         public static string IMAGE_TO_DISPLAY = "imageToDisplay";
         public static string STATUS_IMAGE_TO_DISPLAY = "statusToDisplay";
-
+        public static string FROM_SOCIAL_PAGE = "fromSocialPage";
+        public static string SOCIAL_STATE = "socialState";
         public static string SOCIAL = "Social_Request";
         public static string SHOW_GROUP_CHAT_OVERLAY = "sgcol";
 
@@ -249,7 +250,7 @@ namespace windows_client
         public static readonly string IMAGE = "image";
         public static readonly string CONTACT = "contact";
         public static readonly string CT_CONTACT = "contact/share";
-
+        public static readonly string POKE = "poke";
 
         public static readonly string OK = "ok";
         public static readonly string STAT = "stat";

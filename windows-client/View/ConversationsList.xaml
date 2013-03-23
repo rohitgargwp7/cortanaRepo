@@ -61,6 +61,60 @@
                 </Grid>
             </controls:PivotItem>
 
+            <controls:PivotItem Header="{Binding Path= LocalizedResources.Conversations_Pivot_Favourites_Header_Txt, Source={StaticResource LocalizedStrings}}">
+                <ScrollViewer Margin="16,10,0,0" >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}"/>
+
+                        <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center">
+                            <Image Source="images/favorites_heart.png" Height="90"></Image>
+                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Width="350" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
+                            <TextBlock Text="{Binding Path= LocalizedResources.Favorites_TapToAdd, Source={StaticResource LocalizedStrings}}" Width="270" Margin="0,0,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
+                        </StackPanel>
+
+                        <ListBox x:Name="favourites" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Tap="favourites_Tap" >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
+                                        <Image Source="{Binding AvatarImage}" Height="69" Margin="0,10,0,0"></Image>
+                                        <TextBlock Text="{Binding NameToShow}" FontSize="37" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,2,0,0"></TextBlock>
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu Name="favCtxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.RemFromFav_Txt, Source={StaticResource LocalizedStrings}}" Tap="RemoveFavourite_Tap"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <Rectangle Grid.Row="2" Height="1" Fill="#d8d8d8" Margin="0,25,0,0"/>
+
+                        <TextBlock Grid.Row="3" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}"/>
+
+                        <ListBox x:Name="hikeContactListBox" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="4">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,5" >
+                                        <Image Source="{Binding AvatarImage}" Height="69" Margin="0,10,0,0" Tap="hikeContacts_Tap"></Image>
+                                        <TextBlock Text="{Binding Name}" FontSize="37" Width="300" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,2,0,0" Tap="hikeContacts_Tap"></TextBlock>
+                                        <Image Name="addUserImage" Source="images\add_users.png" Tap="addToFriends_Tap" Width="40" Height="40" HorizontalAlignment="Right" Margin="10,0,0,0"></Image>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </ScrollViewer>
+            </controls:PivotItem>
+
             <controls:PivotItem Header="{Binding Path= LocalizedResources.Conversations_Pivot_Profile_Header_Txt, Source={StaticResource LocalizedStrings}}">
                 <ScrollViewer  >
 
@@ -135,60 +189,6 @@
 
             </controls:PivotItem>
 
-            <controls:PivotItem Header="{Binding Path= LocalizedResources.Conversations_Pivot_Favourites_Header_Txt, Source={StaticResource LocalizedStrings}}">
-                <ScrollViewer Margin="16,10,0,0" >
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Grid.Row="0" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}"/>
-
-                        <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center">
-                            <Image Source="images/favorites_heart.png" Height="90"></Image>
-                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Width="350" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
-                            <TextBlock Text="{Binding Path= LocalizedResources.Favorites_TapToAdd, Source={StaticResource LocalizedStrings}}" Width="270" Margin="0,0,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
-                        </StackPanel>
-
-                        <ListBox x:Name="favourites" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Tap="favourites_Tap" >
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
-                                        <Image Source="{Binding AvatarImage}" Height="69" Margin="0,10,0,0"></Image>
-                                        <TextBlock Text="{Binding NameToShow}" FontSize="37" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,2,0,0"></TextBlock>
-                                        <toolkit:ContextMenuService.ContextMenu>
-                                            <toolkit:ContextMenu Name="favCtxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.RemFromFav_Txt, Source={StaticResource LocalizedStrings}}" Tap="RemoveFavourite_Tap"/>
-                                            </toolkit:ContextMenu>
-                                        </toolkit:ContextMenuService.ContextMenu>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-
-                        <Rectangle Grid.Row="2" Height="1" Fill="#d8d8d8" Margin="0,25,0,0"/>
-
-                        <TextBlock Grid.Row="3" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}"/>
-
-                        <ListBox x:Name="hikeContactListBox" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="4">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,5" >
-                                        <Image Source="{Binding AvatarImage}" Height="69" Margin="0,10,0,0" Tap="hikeContacts_Tap"></Image>
-                                        <TextBlock Text="{Binding Name}" FontSize="37" Width="300" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,2,0,0" Tap="hikeContacts_Tap"></TextBlock>
-                                        <Image Name="addUserImage" Source="images\add_users.png" Tap="addToFriends_Tap" Width="40" Height="40" HorizontalAlignment="Right" Margin="10,0,0,0"></Image>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
-                </ScrollViewer>
-            </controls:PivotItem>
-
             <controls:PivotItem Header="{Binding Path= LocalizedResources.Conversations_Pivot_Timeline_Header_Txt, Source={StaticResource LocalizedStrings}}">
                 <Grid Background="Transparent">
                     <Grid.RowDefinitions>
@@ -226,6 +226,7 @@
                     </ListBox>
                 </Grid>
             </controls:PivotItem>
+
         </controls:Pivot>
 
         <Rectangle x:Name="overlay" Visibility="Collapsed" Grid.Row="0" Opacity="0.75" Grid.RowSpan="2" Fill="#000000"></Rectangle>

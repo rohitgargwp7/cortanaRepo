@@ -14,6 +14,8 @@ using windows_client.Model;
 using windows_client.DbUtils;
 using System.Net.NetworkInformation;
 using System.Diagnostics;
+using System.Windows.Media.Imaging;
+using windows_client.View;
 
 namespace windows_client.View
 {
@@ -21,11 +23,10 @@ namespace windows_client.View
     {
         private ApplicationBar appBar;
         private ApplicationBarIconButton postStatusIcon;
-        private bool isFacebookPost = false;
-        private bool isTwitterPost = false;
-        private int moodId = 0; //TODO Rohit set this on mood selection
-        //bool isMoodText = true;
-        //string previousText = string.Empty;
+        private bool isFacebookPost;
+        private bool isTwitterPost;
+        private bool isFirstLoad = true;
+        private int moodId = 0;
         string lastMoodText = string.Empty;
         public PostStatus()
         {
@@ -50,8 +51,42 @@ namespace windows_client.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            moodListBox.ItemsSource = MoodsInitialiser.Instance.MoodList;
-            userImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
+            if (isFirstLoad)
+            {
+                moodListBox.ItemsSource = MoodsInitialiser.Instance.MoodList;
+                userImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
+                isFirstLoad = false;
+            }
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FROM_SOCIAL_PAGE)) // shows page is navigated from social page
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.FROM_SOCIAL_PAGE);
+
+                object oo;
+                FreeSMS.SocialState ss = FreeSMS.SocialState.DEFAULT;
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.SOCIAL_STATE, out oo))
+                {
+                    ss = (FreeSMS.SocialState)oo;
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.SOCIAL_STATE);
+                }
+                switch (ss)
+                {
+                    case FreeSMS.SocialState.FB_LOGIN:
+                        JObject oj = new JObject();
+                        oj["id"] = (string)App.appSettings[HikeConstants.AppSettings.FB_USER_ID];
+                        oj["token"] = (string)App.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
+                        oj["post"] = false;//so that hike promotional post is not posted on fb
+                        AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(SocialPostFB), HikeConstants.FACEBOOK, true);
+                        break;
+
+                    case FreeSMS.SocialState.TW_LOGIN:
+                        JObject ojj = new JObject();
+                        ojj["id"] = (string)App.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN]; ;
+                        ojj["token"] = (string)App.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN_SECRET];
+                        ojj["post"] = false;
+                        AccountUtils.SocialPost(ojj, new AccountUtils.postResponseFunction(SocialPostTW), HikeConstants.TWITTER, true);
+                        break;
+                }
+            }
         }
 
         private void btnPostStatus_Click(object sender, EventArgs e)
@@ -81,7 +116,10 @@ namespace windows_client.View
                 statusJSON["mood"] = moodId;
                 statusJSON["timeofday"] = (int)TimeUtils.GetTimeIntervalDay();
             }
-            AccountUtils.postStatus(statusJSON, postStatus_Callback);
+            AccountUtils.postStatus(statusJSON, StatusUpdateHelper.Instance.postStatus_Callback);
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+
         }
 
         void PostStatusPage_Loaded(object sender, RoutedEventArgs e)
@@ -89,58 +127,48 @@ namespace windows_client.View
             txtStatus.Focus();
             this.Loaded -= PostStatusPage_Loaded;
         }
-        public void postStatus_Callback(JObject obj)
+        private void FbIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            string stat = "";
-            if (obj != null)
+            if (!isFacebookPost)
             {
-                JToken statusToken;
-                obj.TryGetValue(HikeConstants.STAT, out statusToken);
-                stat = statusToken.ToString();
-            }
-            if (stat == HikeConstants.OK)
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
                 {
-                    JToken statusData;
-                    obj.TryGetValue(HikeConstants.Extras.DATA, out statusData);
-                    try
-                    {
-                        string statusId = statusData["statusid"].ToString();
-                        string message = statusData["msg"].ToString();
-                        // status should be in read state when posted yourself
-                        StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
-                            TimeUtils.getCurrentTimeStamp(), -1, true);
-                        StatusMsgsTable.InsertStatusMsg(sm);
-                        App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
-
-                        if (NavigationService.CanGoBack)
-                            NavigationService.GoBack();
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("PostStatus:: postStatus_Callback, Exception : " + ex.StackTrace);
-                    }
-                });
+                    fbIconImage.Source = UI_Utils.Instance.FacebookEnabledIcon;
+                    isFacebookPost = true;
+                }
+                else
+                {
+                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
+                    NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+                }
             }
             else
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-               {
-                   MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, "Status Not Posted", MessageBoxButton.OK);
-                   postStatusIcon.IsEnabled = true;
-               });
+                fbIconImage.Source = UI_Utils.Instance.FacebookDisabledIcon;
+                isFacebookPost = false;
             }
-        }
-
-        private void FbIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            //TODO - GK toggle isFacebookPostHere
         }
 
         private void TwitterIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            //TODO - GK toggle isTwitterPost
+            if (!isTwitterPost)
+            {
+                if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
+                {
+                    twitterIconImage.Source = UI_Utils.Instance.TwitterEnabledIcon;
+                    isTwitterPost = true;
+                }
+                else
+                {
+                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.TWITTER;
+                    NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+                }
+            }
+            else
+            {
+                twitterIconImage.Source = UI_Utils.Instance.TwitterDisabledIcon;
+                isTwitterPost = false;
+            }
         }
 
         private void Mood_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -161,6 +189,7 @@ namespace windows_client.View
             postedMood.Source = mood.MoodImage;
             postedMood.Visibility = Visibility.Visible;
             gridMood.Visibility = Visibility.Collapsed;
+            moodIconImage.Source = UI_Utils.Instance.MoodEnabledIcon;
             this.appBar.IsVisible = true;
         }
 
@@ -176,16 +205,6 @@ namespace windows_client.View
             base.OnBackKeyPress(e);
         }
 
-        //private void txtStatus_SelectionChanged(object sender, RoutedEventArgs e)
-        //{
-        //    string currentText = txtStatus.Text.Trim();
-        //    if (currentText == previousText)
-        //        return;
-        //    previousText = currentText;
-        //    if (currentText.Length > 0)
-        //        isMoodText = false;
-        //}
-
         private void txtStatus_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             txtStatus.SelectionStart = 0;
@@ -197,6 +216,33 @@ namespace windows_client.View
             string name;
             App.appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
             txtStatus.Hint = string.Format(AppResources.PostStatus_WhatsUp_Hint_txt, (name != null ? name : string.Empty));
+        }
+
+        public void SocialPostFB(JObject obj)
+        {
+            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    fbIconImage.Source = UI_Utils.Instance.FacebookEnabledIcon;
+                    isFacebookPost = true;
+                });
+            }
+            else
+            {
+            }
+        }
+
+        public void SocialPostTW(JObject obj)
+        {
+            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    twitterIconImage.Source = UI_Utils.Instance.TwitterEnabledIcon;
+                    isTwitterPost = true;
+                });
+            }
         }
     }
 }
