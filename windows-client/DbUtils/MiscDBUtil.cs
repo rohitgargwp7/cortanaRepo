@@ -787,7 +787,7 @@ namespace windows_client.DbUtils
 
         #region PENDING REQUESTS
 
-        public static void LoadPendingRequests()
+        public static void LoadPendingRequests(Dictionary<string, ConversationListObject> _pendingReq)
         {
             lock (pendingReadWriteLock)
             {
@@ -825,11 +825,11 @@ namespace windows_client.DbUtils
                                     {
                                         item.ReadFavOrPending(reader);
                                         if (App.ViewModel.ConvMap.ContainsKey(item.Msisdn))
-                                            App.ViewModel.PendingRequests[item.Msisdn] = App.ViewModel.ConvMap[item.Msisdn];
+                                            _pendingReq[item.Msisdn] = App.ViewModel.ConvMap[item.Msisdn];
                                         else
                                         {
                                             item.Avatar = MiscDBUtil.getThumbNailForMsisdn(item.Msisdn);
-                                            App.ViewModel.PendingRequests[item.Msisdn] = item;
+                                            _pendingReq[item.Msisdn] = item;
                                         }
 
                                     }
