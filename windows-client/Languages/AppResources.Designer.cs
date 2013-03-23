@@ -376,7 +376,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Post Status.
+        ///   Looks up a localized string similar to Tap here to update your status..
         /// </summary>
         public static string Conversations_DefaultStatus_Txt {
             get {

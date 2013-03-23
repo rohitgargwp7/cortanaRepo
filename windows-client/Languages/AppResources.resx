@@ -1510,7 +1510,7 @@
     <comment>Used to show for pp update in last msg of convlist</comment>
   </data>
   <data name="Conversations_DefaultStatus_Txt" xml:space="preserve">
-    <value>Post Status</value>
+    <value>Tap here to update your status.</value>
   </data>
   <data name="Mood_Beer_Txt" xml:space="preserve">
     <value>Beer</value>
