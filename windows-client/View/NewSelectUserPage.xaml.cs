@@ -613,7 +613,7 @@ namespace windows_client.View
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, ev) =>
             {
-                glistFiltered = getFilteredContactsFromNameOrPhoneAsync(charsEntered, 0, 26);
+                glistFiltered = getFilteredContactsFromNameOrPhoneAsync(charsEntered, 0, 27);
             };
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (s, ev) =>
@@ -660,7 +660,7 @@ namespace windows_client.View
                 for (int j = 0; j < maxJ; j++)
                 {
                     ContactInfo cn = listToIterate[i][j];
-                    if (cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered) || cn.PhoneNo.Contains(charsEntered))
+                    if (cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered) || (cn.PhoneNo!=null && cn.PhoneNo.Contains(charsEntered)))
                     {
                         if (createNewFilteredList)
                         {
@@ -676,7 +676,6 @@ namespace windows_client.View
             List<Group<ContactInfo>> list = null;
             if (areCharsNumber)
             {
-
                 if (glistFiltered == null || createNewFilteredList)
                 {
                     if (defaultJumpList == null)
