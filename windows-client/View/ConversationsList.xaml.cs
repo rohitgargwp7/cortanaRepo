@@ -687,11 +687,13 @@ namespace windows_client.View
                         App.ViewModel.IsPendingListLoaded = true;
                         //corresponding counters should be handled for eg unread count
                         statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgsForTimeline();
-
                     };
                     statusBw.RunWorkerAsync();
+                    shellProgress.IsVisible = true;
+
                     statusBw.RunWorkerCompleted += (ss, ee) =>
                     {
+                        shellProgress.IsVisible = false;
                         foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
                         {
                             FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
@@ -1005,8 +1007,10 @@ namespace windows_client.View
                     {
                         App.ViewModel.StatusList.Remove(sb);
                         if (sb.IsUnread)
-                            _totalUnreadStatuses -= 1;
-
+                        {
+                            _totalUnreadStatuses--;
+                            RefreshBarCount--;
+                        }
                         if (App.ViewModel.StatusList.Count == 0)
                         {
                             emptyStatusPlaceHolder.Visibility = Visibility.Visible;

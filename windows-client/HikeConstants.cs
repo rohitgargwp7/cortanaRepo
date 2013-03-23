@@ -124,6 +124,12 @@ namespace windows_client
         public static readonly string CS_MOBILE_KEY = "Mobile";
         public static readonly string CS_OTHERS_KEY = "Others";
 
+        // keys for application info in analytics, update and signup
+        public static readonly string OS_NAME = "_os";
+        public static readonly string OS_VERSION = "_os_version";
+        public static readonly string DEVICE_TYPE_KEY = "dev_type";
+
+
         public static string FAQS_LINK
         {
             get
