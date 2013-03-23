@@ -2632,7 +2632,7 @@ namespace windows_client.View
 
                 //TODO handle vibration for user profile and GC.
                 if (convMessage.Msisdn != mContactNumber || (convMessage.MetaDataString != null &&
-                    convMessage.MetaDataString.Contains("poke")))
+                    convMessage.MetaDataString.Contains(HikeConstants.POKE)))
                 {
                     bool isVibrateEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
