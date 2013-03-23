@@ -2201,6 +2201,7 @@ namespace windows_client.View
                 // no message is left, simply remove the object from Conversation list 
                 App.ViewModel.MessageListPageCollection.Remove(obj.ConvBoxObj); // removed from observable collection
                 App.ViewModel.ConvMap.Remove(mContactNumber);
+                // delete from db will be handled by dbconversation listener
                 delConv = true;
             }
             object[] o = new object[3];
