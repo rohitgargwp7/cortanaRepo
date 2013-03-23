@@ -227,7 +227,14 @@ namespace windows_client.Model
                 else
                 {
                     string[] vals = _moodInfo.Split(':');
-                    return Int32.Parse(vals[1]);
+                    try
+                    {
+                        return Int32.Parse(vals[1]);
+                    }
+                    catch
+                    {
+                        return 0;
+                    }
                 }
             }
         }
@@ -241,7 +248,14 @@ namespace windows_client.Model
                 else
                 {
                     string[] vals = _moodInfo.Split(':');
-                    return Int32.Parse(vals[0]);
+                    try
+                    {
+                        return Int32.Parse(vals[0]);
+                    }
+                    catch
+                    {
+                        return 0;
+                    }
                 }
             }
         }
