@@ -2185,7 +2185,6 @@ namespace windows_client.View
                         obj.LastMessage = "\""+sb.statusMessageTxtBlk.Text+"\"";
                     }                   
                     obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
-                    obj.TimeStamp = lastMessageBubble.TimeStampLong;
                 }
                 else
                 {
