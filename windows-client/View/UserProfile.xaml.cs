@@ -1052,9 +1052,16 @@ namespace windows_client.View
         {
             foreach (StatusUpdateBox sb in App.ViewModel.StatusList)
             {
-                if ((sb is FriendRequestStatus) && sb.Msisdn == msisdn)
+                if (sb is FriendRequestStatus)
                 {
-                    App.ViewModel.StatusList.Remove(sb);
+                    if (sb.Msisdn == msisdn)
+                    {
+                        App.ViewModel.StatusList.Remove(sb);
+                        break;
+                    }
+                }
+                else
+                {
                     break;
                 }
             }
