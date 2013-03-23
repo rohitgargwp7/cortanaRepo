@@ -938,8 +938,10 @@ namespace windows_client.View
                     {
                         App.ViewModel.StatusList.Remove(sb);
                         if (sb.IsUnread)
-                            _totalUnreadStatuses -= 1;
-
+                        {
+                            _totalUnreadStatuses--;
+                            RefreshBarCount--;
+                        }
                         if (App.ViewModel.StatusList.Count == 0)
                         {
                             emptyStatusPlaceHolder.Visibility = Visibility.Visible;
