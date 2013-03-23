@@ -211,6 +211,8 @@ namespace windows_client.View
                 //contactInfo
                 statusObject = this.State[HikeConstants.OBJ_FROM_STATUSPAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_STATUSPAGE);
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
             }
         }
 
