@@ -380,7 +380,6 @@ namespace windows_client.View
         {
             mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED, this);
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
-            mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
             mPubSub.addListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
             mPubSub.addListener(HikePubSub.ADD_REMOVE_FAV, this);
             mPubSub.addListener(HikePubSub.ADD_TO_PENDING, this);
@@ -394,6 +393,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.ADD_FRIENDS, this);
             mPubSub.addListener(HikePubSub.BLOCK_USER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_USER, this);
+            mPubSub.addListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
         }
 
         private void removeListeners()
@@ -402,7 +402,6 @@ namespace windows_client.View
             {
                 mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
                 mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
-                mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
                 mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
                 mPubSub.removeListener(HikePubSub.ADD_REMOVE_FAV, this);
                 mPubSub.removeListener(HikePubSub.ADD_TO_PENDING, this);
@@ -416,6 +415,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.ADD_FRIENDS, this);
                 mPubSub.removeListener(HikePubSub.BLOCK_USER, this);
                 mPubSub.removeListener(HikePubSub.UNBLOCK_USER, this);
+                mPubSub.removeListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
             }
             catch (Exception ex)
             {
@@ -564,9 +564,6 @@ namespace windows_client.View
         private void deleteConversation(ConversationBox convObj)
         {
             App.ViewModel.ConvMap.Remove(convObj.Msisdn); // removed entry from map for UI
-            int convs = 0;
-            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
-
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -1145,6 +1142,21 @@ namespace windows_client.View
                         hikeContactList.Add(c);
                     });
                 }
+            }
+            #endregion
+            #region DELETE CONVERSATION
+            else if (HikePubSub.DELETE_STATUS_AND_CONV == type)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    ConversationListObject co = obj as ConversationListObject;
+                    App.ViewModel.MessageListPageCollection.Remove(co.ConvBoxObj);
+                    if (App.ViewModel.MessageListPageCollection.Count == 0)
+                    {
+                        emptyScreenImage.Opacity = 1;
+                        emptyScreenTip.Opacity = 1;
+                    }
+                });
             }
             #endregion
         }
@@ -1945,7 +1957,7 @@ namespace windows_client.View
                 if (UnreadFriendRequests > 0)
                     statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count - UnreadFriendRequests]);
                 //scroll to latest unread status
-                else if (App.ViewModel.StatusList.Count > App.ViewModel.PendingRequests.Count && RefreshBarCount > 0) 
+                else if (App.ViewModel.StatusList.Count > App.ViewModel.PendingRequests.Count && RefreshBarCount > 0)
                     statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count]);
             }
         }
