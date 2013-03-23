@@ -833,9 +833,9 @@ namespace windows_client.View
                     ConversationListObject co = (ConversationListObject)obj;
                     if (co != null)
                     {
-                        // if pending list is not loaded simply ignore this packet , as then this packet will
+                        // if isStatusMessagesLoaded & pending list are not loaded simply ignore this packet , as then this packet will
                         // be shown twice , one here and one from DB.
-                        if (App.ViewModel.IsPendingListLoaded)
+                        if (isStatusMessagesLoaded && App.ViewModel.IsPendingListLoaded)
                         {
                             FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                             App.ViewModel.StatusList.Insert(0, frs);
@@ -1717,6 +1717,11 @@ namespace windows_client.View
                 ContactInfo contactInfo = hikeContactListBox.SelectedItem as ContactInfo;
                 if (contactInfo == null)
                     return;
+                if (App.ViewModel.Isfavourite(contactInfo.Msisdn))
+                {
+                    hikeContactList.Remove(contactInfo);
+                    return;
+                }
                 JObject data = new JObject();
                 data["id"] = contactInfo.Msisdn;
                 JObject obj = new JObject();
