@@ -23,8 +23,9 @@ namespace windows_client.View
     {
         private ApplicationBar appBar;
         private ApplicationBarIconButton postStatusIcon;
-        private bool isFacebookPost = false;
-        private bool isTwitterPost = false;
+        private bool isFacebookPost;
+        private bool isTwitterPost;
+        private bool isFirstLoad = true;
         private int moodId = 0;
         string lastMoodText = string.Empty;
         public PostStatus()
@@ -50,8 +51,12 @@ namespace windows_client.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            moodListBox.ItemsSource = MoodsInitialiser.Instance.MoodList;
-            userImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
+            if (isFirstLoad)
+            {
+                moodListBox.ItemsSource = MoodsInitialiser.Instance.MoodList;
+                userImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
+                isFirstLoad = false;
+            }
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FROM_SOCIAL_PAGE)) // shows page is navigated from social page
             {
                 PhoneApplicationService.Current.State.Remove(HikeConstants.FROM_SOCIAL_PAGE);
