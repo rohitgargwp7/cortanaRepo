@@ -1066,6 +1066,10 @@ namespace windows_client
             {
                 try
                 {
+                    // if user is blocked ignore his requests
+                    if (App.ViewModel.BlockedHashset.Contains(msisdn))
+                        return;
+
                     FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
                     App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
                 }
@@ -1096,7 +1100,7 @@ namespace windows_client
             else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
             {
                 // if this user is already blocked simply ignore his status
-                if(App.ViewModel.BlockedHashset.Contains(msisdn))
+                if (App.ViewModel.BlockedHashset.Contains(msisdn))
                     return;
 
                 JObject data = null;
@@ -1107,10 +1111,13 @@ namespace windows_client
                     JToken val;
                     string iconBase64 = null;
                     if (data.TryGetValue(HikeConstants.THUMBNAIL, out val) && val != null)
-                        iconBase64 = val.ToString();
-
+                        iconBase64 = val.ToString();                        
                     val = null;
-
+                    long ts = 0;
+                    if (data.TryGetValue(HikeConstants.TIMESTAMP, out val) && val != null)
+                        ts = val.ToObject<long>();
+                    ts = TimeUtils.getCurrentTimeStamp(); // TODO : Remove this later to use server time
+                    val = null;
                     #region HANDLE PROFILE PIC UPDATE
                     if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
                     {
@@ -1120,7 +1127,7 @@ namespace windows_client
                             id = idToken.ToString();
 
 
-                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp(), StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn),-1,null,true);
+                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, ts, StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, null, true);
 
                         idToken = null;
                         if (iconBase64 != null)
@@ -1143,9 +1150,16 @@ namespace windows_client
 
                         idToken = null;
                         if (data.TryGetValue(HikeConstants.MOOD, out idToken) && idToken != null && string.IsNullOrEmpty(idToken.ToString()))
-                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, idToken.ToString(), true);
+                        {
+                            int tod = 0;
+                            string moodVal = idToken.ToString();
+                            idToken = null;
+                            if (data.TryGetValue(HikeConstants.TIME_OF_DAY, out idToken) && !string.IsNullOrEmpty(idToken.ToString()))
+                                tod = idToken.ToObject<int>();
+                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts, StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, moodVal + HikeConstants.MOOD_TOD_SEPARATOR + tod, true);
+                        }
                         else
-                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1,null,true);
+                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts, StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, null, true);
 
                         StatusMsgsTable.InsertStatusMsg(sm);
                     }
@@ -1185,7 +1199,82 @@ namespace windows_client
                     string id = (string)data[HikeConstants.STATUS_ID];
                     long msgId = StatusMsgsTable.DeleteStatusMsg(id);
                     if (msgId > 0) // delete only if msgId is greater than 0
+                    {
+                        // if conversation from this user exists
+                        if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                        {
+                            ConversationListObject co = App.ViewModel.ConvMap[msisdn];
+                            // if last msg is status update and its of same id which is about to get deleted, then only proceed
+                            if (co.IsLastMsgStatusUpdate && co.LastMsgId == msgId)
+                            {
+                                ConvMessage cm = MessagesTableUtils.getLastMessageForMsisdn(msisdn);
+                                if (cm != null)
+                                {
+                                    co.LastMessage = cm.Message;
+                                    co.LastMsgId = cm.MessageId;
+                                    co.MessageStatus = cm.MessageStatus;
+
+                                    if (cm.FileAttachment != null)
+                                    {
+                                        if (cm.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                                            co.LastMessage = HikeConstants.IMAGE;
+                                        else if (cm.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                                            co.LastMessage = HikeConstants.AUDIO;
+                                        else if (cm.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                                            co.LastMessage = HikeConstants.VIDEO;
+                                        else if (cm.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                                            co.LastMessage = HikeConstants.CONTACT;
+
+                                        co.TimeStamp = cm.Timestamp;
+                                    }
+                                    else // check here nudge , notification , status update
+                                    {
+                                        // if metadata string 
+                                        if (!string.IsNullOrEmpty(cm.MetaDataString))
+                                        {
+                                            // NUDGE
+                                            if (cm.MetaDataString.Contains("poke"))
+                                            {
+                                                co.LastMessage = AppResources.Nudge;
+                                            }
+                                            // STATUS UPDATE
+                                            else if (cm.MetaDataString.Contains(HikeConstants.MqttMessageTypes.STATUS_UPDATE))
+                                            {
+                                                JObject jdata = null;
+                                                try
+                                                {
+                                                    jdata = JObject.Parse(cm.MetaDataString);
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                }
+                                                if (jdata != null)
+                                                {
+                                                    JToken val;
+                                                    JObject ddata = jdata[HikeConstants.DATA] as JObject;
+                                                    // profile pic update
+                                                    if (ddata.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
+                                                        co.LastMessage = "\"" + AppResources.Update_Profile_Pic_txt + "\"";
+                                                    else // status , mood update
+                                                        co.LastMessage = "\"" + cm.Message + "\"";
+                                                }
+                                            }
+                                            else // NOTIFICATION AND NORMAL MSGS
+                                            {
+                                                co.LastMessage = cm.Message;
+                                            }
+                                        }
+                                    }
+
+                                }
+                                else // there are no msgs left remove the conversation from db and map
+                                {
+                                    App.ViewModel.ConvMap.Remove(msisdn);
+                                }
+                            }
+                        }
                         MessagesTableUtils.deleteMessage(msgId);
+                    }
                 }
                 catch (Exception e)
                 {
