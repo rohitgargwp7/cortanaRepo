@@ -70,16 +70,16 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (PhoneApplicationService.Current.State.ContainsKey("FromSocialPage")) // shows page is navigated from social page
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FROM_SOCIAL_PAGE)) // shows page is navigated from social page
             {
-                PhoneApplicationService.Current.State.Remove("FromSocialPage");
+                PhoneApplicationService.Current.State.Remove(HikeConstants.FROM_SOCIAL_PAGE);
                 ChangeElementsState(false);
                 object oo;
                 SocialState ss = SocialState.DEFAULT;
-                if (PhoneApplicationService.Current.State.TryGetValue("socialState", out oo))
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.SOCIAL_STATE, out oo))
                 {
                     ss = (SocialState)oo;
-                    PhoneApplicationService.Current.State.Remove("socialState");
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.SOCIAL_STATE);
                 }
                 switch (ss)
                 {

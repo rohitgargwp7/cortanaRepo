@@ -44,13 +44,13 @@ namespace windows_client.View
 
             if (socialNetwork == HikeConstants.TWITTER)
             {
-                PhoneApplicationService.Current.State["FromSocialPage"] = true;
+                PhoneApplicationService.Current.State[HikeConstants.FROM_SOCIAL_PAGE] = true;
                 BrowserControl.IsScriptEnabled = false;
                 AuthenticateTwitter();
             }
             else if (socialNetwork == HikeConstants.FACEBOOK)
             {
-                PhoneApplicationService.Current.State["FromSocialPage"] = true;
+                PhoneApplicationService.Current.State[HikeConstants.FROM_SOCIAL_PAGE] = true;
                 if (PhoneApplicationService.Current.State.ContainsKey("fromEnterName"))
                     fromEnterName = true;
                 if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
@@ -127,7 +127,7 @@ namespace windows_client.View
                     App.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        PhoneApplicationService.Current.State["socialState"] = FreeSMS.SocialState.FB_LOGOUT;
+                        PhoneApplicationService.Current.State[HikeConstants.SOCIAL_STATE] = FreeSMS.SocialState.FB_LOGOUT;
                         NavigationService.GoBack();
                     });
                 }
@@ -213,7 +213,7 @@ namespace windows_client.View
                     App.WriteToIsoStorageSettings(HikeConstants.FB_LOGGED_IN, true);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        PhoneApplicationService.Current.State["socialState"] = FreeSMS.SocialState.FB_LOGIN;
+                        PhoneApplicationService.Current.State[HikeConstants.SOCIAL_STATE] = FreeSMS.SocialState.FB_LOGIN;
                         NavigationService.GoBack();
                     });
                 }
@@ -471,7 +471,7 @@ namespace windows_client.View
                         App.WriteToIsoStorageSettings(HikeConstants.TW_LOGGED_IN, true);
                         Dispatcher.BeginInvoke(() =>
                         {
-                            PhoneApplicationService.Current.State["socialState"] = FreeSMS.SocialState.TW_LOGIN;
+                            PhoneApplicationService.Current.State[HikeConstants.SOCIAL_STATE] = FreeSMS.SocialState.TW_LOGIN;
                             NavigationService.GoBack();
                         });
                     }
