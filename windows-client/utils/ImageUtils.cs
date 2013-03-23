@@ -60,6 +60,12 @@ namespace windows_client.utils
         private BitmapImage noNewNotificationImage;
         private BitmapImage newNotificationImage;
         private BitmapImage contactIcon;
+        private BitmapImage facebookDisabledIcon;
+        private BitmapImage facebookEnabledIcon;
+        private BitmapImage twitterDisabledIcon;
+        private BitmapImage twitterEnabledIcon;
+        private BitmapImage moodDisabledIcon;
+        private BitmapImage moodEnabledIcon;
 
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
@@ -636,6 +642,61 @@ namespace windows_client.utils
                 if (contactIcon == null)
                     contactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
                 return contactIcon;
+            }
+        }
+
+        public BitmapImage FacebookDisabledIcon
+        {
+            get
+            {
+                if (facebookDisabledIcon == null)
+                    facebookDisabledIcon = new BitmapImage(new Uri("/View/images/fb_status_disabled.png", UriKind.Relative));
+                return facebookDisabledIcon;
+            }
+        }
+        public BitmapImage FacebookEnabledIcon
+        {
+            get
+            {
+                if (facebookEnabledIcon == null)
+                    facebookEnabledIcon = new BitmapImage(new Uri("/View/images/fb_status.png", UriKind.Relative));
+                return facebookEnabledIcon;
+            }
+        }
+        public BitmapImage TwitterDisabledIcon
+        {
+            get
+            {
+                if (twitterDisabledIcon == null)
+                    twitterDisabledIcon = new BitmapImage(new Uri("/View/images/twitter_status_disabled.png", UriKind.Relative));
+                return twitterDisabledIcon;
+            }
+        }
+        public BitmapImage TwitterEnabledIcon
+        {
+            get
+            {
+                if (twitterEnabledIcon == null)
+                    twitterEnabledIcon = new BitmapImage(new Uri("/View/images/twitter_status.png", UriKind.Relative));
+                return twitterEnabledIcon;
+            }
+        }
+        public BitmapImage MoodDisabledIcon
+        {
+            get
+            {
+                if (moodDisabledIcon == null)
+                    moodDisabledIcon = new BitmapImage(new Uri("/View/images/moods_status_icon_disabled.png", UriKind.Relative));
+                return moodDisabledIcon;
+            }
+        }
+        public BitmapImage MoodEnabledIcon
+        {
+            get
+            {
+                if (moodEnabledIcon == null)
+                    moodEnabledIcon = new BitmapImage(new Uri("/View/images/moods_status_icon.png", UriKind.Relative));
+                return moodEnabledIcon;
             }
         }
 
