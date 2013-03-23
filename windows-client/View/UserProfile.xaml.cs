@@ -629,6 +629,7 @@ namespace windows_client.View
                 {
                     App.ViewModel.PendingRequests.Remove(favObj.Msisdn);
                     MiscDBUtil.SavePendingRequests();
+                    App.ViewModel.RemoveFrndReqFromTimeline(msisdn);
                 }
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.SaveFavourites(favObj);
@@ -995,7 +996,6 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
             FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
             spAddFriendInvite.Visibility = Visibility.Collapsed;
-            RemoveFrndReqFromTimeline();
             if (App.ViewModel.Isfavourite(msisdn)) // if already favourite just ignore
                 return;
 
@@ -1046,6 +1046,8 @@ namespace windows_client.View
             int count = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
             App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+
+            App.ViewModel.RemoveFrndReqFromTimeline(msisdn);
         }
 
         private void No_Click(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1058,28 +1060,9 @@ namespace windows_client.View
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.IGNORED);
             spAddFriendInvite.Visibility = Visibility.Collapsed;
-            RemoveFrndReqFromTimeline();
             App.ViewModel.PendingRequests.Remove(msisdn);
             MiscDBUtil.SavePendingRequests();
-        }
-
-        private void RemoveFrndReqFromTimeline()
-        {
-            foreach (StatusUpdateBox sb in App.ViewModel.StatusList)
-            {
-                if (sb is FriendRequestStatus)
-                {
-                    if (sb.Msisdn == msisdn)
-                    {
-                        App.ViewModel.StatusList.Remove(sb);
-                        break;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-            }
+            App.ViewModel.RemoveFrndReqFromTimeline(msisdn);
         }
 
         #region ADD USER TO CONTATCS

@@ -633,16 +633,18 @@ namespace windows_client.View
                                 App.ViewModel.FavList[i].Avatar = MiscDBUtil.getThumbNailForMsisdn(App.ViewModel.FavList[i].Msisdn);
                             }
                         }
-                        List<ContactInfo> tempHikeContactList = UsersTableUtils.GetAllHikeContacts();
+                        List<ContactInfo> tempHikeContactList = UsersTableUtils.GetAllHikeContactsOrdered();
                         if (hikeContactList != null)
                         {
+                            HashSet<string> msisdns = new HashSet<string>(); // used to remove duplicate contacts
                             int count = tempHikeContactList.Count;
                             // this loop will filter out already added fav and blocked contacts from hike user list
                             for (int i = count - 1; i >= 0; i--)
                             {
                                 // if user is not fav and is not blocked then add to hike contacts
-                                if (!App.ViewModel.Isfavourite(tempHikeContactList[i].Msisdn) && !App.ViewModel.BlockedHashset.Contains(tempHikeContactList[i].Msisdn))
+                                if (!msisdns.Contains(tempHikeContactList[i].Msisdn) && !App.ViewModel.Isfavourite(tempHikeContactList[i].Msisdn) && !App.ViewModel.BlockedHashset.Contains(tempHikeContactList[i].Msisdn))
                                 {
+                                    msisdns.Add(tempHikeContactList[i].Msisdn);
                                     hikeContactList.Add(tempHikeContactList[i]);
                                     if (!App.ViewModel.ContactsCache.ContainsKey(tempHikeContactList[i].Msisdn))
                                         App.ViewModel.ContactsCache[tempHikeContactList[i].Msisdn] = tempHikeContactList[i];
@@ -677,9 +679,7 @@ namespace windows_client.View
                     BackgroundWorker statusBw = new BackgroundWorker();
                     statusBw.DoWork += (sf, ef) =>
                     {
-                        if (!App.ViewModel.IsPendingListLoaded)
-                            MiscDBUtil.LoadPendingRequests();
-                        App.ViewModel.IsPendingListLoaded = true;
+                        App.ViewModel.LoadPendingRequests();
                         //corresponding counters should be handled for eg unread count
                         statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgsForTimeline();
                     };
@@ -1266,6 +1266,7 @@ namespace windows_client.View
                     {
                         App.ViewModel.PendingRequests.Remove(convObj.Msisdn);
                         MiscDBUtil.SavePendingRequests();
+                        App.ViewModel.RemoveFrndReqFromTimeline(convObj.Msisdn);
                     }
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.SaveFavourites(convObj);
@@ -1722,6 +1723,7 @@ namespace windows_client.View
                     hikeContactList.Remove(contactInfo);
                     return;
                 }
+                
                 JObject data = new JObject();
                 data["id"] = contactInfo.Msisdn;
                 JObject obj = new JObject();
@@ -1743,6 +1745,13 @@ namespace windows_client.View
                     favourites.Visibility = System.Windows.Visibility.Visible;
                 }
                 FriendsTableUtils.SetFriendStatus(cObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
+
+                if (App.ViewModel.IsPending(contactInfo.Msisdn))
+                {
+                    App.ViewModel.PendingRequests.Remove(contactInfo.Msisdn);
+                    MiscDBUtil.SavePendingRequests();
+                    App.ViewModel.RemoveFrndReqFromTimeline(contactInfo.Msisdn);
+                }
             }
         }
         #endregion
