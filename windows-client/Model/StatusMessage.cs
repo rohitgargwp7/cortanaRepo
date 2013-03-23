@@ -218,12 +218,31 @@ namespace windows_client.Model
             }
         }
 
+        public int TimeOfDay
+        {
+            get
+            {
+                if (_moodInfo == null || string.IsNullOrWhiteSpace(_moodInfo))
+                    return 0;
+                else
+                {
+                    string[] vals = _moodInfo.Split(':');
+                    return Int32.Parse(vals[1]);
+                }
+            }
+        }
+
         public int MoodId
         {
             get
             {
-                int _moodId;
-                return int.TryParse(_moodInfo, out _moodId) ? _moodId : -1;
+                if (_moodInfo == null || string.IsNullOrWhiteSpace(_moodInfo))
+                    return 0;
+                else
+                {
+                    string[] vals = _moodInfo.Split(':');
+                    return Int32.Parse(vals[0]);
+                }
             }
         }
 
