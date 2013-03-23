@@ -91,6 +91,7 @@ namespace windows_client.ViewModel
         private object readWriteLock = new object();
 
         private bool isBlockedSetLoaded = false;
+
         public HashSet<string> BlockedHashset
         {
             get
@@ -122,18 +123,20 @@ namespace windows_client.ViewModel
             set;
         }
 
+        private object pendingLockObj = new object();
+
         public Dictionary<string, ConversationListObject> PendingRequests
         {
             get
             {
-                if (_pendingReq == null)
-                    _pendingReq = new Dictionary<string, ConversationListObject>();
-                return _pendingReq;
-            }
-            set
-            {
-                if (value != _pendingReq)
-                    _pendingReq = value;
+                if (_pendingReq != null)
+                    return _pendingReq;
+                lock (pendingLockObj)
+                {
+                    if (_pendingReq == null)
+                        _pendingReq = new Dictionary<string, ConversationListObject>();
+                    return _pendingReq;
+                }
             }
         }
 
