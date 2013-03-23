@@ -10,7 +10,7 @@ namespace windows_client.DbUtils
 {
     public class MqttDBUtils
     {
-        public const int Latest_Version = 1;
+        public const int MqttDb_Latest_Version = 1;
 
         private static object lockObj = new object();
 
@@ -124,7 +124,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void UpdateToVersionOne()
+        public static void MqttDbUpdateToLatestVersion()
         {
             using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
             {
@@ -138,7 +138,7 @@ namespace windows_client.DbUtils
                 {
                     // add Address column to the table corresponding to the Person class
                     // IMPORTANT: update database schema version before calling Execute
-                    schemaUpdater.DatabaseSchemaVersion = Latest_Version;
+                    schemaUpdater.DatabaseSchemaVersion = MqttDb_Latest_Version;
                     // execute changes to database schema
                     schemaUpdater.Execute();
                 }
