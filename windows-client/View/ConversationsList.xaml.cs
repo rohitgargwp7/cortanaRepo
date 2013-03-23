@@ -543,9 +543,7 @@ namespace windows_client.View
         {
             if (TutorialStatusUpdate.Visibility == Visibility.Visible)
             {
-                overlay.Visibility = Visibility.Collapsed;
-                TutorialStatusUpdate.Visibility = Visibility.Collapsed;
-                App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
+                RemoveStatusUpdateTutorial();
                 return;
             }
             App.AnalyticsInstance.addEvent(Analytics.GROUP_CHAT);
@@ -566,9 +564,7 @@ namespace windows_client.View
         {
             if (TutorialStatusUpdate.Visibility == Visibility.Visible)
             {
-                overlay.Visibility = Visibility.Collapsed;
-                TutorialStatusUpdate.Visibility = Visibility.Collapsed;
-                App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
+                RemoveStatusUpdateTutorial();
                 return;
             }
             App.AnalyticsInstance.addEvent(Analytics.COMPOSE);
@@ -729,18 +725,13 @@ namespace windows_client.View
                     {
                         overlay.Visibility = Visibility.Visible;
                         TutorialStatusUpdate.Visibility = Visibility.Visible;
+                        launchPagePivot.IsHitTestVisible = false;
                     }
                 }
                 if (selectedIndex != 3)
                 {
                     if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
                         TotalUnreadStatuses = 0;
-                    if (TutorialStatusUpdate.Visibility == Visibility.Visible)
-                    {
-                        overlay.Visibility = Visibility.Collapsed;
-                        TutorialStatusUpdate.Visibility = Visibility.Collapsed;
-                        App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
-                    }
                 }
             }
         }
@@ -1893,9 +1884,7 @@ namespace windows_client.View
         {
             if (TutorialStatusUpdate.Visibility == Visibility.Visible)
             {
-                overlay.Visibility = Visibility.Collapsed;
-                TutorialStatusUpdate.Visibility = Visibility.Collapsed;
-                App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
+                RemoveStatusUpdateTutorial();
             }
             Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
@@ -2054,8 +2043,14 @@ namespace windows_client.View
 
         private void DismissStatusUpdateTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            RemoveStatusUpdateTutorial();
+        }
+
+        private void RemoveStatusUpdateTutorial()
+        {
             overlay.Visibility = Visibility.Collapsed;
             TutorialStatusUpdate.Visibility = Visibility.Collapsed;
+            launchPagePivot.IsHitTestVisible = true;
             App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
         }
     }
