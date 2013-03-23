@@ -70,13 +70,16 @@ namespace windows_client.Controls.StatusUpdate
                 if (sm.MoodId > 0) //For profile pic update. Mood id won't be received. Kept this for future.
                 {
                     this.userProfileImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
+                    this.userProfileImage.MaxHeight = 60;
+                    statusTypeImage.Visibility = System.Windows.Visibility.Collapsed;
                 }
                 else
                 {
-                    this.userProfileImage.Source = UI_Utils.Instance.TextStatusImage;
+                    this.userProfileImage.Visibility = System.Windows.Visibility.Collapsed;
+                    statusTypeImage.Source = UI_Utils.Instance.ProfilePicStatusImage;
+                    statusTypeImage.Visibility = System.Windows.Visibility.Visible;
+                    userNameTxtBlk.Visibility=System.Windows.Visibility.Collapsed;
                 }
-                this.userProfileImage.MaxHeight = 60;
-                statusTypeImage.Visibility = System.Windows.Visibility.Collapsed;
             }
         }
 

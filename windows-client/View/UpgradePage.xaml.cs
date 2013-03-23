@@ -60,6 +60,7 @@ namespace windows_client.View
                 }
                 Thread.Sleep(2000);//added so that this shows at least for 2 sec
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, 1);
+                App.WriteToIsoStorageSettings(App.SHOW_STATUS_UPDATES_TUTORIAL, true);
             };
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (a, b) =>
