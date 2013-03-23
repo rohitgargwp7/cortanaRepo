@@ -188,7 +188,9 @@ namespace windows_client
         public static readonly string THUMBNAIL = "tn";
         public static readonly string PROFILE_PIC_ID = "ppid";
         public static readonly string MOOD = "mood";
+        public static readonly string TIME_OF_DAY = "timeofday";
 
+        public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
         public static string MSISDN = "msisdn";
         public static string MSISDNS = "msisdns";
@@ -207,7 +209,8 @@ namespace windows_client
         public static string COUNTRY_SELECTED = "country_selected";
         public static string IMAGE_TO_DISPLAY = "imageToDisplay";
         public static string STATUS_IMAGE_TO_DISPLAY = "statusToDisplay";
-
+        public static string FROM_SOCIAL_PAGE = "fromSocialPage";
+        public static string SOCIAL_STATE = "socialState";
         public static string SOCIAL = "Social_Request";
         public static string SHOW_GROUP_CHAT_OVERLAY = "sgcol";
 
