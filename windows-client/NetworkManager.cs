@@ -541,10 +541,19 @@ namespace windows_client
                                                             else
                                                                 FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.NOT_SET);
                                                         }
-                                                        else if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken) && pToken != null && pToken.ToObject<bool>() == true)
+                                                        else if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken) && pToken != null)
                                                         {
-                                                            isFav = false;
-                                                            FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
+                                                            if (pToken.ToObject<bool>() == true) // pending is true
+                                                            {
+                                                                isFav = false;
+                                                                FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
+                                                            }
+                                                            else // pending is false
+                                                            {
+                                                                // in this case friend state should be ignored
+                                                                FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.IGNORED);
+                                                                continue;
+                                                            }
                                                         }
                                                         else
                                                             FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
