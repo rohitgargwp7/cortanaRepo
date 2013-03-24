@@ -541,10 +541,19 @@ namespace windows_client
                                                             else
                                                                 FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.NOT_SET);
                                                         }
-                                                        else if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken) && pToken != null && pToken.ToObject<bool>() == true)
+                                                        else if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken) && pToken != null)
                                                         {
-                                                            isFav = false;
-                                                            FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
+                                                            if (pToken.ToObject<bool>() == true) // pending is true
+                                                            {
+                                                                isFav = false;
+                                                                FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
+                                                            }
+                                                            else // pending is false
+                                                            {
+                                                                // in this case friend state should be ignored
+                                                                FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.IGNORED);
+                                                                continue;
+                                                            }
                                                         }
                                                         else
                                                             FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
@@ -1200,6 +1209,7 @@ namespace windows_client
                     long msgId = StatusMsgsTable.DeleteStatusMsg(id);
                     if (msgId > 0) // delete only if msgId is greater than 0
                     {
+                        MessagesTableUtils.deleteMessage(msgId);
                         // if conversation from this user exists
                         if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                         {
@@ -1269,11 +1279,12 @@ namespace windows_client
                                 }
                                 else // there are no msgs left remove the conversation from db and map
                                 {
+                                    ConversationTableUtils.deleteConversation(msisdn);
+                                    pubSub.publish(HikePubSub.DELETE_STATUS_AND_CONV, App.ViewModel.ConvMap[msisdn]);
                                     App.ViewModel.ConvMap.Remove(msisdn);
                                 }
                             }
-                        }
-                        MessagesTableUtils.deleteMessage(msgId);
+                        }                      
                     }
                 }
                 catch (Exception e)

@@ -34,11 +34,6 @@ namespace windows_client.ViewModel
             {
                 return _statusList;
             }
-            set
-            {
-                if (value != _statusList)
-                    _statusList = value;
-            }
         }
 
         private Dictionary<string, ConversationListObject> _convMap;
@@ -123,21 +118,20 @@ namespace windows_client.ViewModel
             set;
         }
 
-        private object pendingLockObj = new object();
-
         public Dictionary<string, ConversationListObject> PendingRequests
         {
             get
             {
-                if (_pendingReq != null)
+                if (IsPendingListLoaded)
                     return _pendingReq;
-                lock (pendingLockObj)
-                {
-                    if (_pendingReq == null)
-                        _pendingReq = new Dictionary<string, ConversationListObject>();
-                    return _pendingReq;
-                }
+                LoadPendingRequests();
+                return _pendingReq;
             }
+        }
+
+        public void LoadPendingRequests()
+        {
+            MiscDBUtil.LoadPendingRequests(_pendingReq);
         }
 
         public ObservableCollection<ConversationListObject> FavList
@@ -243,7 +237,7 @@ namespace windows_client.ViewModel
         {
             if (!IsPendingListLoaded)
             {
-                MiscDBUtil.LoadPendingRequests();
+                MiscDBUtil.LoadPendingRequests(_pendingReq);
             }
             if (_pendingReq == null)
                 return false;
@@ -330,7 +324,7 @@ namespace windows_client.ViewModel
                         msisdn = (string)obj;
 
                     if (!IsPendingListLoaded)
-                        MiscDBUtil.LoadPendingRequests();
+                        LoadPendingRequests();
                     if (_pendingReq != null && _pendingReq.Remove(msisdn))
                     {
                         MiscDBUtil.SavePendingRequests();
@@ -380,6 +374,25 @@ namespace windows_client.ViewModel
             get
             {
                 return _contactsCache;
+            }
+        }
+
+        public void RemoveFrndReqFromTimeline(string msisdn)
+        {         
+            foreach (StatusUpdateBox sb in App.ViewModel.StatusList)
+            {
+                if (sb is FriendRequestStatus)
+                {
+                    if (sb.Msisdn == msisdn)
+                    {
+                        App.ViewModel.StatusList.Remove(sb);
+                        break;
+                    }
+                }
+                else
+                {
+                    break;
+                }
             }
         }
     }

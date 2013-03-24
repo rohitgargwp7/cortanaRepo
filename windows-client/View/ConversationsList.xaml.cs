@@ -115,6 +115,14 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            string ur = e.Uri.ToString();
+            if(ur.Contains("True"))
+            {
+                this.Loaded += (ss,ee)=>
+                {
+                    launchPagePivot.SelectedIndex = 3;
+                };
+            }
             if (launchPagePivot.SelectedIndex == 3)
             {
                 RefreshBarCount = 0;
@@ -236,8 +244,6 @@ namespace windows_client.View
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
                 Utils.requestAccountInfo();
-                //TODO - GK - please place it in a position such that App.appInitialize is called after writing isolated storage setting
-                App.WriteToIsoStorageSettings(App.APP_UPDATE_POSTPENDING, true);
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
                 App.RemoveKeyFromAppSettings(HikeConstants.IS_NEW_INSTALLATION);
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE);
@@ -380,7 +386,6 @@ namespace windows_client.View
         {
             mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED, this);
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
-            mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
             mPubSub.addListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
             mPubSub.addListener(HikePubSub.ADD_REMOVE_FAV, this);
             mPubSub.addListener(HikePubSub.ADD_TO_PENDING, this);
@@ -394,6 +399,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.ADD_FRIENDS, this);
             mPubSub.addListener(HikePubSub.BLOCK_USER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_USER, this);
+            mPubSub.addListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
         }
 
         private void removeListeners()
@@ -402,7 +408,6 @@ namespace windows_client.View
             {
                 mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
                 mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
-                mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
                 mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
                 mPubSub.removeListener(HikePubSub.ADD_REMOVE_FAV, this);
                 mPubSub.removeListener(HikePubSub.ADD_TO_PENDING, this);
@@ -416,6 +421,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.ADD_FRIENDS, this);
                 mPubSub.removeListener(HikePubSub.BLOCK_USER, this);
                 mPubSub.removeListener(HikePubSub.UNBLOCK_USER, this);
+                mPubSub.removeListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
             }
             catch (Exception ex)
             {
@@ -574,9 +580,6 @@ namespace windows_client.View
         private void deleteConversation(ConversationBox convObj)
         {
             App.ViewModel.ConvMap.Remove(convObj.Msisdn); // removed entry from map for UI
-            int convs = 0;
-            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
-
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -638,16 +641,18 @@ namespace windows_client.View
                                 App.ViewModel.FavList[i].Avatar = MiscDBUtil.getThumbNailForMsisdn(App.ViewModel.FavList[i].Msisdn);
                             }
                         }
-                        List<ContactInfo> tempHikeContactList = UsersTableUtils.GetAllHikeContacts();
+                        List<ContactInfo> tempHikeContactList = UsersTableUtils.GetAllHikeContactsOrdered();
                         if (hikeContactList != null)
                         {
+                            HashSet<string> msisdns = new HashSet<string>(); // used to remove duplicate contacts
                             int count = tempHikeContactList.Count;
                             // this loop will filter out already added fav and blocked contacts from hike user list
                             for (int i = count - 1; i >= 0; i--)
                             {
                                 // if user is not fav and is not blocked then add to hike contacts
-                                if (!App.ViewModel.Isfavourite(tempHikeContactList[i].Msisdn) && !App.ViewModel.BlockedHashset.Contains(tempHikeContactList[i].Msisdn))
+                                if (!msisdns.Contains(tempHikeContactList[i].Msisdn) && !App.ViewModel.Isfavourite(tempHikeContactList[i].Msisdn) && !App.ViewModel.BlockedHashset.Contains(tempHikeContactList[i].Msisdn))
                                 {
+                                    msisdns.Add(tempHikeContactList[i].Msisdn);
                                     hikeContactList.Add(tempHikeContactList[i]);
                                     if (!App.ViewModel.ContactsCache.ContainsKey(tempHikeContactList[i].Msisdn))
                                         App.ViewModel.ContactsCache[tempHikeContactList[i].Msisdn] = tempHikeContactList[i];
@@ -682,9 +687,7 @@ namespace windows_client.View
                     BackgroundWorker statusBw = new BackgroundWorker();
                     statusBw.DoWork += (sf, ef) =>
                     {
-                        if (!App.ViewModel.IsPendingListLoaded)
-                            MiscDBUtil.LoadPendingRequests();
-                        App.ViewModel.IsPendingListLoaded = true;
+                        App.ViewModel.LoadPendingRequests();
                         //corresponding counters should be handled for eg unread count
                         statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgsForTimeline();
                     };
@@ -839,9 +842,9 @@ namespace windows_client.View
                     ConversationListObject co = (ConversationListObject)obj;
                     if (co != null)
                     {
-                        // if pending list is not loaded simply ignore this packet , as then this packet will
+                        // if isStatusMessagesLoaded & pending list are not loaded simply ignore this packet , as then this packet will
                         // be shown twice , one here and one from DB.
-                        if (App.ViewModel.IsPendingListLoaded)
+                        if (isStatusMessagesLoaded && App.ViewModel.IsPendingListLoaded)
                         {
                             FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                             App.ViewModel.StatusList.Insert(0, frs);
@@ -1166,6 +1169,21 @@ namespace windows_client.View
                 }
             }
             #endregion
+            #region DELETE CONVERSATION
+            else if (HikePubSub.DELETE_STATUS_AND_CONV == type)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    ConversationListObject co = obj as ConversationListObject;
+                    App.ViewModel.MessageListPageCollection.Remove(co.ConvBoxObj);
+                    if (App.ViewModel.MessageListPageCollection.Count == 0)
+                    {
+                        emptyScreenImage.Opacity = 1;
+                        emptyScreenTip.Opacity = 1;
+                    }
+                });
+            }
+            #endregion
         }
 
         #endregion
@@ -1257,6 +1275,7 @@ namespace windows_client.View
                     {
                         App.ViewModel.PendingRequests.Remove(convObj.Msisdn);
                         MiscDBUtil.SavePendingRequests();
+                        App.ViewModel.RemoveFrndReqFromTimeline(convObj.Msisdn);
                     }
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.SaveFavourites(convObj);
@@ -1708,6 +1727,12 @@ namespace windows_client.View
                 ContactInfo contactInfo = hikeContactListBox.SelectedItem as ContactInfo;
                 if (contactInfo == null)
                     return;
+                if (App.ViewModel.Isfavourite(contactInfo.Msisdn))
+                {
+                    hikeContactList.Remove(contactInfo);
+                    return;
+                }
+                
                 JObject data = new JObject();
                 data["id"] = contactInfo.Msisdn;
                 JObject obj = new JObject();
@@ -1729,6 +1754,13 @@ namespace windows_client.View
                     favourites.Visibility = System.Windows.Visibility.Visible;
                 }
                 FriendsTableUtils.SetFriendStatus(cObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
+
+                if (App.ViewModel.IsPending(contactInfo.Msisdn))
+                {
+                    App.ViewModel.PendingRequests.Remove(contactInfo.Msisdn);
+                    MiscDBUtil.SavePendingRequests();
+                    App.ViewModel.RemoveFrndReqFromTimeline(contactInfo.Msisdn);
+                }
             }
         }
         #endregion
@@ -1909,6 +1941,7 @@ namespace windows_client.View
             if (App.ViewModel.ConvMap.ContainsKey(fObj.Msisdn))
             {
                 cObj = App.ViewModel.ConvMap[fObj.Msisdn];
+                cObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.RemFromFav_Txt;
             }
             else
             {

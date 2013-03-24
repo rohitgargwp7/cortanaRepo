@@ -52,7 +52,7 @@ namespace windows_client.DbUtils
                      ((HikeUsersDb hdc) =>
                          from o in hdc.users
                          where o.OnHike == true
-                         orderby o.Name
+                         orderby o.Name descending
                          select o);
                 return q;
             }

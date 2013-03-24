@@ -96,6 +96,14 @@ namespace windows_client
 
         #region PROPERTIES
 
+        public static PageState PageStateVal
+        {
+            get
+            {
+                return ps;
+            }
+
+        }
         public static bool IsAppLaunched
         {
             get
@@ -354,7 +362,7 @@ namespace windows_client
             {
                 if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
                     isNewInstall = false;
-                instantiateClasses();
+                instantiateClasses(false);
             }
             else
             {
@@ -400,10 +408,6 @@ namespace windows_client
             {
                 PushHelper.Instance.registerPushnotifications();
             }
-            bool isAppUpdatePostPending = true;
-            appSettings.TryGetValue<bool>(App.APP_UPDATE_POSTPENDING, out isAppUpdatePostPending);
-            if (isAppUpdatePostPending)
-                UpdatePostHelper.Instance.postAppInfo();
             #endregion
         }
 
@@ -431,42 +435,76 @@ namespace windows_client
             }
         }
 
-
         void RootFrame_Navigating(object sender, NavigatingCancelEventArgs e)
         {
             RootFrame.Navigating -= RootFrame_Navigating;
 
             if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
                 isNewInstall = false;
-            instantiateClasses();
+
+            /*
+            * These changes are done from version 2.0.0.0 , in WP8 devices after status upgrade
+            */
+
+            // this will get the current version installed already in "_currentVersion"
+            appSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out _currentVersion);
+            _latestVersion = Utils.getAppVersion(); // this will get the new version we are upgrading to
 
             string targetPage = e.Uri.ToString();
+            e.Cancel = true;
 
-            if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
+            PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
+
+            // if not new install && current version is less than equal to version 1.8.0.0  and upgrade is done for wp8 device
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "1.8.0.0") != 1 && Utils.IsWP8)
             {
+                instantiateClasses(true);
+                RootFrame.Dispatcher.BeginInvoke(delegate
+                {
+                    RootFrame.Navigate(new Uri("/View/UpgradePage.xaml", UriKind.Relative));
+                });
+            }
+            else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
                 _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-                string param = GetParamFromUri(targetPage);
-                e.Cancel = true;
+      
+                instantiateClasses(false);
+                string param = Utils.GetParamFromUri(targetPage);
                 RootFrame.Dispatcher.BeginInvoke(delegate
                 {
                     RootFrame.Navigate(new Uri("/View/NewChatThread.xaml?" + param, UriKind.Relative));
                 });
             }
-
+            else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
+                _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
+                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
+            
+                instantiateClasses(false);
+                RootFrame.Dispatcher.BeginInvoke(delegate
+                {
+                    RootFrame.Navigate(new Uri("/View/ConversationsList.xaml?" + true, UriKind.Relative));
+                });
+            }
             else if (targetPage != null && targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
             {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
+                _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
+                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
+            
+                instantiateClasses(false);
                 if (ps != PageState.CONVLIST_SCREEN)
                 {
                     RootFrame.Dispatcher.BeginInvoke(delegate
                     {
-                        loadPage();
+                        Uri nUri = Utils.LoadPageUri(ps);
+                        ((App)Application.Current).RootFrame.Navigate(nUri);
                         return;
                     });
                 }
-                _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
-                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-                e.Cancel = true;
                 int idx = targetPage.IndexOf("?") + 1;
                 string param = targetPage.Substring(idx);
                 RootFrame.Dispatcher.BeginInvoke(delegate
@@ -476,28 +514,16 @@ namespace windows_client
             }
             else
             {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
                 _appLaunchState = LaunchState.NORMAL_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-                e.Cancel = true;
+            
+                instantiateClasses(false);
                 RootFrame.Dispatcher.BeginInvoke(delegate
                 {
-                    loadPage();
+                    Uri nUri = Utils.LoadPageUri(ps);
+                    ((App)Application.Current).RootFrame.Navigate(nUri);
                 });
-            }
-
-        }
-
-        private string GetParamFromUri(string targetPage)
-        {
-            try
-            {
-                int idx = targetPage.IndexOf("msisdn");
-                return targetPage.Substring(idx);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("App :: GetParamFromUri : GetParamFromUri , Exception : " + ex.StackTrace);
-                return "";
             }
         }
 
@@ -590,50 +616,7 @@ namespace windows_client
 
         #endregion
 
-        private void loadPage()
-        {
-            Uri nUri = null;
-
-            switch (ps)
-            {
-                case PageState.WELCOME_SCREEN:
-                    nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
-                    break;
-                case PageState.PHONE_SCREEN:
-                    createDatabaseAsync();
-                    nUri = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
-                    break;
-                case PageState.PIN_SCREEN:
-                    createDatabaseAsync();
-                    nUri = new Uri("/View/EnterPin.xaml", UriKind.Relative);
-                    break;
-                case PageState.SETNAME_SCREEN:
-                    createDatabaseAsync();
-                    nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
-                    break;
-                case PageState.WELCOME_HIKE_SCREEN:
-                    nUri = new Uri("/View/WelcomeScreen.xaml", UriKind.Relative);
-                    break;
-                case PageState.CONVLIST_SCREEN:
-                    nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
-                    break;
-                case PageState.NUX_SCREEN_FRIENDS:
-                    nUri = new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative);
-                    break;
-                case PageState.NUX_SCREEN_FAMILY:
-                    nUri = new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative);
-                    break;
-                case PageState.UPGRADE_SCREEN:
-                    nUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
-                    break;
-                default:
-                    nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
-                    break;
-            }
-            ((App)Application.Current).RootFrame.Navigate(nUri);
-        }
-
-        private static void instantiateClasses()
+        private static void instantiateClasses(bool initInUpgradePage)
         {
             #region GROUP CACHE
 
@@ -713,12 +696,16 @@ namespace windows_client
                 SmileyParser.Instance.initializeSmileyParser();
             }
             #endregion
+            #region RATE MY APP
+            if (isNewInstall)
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, 1);
+            #endregion
             #region VIEW MODEL
 
             IS_VIEWMODEL_LOADED = false;
             if (_viewModel == null)
             {
-                _latestVersion = Utils.getAppVersion();
+                _latestVersion = Utils.getAppVersion(); // this will get the new version we have installed
                 List<ConversationListObject> convList = null;
 
                 if (!isNewInstall)// this has to be called for no new install case
@@ -734,29 +721,27 @@ namespace windows_client
                 else
                     _viewModel = new HikeViewModel(convList);
 
-                if (!isNewInstall && Utils.compareVersion(_latestVersion, _currentVersion) == 1) // shows this is update
+                if (!initInUpgradePage)
                 {
-                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE, true);
-                    App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
-                    if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
-                        MqttDBUtils.UpdateToVersionOne();
-                    if (Utils.compareVersion(_currentVersion, "1.7.1.2") != 1)// if current version is less than equal to 1.7.1.2 then show NUX
+                    if (!isNewInstall && Utils.compareVersion(_latestVersion, _currentVersion) == 1) // shows this is update
                     {
-                        ps = PageState.UPGRADE_SCREEN;
+                        appSettings[App.APP_UPDATE_POSTPENDING] = true;
+                        appSettings[HikeConstants.AppSettings.NEW_UPDATE] = true;
+                        WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
+                        if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
+                            MqttDBUtils.MqttDbUpdateToLatestVersion();
                     }
                 }
+                st.Stop();
+                msec = st.ElapsedMilliseconds;
+                Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
+                IS_VIEWMODEL_LOADED = true;
+
             }
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
-            IS_VIEWMODEL_LOADED = true;
             #endregion
-            #region RateMyApp
-            if (isNewInstall)
-            {
-                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, 1);
-                App.WriteToIsoStorageSettings(SHOW_STATUS_UPDATES_TUTORIAL, true);
-            }
+            #region POST APP INFO ON UPDATE
+            // if app info is already sent to server , this function will automatically handle
+            UpdatePostHelper.Instance.postAppInfo();
             #endregion
         }
 
@@ -886,8 +871,9 @@ namespace windows_client
             {
                 try
                 {
-                    appSettings.Remove(key);
-                    appSettings.Save();
+                    // if key exists then only remove and save it
+                    if (appSettings.Remove(key))
+                        appSettings.Save();
                 }
                 catch (Exception ex)
                 {
@@ -897,7 +883,7 @@ namespace windows_client
         }
 
         /// <summary>
-        /// this function is used as an upgrade function too.
+        /// This function handles any upgrade process in Conversations and AppSettings only
         /// </summary>
         /// <returns></returns>
         private static List<ConversationListObject> GetConversations()
@@ -910,7 +896,7 @@ namespace windows_client
             // this will ensure that we will show tutorials in case of app upgrade from any version to version later that 1.5.0.8
             if (Utils.compareVersion(_currentVersion, "1.5.0.8") != 1) // current version is less than equal to 1.5.0.8
             {
-                WriteToIsoStorageSettings(App.SHOW_FAVORITES_TUTORIAL, true);
+                App.appSettings[App.SHOW_FAVORITES_TUTORIAL] = true;
                 WriteToIsoStorageSettings(App.SHOW_NUDGE_TUTORIAL, true);
             }
 
@@ -922,9 +908,9 @@ namespace windows_client
                  */
                 convList = ConversationTableUtils.getAllConversations(); // this function will read according to the old logic of Version 1.0.0.0
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
-                WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convList != null ? convList.Count : 0);
+                App.appSettings[HikeViewModel.NUMBER_OF_CONVERSATIONS] = (convList != null) ? convList.Count : 0;
                 // there was no country code in first version, and as first version was released in India , we are setting value to +91 
-                WriteToIsoStorageSettings(COUNTRY_CODE_SETTING, "+91");
+                App.appSettings[COUNTRY_CODE_SETTING] = "+91";
                 App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
                 return convList;
             }
@@ -936,7 +922,7 @@ namespace windows_client
                  */
                 convList = ConversationTableUtils.getAllConvs();
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
-                WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convList != null ? convList.Count : 0);
+                App.appSettings[HikeViewModel.NUMBER_OF_CONVERSATIONS] = convList != null ? convList.Count : 0;
 
                 string country_code = null;
                 App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);

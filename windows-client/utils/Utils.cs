@@ -378,5 +378,61 @@ namespace windows_client.utils
 
         private static Version TargetedVersion = new Version(8, 0);
 
+        public static Uri LoadPageUri(App.PageState pageState)
+        {
+            Uri nUri = null;
+
+            switch (pageState)
+            {
+                case App.PageState.WELCOME_SCREEN:
+                    nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
+                    break;
+                case App.PageState.PHONE_SCREEN:
+                    App.createDatabaseAsync();
+                    nUri = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
+                    break;
+                case App.PageState.PIN_SCREEN:
+                    App.createDatabaseAsync();
+                    nUri = new Uri("/View/EnterPin.xaml", UriKind.Relative);
+                    break;
+                case App.PageState.SETNAME_SCREEN:
+                    App.createDatabaseAsync();
+                    nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
+                    break;
+                case App.PageState.WELCOME_HIKE_SCREEN:
+                    nUri = new Uri("/View/WelcomeScreen.xaml", UriKind.Relative);
+                    break;
+                case App.PageState.CONVLIST_SCREEN:
+                    nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                    break;
+                case App.PageState.NUX_SCREEN_FRIENDS:
+                    nUri = new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative);
+                    break;
+                case App.PageState.NUX_SCREEN_FAMILY:
+                    nUri = new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative);
+                    break;
+                case App.PageState.UPGRADE_SCREEN:
+                    nUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
+                    break;
+                default:
+                    nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
+                    break;
+            }
+            return nUri;
+        }
+
+        public static string GetParamFromUri(string targetPage)
+        {
+            try
+            {
+                int idx = targetPage.IndexOf("msisdn");
+                return targetPage.Substring(idx);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("App :: GetParamFromUri : GetParamFromUri , Exception : " + ex.StackTrace);
+                return "";
+            }
+        }
     }
 }
