@@ -408,21 +408,33 @@ namespace windows_client
                         }
                     });
                 }
-                else
+                else // update fav and contact section
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (msisdn == null)
                             return;
+                        bool isPendingOrFav = false; 
                         ConversationListObject c = App.ViewModel.GetFav(msisdn);
                         if (c != null) // for favourites
                         {
                             c.Avatar = imageBytes;
+                            isPendingOrFav = true;
                         }
                         c = App.ViewModel.GetPending(msisdn);
                         if (c != null) // for pending requests
                         {
                             c.Avatar = imageBytes;
+                            isPendingOrFav = true;
+                        }
+                        
+                        if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                        {
+                            // if bitmap is not already updated by fav or pending , simply remove the old image
+                            if (!isPendingOrFav)
+                                UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
+                            // this is done to notify that image is changed so load new one.
+                            App.ViewModel.ContactsCache[msisdn].Avatar = null;
                         }
                     });
                 }
