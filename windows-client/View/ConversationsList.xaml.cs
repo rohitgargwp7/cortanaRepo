@@ -737,11 +737,16 @@ namespace windows_client.View
                         launchPagePivot.IsHitTestVisible = false;
                     }
                 }
-                if (selectedIndex != 3)
+                else
                 {
-                    if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
-                        TotalUnreadStatuses = 0;
+                    RefreshBarCount = 0;
+                    UnreadFriendRequests = 0;
                 }
+            }
+            if (selectedIndex != 3)
+            {
+                if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
+                    TotalUnreadStatuses = 0;
             }
         }
 
