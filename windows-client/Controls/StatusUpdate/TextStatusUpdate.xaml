@@ -11,7 +11,7 @@
     DataContext="{Binding RelativeSource={RelativeSource Self}, Mode=OneTime}">
 
     <!--<Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Right">-->
-    <Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Left" Margin="0,15,0,15">
+    <Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Left" Margin="0,12,0,12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
