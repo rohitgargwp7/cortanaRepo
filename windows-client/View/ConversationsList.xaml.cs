@@ -1135,6 +1135,7 @@ namespace windows_client.View
             #region BLOCK_USER
             else if (HikePubSub.BLOCK_USER == type)
             {
+                //TODO : Madhur Garg , you can handle bug#3999 https://hike.fogbugz.com/default.asp?3999 here 
                 if (obj is ContactInfo)
                 {
                     ContactInfo c = obj as ContactInfo;
@@ -2019,7 +2020,7 @@ namespace windows_client.View
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                 favourites.Visibility = System.Windows.Visibility.Visible;
             }
-            StatusMessage sm = new StatusMessage(cn.Msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1, false);
+            StatusMessage sm = new StatusMessage(fObj.Msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1, false);
             mPubSub.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
             mPubSub.publish(HikePubSub.STATUS_RECEIVED,sm);
         }
