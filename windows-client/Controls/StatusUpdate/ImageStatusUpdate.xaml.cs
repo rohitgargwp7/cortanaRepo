@@ -25,12 +25,12 @@ namespace windows_client.Controls.StatusUpdate
                     if (value == true) //unread status
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
-                        statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
+                        //statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
                     }
                     else //read status
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
-                        statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
+                        //statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
                     }
                 }
             }
@@ -52,21 +52,23 @@ namespace windows_client.Controls.StatusUpdate
             if (sm.IsUnread)
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
-                statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
+                //statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
             }
             else
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
-                statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
+                //statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
             }
             if (isShowOnTimeline)
             {
                 this.userProfileImage.Source = this.UserImage;
                 this.userProfileImage.Height = 69;
                 statusTypeImage.Source = UI_Utils.Instance.ProfilePicStatusImage;
+                statusTypeImage.Width = 31;
             }
             else
             {
+                statusTypeImage.Width = 35;
                 if (sm.MoodId > 0) //For profile pic update. Mood id won't be received. Kept this for future.
                 {
                     this.userProfileImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
@@ -78,7 +80,7 @@ namespace windows_client.Controls.StatusUpdate
                     this.userProfileImage.Visibility = System.Windows.Visibility.Collapsed;
                     statusTypeImage.Source = UI_Utils.Instance.ProfilePicStatusImage;
                     statusTypeImage.Visibility = System.Windows.Visibility.Visible;
-                    userNameTxtBlk.Visibility=System.Windows.Visibility.Collapsed;
+                    userNameTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
                 }
             }
         }

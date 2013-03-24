@@ -26,12 +26,12 @@ namespace windows_client.Controls.StatusUpdate
                     if (value != true) //read status
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
-                        statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
+                //        statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
                     }
                     else
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
-                        statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
+                //        statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
                     }
                 }
             }
@@ -53,12 +53,12 @@ namespace windows_client.Controls.StatusUpdate
             if (sm.IsUnread)
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
-                statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
+                //statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
             }
             else
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
-                statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
+                //statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
             }
             if (sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
             {
@@ -76,12 +76,15 @@ namespace windows_client.Controls.StatusUpdate
             {
                 this.userProfileImage.Source = this.UserImage;
                 this.userProfileImage.Height = 69;
+                statusTypeImage.Width = 31;
+                statusTextTxtBlk.MaxWidth = 300;
             }
             else
             {
                 userNameTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
                 this.userProfileImage.Visibility = System.Windows.Visibility.Collapsed;
-                this.userProfileImage.Visibility = System.Windows.Visibility.Collapsed;
+                statusTypeImage.Width = 35;
+                statusTextTxtBlk.MaxWidth = 380;
             }
         }
 
