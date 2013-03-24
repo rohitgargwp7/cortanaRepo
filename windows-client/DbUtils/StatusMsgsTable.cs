@@ -10,11 +10,13 @@ using System.Threading.Tasks;
 using windows_client.Languages;
 using windows_client.Model;
 using windows_client.Misc;
+using Microsoft.Phone.Data.Linq;
 
 namespace windows_client.DbUtils
 {
     class StatusMsgsTable
     {
+        public const int MessagesDb_Latest_Version = 1;
         public static string LAST_STATUS_FILENAME = "_Last_Status";
         public static object readWriteLock = new object();
 
@@ -233,6 +235,35 @@ namespace windows_client.DbUtils
                     catch (Exception ex)
                     {
                         Debug.WriteLine("StatusMsgTable :: DeleteLastStatusFile : delete file, Exception : " + ex.StackTrace);
+                    }
+                }
+            }
+        }
+
+        public static void MessagesDbUpdateToLatestVersion()
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                DatabaseSchemaUpdater schemaUpdater = context.CreateDatabaseSchemaUpdater();
+                // get current database schema version
+                // if not changed the version is 0 by default
+                int version = schemaUpdater.DatabaseSchemaVersion;
+
+                // if current version of database schema is old
+                if (version == 0)
+                {
+                    // add a status messages table to chats db  
+                    schemaUpdater.AddTable<StatusMessage>();
+                    
+                    // IMPORTANT: update database schema version before calling Execute
+                    schemaUpdater.DatabaseSchemaVersion = MessagesDb_Latest_Version;
+                    try
+                    {
+                        // execute changes to database schema
+                        schemaUpdater.Execute();
+                    }
+                    catch (Exception e)
+                    {
                     }
                 }
             }

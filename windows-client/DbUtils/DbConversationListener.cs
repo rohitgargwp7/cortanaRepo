@@ -40,7 +40,6 @@ namespace windows_client.DbUtils
             mPubSub.addListener(HikePubSub.BLOCK_GROUPOWNER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
             mPubSub.addListener(HikePubSub.DELETE_CONVERSATION, this);
-            mPubSub.addListener(HikePubSub.DELETE_ALL_CONVERSATIONS, this);
             mPubSub.addListener(HikePubSub.ATTACHMENT_RESEND, this);
             mPubSub.addListener(HikePubSub.ATTACHMENT_SENT, this);
             mPubSub.addListener(HikePubSub.FORWARD_ATTACHMENT, this);
@@ -58,7 +57,6 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.BLOCK_GROUPOWNER, this);
             mPubSub.removeListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
             mPubSub.removeListener(HikePubSub.DELETE_CONVERSATION, this);
-            mPubSub.removeListener(HikePubSub.DELETE_ALL_CONVERSATIONS, this);
             mPubSub.removeListener(HikePubSub.ATTACHMENT_RESEND, this);
             mPubSub.removeListener(HikePubSub.ATTACHMENT_SENT, this);
             mPubSub.removeListener(HikePubSub.FORWARD_ATTACHMENT, this);

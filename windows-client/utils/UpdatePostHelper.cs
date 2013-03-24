@@ -44,7 +44,10 @@ namespace windows_client.utils
 
         public void postAppInfo()
         {
-            AccountUtils.postUpdateInfo(postUpdateInfo_Callback);
+            bool isAppUpdatePostPending = true;
+            App.appSettings.TryGetValue<bool>(App.APP_UPDATE_POSTPENDING, out isAppUpdatePostPending);
+            if (isAppUpdatePostPending)
+                AccountUtils.postUpdateInfo(postUpdateInfo_Callback);
         }
 
         public void postUpdateInfo_Callback(JObject obj)

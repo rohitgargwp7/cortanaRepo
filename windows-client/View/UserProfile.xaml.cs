@@ -629,6 +629,7 @@ namespace windows_client.View
                 {
                     App.ViewModel.PendingRequests.Remove(favObj.Msisdn);
                     MiscDBUtil.SavePendingRequests();
+                    App.ViewModel.RemoveFrndReqFromTimeline(msisdn);
                 }
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.SaveFavourites(favObj);
@@ -681,6 +682,20 @@ namespace windows_client.View
                 }
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
             }
+            int count = 0;
+            IEnumerable<JournalEntry> entries = NavigationService.BackStack;
+            foreach (JournalEntry entry in entries)
+            {
+                count++;
+            }
+            if (count == 3) // case when userprofile is opened from Group Info page
+            {
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry(); // this will remove groupinfo
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry(); // this will remove chat thread
+            }
+            Debug.WriteLine(count);
             string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
@@ -716,6 +731,7 @@ namespace windows_client.View
                 InitHikeUserProfile();
             }
         }
+
         #endregion
 
         private void InitAppBar()
@@ -985,7 +1001,6 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
             FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
             spAddFriendInvite.Visibility = Visibility.Collapsed;
-            RemoveFrndReqFromTimeline();
             if (App.ViewModel.Isfavourite(msisdn)) // if already favourite just ignore
                 return;
 
@@ -993,6 +1008,7 @@ namespace windows_client.View
             if (App.ViewModel.ConvMap.ContainsKey(msisdn))
             {
                 cObj = App.ViewModel.ConvMap[msisdn];
+                cObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.RemFromFav_Txt;
             }
             else
             {
@@ -1036,7 +1052,7 @@ namespace windows_client.View
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
             App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
 
-
+            App.ViewModel.RemoveFrndReqFromTimeline(msisdn);
         }
 
         private void No_Click(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1049,28 +1065,9 @@ namespace windows_client.View
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.IGNORED);
             spAddFriendInvite.Visibility = Visibility.Collapsed;
-            RemoveFrndReqFromTimeline();
             App.ViewModel.PendingRequests.Remove(msisdn);
             MiscDBUtil.SavePendingRequests();
-        }
-
-        private void RemoveFrndReqFromTimeline()
-        {
-            foreach (StatusUpdateBox sb in App.ViewModel.StatusList)
-            {
-                if (sb is FriendRequestStatus)
-                {
-                    if (sb.Msisdn == msisdn)
-                    {
-                        App.ViewModel.StatusList.Remove(sb);
-                        break;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-            }
+            App.ViewModel.RemoveFrndReqFromTimeline(msisdn);
         }
 
         #region ADD USER TO CONTATCS
@@ -1255,7 +1252,6 @@ namespace windows_client.View
             });
         }
         #endregion
-
 
     }
 }

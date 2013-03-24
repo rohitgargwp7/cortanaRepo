@@ -449,19 +449,8 @@ namespace windows_client.Model
             {
                 try
                 {
-                    // donot add this bitmap to map as this may not be used everywhere in the app
-                    // also this would fill the map with bitmaps for all the contacts
-
-                    if (_avatar == null)
-                    {
-                        if (Utils.isGroupConversation(_msisdn))
-                            return UI_Utils.Instance.getDefaultGroupAvatar(_msisdn);
-                        return UI_Utils.Instance.getDefaultAvatar(_msisdn);
-                    }
-                    else
-                    {
-                        return UI_Utils.Instance.createImageFromBytes(_avatar);
-                    }
+                    // get image and save in cache too
+                    return UI_Utils.Instance.GetBitmapImage(_msisdn);
                 }
                 catch (Exception ex)
                 {

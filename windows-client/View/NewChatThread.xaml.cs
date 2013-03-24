@@ -211,6 +211,8 @@ namespace windows_client.View
                 //contactInfo
                 statusObject = this.State[HikeConstants.OBJ_FROM_STATUSPAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_STATUSPAGE);
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
             }
         }
 
@@ -554,21 +556,7 @@ namespace windows_client.View
                         PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
                     }
                 }
-                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
-                    avatarImage = App.ViewModel.ConvMap[mContactNumber].AvatarImage;
-                else
-                {
-                    avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
-
-                    if (avatar == null)
-                    {
-                        avatarImage = UI_Utils.Instance.getDefaultAvatar(mContactNumber);
-                    }
-                    else
-                    {
-                        avatarImage = UI_Utils.Instance.createImageFromBytes(avatar);
-                    }
-                }
+                avatarImage = UI_Utils.Instance.GetBitmapImage(mContactNumber, isOnHike);
                 userImage.Source = avatarImage;
             }
             #endregion
@@ -2204,6 +2192,7 @@ namespace windows_client.View
                 // no message is left, simply remove the object from Conversation list 
                 App.ViewModel.MessageListPageCollection.Remove(obj.ConvBoxObj); // removed from observable collection
                 App.ViewModel.ConvMap.Remove(mContactNumber);
+                // delete from db will be handled by dbconversation listener
                 delConv = true;
             }
             object[] o = new object[3];
