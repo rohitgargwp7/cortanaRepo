@@ -426,8 +426,8 @@ namespace windows_client.Model
             }
             set
             {
-                if (value != _avatar)
                     _avatar = value;
+                    NotifyPropertyChanged("AvatarImage");
             }
         }
 
