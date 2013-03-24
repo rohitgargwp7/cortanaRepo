@@ -325,7 +325,7 @@ namespace windows_client.View
             appBar.Buttons.Add(groupChatIconButton);
 
             composeIconButton = new ApplicationBarIconButton();
-            composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
+            composeIconButton.IconUri = new Uri("/View/images/icon_message.png", UriKind.Relative);
             composeIconButton.Text = AppResources.Conversations_NewChat_AppBar_Btn;
             composeIconButton.Click += selectUserBtn_Click;
             composeIconButton.IsEnabled = true;
