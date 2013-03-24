@@ -241,50 +241,55 @@ namespace windows_client.View
             contactsListBox.Focus();
         }
 
-        private void CheckBox_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        public void CheckBox_Tap(ContactInfo cn)
         {
-            CheckBox c = sender as CheckBox;
-            ContactInfo cn = c.DataContext as ContactInfo;
-            string msisdn;
-            if (cn.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
+            //checked for null because after binding to listbox if select unselect then add in selected contacts
+            if (contactsListBox.ItemsSource != null)
             {
-                msisdn = Utils.NormalizeNumber(cn.Name);
-                cn = GetContactIfExists(cn);
-            }
-            else
-                msisdn = cn.Msisdn;
-            if ((bool)c.IsChecked) // this will be true when checkbox is not checked initially and u clicked it
-            {
-                if (_isAddToFavPage)
+                string msisdn;
+                if (cn.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
                 {
-                    if (hikeFavList == null)
-                        hikeFavList = new List<ContactInfo>();
-                    hikeFavList.Add(cn);
+                    msisdn = Utils.NormalizeNumber(cn.Name);
+                    cn = GetContactIfExists(cn);
                 }
                 else
-                    contactsList[msisdn] = true;
-            }
-            else // this will be true when checkbox is checked initially and u clicked it to make it uncheck
-            {
-                if (_isAddToFavPage)
-                    hikeFavList.Remove(cn);
-                else
-                    contactsList.Remove(msisdn);
-            }
+                    msisdn = cn.Msisdn;
+                if (cn.IsFav) // this will be true when checkbox is not checked initially and u clicked it
+                {
+                    if (_isAddToFavPage)
+                    {
+                        if (hikeFavList == null)
+                            hikeFavList = new List<ContactInfo>();
+                        hikeFavList.Add(cn);
+                    }
+                    else
+                        contactsList[msisdn] = true;
+                }
+                else // this will be true when checkbox is checked initially and u clicked it to make it uncheck
+                {
+                    if (_isAddToFavPage)
+                        hikeFavList.Remove(cn);
+                    else
+                        contactsList.Remove(msisdn);
+                }
 
-            if (_isAddToFavPage)
-            {
-                if (hikeFavList.Count > 0)
-                    doneIconButton.IsEnabled = true;
-                else
-                    doneIconButton.IsEnabled = false;
-            }
-            else
-            {
-                if (contactsList.Count > 0)
-                    doneIconButton.IsEnabled = true;
-                else
-                    doneIconButton.IsEnabled = false;
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    if (_isAddToFavPage)
+                    {
+                        if (hikeFavList.Count > 0)
+                            doneIconButton.IsEnabled = true;
+                        else
+                            doneIconButton.IsEnabled = false;
+                    }
+                    else
+                    {
+                        if (contactsList.Count > 0)
+                            doneIconButton.IsEnabled = true;
+                        else
+                            doneIconButton.IsEnabled = false;
+                    }
+                });
             }
         }
 
