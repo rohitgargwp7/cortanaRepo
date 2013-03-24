@@ -1132,7 +1132,7 @@ namespace windows_client
                     JToken val;
                     string iconBase64 = null;
                     if (data.TryGetValue(HikeConstants.THUMBNAIL, out val) && val != null)
-                        iconBase64 = val.ToString();                        
+                        iconBase64 = val.ToString();
                     val = null;
                     long ts = 0;
                     if (data.TryGetValue(HikeConstants.TIMESTAMP, out val) && val != null)
@@ -1148,7 +1148,8 @@ namespace windows_client
                             id = idToken.ToString();
 
 
-                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, ts, StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, null, true);
+                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, ts,
+                            StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, -1, 0, true);
 
                         idToken = null;
                         if (iconBase64 != null)
@@ -1169,18 +1170,20 @@ namespace windows_client
                         if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken) && idToken != null)
                             id = idToken.ToString();
 
-                        idToken = null;
-                        if (data.TryGetValue(HikeConstants.MOOD, out idToken) && idToken != null && string.IsNullOrEmpty(idToken.ToString()))
+                        int moodId = -1;
+                        int tod = 0;
+                        if (data[HikeConstants.MOOD] != null)
                         {
-                            int tod = 0;
-                            string moodVal = idToken.ToString();
-                            idToken = null;
-                            if (data.TryGetValue(HikeConstants.TIME_OF_DAY, out idToken) && !string.IsNullOrEmpty(idToken.ToString()))
-                                tod = idToken.ToObject<int>();
-                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts, StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, moodVal + HikeConstants.MOOD_TOD_SEPARATOR + tod, true);
+                            string moodId_String = data[HikeConstants.MOOD].ToString();
+                            if (!string.IsNullOrEmpty(moodId_String))
+                            {
+                                int.TryParse(moodId_String, out moodId);
+                                if (moodId > 0)
+                                    tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
+                            }
                         }
-                        else
-                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts, StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, null, true);
+                        sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts,
+                            StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, moodId, tod, true);
 
                         StatusMsgsTable.InsertStatusMsg(sm);
                     }

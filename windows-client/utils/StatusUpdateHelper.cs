@@ -132,20 +132,35 @@ namespace windows_client.utils
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     JToken statusData;
+                    JObject moodData;
                     obj.TryGetValue(HikeConstants.Extras.DATA, out statusData);
                     try
                     {
+                        moodData = statusData.ToObject<JObject>();
                         string statusId = statusData["statusid"].ToString();
                         string message = statusData["msg"].ToString();
+
+                        int moodId = -1;
+                        int tod = 0;
+                        if (statusData[HikeConstants.MOOD] != null)
+                        {
+                            string moodId_String = statusData[HikeConstants.MOOD].ToString();
+                            if (!string.IsNullOrEmpty(moodId_String))
+                            {
+                                int.TryParse(moodId_String, out moodId);
+                                if (moodId > 0)
+                                    tod = statusData[HikeConstants.TIME_OF_DAY].ToObject<int>();
+                            }
+                        }
                         // status should be in read state when posted yourself
                         StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
-                            TimeUtils.getCurrentTimeStamp(), -1, true);
+                            TimeUtils.getCurrentTimeStamp(), true, -1, moodId, tod, true);
                         StatusMsgsTable.InsertStatusMsg(sm);
                         App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                     }
                     catch (Exception ex)
                     {
-//                        Debug.WriteLine("PostStatus:: postStatus_Callback, Exception : " + ex.StackTrace);
+                        //                        Debug.WriteLine("PostStatus:: postStatus_Callback, Exception : " + ex.StackTrace);
                     }
                 });
             }
@@ -154,7 +169,7 @@ namespace windows_client.utils
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, "Status Not Posted", MessageBoxButton.OK);
-//                    postStatusIcon.IsEnabled = true;
+                    //                    postStatusIcon.IsEnabled = true;
                 });
             }
         }
