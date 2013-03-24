@@ -556,21 +556,7 @@ namespace windows_client.View
                         PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
                     }
                 }
-                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
-                    avatarImage = App.ViewModel.ConvMap[mContactNumber].AvatarImage;
-                else
-                {
-                    avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
-
-                    if (avatar == null)
-                    {
-                        avatarImage = UI_Utils.Instance.getDefaultAvatar(mContactNumber);
-                    }
-                    else
-                    {
-                        avatarImage = UI_Utils.Instance.createImageFromBytes(avatar);
-                    }
-                }
+                avatarImage = UI_Utils.Instance.GetBitmapImage(mContactNumber, isOnHike);
                 userImage.Source = avatarImage;
             }
             #endregion
