@@ -115,6 +115,14 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            string ur = e.Uri.ToString();
+            if(ur.Contains("True"))
+            {
+                this.Loaded += (ss,ee)=>
+                {
+                    launchPagePivot.SelectedIndex = 3;
+                };
+            }
             if (launchPagePivot.SelectedIndex == 3)
             {
                 RefreshBarCount = 0;
