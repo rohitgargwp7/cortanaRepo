@@ -439,13 +439,11 @@ namespace windows_client.View
             {
                 freeSmsImage.Source = new BitmapImage(new Uri("images/free_sms_dark.png", UriKind.Relative));
                 settingsImage.Source = new BitmapImage(new Uri("images/settings_dark.png", UriKind.Relative));
-                privacyImage.Source = new BitmapImage(new Uri("images/privacy_dark.png", UriKind.Relative));
                 helpImage.Source = new BitmapImage(new Uri("images/help_dark.png", UriKind.Relative));
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_black.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_black.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite_dark.png", UriKind.Relative));
                 rewards.Source = new BitmapImage(new Uri("images/rewards_link_dark.png", UriKind.Relative));
-                blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon_white.png", UriKind.Relative));
             }
             else
             {
@@ -453,23 +451,27 @@ namespace windows_client.View
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_white.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite.png", UriKind.Relative));
                 rewards.Source = new BitmapImage(new Uri("images/rewards_link.png", UriKind.Relative));
-                blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon.png", UriKind.Relative));
-
             }
             bool showRewards;
             if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
                 rewardsPanel.Visibility = Visibility.Visible;
 
-            editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = rewardsTxtBlk.Foreground = UI_Utils.Instance.EditProfileForeground;
+            txtStatus.Foreground = creditsTxtBlck.Foreground = rewardsTxtBlk.Foreground = UI_Utils.Instance.EditProfileForeground;
             int moodId;
             string lastStatus = StatusMsgsTable.GetLastStatusMessage(out moodId);
             if (!string.IsNullOrEmpty(lastStatus))
             {
                 txtStatus.Text = lastStatus;
                 if (moodId > 0)
+                {
+                    statusImage.Height = 30;
                     statusImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(moodId);
+                }
                 else
+                {
+                    statusImage.Height = 25;
                     statusImage.Source = UI_Utils.Instance.TextStatusImage;
+                }
             }
             else
             {
@@ -1373,12 +1375,6 @@ namespace windows_client.View
             appBar.IsMenuEnabled = true;
         }
 
-        private void Notifications_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            App.AnalyticsInstance.addEvent(Analytics.SETTINGS);
-            NavigationService.Navigate(new Uri("/View/Settings.xaml", UriKind.Relative));
-        }
-
         private void EditProfile_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
@@ -1391,10 +1387,10 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/FreeSMS.xaml", UriKind.Relative));
         }
 
-        private void Privacy_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void Settings_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.PRIVACY);
-            NavigationService.Navigate(new Uri("/View/Privacy.xaml", UriKind.Relative));
+            App.AnalyticsInstance.addEvent(Analytics.SETTINGS);
+            NavigationService.Navigate(new Uri("/View/Settings.xaml", UriKind.Relative));
         }
 
         private void Help_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1402,10 +1398,7 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.HELP);
             NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
         }
-        private void BlockList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            NavigationService.Navigate(new Uri("/View/BlockListPage.xaml", UriKind.Relative));
-        }
+     
         private void Rewards_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             try
