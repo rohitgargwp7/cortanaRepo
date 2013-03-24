@@ -38,7 +38,7 @@ namespace windows_client
         public EnterName()
         {
             InitializeComponent();
-            App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, Utils.getAppVersion());// new install so write version
+            App.appSettings[HikeConstants.FILE_SYSTEM_VERSION] = Utils.getAppVersion();// new install so write version
             App.appSettings.Remove(App.ACCOUNT_NAME);
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.SETNAME_SCREEN);
             appBar = new ApplicationBar();
