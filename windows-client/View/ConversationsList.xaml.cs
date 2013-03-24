@@ -116,9 +116,9 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
             string ur = e.Uri.ToString();
-            if(ur.Contains("True"))
+            if (ur.Contains("True"))
             {
-                this.Loaded += (ss,ee)=>
+                this.Loaded += (ss, ee) =>
                 {
                     launchPagePivot.SelectedIndex = 3;
                 };
@@ -1084,6 +1084,11 @@ namespace windows_client.View
                     {
                         if (obj != null)
                             hikeContactList.Remove(obj as ContactInfo);
+                        if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                        {
+                            emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                            favourites.Visibility = System.Windows.Visibility.Visible;
+                        }
                     });
                 }
                 else if (obj is string)
@@ -1112,6 +1117,14 @@ namespace windows_client.View
                             });
                         }
                     }
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                          {
+                              if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                              {
+                                  emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                                  favourites.Visibility = System.Windows.Visibility.Visible;
+                              }
+                          });
                 }
             }
             #endregion
@@ -1681,6 +1694,10 @@ namespace windows_client.View
             if (convObj != null)
             {
                 convObj.IsFav = false;
+                if (convObj.ConvBoxObj != null && convObj.ConvBoxObj.FavouriteMenuItem != null)
+                {
+                    convObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.Add_To_Fav_Txt;
+                }
                 App.ViewModel.FavList.Remove(convObj);
                 JObject data = new JObject();
                 data["id"] = convObj.Msisdn;
@@ -1744,14 +1761,25 @@ namespace windows_client.View
                     hikeContactList.Remove(contactInfo);
                     return;
                 }
-                
+
                 JObject data = new JObject();
                 data["id"] = contactInfo.Msisdn;
                 JObject obj = new JObject();
                 obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
                 obj[HikeConstants.DATA] = data;
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-                ConversationListObject cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, contactInfo.Avatar);
+                ConversationListObject cObj = null;
+                if (App.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn))
+                {
+                    cObj = App.ViewModel.ConvMap[contactInfo.Msisdn];
+                    cObj.IsFav = true;
+                    if (cObj.ConvBoxObj != null && cObj.ConvBoxObj.FavouriteMenuItem != null)
+                        cObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.RemFromFav_Txt;
+                }
+                else
+                {
+                    cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, contactInfo.Avatar);
+                }
                 hikeContactList.Remove(contactInfo);
                 App.ViewModel.FavList.Add(cObj);
                 MiscDBUtil.SaveFavourites();

@@ -621,6 +621,8 @@ namespace windows_client.View
                 {
                     favObj = App.ViewModel.ConvMap[msisdn];
                     favObj.IsFav = true;
+                    if (favObj.ConvBoxObj != null && favObj.ConvBoxObj.FavouriteMenuItem != null)
+                        favObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.Add_To_Fav_Txt;
                 }
                 else
                     favObj = new ConversationListObject(msisdn, nameToShow, isOnHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));//todo:change
