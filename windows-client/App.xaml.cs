@@ -698,7 +698,10 @@ namespace windows_client
             #endregion
             #region RATE MY APP
             if (isNewInstall)
+            {
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, 1);
+                App.WriteToIsoStorageSettings(App.SHOW_STATUS_UPDATES_TUTORIAL, true);
+            }
             #endregion
             #region VIEW MODEL
 
