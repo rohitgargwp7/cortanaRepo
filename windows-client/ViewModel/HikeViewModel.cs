@@ -378,20 +378,14 @@ namespace windows_client.ViewModel
         }
 
         public void RemoveFrndReqFromTimeline(string msisdn)
-        {
-            bool isLoaded = false;           
+        {         
             foreach (StatusUpdateBox sb in App.ViewModel.StatusList)
             {
-                isLoaded = true;
                 if (sb is FriendRequestStatus)
                 {
                     if (sb.Msisdn == msisdn)
                     {
                         App.ViewModel.StatusList.Remove(sb);
-                        bool isDec = false;
-                        if (sb.IsUnread)
-                            isDec = true;
-                        App.HikePubSubInstance.publish(HikePubSub.DEC_NOTIFICATION_COUNT, isDec);
                         break;
                     }
                 }
@@ -399,10 +393,6 @@ namespace windows_client.ViewModel
                 {
                     break;
                 }
-            }
-            if (!isLoaded) // if statuses are not loaded
-            {
-                App.HikePubSubInstance.publish(HikePubSub.DEC_NOTIFICATION_COUNT, true);
             }
         }
     }
