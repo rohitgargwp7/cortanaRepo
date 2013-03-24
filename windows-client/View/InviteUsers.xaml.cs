@@ -273,23 +273,21 @@ namespace windows_client.View
                         contactsList.Remove(msisdn);
                 }
 
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+
+                if (_isAddToFavPage)
                 {
-                    if (_isAddToFavPage)
-                    {
-                        if (hikeFavList.Count > 0)
-                            doneIconButton.IsEnabled = true;
-                        else
-                            doneIconButton.IsEnabled = false;
-                    }
+                    if (hikeFavList.Count > 0)
+                        doneIconButton.IsEnabled = true;
                     else
-                    {
-                        if (contactsList.Count > 0)
-                            doneIconButton.IsEnabled = true;
-                        else
-                            doneIconButton.IsEnabled = false;
-                    }
-                });
+                        doneIconButton.IsEnabled = false;
+                }
+                else
+                {
+                    if (contactsList.Count > 0)
+                        doneIconButton.IsEnabled = true;
+                    else
+                        doneIconButton.IsEnabled = false;
+                }
             }
         }
 
