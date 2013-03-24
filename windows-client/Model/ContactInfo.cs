@@ -183,10 +183,13 @@ namespace windows_client.Model
                 if (value != _isFav)
                 {
                     _isFav = value;
-                    var currentPage = ((App)Application.Current).RootFrame.Content as InviteUsers;
-                    if (currentPage != null)
+                    if (((App)Application.Current).RootFrame.Content != null && ((App)Application.Current).RootFrame.Content is InviteUsers)
                     {
-                        currentPage.CheckBox_Tap(this);
+                        InviteUsers currentPage = ((App)Application.Current).RootFrame.Content as InviteUsers;
+                        if (currentPage != null)
+                        {
+                            currentPage.CheckBox_Tap(this);
+                        }
                     }
                 }
             }
