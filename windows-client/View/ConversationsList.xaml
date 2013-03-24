@@ -34,7 +34,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Image x:Name="icon" Grid.Column="0" Source="images\hike_header.png" Height="40" Margin="4,25,0,0"/>
-            <Image x:Name="notificationIndicator" Grid.Column="1" Source="images\notification_read.png" Height="36" Margin="270,25,0,0" Tap="notification_Tap"/>
+            <Image x:Name="notificationIndicator" Grid.Column="1" Source="images\notification_read.png" MaxHeight="43" Margin="270,25,0,0" Tap="notification_Tap"/>
             <TextBlock x:Name="notificationCountTxtBlk" Grid.Column="1" HorizontalAlignment="Center" Margin="274,34,0,0" FontSize="16" FontFamily="Segoe WP Semibold" Tap="notification_Tap"/>
         </Grid>
 
@@ -72,9 +72,9 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}"/>
+                        <TextBlock x:Name="circleOfFriendsTitleTxtBlck" Visibility="Collapsed" Grid.Row="0" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}"/>
 
-                        <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center">
+                        <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center" Visibility="Collapsed">
                             <Image Source="images/favorites_heart.png" Height="90"></Image>
                             <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Width="350" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                             <TextBlock Text="{Binding Path= LocalizedResources.Favorites_TapToAdd, Source={StaticResource LocalizedStrings}}" Width="270" Margin="0,0,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
@@ -96,9 +96,9 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
 
-                        <Rectangle Grid.Row="2" Height="1" Fill="#d8d8d8" Margin="0,25,0,0"/>
+                        <Rectangle Visibility="Collapsed" Grid.Row="2" Height="1" Fill="#d8d8d8" Margin="1,25,-1,0"/>
 
-                        <TextBlock Grid.Row="3" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}"/>
+                        <TextBlock x:Name="contactOnHikeTitleTxtBlck" Visibility="Collapsed" Grid.Row="3" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}"/>
 
                         <ListBox x:Name="hikeContactListBox" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="4">
                             <ListBox.ItemTemplate>
