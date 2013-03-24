@@ -174,6 +174,8 @@ namespace windows_client.View
                         {
                             favObj = App.ViewModel.ConvMap[hikeFavList[i].Msisdn];
                             favObj.IsFav = true;
+                            if (favObj.ConvBoxObj != null && favObj.ConvBoxObj.FavouriteMenuItem != null)
+                                favObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.Add_To_Fav_Txt;
                         }
                         else
                             favObj = new ConversationListObject(hikeFavList[i].Msisdn, hikeFavList[i].Name, hikeFavList[i].OnHike, hikeFavList[i].Avatar);

@@ -894,6 +894,8 @@ namespace windows_client.View
                     {
                         favObj = App.ViewModel.ConvMap[gp.Msisdn];
                         favObj.IsFav = true;
+                        if (favObj.ConvBoxObj != null && favObj.ConvBoxObj.FavouriteMenuItem != null)
+                            favObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.Add_To_Fav_Txt;
                     }
                     else
                         favObj = new ConversationListObject(gp.Msisdn, gp.Name, gp.IsOnHike, MiscDBUtil.getThumbNailForMsisdn(gp.Msisdn));

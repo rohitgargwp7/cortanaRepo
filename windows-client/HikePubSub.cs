@@ -53,6 +53,8 @@ namespace windows_client
 
         public static readonly string STATUS_RECEIVED = "statusReceived";
 
+        public static readonly string SAVE_STATUS_IN_DB = "svStatusDb";
+
         public static readonly string STATUS_DELETED = "statusDeleted";
 
         public static readonly string FRIEND_RELATIONSHIP_CHANGE = "friendRelation";

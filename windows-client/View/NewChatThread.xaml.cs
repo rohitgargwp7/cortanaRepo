@@ -30,6 +30,7 @@ using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Controls.Primitives;
+using System.Windows.Navigation;
 
 namespace windows_client.View
 {
@@ -211,8 +212,13 @@ namespace windows_client.View
                 //contactInfo
                 statusObject = this.State[HikeConstants.OBJ_FROM_STATUSPAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_STATUSPAGE);
-                if (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry();
+                IEnumerable<JournalEntry> entries = NavigationService.BackStack;
+                int count = 0;
+                foreach (JournalEntry entry in entries)
+                    count++;
+                if (count > 1) // this represents we came to this page from timeline directly
+                    if (NavigationService.CanGoBack)
+                        NavigationService.RemoveBackEntry();
             }
         }
 

@@ -606,7 +606,7 @@ namespace windows_client.View
             if (isInvited)
                 return;
 
-            FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
+            FriendsTableUtils.FriendStatusEnum frndStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
@@ -621,6 +621,8 @@ namespace windows_client.View
                 {
                     favObj = App.ViewModel.ConvMap[msisdn];
                     favObj.IsFav = true;
+                    if (favObj.ConvBoxObj != null && favObj.ConvBoxObj.FavouriteMenuItem != null)
+                        favObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.Add_To_Fav_Txt;
                 }
                 else
                     favObj = new ConversationListObject(msisdn, nameToShow, isOnHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));//todo:change
@@ -629,7 +631,7 @@ namespace windows_client.View
                 {
                     App.ViewModel.PendingRequests.Remove(favObj.Msisdn);
                     MiscDBUtil.SavePendingRequests();
-                    App.ViewModel.RemoveFrndReqFromTimeline(msisdn);
+                    App.ViewModel.RemoveFrndReqFromTimeline(msisdn, frndStatus);
                 }
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.SaveFavourites(favObj);
@@ -882,7 +884,7 @@ namespace windows_client.View
         private void ShowAddToContacts()
         {
             BitmapImage locked;
-            if(Utils.isDarkTheme())
+            if (Utils.isDarkTheme())
                 locked = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
             else
                 locked = new BitmapImage(new Uri("/View/images/menu_contact_icon_black.png", UriKind.Relative));
@@ -999,7 +1001,7 @@ namespace windows_client.View
         private void Yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
-            FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
+            FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
             spAddFriendInvite.Visibility = Visibility.Collapsed;
             if (App.ViewModel.Isfavourite(msisdn)) // if already favourite just ignore
                 return;
@@ -1052,7 +1054,7 @@ namespace windows_client.View
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
             App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
 
-            App.ViewModel.RemoveFrndReqFromTimeline(msisdn);
+            App.ViewModel.RemoveFrndReqFromTimeline(msisdn, fs);
         }
 
         private void No_Click(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1063,11 +1065,11 @@ namespace windows_client.View
             obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
             obj[HikeConstants.DATA] = data;
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-            FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.IGNORED);
+            FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.IGNORED);
             spAddFriendInvite.Visibility = Visibility.Collapsed;
             App.ViewModel.PendingRequests.Remove(msisdn);
             MiscDBUtil.SavePendingRequests();
-            App.ViewModel.RemoveFrndReqFromTimeline(msisdn);
+            App.ViewModel.RemoveFrndReqFromTimeline(msisdn, fs);
         }
 
         #region ADD USER TO CONTATCS

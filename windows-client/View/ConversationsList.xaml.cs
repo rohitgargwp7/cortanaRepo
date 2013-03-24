@@ -116,9 +116,9 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
             string ur = e.Uri.ToString();
-            if(ur.Contains("True"))
+            if (ur.Contains("True"))
             {
-                this.Loaded += (ss,ee)=>
+                this.Loaded += (ss, ee) =>
                 {
                     launchPagePivot.SelectedIndex = 3;
                 };
@@ -948,6 +948,10 @@ namespace windows_client.View
                 StatusMessage sm = obj as StatusMessage;
                 if (sm == null)
                     return;
+                // TODO : Madhur Garg : Handle statusMsg of type IS_NOW_FRIENDS
+                // Currently its crashing on tapping UI
+                // Also in this i think we dont need to increase any counter.
+                // Also if i am on timeline , 1 update etc msg should not be shown in this case
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -1086,6 +1090,11 @@ namespace windows_client.View
                     {
                         if (obj != null)
                             hikeContactList.Remove(obj as ContactInfo);
+                        if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                        {
+                            emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                            favourites.Visibility = System.Windows.Visibility.Visible;
+                        }
                     });
                 }
                 else if (obj is string)
@@ -1114,12 +1123,21 @@ namespace windows_client.View
                             });
                         }
                     }
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                          {
+                              if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                              {
+                                  emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                                  favourites.Visibility = System.Windows.Visibility.Visible;
+                              }
+                          });
                 }
             }
             #endregion
             #region BLOCK_USER
             else if (HikePubSub.BLOCK_USER == type)
             {
+                //TODO : Madhur Garg , you can handle bug#3999 https://hike.fogbugz.com/default.asp?3999 here 
                 if (obj is ContactInfo)
                 {
                     ContactInfo c = obj as ContactInfo;
@@ -1284,12 +1302,13 @@ namespace windows_client.View
                     else
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                     hikeContactList.Remove(c);
+                    FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);                
                     App.ViewModel.FavList.Insert(0, convObj);
                     if (App.ViewModel.IsPending(convObj.Msisdn))
                     {
                         App.ViewModel.PendingRequests.Remove(convObj.Msisdn);
                         MiscDBUtil.SavePendingRequests();
-                        App.ViewModel.RemoveFrndReqFromTimeline(convObj.Msisdn);
+                        App.ViewModel.RemoveFrndReqFromTimeline(convObj.Msisdn,fs);
                     }
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.SaveFavourites(convObj);
@@ -1308,7 +1327,6 @@ namespace windows_client.View
                         favourites.Visibility = System.Windows.Visibility.Visible;
                         //addFavsPanel.Opacity = 1;
                     }
-                    FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
                     menuFavourite.Header = AppResources.RemFromFav_Txt;
                     App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
                 }
@@ -1674,6 +1692,10 @@ namespace windows_client.View
             if (convObj != null)
             {
                 convObj.IsFav = false;
+                if (convObj.ConvBoxObj != null && convObj.ConvBoxObj.FavouriteMenuItem != null)
+                {
+                    convObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.Add_To_Fav_Txt;
+                }
                 App.ViewModel.FavList.Remove(convObj);
                 JObject data = new JObject();
                 data["id"] = convObj.Msisdn;
@@ -1737,14 +1759,25 @@ namespace windows_client.View
                     hikeContactList.Remove(contactInfo);
                     return;
                 }
-                
+
                 JObject data = new JObject();
                 data["id"] = contactInfo.Msisdn;
                 JObject obj = new JObject();
                 obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
                 obj[HikeConstants.DATA] = data;
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-                ConversationListObject cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, contactInfo.Avatar);
+                ConversationListObject cObj = null;
+                if (App.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn))
+                {
+                    cObj = App.ViewModel.ConvMap[contactInfo.Msisdn];
+                    cObj.IsFav = true;
+                    if (cObj.ConvBoxObj != null && cObj.ConvBoxObj.FavouriteMenuItem != null)
+                        cObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.RemFromFav_Txt;
+                }
+                else
+                {
+                    cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, contactInfo.Avatar);
+                }
                 hikeContactList.Remove(contactInfo);
                 App.ViewModel.FavList.Add(cObj);
                 MiscDBUtil.SaveFavourites();
@@ -1758,13 +1791,13 @@ namespace windows_client.View
                     emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                     favourites.Visibility = System.Windows.Visibility.Visible;
                 }
-                FriendsTableUtils.SetFriendStatus(cObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
+                FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(cObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
 
                 if (App.ViewModel.IsPending(contactInfo.Msisdn))
                 {
                     App.ViewModel.PendingRequests.Remove(contactInfo.Msisdn);
                     MiscDBUtil.SavePendingRequests();
-                    App.ViewModel.RemoveFrndReqFromTimeline(contactInfo.Msisdn);
+                    App.ViewModel.RemoveFrndReqFromTimeline(contactInfo.Msisdn,fs);
                 }
             }
         }
@@ -1980,6 +2013,9 @@ namespace windows_client.View
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                 favourites.Visibility = System.Windows.Visibility.Visible;
             }
+            StatusMessage sm = new StatusMessage(fObj.Msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1, false);
+            mPubSub.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
+            mPubSub.publish(HikePubSub.STATUS_RECEIVED,sm);
         }
 
         private void no_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)

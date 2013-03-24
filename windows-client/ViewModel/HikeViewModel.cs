@@ -11,6 +11,8 @@ using windows_client.View;
 using Microsoft.Phone.Controls;
 using windows_client.Controls.StatusUpdate;
 using System.Diagnostics;
+using windows_client.Languages;
+using windows_client.utils;
 
 
 namespace windows_client.ViewModel
@@ -377,8 +379,14 @@ namespace windows_client.ViewModel
             }
         }
 
-        public void RemoveFrndReqFromTimeline(string msisdn)
-        {         
+        public void RemoveFrndReqFromTimeline(string msisdn,FriendsTableUtils.FriendStatusEnum friendStatus)
+        {
+            if (friendStatus == FriendsTableUtils.FriendStatusEnum.FRIENDS)
+            {
+                StatusMessage sm = new StatusMessage(msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1, false);
+                App.HikePubSubInstance.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
+                App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
+            }
             foreach (StatusUpdateBox sb in App.ViewModel.StatusList)
             {
                 if (sb is FriendRequestStatus)

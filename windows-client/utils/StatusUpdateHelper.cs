@@ -86,6 +86,7 @@ namespace windows_client.utils
                     if (enlargePic_Tap != null)
                         (statusUpdateBox as ImageStatusUpdate).statusImage.Tap += enlargePic_Tap;
                     break;
+                case StatusMessage.StatusType.IS_NOW_FRIEND: // TODO : Madhur Garg to handle UI
                 case StatusMessage.StatusType.TEXT_UPDATE:
                     statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status, isShowOnTimeline, statusBubbleImageTap);
                     break;
