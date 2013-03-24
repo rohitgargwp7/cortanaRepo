@@ -20,11 +20,15 @@ namespace windows_client.View
             InitializeComponent();
         }
 
+        protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
+        {
+            base.OnRemovedFromJournal(e);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
+        }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             string navigateTo = "/View/ConversationsList.xaml";//default page
-            //App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.UPGRADE_SCREEN);
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
 
@@ -64,21 +68,21 @@ namespace windows_client.View
                         if (listContactInfo != null)
                         {
                             navigateTo = "/View/NUX_InviteFriends.xaml";
-                            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN_FRIENDS);
+                            App.appSettings[App.PAGE_STATE] = App.PageState.NUX_SCREEN_FRIENDS;
                         }
                         else
                         {
                             navigateTo = "/View/ConversationsList.xaml";
-                            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                            App.appSettings[App.PAGE_STATE] = App.PageState.CONVLIST_SCREEN;
                         }
                     }
                     else
                     {
                         navigateTo = "/View/ConversationsList.xaml";
-                        App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                        App.appSettings[App.PAGE_STATE] = App.PageState.CONVLIST_SCREEN;
                     }
                     Thread.Sleep(2000);//added so that this shows at least for 2 sec
-                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, 1);
+                    App.appSettings[HikeConstants.AppSettings.APP_LAUNCH_COUNT] = 1;
                 }
                 else
                 {
@@ -96,13 +100,22 @@ namespace windows_client.View
                 progressBar.IsEnabled = false;
                 App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, App.LATEST_VERSION);
 
+                if (App.PageState.NUX_SCREEN_FRIENDS == (App.PageState)App.appSettings[App.PAGE_STATE])
+                {
+                    NavigationService.Navigate(new Uri(navigateTo, UriKind.Relative));
+                    return;
+                }
+
                 string targetPage = (string)PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO];
                 if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
                 {
                     string param = Utils.GetParamFromUri(targetPage);
                     NavigationService.Navigate(new Uri("/View/NewChatThread.xaml?" + param, UriKind.Relative));
                 }
-
+                else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
+                {
+                    NavigationService.Navigate(new Uri("/View/ConversationsList.xaml?" + true, UriKind.Relative));
+                }
                 else if (targetPage != null && targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
                 {
 
@@ -114,7 +127,7 @@ namespace windows_client.View
                     }
                     int idx = targetPage.IndexOf("?") + 1;
                     string param = targetPage.Substring(idx);
-                    NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative));
+                    NavigationService.Navigate(new Uri("/View/ConversationsList.xaml?" + true, UriKind.Relative));
                 }
                 else
                 {

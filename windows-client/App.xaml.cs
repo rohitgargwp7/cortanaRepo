@@ -451,25 +451,9 @@ namespace windows_client
             _latestVersion = Utils.getAppVersion(); // this will get the new version we are upgrading to
 
             string targetPage = e.Uri.ToString();
-            if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn"))
-            {
-                PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
-                _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
-                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-            }
-            else if (targetPage != null && targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId"))
-            {
-                PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
-                _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
-                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-            }
-            else
-            {
-                PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = string.Empty;
-                _appLaunchState = LaunchState.NORMAL_LAUNCH;
-                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-            }
             e.Cancel = true;
+
+            PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
             // if not new install && current version is less than equal to version 1.8.0.0  and upgrade is done for wp8 device
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "1.8.0.0") != 1 && Utils.IsWP8)
@@ -480,46 +464,66 @@ namespace windows_client
                     RootFrame.Navigate(new Uri("/View/UpgradePage.xaml", UriKind.Relative));
                 });
             }
-            else
+            else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
-                if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
+                PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
+                _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
+                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
+      
+                instantiateClasses(false);
+                string param = Utils.GetParamFromUri(targetPage);
+                RootFrame.Dispatcher.BeginInvoke(delegate
                 {
-                    instantiateClasses(false);
-                    string param = Utils.GetParamFromUri(targetPage);
-                    RootFrame.Dispatcher.BeginInvoke(delegate
-                    {
-                        RootFrame.Navigate(new Uri("/View/NewChatThread.xaml?" + param, UriKind.Relative));
-                    });
-                }
-
-                else if (targetPage != null && targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
+                    RootFrame.Navigate(new Uri("/View/NewChatThread.xaml?" + param, UriKind.Relative));
+                });
+            }
+            else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
+                _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
+                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
+            
+                instantiateClasses(false);
+                RootFrame.Dispatcher.BeginInvoke(delegate
                 {
-                    instantiateClasses(false);
-                    if (ps != PageState.CONVLIST_SCREEN)
-                    {
-                        RootFrame.Dispatcher.BeginInvoke(delegate
-                        {
-                            Uri nUri = Utils.LoadPageUri(ps);
-                            ((App)Application.Current).RootFrame.Navigate(nUri);
-                            return;
-                        });
-                    }
-                    int idx = targetPage.IndexOf("?") + 1;
-                    string param = targetPage.Substring(idx);
-                    RootFrame.Dispatcher.BeginInvoke(delegate
-                    {
-                        RootFrame.Navigate(new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative));
-                    });
-                }
-                else
+                    RootFrame.Navigate(new Uri("/View/ConversationsList.xaml?" + true, UriKind.Relative));
+                });
+            }
+            else if (targetPage != null && targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
+                _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
+                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
+            
+                instantiateClasses(false);
+                if (ps != PageState.CONVLIST_SCREEN)
                 {
-                    instantiateClasses(false);
                     RootFrame.Dispatcher.BeginInvoke(delegate
                     {
                         Uri nUri = Utils.LoadPageUri(ps);
                         ((App)Application.Current).RootFrame.Navigate(nUri);
+                        return;
                     });
                 }
+                int idx = targetPage.IndexOf("?") + 1;
+                string param = targetPage.Substring(idx);
+                RootFrame.Dispatcher.BeginInvoke(delegate
+                {
+                    RootFrame.Navigate(new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative));
+                });
+            }
+            else
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
+                _appLaunchState = LaunchState.NORMAL_LAUNCH;
+                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
+            
+                instantiateClasses(false);
+                RootFrame.Dispatcher.BeginInvoke(delegate
+                {
+                    Uri nUri = Utils.LoadPageUri(ps);
+                    ((App)Application.Current).RootFrame.Navigate(nUri);
+                });
             }
         }
 
@@ -894,7 +898,7 @@ namespace windows_client
                 App.appSettings[App.SHOW_FAVORITES_TUTORIAL] = true;
                 WriteToIsoStorageSettings(App.SHOW_NUDGE_TUTORIAL, true);
             }
-           
+
             if (_currentVersion == "1.0.0.0")  // user is upgrading from version 1.0.0.0 to latest
             {
                 /*
