@@ -627,6 +627,7 @@ namespace windows_client.View
                 {
                     _isFavListBound = true;
                     BackgroundWorker favBw = new BackgroundWorker();
+                    shellProgress.IsVisible = true;
                     favBw.DoWork += (sf, ef) =>
                     {
                         for (int i = 0; i < App.ViewModel.FavList.Count; i++)
@@ -658,14 +659,20 @@ namespace windows_client.View
                     favBw.RunWorkerAsync();
                     favBw.RunWorkerCompleted += (sf, ef) =>
                     {
-
+                        shellProgress.IsVisible = false;
                         hikeContactListBox.ItemsSource = hikeContactList;
                         favourites.ItemsSource = App.ViewModel.FavList;
+                        circleOfFriendsTitleTxtBlck.Visibility = System.Windows.Visibility.Visible;
+                        contactOnHikeTitleTxtBlck.Visibility = System.Windows.Visibility.Visible;
                         if (App.ViewModel.FavList.Count > 0)
                         {
                             emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                             favourites.Visibility = System.Windows.Visibility.Visible;
                             //addFavsPanel.Opacity = 1;
+                        }
+                        else
+                        {
+                            emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
                         }
                     };
                 }
