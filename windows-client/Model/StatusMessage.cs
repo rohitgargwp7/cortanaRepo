@@ -33,17 +33,17 @@ namespace windows_client.Model
         }
 
         public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, long id)
-            : this(msisdn, msg, type, mappedId, ts, true, id, null, true)
+            : this(msisdn, msg, type, mappedId, ts, true, id, -1, 0, true)
         {
         }
 
         public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, long id, bool isUnRead)
-            : this(msisdn, msg, type, mappedId, ts, true, id, null, isUnRead)
+            : this(msisdn, msg, type, mappedId, ts, true, id, -1, 0, isUnRead)
         {
         }
 
         public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, bool showOnTimeline,
-            long msgId, string moodInfo, bool isUnread)
+            long msgId, int moodId, int timeOfDay, bool isUnread)
         {
             _msisdn = msisdn;
             _message = msg;
@@ -51,9 +51,16 @@ namespace windows_client.Model
             _serverId = mappedId;
             _timestamp = ts;
             _msgId = msgId;
-            _moodInfo = moodInfo;
             _isUnread = isUnread;
             _showOnTimeline = showOnTimeline;
+            if (moodId < 1)
+            {
+                _moodInfo = String.Empty;
+            }
+            else
+            {
+                _moodInfo = moodId + HikeConstants.MOOD_TOD_SEPARATOR + timeOfDay;
+            }
         }
 
         public StatusMessage()
