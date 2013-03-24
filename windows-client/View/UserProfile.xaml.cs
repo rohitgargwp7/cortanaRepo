@@ -865,7 +865,11 @@ namespace windows_client.View
 
         private void ShowAddToContacts()
         {
-            BitmapImage locked = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
+            BitmapImage locked;
+            if(Utils.isDarkTheme())
+                locked = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
+            else
+                locked = new BitmapImage(new Uri("/View/images/menu_contact_icon_black.png", UriKind.Relative));
             imgInviteLock.Source = locked;
             txtSmsUserNameBlk1.Text = nameToShow;
             txtSmsUserNameBlk2.Text = AppResources.Profile_NotInAddressbook_Txt;
@@ -930,6 +934,7 @@ namespace windows_client.View
             txtSmsUserNameBlk2.FontWeight = FontWeights.Normal;
             gridHikeUser.Visibility = Visibility.Collapsed;
             btnInvite.Visibility = Visibility.Collapsed;
+            imgInviteLock.Visibility = Visibility.Collapsed;
         }
 
         private void ShowNonHikeUser()

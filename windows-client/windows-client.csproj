@@ -531,6 +531,7 @@
     <Content Include="View\images\icon_stop_appbar.png" />
     <Content Include="View\images\invite.png" />
     <Content Include="View\images\invite_dark.png" />
+    <Content Include="View\images\menu_contact_icon_black.png" />
     <Content Include="View\images\moods\apple.png" />
     <Content Include="View\images\moods\beer.png" />
     <Content Include="View\images\moods\busy.png" />

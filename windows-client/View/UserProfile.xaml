@@ -18,7 +18,6 @@
     <shell:SystemTray.ProgressIndicator>
         <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
     </shell:SystemTray.ProgressIndicator>
-    <ScrollViewer>
         <!--LayoutRoot is the root grid where all page content is placed-->
         <Grid x:Name="LayoutRoot" >
             <Grid.RowDefinitions>
@@ -36,7 +35,7 @@
                 </Grid.RowDefinitions>
                 <Image Name="imgBackgrund"  Source="images/profile_stock1.jpg" Grid.Row="0" Grid.RowSpan="4" Stretch="UniformToFill" />
 
-                <Grid Grid.Row="0" Margin="24,22,24,0">
+                <Grid Grid.Row="0" Margin="24,22,24,20">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*" />
@@ -47,17 +46,17 @@
                     <Ellipse  Fill="#4CB700" Width="10" Height="10"  HorizontalAlignment="Center" />
                 </Grid>-->
                 </Grid>
-                <Grid Grid.Row="1" Margin="24,55,24,0">
+                <Grid Grid.Row="1" Margin="24,30,24,0" VerticalAlignment="Bottom">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Image Name="avatarImage" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="0" Height="69"/>
+                    <Image Name="avatarImage" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="0" Height="90" Width="90"/>
                     <Image Name="changePic" Visibility="Collapsed" Grid.Column="0"  Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Source="images\change_pic.png" />
                 </Grid>
                 <StackPanel Grid.Row="2" Margin="24,24,24,0" Orientation="Vertical" >
                     <TextBlock Name="txtUserName" HorizontalAlignment="Left" FontSize="34" FontFamily="Segoe WP" Foreground="White"/>
-                    <TextBlock Name="txtOnHikeSmsTime" HorizontalAlignment="Left" FontSize="15"  FontFamily="Segoe WP" Foreground="White"  />
+                    <TextBlock Name="txtOnHikeSmsTime" HorizontalAlignment="Left" FontSize="16"  FontFamily="Segoe WP Semilight" Foreground="White"  />
                 </StackPanel>
 
 
@@ -84,7 +83,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Image x:Name="imgInviteLock" Grid.Row="0" HorizontalAlignment="Center" MaxHeight="30" MaxWidth="30" Margin="0,30,0,0"></Image>
-                <TextBlock Grid.Row="1" FontSize="18" TextWrapping="Wrap" Margin="0,15,0,0" HorizontalAlignment="Center" Foreground="#5f5f5f" TextAlignment="Center" >
+                <TextBlock Grid.Row="1" FontSize="20" TextWrapping="Wrap" Margin="0,15,0,0" HorizontalAlignment="Center" Foreground="#5f5f5f" TextAlignment="Center" >
                     <TextBlock.Inlines>
                         <Run x:Name="txtSmsUserNameBlk1" FontFamily="Segoe WP" FontWeight="SemiBold"/>
                         <Run x:Name="txtSmsUserNameBlk2" />
@@ -93,12 +92,12 @@
                     </TextBlock.Inlines>
                 </TextBlock>
                 <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
-                    <Button Name="btnInvite"  Content="{Binding Path= LocalizedResources.InviteOnHikeBtn_Txt, Source={StaticResource LocalizedStrings}}"  FontSize="15" Width="150" Height="60" Background="#2e91d3" BorderThickness="0" Foreground="White"  Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Collapsed"/>
-                    <Button Name="addToFavBtn" Content="{Binding Path= LocalizedResources.btnAddAsFriend_Txt, Source={StaticResource LocalizedStrings}}"  FontSize="15" Width="150" Height="60" Background="#e9ecee" BorderThickness="0" Foreground="#595959"  Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Collapsed" />
+                    <Button Name="btnInvite"  Content="{Binding Path= LocalizedResources.InviteOnHikeBtn_Txt, Source={StaticResource LocalizedStrings}}"  FontSize="18" Width="170" Height="60" Background="#2e91d3" BorderThickness="0" Foreground="White"  Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Collapsed"/>
+                    <Button Name="addToFavBtn" Content="{Binding Path= LocalizedResources.btnAddAsFriend_Txt, Source={StaticResource LocalizedStrings}}"  FontSize="18" Width="170" Height="60" Background="#e9ecee" BorderThickness="0" Foreground="#595959"  Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Collapsed" />
                 </StackPanel>
             </Grid>
             <Grid Name="gridHikeUser" Grid.Row="2" >
-                <ListBox x:Name="statusLLS" Margin="12,0,12,0" Grid.Row="0" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                <ListBox x:Name="statusLLS" Margin="12,0,12,0" Grid.Row="0">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <status:StatusUpdateBox></status:StatusUpdateBox>
@@ -107,6 +106,4 @@
                 </ListBox>
             </Grid>
         </Grid>
-    </ScrollViewer>
-
 </phone:PhoneApplicationPage>
