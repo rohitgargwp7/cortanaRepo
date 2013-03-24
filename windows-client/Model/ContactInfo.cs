@@ -14,6 +14,7 @@ using windows_client.Misc;
 using System.Text;
 using windows_client.DbUtils;
 using windows_client.Languages;
+using windows_client.View;
 
 namespace windows_client.Model
 {
@@ -182,6 +183,14 @@ namespace windows_client.Model
                 if (value != _isFav)
                 {
                     _isFav = value;
+                    if (((App)Application.Current).RootFrame.Content != null && ((App)Application.Current).RootFrame.Content is InviteUsers)
+                    {
+                        InviteUsers currentPage = ((App)Application.Current).RootFrame.Content as InviteUsers;
+                        if (currentPage != null)
+                        {
+                            currentPage.CheckBox_Tap(this);
+                        }
+                    }
                 }
             }
         }   // this is used in inviteUsers page , when you show hike users
