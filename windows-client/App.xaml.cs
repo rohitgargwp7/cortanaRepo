@@ -871,8 +871,9 @@ namespace windows_client
             {
                 try
                 {
-                    appSettings.Remove(key);
-                    appSettings.Save();
+                    // if key exists then only remove and save it
+                    if (appSettings.Remove(key))
+                        appSettings.Save();
                 }
                 catch (Exception ex)
                 {
