@@ -878,8 +878,8 @@ namespace windows_client.View
             if (isGroupChat)
             {
                 userName.Tap += userName_Tap;
-                userImage.Tap+=userImage_Tap;
-            
+                userImage.Tap += userImage_Tap;
+
                 ApplicationBarMenuItem leaveMenuItem = new ApplicationBarMenuItem();
                 leaveMenuItem.Text = AppResources.SelectUser_LeaveGrp_Txt;
                 leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
@@ -1906,8 +1906,11 @@ namespace windows_client.View
             if (mUserIsBlocked)
                 return;
 
+            this.Focus();
             string message = sendMsgTxtbox.Text.Trim();
-            sendMsgTxtbox.Text = "";
+            sendMsgTxtbox.Text = string.Empty;
+            this.UpdateLayout();
+            sendMsgTxtbox.Focus();
 
             if (String.IsNullOrEmpty(message))
                 return;
@@ -2184,8 +2187,8 @@ namespace windows_client.View
                     }
                     else // status, moods update
                     {
-                        obj.LastMessage = "\""+sb.statusMessageTxtBlk.Text+"\"";
-                    }                   
+                        obj.LastMessage = "\"" + sb.statusMessageTxtBlk.Text + "\"";
+                    }
                     obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
                 }
                 else
@@ -3280,7 +3283,7 @@ namespace windows_client.View
             PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;
             NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
         }
-       
+
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (!isGroupChat)

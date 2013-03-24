@@ -723,6 +723,7 @@ namespace windows_client.View
                     if (appSettings.Contains(App.SHOW_STATUS_UPDATES_TUTORIAL))
                     {
                         overlay.Visibility = Visibility.Visible;
+                        overlay.Tap += DismissStatusUpdateTutorial_Tap;
                         TutorialStatusUpdate.Visibility = Visibility.Visible;
                         launchPagePivot.IsHitTestVisible = false;
                     }
@@ -2090,6 +2091,7 @@ namespace windows_client.View
 
         private void RemoveStatusUpdateTutorial()
         {
+            overlay.Tap -= DismissStatusUpdateTutorial_Tap;
             overlay.Visibility = Visibility.Collapsed;
             TutorialStatusUpdate.Visibility = Visibility.Collapsed;
             launchPagePivot.IsHitTestVisible = true;

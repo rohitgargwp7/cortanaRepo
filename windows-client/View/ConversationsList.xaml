@@ -229,7 +229,7 @@
 
         </controls:Pivot>
 
-        <Rectangle x:Name="overlay" Visibility="Collapsed" Grid.Row="0" Opacity="0.85" Grid.RowSpan="2" Fill="#000000"></Rectangle>
+        <Rectangle x:Name="overlay" Visibility="Collapsed" Grid.Row="0" Opacity="0.85" Grid.RowSpan="2" Fill="#000000" ></Rectangle>
 
         <Grid x:Name="TutorialsGrid" Visibility="Collapsed" Grid.Row="1"  VerticalAlignment="Center" Margin="0,-60,0,0" >
             <Grid.RowDefinitions>
