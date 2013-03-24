@@ -1393,6 +1393,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirmed you as a friend.
+        /// </summary>
+        public static string Friend_Confirm_Txt {
+            get {
+                return ResourceManager.GetString("Friend_Confirm_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to friends.
         /// </summary>
         public static string Friends_Txt {
@@ -2496,6 +2505,15 @@ namespace windows_client.Languages {
         public static string NORMAL_UPDATE_TEXT {
             get {
                 return ResourceManager.GetString("NORMAL_UPDATE_TEXT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is now your friend.
+        /// </summary>
+        public static string Now_Friends_Txt {
+            get {
+                return ResourceManager.GetString("Now_Friends_Txt", resourceCulture);
             }
         }
         

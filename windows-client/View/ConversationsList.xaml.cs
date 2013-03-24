@@ -946,6 +946,10 @@ namespace windows_client.View
                 StatusMessage sm = obj as StatusMessage;
                 if (sm == null)
                     return;
+                // TODO : Madhur Garg : Handle statusMsg of type IS_NOW_FRIENDS
+                // Currently its crashing on tapping UI
+                // Also in this i think we dont need to increase any counter.
+                // Also if i am on timeline , 1 update etc msg should not be shown in this case
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -1295,12 +1299,13 @@ namespace windows_client.View
                     else
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                     hikeContactList.Remove(c);
+                    FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);                
                     App.ViewModel.FavList.Insert(0, convObj);
                     if (App.ViewModel.IsPending(convObj.Msisdn))
                     {
                         App.ViewModel.PendingRequests.Remove(convObj.Msisdn);
                         MiscDBUtil.SavePendingRequests();
-                        App.ViewModel.RemoveFrndReqFromTimeline(convObj.Msisdn);
+                        App.ViewModel.RemoveFrndReqFromTimeline(convObj.Msisdn,fs);
                     }
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.SaveFavourites(convObj);
@@ -1319,7 +1324,6 @@ namespace windows_client.View
                         favourites.Visibility = System.Windows.Visibility.Visible;
                         //addFavsPanel.Opacity = 1;
                     }
-                    FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
                     menuFavourite.Header = AppResources.RemFromFav_Txt;
                     App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
                 }
@@ -1793,13 +1797,13 @@ namespace windows_client.View
                     emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                     favourites.Visibility = System.Windows.Visibility.Visible;
                 }
-                FriendsTableUtils.SetFriendStatus(cObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
+                FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(cObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
 
                 if (App.ViewModel.IsPending(contactInfo.Msisdn))
                 {
                     App.ViewModel.PendingRequests.Remove(contactInfo.Msisdn);
                     MiscDBUtil.SavePendingRequests();
-                    App.ViewModel.RemoveFrndReqFromTimeline(contactInfo.Msisdn);
+                    App.ViewModel.RemoveFrndReqFromTimeline(contactInfo.Msisdn,fs);
                 }
             }
         }
@@ -2015,6 +2019,9 @@ namespace windows_client.View
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                 favourites.Visibility = System.Windows.Visibility.Visible;
             }
+            StatusMessage sm = new StatusMessage(cn.Msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1, false);
+            mPubSub.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
+            mPubSub.publish(HikePubSub.STATUS_RECEIVED,sm);
         }
 
         private void no_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)

@@ -43,6 +43,7 @@ namespace windows_client.DbUtils
             mPubSub.addListener(HikePubSub.ATTACHMENT_RESEND, this);
             mPubSub.addListener(HikePubSub.ATTACHMENT_SENT, this);
             mPubSub.addListener(HikePubSub.FORWARD_ATTACHMENT, this);
+            mPubSub.addListener(HikePubSub.SAVE_STATUS_IN_DB, this);
         }
 
         private void removeListeners()
@@ -60,6 +61,7 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.ATTACHMENT_RESEND, this);
             mPubSub.removeListener(HikePubSub.ATTACHMENT_SENT, this);
             mPubSub.removeListener(HikePubSub.FORWARD_ATTACHMENT, this);
+            mPubSub.removeListener(HikePubSub.SAVE_STATUS_IN_DB, this);
         }
 
         public void uploadFileCallback(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble)
@@ -402,6 +404,11 @@ namespace windows_client.DbUtils
                 MiscDBUtil.deleteMsisdnData(convMsisdn);
             }
             #endregion
+            else if (type == HikePubSub.SAVE_STATUS_IN_DB)
+            {
+                StatusMessage sm = obj as StatusMessage;
+                StatusMsgsTable.InsertStatusMsg(sm);
+            }
         }
 
         private JObject blockUnblockSerialize(string type, string msisdn)
