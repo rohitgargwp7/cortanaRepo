@@ -72,6 +72,10 @@ namespace windows_client.Controls.StatusUpdate
             {
                 this.userProfileImage.Source = this.UserImage;
                 this.userProfileImage.Height = 69;
+                if (sm.MoodId > 0)
+                {
+                    statusTypeImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
+                }
             }
             else
             {
@@ -88,7 +92,6 @@ namespace windows_client.Controls.StatusUpdate
                     statusTypeImage.Visibility = System.Windows.Visibility.Visible;
                     userNameTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
                 }
-             
             }
         }
 
