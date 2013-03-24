@@ -215,7 +215,16 @@ namespace windows_client.View
         {
             string name;
             App.appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
-            txtStatus.Hint = string.Format(AppResources.PostStatus_WhatsUp_Hint_txt, (name != null ? name : string.Empty));
+            string nameToShow = null;
+            if (!string.IsNullOrEmpty(name))
+            {
+                string[] nameArray = name.Split(' ');
+                if (nameArray.Length > 0)
+                {
+                    nameToShow = nameArray[0];
+                }
+            }
+            txtStatus.Hint = string.Format(AppResources.PostStatus_WhatsUp_Hint_txt, (nameToShow != null ? nameToShow : string.Empty));
         }
 
         public void SocialPostFB(JObject obj)
