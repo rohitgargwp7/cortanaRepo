@@ -12,8 +12,8 @@ namespace windows_client.Controls.StatusUpdate
     public partial class TextStatusUpdate : StatusUpdateBox
     {
         private long timestamp;
-        private static Thickness timelineStatusMargin = new Thickness(12, 0, 12, 0);
-        private static Thickness userProfileStatusMargin = new Thickness(0, 0, 0, 0);
+        private static Thickness timelineStatusLayoutMargin = new Thickness(0, 12, 0, 12);
+        private static Thickness userProfileStatusLayoutMargin = new Thickness(0, 0, 0, 0);
 
         private static Thickness timelineStatusTypeMargin = new Thickness(12, 23, 0, 0);
         private static Thickness userProfileStatusTypeMargin = new Thickness(12, 34, 0, 0);
@@ -91,7 +91,7 @@ namespace windows_client.Controls.StatusUpdate
                 this.userProfileImage.Height = 69;
                 statusTypeImage.Width = 31;
                 statusTextTxtBlk.MaxWidth = 300;
-                this.LayoutRoot.Margin = timelineStatusMargin;
+                this.LayoutRoot.Margin = timelineStatusLayoutMargin;
                 this.statusTypeImage.Margin = timelineStatusTypeMargin;
 
                 this.statusTextTxtBlk.Margin = timelineStatusTextMargin;
@@ -103,7 +103,7 @@ namespace windows_client.Controls.StatusUpdate
                 this.userProfileImage.Visibility = System.Windows.Visibility.Collapsed;
                 statusTypeImage.Width = 40;
                 statusTextTxtBlk.MaxWidth = 380;
-                this.LayoutRoot.Margin = userProfileStatusMargin;
+                this.LayoutRoot.Margin = userProfileStatusLayoutMargin;
                 this.statusTypeImage.Margin = userProfileStatusTypeMargin;
                 
                 this.statusTextTxtBlk.Margin = userProfileStatusTextMargin;
