@@ -1302,13 +1302,13 @@ namespace windows_client.View
                     else
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                     hikeContactList.Remove(c);
-                    FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);                
+                    FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
                     App.ViewModel.FavList.Insert(0, convObj);
                     if (App.ViewModel.IsPending(convObj.Msisdn))
                     {
                         App.ViewModel.PendingRequests.Remove(convObj.Msisdn);
                         MiscDBUtil.SavePendingRequests();
-                        App.ViewModel.RemoveFrndReqFromTimeline(convObj.Msisdn,fs);
+                        App.ViewModel.RemoveFrndReqFromTimeline(convObj.Msisdn, fs);
                     }
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.SaveFavourites(convObj);
@@ -1416,7 +1416,7 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.HELP);
             NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
         }
-     
+
         private void Rewards_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             try
@@ -1797,7 +1797,7 @@ namespace windows_client.View
                 {
                     App.ViewModel.PendingRequests.Remove(contactInfo.Msisdn);
                     MiscDBUtil.SavePendingRequests();
-                    App.ViewModel.RemoveFrndReqFromTimeline(contactInfo.Msisdn,fs);
+                    App.ViewModel.RemoveFrndReqFromTimeline(contactInfo.Msisdn, fs);
                 }
             }
         }
@@ -1941,9 +1941,10 @@ namespace windows_client.View
 
         private void refreshStatuses_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            for (int i = 0; i < FreshStatusUpdates.Count; i++)
+            int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
+            for (int i = 0; i < (FreshStatusUpdates != null ? FreshStatusUpdates.Count : 0); i++)
             {
-                App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count,
+                App.ViewModel.StatusList.Insert(pendingCount,
                     StatusUpdateHelper.Instance.createStatusUIObject(FreshStatusUpdates[i], true,
                     statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
             }
@@ -1952,7 +1953,7 @@ namespace windows_client.View
                 emptyStatusPlaceHolder.Visibility = Visibility.Collapsed;
                 statusLLS.Visibility = Visibility.Visible;
             }
-            statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count]);
+            statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount]);
             RefreshBarCount = 0;
         }
         private void postStatusBtn_Click(object sender, EventArgs e)
@@ -2015,7 +2016,7 @@ namespace windows_client.View
             }
             StatusMessage sm = new StatusMessage(fObj.Msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1, false);
             mPubSub.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
-            mPubSub.publish(HikePubSub.STATUS_RECEIVED,sm);
+            mPubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
         }
 
         private void no_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
