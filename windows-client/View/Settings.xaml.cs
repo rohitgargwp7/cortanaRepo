@@ -33,7 +33,7 @@ namespace windows_client.View
 
         private void Notifications_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.SETTINGS);
+            App.AnalyticsInstance.addEvent(Analytics.NOTIFICATIONS);
             NavigationService.Navigate(new Uri("/View/Notifications.xaml", UriKind.Relative));
         }
 
@@ -45,6 +45,7 @@ namespace windows_client.View
 
         private void BlockList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.BLOCKLIST);
             NavigationService.Navigate(new Uri("/View/BlockListPage.xaml", UriKind.Relative));
         }
     }
