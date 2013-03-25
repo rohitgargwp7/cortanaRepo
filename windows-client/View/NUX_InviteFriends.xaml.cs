@@ -224,6 +224,7 @@ namespace windows_client.View
         {
             if (ps == App.PageState.NUX_SCREEN_FRIENDS)
             {
+                App.AnalyticsInstance.addEvent(Analytics.SKIP_NUX_1);
                 if (listFamilyMembers != null && listFamilyMembers.Count > 1)
                 {
                     InitialiseFamilyScreen();
@@ -236,6 +237,7 @@ namespace windows_client.View
             }
             else
             {
+                App.AnalyticsInstance.addEvent(Analytics.SKIP_NUX_2);
                 App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
                 NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
             }

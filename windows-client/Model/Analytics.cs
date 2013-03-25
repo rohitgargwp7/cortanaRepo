@@ -18,6 +18,10 @@ namespace windows_client.Model
         public static readonly string ADD_FAVS_CONTEXT_MENU_CONVLIST = "coATFCM";
         public static readonly string REMOVE_FAVS_CONTEXT_MENU_CONVLIST = "coRFFCM";
 
+        // NUX
+        public static readonly string SKIP_NUX_1 = "skipNux1";
+        public static readonly string SKIP_NUX_2 = "skipNux2";
+
         //pr = profile screen
         public static readonly string FREE_SMS = "prFrS";
         public static readonly string INVITE = "prInv";
@@ -161,7 +165,7 @@ namespace windows_client.Model
 
         public void clearObject() //call after publish
         {
-            if(eventMap != null)
+            if (eventMap != null)
                 eventMap.Clear();
         }
 
