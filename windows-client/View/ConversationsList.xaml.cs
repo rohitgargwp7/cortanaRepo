@@ -691,14 +691,22 @@ namespace windows_client.View
                         contactOnHikeTitleTxtBlck.Visibility = System.Windows.Visibility.Visible;
                         if (App.ViewModel.FavList.Count > 0)
                         {
-                            emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                            emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                             favourites.Visibility = System.Windows.Visibility.Visible;
-                            //addFavsPanel.Opacity = 1;
                         }
                         else
                         {
-                            emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
+                            emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
+                            if (hikeContactList.Count > 0)
+                                addContactsTxtBlk.Visibility = Visibility.Visible;
+                            else
+                                addContactsTxtBlk.Visibility = Visibility.Collapsed;
                         }
+
+                        if (hikeContactList.Count == 0)
+                            emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
+                        else
+                            emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
                     };
                 }
                 #endregion
@@ -848,15 +856,15 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                    if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                     {
-                        emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                        emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                         favourites.Visibility = System.Windows.Visibility.Visible;
                         //addFavsPanel.Opacity = 1;
                     }
                     else if (App.ViewModel.FavList.Count == 0) // remove fav
                     {
-                        emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
+                        emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
                         favourites.Visibility = System.Windows.Visibility.Collapsed;
                         //addFavsPanel.Opacity = 0;
                     }
@@ -1095,6 +1103,10 @@ namespace windows_client.View
                     {
                         if (c != null)
                             hikeContactList.Add(c);
+                        if (emptyListPlaceholderHikeContacts.Visibility == Visibility.Visible)
+                        {
+                            emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
+                        }
                     });
                 }
             }
@@ -1108,10 +1120,14 @@ namespace windows_client.View
                     {
                         if (obj != null)
                             hikeContactList.Remove(obj as ContactInfo);
-                        if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                        if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                         {
-                            emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                            emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                             favourites.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        if (hikeContactList.Count == 0)
+                        {
+                            emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
                         }
                     });
                 }
@@ -1143,10 +1159,14 @@ namespace windows_client.View
                     }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                           {
-                              if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                              if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                               {
-                                  emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                                  emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                                   favourites.Visibility = System.Windows.Visibility.Visible;
+                              }
+                              if (hikeContactList.Count == 0)
+                              {
+                                  emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
                               }
                           });
                 }
@@ -1289,7 +1309,7 @@ namespace windows_client.View
                     App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
                     if (App.ViewModel.FavList.Count == 0)
                     {
-                        emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
+                        emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
                         favourites.Visibility = System.Windows.Visibility.Collapsed;
                         //addFavsPanel.Opacity = 0;
                     }
@@ -1308,6 +1328,10 @@ namespace windows_client.View
                             c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                         c.Avatar = convObj.Avatar;
                         hikeContactList.Add(c);
+                    }
+                    if (emptyListPlaceholderHikeContacts.Visibility == System.Windows.Visibility.Visible)
+                    {
+                        emptyListPlaceholderHikeContacts.Visibility = System.Windows.Visibility.Collapsed;
                     }
                 }
                 else // add to fav
@@ -1339,11 +1363,15 @@ namespace windows_client.View
                     obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
                     obj[HikeConstants.DATA] = data;
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                    if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                    if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                     {
-                        emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                        emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                         favourites.Visibility = System.Windows.Visibility.Visible;
                         //addFavsPanel.Opacity = 1;
+                    }
+                    if (hikeContactList.Count == 0)
+                    {
+                        emptyListPlaceholderHikeContacts.Visibility = System.Windows.Visibility.Visible;
                     }
                     menuFavourite.Header = AppResources.RemFromFav_Txt;
                     App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
@@ -1743,8 +1771,12 @@ namespace windows_client.View
             }
             if (App.ViewModel.FavList.Count == 0)
             {
-                emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
+                emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
                 favourites.Visibility = System.Windows.Visibility.Collapsed;
+            }
+            if (emptyListPlaceholderHikeContacts.Visibility == Visibility.Visible)
+            {
+                emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -1804,10 +1836,14 @@ namespace windows_client.View
                 App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
 
-                if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                 {
-                    emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                    emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                     favourites.Visibility = System.Windows.Visibility.Visible;
+                }
+                if (hikeContactList.Count == 0)
+                {
+                    emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
                 }
                 FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(cObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
 
@@ -2028,9 +2064,9 @@ namespace windows_client.View
             int count = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
             App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
-            if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+            if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
             {
-                emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                 favourites.Visibility = System.Windows.Visibility.Visible;
             }
             StatusMessage sm = new StatusMessage(fObj.Msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1, false);
@@ -2146,6 +2182,6 @@ namespace windows_client.View
 
 
         #endregion
-        
+
     }
 }
