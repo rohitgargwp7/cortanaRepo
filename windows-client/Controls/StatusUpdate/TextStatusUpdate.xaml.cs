@@ -15,7 +15,7 @@ namespace windows_client.Controls.StatusUpdate
         private static Thickness timelineStatusLayoutMargin = new Thickness(0, 12, 0, 12);
         private static Thickness userProfileStatusLayoutMargin = new Thickness(0, 0, 0, 0);
 
-        private static Thickness timelineStatusTypeMargin = new Thickness(12, 23, 0, 0);
+        private static Thickness timelineStatusTypeMargin = new Thickness(12, 26, 0, 0);
         private static Thickness userProfileStatusTypeMargin = new Thickness(12, 34, 0, 0);
 
         private static Thickness timelineStatusTextMargin = new Thickness(10, 0, 5, 0);
