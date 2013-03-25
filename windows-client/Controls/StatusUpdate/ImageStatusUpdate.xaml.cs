@@ -10,6 +10,7 @@ namespace windows_client.Controls.StatusUpdate
     public partial class ImageStatusUpdate : StatusUpdateBox
     {
         private BitmapImage _statusImageSource;
+        private long timestamp;
 
         public override bool IsUnread
         {
@@ -42,7 +43,9 @@ namespace windows_client.Controls.StatusUpdate
         {
             InitializeComponent();
             this.statusTextTxtBlk.Text = AppResources.StatusUpdate_Photo;
+            this.timestamp = sm.Timestamp;
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(sm.Timestamp);
+            this.Loaded += ImageStatusUpdate_Loaded;
             this.IsUnread = sm.IsUnread;
             if (statusImageBitmap != null)
                 this.StatusImage = statusImageBitmap;
@@ -59,30 +62,34 @@ namespace windows_client.Controls.StatusUpdate
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
                 //statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
             }
+            statusTypeImage.Source = UI_Utils.Instance.ProfilePicStatusImage;
             if (isShowOnTimeline)
             {
                 this.userProfileImage.Source = this.UserImage;
                 this.userProfileImage.Height = 69;
-                statusTypeImage.Source = UI_Utils.Instance.ProfilePicStatusImage;
                 statusTypeImage.Width = 31;
             }
             else
             {
-                statusTypeImage.Width = 35;
+                userProfileImage.Visibility = System.Windows.Visibility.Collapsed;
+                statusTypeImage.Width = 40;
                 if (sm.MoodId > 0) //For profile pic update. Mood id won't be received. Kept this for future.
                 {
-                    this.userProfileImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
+                    this.statusTypeImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
                     this.userProfileImage.MaxHeight = 60;
-                    statusTypeImage.Visibility = System.Windows.Visibility.Collapsed;
                 }
                 else
                 {
-                    this.userProfileImage.Visibility = System.Windows.Visibility.Collapsed;
-                    statusTypeImage.Source = UI_Utils.Instance.ProfilePicStatusImage;
                     statusTypeImage.Visibility = System.Windows.Visibility.Visible;
                     userNameTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
                 }
             }
+        }
+
+        void ImageStatusUpdate_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
+            this.userProfileImage.Source = UI_Utils.Instance.GetBitmapImage(this.Msisdn);
         }
 
         public BitmapImage StatusImage

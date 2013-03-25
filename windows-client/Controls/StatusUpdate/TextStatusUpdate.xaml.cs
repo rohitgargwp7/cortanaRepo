@@ -5,13 +5,25 @@ using Microsoft.Phone.Controls;
 using System;
 using System.Windows.Media;
 using windows_client.Model;
+using System.Windows;
 
 namespace windows_client.Controls.StatusUpdate
 {
     public partial class TextStatusUpdate : StatusUpdateBox
     {
         private long timestamp;
+        private static Thickness timelineStatusMargin = new Thickness(12, 0, 12, 0);
+        private static Thickness userProfileStatusMargin = new Thickness(0, 0, 0, 0);
 
+        private static Thickness timelineStatusTypeMargin = new Thickness(12, 23, 0, 0);
+        private static Thickness userProfileStatusTypeMargin = new Thickness(12, 34, 0, 0);
+
+        private static Thickness timelineStatusTextMargin = new Thickness(10, 0, 5, 0);
+        private static Thickness userProfileStatusTextMargin = new Thickness(18, 0, 5, 0);
+
+        //private static Thickness timelineTimestampMargin = new Thickness(12, 23, 0, 0);
+        //private static Thickness userProfileTimestampMargin = new Thickness(12, 34, 0, 0);
+        
         public override bool IsUnread
         {
             get
@@ -46,6 +58,7 @@ namespace windows_client.Controls.StatusUpdate
             this.timestamp = sm.Timestamp;
             this.IsUnread = sm.IsUnread;
             statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
+            this.Loaded += TextStatusUpdate_Loaded;
             if (statusBubbleImageTap != null)
             {
                 this.userProfileImage.Tap += statusBubbleImageTap;
@@ -78,19 +91,30 @@ namespace windows_client.Controls.StatusUpdate
                 this.userProfileImage.Height = 69;
                 statusTypeImage.Width = 31;
                 statusTextTxtBlk.MaxWidth = 300;
+                this.LayoutRoot.Margin = timelineStatusMargin;
+                this.statusTypeImage.Margin = timelineStatusTypeMargin;
+
+                this.statusTextTxtBlk.Margin = timelineStatusTextMargin;
+                this.timestampTxtBlk.Margin = timelineStatusTextMargin;
             }
             else
             {
                 userNameTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
                 this.userProfileImage.Visibility = System.Windows.Visibility.Collapsed;
-                statusTypeImage.Width = 35;
+                statusTypeImage.Width = 40;
                 statusTextTxtBlk.MaxWidth = 380;
+                this.LayoutRoot.Margin = userProfileStatusMargin;
+                this.statusTypeImage.Margin = userProfileStatusTypeMargin;
+                
+                this.statusTextTxtBlk.Margin = userProfileStatusTextMargin;
+                this.timestampTxtBlk.Margin = userProfileStatusTextMargin;
             }
         }
 
-        void timestampTxtBlk_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        void TextStatusUpdate_Loaded(object sender, RoutedEventArgs e)
         {
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
+            this.userProfileImage.Source = UI_Utils.Instance.GetBitmapImage(this.Msisdn);
         }
     }
 }
