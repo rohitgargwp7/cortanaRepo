@@ -38,7 +38,7 @@
                 <TextBlock Text="{Binding Path= LocalizedResources.Account_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="20,0,0,0" FontSize="42"></TextBlock>
             </StackPanel>
             <StackPanel Grid.Row="1" Orientation="Horizontal" MaxHeight="55" Tap="Notifications_Tap" Margin="15,30,0,5">
-                <Image Name="settingsImage" VerticalAlignment="Center" Source="images\settings.png" Height="34" Width="35">
+                <Image Name="settingsImage" VerticalAlignment="Center" Height="34" Width="35">
                 </Image>
                 <TextBlock Text="{Binding Path= LocalizedResources.Notifications_Header_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,-5,0,0"></TextBlock>
             </StackPanel>

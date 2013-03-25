@@ -22,11 +22,12 @@ namespace windows_client.View
             {
                 privacyImage.Source = new BitmapImage(new Uri("images/privacy_dark.png", UriKind.Relative));
                 blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon_white.png", UriKind.Relative));
-                settingsImage.Source = new BitmapImage(new Uri("images/settings_dark.png", UriKind.Relative));
+                settingsImage.Source = new BitmapImage(new Uri("images/icon_notification.png", UriKind.Relative));
             }
             else
             {
                 blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon.png", UriKind.Relative));
+                settingsImage.Source = new BitmapImage(new Uri("images/icon_notification_black.png", UriKind.Relative));
             }
         }
 
