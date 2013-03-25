@@ -91,7 +91,7 @@ namespace windows_client.View
 
         private void btnPostStatus_Click(object sender, EventArgs e)
         {
-            postStatusIcon.IsEnabled = false;
+
             string statusText = txtStatus.Text.Trim();
             if (statusText == string.Empty)
             {
@@ -157,6 +157,9 @@ namespace windows_client.View
                 {
                     twitterIconImage.Source = UI_Utils.Instance.TwitterEnabledIcon;
                     isTwitterPost = true;
+                    if (txtStatus.Text.Length > 140)
+                        postStatusIcon.IsEnabled = false;
+                    txtCounter.Visibility = Visibility.Visible;
                 }
                 else
                 {
@@ -168,6 +171,9 @@ namespace windows_client.View
             {
                 twitterIconImage.Source = UI_Utils.Instance.TwitterDisabledIcon;
                 isTwitterPost = false;
+                if (txtStatus.Text.Length > 0)
+                    postStatusIcon.IsEnabled = true;
+                txtCounter.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -250,8 +256,31 @@ namespace windows_client.View
                 {
                     twitterIconImage.Source = UI_Utils.Instance.TwitterEnabledIcon;
                     isTwitterPost = true;
+                    if (txtStatus.Text.Length > 140)
+                    {
+                        postStatusIcon.IsEnabled = false;
+                    }
+                    txtCounter.Visibility = Visibility.Visible;
                 });
             }
+        }
+
+        private void txtStatus_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            int count = txtStatus.Text.Length;
+            if (count == 0)
+            {
+                postStatusIcon.IsEnabled = false;
+            }
+            else if (isTwitterPost && count > 140)
+            {
+                postStatusIcon.IsEnabled = false;
+            }
+            else
+            {
+                postStatusIcon.IsEnabled = true;
+            }
+            txtCounter.Text = (140 - count).ToString();
         }
     }
 }
