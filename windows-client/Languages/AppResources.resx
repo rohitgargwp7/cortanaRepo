@@ -1711,10 +1711,9 @@
   <data name="Conversations_Status_Tutorials_Header" xml:space="preserve">
     <value>Status Updates</value>
   </data>
-
   <data name="Notifications_Header_Txt" xml:space="preserve">
     <value>notifications</value>
-</data>
+  </data>
   <data name="Now_Friends_Txt" xml:space="preserve">
     <value>Is now your friend</value>
     <comment>This is used in timeline and profile , when user becomed friend.</comment>
@@ -1722,5 +1721,11 @@
   <data name="Friend_Confirm_Txt" xml:space="preserve">
     <value>Confirmed you as a friend</value>
     <comment>This is shown when a user confirms you as friend.</comment>
+  </data>
+  <data name="Conversations_BtnCircleOfFriends_Txt" xml:space="preserve">
+    <value>View circle of friends</value>
+  </data>
+  <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
+    <value>You can see updates from your circle of friends here.</value>
   </data>
 </root>

@@ -349,6 +349,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View circle of friends.
+        /// </summary>
+        public static string Conversations_BtnCircleOfFriends_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_BtnCircleOfFriends_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update status.
         /// </summary>
         public static string Conversations_BtnUpdateStatus_Txt {
@@ -453,6 +462,15 @@ namespace windows_client.Languages {
         public static string Conversations_EmptyStatus_TeamHike_Txt {
             get {
                 return ResourceManager.GetString("Conversations_EmptyStatus_TeamHike_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can see updates from your circle of friends here..
+        /// </summary>
+        public static string Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt", resourceCulture);
             }
         }
         

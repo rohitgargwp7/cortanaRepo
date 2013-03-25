@@ -192,6 +192,24 @@ namespace windows_client.View
             removeListeners();
         }
 
+        private void DismissStatusUpdateTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            RemoveStatusUpdateTutorial();
+        }
+
+        private void RemoveStatusUpdateTutorial()
+        {
+            overlay.Tap -= DismissStatusUpdateTutorial_Tap;
+            overlay.Visibility = Visibility.Collapsed;
+            TutorialStatusUpdate.Visibility = Visibility.Collapsed;
+            launchPagePivot.IsHitTestVisible = true;
+            App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
+        }
+
+        private void CircleOfFriends_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            launchPagePivot.SelectedIndex = 1;
+        }
         #endregion
 
         #region ConvList Page
@@ -729,7 +747,7 @@ namespace windows_client.View
                         if (App.ViewModel.StatusList.Count == 0)
                         {
                             emptyStatusPlaceHolder.Visibility = Visibility.Visible;
-                            txtEmptyStatusBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
+                            txtEmptyStatusFriendBlk1.Text = txtEmptyStatusBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
                             statusLLS.Visibility = Visibility.Collapsed;
                         }
                         RefreshBarCount = 0;
@@ -1036,7 +1054,7 @@ namespace windows_client.View
                         if (App.ViewModel.StatusList.Count == 0)
                         {
                             emptyStatusPlaceHolder.Visibility = Visibility.Visible;
-                            txtEmptyStatusBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
+                            txtEmptyStatusFriendBlk1.Text = txtEmptyStatusBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
                             statusLLS.Visibility = Visibility.Collapsed;
                         }
                     }
@@ -2126,19 +2144,6 @@ namespace windows_client.View
 
 
         #endregion
-
-        private void DismissStatusUpdateTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            RemoveStatusUpdateTutorial();
-        }
-
-        private void RemoveStatusUpdateTutorial()
-        {
-            overlay.Tap -= DismissStatusUpdateTutorial_Tap;
-            overlay.Visibility = Visibility.Collapsed;
-            TutorialStatusUpdate.Visibility = Visibility.Collapsed;
-            launchPagePivot.IsHitTestVisible = true;
-            App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
-        }
+        
     }
 }
