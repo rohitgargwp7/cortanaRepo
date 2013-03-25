@@ -25,11 +25,11 @@
         
         <Image x:Name="userProfileImage" Source="{Binding UserImage}" Margin="0,5,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" VerticalAlignment="Top" ></Image>
 
-        <Image x:Name="statusTypeImage" Margin="12,23,0,0" Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="31" ></Image>
+        <Image x:Name="statusTypeImage" Margin="12,23,0,0" Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"  VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
 
-        <TextBlock x:Name="userNameTxtBlk" Text="{Binding UserName}" Margin="8,0,0,0" FontSize="16" Grid.Column="2" Grid.Row="0" FontFamily="Segoe WP Semibold"/>
-        <TextBlock x:Name="statusTextTxtBlk" TextWrapping="Wrap" FontSize="23" Grid.Column="2" Grid.Row="1" Margin="8,0,5,0"/>
+        <TextBlock x:Name="userNameTxtBlk" Text="{Binding UserName}" Margin="10,0,0,0" FontSize="19" Grid.Column="2" Grid.Row="0" FontFamily="Segoe WP Semibold"/>
+        <TextBlock x:Name="statusTextTxtBlk" TextWrapping="Wrap" FontSize="25" Grid.Column="2" Grid.Row="1" Margin="10,0,5,0" FontFamily="Segoe WP SemiLight"/>
         <TextBlock x:Name="timestampTxtBlk" TextWrapping="Wrap" FontSize="16" Grid.Column="2" Grid.Row="2" Margin="10,0,5,0" Foreground="#888888"/>
-        <Image x:Name="statusImage" Margin="10,10,0,0" Grid.Column="2" Grid.Row="3" VerticalAlignment="Top" MaxWidth="236" ></Image>
+        <Image x:Name="statusImage" Margin="-8,10,0,0" Grid.Column="2" Grid.Row="3" VerticalAlignment="Top" MaxWidth="236" ></Image>
     </Grid>
 </status:StatusUpdateBox>
