@@ -2883,6 +2883,9 @@ namespace windows_client.View
                 }
                 else
                 {
+                    // this shows that typing notification has come for a group chat , which in current case is not
+                    if (vals[1] != null) // vals[1] will be null in 1-1 chat
+                        return;
                     typingNotSenderOrSendee = (string)vals[0];
                 }
                 if (mContactNumber == typingNotSenderOrSendee)
