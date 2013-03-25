@@ -1959,9 +1959,11 @@ namespace windows_client.View
 
         private void refreshStatuses_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            for (int i = 0; i < FreshStatusUpdates.Count; i++)
+            // this fix will solve the possible crash , suggested by nitesh
+            int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
+            for (int i = 0; i < (FreshStatusUpdates != null ? FreshStatusUpdates.Count : 0); i++)
             {
-                App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count,
+                App.ViewModel.StatusList.Insert(pendingCount,
                     StatusUpdateHelper.Instance.createStatusUIObject(FreshStatusUpdates[i], true,
                     statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
             }
@@ -1970,7 +1972,7 @@ namespace windows_client.View
                 emptyStatusPlaceHolder.Visibility = Visibility.Collapsed;
                 statusLLS.Visibility = Visibility.Visible;
             }
-            statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count]);
+            statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount]);
             RefreshBarCount = 0;
         }
         private void postStatusBtn_Click(object sender, EventArgs e)
