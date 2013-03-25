@@ -1941,6 +1941,7 @@ namespace windows_client.View
 
         private void refreshStatuses_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            // this fix will solve the possible crash , suggested by nitesh
             int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
             for (int i = 0; i < (FreshStatusUpdates != null ? FreshStatusUpdates.Count : 0); i++)
             {
