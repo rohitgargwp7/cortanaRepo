@@ -691,7 +691,6 @@ namespace windows_client.View
                     appBar.MenuItems.Remove(delConvsMenu);
                 if (!isStatusMessagesLoaded)
                 {
-                    isStatusMessagesLoaded = true;
                     List<StatusMessage> statusMessagesFromDB = null;
                     BackgroundWorker statusBw = new BackgroundWorker();
                     statusBw.DoWork += (sf, ef) =>
@@ -734,6 +733,7 @@ namespace windows_client.View
                         }
                         RefreshBarCount = 0;
                         UnreadFriendRequests = 0;
+                        isStatusMessagesLoaded = true;
                     };
                     if (appSettings.Contains(App.SHOW_STATUS_UPDATES_TUTORIAL))
                     {
@@ -965,7 +965,8 @@ namespace windows_client.View
                         else
                             statusImage.Source = UI_Utils.Instance.TextStatusImage;
 
-                        txtStatus.Text = sm.Message;
+                        if(sm.Status_Type != StatusMessage.StatusType.PROFILE_PIC_UPDATE)
+                            txtStatus.Text = sm.Message;
                         // if status list is not loaded simply ignore this packet , as then this packet will
                         // be shown twice , one here and one from DB.
                         if (isStatusMessagesLoaded)
@@ -2015,7 +2016,7 @@ namespace windows_client.View
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                 favourites.Visibility = System.Windows.Visibility.Visible;
             }
-            StatusMessage sm = new StatusMessage(fObj.Msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1, false);
+            StatusMessage sm = new StatusMessage(fObj.Msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1);
             mPubSub.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
             mPubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
         }
