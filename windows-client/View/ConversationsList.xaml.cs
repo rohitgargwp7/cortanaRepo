@@ -45,7 +45,6 @@ namespace windows_client.View
         ApplicationBarIconButton groupChatIconButton;
         //ApplicationBarIconButton addFriendIconButton;
 
-        private bool isShowFavTute = true;
         private bool isStatusMessagesLoaded = false;
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
         #endregion
@@ -57,8 +56,6 @@ namespace windows_client.View
             InitializeComponent();
             initAppBar();
             initProfilePage();
-            if (isShowFavTute)
-                showTutorial();
             App.ViewModel.ConversationListPage = this;
 
             App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out _totalUnreadStatuses);
@@ -66,43 +63,6 @@ namespace windows_client.View
             App.appSettings.TryGetValue(HikeConstants.UNREAD_FRIEND_REQUESTS, out _unreadFriendRequests);
             setNotificationCounter(RefreshBarCount + UnreadFriendRequests);
             App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
-        }
-
-        private void favTutePvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (favTutePvt.SelectedIndex == 0)
-            {
-                favBox1.Fill = UI_Utils.Instance.WalkThroughSelectedColumn;
-                favBox0.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
-            }
-            else
-            {
-                favBox0.Fill = UI_Utils.Instance.WalkThroughSelectedColumn;
-                favBox1.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
-            }
-        }
-
-        private void showTutorial()
-        {
-            if (App.appSettings.Contains(App.SHOW_FAVORITES_TUTORIAL))
-            {
-                overlay.Visibility = Visibility.Visible;
-                TutorialsGrid.Visibility = Visibility.Visible;
-                launchPagePivot.IsHitTestVisible = false;
-            }
-            else
-            {
-                convListPagePivot.ApplicationBar = appBar;
-            }
-        }
-
-        private void dismissTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            overlay.Visibility = Visibility.Collapsed;
-            TutorialsGrid.Visibility = Visibility.Collapsed;
-            convListPagePivot.ApplicationBar = appBar;
-            launchPagePivot.IsHitTestVisible = true;
-            App.RemoveKeyFromAppSettings(App.SHOW_FAVORITES_TUTORIAL);
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
