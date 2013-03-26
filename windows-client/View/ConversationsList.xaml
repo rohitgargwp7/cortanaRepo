@@ -34,8 +34,10 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Image x:Name="icon" Grid.Column="0" Source="images\hike_header.png" Height="40" Margin="4,25,0,0"/>
-            <Image x:Name="notificationIndicator" Grid.Column="1" Source="images\notification_read.png" MaxHeight="43" Margin="270,25,0,0" Tap="notification_Tap"/>
-            <TextBlock x:Name="notificationCountTxtBlk" Grid.Column="1" HorizontalAlignment="Center" Margin="274,34,0,0" FontSize="16" FontFamily="Segoe WP Semibold" Tap="notification_Tap"/>
+            <StackPanel Grid.Column="1" Margin="270,25,0,0" Height="50">
+                <Image x:Name="notificationIndicator" Source="images\notification_read.png" Margin="0,6,0,0" MaxHeight="35" Tap="notification_Tap"/>
+            </StackPanel>
+            <TextBlock x:Name="notificationCountTxtBlk" Foreground="White" Grid.Column="1" HorizontalAlignment="Center" Margin="274,37,0,0" FontSize="18" FontFamily="Segoe WP Semibold" Tap="notification_Tap"/>
         </Grid>
 
         <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,-10,0,0" SelectionChanged="Pivot_SelectionChanged">
@@ -99,13 +101,13 @@
                         <Rectangle Visibility="Collapsed" Grid.Row="2" Height="1" Fill="#d8d8d8" Margin="1,25,-1,0"/>
 
                         <TextBlock x:Name="contactOnHikeTitleTxtBlck" Visibility="Collapsed" Grid.Row="3" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}"/>
-                      
+
                         <StackPanel x:Name="emptyListPlaceholderHikeContacts" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="4" HorizontalAlignment="Center" Visibility="Collapsed">
                             <Image Source="images/hike_users.png" Height="90"></Image>
                             <TextBlock Text="{Binding Path= LocalizedResources.Conversations_NoFriendsOnHike_Txt, Source={StaticResource LocalizedStrings}}"  Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                             <TextBlock Text="{Binding Path= LocalizedResources.Conversations_InviteFriendsHike_Txt, Source={StaticResource LocalizedStrings}}" Width="270" Margin="0,0,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                         </StackPanel>
-                 
+
                         <ListBox x:Name="hikeContactListBox" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="4">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
