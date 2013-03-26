@@ -327,10 +327,12 @@ namespace windows_client.ViewModel
 
                     if (!IsPendingListLoaded)
                         LoadPendingRequests();
+                    #region handle pending request
                     if (_pendingReq != null && _pendingReq.Remove(msisdn))
                     {
                         MiscDBUtil.SavePendingRequests();
                     }
+                    #endregion
                     if (_favList != null) // this will remove from UI too
                         RemoveAndSaveFromFavList(msisdn);
                 }
@@ -383,7 +385,7 @@ namespace windows_client.ViewModel
         {
             if (friendStatus == FriendsTableUtils.FriendStatusEnum.FRIENDS)
             {
-                StatusMessage sm = new StatusMessage(msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1, false);
+                StatusMessage sm = new StatusMessage(msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1);
                 App.HikePubSubInstance.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
                 App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
             }
