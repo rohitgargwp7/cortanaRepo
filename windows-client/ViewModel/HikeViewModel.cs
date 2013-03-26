@@ -327,10 +327,12 @@ namespace windows_client.ViewModel
 
                     if (!IsPendingListLoaded)
                         LoadPendingRequests();
+                    #region handle pending request
                     if (_pendingReq != null && _pendingReq.Remove(msisdn))
                     {
                         MiscDBUtil.SavePendingRequests();
                     }
+                    #endregion
                     if (_favList != null) // this will remove from UI too
                         RemoveAndSaveFromFavList(msisdn);
                 }
