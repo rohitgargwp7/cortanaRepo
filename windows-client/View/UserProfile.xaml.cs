@@ -657,7 +657,6 @@ namespace windows_client.View
                 gridInvite.Visibility = Visibility.Collapsed;
             else
             {
-                btn.Content = AppResources.Invited;
                 btn.Visibility = Visibility.Collapsed;
             }
             isInvited = true;
