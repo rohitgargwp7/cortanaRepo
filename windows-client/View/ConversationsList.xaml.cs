@@ -2046,7 +2046,7 @@ namespace windows_client.View
             App.ViewModel.StatusList.Remove(fObj);
             App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
             MiscDBUtil.SavePendingRequests();
-            FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.IGNORED);
+            FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
         }
 
         private void notification_Tap(object sender, System.Windows.Input.GestureEventArgs e)

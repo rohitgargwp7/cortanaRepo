@@ -653,9 +653,14 @@ namespace windows_client.View
                     }
                 }
             }
-            btn.Content = AppResources.Invited;
+            if (gridInvite.Visibility == Visibility.Visible)
+                gridInvite.Visibility = Visibility.Collapsed;
+            else
+            {
+                btn.Content = AppResources.Invited;
+                btn.Visibility = Visibility.Collapsed;
+            }
             isInvited = true;
-            gridInvite.Visibility = Visibility.Collapsed;
 
             if (toggleToInvitedScreen)//do not change ui if sms user or if status are shown
                 ShowRequestSent();
@@ -820,9 +825,9 @@ namespace windows_client.View
                         case FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU:
                             if (isInAddressBook)
                             {
+                                LoadStatuses();
                                 spAddFriend.Visibility = Visibility.Visible;
                                 gridInvite.Visibility = Visibility.Visible;
-                                LoadStatuses();
                             }
                             else
                                 ShowAddToContacts();
@@ -834,6 +839,8 @@ namespace windows_client.View
                                 LoadStatuses();
                             else
                                 ShowAddToContacts();
+                            spAddFriend.Visibility = Visibility.Visible;
+                            gridInvite.Visibility = Visibility.Visible;
                             break;
                         #endregion
                         #region REQUEST SENT
@@ -940,6 +947,7 @@ namespace windows_client.View
             txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, nameToShow);
             seeUpdatesTxtBlk1.Text = string.Format(AppResources.Profile_YouCanNowSeeUpdates, nameToShow);
             gridInvite.Visibility = Visibility.Visible;
+            spAddFriend.Visibility = Visibility.Collapsed;
         }
 
         private void ShowEmptyStatus()
@@ -1064,8 +1072,9 @@ namespace windows_client.View
             obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
             obj[HikeConstants.DATA] = data;
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-            FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.IGNORED);
+            FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
             spAddFriendInvite.Visibility = Visibility.Collapsed;
+            spAddFriend.Visibility = Visibility.Visible;
             App.ViewModel.PendingRequests.Remove(msisdn);
             MiscDBUtil.SavePendingRequests();
             App.ViewModel.RemoveFrndReqFromTimeline(msisdn, fs);

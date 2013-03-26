@@ -1080,7 +1080,7 @@ namespace windows_client
             {
                 try
                 {
-                    FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.NOT_SET);
+                    FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
                     App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
                 }
                 catch (Exception e)
