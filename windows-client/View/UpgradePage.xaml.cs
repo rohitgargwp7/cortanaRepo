@@ -114,7 +114,8 @@ namespace windows_client.View
                 }
                 else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
                 {
-                    NavigationService.Navigate(new Uri("/View/ConversationsList.xaml?" + true, UriKind.Relative));
+                    PhoneApplicationService.Current.State["IsStatusPush"] = true;
+                    NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
                 }
                 else if (targetPage != null && targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
                 {
