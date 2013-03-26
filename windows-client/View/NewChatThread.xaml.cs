@@ -3520,8 +3520,27 @@ namespace windows_client.View
 
         #endregion
 
+        #region Orientation Handling
+        private void PhoneApplicationPage_OrientationChanged(object sender,
+      OrientationChangedEventArgs e)
+        {
+            for (int i = 0; i < this.MessageList.Children.Count; i++)
+            {
+                if (typeof(MyChatBubble).IsAssignableFrom(this.MessageList.Children[i].GetType()))
+                {
+                    (this.MessageList.Children[i] as MyChatBubble).OrientationChanged(e.Orientation);
+                }
+                //if (this.MessageList.Children[i] is SentChatBubble)
+                //    (this.MessageList.Children[i] as MyChatBubble).OrientationChanged(e.Orientation);
+            }
+        }
+        #endregion
+
         #region ScrollViewer On Scroll call Back events handling
-        //http://www.c-sharpcorner.com/blogs/3703/how-to-detect-the-scrollbar-has-changed-in-a-scrollviewer-in.aspx
+
+        private void MessageListPanel_Loaded1(object sender, RoutedEventArgs e)
+        {
+        }
         private void MessageListPanel_Loaded(object sender, RoutedEventArgs e)
         {
             this.MessageList.Loaded -= MessageListPanel_Loaded;

@@ -60,6 +60,18 @@ namespace windows_client.Controls
             }
         }
 
+        public override void OrientationChanged(PageOrientation orientation)
+        {
+            if ((orientation & PageOrientation.Landscape) == PageOrientation.Landscape)
+            {
+                this.MessageText.Width = 510;
+            }
+            else if ((orientation & PageOrientation.Portrait) == PageOrientation.Portrait)
+            {
+                this.MessageText.Width = 330;
+            }
+        }
+
         public void updateProgress(double progressValue)
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>

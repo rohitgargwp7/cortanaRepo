@@ -14,6 +14,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
+    OrientationChanged="PhoneApplicationPage_OrientationChanged"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True" Visibility="Visible" Name="chatThreadMainPage">
 
@@ -62,7 +63,7 @@
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <ScrollViewer Grid.Row="1" Name="Scroller" Opacity="0" Margin="0,0,0,0" Tap="MessageList_Tap" DoubleTap="MessageList_DoubleTap">
+        <ScrollViewer Grid.Row="1" Name="Scroller" Opacity="0" Margin="0,0,0,0" Tap="MessageList_Tap" DoubleTap="MessageList_DoubleTap" Loaded="MessageListPanel_Loaded1">
             <StackPanel  Name="MessageList" Margin="0,0,0,0" VerticalAlignment="Bottom" Loaded="MessageListPanel_Loaded">
 
             </StackPanel>

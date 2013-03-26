@@ -113,6 +113,10 @@ namespace windows_client.Controls
             }
         }
 
+        public virtual void OrientationChanged(PageOrientation orientation)
+        { 
+        }
+
         public void setTapEvent(EventHandler<Microsoft.Phone.Controls.GestureEventArgs> tapEventHandler)
         {
             var gl = GestureService.GetGestureListener(this);
