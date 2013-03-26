@@ -667,15 +667,16 @@ namespace windows_client.View
                     favBw.RunWorkerCompleted += (sf, ef) =>
                     {
                         shellProgress.IsVisible = false;
-                        hikeContactListBox.ItemsSource = hikeContactList;
-                        favourites.ItemsSource = App.ViewModel.FavList;
+                        contactsCollectionView.Source = hikeContactList;
+                        favCollectionView.Source = App.ViewModel.FavList; // this is done to sort in view
+                        favourites.SelectedIndex = -1;
+                        hikeContactListBox.SelectedIndex = -1;
                         circleOfFriendsTitleTxtBlck.Visibility = System.Windows.Visibility.Visible;
                         contactOnHikeTitleTxtBlck.Visibility = System.Windows.Visibility.Visible;
                         if (App.ViewModel.FavList.Count > 0)
                         {
                             emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                             favourites.Visibility = System.Windows.Visibility.Visible;
-                            //addFavsPanel.Opacity = 1;
                         }
                         else
                         {
@@ -965,7 +966,7 @@ namespace windows_client.View
                         else
                             statusImage.Source = UI_Utils.Instance.TextStatusImage;
 
-                        if(sm.Status_Type != StatusMessage.StatusType.PROFILE_PIC_UPDATE)
+                        if(sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
                             txtStatus.Text = sm.Message;
                         // if status list is not loaded simply ignore this packet , as then this packet will
                         // be shown twice , one here and one from DB.
@@ -1682,6 +1683,7 @@ namespace windows_client.View
                 string uri = "/View/NewChatThread.xaml";
                 NavigationService.Navigate(new Uri(uri, UriKind.Relative));
             }
+            favourites.SelectedIndex = -1;
         }
 
         private void RemoveFavourite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1801,6 +1803,7 @@ namespace windows_client.View
                     App.ViewModel.RemoveFrndReqFromTimeline(contactInfo.Msisdn, fs);
                 }
             }
+            hikeContactListBox.SelectedIndex = -1;
         }
         #endregion
 
