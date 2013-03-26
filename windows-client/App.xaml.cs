@@ -39,7 +39,6 @@ namespace windows_client
         public static readonly string STATUS_UPDATE_SETTING = "stUpSet";
         public static readonly string STATUS_UPDATE_FIRST_SETTING = "stUpFirSet";
         public static readonly string STATUS_UPDATE_SECOND_SETTING = "stUpSecSet";
-        public static readonly string SHOW_FAVORITES_TUTORIAL = "favoritesTute";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
         public static readonly string LATEST_PUSH_TOKEN = "pushToken";
@@ -899,7 +898,6 @@ namespace windows_client
             // this will ensure that we will show tutorials in case of app upgrade from any version to version later that 1.5.0.8
             if (Utils.compareVersion(_currentVersion, "1.5.0.8") != 1) // current version is less than equal to 1.5.0.8
             {
-                App.appSettings[App.SHOW_FAVORITES_TUTORIAL] = true;
                 WriteToIsoStorageSettings(App.SHOW_NUDGE_TUTORIAL, true);
             }
 

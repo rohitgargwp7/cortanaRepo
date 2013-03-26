@@ -349,6 +349,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View circle of friends.
+        /// </summary>
+        public static string Conversations_BtnCircleOfFriends_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_BtnCircleOfFriends_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update status.
         /// </summary>
         public static string Conversations_BtnUpdateStatus_Txt {
@@ -457,6 +466,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can see updates from your circle of friends here..
+        /// </summary>
+        public static string Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to free SMS.
         /// </summary>
         public static string Conversations_FreeSms_Txt {
@@ -475,6 +493,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invite your friends to hike.
+        /// </summary>
+        public static string Conversations_InviteFriendsHike_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_InviteFriendsHike_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Message {0} on Hike.
         /// </summary>
         public static string Conversations_MessageOnHike_Txt {
@@ -489,6 +516,15 @@ namespace windows_client.Languages {
         public static string Conversations_NewChat_AppBar_Btn {
             get {
                 return ResourceManager.GetString("Conversations_NewChat_AppBar_Btn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have no Contacts on hike right now..
+        /// </summary>
+        public static string Conversations_NoFriendsOnHike_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_NoFriendsOnHike_Txt", resourceCulture);
             }
         }
         
@@ -619,7 +655,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have no friends right now..
+        ///   Looks up a localized string similar to You have no-one in your Circle of friends right now..
         /// </summary>
         public static string Conversations_TapYesToAdd_Txt {
             get {
@@ -1105,7 +1141,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap here to add new..
+        ///   Looks up a localized string similar to Add contacts to your circle of friends..
         /// </summary>
         public static string Favorites_TapToAdd {
             get {

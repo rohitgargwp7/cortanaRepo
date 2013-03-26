@@ -57,6 +57,11 @@ namespace windows_client.Model
         public static readonly string ADD_FAVS_CONTEXT_MENU_GROUP_INFO = "giATFCM";
         public static readonly string REMOVE_FAVS_CONTEXT_MENU_GROUP_INFO = "giRFFCM";
 
+
+        // NUX
+        public static readonly string SKIP_NUX_1 = "skipNux1";
+        public static readonly string SKIP_NUX_2 = "skipNux2";
+
         private Dictionary<string, int> eventMap = null;
 
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
@@ -161,7 +166,7 @@ namespace windows_client.Model
 
         public void clearObject() //call after publish
         {
-            if(eventMap != null)
+            if (eventMap != null)
                 eventMap.Clear();
         }
 

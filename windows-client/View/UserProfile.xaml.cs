@@ -352,7 +352,6 @@ namespace windows_client.View
                 #endregion
 
                 avatarImage.Source = profileImage;
-                avatarImage.Tap += onProfilePicButtonTap;
                 txtUserName.Text = nameToShow;
 
                 //if blocked user show block ui and return

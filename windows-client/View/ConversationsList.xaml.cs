@@ -45,7 +45,6 @@ namespace windows_client.View
         ApplicationBarIconButton groupChatIconButton;
         //ApplicationBarIconButton addFriendIconButton;
 
-        private bool isShowFavTute = true;
         private bool isStatusMessagesLoaded = false;
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
         #endregion
@@ -57,52 +56,13 @@ namespace windows_client.View
             InitializeComponent();
             initAppBar();
             initProfilePage();
-            if (isShowFavTute)
-                showTutorial();
             App.ViewModel.ConversationListPage = this;
-
+            convListPagePivot.ApplicationBar = appBar;
             App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out _totalUnreadStatuses);
             App.appSettings.TryGetValue(HikeConstants.REFRESH_BAR, out _refreshBarCount);
             App.appSettings.TryGetValue(HikeConstants.UNREAD_FRIEND_REQUESTS, out _unreadFriendRequests);
             setNotificationCounter(RefreshBarCount + UnreadFriendRequests);
             App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
-        }
-
-        private void favTutePvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (favTutePvt.SelectedIndex == 0)
-            {
-                favBox1.Fill = UI_Utils.Instance.WalkThroughSelectedColumn;
-                favBox0.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
-            }
-            else
-            {
-                favBox0.Fill = UI_Utils.Instance.WalkThroughSelectedColumn;
-                favBox1.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
-            }
-        }
-
-        private void showTutorial()
-        {
-            if (App.appSettings.Contains(App.SHOW_FAVORITES_TUTORIAL))
-            {
-                overlay.Visibility = Visibility.Visible;
-                TutorialsGrid.Visibility = Visibility.Visible;
-                launchPagePivot.IsHitTestVisible = false;
-            }
-            else
-            {
-                convListPagePivot.ApplicationBar = appBar;
-            }
-        }
-
-        private void dismissTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            overlay.Visibility = Visibility.Collapsed;
-            TutorialsGrid.Visibility = Visibility.Collapsed;
-            convListPagePivot.ApplicationBar = appBar;
-            launchPagePivot.IsHitTestVisible = true;
-            App.RemoveKeyFromAppSettings(App.SHOW_FAVORITES_TUTORIAL);
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
@@ -192,6 +152,24 @@ namespace windows_client.View
             removeListeners();
         }
 
+        private void DismissStatusUpdateTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            RemoveStatusUpdateTutorial();
+        }
+
+        private void RemoveStatusUpdateTutorial()
+        {
+            overlay.Tap -= DismissStatusUpdateTutorial_Tap;
+            overlay.Visibility = Visibility.Collapsed;
+            TutorialStatusUpdate.Visibility = Visibility.Collapsed;
+            launchPagePivot.IsHitTestVisible = true;
+            App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
+        }
+
+        private void CircleOfFriends_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            launchPagePivot.SelectedIndex = 1;
+        }
         #endregion
 
         #region ConvList Page
@@ -675,13 +653,22 @@ namespace windows_client.View
                         contactOnHikeTitleTxtBlck.Visibility = System.Windows.Visibility.Visible;
                         if (App.ViewModel.FavList.Count > 0)
                         {
-                            emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                            emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                             favourites.Visibility = System.Windows.Visibility.Visible;
                         }
                         else
                         {
-                            emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
+                            emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
+                            if (hikeContactList.Count > 0)
+                                addContactsTxtBlk.Visibility = Visibility.Visible;
+                            else
+                                addContactsTxtBlk.Visibility = Visibility.Collapsed;
                         }
+
+                        if (hikeContactList.Count == 0)
+                            emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
+                        else
+                            emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
                     };
                 }
                 #endregion
@@ -729,7 +716,7 @@ namespace windows_client.View
                         if (App.ViewModel.StatusList.Count == 0)
                         {
                             emptyStatusPlaceHolder.Visibility = Visibility.Visible;
-                            txtEmptyStatusBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
+                            txtEmptyStatusFriendBlk1.Text = txtEmptyStatusBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
                             statusLLS.Visibility = Visibility.Collapsed;
                         }
                         RefreshBarCount = 0;
@@ -831,15 +818,15 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                    if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                     {
-                        emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                        emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                         favourites.Visibility = System.Windows.Visibility.Visible;
                         //addFavsPanel.Opacity = 1;
                     }
                     else if (App.ViewModel.FavList.Count == 0) // remove fav
                     {
-                        emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
+                        emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
                         favourites.Visibility = System.Windows.Visibility.Collapsed;
                         //addFavsPanel.Opacity = 0;
                     }
@@ -1038,7 +1025,7 @@ namespace windows_client.View
                         if (App.ViewModel.StatusList.Count == 0)
                         {
                             emptyStatusPlaceHolder.Visibility = Visibility.Visible;
-                            txtEmptyStatusBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
+                            txtEmptyStatusFriendBlk1.Text = txtEmptyStatusBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
                             statusLLS.Visibility = Visibility.Collapsed;
                         }
                     }
@@ -1079,6 +1066,10 @@ namespace windows_client.View
                     {
                         if (c != null)
                             hikeContactList.Add(c);
+                        if (emptyListPlaceholderHikeContacts.Visibility == Visibility.Visible)
+                        {
+                            emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
+                        }
                     });
                 }
             }
@@ -1092,10 +1083,14 @@ namespace windows_client.View
                     {
                         if (obj != null)
                             hikeContactList.Remove(obj as ContactInfo);
-                        if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                        if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                         {
-                            emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                            emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                             favourites.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        if (hikeContactList.Count == 0)
+                        {
+                            emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
                         }
                     });
                 }
@@ -1127,10 +1122,14 @@ namespace windows_client.View
                     }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                           {
-                              if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                              if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                               {
-                                  emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                                  emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                                   favourites.Visibility = System.Windows.Visibility.Visible;
+                              }
+                              if (hikeContactList.Count == 0)
+                              {
+                                  emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
                               }
                           });
                 }
@@ -1273,7 +1272,7 @@ namespace windows_client.View
                     App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
                     if (App.ViewModel.FavList.Count == 0)
                     {
-                        emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
+                        emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
                         favourites.Visibility = System.Windows.Visibility.Collapsed;
                         //addFavsPanel.Opacity = 0;
                     }
@@ -1292,6 +1291,10 @@ namespace windows_client.View
                             c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                         c.Avatar = convObj.Avatar;
                         hikeContactList.Add(c);
+                    }
+                    if (emptyListPlaceholderHikeContacts.Visibility == System.Windows.Visibility.Visible)
+                    {
+                        emptyListPlaceholderHikeContacts.Visibility = System.Windows.Visibility.Collapsed;
                     }
                 }
                 else // add to fav
@@ -1323,11 +1326,15 @@ namespace windows_client.View
                     obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
                     obj[HikeConstants.DATA] = data;
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                    if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                    if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                     {
-                        emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                        emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                         favourites.Visibility = System.Windows.Visibility.Visible;
                         //addFavsPanel.Opacity = 1;
+                    }
+                    if (hikeContactList.Count == 0)
+                    {
+                        emptyListPlaceholderHikeContacts.Visibility = System.Windows.Visibility.Visible;
                     }
                     menuFavourite.Header = AppResources.RemFromFav_Txt;
                     App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
@@ -1728,8 +1735,12 @@ namespace windows_client.View
             }
             if (App.ViewModel.FavList.Count == 0)
             {
-                emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
+                emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
                 favourites.Visibility = System.Windows.Visibility.Collapsed;
+            }
+            if (emptyListPlaceholderHikeContacts.Visibility == Visibility.Visible)
+            {
+                emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -1789,10 +1800,14 @@ namespace windows_client.View
                 App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
 
-                if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                 {
-                    emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                    emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                     favourites.Visibility = System.Windows.Visibility.Visible;
+                }
+                if (hikeContactList.Count == 0)
+                {
+                    emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
                 }
                 FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(cObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
 
@@ -2014,9 +2029,9 @@ namespace windows_client.View
             int count = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
             App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
-            if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+            if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
             {
-                emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                 favourites.Visibility = System.Windows.Visibility.Visible;
             }
             StatusMessage sm = new StatusMessage(fObj.Msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1);
@@ -2093,7 +2108,14 @@ namespace windows_client.View
                     return;
 
                 if (stsBox.Msisdn == App.MSISDN)
+                {
+                    Object[] obj = new Object[2];
+                    obj[0] = stsBox.Msisdn;
+                    obj[1] = stsBox.UserName;
+                    PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = obj;
+                    NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
                     return;
+                }
                 if (App.ViewModel.ConvMap.ContainsKey(stsBox.Msisdn))
                     PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = App.ViewModel.ConvMap[stsBox.Msisdn];
                 else
@@ -2126,18 +2148,5 @@ namespace windows_client.View
 
         #endregion
 
-        private void DismissStatusUpdateTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            RemoveStatusUpdateTutorial();
-        }
-
-        private void RemoveStatusUpdateTutorial()
-        {
-            overlay.Tap -= DismissStatusUpdateTutorial_Tap;
-            overlay.Visibility = Visibility.Collapsed;
-            TutorialStatusUpdate.Visibility = Visibility.Collapsed;
-            launchPagePivot.IsHitTestVisible = true;
-            App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
-        }
     }
 }
