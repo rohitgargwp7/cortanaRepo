@@ -210,7 +210,7 @@
     <comment>cs</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>You have no friends right now.</value>
+    <value>You have no-one in your Circle of friends right now.</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -1159,7 +1159,7 @@
     <comment>Text used in app menu bar</comment>
   </data>
   <data name="Favorites_TapToAdd" xml:space="preserve">
-    <value>Tap here to add new.</value>
+    <value>Add contacts to your circle of friends.</value>
     <comment>xaml (below heart image)</comment>
   </data>
   <data name="Favorites_Tute_Screen1" xml:space="preserve">
@@ -1718,5 +1718,17 @@
   </data>
   <data name="Me_Txt" xml:space="preserve">
     <value>Me</value>
+  </data>
+  <data name="Conversations_BtnCircleOfFriends_Txt" xml:space="preserve">
+    <value>View circle of friends</value>
+  </data>
+  <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
+    <value>You can see updates from your circle of friends here.</value>
+  </data>
+  <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
+    <value>Invite your friends to hike</value>
+  </data>
+  <data name="Conversations_NoFriendsOnHike_Txt" xml:space="preserve">
+    <value>You have no Contacts on hike right now.</value>
   </data>
 </root>

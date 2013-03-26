@@ -166,7 +166,7 @@ namespace windows_client.Model
 
         public void clearObject() //call after publish
         {
-            if(eventMap != null)
+            if (eventMap != null)
                 eventMap.Clear();
         }
 

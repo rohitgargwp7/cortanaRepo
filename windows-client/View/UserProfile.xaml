@@ -46,7 +46,7 @@
                     <Ellipse  Fill="#4CB700" Width="10" Height="10"  HorizontalAlignment="Center" />
                 </Grid>-->
                 </Grid>
-                <Grid Grid.Row="1" Margin="24,30,24,0" VerticalAlignment="Bottom">
+            <Grid Grid.Row="1" Margin="24,30,24,0" VerticalAlignment="Bottom" Tap="onProfilePicButtonTap">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*" />

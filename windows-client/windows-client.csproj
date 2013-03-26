@@ -527,6 +527,8 @@
     <Content Include="View\images\icon_cross.png" />
     <Content Include="View\images\icon_editprofile.png" />
     <Content Include="View\images\icon_group.png" />
+    <Content Include="View\images\icon_notification.png" />
+    <Content Include="View\images\icon_notification_black.png" />
     <Content Include="View\images\icon_pause.png" />
     <Content Include="View\images\icon_message.png" />
     <Content Include="View\images\icon_play.png" />

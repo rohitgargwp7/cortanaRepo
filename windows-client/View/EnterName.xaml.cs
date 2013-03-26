@@ -185,7 +185,6 @@ namespace windows_client
             try
             {
                 App.appSettings[HikeConstants.IS_NEW_INSTALLATION] = true;
-                App.appSettings[App.SHOW_FAVORITES_TUTORIAL] = true;
                 App.WriteToIsoStorageSettings(App.SHOW_NUDGE_TUTORIAL, true);
 
                 NavigationService.Navigate(nextPage);
