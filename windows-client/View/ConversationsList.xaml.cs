@@ -2055,7 +2055,7 @@ namespace windows_client.View
             {
                 launchPagePivot.SelectedIndex = 3;
                 //if no new status scroll to latest unseen friends request
-                if (UnreadFriendRequests > 0)
+                if (UnreadFriendRequests > 0 && (App.ViewModel.PendingRequests.Count > UnreadFriendRequests))
                     statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count - UnreadFriendRequests]);
                 //scroll to latest unread status
                 else if (App.ViewModel.StatusList.Count > App.ViewModel.PendingRequests.Count && RefreshBarCount > 0)
