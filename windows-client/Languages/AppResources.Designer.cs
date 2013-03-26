@@ -1861,6 +1861,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Me.
+        /// </summary>
+        public static string Me_Txt {
+            get {
+                return ResourceManager.GetString("Me_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You can also message friends not.
         /// </summary>
         public static string MessageNonHikeFriends_Blk1_Txt {
@@ -3648,24 +3657,6 @@ namespace windows_client.Languages {
         public static string Stop_Txt {
             get {
                 return ResourceManager.GetString("Stop_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string String1 {
-            get {
-                return ResourceManager.GetString("String1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string String2 {
-            get {
-                return ResourceManager.GetString("String2", resourceCulture);
             }
         }
         

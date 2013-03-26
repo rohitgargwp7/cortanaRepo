@@ -1581,9 +1581,6 @@
   <data name="Mood_Writing_Txt" xml:space="preserve">
     <value>Writing</value>
   </data>
-  <data name="String1" xml:space="preserve">
-    <value />
-  </data>
   <data name="Mood_Beer_Morning_Txt" xml:space="preserve">
     <value>Have no fear, I've got beer...</value>
   </data>
@@ -1689,9 +1686,6 @@
   <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
     <value>Status Updates Notification</value>
   </data>
-  <data name="String2" xml:space="preserve">
-    <value />
-  </data>
   <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
     <value>Every Hour</value>
   </data>
@@ -1711,10 +1705,9 @@
   <data name="Conversations_Status_Tutorials_Header" xml:space="preserve">
     <value>Status Updates</value>
   </data>
-
   <data name="Notifications_Header_Txt" xml:space="preserve">
     <value>notifications</value>
-</data>
+  </data>
   <data name="Now_Friends_Txt" xml:space="preserve">
     <value>Is now your friend</value>
     <comment>This is used in timeline and profile , when user becomed friend.</comment>
@@ -1722,5 +1715,8 @@
   <data name="Friend_Confirm_Txt" xml:space="preserve">
     <value>Confirmed you as a friend</value>
     <comment>This is shown when a user confirms you as friend.</comment>
+  </data>
+  <data name="Me_Txt" xml:space="preserve">
+    <value>Me</value>
   </data>
 </root>
