@@ -1143,9 +1143,6 @@ namespace windows_client.View
                 {
                     ContactInfo c = obj as ContactInfo;
 
-                    // ignore if not onhike or not in addressbook
-                    if (!c.OnHike || string.IsNullOrEmpty(c.Name))
-                        return;
                     if (isStatusMessagesLoaded)
                     {
                         #region removing friend request
@@ -1173,7 +1170,7 @@ namespace windows_client.View
                         }
                         #endregion
                     }
-
+                    #region removing hike contact if blocked
                     if (c.OnHike && !string.IsNullOrEmpty(c.Name)) // if friend request is not there , try to remove from contacts
                     {
                         Dispatcher.BeginInvoke(() =>
@@ -1181,6 +1178,7 @@ namespace windows_client.View
                             hikeContactList.Remove(c);
                         });
                     }
+                    #endregion
                 }
             }
             #endregion
