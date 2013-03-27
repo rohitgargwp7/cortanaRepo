@@ -1,16 +1,12 @@
-﻿using System.Windows;
-using System.Linq;
+﻿using System.Linq;
 using windows_client.Model;
 using System.Collections.Generic;
-using windows_client.View;
 using System;
 using windows_client.utils;
 using System.Data.Linq;
 using Newtonsoft.Json.Linq;
 using windows_client.Controls;
 using System.Diagnostics;
-using System.Threading;
-using Microsoft.Phone.Shell;
 using System.Text;
 using windows_client.Misc;
 using windows_client.Languages;
