@@ -1150,33 +1150,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A permanent place for all your friend friends..
-        /// </summary>
-        public static string Favorites_Tute_Screen1 {
-            get {
-                return ResourceManager.GetString("Favorites_Tute_Screen1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Chatting with them is just a tap away..
-        /// </summary>
-        public static string Favorites_Tute_Screen1_2 {
-            get {
-                return ResourceManager.GetString("Favorites_Tute_Screen1_2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To see all your hike friends and add new to friends tap the + button.
-        /// </summary>
-        public static string Favorites_Tute_Screen2 {
-            get {
-                return ResourceManager.GetString("Favorites_Tute_Screen2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Connect with Facebook.
         /// </summary>
         public static string FB_Connect_Txt {

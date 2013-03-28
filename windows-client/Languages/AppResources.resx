@@ -1162,18 +1162,6 @@
     <value>Add contacts to your circle of friends.</value>
     <comment>xaml (below heart image)</comment>
   </data>
-  <data name="Favorites_Tute_Screen1" xml:space="preserve">
-    <value>A permanent place for all your friend friends.</value>
-    <comment>xaml (below tute image)</comment>
-  </data>
-  <data name="Favorites_Tute_Screen1_2" xml:space="preserve">
-    <value>Chatting with them is just a tap away.</value>
-    <comment>xaml (below tute image)</comment>
-  </data>
-  <data name="Favorites_Tute_Screen2" xml:space="preserve">
-    <value>To see all your hike friends and add new to friends tap the + button</value>
-    <comment>xaml (below tute image)</comment>
-  </data>
   <data name="Invited" xml:space="preserve">
     <value>Invited</value>
   </data>
