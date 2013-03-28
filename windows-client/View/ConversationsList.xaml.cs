@@ -645,8 +645,10 @@ namespace windows_client.View
                     favBw.RunWorkerCompleted += (sf, ef) =>
                     {
                         shellProgress.IsVisible = false;
-                        hikeContactListBox.ItemsSource = hikeContactList;
-                        favourites.ItemsSource = App.ViewModel.FavList;
+                        contactsCollectionView.Source = hikeContactList;
+                        favCollectionView.Source = App.ViewModel.FavList; // this is done to sort in view
+                        favourites.SelectedIndex = -1;
+                        hikeContactListBox.SelectedIndex = -1;
                         circleOfFriendsTitleTxtBlck.Visibility = System.Windows.Visibility.Visible;
                         contactOnHikeTitleTxtBlck.Visibility = System.Windows.Visibility.Visible;
                         if (App.ViewModel.FavList.Count > 0)
@@ -677,7 +679,6 @@ namespace windows_client.View
                     appBar.MenuItems.Remove(delConvsMenu);
                 if (!isStatusMessagesLoaded)
                 {
-                    isStatusMessagesLoaded = true;
                     List<StatusMessage> statusMessagesFromDB = null;
                     BackgroundWorker statusBw = new BackgroundWorker();
                     statusBw.DoWork += (sf, ef) =>
@@ -720,6 +721,7 @@ namespace windows_client.View
                         }
                         RefreshBarCount = 0;
                         UnreadFriendRequests = 0;
+                        isStatusMessagesLoaded = true;
                     };
                     if (appSettings.Contains(App.SHOW_STATUS_UPDATES_TUTORIAL))
                     {
@@ -951,7 +953,8 @@ namespace windows_client.View
                         else
                             statusImage.Source = UI_Utils.Instance.TextStatusImage;
 
-                        txtStatus.Text = sm.Message;
+                        if(sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
+                            txtStatus.Text = sm.Message;
                         // if status list is not loaded simply ignore this packet , as then this packet will
                         // be shown twice , one here and one from DB.
                         if (isStatusMessagesLoaded)
@@ -1140,9 +1143,6 @@ namespace windows_client.View
                 {
                     ContactInfo c = obj as ContactInfo;
 
-                    // ignore if not onhike or not in addressbook
-                    if (!c.OnHike || string.IsNullOrEmpty(c.Name))
-                        return;
                     if (isStatusMessagesLoaded)
                     {
                         #region removing friend request
@@ -1170,7 +1170,7 @@ namespace windows_client.View
                         }
                         #endregion
                     }
-
+                    #region removing hike contact if blocked
                     if (c.OnHike && !string.IsNullOrEmpty(c.Name)) // if friend request is not there , try to remove from contacts
                     {
                         Dispatcher.BeginInvoke(() =>
@@ -1178,6 +1178,7 @@ namespace windows_client.View
                             hikeContactList.Remove(c);
                         });
                     }
+                    #endregion
                 }
             }
             #endregion
@@ -1687,6 +1688,7 @@ namespace windows_client.View
                 string uri = "/View/NewChatThread.xaml";
                 NavigationService.Navigate(new Uri(uri, UriKind.Relative));
             }
+            favourites.SelectedIndex = -1;
         }
 
         private void RemoveFavourite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1814,6 +1816,7 @@ namespace windows_client.View
                     App.ViewModel.RemoveFrndReqFromTimeline(contactInfo.Msisdn, fs);
                 }
             }
+            hikeContactListBox.SelectedIndex = -1;
         }
         #endregion
 
@@ -2029,7 +2032,7 @@ namespace windows_client.View
                 emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                 favourites.Visibility = System.Windows.Visibility.Visible;
             }
-            StatusMessage sm = new StatusMessage(fObj.Msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1, false);
+            StatusMessage sm = new StatusMessage(fObj.Msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1);
             mPubSub.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
             mPubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
         }
@@ -2055,7 +2058,7 @@ namespace windows_client.View
             {
                 launchPagePivot.SelectedIndex = 3;
                 //if no new status scroll to latest unseen friends request
-                if (UnreadFriendRequests > 0)
+                if (UnreadFriendRequests > 0 && (App.ViewModel.PendingRequests.Count > UnreadFriendRequests))
                     statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count - UnreadFriendRequests]);
                 //scroll to latest unread status
                 else if (App.ViewModel.StatusList.Count > App.ViewModel.PendingRequests.Count && RefreshBarCount > 0)

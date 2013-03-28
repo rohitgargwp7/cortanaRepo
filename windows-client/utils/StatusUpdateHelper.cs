@@ -47,8 +47,7 @@ namespace windows_client.utils
             BitmapImage userProfileThumbnail;
             if (App.MSISDN == status.Msisdn)
             {
-                if (!App.appSettings.TryGetValue(App.ACCOUNT_NAME, out userName))
-                    userName = App.MSISDN;
+                userName = AppResources.Me_Txt;
                 userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
             }
             else
