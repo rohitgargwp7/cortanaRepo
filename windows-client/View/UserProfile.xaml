@@ -54,14 +54,12 @@
                 <Image Name="avatarImage" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="0" Height="90" Width="90"/>
                 <Image Name="changePic" Visibility="Collapsed" Grid.Column="0"  Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Source="images\change_pic.png" />
             </Grid>
-            <StackPanel Grid.Row="2" Margin="24,24,24,0" Orientation="Vertical" >
+            <StackPanel Grid.Row="2" Margin="24,12,24,0" Orientation="Vertical" >
                 <TextBlock Name="txtUserName" HorizontalAlignment="Left" FontSize="34" FontFamily="Segoe WP" Foreground="White"/>
-                <TextBlock Name="txtOnHikeSmsTime" HorizontalAlignment="Left" FontSize="16"  FontFamily="Segoe WP Semilight" Foreground="White"  />
+                <TextBlock Name="txtOnHikeSmsTime" HorizontalAlignment="Left" FontSize="18"  FontFamily="Segoe WP Semilight" Foreground="White" Margin="0 5 0 0" />
             </StackPanel>
-
-
         </Grid>
-        <Grid Name="gridInvite" Grid.Row="1" Visibility="Collapsed">
+        <Grid Name="gridAddFriendStrip" Grid.Row="1" Visibility="Collapsed">
             <StackPanel  Name="spAddFriendInvite" Visibility="Collapsed" Background="#414243">
                 <TextBlock x:Name="txtAddedYouAsFriend" TextWrapping="Wrap" FontSize="18" FontFamily="Segoe WP Semibold"  Margin="0,10,0,0" Foreground="#e5e5e5" HorizontalAlignment="Center" TextAlignment="Center"/>
                 <TextBlock x:Name="seeUpdatesTxtBlk1" TextWrapping="Wrap" FontSize="18" FontFamily="Segoe WP Regular" Foreground="#e5e5e5"   HorizontalAlignment="Center" TextAlignment="Center"/>
