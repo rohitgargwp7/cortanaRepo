@@ -81,9 +81,7 @@ namespace windows_client.DbUtils
                                 {
                                     friendStatus = FriendStatusEnum.FRIENDS;
                                 }
-
                             }
-
 
                             using (BinaryWriter writer = new BinaryWriter(file))
                             {
