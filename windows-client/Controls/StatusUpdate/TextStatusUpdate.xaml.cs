@@ -13,6 +13,7 @@ namespace windows_client.Controls.StatusUpdate
     {
         private long timestamp;
         private int moodId = -1;
+        private bool isShowOnTimeline;
         private static Thickness timelineStatusLayoutMargin = new Thickness(0, 12, 0, 12);
         private static Thickness userProfileStatusLayoutMargin = new Thickness(0, 0, 0, 0);
 
@@ -60,6 +61,7 @@ namespace windows_client.Controls.StatusUpdate
             this.IsUnread = sm.IsUnread;
             statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
             this.Loaded += TextStatusUpdate_Loaded;
+            this.isShowOnTimeline = isShowOnTimeline;
             if (statusBubbleImageTap != null)
             {
                 this.statusTypeImage.Tap += statusBubbleImageTap;
@@ -74,19 +76,10 @@ namespace windows_client.Controls.StatusUpdate
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
                 //statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
             }
-            if (sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
-            {
-                statusTypeImage.Source = UI_Utils.Instance.FriendRequestImage;
-            }
-            else
-            {
-                statusTypeImage.Source = UI_Utils.Instance.TextStatusImage;
-            }
             if (isShowOnTimeline)
             {
                 this.statusTypeImage.Source = this.UserImage;
                 this.statusTypeImage.MaxWidth = 69;
-                //statusTypeImage.Width = 31;
                 statusTextTxtBlk.MaxWidth = 300;
                 this.LayoutRoot.Margin = timelineStatusLayoutMargin;
                 this.statusTypeImage.Margin = timelineStatusTypeMargin;
@@ -96,7 +89,6 @@ namespace windows_client.Controls.StatusUpdate
             else
             {
                 userNameTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
-                //                this.userProfileImage.Visibility = System.Windows.Visibility.Collapsed;
                 statusTypeImage.Width = 40;
                 statusTextTxtBlk.MaxWidth = 380;
                 this.LayoutRoot.Margin = userProfileStatusLayoutMargin;
@@ -109,14 +101,24 @@ namespace windows_client.Controls.StatusUpdate
                 statusTypeImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
                 moodId = sm.MoodId;
             }
-
+            else if(!isShowOnTimeline)
+            {
+                if (sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
+                {
+                    statusTypeImage.Source = UI_Utils.Instance.TextStatusImage;
+                }
+                else
+                {
+                    statusTypeImage.Source = UI_Utils.Instance.FriendRequestImage;
+                }
+            }
         }
 
         void TextStatusUpdate_Loaded(object sender, RoutedEventArgs e)
         {
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
             //if there is no mood. refresh user image on loading CC
-            if (moodId == -1)
+            if (moodId == -1 && isShowOnTimeline)
             {
                 this.statusTypeImage.Source = UI_Utils.Instance.GetBitmapImage(this.Msisdn);
             }
