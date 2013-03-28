@@ -65,7 +65,9 @@ namespace windows_client.utils
             if (moodImages[moodId - 1] == null)
             {
                 BitmapImage moodImg = new BitmapImage();
-                moodImg.CreateOptions = BitmapCreateOptions.BackgroundCreation;
+                //Have to remove background creation here. If two consecutive statuses use same mood image, then at times
+                // either of images are not updated.
+                //moodImg.CreateOptions = BitmapCreateOptions.BackgroundCreation;
                 moodImg.UriSource = new Uri(moodInfo[moodId - 1, 0], UriKind.Relative);
                 moodImages[moodId - 1] = moodImg;
             }
