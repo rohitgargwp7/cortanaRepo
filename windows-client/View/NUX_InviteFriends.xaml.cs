@@ -51,7 +51,6 @@ namespace windows_client.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
             if (isFirstLaunch)
             {
                 if (App.appSettings.TryGetValue(App.PAGE_STATE, out ps) && ps == App.PageState.NUX_SCREEN_FAMILY)
@@ -100,7 +99,7 @@ namespace windows_client.View
             {
                 listContactInfo = listCloseFriends;
                 MarkDefaultChecked();
-                lstBoxInvite.ItemsSource = listContactInfo;
+                lstBoxInviteFriends.ItemsSource = listContactInfo;
                 sendInviteIconButton.Click += btnInviteFriends_Click;
             }
             else if (listFamilyMembers != null && listFamilyMembers.Count > 1)
@@ -125,7 +124,9 @@ namespace windows_client.View
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN_FAMILY);
             listContactInfo = listFamilyMembers;
             MarkDefaultChecked();
-            lstBoxInvite.ItemsSource = listContactInfo;
+            lstBoxInviteFamily.ItemsSource = listContactInfo;
+            lstBoxInviteFamily.Visibility = Visibility.Visible;
+            lstBoxInviteFriends.Visibility = Visibility.Collapsed;
             txtHeader.Text = AppResources.Nux_InviteFamily_Txt;
             txtConnectHike.Text = AppResources.Nux_FamilyMembersConnect_txt;
             sendInviteIconButton.IsEnabled = true;
