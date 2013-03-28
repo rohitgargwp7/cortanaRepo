@@ -22,6 +22,10 @@ namespace windows_client.Mqtt
         public volatile MqttConnection mqttConnection;
         private HikePubSub pubSub;
 
+        //Bug# 3833 - There are some changes in initialization of static objects in .Net 4. So, removing static for now.
+        //Later, on we should be using singleton so, static won't be required
+        private object lockObj = new object(); //TODO - Madhur Garg make this class singleton
+
         // constants used to define MQTT connection status
         public enum MQTTConnectionStatus
         {
@@ -298,9 +302,6 @@ namespace windows_client.Mqtt
                 connect();
             }        
         }
-
-        private static object lockObj = new object();
-
 
         private void connectInBackground()
         {
