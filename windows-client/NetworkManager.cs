@@ -551,7 +551,7 @@ namespace windows_client
                                                             if (rp)
                                                                 FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
                                                             else
-                                                                FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.NOT_SET);
+                                                                FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
                                                         }
                                                         else if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken) && pToken != null)
                                                         {
@@ -563,7 +563,7 @@ namespace windows_client
                                                             else // pending is false
                                                             {
                                                                 // in this case friend state should be ignored
-                                                                FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.IGNORED);
+                                                                FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
                                                                 continue;
                                                             }
                                                         }
