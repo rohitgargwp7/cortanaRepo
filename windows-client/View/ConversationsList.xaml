@@ -142,7 +142,7 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Image Name="statusImage" Grid.Column="0" Height="25" VerticalAlignment="Center" />
-                                <TextBlock Name="txtStatus" Margin="10 0 10 0" FontFamily="Segoe WP SemiLight" Grid.Column="1"></TextBlock>
+                                <TextBlock Name="txtStatus"  Margin="10 0 10 0" FontFamily="Segoe WP SemiLight" Height="30" Grid.Column="1" ></TextBlock>
                             </Grid>
                         </StackPanel>
                     </Grid>
