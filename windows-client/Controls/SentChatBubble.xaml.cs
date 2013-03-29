@@ -178,11 +178,11 @@ namespace windows_client.Controls
         {
             if ((orientation & PageOrientation.Landscape) == PageOrientation.Landscape)
             {
-                this.MessageText.Width = 510;
+                this.MessageText.Width = HikeConstants.CHATBUBBLE_LANDSCAPE_WIDTH;
             }
             else if ((orientation & PageOrientation.Portrait) == PageOrientation.Portrait)
             {
-                this.MessageText.Width = 330;
+                this.MessageText.Width = HikeConstants.CHATBUBBLE_PORTRAIT_WIDTH;
             }
         }
 
@@ -357,7 +357,7 @@ namespace windows_client.Controls
                     textBlck.Text = messageString;
                     textBlck.FontSize = 22;
                     textBlck.MinWidth = 150;
-                    textBlck.MaxWidth = 330;
+                    textBlck.MaxWidth = HikeConstants.CHATBUBBLE_PORTRAIT_WIDTH;
                     textBlck.Foreground = UI_Utils.Instance.White;
                     textBlck.Margin = contactMessageTextMargin;
                     textBlck.TextWrapping = TextWrapping.Wrap;
