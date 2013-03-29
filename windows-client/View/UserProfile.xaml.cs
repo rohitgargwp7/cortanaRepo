@@ -176,7 +176,7 @@ namespace windows_client.View
                         //because if previous state was friends then in address book has not been fetched yet
                         if (previousStatus == FriendsTableUtils.FriendStatusEnum.FRIENDS)
                         {
-                            isInAddressBook = UsersTableUtils.getContactInfoFromMSISDN(msisdn) != null;
+                            isInAddressBook = CheckUserInAddressBook();
                         }
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
@@ -226,7 +226,7 @@ namespace windows_client.View
                     if (msisdn != recMsisdn)
                         return;
                     timeOfJoin = FriendsTableUtils.GetFriendOnHIke(msisdn);
-                    isInAddressBook = UsersTableUtils.getContactInfoFromMSISDN(msisdn) != null;
+                    isInAddressBook = CheckUserInAddressBook();
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (timeOfJoin == 0)
@@ -791,7 +791,7 @@ namespace windows_client.View
                 isInAddressBook = false;
                 bw.DoWork += (ss, ee) =>
                 {
-                    isInAddressBook = UsersTableUtils.getContactInfoFromMSISDN(msisdn) != null;
+                    isInAddressBook = CheckUserInAddressBook();
                 };
                 bw.RunWorkerAsync();
                 bw.RunWorkerCompleted += (ss, ee) =>
@@ -1255,5 +1255,23 @@ namespace windows_client.View
         }
         #endregion
 
+        private bool CheckUserInAddressBook()
+        {
+            bool inAddressBook = false;
+            ConversationListObject convObj;
+            if (App.ViewModel.ConvMap.TryGetValue(msisdn, out convObj) && (convObj.ContactName != null))
+            {
+                inAddressBook = true;
+            }
+            else if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+            {
+                inAddressBook = true;
+            }
+            else if (UsersTableUtils.getContactInfoFromMSISDN(msisdn) != null)
+            {
+                inAddressBook = true;
+            }
+            return inAddressBook;
+        }
     }
 }
