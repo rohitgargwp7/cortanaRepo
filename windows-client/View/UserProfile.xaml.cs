@@ -856,12 +856,7 @@ namespace windows_client.View
 
         private void ShowAddToContacts()
         {
-            BitmapImage locked;
-            if (Utils.isDarkTheme())
-                locked = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
-            else
-                locked = new BitmapImage(new Uri("/View/images/menu_contact_icon_black.png", UriKind.Relative));
-            imgInviteLock.Source = locked;
+            imgInviteLock.Source = UI_Utils.Instance.ContactIcon;
             txtSmsUserNameBlk1.Text = nameToShow;
             txtSmsUserNameBlk2.Text = AppResources.Profile_NotInAddressbook_Txt;
             txtSmsUserNameBlk3.Text = string.Empty;
@@ -876,12 +871,7 @@ namespace windows_client.View
 
         private void ShowRequestSent()
         {
-            BitmapImage locked;
-            if (Utils.isDarkTheme())
-                locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));//todo:add white image
-            else
-                locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
-            imgInviteLock.Source = locked;
+            imgInviteLock.Source = UI_Utils.Instance.UserProfileLockImage;
             txtSmsUserNameBlk1.Text = AppResources.Profile_RequestSent_Blk1;
             txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
             txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
@@ -891,7 +881,7 @@ namespace windows_client.View
             btnInvite.Visibility = Visibility.Collapsed;
             if (!isInAddressBook)
             {
-                addToFavBtn.Content = "Add to Contacts";
+                addToFavBtn.Content = AppResources.UserProfile_AddToContacts_Btn;
                 addToFavBtn.Visibility = Visibility.Visible;
                 addToFavBtn.Tap += AddUserToContacts_Click;
             }
@@ -903,12 +893,7 @@ namespace windows_client.View
 
         private void ShowAddAsFriends()
         {
-            BitmapImage locked;
-            if (Utils.isDarkTheme())
-                locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));//todo:add white image
-            else
-                locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
-            imgInviteLock.Source = locked;
+            imgInviteLock.Source = UI_Utils.Instance.UserProfileLockImage;
             imgInviteLock.Visibility = Visibility.Visible;
             txtSmsUserNameBlk1.Text = AppResources.ProfileToBeFriendBlk1;
             txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
@@ -954,18 +939,13 @@ namespace windows_client.View
             txtSmsUserNameBlk2.FontWeight = FontWeights.Normal;
             gridHikeUser.Visibility = Visibility.Collapsed;
             btnInvite.Visibility = Visibility.Collapsed;
-            imgInviteLock.Source = null;
+            imgInviteLock.Source = null;//left null so that it occupies blank space
             imgInviteLock.Visibility = Visibility.Visible;
         }
 
         private void ShowNonHikeUser()
         {
-            BitmapImage locked;
-            if (Utils.isDarkTheme())
-                locked = new BitmapImage(new Uri("/View/images/user_invite_white.png", UriKind.Relative));
-            else
-                locked = new BitmapImage(new Uri("/View/images/user_invite.png", UriKind.Relative));
-            imgInviteLock.Source = locked;
+            imgInviteLock.Source = UI_Utils.Instance.UserProfileInviteImage;
             imgInviteLock.Visibility = Visibility.Visible;
             txtOnHikeSmsTime.Text = AppResources.OnSms_Txt;
             txtSmsUserNameBlk1.Text = nameToShow;
@@ -987,12 +967,7 @@ namespace windows_client.View
 
         private void ShowBlockedUser()
         {
-            BitmapImage locked;
-            if (Utils.isDarkTheme())
-                locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));//todo:add white image
-            else
-                locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
-            imgInviteLock.Source = locked;
+            imgInviteLock.Source = UI_Utils.Instance.UserProfileLockImage;
             txtSmsUserNameBlk1.Text = AppResources.Profile_BlockedUser_Blk1;
             txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
             txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;

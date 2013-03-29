@@ -3670,6 +3670,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add to Contacts.
+        /// </summary>
+        public static string UserProfile_AddToContacts_Btn {
+            get {
+                return ResourceManager.GetString("UserProfile_AddToContacts_Btn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Video.
         /// </summary>
         public static string Video_Txt {

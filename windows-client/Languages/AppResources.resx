@@ -1647,4 +1647,7 @@
   <data name="Mood_Watching_tv" xml:space="preserve">
     <value>Watching tv </value>
   </data>
+  <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
+    <value>Add to Contacts</value>
+  </data>
 </root>
