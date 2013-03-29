@@ -2631,7 +2631,7 @@ namespace windows_client.View
                 //TODO handle vibration for user profile and GC.
                 if ((convMessage.Msisdn != mContactNumber || (convMessage.MetaDataString != null &&
                     convMessage.MetaDataString.Contains(HikeConstants.POKE))) &&
-                    convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                    convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE && !IsMute)
                 {
                     bool isVibrateEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
@@ -3539,9 +3539,6 @@ namespace windows_client.View
 
         #region ScrollViewer On Scroll call Back events handling
 
-        private void MessageListPanel_Loaded1(object sender, RoutedEventArgs e)
-        {
-        }
         private void MessageListPanel_Loaded(object sender, RoutedEventArgs e)
         {
             this.MessageList.Loaded -= MessageListPanel_Loaded;
