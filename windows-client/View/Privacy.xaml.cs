@@ -18,6 +18,7 @@ using Microsoft.Phone.Notification;
 using windows_client.Languages;
 using windows_client.DbUtils;
 using windows_client.Controls;
+using Facebook;
 
 namespace windows_client.View
 {
@@ -127,7 +128,10 @@ namespace windows_client.View
                 });
                 return;
             }
-            DeleteLocalStorage();
+            if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
+                LogOutFb();//delete local storage in call back of fb
+            else
+                DeleteLocalStorage();
         }
 
         private void DeleteLocalStorage()
@@ -176,6 +180,24 @@ namespace windows_client.View
 
         }
 
+        private void LogOutFb()
+        {
+            var fb = new FacebookClient();
+            var parameters = new Dictionary<string, object>();
+            parameters["access_token"] = (string)App.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
+            parameters["next"] = "https://www.facebook.com/connect/login_success.html";
+            var logoutUrl = fb.GetLogoutUrl(parameters);
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+              {
+                  WebBrowser browser = new WebBrowser();
+                  browser.Navigated += (s, e) =>
+                      {
+                          DeleteLocalStorage();//deleting account even if fb is not logged out
+                      };
+                  browser.Navigate(logoutUrl);
+              });
+        }
+        
         public void onEventReceived(string type, object obj)
         {
 
