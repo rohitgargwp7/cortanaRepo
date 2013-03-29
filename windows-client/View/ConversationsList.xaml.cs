@@ -791,7 +791,7 @@ namespace windows_client.View
 
                 if (isVibrateEnabled)
                 {
-                    if (App.newChatThreadPage == null && (!Utils.isGroupConversation(mObj.Msisdn) ||&& !mObj.IsMute))
+                    if (App.newChatThreadPage == null && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute))
                     {
                         VibrateController vibrate = VibrateController.Default;
                         vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
