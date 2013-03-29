@@ -62,13 +62,16 @@ namespace windows_client.Controls
 
         public override void OrientationChanged(PageOrientation orientation)
         {
-            if ((orientation & PageOrientation.Landscape) == PageOrientation.Landscape)
+            if (this.MessageText != null)
             {
-                this.MessageText.Width = HikeConstants.CHATBUBBLE_LANDSCAPE_WIDTH;
-            }
-            else if ((orientation & PageOrientation.Portrait) == PageOrientation.Portrait)
-            {
-                this.MessageText.Width = HikeConstants.CHATBUBBLE_PORTRAIT_WIDTH;
+                if ((orientation & PageOrientation.Landscape) == PageOrientation.Landscape)
+                {
+                    this.MessageText.Width = HikeConstants.CHATBUBBLE_LANDSCAPE_WIDTH;
+                }
+                else if ((orientation & PageOrientation.Portrait) == PageOrientation.Portrait)
+                {
+                    this.MessageText.Width = HikeConstants.CHATBUBBLE_PORTRAIT_WIDTH;
+                }
             }
         }
 
