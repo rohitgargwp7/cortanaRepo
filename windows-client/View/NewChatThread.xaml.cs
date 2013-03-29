@@ -3531,8 +3531,6 @@ namespace windows_client.View
                 {
                     (this.MessageList.Children[i] as MyChatBubble).OrientationChanged(e.Orientation);
                 }
-                //if (this.MessageList.Children[i] is SentChatBubble)
-                //    (this.MessageList.Children[i] as MyChatBubble).OrientationChanged(e.Orientation);
             }
         }
         #endregion
