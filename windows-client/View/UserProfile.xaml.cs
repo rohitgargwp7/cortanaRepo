@@ -1234,11 +1234,12 @@ namespace windows_client.View
         {
             bool inAddressBook = false;
             ConversationListObject convObj;
+            ContactInfo cinfo;
             if (App.ViewModel.ConvMap.TryGetValue(msisdn, out convObj) && (convObj.ContactName != null))
             {
                 inAddressBook = true;
             }
-            else if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+            else if (App.ViewModel.ContactsCache.TryGetValue(msisdn,out cinfo) && cinfo.Name!=null)
             {
                 inAddressBook = true;
             }
