@@ -1832,36 +1832,42 @@ namespace windows_client.View
 
         private void inviteUserBtn_Click(object sender, EventArgs e)
         {
-            if (!isGroupChat && isOnHike)
-                return;
-            long time = TimeUtils.getCurrentTimeStamp();
-            string inviteToken = "";
-            if (isGroupChat)
+            try
             {
-                foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
+                if (!isGroupChat && isOnHike)
+                    return;
+                long time = TimeUtils.getCurrentTimeStamp();
+                string inviteToken = "";
+                if (isGroupChat)
                 {
-                    if (!gp.IsOnHike)
+                    foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
                     {
-                        ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
-                        convMessage.IsInvite = true;
-                        App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
+                        if (!gp.IsOnHike)
+                        {
+                            ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
+                            convMessage.IsInvite = true;
+                            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
+                        }
                     }
                 }
+                else
+                {
+                    //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+                    ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED);
+                    convMessage.IsSms = true;
+                    convMessage.IsInvite = true;
+                    sendMsg(convMessage, false);
+                }
+                if (showNoSmsLeftOverlay || isGroupChat)
+                    showOverlay(false);
+                if (isGroupChat)
+                    App.appSettings.Remove(HikeConstants.SHOW_GROUP_CHAT_OVERLAY);
             }
-            else
+            catch (Exception ex)
             {
-                //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-                ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED);
-                convMessage.IsSms = true;
-                convMessage.IsInvite = true;
-                sendMsg(convMessage, false);
+                Debug.WriteLine("NewChatThread :: inviteUserBtn_Click : Exception Occored:{0}", ex.StackTrace);
             }
-            if (showNoSmsLeftOverlay || isGroupChat)
-                showOverlay(false);
-            if (isGroupChat)
-                App.appSettings.Remove(HikeConstants.SHOW_GROUP_CHAT_OVERLAY);
         }
-
         #endregion
 
         #region PAGE EVENTS

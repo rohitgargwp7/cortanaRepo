@@ -111,6 +111,13 @@ namespace windows_client.utils
                 StatusMsgsTable.DeleteStatusMsg(sb.serverId);
                 App.HikePubSubInstance.publish(HikePubSub.STATUS_DELETED, sb);
             }
+            else
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBoxResult result = MessageBox.Show(AppResources.StatusDetionFail_Txt, AppResources.Please_Try_Again_Txt, MessageBoxButton.OK);
+                });
+            }
         }
 
         public bool IsTwoWayFriend(string msisdn)

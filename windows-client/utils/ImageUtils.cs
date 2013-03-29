@@ -66,6 +66,8 @@ namespace windows_client.utils
         private BitmapImage twitterEnabledIcon;
         private BitmapImage moodDisabledIcon;
         private BitmapImage moodEnabledIcon;
+        private BitmapImage userProfileLockImage;
+        private BitmapImage userProfileInviteImage;
 
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
@@ -640,11 +642,16 @@ namespace windows_client.utils
             get
             {
                 if (contactIcon == null)
-                    contactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
+                {
+                    if (Utils.isDarkTheme())
+                        contactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
+                    else
+                        contactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon_black.png", UriKind.Relative));
+                }
                 return contactIcon;
             }
         }
-
+        
         public BitmapImage FacebookDisabledIcon
         {
             get
@@ -654,6 +661,7 @@ namespace windows_client.utils
                 return facebookDisabledIcon;
             }
         }
+        
         public BitmapImage FacebookEnabledIcon
         {
             get
@@ -663,6 +671,7 @@ namespace windows_client.utils
                 return facebookEnabledIcon;
             }
         }
+        
         public BitmapImage TwitterDisabledIcon
         {
             get
@@ -672,6 +681,7 @@ namespace windows_client.utils
                 return twitterDisabledIcon;
             }
         }
+        
         public BitmapImage TwitterEnabledIcon
         {
             get
@@ -681,6 +691,7 @@ namespace windows_client.utils
                 return twitterEnabledIcon;
             }
         }
+        
         public BitmapImage MoodDisabledIcon
         {
             get
@@ -690,6 +701,7 @@ namespace windows_client.utils
                 return moodDisabledIcon;
             }
         }
+        
         public BitmapImage MoodEnabledIcon
         {
             get
@@ -699,7 +711,36 @@ namespace windows_client.utils
                 return moodEnabledIcon;
             }
         }
+       
+        public BitmapImage UserProfileLockImage
+        {
+            get
+            {
+                if (userProfileLockImage == null)
+                {
+                    if (Utils.isDarkTheme())
+                        userProfileLockImage = new BitmapImage(new Uri("/View/images/user_lock_white.png", UriKind.Relative));//todo:add white image
+                    else
+                        userProfileLockImage = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
+                }
+                return userProfileLockImage;
+            }
+        }
 
+        public BitmapImage UserProfileInviteImage
+        {
+            get
+            {
+                if (userProfileInviteImage == null)
+                {
+                    if (Utils.isDarkTheme())
+                        userProfileInviteImage = new BitmapImage(new Uri("/View/images/user_invite_white.png", UriKind.Relative));
+                    else
+                        userProfileInviteImage = new BitmapImage(new Uri("/View/images/user_invite.png", UriKind.Relative));
+                }
+                return userProfileInviteImage;
+            }
+        }
         public SolidColorBrush ReceiveMessageForeground
         {
             get

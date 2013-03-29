@@ -21,11 +21,16 @@ namespace windows_client.Model
         //pr = profile screen
         public static readonly string FREE_SMS = "prFrS";
         public static readonly string INVITE = "prInv";
-        public static readonly string PRIVACY = "prPrvc";
         public static readonly string SETTINGS = "prSet";
         public static readonly string HELP = "prHlp";
         public static readonly string EDIT_PROFILE = "prEdtPr";
         public static readonly string REWARDS = "prRew";
+
+        //st = settingsScreen
+
+        public static readonly string NOTIFICATIONS = "stNot";
+        public static readonly string PRIVACY = "stPriv";
+        public static readonly string BLOCKLIST = "stBlk";
 
         //in = invite Screen
         public static readonly string INVITE_SOCIAL = "inSo";

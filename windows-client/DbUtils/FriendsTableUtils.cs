@@ -66,25 +66,22 @@ namespace windows_client.DbUtils
                                         Debug.WriteLine("FriendsTableUtils :: SetFriendStatus : Reading timestamp, Exception : " + e.StackTrace);
                                     }
                                 }
-
-                                if (friendStatus == FriendStatusEnum.UNFRIENDED_BY_HIM && friendStatusDb != FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                                //not now and remove from friends are totally same state now
+                                if ((friendStatusDb == FriendStatusEnum.UNFRIENDED_BY_YOU && friendStatus == FriendStatusEnum.UNFRIENDED_BY_HIM) ||
+                                    (friendStatusDb == FriendStatusEnum.UNFRIENDED_BY_HIM && friendStatus == FriendStatusEnum.UNFRIENDED_BY_YOU) ||
+                                    (friendStatusDb == FriendStatusEnum.REQUEST_SENT && friendStatus == FriendStatusEnum.UNFRIENDED_BY_YOU) ||
+                                    (friendStatusDb == FriendStatusEnum.REQUEST_RECIEVED && friendStatus == FriendStatusEnum.UNFRIENDED_BY_HIM))
                                 {
                                     friendStatus = FriendStatusEnum.NOT_SET;
                                 }
-                                else if (friendStatus == FriendStatusEnum.UNFRIENDED_BY_YOU && friendStatusDb != FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                                {
-                                    friendStatus = FriendStatusEnum.NOT_SET;
-                                }
-
                                 else if ((friendStatusDb == FriendStatusEnum.REQUEST_SENT && friendStatus == FriendStatusEnum.REQUEST_RECIEVED) ||
-                                    (friendStatusDb == FriendStatusEnum.REQUEST_RECIEVED && friendStatus == FriendStatusEnum.REQUEST_SENT) ||
-                                    (friendStatusDb == FriendStatusEnum.UNFRIENDED_BY_YOU && friendStatus == FriendStatusEnum.REQUEST_SENT) ||
-                                    (friendStatusDb == FriendStatusEnum.UNFRIENDED_BY_HIM && friendStatus == FriendStatusEnum.REQUEST_RECIEVED))
+                                         (friendStatusDb == FriendStatusEnum.REQUEST_RECIEVED && friendStatus == FriendStatusEnum.REQUEST_SENT) ||
+                                         (friendStatusDb == FriendStatusEnum.UNFRIENDED_BY_YOU && friendStatus == FriendStatusEnum.REQUEST_SENT) ||
+                                         (friendStatusDb == FriendStatusEnum.UNFRIENDED_BY_HIM && friendStatus == FriendStatusEnum.REQUEST_RECIEVED))
                                 {
                                     friendStatus = FriendStatusEnum.FRIENDS;
                                 }
                             }
-
 
                             using (BinaryWriter writer = new BinaryWriter(file))
                             {
@@ -231,7 +228,7 @@ namespace windows_client.DbUtils
                         {
                             if (file.Length > 0)
                             {
-                                using (var reader = new BinaryReader(file,Encoding.UTF8,true))
+                                using (var reader = new BinaryReader(file, Encoding.UTF8, true))
                                 {
                                     try
                                     {
