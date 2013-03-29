@@ -11,6 +11,9 @@ namespace windows_client.utils
     class MoodsInitialiser
     {
         private static MoodsInitialiser instance = null;
+        private BitmapImage[] moodImages;
+        private readonly int nonCricketMoodCount = 24;
+        private readonly int cricketMoodCount = 9;
 
         public static MoodsInitialiser Instance
         {
@@ -26,9 +29,13 @@ namespace windows_client.utils
 
         private MoodsInitialiser()
         {
+            bool hideCricketMoods;
+            App.appSettings.TryGetValue<bool>(App.HIDE_CRICKET_MOODS, out hideCricketMoods);
+            if (hideCricketMoods)
+                moodImages = new BitmapImage[nonCricketMoodCount];
+            else
+                moodImages = new BitmapImage[nonCricketMoodCount + cricketMoodCount];
         }
-
-        private BitmapImage[] moodImages = new BitmapImage[33];
 
         private string[,] moodInfo = new string[,]
         {
@@ -65,18 +72,18 @@ namespace windows_client.utils
             { "/View/images/moods/pune.png",           AppResources.Mood_Pune              ,                   "",	"",	""},
             { "/View/images/moods/hyderabad.png",      AppResources.Mood_Hyderabad         ,                   "",	"",	""},
             { "/View/images/moods/bangalore.png",      AppResources.Mood_Bangalore         ,                   "",	"",	""}
-        };    
+        };
 
 
         public BitmapImage GetMoodImageForMoodId(int moodId)
         {
             if (moodId < 1 || moodId > moodImages.Length)
-                return null;
+                return UI_Utils.Instance.TextStatusImage;
             if (moodImages[moodId - 1] == null)
             {
                 BitmapImage moodImg = new BitmapImage();
                 //Have to remove background creation here. If two consecutive statuses use same mood image, then at times
-                // either of images are not updated.
+                //either of images are not updated.
                 //moodImg.CreateOptions = BitmapCreateOptions.BackgroundCreation;
                 moodImg.UriSource = new Uri(moodInfo[moodId - 1, 0], UriKind.Relative);
                 moodImages[moodId - 1] = moodImg;
