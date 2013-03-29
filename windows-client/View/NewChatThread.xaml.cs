@@ -2629,8 +2629,9 @@ namespace windows_client.View
                 ConvMessage convMessage = (ConvMessage)vals[0];
 
                 //TODO handle vibration for user profile and GC.
-                if (convMessage.Msisdn != mContactNumber || (convMessage.MetaDataString != null &&
-                    convMessage.MetaDataString.Contains(HikeConstants.POKE)))
+                if ((convMessage.Msisdn != mContactNumber && (convMessage.MetaDataString != null &&
+                    convMessage.MetaDataString.Contains(HikeConstants.POKE))) &&
+                    convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
                     bool isVibrateEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
@@ -3520,8 +3521,22 @@ namespace windows_client.View
 
         #endregion
 
+        #region Orientation Handling
+        private void PhoneApplicationPage_OrientationChanged(object sender,
+      OrientationChangedEventArgs e)
+        {
+            for (int i = 0; i < this.MessageList.Children.Count; i++)
+            {
+                if (typeof(MyChatBubble).IsAssignableFrom(this.MessageList.Children[i].GetType()))
+                {
+                    (this.MessageList.Children[i] as MyChatBubble).OrientationChanged(e.Orientation);
+                }
+            }
+        }
+        #endregion
+
         #region ScrollViewer On Scroll call Back events handling
-        //http://www.c-sharpcorner.com/blogs/3703/how-to-detect-the-scrollbar-has-changed-in-a-scrollviewer-in.aspx
+
         private void MessageListPanel_Loaded(object sender, RoutedEventArgs e)
         {
             this.MessageList.Loaded -= MessageListPanel_Loaded;

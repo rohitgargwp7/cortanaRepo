@@ -12,18 +12,20 @@ namespace windows_client.Controls.StatusUpdate
     public partial class TextStatusUpdate : StatusUpdateBox
     {
         private long timestamp;
+        private int moodId = -1;
+        private bool isShowOnTimeline;
         private static Thickness timelineStatusLayoutMargin = new Thickness(0, 12, 0, 12);
         private static Thickness userProfileStatusLayoutMargin = new Thickness(0, 0, 0, 0);
 
-        private static Thickness timelineStatusTypeMargin = new Thickness(12, 26, 0, 0);
+        private static Thickness timelineStatusTypeMargin = new Thickness(0, 8, 0, 0);
         private static Thickness userProfileStatusTypeMargin = new Thickness(12, 34, 0, 0);
 
-        private static Thickness timelineStatusTextMargin = new Thickness(10, 0, 5, 0);
+        private static Thickness timelineStatusTextMargin = new Thickness(20, 0, 5, 0);
         private static Thickness userProfileStatusTextMargin = new Thickness(18, 0, 5, 0);
 
         //private static Thickness timelineTimestampMargin = new Thickness(12, 23, 0, 0);
         //private static Thickness userProfileTimestampMargin = new Thickness(12, 34, 0, 0);
-        
+
         public override bool IsUnread
         {
             get
@@ -38,12 +40,12 @@ namespace windows_client.Controls.StatusUpdate
                     if (value != true) //read status
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
-                //        statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
+                        //        statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
                     }
                     else
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
-                //        statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
+                        //        statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
                     }
                 }
             }
@@ -59,9 +61,10 @@ namespace windows_client.Controls.StatusUpdate
             this.IsUnread = sm.IsUnread;
             statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
             this.Loaded += TextStatusUpdate_Loaded;
+            this.isShowOnTimeline = isShowOnTimeline;
             if (statusBubbleImageTap != null)
             {
-                this.userProfileImage.Tap += statusBubbleImageTap;
+                this.statusTypeImage.Tap += statusBubbleImageTap;
             }
             if (sm.IsUnread)
             {
@@ -73,48 +76,52 @@ namespace windows_client.Controls.StatusUpdate
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
                 //statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
             }
-            if (sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
-            {
-                statusTypeImage.Source = UI_Utils.Instance.FriendRequestImage;
-            }
-            else
-            {
-                statusTypeImage.Source = UI_Utils.Instance.TextStatusImage;
-            }
-            if (sm.MoodId > 0)
-            {
-                statusTypeImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
-            }
             if (isShowOnTimeline)
             {
-                this.userProfileImage.Source = this.UserImage;
-                this.userProfileImage.Height = 69;
-                statusTypeImage.Width = 31;
+                this.statusTypeImage.Source = this.UserImage;
+                this.statusTypeImage.MaxWidth = 69;
                 statusTextTxtBlk.MaxWidth = 300;
                 this.LayoutRoot.Margin = timelineStatusLayoutMargin;
                 this.statusTypeImage.Margin = timelineStatusTypeMargin;
-
                 this.statusTextTxtBlk.Margin = timelineStatusTextMargin;
                 this.timestampTxtBlk.Margin = timelineStatusTextMargin;
             }
             else
             {
                 userNameTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
-                this.userProfileImage.Visibility = System.Windows.Visibility.Collapsed;
                 statusTypeImage.Width = 40;
                 statusTextTxtBlk.MaxWidth = 380;
                 this.LayoutRoot.Margin = userProfileStatusLayoutMargin;
                 this.statusTypeImage.Margin = userProfileStatusTypeMargin;
-                
                 this.statusTextTxtBlk.Margin = userProfileStatusTextMargin;
                 this.timestampTxtBlk.Margin = userProfileStatusTextMargin;
+            }
+            if (sm.MoodId > 0)
+            {
+                statusTypeImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
+                moodId = sm.MoodId;
+            }
+            else if(!isShowOnTimeline)
+            {
+                if (sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
+                {
+                    statusTypeImage.Source = UI_Utils.Instance.TextStatusImage;
+                }
+                else
+                {
+                    statusTypeImage.Source = UI_Utils.Instance.FriendRequestImage;
+                }
             }
         }
 
         void TextStatusUpdate_Loaded(object sender, RoutedEventArgs e)
         {
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
-            this.userProfileImage.Source = UI_Utils.Instance.GetBitmapImage(this.Msisdn);
+            //if there is no mood. refresh user image on loading CC
+            if (moodId == -1 && isShowOnTimeline)
+            {
+                this.statusTypeImage.Source = UI_Utils.Instance.GetBitmapImage(this.Msisdn);
+            }
         }
     }
 }
