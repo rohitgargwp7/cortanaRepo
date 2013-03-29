@@ -14,7 +14,7 @@ namespace windows_client.Controls.StatusUpdate
         private long timestamp;
         private int moodId = -1;
         private bool isShowOnTimeline;
-        private static Thickness timelineStatusLayoutMargin = new Thickness(0, 12, 0, 12);
+        private static Thickness timelineStatusLayoutMargin = new Thickness(0, 0, 0, 24);
         private static Thickness userProfileStatusLayoutMargin = new Thickness(0, 0, 0, 0);
 
         private static Thickness timelineStatusTypeMargin = new Thickness(0, 8, 0, 0);

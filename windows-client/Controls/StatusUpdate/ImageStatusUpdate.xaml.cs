@@ -4,6 +4,7 @@ using windows_client.Languages;
 using System;
 using System.Windows.Media;
 using windows_client.Model;
+using System.Windows;
 
 namespace windows_client.Controls.StatusUpdate
 {
@@ -11,6 +12,8 @@ namespace windows_client.Controls.StatusUpdate
     {
         private BitmapImage _statusImageSource;
         private long timestamp;
+        private bool isShowOnTimeline;
+        private static Thickness statusImageMargin = new Thickness(12, 28, 0, 12);
 
         public override bool IsUnread
         {
@@ -26,12 +29,10 @@ namespace windows_client.Controls.StatusUpdate
                     if (value == true) //unread status
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
-                        //statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
                     }
                     else //read status
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
-                        //statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
                     }
                 }
             }
@@ -47,6 +48,7 @@ namespace windows_client.Controls.StatusUpdate
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(sm.Timestamp);
             this.Loaded += ImageStatusUpdate_Loaded;
             this.IsUnread = sm.IsUnread;
+            this.isShowOnTimeline = isShowOnTimeline;
             if (statusImageBitmap != null)
                 this.StatusImage = statusImageBitmap;
             if (imageTap != null)
@@ -55,32 +57,26 @@ namespace windows_client.Controls.StatusUpdate
             if (sm.IsUnread)
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
-                //statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
             }
             else
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
-                //statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
             }
-            statusTypeImage.Source = UI_Utils.Instance.ProfilePicStatusImage;
             if (isShowOnTimeline)
             {
                 this.userProfileImage.Source = this.UserImage;
                 this.userProfileImage.Height = 69;
-                statusTypeImage.Width = 31;
             }
             else
             {
-                userProfileImage.Visibility = System.Windows.Visibility.Collapsed;
-                statusTypeImage.Width = 40;
+                this.userProfileImage.Margin = statusImageMargin;
+                userProfileImage.Source = UI_Utils.Instance.ProfilePicStatusImage;
                 if (sm.MoodId > 0) //For profile pic update. Mood id won't be received. Kept this for future.
                 {
-                    this.statusTypeImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
                     this.userProfileImage.MaxHeight = 60;
                 }
                 else
                 {
-                    statusTypeImage.Visibility = System.Windows.Visibility.Visible;
                     userNameTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
                 }
             }
@@ -89,7 +85,8 @@ namespace windows_client.Controls.StatusUpdate
         void ImageStatusUpdate_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
-            this.userProfileImage.Source = UI_Utils.Instance.GetBitmapImage(this.Msisdn);
+            if (isShowOnTimeline)
+                this.userProfileImage.Source = UI_Utils.Instance.GetBitmapImage(this.Msisdn);
         }
 
         public BitmapImage StatusImage
