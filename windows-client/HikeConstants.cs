@@ -88,6 +88,10 @@ namespace windows_client
         public static readonly string ANALYTICS_OBJECT_FILE = "eventsFile";
         public static readonly string ANALYTICS_OBJECT_DIRECTORY = "analytics";
 
+        //Chat bubbles
+        public static readonly int CHATBUBBLE_LANDSCAPE_WIDTH = 510;
+        public static readonly int CHATBUBBLE_PORTRAIT_WIDTH = 330;
+
         //file for sharing info with background agent
         public static readonly string BACKGROUND_AGENT_FILE = "token";
         public static readonly string BACKGROUND_AGENT_DIRECTORY = "ba";

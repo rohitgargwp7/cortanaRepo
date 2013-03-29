@@ -174,6 +174,21 @@ namespace windows_client.Controls
             }
         }
 
+        public override void OrientationChanged(PageOrientation orientation)
+        {
+            if (this.MessageText != null)
+            {
+                if ((orientation & PageOrientation.Landscape) == PageOrientation.Landscape)
+                {
+                    this.MessageText.Width = HikeConstants.CHATBUBBLE_LANDSCAPE_WIDTH;
+                }
+                else if ((orientation & PageOrientation.Portrait) == PageOrientation.Portrait)
+                {
+                    this.MessageText.Width = HikeConstants.CHATBUBBLE_PORTRAIT_WIDTH;
+                }
+            }
+        }
+
         private void setSDRImage(BitmapImage img)
         {
             this.SDRImage.Source = img;
@@ -345,7 +360,7 @@ namespace windows_client.Controls
                     textBlck.Text = messageString;
                     textBlck.FontSize = 22;
                     textBlck.MinWidth = 150;
-                    textBlck.MaxWidth = 330;
+                    textBlck.MaxWidth = HikeConstants.CHATBUBBLE_PORTRAIT_WIDTH;
                     textBlck.Foreground = UI_Utils.Instance.White;
                     textBlck.Margin = contactMessageTextMargin;
                     textBlck.TextWrapping = TextWrapping.Wrap;
@@ -444,8 +459,6 @@ namespace windows_client.Controls
             {
                 bubbleColor = UI_Utils.Instance.HikeMsgBackground;
             }
-
-
         }
     }
 }

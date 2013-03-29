@@ -944,17 +944,20 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
-                    if (sm.Msisdn == App.MSISDN)
+                    if (sm.Msisdn == App.MSISDN || sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
                     {
-                        StatusMsgsTable.SaveLastStatusMessage(sm.Message, sm.MoodId);
-                        //update profile status
-                        if (sm.MoodId > 0)
-                            statusImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
-                        else
-                            statusImage.Source = UI_Utils.Instance.TextStatusImage;
+                        if (sm.Status_Type != StatusMessage.StatusType.IS_NOW_FRIEND)
+                        {
+                            StatusMsgsTable.SaveLastStatusMessage(sm.Message, sm.MoodId);
+                            //update profile status
+                            if (sm.MoodId > 0)
+                                statusImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
+                            else
+                                statusImage.Source = UI_Utils.Instance.TextStatusImage;
 
-                        if(sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
-                            txtStatus.Text = sm.Message;
+                            if (sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
+                                txtStatus.Text = sm.Message;
+                        }
                         // if status list is not loaded simply ignore this packet , as then this packet will
                         // be shown twice , one here and one from DB.
                         if (isStatusMessagesLoaded)
@@ -1158,6 +1161,10 @@ namespace windows_client.View
                                     {
                                         Dispatcher.BeginInvoke(() =>
                                         {
+                                            if (i < UnreadFriendRequests)
+                                            {
+                                                UnreadFriendRequests--;
+                                            }
                                             App.ViewModel.StatusList.RemoveAt(i);
                                         });
                                         break;
