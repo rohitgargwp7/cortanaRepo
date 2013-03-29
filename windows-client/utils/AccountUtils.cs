@@ -358,7 +358,7 @@ namespace windows_client.utils
                     data.Add("devicetype", "windows");
                     data[HikeConstants.DEVICE_ID] = Utils.getHashedDeviceId();
                     data[HikeConstants.DEVICE_VERSION] = Utils.getDeviceModel();
-                    data[HikeConstants.APP_VERSION] = Utils.getAppVersion();
+                    data[HikeConstants.APPVERSION] = Utils.getAppVersion();
                     if (Utils.IsWP8)
                         data[HikeConstants.OS_NAME] = "win8";
                     else
