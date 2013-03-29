@@ -49,8 +49,10 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Image x:Name="icon" Grid.Column="0" Source="images\hike_header.png" Height="40" Margin="4,25,0,0"/>
-            <Image x:Name="notificationIndicator" Grid.Column="1" Source="images\notification_read.png" MaxHeight="43" Margin="270,25,0,0" Tap="notification_Tap"/>
-            <TextBlock x:Name="notificationCountTxtBlk" Grid.Column="1" HorizontalAlignment="Center" Margin="274,34,0,0" FontSize="16" FontFamily="Segoe WP Semibold" Tap="notification_Tap"/>
+            <StackPanel Grid.Column="1" Margin="270,25,0,0" Height="50">
+                <Image x:Name="notificationIndicator" Source="images\notification_read.png" Margin="0,6,0,0" MaxHeight="35" Tap="notification_Tap"/>
+            </StackPanel>
+            <TextBlock x:Name="notificationCountTxtBlk" Foreground="White" Grid.Column="1" HorizontalAlignment="Center" Margin="274,37,0,0" FontSize="18" FontFamily="Segoe WP Semibold" Tap="notification_Tap"/>
         </Grid>
 
         <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,-10,0,0" SelectionChanged="Pivot_SelectionChanged">
@@ -152,20 +154,20 @@
                         </Grid.ColumnDefinitions>
                         <Image x:Name="avatarImage" Grid.Column="0" MaxHeight="83" MaxWidth="83" Margin="15,0,5,0" />
                         <StackPanel Grid.Column="1" Name="accountStackPanel" Orientation="Vertical"  Margin="20, 0,0,0" VerticalAlignment="Top">
-                            <TextBlock x:Name="accountName" FontSize="42" FontFamily="Segoe WP SemiLight" Text="{Binding Path= LocalizedResources.Conversations_ProfileName_Default_Txt, Source={StaticResource LocalizedStrings}}" Margin="0 -5 0 0"/>
+                            <TextBlock x:Name="accountName" FontSize="42" FontFamily="Segoe WP SemiLight" Text="{Binding Path= LocalizedResources.Conversations_ProfileName_Default_Txt, Source={StaticResource LocalizedStrings}}" Margin="0 -10 0 5"/>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Image Name="statusImage" Grid.Column="0" Height="25" VerticalAlignment="Center" />
-                                <TextBlock Name="txtStatus" Margin="10 0 10 0" FontFamily="Segoe WP SemiLight" Grid.Column="1"></TextBlock>
+                                <TextBlock Name="txtStatus"  Margin="10 0 10 0" FontFamily="Segoe WP SemiLight" Height="30" Grid.Column="1" ></TextBlock>
                             </Grid>
                         </StackPanel>
                     </Grid>
 
-                    <StackPanel Orientation="Vertical" Grid.Row="1" Margin="0, 15, 0,10">
-                        <StackPanel x:Name="freeSMSPanel" Orientation="Horizontal"  Tap="FreeSMS_Tap" Margin="15,10,0,0">
+                    <StackPanel Orientation="Vertical" Grid.Row="1" Margin="0, 10, 0, 10">
+                        <StackPanel x:Name="freeSMSPanel" Orientation="Horizontal"  Tap="FreeSMS_Tap" Margin="15,20,0,0">
                             <Image Name ="freeSmsImage" VerticalAlignment="Top" Margin="0,10,0,0" Source="images\free_sms.png" Height="35">
                             </Image>
                             <StackPanel Orientation="Vertical">
@@ -173,24 +175,24 @@
                                 <TextBlock x:Name="creditsTxtBlck" FontSize="18" Margin="15,0,0,0"></TextBlock>
                             </StackPanel>
                         </StackPanel>
-                        <StackPanel x:Name="rewardsPanel" Visibility="Collapsed"  Orientation="Horizontal" Tap="Rewards_Tap" Margin="15,10,0,0">
+                        <StackPanel x:Name="rewardsPanel" Visibility="Collapsed"  Orientation="Horizontal" Tap="Rewards_Tap" Margin="15,20,0,0">
                             <Image Name ="rewards" VerticalAlignment="Center" Height="35"/>
                             <StackPanel Orientation="Vertical">
                                 <TextBlock Text="{Binding Path= LocalizedResources.Rewards_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
                                 <TextBlock x:Name="rewardsTxtBlk" FontSize="18" Margin="15,0,0,0"></TextBlock>
                             </StackPanel>
                         </StackPanel>
-                        <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Invite_Tap" Margin="15,10,0,5">
+                        <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Invite_Tap" Margin="15,20,0,5">
                             <Image Name ="invite" VerticalAlignment="Center" Height="35">
                             </Image>
                             <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TellFriend_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
-                        <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Settings_Tap" Margin="15,10,0,5">
+                        <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Settings_Tap" Margin="15,20,0,5">
                             <Image Name="settingsImage" VerticalAlignment="Center" Source="images\settings.png" Height="34" Width="34">
                             </Image>
                             <TextBlock Text="{Binding Path= LocalizedResources.Settings, Source={StaticResource LocalizedStrings}}" FontSize="39" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0"></TextBlock>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,10,0,5" Tap="Help_Tap">
+                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,20,0,5" Tap="Help_Tap">
                             <Image Name="helpImage" VerticalAlignment="Center" Source="images\help.png" Height="35"></Image>
                             <TextBlock Text="{Binding Path= LocalizedResources.Help, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
