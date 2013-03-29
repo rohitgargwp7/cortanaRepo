@@ -130,8 +130,7 @@ namespace windows_client.View
             }
             if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
                 LogOutFb();//delete local storage in call back of fb
-            else
-                DeleteLocalStorage();
+            DeleteLocalStorage();
         }
 
         private void DeleteLocalStorage()
@@ -190,14 +189,10 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
               {
                   WebBrowser browser = new WebBrowser();
-                  browser.Navigated += (s, e) =>
-                      {
-                          DeleteLocalStorage();//deleting account even if fb is not logged out
-                      };
                   browser.Navigate(logoutUrl);
               });
         }
-        
+
         public void onEventReceived(string type, object obj)
         {
 
