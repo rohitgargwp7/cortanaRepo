@@ -3400,6 +3400,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not delete your status update. Please check your network connection and try again later..
+        /// </summary>
+        public static string StatusDelete_NoNtwrk_Txt {
+            get {
+                return ResourceManager.GetString("StatusDelete_NoNtwrk_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to delete your status..
+        /// </summary>
+        public static string StatusDetionFail_Txt {
+            get {
+                return ResourceManager.GetString("StatusDetionFail_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Changed profile picture.
         /// </summary>
         public static string StatusUpdate_Photo {

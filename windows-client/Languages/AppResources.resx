@@ -1647,6 +1647,12 @@
   <data name="Mood_Watching_tv" xml:space="preserve">
     <value>Watching tv </value>
   </data>
+  <data name="StatusDelete_NoNtwrk_Txt" xml:space="preserve">
+    <value>Could not delete your status update. Please check your network connection and try again later.</value>
+  </data>
+  <data name="StatusDetionFail_Txt" xml:space="preserve">
+    <value>Unable to delete your status.</value>
+  </data>
   <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
     <value>Add to Contacts</value>
   </data>
