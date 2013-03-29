@@ -223,6 +223,10 @@ namespace windows_client.DbUtils
                 //In case of sending attachments, here message state should be unknown instead of sent_unconfirmed
                 //convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
+
+                // in case of db failure convObj returned will be null
+                if (convObj == null)
+                    return;
                 chatBubble.MessageId = convMessage.MessageId;
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>

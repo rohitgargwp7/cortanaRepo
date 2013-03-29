@@ -588,6 +588,7 @@
     <Content Include="View\images\user_lock.png" />
     <Content Include="View\images\menu_camera_icon.png" />
     <Content Include="View\images\menu_video_icon.png" />
+    <Content Include="View\images\user_lock_white.png" />
     <Content Include="View\images\welome_screen.jpg" />
     <Resource Include="View\images\logo_main_white.png" />
     <Resource Include="View\images\logo_main_black.png" />
