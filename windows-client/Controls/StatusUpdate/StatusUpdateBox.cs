@@ -1,5 +1,7 @@
 ﻿using Microsoft.Phone.Controls;
+using Microsoft.Phone.Net.NetworkInformation;
 using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using windows_client.DbUtils;
@@ -105,6 +107,11 @@ namespace windows_client.Controls.StatusUpdate
 
         private void delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBoxResult result = MessageBox.Show(AppResources.StatusDelete_NoNtwrk_Txt, AppResources.Please_Try_Again_Txt, MessageBoxButton.OK);
+                return;
+            }
             StatusUpdateHelper.Instance.deleteMyStatus(this);
         }
 
