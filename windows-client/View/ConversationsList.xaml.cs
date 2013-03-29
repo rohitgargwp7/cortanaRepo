@@ -1161,6 +1161,10 @@ namespace windows_client.View
                                     {
                                         Dispatcher.BeginInvoke(() =>
                                         {
+                                            if (i < UnreadFriendRequests)
+                                            {
+                                                UnreadFriendRequests--;
+                                            }
                                             App.ViewModel.StatusList.RemoveAt(i);
                                         });
                                         break;
