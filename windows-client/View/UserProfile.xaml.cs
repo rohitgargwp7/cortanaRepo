@@ -97,10 +97,13 @@ namespace windows_client.View
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(sm, false, null, null, enlargePic_Tap));
-                    this.statusLLS.ItemsSource = statusList;
-                    gridHikeUser.Visibility = Visibility.Visible;
-                    gridSmsUser.Visibility = Visibility.Collapsed;
+                    if (isStatusLoaded)
+                    {
+                        statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(sm, false, null, null, enlargePic_Tap));
+                        this.statusLLS.ItemsSource = statusList;
+                        gridHikeUser.Visibility = Visibility.Visible;
+                        gridSmsUser.Visibility = Visibility.Collapsed;
+                    }
                 });
             }
             #endregion
@@ -143,6 +146,7 @@ namespace windows_client.View
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
                             CreateStatusUi(statusMessagesFromDB);
+                            isStatusLoaded = true;
                         });
 
                         break;
@@ -155,6 +159,7 @@ namespace windows_client.View
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 CreateStatusUi(statusMessagesFromDB);
+                                isStatusLoaded = true;
                             });
                         }
                         else
@@ -517,6 +522,7 @@ namespace windows_client.View
             bw.RunWorkerCompleted += (ss, ee) =>
             {
                 CreateStatusUi(statusMessagesFromDB);
+                isStatusLoaded = true;
                 shellProgress.IsVisible = false;
             };
         }
@@ -542,7 +548,6 @@ namespace windows_client.View
                 gridHikeUser.Visibility = Visibility.Visible;
             }
             this.statusLLS.ItemsSource = statusList;
-            isStatusLoaded = true;
         }
 
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -613,8 +618,9 @@ namespace windows_client.View
                 {
                     App.ViewModel.PendingRequests.Remove(favObj.Msisdn);
                     MiscDBUtil.SavePendingRequests();
-                    App.ViewModel.RemoveFrndReqFromTimeline(msisdn, friendStatus);
                 }
+                //on tapping add as friend one can also become two way friend so need to add status is now friend
+                App.ViewModel.RemoveFrndReqFromTimeline(msisdn, friendStatus);
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.SaveFavourites(favObj);
                 int count = 0;
@@ -998,7 +1004,9 @@ namespace windows_client.View
             if (App.ViewModel.ConvMap.ContainsKey(msisdn))
             {
                 cObj = App.ViewModel.ConvMap[msisdn];
-                cObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.RemFromFav_Txt;
+                cObj.IsFav = true;
+                if (cObj.ConvBoxObj != null && cObj.ConvBoxObj.FavouriteMenuItem != null)
+                    cObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.RemFromFav_Txt;
             }
             else
             {
@@ -1215,17 +1223,19 @@ namespace windows_client.View
                     App.newChatThreadPage.userName.Text = nameToShow;
                 MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
 
-
                 if (friendStatus < FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
                 {
                     addToFavBtn.Tap -= AddUserToContacts_Click;
                     addToFavBtn.Visibility = Visibility.Collapsed;
+                    txtSmsUserNameBlk2.Text = nameToShow;
                 }
                 else
                 {
                     btnInvite.Tap -= AddUserToContacts_Click;
                     CreateStatusUi(statusMessagesFromDB);
+                    isStatusLoaded = true;
                 }
+                isInAddressBook = true;
             });
         }
         #endregion
@@ -1239,7 +1249,7 @@ namespace windows_client.View
             {
                 inAddressBook = true;
             }
-            else if (App.ViewModel.ContactsCache.TryGetValue(msisdn,out cinfo) && cinfo.Name!=null)
+            else if (App.ViewModel.ContactsCache.TryGetValue(msisdn, out cinfo) && cinfo.Name != null)
             {
                 inAddressBook = true;
             }

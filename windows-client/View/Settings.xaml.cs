@@ -26,6 +26,7 @@ namespace windows_client.View
             }
             else
             {
+                privacyImage.Source = new BitmapImage(new Uri("images/privacy.png", UriKind.Relative));
                 blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon.png", UriKind.Relative));
                 settingsImage.Source = new BitmapImage(new Uri("images/icon_notification_black.png", UriKind.Relative));
             }
