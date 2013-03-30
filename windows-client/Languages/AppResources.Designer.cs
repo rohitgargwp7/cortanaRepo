@@ -493,6 +493,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invite Friend.
+        /// </summary>
+        public static string Conversations_InviteFriend_Btn {
+            get {
+                return ResourceManager.GetString("Conversations_InviteFriend_Btn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invite your friends to hike.
         /// </summary>
         public static string Conversations_InviteFriendsHike_Txt {
