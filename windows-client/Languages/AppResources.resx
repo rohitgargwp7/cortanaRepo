@@ -1669,9 +1669,9 @@
     <value>Manage your hike account</value>
   </data>
   <data name="Settings_BlocklistSettings_Txt" xml:space="preserve">
-    <value>Block people from your account</value>
+    <value>A list of people you've blocked</value>
   </data>
   <data name="Settings_NotificationSettings_Txt" xml:space="preserve">
-    <value>Control your notifications</value>
+    <value>Your notifications preferences</value>
   </data>
 </root>

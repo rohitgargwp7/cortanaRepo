@@ -3175,7 +3175,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Block people from your account.
+        ///   Looks up a localized string similar to A list of people you&apos;ve blocked.
         /// </summary>
         public static string Settings_BlocklistSettings_Txt {
             get {
@@ -3193,7 +3193,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Control your notifications.
+        ///   Looks up a localized string similar to Your notifications preferences.
         /// </summary>
         public static string Settings_NotificationSettings_Txt {
             get {
