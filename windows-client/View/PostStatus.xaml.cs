@@ -192,8 +192,7 @@ namespace windows_client.View
             moodId = moodListBox.SelectedIndex + 1;
             if (string.IsNullOrWhiteSpace(txtStatus.Text) || lastMoodText == txtStatus.Text)
                 lastMoodText = txtStatus.Text = mood.MoodText;
-            postedMood.Source = mood.MoodImage;
-            postedMood.Visibility = Visibility.Visible;
+            userImage.Source = mood.MoodImage;
             gridMood.Visibility = Visibility.Collapsed;
             moodIconImage.Source = UI_Utils.Instance.MoodEnabledIcon;
             this.appBar.IsVisible = true;
@@ -209,12 +208,6 @@ namespace windows_client.View
                 return;
             }
             base.OnBackKeyPress(e);
-        }
-
-        private void txtStatus_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            txtStatus.SelectionStart = 0;
-            txtStatus.SelectionLength = txtStatus.Text.Length;
         }
 
         private void txtStatus_GotFocus(object sender, RoutedEventArgs e)
