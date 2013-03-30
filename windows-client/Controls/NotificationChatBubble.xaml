@@ -13,11 +13,8 @@
     <local:MyChatBubble.Resources>
         <toolkit:ThreadDateTimeConverter x:Key="TimeConverter" />
     </local:MyChatBubble.Resources>
-
-    <!--<Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,5,0,5" Width="444">-->
     <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,5,0,5">
         <Border x:Name="border" BorderThickness="1" Margin="24,0,24,0"/>
-
         <Grid Margin="24,3,24,3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -29,13 +26,6 @@
             <Image x:Name="NotificationImage" Height="20" Width="20" Grid.Column="0" VerticalAlignment="Center" Margin="10,0,0,0" HorizontalAlignment="Left"></Image>
             <TextBlock x:Name="UserName" Height="Auto" Grid.Column="1" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
                           Text="{Binding Text, Mode=OneTime}" Margin="3,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-
-            <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Name="notStackPanel" Margin="24,3,24,3">
-                <Image x:Name="NotificationImage" Height="20" Width="20" VerticalAlignment="Center" Margin="10,0,0,0"></Image>
-                <TextBlock x:Name="UserName" Height="Auto" MaxWidth="380" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
-                          Text="{Binding Text, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            </StackPanel>-->
-
         </Grid>
     </Grid>
 </local:MyChatBubble>
