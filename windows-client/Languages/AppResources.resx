@@ -1674,6 +1674,9 @@
   <data name="Settings_NotificationSettings_Txt" xml:space="preserve">
     <value>Your notifications preferences</value>
   </data>
+  <data name="Blocklist_user_txt" xml:space="preserve">
+    <value>user</value>
+  </data>
   <data name="Conversations_InviteFriend_Btn" xml:space="preserve">
     <value>Invite Friend</value>
   </data>

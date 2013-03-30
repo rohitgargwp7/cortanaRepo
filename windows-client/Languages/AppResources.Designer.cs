@@ -214,6 +214,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to user.
+        /// </summary>
+        public static string Blocklist_user_txt {
+            get {
+                return ResourceManager.GetString("Blocklist_user_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add as a friend.
         /// </summary>
         public static string btnAddAsFriend_Txt {

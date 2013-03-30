@@ -107,7 +107,7 @@ namespace windows_client.View
             }
         }
 
-        public class Group<T> :List<T>
+        public class Group<T> : List<T>
         {
             public Group(string name, List<T> items)
             {
@@ -169,11 +169,15 @@ namespace windows_client.View
                 blockedSet = new HashSet<string>();
                 TAP_MSG = AppResources.Block_Tap_Txt;
             }
-
+            if (frmBlockedList)
+            {
+                txtChat.Text = AppResources.Block_Txt.ToUpper();
+                txtTitle.Text = AppResources.Blocklist_user_txt;
+            }
             if (isGroupChat)
                 txtChat.Text = AppResources.GrpChat_Txt.ToUpper();
 
-            if(frmBlockedList) //  this is to show block button
+            if (frmBlockedList) //  this is to show block button
                 contactsListBox.ItemTemplate = this.blockTemplate;
             else
                 contactsListBox.ItemTemplate = this.defaultTemplate;
@@ -196,7 +200,7 @@ namespace windows_client.View
             };
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (s, e) =>
-            {                
+            {
                 if (!hideSmsContacts)
                 {
                     if (filteredJumpList == null)
@@ -589,10 +593,10 @@ namespace windows_client.View
                     gl[26][0].Name = charsEntered;
                     if (charsEntered.Length >= 1 && charsEntered.Length <= 15)
                     {
-                        if(frmBlockedList)
+                        if (frmBlockedList)
                         {
-                            if(blockedSet.Contains(Utils.NormalizeNumber(gl[26][0].Name)))
-                                gl[26][0].Msisdn = string.Format(TAP_MSG,AppResources.UnBlock_Txt.ToLower());
+                            if (blockedSet.Contains(Utils.NormalizeNumber(gl[26][0].Name)))
+                                gl[26][0].Msisdn = string.Format(TAP_MSG, AppResources.UnBlock_Txt.ToLower());
                             else
                                 gl[26][0].Msisdn = string.Format(TAP_MSG, AppResources.Block_Txt.ToLower());
                         }
@@ -659,7 +663,7 @@ namespace windows_client.View
                 for (int j = 0; j < maxJ; j++)
                 {
                     ContactInfo cn = listToIterate[i][j];
-                    if (cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered) || (cn.PhoneNo!=null && cn.PhoneNo.Contains(charsEntered)))
+                    if (cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered) || (cn.PhoneNo != null && cn.PhoneNo.Contains(charsEntered)))
                     {
                         if (createNewFilteredList)
                         {
@@ -1164,7 +1168,7 @@ namespace windows_client.View
             ContactInfo ci = btn.DataContext as ContactInfo;
             if (ci == null)
                 return;
-            
+
             if (btn.Content.Equals(AppResources.Block_Txt)) // block request
             {
                 btn.Content = AppResources.UnBlock_Txt;
@@ -1177,7 +1181,7 @@ namespace windows_client.View
                 btn.Content = AppResources.Block_Txt;
                 App.ViewModel.BlockedHashset.Remove(ci.Msisdn);
                 App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, ci);
-            }           
+            }
         }
 
         private void contactBlockUnblock_Click(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1200,7 +1204,7 @@ namespace windows_client.View
             }
             else // block request
             {
-                contact.Msisdn = string.Format(TAP_MSG,AppResources.UnBlock_Txt.ToLower());
+                contact.Msisdn = string.Format(TAP_MSG, AppResources.UnBlock_Txt.ToLower());
                 App.ViewModel.BlockedHashset.Add(c.Msisdn);
                 App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, c);
                 FriendsTableUtils.SetFriendStatus(c.Msisdn, FriendsTableUtils.FriendStatusEnum.NOT_SET);
