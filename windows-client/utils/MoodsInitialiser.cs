@@ -12,7 +12,7 @@ namespace windows_client.utils
     {
         private static MoodsInitialiser instance = null;
         private BitmapImage[] moodImages;
-        private readonly int nonCricketMoodCount = 24;
+        private readonly int totalMoodCount = 33;
         private readonly int cricketMoodCount = 9;
 
         public static MoodsInitialiser Instance
@@ -32,9 +32,9 @@ namespace windows_client.utils
             bool hideCricketMoods;
             App.appSettings.TryGetValue<bool>(App.HIDE_CRICKET_MOODS, out hideCricketMoods);
             if (hideCricketMoods)
-                moodImages = new BitmapImage[nonCricketMoodCount];
+                moodImages = new BitmapImage[totalMoodCount - cricketMoodCount];
             else
-                moodImages = new BitmapImage[nonCricketMoodCount + cricketMoodCount];
+                moodImages = new BitmapImage[totalMoodCount];
         }
 
         private string[,] moodInfo = new string[,]
