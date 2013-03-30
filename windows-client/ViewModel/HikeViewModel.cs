@@ -133,7 +133,14 @@ namespace windows_client.ViewModel
 
         public void LoadPendingRequests()
         {
-            MiscDBUtil.LoadPendingRequests(_pendingReq);
+            try
+            {
+                MiscDBUtil.LoadPendingRequests(_pendingReq);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("HikeViewModel :: LoadPendingRequests : Exception : " + e.StackTrace);
+            }
         }
 
         public ObservableCollection<ConversationListObject> FavList
@@ -192,22 +199,25 @@ namespace windows_client.ViewModel
         {
             if (_favList != null && _favList.Count > 0)
             {
+                ConversationListObject favObj = null;
                 for (int i = _favList.Count - 1; i > 0; i--)
                 {
                     if (_favList[i].Msisdn == msisdn)
                     {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            _favList.RemoveAt(i);
-                        });
-                        MiscDBUtil.SaveFavourites();
-                        MiscDBUtil.DeleteFavourite(msisdn);
-                        int count = 0;
-                        App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                        App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
+                        favObj = _favList[i];
                         break;
                     }
                 }
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    _favList.Remove(favObj);
+                    MiscDBUtil.SaveFavourites();
+                    MiscDBUtil.DeleteFavourite(msisdn);
+                    int count = 0;
+                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
+                    return;
+                });
             }
         }
 
@@ -330,7 +340,14 @@ namespace windows_client.ViewModel
                     #region handle pending request
                     if (_pendingReq != null && _pendingReq.Remove(msisdn))
                     {
-                        MiscDBUtil.SavePendingRequests();
+                        try
+                        {
+                            MiscDBUtil.SavePendingRequests();
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("HikeViewModel :: SavePendingRequests : Exception : " + e.StackTrace);
+                        }
                     }
                     #endregion
                     if (_favList != null) // this will remove from UI too
@@ -381,7 +398,7 @@ namespace windows_client.ViewModel
             }
         }
 
-        public void RemoveFrndReqFromTimeline(string msisdn,FriendsTableUtils.FriendStatusEnum friendStatus)
+        public void RemoveFrndReqFromTimeline(string msisdn, FriendsTableUtils.FriendStatusEnum friendStatus)
         {
             if (friendStatus == FriendsTableUtils.FriendStatusEnum.FRIENDS)
             {

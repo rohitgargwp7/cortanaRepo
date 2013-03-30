@@ -952,7 +952,7 @@ namespace windows_client.View
                     int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
                     if (sm.Msisdn == App.MSISDN || sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
                     {
-                        if (sm.Status_Type != StatusMessage.StatusType.IS_NOW_FRIEND)
+                        if (sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
                         {
                             StatusMsgsTable.SaveLastStatusMessage(sm.Message, sm.MoodId);
                             //update profile status
@@ -961,8 +961,7 @@ namespace windows_client.View
                             else
                                 statusImage.Source = UI_Utils.Instance.TextStatusImage;
 
-                            if (sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
-                                txtStatus.Text = sm.Message;
+                            txtStatus.Text = sm.Message;
                         }
                         // if status list is not loaded simply ignore this packet , as then this packet will
                         // be shown twice , one here and one from DB.

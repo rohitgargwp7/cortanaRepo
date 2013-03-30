@@ -192,8 +192,7 @@ namespace windows_client.View
                     }
                 }
                 allContactsList = UsersTableUtils.getAllContactsByGroup();
-                if(hideSmsContacts)
-                    jumpList = getGroupedList(allContactsList);
+                jumpList = getGroupedList(allContactsList);
             };
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (s, e) =>
@@ -386,7 +385,7 @@ namespace windows_client.View
                 {
                     if (isFreeSmsOn) // free sms is on 
                     {
-                        if (!c.OnHike && !Utils.IsIndianNumber(c.Msisdn)) // if non hike non indian user
+                        if (!c.OnHike && !Utils.IsIndianNumber(c.Msisdn) && !frmBlockedList) // if non hike non indian user
                         {
                             if (isGroupChat)
                                 continue;

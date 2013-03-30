@@ -489,7 +489,7 @@ namespace windows_client
                     RootFrame.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
                 });
             }
-            else if (targetPage != null && targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
+            else if (targetPage != null && targetPage.Contains("NewSelectUserPage.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
             {
                 PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
                 _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
