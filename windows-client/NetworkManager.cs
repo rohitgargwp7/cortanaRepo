@@ -1145,9 +1145,9 @@ namespace windows_client
                         iconBase64 = val.ToString();
                     val = null;
                     long ts = 0;
-                    if (data.TryGetValue(HikeConstants.TIMESTAMP, out val) && val != null)
+                    if (jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out val) && val != null)
                         ts = val.ToObject<long>();
-                    ts = TimeUtils.getCurrentTimeStamp(); // TODO : Remove this later to use server time
+                    
                     val = null;
                     #region HANDLE PROFILE PIC UPDATE
                     if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
