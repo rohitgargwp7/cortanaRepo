@@ -96,7 +96,7 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="646"/>
+            <RowDefinition Height="700"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
