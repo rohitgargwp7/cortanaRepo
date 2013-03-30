@@ -712,9 +712,9 @@ namespace windows_client
                     }
                     #endregion
                     #region moods zone
-                    if (data.TryGetValue(HikeConstants.CMOODS, out rew))
+                    if (data.TryGetValue(App.HIDE_CRICKET_MOODS, out rew))
                     {
-                        App.WriteToIsoStorageSettings(HikeConstants.CMOODS, rew.ToObject<bool>());
+                        App.WriteToIsoStorageSettings(App.HIDE_CRICKET_MOODS, rew.ToObject<bool>());
                     }
                     #endregion
                 }

@@ -16,15 +16,17 @@ namespace windows_client.Controls
 {
     public partial class ReceivedChatBubble : MyChatBubble
     {
-        public static ReceivedChatBubble getSplitChatBubbles(ConvMessage cm, bool isGroupChat, string userName)
+        public static ReceivedChatBubble getSplitChatBubbles(ConvMessage cm, bool isGroupChat, string userName,
+            PageOrientation pageOrientation)
         {
             ReceivedChatBubble receivedChatBubble;
             if (cm.Message.Length < HikeConstants.MAX_CHATBUBBLE_SIZE)
             {
-                receivedChatBubble = new ReceivedChatBubble(cm, isGroupChat, userName, cm.Message);
+                receivedChatBubble = new ReceivedChatBubble(cm, isGroupChat, userName, cm.Message, pageOrientation);
                 return receivedChatBubble;
             }
-            receivedChatBubble = new ReceivedChatBubble(cm, isGroupChat, userName, cm.Message.Substring(0, HikeConstants.MAX_CHATBUBBLE_SIZE));
+            receivedChatBubble = new ReceivedChatBubble(cm, isGroupChat, userName, cm.Message.Substring(0, HikeConstants.MAX_CHATBUBBLE_SIZE),
+                pageOrientation);
             receivedChatBubble.splitChatBubbles = new List<MyChatBubble>();
             int lengthOfNextBubble = 1400;
             for (int i = 1; i <= (cm.Message.Length / HikeConstants.MAX_CHATBUBBLE_SIZE); i++)
@@ -38,13 +40,14 @@ namespace windows_client.Controls
                     lengthOfNextBubble = (cm.Message.Length - (i) * HikeConstants.MAX_CHATBUBBLE_SIZE) % HikeConstants.MAX_CHATBUBBLE_SIZE;
                 }
                 ReceivedChatBubble splitBubble = new ReceivedChatBubble(cm, isGroupChat, userName, cm.Message.Substring
-                    (i * HikeConstants.MAX_CHATBUBBLE_SIZE, lengthOfNextBubble));
+                    (i * HikeConstants.MAX_CHATBUBBLE_SIZE, lengthOfNextBubble), pageOrientation);
                 receivedChatBubble.splitChatBubbles.Add(splitBubble);
             }
             return receivedChatBubble;
         }
 
-        public ReceivedChatBubble(ConvMessage cm, bool isGroupChat, string userName, string messageString)
+        public ReceivedChatBubble(ConvMessage cm, bool isGroupChat, string userName, string messageString,
+            PageOrientation pageOrientation)
             : base(cm)
         {
             // Required to initialize variables
@@ -52,7 +55,7 @@ namespace windows_client.Controls
             string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
             bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
                 cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
-            initializeBasedOnState(cm, isGroupChat, userName, messageString);
+            initializeBasedOnState(cm, isGroupChat, userName, messageString, pageOrientation);
 
             if (cm.FileAttachment != null && cm.FileAttachment.Thumbnail != null && cm.FileAttachment.Thumbnail.Length != 0)
             {
@@ -167,7 +170,8 @@ namespace windows_client.Controls
         private static Thickness userNameMargin = new Thickness(12, 12, 0, 0);
 
 
-        private void initializeBasedOnState(ConvMessage cm, bool isGroupChat, string userName, string messageString)
+        private void initializeBasedOnState(ConvMessage cm, bool isGroupChat, string userName, string messageString,
+            PageOrientation pageOrientation)
         {
             bool hasAttachment = cm.HasAttachment;
             string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
@@ -306,7 +310,14 @@ namespace windows_client.Controls
             else
             {
                 MessageText = new LinkifiedTextBox(UI_Utils.Instance.ReceiveMessageForeground, 22, messageString);
-                MessageText.Width = 330;
+                if ((pageOrientation & PageOrientation.Landscape) == PageOrientation.Landscape)
+                {
+                    this.MessageText.Width = HikeConstants.CHATBUBBLE_LANDSCAPE_WIDTH;
+                }
+                else if ((pageOrientation & PageOrientation.Portrait) == PageOrientation.Portrait)
+                {
+                    this.MessageText.Width = HikeConstants.CHATBUBBLE_PORTRAIT_WIDTH;
+                }
                 if (!isGroupChat)
                     MessageText.Margin = messageTextMargin;
                 MessageText.FontFamily = UI_Utils.Instance.SemiLightFont;
