@@ -1656,4 +1656,22 @@
   <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
     <value>Add to Contacts</value>
   </data>
+  <data name="SettingsSubtitle_Account_Txt" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="SettingsSubtitle_Blocklist_Txt" xml:space="preserve">
+    <value>Blocklist</value>
+  </data>
+  <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="Settings_AccountSettings_Txt" xml:space="preserve">
+    <value>Manage your hike account</value>
+  </data>
+  <data name="Settings_BlocklistSettings_Txt" xml:space="preserve">
+    <value>Block people from your account</value>
+  </data>
+  <data name="Settings_NotificationSettings_Txt" xml:space="preserve">
+    <value>Control your notifications</value>
+  </data>
 </root>

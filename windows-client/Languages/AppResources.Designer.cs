@@ -3166,11 +3166,38 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage your hike account.
+        /// </summary>
+        public static string Settings_AccountSettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_AccountSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block people from your account.
+        /// </summary>
+        public static string Settings_BlocklistSettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_BlocklistSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Send free SMS to India.
         /// </summary>
         public static string Settings_FreeSMSToggleSwitchHeader {
             get {
                 return ResourceManager.GetString("Settings_FreeSMSToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Control your notifications.
+        /// </summary>
+        public static string Settings_NotificationSettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_NotificationSettings_Txt", resourceCulture);
             }
         }
         
@@ -3225,6 +3252,33 @@ namespace windows_client.Languages {
         public static string Settings_VibrateToggleSwitchHeader {
             get {
                 return ResourceManager.GetString("Settings_VibrateToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account.
+        /// </summary>
+        public static string SettingsSubtitle_Account_Txt {
+            get {
+                return ResourceManager.GetString("SettingsSubtitle_Account_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blocklist.
+        /// </summary>
+        public static string SettingsSubtitle_Blocklist_Txt {
+            get {
+                return ResourceManager.GetString("SettingsSubtitle_Blocklist_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications.
+        /// </summary>
+        public static string SettingsSubtitle_Notification_Txt {
+            get {
+                return ResourceManager.GetString("SettingsSubtitle_Notification_Txt", resourceCulture);
             }
         }
         
