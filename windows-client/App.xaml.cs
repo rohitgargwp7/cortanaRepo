@@ -482,11 +482,11 @@ namespace windows_client
                 PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
                 _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-            
+                PhoneApplicationService.Current.State["IsStatusPush"] = true;
                 instantiateClasses(false);
                 RootFrame.Dispatcher.BeginInvoke(delegate
                 {
-                    RootFrame.Navigate(new Uri("/View/ConversationsList.xaml?" + true, UriKind.Relative));
+                    RootFrame.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
                 });
             }
             else if (targetPage != null && targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE

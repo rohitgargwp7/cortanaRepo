@@ -63,6 +63,16 @@ namespace windows_client.View
             App.appSettings.TryGetValue(HikeConstants.UNREAD_FRIEND_REQUESTS, out _unreadFriendRequests);
             setNotificationCounter(RefreshBarCount + UnreadFriendRequests);
             App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
+
+            if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
+                this.Loaded += ConversationsList_Loaded;
+        }
+
+        private void ConversationsList_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.Loaded -= ConversationsList_Loaded;
+            launchPagePivot.SelectedIndex = 3;
+            PhoneApplicationService.Current.State.Remove("IsStatusPush");
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
@@ -75,14 +85,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            string ur = e.Uri.ToString();
-            if (ur.Contains("True"))
-            {
-                this.Loaded += (ss, ee) =>
-                {
-                    launchPagePivot.SelectedIndex = 3;
-                };
-            }
+
             if (launchPagePivot.SelectedIndex == 3)
             {
                 RefreshBarCount = 0;
@@ -787,9 +790,10 @@ namespace windows_client.View
                 }
                 bool isVibrateEnabled = true;
                 App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
+
                 if (isVibrateEnabled)
                 {
-                    if (App.newChatThreadPage == null)
+                    if (App.newChatThreadPage == null && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute))
                     {
                         VibrateController vibrate = VibrateController.Default;
                         vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));

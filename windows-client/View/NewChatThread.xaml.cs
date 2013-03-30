@@ -2633,7 +2633,7 @@ namespace windows_client.View
             {
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
-
+                
                 //TODO handle vibration for user profile and GC.
                 if ((convMessage.Msisdn != mContactNumber && (convMessage.MetaDataString != null &&
                     convMessage.MetaDataString.Contains(HikeConstants.POKE))) &&
@@ -2641,7 +2641,14 @@ namespace windows_client.View
                 {
                     bool isVibrateEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
-                    if (isVibrateEnabled)
+                    ConversationListObject cobj;
+                    /* Checks to vibrate:
+                     * 1. Vibration is On
+                     * 2. Msg is for a group conversation
+                     * 3. This group exists
+                     * 4. This group is not muted
+                     * */
+                    if (isVibrateEnabled && (!Utils.isGroupConversation(convMessage.Msisdn)|| App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn,out cobj) && !cobj.IsMute))
                     {
                         VibrateController vibrate = VibrateController.Default;
                         vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
