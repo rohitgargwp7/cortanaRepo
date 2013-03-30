@@ -25,10 +25,7 @@ using System.Device.Location;
 using windows_client.Misc;
 using Microsoft.Phone.UserData;
 using windows_client.Languages;
-using windows_client.ViewModel;
 using System.Net.NetworkInformation;
-using System.Windows;
-using System.Windows.Data;
 using System.Windows.Controls.Primitives;
 using System.Windows.Navigation;
 
@@ -44,6 +41,7 @@ namespace windows_client.View
         private readonly string ON_GROUP_TEXT = AppResources.SelectUser_GroupMsg_Txt;
         private readonly string ZERO_CREDITS_MSG = AppResources.SelectUser_ZeroCredits_Txt;
         private readonly string UNBLOCK_USER = AppResources.UnBlock_Txt;
+        private PageOrientation pageOrientation = PageOrientation.Portrait;
 
         private string groupOwner = null;
         public string mContactNumber;
@@ -1049,7 +1047,7 @@ namespace windows_client.View
                     convMessage.MetaDataString = chatBubble.MetaDataString;
                 }
 
-                SentChatBubble newChatBubble = SentChatBubble.getSplitChatBubbles(convMessage, false);
+                SentChatBubble newChatBubble = SentChatBubble.getSplitChatBubbles(convMessage, false, pageOrientation);
 
                 newChatBubble.SetSentMessageStatusForUploadedAttachments();
 
@@ -1540,14 +1538,16 @@ namespace windows_client.View
                     {
                         if (convMessage.IsSent)
                         {
-                            chatBubble = SentChatBubble.getSplitChatBubbles(convMessage, readFromDB);
+                            chatBubble = SentChatBubble.getSplitChatBubbles(convMessage, readFromDB, pageOrientation);
                             if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
                                 || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
                                 msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
                         }
                         else
                         {
-                            chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, isGroupChat ? GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName : mContactName);
+                            chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, isGroupChat ? 
+                                GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName : mContactName, 
+                                pageOrientation);
                         }
                     }
                     this.MessageList.Children.Insert(insertPosition, chatBubble);
@@ -3535,9 +3535,10 @@ namespace windows_client.View
         #endregion
 
         #region Orientation Handling
-        private void PhoneApplicationPage_OrientationChanged(object sender,
-      OrientationChangedEventArgs e)
+
+        private void PhoneApplicationPage_OrientationChanged(object sender, OrientationChangedEventArgs e)
         {
+            pageOrientation = e.Orientation;
             for (int i = 0; i < this.MessageList.Children.Count; i++)
             {
                 if (typeof(MyChatBubble).IsAssignableFrom(this.MessageList.Children[i].GetType()))
