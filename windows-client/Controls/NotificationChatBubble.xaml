@@ -16,19 +16,25 @@
 
     <!--<Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,5,0,5" Width="444">-->
     <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,5,0,5">
-        <Grid Margin="0">
+        <Border x:Name="border" BorderThickness="1" Margin="24,0,24,0"/>
+
+        <Grid Margin="24,3,24,3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Border x:Name="border" BorderThickness="1"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Name="notStackPanel" Margin="0,3,0,3">
+            <Image x:Name="NotificationImage" Height="20" Width="20" Grid.Column="0" VerticalAlignment="Center" Margin="10,0,0,0" HorizontalAlignment="Left"></Image>
+            <TextBlock x:Name="UserName" Height="Auto" Grid.Column="1" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
+                          Text="{Binding Text, Mode=OneTime}" Margin="3,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+            <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Name="notStackPanel" Margin="24,3,24,3">
                 <Image x:Name="NotificationImage" Height="20" Width="20" VerticalAlignment="Center" Margin="10,0,0,0"></Image>
                 <TextBlock x:Name="UserName" Height="Auto" MaxWidth="380" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
-                          Margin="8,0,0,3"  Text="{Binding Text, Mode=OneTime}" VerticalAlignment="Center"/>
-            </StackPanel>
+                          Text="{Binding Text, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </StackPanel>-->
 
         </Grid>
     </Grid>
