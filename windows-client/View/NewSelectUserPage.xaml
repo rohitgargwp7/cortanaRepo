@@ -42,7 +42,7 @@
         </Style>
 
         <DataTemplate x:Key="GroupHeaderTemplate">
-            <Border Background="Transparent" Margin="0,5,0,5">
+            <Border Background="Transparent" Margin="0,5,0,10">
                 <Border Background="{StaticResource PhoneAccentBrush}" 
                         Width="55" Height="55" HorizontalAlignment="Left">
                     <TextBlock Text="{Binding Title}" 
