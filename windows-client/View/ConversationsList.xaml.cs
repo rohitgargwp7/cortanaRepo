@@ -1895,15 +1895,15 @@ namespace windows_client.View
                             if (_refreshBarCount == 0 && value > 0)
                             {
                                 refreshStatusBackground.Visibility = System.Windows.Visibility.Visible;
-                                refreshStatusText.Visibility = System.Windows.Visibility.Visible;
+                                refreshBarPanel.Visibility = System.Windows.Visibility.Visible;
                             }
                             else if (_refreshBarCount > 0 && value == 0)
                             {
                                 refreshStatusBackground.Visibility = System.Windows.Visibility.Collapsed;
-                                refreshStatusText.Visibility = System.Windows.Visibility.Collapsed;
+                                refreshBarPanel.Visibility = System.Windows.Visibility.Collapsed;
                                 FreshStatusUpdates.Clear();
                             }
-                            if (refreshStatusText.Visibility == System.Windows.Visibility.Visible && value > 0)
+                            if (refreshBarPanel.Visibility == System.Windows.Visibility.Visible && value > 0)
                             {
                                 if (value == 1)
                                     refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_SingleStatus, value);
