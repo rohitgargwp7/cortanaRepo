@@ -669,9 +669,15 @@ namespace windows_client.View
                         }
 
                         if (hikeContactList.Count == 0)
+                        {
                             emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
+                            hikeContactListBox.Visibility = Visibility.Collapsed;
+                        }
                         else
+                        {
                             emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
+                            hikeContactListBox.Visibility = Visibility.Visible;
+                        }
                     };
                 }
                 #endregion
@@ -1073,9 +1079,10 @@ namespace windows_client.View
                     {
                         if (c != null)
                             hikeContactList.Add(c);
-                        if (emptyListPlaceholderHikeContacts.Visibility == Visibility.Visible)
+                        if (hikeContactList.Count > 0)
                         {
                             emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
+                            hikeContactListBox.Visibility = Visibility.Visible;
                         }
                     });
                 }
@@ -1098,6 +1105,7 @@ namespace windows_client.View
                         if (hikeContactList.Count == 0)
                         {
                             emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
+                            hikeContactListBox.Visibility = Visibility.Collapsed;
                         }
                     });
                 }
@@ -1137,6 +1145,7 @@ namespace windows_client.View
                               if (hikeContactList.Count == 0)
                               {
                                   emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
+                                  hikeContactListBox.Visibility = Visibility.Collapsed;
                               }
                           });
                 }
@@ -1301,9 +1310,10 @@ namespace windows_client.View
                         c.Avatar = convObj.Avatar;
                         hikeContactList.Add(c);
                     }
-                    if (emptyListPlaceholderHikeContacts.Visibility == System.Windows.Visibility.Visible)
+                    if (hikeContactList.Count > 0)
                     {
                         emptyListPlaceholderHikeContacts.Visibility = System.Windows.Visibility.Collapsed;
+                        hikeContactListBox.Visibility = Visibility.Visible;
                     }
                 }
                 else // add to fav
@@ -1344,6 +1354,7 @@ namespace windows_client.View
                     if (hikeContactList.Count == 0)
                     {
                         emptyListPlaceholderHikeContacts.Visibility = System.Windows.Visibility.Visible;
+                        hikeContactListBox.Visibility = Visibility.Collapsed;
                     }
                     menuFavourite.Header = AppResources.RemFromFav_Txt;
                     App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
@@ -1409,6 +1420,11 @@ namespace windows_client.View
         {
             composeIconButton.IsEnabled = true;
             appBar.IsMenuEnabled = true;
+        }
+      
+        private void InviteBtn_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
         }
 
         private void EditProfile_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1747,9 +1763,10 @@ namespace windows_client.View
                 emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
                 favourites.Visibility = System.Windows.Visibility.Collapsed;
             }
-            if (emptyListPlaceholderHikeContacts.Visibility == Visibility.Visible)
+            if (hikeContactList.Count > 0)
             {
                 emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
+                hikeContactListBox.Visibility = Visibility.Visible;
             }
         }
 
@@ -1817,6 +1834,7 @@ namespace windows_client.View
                 if (hikeContactList.Count == 0)
                 {
                     emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
+                    hikeContactListBox.Visibility = Visibility.Collapsed;
                 }
                 FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(cObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
 
@@ -2011,7 +2029,7 @@ namespace windows_client.View
                 cObj = App.ViewModel.ConvMap[fObj.Msisdn];
                 cObj.IsFav = true;
                 if (cObj.ConvBoxObj != null && cObj.ConvBoxObj.FavouriteMenuItem != null)
-                cObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.RemFromFav_Txt;
+                    cObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.RemFromFav_Txt;
             }
             else
             {
@@ -2158,6 +2176,7 @@ namespace windows_client.View
 
 
         #endregion
+
 
     }
 }
