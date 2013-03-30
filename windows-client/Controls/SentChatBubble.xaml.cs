@@ -23,17 +23,17 @@ namespace windows_client.Controls
         private ConvMessage.State messageState;
         private static IScheduler scheduler = Scheduler.NewThread;
 
-        public static SentChatBubble getSplitChatBubbles(ConvMessage cm, bool readFromDB)
+        public static SentChatBubble getSplitChatBubbles(ConvMessage cm, bool readFromDB, PageOrientation pageOrientation)
         {
             try
             {
                 SentChatBubble sentChatBubble;
                 if (cm.Message.Length < HikeConstants.MAX_CHATBUBBLE_SIZE)
                 {
-                    sentChatBubble = new SentChatBubble(cm, readFromDB, cm.Message);
+                    sentChatBubble = new SentChatBubble(cm, readFromDB, cm.Message, pageOrientation);
                     return sentChatBubble;
                 }
-                sentChatBubble = new SentChatBubble(cm, readFromDB, cm.Message.Substring(0, HikeConstants.MAX_CHATBUBBLE_SIZE));
+                sentChatBubble = new SentChatBubble(cm, readFromDB, cm.Message.Substring(0, HikeConstants.MAX_CHATBUBBLE_SIZE), pageOrientation);
                 sentChatBubble.splitChatBubbles = new List<MyChatBubble>();
                 int lengthOfNextBubble = 1400;
                 for (int i = 1; i <= (cm.Message.Length / HikeConstants.MAX_CHATBUBBLE_SIZE); i++)
@@ -47,7 +47,7 @@ namespace windows_client.Controls
                         lengthOfNextBubble = (cm.Message.Length - (i) * HikeConstants.MAX_CHATBUBBLE_SIZE) % HikeConstants.MAX_CHATBUBBLE_SIZE;
                     }
                     SentChatBubble splitBubble = new SentChatBubble(cm, readFromDB, cm.Message.Substring(i * HikeConstants.MAX_CHATBUBBLE_SIZE,
-                        lengthOfNextBubble));
+                        lengthOfNextBubble), pageOrientation);
                     sentChatBubble.splitChatBubbles.Add(splitBubble);
                 }
                 return sentChatBubble;
@@ -59,11 +59,11 @@ namespace windows_client.Controls
             }
         }
 
-        public SentChatBubble(ConvMessage cm, bool readFromDB, string messageText)
+        public SentChatBubble(ConvMessage cm, bool readFromDB, string messageText, PageOrientation pageOrientation)
             : base(cm)
         {
             InitializeComponent();
-            initializeBasedOnState(cm, messageText);
+            initializeBasedOnState(cm, messageText, pageOrientation);
             //IsSms is false for group chat
             switch (cm.MessageStatus)
             {
@@ -115,7 +115,7 @@ namespace windows_client.Controls
         {
             // Required to initialize variables
             InitializeComponent();
-            initializeBasedOnState(cm, cm.Message);
+            initializeBasedOnState(cm, cm.Message, PageOrientation.Portrait);
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
             if (thumbnailsBytes != null && thumbnailsBytes.Length > 0)
@@ -305,11 +305,11 @@ namespace windows_client.Controls
         //private static Thickness nudgeBubbleMargin = new Thickness(348, 12, 0, 10);
         //private static Thickness attachmentBubbleMargin = new Thickness(200, 12, 0, 10);
 
-        private void initializeBasedOnState(ConvMessage cm, string messageString)
+        private void initializeBasedOnState(ConvMessage cm, string messageString, PageOrientation pageOrientation)
         {
             bool hasAttachment = cm.HasAttachment;
             string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
-            //string messageString = cm.Message;
+            //string messageString = cm.Message;5
             bool isSMS = cm.IsSms;
             bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains(HikeConstants.POKE);
 
@@ -405,20 +405,25 @@ namespace windows_client.Controls
                     uploadProgress.MaxHeight = 100;
                     Grid.SetRow(uploadProgress, 1);
                     attachment.Children.Add(uploadProgress);
-                    //this.Margin = attachmentBubbleMargin;
                 }
             }
             else
             {
                 MessageText = new LinkifiedTextBox(UI_Utils.Instance.White, 22, messageString);
-                MessageText.Width = 330;
+                if ((pageOrientation & PageOrientation.Landscape) == PageOrientation.Landscape)
+                {
+                    this.MessageText.Width = HikeConstants.CHATBUBBLE_LANDSCAPE_WIDTH;
+                }
+                else if ((pageOrientation & PageOrientation.Portrait) == PageOrientation.Portrait)
+                {
+                    this.MessageText.Width = HikeConstants.CHATBUBBLE_PORTRAIT_WIDTH;
+                }
                 MessageText.Foreground = progressColor;
                 MessageText.Margin = messageTextMargin;
                 MessageText.FontFamily = UI_Utils.Instance.SemiLightFont;
                 Grid.SetRow(MessageText, 0);
                 Grid.SetColumn(MessageText, 1);
                 wrapperGrid.Children.Add(MessageText);
-                //this.Margin = textBubbleMargin;
             }
 
             SDRImage = new Image();

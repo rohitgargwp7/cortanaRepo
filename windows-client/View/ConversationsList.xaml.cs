@@ -93,6 +93,8 @@ namespace windows_client.View
             }
             this.myListBox.SelectedIndex = -1;
             this.favourites.SelectedIndex = -1;
+            this.hikeContactListBox.SelectedIndex = -1;
+            this.statusLLS.SelectedIndex = -1;
             if (App.ViewModel.MessageListPageCollection.Count > 0)
                 myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
             App.IS_TOMBSTONED = false;

@@ -88,12 +88,17 @@ namespace windows_client.Controls.StatusUpdate
         }
 
         public StatusUpdateBox(string userName, BitmapImage userImage, string msisdn, string serverId)
+            : this(userName, userImage, msisdn, serverId, true)
+        {
+        }
+
+        public StatusUpdateBox(string userName, BitmapImage userImage, string msisdn, string serverId, bool isShowOnTimeline)
         {
             this.UserName = userName;
             this.UserImage = userImage;
             this.Msisdn = msisdn;
             this._serverId = serverId;
-            if (App.MSISDN == msisdn)
+            if (!isShowOnTimeline && App.MSISDN == msisdn)
             {
                 ContextMenu menu = new ContextMenu();
                 menu.IsZoomEnabled = true;

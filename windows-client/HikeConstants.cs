@@ -109,7 +109,8 @@ namespace windows_client
         public static readonly string DEVICE_ID = "deviceid";//A unique ID of the device
         public static readonly string DEVICE_TOKEN = "devicetoken";// A unique ID of the device 
         public static readonly string DEVICE_VERSION = "deviceversion";//The current OS version
-        public static readonly string APP_VERSION = "appversion";//The app version
+        public static readonly string APP_VERSION = "app_version";//The app version
+        public static readonly string APPVERSION = "appversion";//The app version
         public static readonly string INVITE_TOKEN_KEY = "invite_token";//The referral token
         public static readonly string PUSH_CHANNEL_CN = "*.hike.in";//The PUSH CN
         public static readonly string FAVORITES = "favorites";
@@ -200,7 +201,6 @@ namespace windows_client
         public static readonly string MOOD = "mood";
         public static readonly string TIME_OF_DAY = "timeofday";
 
-        public static readonly string CMOODS = "cmoods";
         public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
         public static string MSISDN = "msisdn";
