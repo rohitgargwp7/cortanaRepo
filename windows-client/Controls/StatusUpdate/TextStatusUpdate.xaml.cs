@@ -53,7 +53,7 @@ namespace windows_client.Controls.StatusUpdate
 
         public TextStatusUpdate(string userName, BitmapImage userImage, StatusMessage sm, bool isShowOnTimeline,
             EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap)
-            : base(userName, userImage, sm.Msisdn, sm.ServerId)
+            : base(userName, userImage, sm.Msisdn, sm.ServerId, isShowOnTimeline)
         {
             InitializeComponent();
             this.statusTextTxtBlk.Text = sm.Message;

@@ -40,7 +40,7 @@ namespace windows_client.Controls.StatusUpdate
 
         public ImageStatusUpdate(string userName, BitmapImage userImage, StatusMessage sm, bool isShowOnTimeline,
             BitmapImage statusImageBitmap, EventHandler<System.Windows.Input.GestureEventArgs> imageTap)
-            : base(userName, userImage, sm.Msisdn, sm.ServerId)
+            : base(userName, userImage, sm.Msisdn, sm.ServerId, isShowOnTimeline)
         {
             InitializeComponent();
             this.statusTextTxtBlk.Text = AppResources.StatusUpdate_Photo;
