@@ -42,7 +42,7 @@
         </Style>
 
         <DataTemplate x:Key="GroupHeaderTemplate">
-            <Border Background="Transparent" Margin="0,5,0,0">
+            <Border Background="Transparent" Margin="0,5,0,10">
                 <Border Background="{StaticResource PhoneAccentBrush}" 
                         Width="55" Height="55" HorizontalAlignment="Left">
                     <TextBlock Text="{Binding Title}" 
@@ -96,7 +96,7 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="646"/>
+            <RowDefinition Height="700"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
