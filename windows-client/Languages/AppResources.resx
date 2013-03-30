@@ -182,7 +182,7 @@
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_Pending_Yes_Btn" xml:space="preserve">
-    <value>Yes</value>
+    <value>Confirm</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_Pivot_Chats_Header_Txt" xml:space="preserve">
@@ -206,8 +206,8 @@
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>remove from friends</value>
-    <comment>cs</comment>
+    <value>remove from circle of friends</value>
+    <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
     <value>You have no-one in your Circle of friends right now.</value>
@@ -602,8 +602,8 @@
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>add to friends</value>
-    <comment>cs</comment>
+    <value>add to circle of friends</value>
+    <comment>fix length(24)</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
     <value>add user</value>
@@ -1537,7 +1537,7 @@
     <value>Me</value>
   </data>
   <data name="Conversations_BtnCircleOfFriends_Txt" xml:space="preserve">
-    <value>View circle of friends</value>
+    <value>View friends</value>
   </data>
   <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
     <value>You can see updates from your circle of friends here.</value>
@@ -1655,5 +1655,23 @@
   </data>
   <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
     <value>Add to Contacts</value>
+  </data>
+  <data name="SettingsSubtitle_Account_Txt" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="SettingsSubtitle_Blocklist_Txt" xml:space="preserve">
+    <value>Blocklist</value>
+  </data>
+  <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="Settings_AccountSettings_Txt" xml:space="preserve">
+    <value>Manage your hike account</value>
+  </data>
+  <data name="Settings_BlocklistSettings_Txt" xml:space="preserve">
+    <value>A list of people you've blocked</value>
+  </data>
+  <data name="Settings_NotificationSettings_Txt" xml:space="preserve">
+    <value>Your notifications preferences</value>
   </data>
 </root>
