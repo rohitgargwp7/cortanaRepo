@@ -192,8 +192,7 @@ namespace windows_client.View
                     }
                 }
                 allContactsList = UsersTableUtils.getAllContactsByGroup();
-                if(hideSmsContacts)
-                    jumpList = getGroupedList(allContactsList);
+                jumpList = getGroupedList(allContactsList);
             };
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (s, e) =>
