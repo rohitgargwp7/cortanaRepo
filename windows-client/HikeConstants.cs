@@ -200,6 +200,7 @@ namespace windows_client
         public static readonly string MOOD = "mood";
         public static readonly string TIME_OF_DAY = "timeofday";
 
+        public static readonly string CMOODS = "cmoods";
         public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
         public static string MSISDN = "msisdn";

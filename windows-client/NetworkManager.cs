@@ -8,16 +8,10 @@ using System.Windows;
 using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
-using Microsoft.Phone.Notification;
 using System.Text;
 using windows_client.Misc;
-using windows_client.View;
-using System.Collections.ObjectModel;
 using windows_client.Languages;
-using System.Windows.Threading;
 using windows_client.ViewModel;
-using windows_client.Controls.StatusUpdate;
-using Microsoft.Phone.Controls;
 
 namespace windows_client
 {
@@ -680,7 +674,7 @@ namespace windows_client
                 {
                     data = (JObject)jsonObj[HikeConstants.DATA];
                     Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString());
-
+                    #region rewards zone
                     JToken rew;
                     if (data.TryGetValue(HikeConstants.REWARDS_TOKEN, out rew))
                         App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, rew.ToString());
@@ -690,6 +684,8 @@ namespace windows_client
                         App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, rew.ToObject<bool>());
                         pubSub.publish(HikePubSub.REWARDS_TOGGLE, null);
                     }
+                    #endregion
+                    #region batch push zone
                     JToken pushStatus;
                     if (data.TryGetValue(HikeConstants.ENABLE_PUSH_BATCH_SU, out pushStatus))
                     {
@@ -714,6 +710,13 @@ namespace windows_client
                             Debug.WriteLine("NetworkManager ::  onMessage :  ACCOUNT CONFIG, enable push notification, Exception : " + ex.StackTrace);
                         }
                     }
+                    #endregion
+                    #region moods zone
+                    if (data.TryGetValue(HikeConstants.CMOODS, out rew))
+                    {
+                        App.WriteToIsoStorageSettings(HikeConstants.CMOODS, rew.ToObject<bool>());
+                    }
+                    #endregion
                 }
                 catch (Exception ex)
                 {
