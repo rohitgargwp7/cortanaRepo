@@ -13,7 +13,6 @@ namespace windows_client.Controls.StatusUpdate
         private BitmapImage _statusImageSource;
         private long timestamp;
         private bool isShowOnTimeline;
-        private static Thickness statusImageMargin = new Thickness(12, 28, 0, 12);
 
         public override bool IsUnread
         {
@@ -69,7 +68,7 @@ namespace windows_client.Controls.StatusUpdate
             }
             else
             {
-                this.userProfileImage.Margin = statusImageMargin;
+                this.userProfileImage.Margin = UI_Utils.Instance.StatusImageMargin;
                 userProfileImage.Source = UI_Utils.Instance.ProfilePicStatusImage;
                 if (sm.MoodId > 0) //For profile pic update. Mood id won't be received. Kept this for future.
                 {

@@ -82,6 +82,16 @@ namespace windows_client.utils
 
         #endregion
 
+        #region STATUS UPDATE CUSTOM CONTROLS
+        public Thickness TimelineStatusLayoutMargin = new Thickness(0, 0, 0, 24);
+        public Thickness UserProfileStatusLayoutMargin = new Thickness(0, 0, 0, 0);
+        public Thickness TimelineStatusTypeMargin = new Thickness(0, 8, 0, 0);
+        public Thickness UserProfileStatusTypeMargin = new Thickness(12, 34, 0, 0);
+        public Thickness TimelineStatusTextMargin = new Thickness(20, 0, 5, 0);
+        public Thickness UserProfileStatusTextMargin = new Thickness(18, 0, 5, 0);
+        public Thickness StatusImageMargin = new Thickness(12, 28, 0, 12);
+        #endregion
+
         private Dictionary<string, BitmapImage> _bitMapImageCache = null;
 
         private static volatile UI_Utils instance = null;
@@ -651,7 +661,7 @@ namespace windows_client.utils
                 return contactIcon;
             }
         }
-        
+
         public BitmapImage FacebookDisabledIcon
         {
             get
@@ -661,7 +671,7 @@ namespace windows_client.utils
                 return facebookDisabledIcon;
             }
         }
-        
+
         public BitmapImage FacebookEnabledIcon
         {
             get
@@ -671,7 +681,7 @@ namespace windows_client.utils
                 return facebookEnabledIcon;
             }
         }
-        
+
         public BitmapImage TwitterDisabledIcon
         {
             get
@@ -681,7 +691,7 @@ namespace windows_client.utils
                 return twitterDisabledIcon;
             }
         }
-        
+
         public BitmapImage TwitterEnabledIcon
         {
             get
@@ -691,7 +701,7 @@ namespace windows_client.utils
                 return twitterEnabledIcon;
             }
         }
-        
+
         public BitmapImage MoodDisabledIcon
         {
             get
@@ -701,7 +711,7 @@ namespace windows_client.utils
                 return moodDisabledIcon;
             }
         }
-        
+
         public BitmapImage MoodEnabledIcon
         {
             get
@@ -711,7 +721,7 @@ namespace windows_client.utils
                 return moodEnabledIcon;
             }
         }
-       
+
         public BitmapImage UserProfileLockImage
         {
             get

@@ -14,17 +14,6 @@ namespace windows_client.Controls.StatusUpdate
         private long timestamp;
         private int moodId = -1;
         private bool isShowOnTimeline;
-        private static Thickness timelineStatusLayoutMargin = new Thickness(0, 0, 0, 24);
-        private static Thickness userProfileStatusLayoutMargin = new Thickness(0, 0, 0, 0);
-
-        private static Thickness timelineStatusTypeMargin = new Thickness(0, 8, 0, 0);
-        private static Thickness userProfileStatusTypeMargin = new Thickness(12, 34, 0, 0);
-
-        private static Thickness timelineStatusTextMargin = new Thickness(20, 0, 5, 0);
-        private static Thickness userProfileStatusTextMargin = new Thickness(18, 0, 5, 0);
-
-        //private static Thickness timelineTimestampMargin = new Thickness(12, 23, 0, 0);
-        //private static Thickness userProfileTimestampMargin = new Thickness(12, 34, 0, 0);
 
         public override bool IsUnread
         {
@@ -40,12 +29,10 @@ namespace windows_client.Controls.StatusUpdate
                     if (value != true) //read status
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
-                        //        statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
                     }
                     else
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
-                        //        statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
                     }
                 }
             }
@@ -69,39 +56,37 @@ namespace windows_client.Controls.StatusUpdate
             if (sm.IsUnread)
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
-                //statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
             }
             else
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
-                //statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
             }
             if (isShowOnTimeline)
             {
                 this.statusTypeImage.Source = this.UserImage;
                 this.statusTypeImage.MaxWidth = 69;
                 statusTextTxtBlk.MaxWidth = 300;
-                this.LayoutRoot.Margin = timelineStatusLayoutMargin;
-                this.statusTypeImage.Margin = timelineStatusTypeMargin;
-                this.statusTextTxtBlk.Margin = timelineStatusTextMargin;
-                this.timestampTxtBlk.Margin = timelineStatusTextMargin;
+                this.LayoutRoot.Margin = UI_Utils.Instance.TimelineStatusLayoutMargin;
+                this.statusTypeImage.Margin = UI_Utils.Instance.TimelineStatusTypeMargin;
+                this.statusTextTxtBlk.Margin = UI_Utils.Instance.TimelineStatusTextMargin;
+                this.timestampTxtBlk.Margin = UI_Utils.Instance.TimelineStatusTextMargin;
             }
             else
             {
                 userNameTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
                 statusTypeImage.Width = 40;
                 statusTextTxtBlk.MaxWidth = 380;
-                this.LayoutRoot.Margin = userProfileStatusLayoutMargin;
-                this.statusTypeImage.Margin = userProfileStatusTypeMargin;
-                this.statusTextTxtBlk.Margin = userProfileStatusTextMargin;
-                this.timestampTxtBlk.Margin = userProfileStatusTextMargin;
+                this.LayoutRoot.Margin = UI_Utils.Instance.UserProfileStatusLayoutMargin;
+                this.statusTypeImage.Margin = UI_Utils.Instance.UserProfileStatusTypeMargin;
+                this.statusTextTxtBlk.Margin = UI_Utils.Instance.UserProfileStatusTextMargin;
+                this.timestampTxtBlk.Margin = UI_Utils.Instance.UserProfileStatusTextMargin;
             }
             if (sm.MoodId > 0)
             {
                 statusTypeImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
                 moodId = sm.MoodId;
             }
-            else if(!isShowOnTimeline)
+            else if (!isShowOnTimeline)
             {
                 if (sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
                 {
