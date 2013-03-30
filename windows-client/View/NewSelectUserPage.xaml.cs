@@ -386,7 +386,7 @@ namespace windows_client.View
                 {
                     if (isFreeSmsOn) // free sms is on 
                     {
-                        if (!c.OnHike && !Utils.IsIndianNumber(c.Msisdn)) // if non hike non indian user
+                        if (!c.OnHike && !Utils.IsIndianNumber(c.Msisdn) && !frmBlockedList) // if non hike non indian user
                         {
                             if (isGroupChat)
                                 continue;
