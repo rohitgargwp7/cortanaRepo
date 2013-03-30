@@ -155,6 +155,8 @@ namespace windows_client.View
         {
             base.OnRemovedFromJournal(e);
             removeListeners();
+            if (launchPagePivot.SelectedIndex == 3) //if user quits app from timeline when a few statuses were shown as unread
+                TotalUnreadStatuses = RefreshBarCount;  //and new statuses arrived in refresh bar
         }
 
         private void DismissStatusUpdateTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1422,7 +1424,7 @@ namespace windows_client.View
             composeIconButton.IsEnabled = true;
             appBar.IsMenuEnabled = true;
         }
-      
+
         private void InviteBtn_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
