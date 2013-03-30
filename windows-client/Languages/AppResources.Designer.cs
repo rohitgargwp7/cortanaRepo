@@ -70,7 +70,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to add to friends.
+        ///   Looks up a localized string similar to add to circle of friends.
         /// </summary>
         public static string Add_To_Fav_Txt {
             get {
@@ -349,7 +349,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View circle of friends.
+        ///   Looks up a localized string similar to View friends.
         /// </summary>
         public static string Conversations_BtnCircleOfFriends_Txt {
             get {
@@ -547,7 +547,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Yes.
+        ///   Looks up a localized string similar to Confirm.
         /// </summary>
         public static string Conversations_Pending_Yes_Btn {
             get {
@@ -2842,7 +2842,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to remove from friends.
+        ///   Looks up a localized string similar to remove from circle of friends.
         /// </summary>
         public static string RemFromFav_Txt {
             get {
