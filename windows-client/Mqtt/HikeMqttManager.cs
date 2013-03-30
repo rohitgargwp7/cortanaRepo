@@ -274,7 +274,7 @@ namespace windows_client.Mqtt
             connect();
         }
 
-        private static Border b = new Border();
+        private Border b = new Border();
 
         public void connect()
         {
