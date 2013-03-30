@@ -655,7 +655,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have no-one in your Circle of friends right now..
+        ///   Looks up a localized string similar to You have no friends in your Circle right now..
         /// </summary>
         public static string Conversations_TapYesToAdd_Txt {
             get {

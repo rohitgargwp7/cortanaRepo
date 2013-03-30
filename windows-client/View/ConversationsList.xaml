@@ -93,7 +93,7 @@
 
                         <StackPanel x:Name="emptyListPlaceholderFiends" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center" Visibility="Collapsed">
                             <Image Source="images/favorites_heart.png" Height="90"></Image>
-                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Width="350" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
+                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                             <TextBlock Name="addContactsTxtBlk" Text="{Binding Path= LocalizedResources.Favorites_TapToAdd, Source={StaticResource LocalizedStrings}}"  Margin="0,0,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                         </StackPanel>
 
@@ -119,10 +119,11 @@
 
                         <TextBlock x:Name="contactOnHikeTitleTxtBlck" Visibility="Collapsed" Margin="0,35,0,15" Grid.Row="3" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}"/>
 
-                        <StackPanel x:Name="emptyListPlaceholderHikeContacts" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="4" HorizontalAlignment="Center" Visibility="Collapsed">
+                        <StackPanel x:Name="emptyListPlaceholderHikeContacts" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="4" HorizontalAlignment="Center" Visibility="Collapsed" >
                             <Image Source="images/hike_users.png" Height="90"></Image>
                             <TextBlock Text="{Binding Path= LocalizedResources.Conversations_NoFriendsOnHike_Txt, Source={StaticResource LocalizedStrings}}"  Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                             <TextBlock Text="{Binding Path= LocalizedResources.Conversations_InviteFriendsHike_Txt, Source={StaticResource LocalizedStrings}}" Width="270" Margin="0,0,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
+                            <Button Content="{Binding Path= LocalizedResources.FreeSMS_InviteNow_Btn, Source={StaticResource LocalizedStrings}}"  FontSize="18" Height="70" Width="160"  Background="#e9ecee" BorderThickness="0" Foreground="#595959" HorizontalAlignment="Center" Tap="Button_Tap_1"/>
                         </StackPanel>
 
                         <ListBox x:Name="hikeContactListBox" ItemsSource="{Binding Source={StaticResource contactsCollectionViewKey}}" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="4">

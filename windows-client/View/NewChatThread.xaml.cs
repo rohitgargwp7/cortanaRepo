@@ -1907,7 +1907,6 @@ namespace windows_client.View
             this.Focus();
             string message = sendMsgTxtbox.Text.Trim();
             sendMsgTxtbox.Text = string.Empty;
-            this.UpdateLayout();
             sendMsgTxtbox.Focus();
 
             if (String.IsNullOrEmpty(message))
