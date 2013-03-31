@@ -662,12 +662,12 @@ namespace windows_client.Model
                             locationFile[HikeConstants.LONGITUDE] = fileObject[HikeConstants.LONGITUDE];
                             locationFile[HikeConstants.ZOOM_LEVEL] = fileObject[HikeConstants.ZOOM_LEVEL];
                             locationFile[HikeConstants.LOCATION_ADDRESS] = fileObject[HikeConstants.LOCATION_ADDRESS];
-                            this.MetaDataString = locationFile.ToString();
+                            this.MetaDataString = locationFile.ToString(Newtonsoft.Json.Formatting.None);
                         }
 
                         if (contentType.ToString().Contains(HikeConstants.CONTACT))
                         {
-                            this.MetaDataString = fileObject.ToString();
+                            this.MetaDataString = fileObject.ToString(Newtonsoft.Json.Formatting.None);
                         }
                     }
                     else
