@@ -29,7 +29,8 @@ namespace windows_client.Controls.StatusUpdate
         }
 
         public FriendRequestStatus(ConversationListObject c,
-            EventHandler<GestureEventArgs> yesTap, EventHandler<GestureEventArgs> noTap)
+            EventHandler<GestureEventArgs> yesTap, EventHandler<GestureEventArgs> noTap,
+            EventHandler<System.Windows.Input.GestureEventArgs> bubbleTap)
             : base(c, string.Empty)
         {
             InitializeComponent();
@@ -45,6 +46,7 @@ namespace windows_client.Controls.StatusUpdate
                 var glNo = GestureService.GetGestureListener(this.noBtn);
                 glNo.Tap += noTap;
             }
+            this.Tap += bubbleTap;
         }
 
         public void update(ConversationListObject c)

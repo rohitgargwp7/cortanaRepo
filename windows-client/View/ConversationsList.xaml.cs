@@ -708,7 +708,7 @@ namespace windows_client.View
                         shellProgress.IsVisible = false;
                         foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
                         {
-                            FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
+                            FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click, statusBubblePhoto_Tap);
                             App.ViewModel.StatusList.Add(frs);
                         }
 
@@ -862,7 +862,7 @@ namespace windows_client.View
                         // be shown twice , one here and one from DB.
                         if (isStatusMessagesLoaded && App.ViewModel.IsPendingListLoaded)
                         {
-                            FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
+                            FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click, statusBubblePhoto_Tap);
                             App.ViewModel.StatusList.Insert(0, frs);
 
                             if (emptyStatusPlaceHolder.Visibility == Visibility.Visible)
