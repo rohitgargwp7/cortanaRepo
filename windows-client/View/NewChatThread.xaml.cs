@@ -109,6 +109,8 @@ namespace windows_client.View
 
         #endregion
 
+        private List<long> idsToUpdate = null; // this will store ids in perception fix case
+
         private BitmapImage[] imagePathsForList0
         {
             get
@@ -907,6 +909,10 @@ namespace windows_client.View
         bool hasMoreMessages;
         const int INITIAL_FETCH_COUNT = 21;
         const int SUBSEQUENT_FETCH_COUNT = 11;
+
+        // this variable stores the status of last SENT msg
+        ConvMessage.State refState = ConvMessage.State.UNKNOWN;
+
         private void loadMessages(int messageFetchCount)
         {
             int i;
@@ -929,6 +935,7 @@ namespace windows_client.View
                 return;
             }
 
+            bool isHandled = false;
             JArray ids = new JArray();
             List<long> dbIds = new List<long>();
             int count = 0;
@@ -946,6 +953,29 @@ namespace windows_client.View
                 if (count % 5 == 0)
                     Thread.Sleep(5);
                 messagesList[i].IsSms = !isOnHike;
+
+                #region PERCEPTION FIX ZONE
+
+                // perception fix is only used for msgs of normal type in which SDR applies
+                if (messagesList[i].GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                {
+                    if (!isHandled && messagesList[i].IsSent && messageFetchCount == INITIAL_FETCH_COUNT) // this has to be done for first load and not paging
+                    {
+                        refState = messagesList[i].MessageStatus;
+                        isHandled = true;
+                    }
+
+                    if (refState == ConvMessage.State.SENT_DELIVERED_READ && messagesList[i].MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                    {
+                        messagesList[i].MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
+                        if (idsToUpdate == null)
+                            idsToUpdate = new List<long>();
+                        idsToUpdate.Add(messagesList[i].MessageId);
+                    }
+                }
+
+                #endregion
+
                 if (messagesList[i].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
                 {
                     isPublish = true;
@@ -959,6 +989,19 @@ namespace windows_client.View
                     AddMessageToUI(cm, true, true);
                 });
             }
+
+                   #region perception fix update db
+            if (idsToUpdate != null && idsToUpdate.Count > 0)
+            {
+                BackgroundWorker bw = new BackgroundWorker();
+                bw.DoWork += (ss, ee) =>
+                {
+                    MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ);
+                    idsToUpdate = null;
+                };
+                bw.RunWorkerAsync();
+            }
+            #endregion
 
             if (isPublish)
             {
@@ -2745,13 +2788,17 @@ namespace windows_client.View
                 object[] vals = (object[])obj;
                 long[] ids = (long[])vals[0];
                 string msisdnToCheck = (string)vals[1];
-                if (msisdnToCheck != mContactNumber)
+                if (msisdnToCheck != mContactNumber || ids == null || ids.Length == 0)
                     return;
+                long maxId = 0;
                 // TODO we could keep a map of msgId -> conversation objects somewhere to make this faster
                 for (int i = 0; i < ids.Length; i++)
                 {
                     try
                     {
+                        if (maxId < ids[i])
+                            maxId = ids[i];
+
                         SentChatBubble msg = null;
                         msgMap.TryGetValue(ids[i], out msg);
                         if (msg != null)
@@ -2766,6 +2813,28 @@ namespace windows_client.View
                         continue;
                     }
                 }
+                #region perception fix
+
+                if (msgMap.Count > 0)
+                {
+
+                    List<long> idsToUpdate = new List<long>();
+                    foreach (var kv in msgMap)
+                    {
+                        if (kv.Key < maxId)
+                        {
+                            idsToUpdate.Add(kv.Key);
+                            SentChatBubble msg = kv.Value;
+                            msg.SetSentMessageStatus(ConvMessage.State.SENT_DELIVERED_READ);
+                        }
+                    }
+                    // remove these ids from map
+                    foreach (long id in idsToUpdate)
+                        msgMap.Remove(id);
+                    MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ);
+                    idsToUpdate = null;
+                }
+                #endregion
             }
 
             #endregion
