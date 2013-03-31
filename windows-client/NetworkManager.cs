@@ -135,16 +135,11 @@ namespace windows_client
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
 
-                    if (convMessage.FileAttachment != null && convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                        convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
-
-                    if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
+                    if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT)
+                        || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
                     {
-                        byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(convMessage.MetaDataString);
-                        MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
-                    Convert.ToString(convMessage.MessageId), locationBytes);
+                        convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
                     }
-
                     if (obj == null)
                         return;
                     if (convMessage.FileAttachment != null)

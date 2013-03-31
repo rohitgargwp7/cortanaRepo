@@ -1069,10 +1069,7 @@ namespace windows_client.View
                 else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                 {
                     convMessage.Message = AppResources.Location_Txt;
-                    byte[] locationInfo = null;
-                    MiscDBUtil.readFileFromIsolatedStorage(sourceFilePath, out locationInfo);
-                    string locationInfoString = System.Text.Encoding.UTF8.GetString(locationInfo, 0, locationInfo.Length);
-                    convMessage.MetaDataString = locationInfoString;
+                    convMessage.MetaDataString = chatBubble.MetaDataString;
                 }
                 else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                 {
@@ -1549,11 +1546,7 @@ namespace windows_client.View
                 byte[] filebytes;
                 MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
 
-                UTF8Encoding enc = new UTF8Encoding();
-                string locationInfo = enc.GetString(filebytes, 0, filebytes.Length);
-
-                JObject locationJSON = JObject.Parse(locationInfo)[HikeConstants.FILES_DATA].ToObject<JArray>()[0].ToObject<JObject>();
-                //JObject locationJSON = JObject.Parse(locationInfo);
+                JObject locationJSON = JObject.Parse(chatBubble.MetaDataString);
                 if (this.bingMapsTask == null)
                     bingMapsTask = new BingMapsTask();
                 double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
