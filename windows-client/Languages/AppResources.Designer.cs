@@ -3436,7 +3436,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I’m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp.
+        ///   Looks up a localized string similar to I&apos;m using @hikeapp 2.0 with status updates &amp; moods. Simple &amp; beautiful messaging, absolutely free..
         /// </summary>
         public static string Social_Invite_Txt {
             get {

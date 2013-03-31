@@ -905,7 +905,7 @@
     <comment>cs</comment>
   </data>
   <data name="Social_Invite_Txt" xml:space="preserve">
-    <value>I’m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp</value>
+    <value>I'm using @hikeapp 2.0 with status updates &amp; moods. Simple &amp; beautiful messaging, absolutely free.</value>
     <comment>This is used in case of Facebook and Twitter</comment>
   </data>
   <data name="Social_Txt" xml:space="preserve">
