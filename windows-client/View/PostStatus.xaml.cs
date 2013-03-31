@@ -27,7 +27,7 @@ namespace windows_client.View
         private bool isTwitterPost;
         private bool isFirstLoad = true;
         private int moodId = 0;
-        string lastMoodText = string.Empty;
+        string hintText = string.Empty;
         public PostStatus()
         {
             InitializeComponent();
@@ -45,7 +45,6 @@ namespace windows_client.View
             postStatusIcon.IsEnabled = true;
             appBar.Buttons.Add(postStatusIcon);
             postStatusPage.ApplicationBar = appBar;
-
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -54,7 +53,6 @@ namespace windows_client.View
             if (isFirstLoad)
             {
                 moodListBox.ItemsSource = MoodsInitialiser.Instance.MoodList;
-                userImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
                 isFirstLoad = false;
             }
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FROM_SOCIAL_PAGE)) // shows page is navigated from social page
@@ -91,8 +89,10 @@ namespace windows_client.View
 
         private void btnPostStatus_Click(object sender, EventArgs e)
         {
-
             string statusText = txtStatus.Text.Trim();
+            if (moodId > 0 && statusText == string.Empty)
+                statusText = txtStatus.Hint;
+
             if (statusText == string.Empty)
             {
                 postStatusIcon.IsEnabled = true;
@@ -190,11 +190,11 @@ namespace windows_client.View
             if (mood == null)
                 return;
             moodId = moodListBox.SelectedIndex + 1;
-            if (string.IsNullOrWhiteSpace(txtStatus.Text) || lastMoodText == txtStatus.Text)
-                lastMoodText = txtStatus.Text = mood.MoodText;
-            userImage.Source = mood.MoodImage;
+            txtStatus.Hint = hintText = mood.MoodText;
+            moodImage.Source = mood.MoodImage;
+            moodImage.Height = 60;
+            moodImage.Width = 60;
             gridMood.Visibility = Visibility.Collapsed;
-            moodIconImage.Source = UI_Utils.Instance.MoodEnabledIcon;
             this.appBar.IsVisible = true;
         }
 
@@ -205,6 +205,7 @@ namespace windows_client.View
                 gridMood.Visibility = Visibility.Collapsed;
                 e.Cancel = true;
                 this.appBar.IsVisible = true;
+                txtStatus.Focus();
                 return;
             }
             base.OnBackKeyPress(e);
@@ -212,18 +213,23 @@ namespace windows_client.View
 
         private void txtStatus_GotFocus(object sender, RoutedEventArgs e)
         {
-            string name;
-            App.appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
-            string nameToShow = null;
-            if (!string.IsNullOrEmpty(name))
+            if (hintText == string.Empty)
             {
-                string[] nameArray = name.Split(' ');
-                if (nameArray.Length > 0)
+                string name;
+                App.appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
+                string nameToShow = null;
+                if (!string.IsNullOrEmpty(name))
                 {
-                    nameToShow = nameArray[0];
+                    string[] nameArray = name.Split(' ');
+                    if (nameArray.Length > 0)
+                    {
+                        nameToShow = nameArray[0];
+                    }
                 }
+                txtStatus.Hint = hintText = string.Format(AppResources.PostStatus_WhatsUp_Hint_txt, (nameToShow != null ? nameToShow : string.Empty));
             }
-            txtStatus.Hint = string.Format(AppResources.PostStatus_WhatsUp_Hint_txt, (nameToShow != null ? nameToShow : string.Empty));
+            else
+                txtStatus.Hint = hintText;
         }
 
         public void SocialPostFB(JObject obj)
@@ -261,7 +267,7 @@ namespace windows_client.View
         private void txtStatus_TextChanged(object sender, TextChangedEventArgs e)
         {
             int count = txtStatus.Text.Length;
-            if (count == 0)
+            if (count == 0 && moodId==0)
             {
                 postStatusIcon.IsEnabled = false;
             }

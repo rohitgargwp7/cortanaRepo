@@ -667,9 +667,9 @@ namespace windows_client.View
                         {
                             emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
                             if (hikeContactList.Count > 0)
-                                addContactsTxtBlk.Visibility = Visibility.Visible;
+                                addContactsTxtBlk.Text = AppResources.Conversations_NoFriend_Tap_Txt;
                             else
-                                addContactsTxtBlk.Visibility = Visibility.Collapsed;
+                                addContactsTxtBlk.Text = AppResources.Conversations_TapYesToAdd_Txt;
                         }
 
                         if (hikeContactList.Count == 0)
@@ -729,7 +729,7 @@ namespace windows_client.View
                         if (App.ViewModel.StatusList.Count == 0)
                         {
                             emptyStatusPlaceHolder.Visibility = Visibility.Visible;
-                            txtEmptyStatusFriendBlk1.Text = txtEmptyStatusBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
+                            txtEmptyStatusFriendBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
                             statusLLS.Visibility = Visibility.Collapsed;
                         }
                         RefreshBarCount = 0;
@@ -1041,7 +1041,7 @@ namespace windows_client.View
                         if (App.ViewModel.StatusList.Count == 0)
                         {
                             emptyStatusPlaceHolder.Visibility = Visibility.Visible;
-                            txtEmptyStatusFriendBlk1.Text = txtEmptyStatusBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
+                            txtEmptyStatusFriendBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
                             statusLLS.Visibility = Visibility.Collapsed;
                         }
                     }

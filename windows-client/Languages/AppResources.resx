@@ -210,7 +210,7 @@
     <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>You have no friends in your Circle right now.</value>
+    <value>You don't have anyone in your circle of friends.</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -905,7 +905,7 @@
     <comment>cs</comment>
   </data>
   <data name="Social_Invite_Txt" xml:space="preserve">
-    <value>I’m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp</value>
+    <value>I'm using @hikeapp 2.0 with status updates &amp; moods. Simple &amp; beautiful messaging, absolutely free.</value>
     <comment>This is used in case of Facebook and Twitter</comment>
   </data>
   <data name="Social_Txt" xml:space="preserve">
@@ -1416,10 +1416,6 @@
   <data name="Stop_Contact_Scanning" xml:space="preserve">
     <value>Do you want to stop contact scanning?</value>
   </data>
-  <data name="PostStatus_WhatsUp_Txt" xml:space="preserve">
-    <value>What's up,{0}?</value>
-    <comment>{0} to be replaced by name</comment>
-  </data>
   <data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
     <value>Message {0} on Hike</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
@@ -1489,10 +1485,6 @@
   <data name="Conversations_EmptyStatus_TeamHike_Txt" xml:space="preserve">
     <value>Team Hike</value>
   </data>
-  <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
-    <value>What's up, {0}?</value>
-    <comment>{0} replaced by user name </comment>
-  </data>
   <data name="Update_Profile_Pic_txt" xml:space="preserve">
     <value>Updated profile picture</value>
     <comment>Used to show for pp update in last msg of convlist</comment>
@@ -1514,7 +1506,7 @@
     <value>Immediate</value>
   </data>
   <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
-    <value>Only your 'friends on hike' can see your status updates</value>
+    <value>Only your 'Circle of friends' can see your status updates</value>
   </data>
   <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
     <value>Tap on this icon to post a new status</value>
@@ -1544,9 +1536,6 @@
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
     <value>Invite your friends to hike</value>
-  </data>
-  <data name="Conversations_NoFriendsOnHike_Txt" xml:space="preserve">
-    <value>You have no Contacts on hike right now.</value>
   </data>
   <data name="Mood_Angry" xml:space="preserve">
     <value>Angry </value>
@@ -1678,6 +1667,13 @@
     <value>user</value>
   </data>
   <data name="Conversations_InviteFriend_Btn" xml:space="preserve">
-    <value>Invite Friend</value>
+    <value>Invite Friends</value>
+  </data>
+  <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
+    <value>Tap on + to add a contact to your circle of friends.</value>
+  </data>
+  <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
+    <value>What's up, {0}?</value>
+    <comment>{0} replaced by user name </comment>
   </data>
 </root>

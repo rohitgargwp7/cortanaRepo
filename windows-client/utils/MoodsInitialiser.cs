@@ -12,7 +12,7 @@ namespace windows_client.utils
     {
         private static MoodsInitialiser instance = null;
         private BitmapImage[] moodImages;
-        private readonly int totalMoodCount = 33;
+        public static readonly int totalMoodCount = 33;
         private readonly int cricketMoodCount = 9;
 
         public static MoodsInitialiser Instance
@@ -109,6 +109,7 @@ namespace windows_client.utils
 
         public class Mood
         {
+            private const int nonCricketMoodsCount = 24;
             int _moodId;
             public Mood(int moodId)
             {
@@ -123,6 +124,16 @@ namespace windows_client.utils
                 }
             }
 
+            public int MoodHeight
+            {
+                get
+                {
+                    if (_moodId <= nonCricketMoodsCount)
+                        return 55;
+                    else
+                        return 65;
+                }
+            }
             public string MoodText
             {
                 get

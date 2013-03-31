@@ -502,7 +502,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invite Friend.
+        ///   Looks up a localized string similar to Invite Friends.
         /// </summary>
         public static string Conversations_InviteFriend_Btn {
             get {
@@ -538,11 +538,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have no Contacts on hike right now..
+        ///   Looks up a localized string similar to Tap on + to add a contact to your circle of friends..
         /// </summary>
-        public static string Conversations_NoFriendsOnHike_Txt {
+        public static string Conversations_NoFriend_Tap_Txt {
             get {
-                return ResourceManager.GetString("Conversations_NoFriendsOnHike_Txt", resourceCulture);
+                return ResourceManager.GetString("Conversations_NoFriend_Tap_Txt", resourceCulture);
             }
         }
         
@@ -655,7 +655,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only your &apos;friends on hike&apos; can see your status updates.
+        ///   Looks up a localized string similar to Only your &apos;Circle of friends&apos; can see your status updates.
         /// </summary>
         public static string Conversations_StatusTutorials_Info_Txt {
             get {
@@ -673,7 +673,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have no friends in your Circle right now..
+        ///   Looks up a localized string similar to You don&apos;t have anyone in your circle of friends..
         /// </summary>
         public static string Conversations_TapYesToAdd_Txt {
             get {
@@ -2545,15 +2545,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to What&apos;s up,{0}?.
-        /// </summary>
-        public static string PostStatus_WhatsUp_Txt {
-            get {
-                return ResourceManager.GetString("PostStatus_WhatsUp_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to privacy.
         /// </summary>
         public static string Privacy {
@@ -3436,7 +3427,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I’m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp.
+        ///   Looks up a localized string similar to I&apos;m using @hikeapp 2.0 with status updates &amp; moods. Simple &amp; beautiful messaging, absolutely free..
         /// </summary>
         public static string Social_Invite_Txt {
             get {

@@ -503,6 +503,7 @@
     <Content Include="View\images\avatars\Sneakers.png" />
     <Content Include="View\images\avatars\Space.png" />
     <Content Include="View\images\avatars\TealPeople.png" />
+    <Content Include="View\images\blocklist_holder.png" />
     <Content Include="View\images\block_list_icon.png" />
     <Content Include="View\images\block_list_icon_white.png" />
     <Content Include="View\images\change_pic.png" />
@@ -581,6 +582,7 @@
     <Content Include="View\images\notification_unread.png" />
     <Content Include="View\images\refresh_bar_arrow.png" />
     <Content Include="View\images\timeline_photo.png" />
+    <Content Include="View\images\timeline_status_icon.png" />
     <Content Include="View\images\tutorial_arrow.png" />
     <Content Include="View\images\tutorial_preview.png" />
     <Content Include="View\images\twitter_status.png" />

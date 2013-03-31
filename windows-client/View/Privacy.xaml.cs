@@ -97,6 +97,8 @@ namespace windows_client.View
                 });
                 return;
             }
+            if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
+                LogOutFb();
             DeleteLocalStorage();
         }
 
@@ -129,7 +131,7 @@ namespace windows_client.View
                 return;
             }
             if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
-                LogOutFb();//delete local storage in call back of fb
+                LogOutFb();
             DeleteLocalStorage();
         }
 
