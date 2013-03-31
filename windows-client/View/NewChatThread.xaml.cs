@@ -1404,6 +1404,10 @@ namespace windows_client.View
                             convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                                 "/" + convMessage.FileAttachment.FileKey;
                         }
+                        else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                        {
+                            convMessage.MetaDataString = chatBubble.MetaDataString;
+                        }
                         object[] values = new object[2];
                         values[0] = convMessage;
                         values[1] = chatBubble;
