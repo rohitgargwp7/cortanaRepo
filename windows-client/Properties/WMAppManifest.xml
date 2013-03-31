@@ -30,9 +30,9 @@
     <Tokens>
       <PrimaryToken TokenID="windows_clientToken" TaskName="_default">
         <TemplateIconic>
-          <SmallImageURI IsRelative="true" IsResource="false">hike-symbol-app-icon70x110.png</SmallImageURI>
+          <SmallImageURI IsRelative="true" IsResource="false">hike_small.png</SmallImageURI>
           <Count>0</Count>
-          <IconImageURI IsRelative="true" IsResource="false">hike-symbol-app-icon_130x202.png</IconImageURI>
+          <IconImageURI IsRelative="true" IsResource="false">hike_medium.png</IconImageURI>
           <Title>Hike</Title>
           <Message>
           </Message>
