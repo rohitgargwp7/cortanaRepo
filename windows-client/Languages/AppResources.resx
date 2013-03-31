@@ -210,7 +210,7 @@
     <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>You have no friends in your Circle right now.</value>
+    <value>You don't have anyone in your circle of friends.</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -1514,7 +1514,7 @@
     <value>Immediate</value>
   </data>
   <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
-    <value>Only your 'friends on hike' can see your status updates</value>
+    <value>Only your 'Circle of friends' can see your status updates</value>
   </data>
   <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
     <value>Tap on this icon to post a new status</value>
@@ -1544,9 +1544,6 @@
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
     <value>Invite your friends to hike</value>
-  </data>
-  <data name="Conversations_NoFriendsOnHike_Txt" xml:space="preserve">
-    <value>You have no Contacts on hike right now.</value>
   </data>
   <data name="Mood_Angry" xml:space="preserve">
     <value>Angry </value>
@@ -1678,6 +1675,9 @@
     <value>user</value>
   </data>
   <data name="Conversations_InviteFriend_Btn" xml:space="preserve">
-    <value>Invite Friend</value>
+    <value>Invite Friends</value>
+  </data>
+  <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
+    <value>Tap on + to add a contact to your circle of friends.</value>
   </data>
 </root>

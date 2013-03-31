@@ -16,7 +16,7 @@
 
     <phone:PhoneApplicationPage.Resources>
         <Style TargetType="ContentControl" x:Key="HintCustomStyle">
-            <Setter Property="Height" Value="130"></Setter>
+            <Setter Property="Height" Value="120"></Setter>
             <Setter Property="Width" Value="310"></Setter>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="VerticalContentAlignment" Value="Top"/>
@@ -42,7 +42,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Image Name="userImage"  Height="60" Width="60" VerticalAlignment="Top" Margin="24 24 5 0" Grid.Column="0"/>
+                <Image Name="moodImage" Source="images/timeline_status_icon.png"  Height="40" Width="40" VerticalAlignment="Top" Margin="24 24 5 0" Grid.Column="0"/>
                 <toolkit:PhoneTextBox InputScope="Text" AcceptsReturn="True"  VerticalAlignment="Top" x:Name="txtStatus" HorizontalAlignment="Left" Background="White" BorderThickness="0"  TextWrapping="Wrap" HintStyle="{StaticResource HintCustomStyle}" VerticalContentAlignment="Top" GotFocus="txtStatus_GotFocus"  TextChanged="txtStatus_TextChanged" Grid.Column="2" Width="345" Height="155" Margin="0 10 0 0"/>
                 <toolkit:PhoneTextBox Name="txtCounter" Width="70" Visibility="Collapsed" Background="White" Text="140"  BorderThickness="0" Foreground="Gray" Grid.Column="3"  IsHitTestVisible="False" TextAlignment="Right" Margin="0 10 0 0"/>
             </Grid>
@@ -52,22 +52,14 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Height="50" Width="50" Margin="10 -10 0 0" Grid.Column="0" Tap="FbIcon_Tap" >
-                    <Button Height="60" Width="60" BorderThickness="0"  Margin="0" Padding="0">
-                        <Image Name="fbIconImage" Source="/View/images/fb_status_disabled.png" VerticalAlignment="Center" HorizontalAlignment="Left"  Height="35" ></Image>
-                    </Button>
-
+                <StackPanel Height="50" Width="50" Margin="30 0 0 0" Grid.Column="0" Tap="FbIcon_Tap" >
+                    <Image Name="fbIconImage" Source="/View/images/fb_status_disabled.png" VerticalAlignment="Center" HorizontalAlignment="Left"  Height="35" ></Image>
                 </StackPanel>
-                <StackPanel Height="50" Width="50" Margin="20 -10 0 0" Grid.Column="1" Tap="TwitterIcon_Tap" HorizontalAlignment="Left" >
-                    <Button Height="60" Width="60" BorderThickness="0"  Margin="0" Padding="0">
-                        <Image Name="twitterIconImage" Source="/View/images/twitter_status_disabled.png"  VerticalAlignment="Center"  Height="35" ></Image>
-                    </Button>
+                <StackPanel Height="50" Width="50" Margin="20 0 0 0" Grid.Column="1" Tap="TwitterIcon_Tap" HorizontalAlignment="Left" >
+                    <Image Name="twitterIconImage" Source="/View/images/twitter_status_disabled.png"  VerticalAlignment="Center"  Height="35" ></Image>
                 </StackPanel>
-
-                <StackPanel Height="50" Width="50" Margin="0 -10 24 0" Grid.Column="2" >
-                    <Button Height="60" Width="60" BorderThickness="0"  Margin="0" Padding="0" Tap="Mood_Tap">
-                        <Image Name="moodIconImage" Source="/View/images/moods_status_icon_disabled.png" Width="40"  VerticalAlignment="Center"/>
-                    </Button>
+                <StackPanel Height="50" Width="50" Margin="0 0 24 0" Grid.Column="2" Tap="Mood_Tap">
+                    <Image Source="/View/images/moods_status_icon.png" Width="40" VerticalAlignment="Center" Tap="Mood_Tap"/>
                 </StackPanel>
             </Grid>
         </Grid>
@@ -77,10 +69,10 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="SELECT MOOD" FontSize="24" FontFamily="Segoe WP Regular"  Margin="26 40 12 12" Foreground="Gray"></TextBlock>
-            <ListBox  Name="moodListBox"  Grid.Row="1" Margin="30 0 12 30" Tap="moodList_Tap">
+            <ListBox  Name="moodListBox"  Grid.Row="1" Margin="20 15 12 30" Tap="moodList_Tap">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0 30 0 0">
+                        <Grid Margin="0 0 0 25">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="70"></ColumnDefinition>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
