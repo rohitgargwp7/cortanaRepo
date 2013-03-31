@@ -195,32 +195,6 @@ namespace windows_client.ViewModel
             RegisterListeners();
         }
 
-        public void RemoveAndSaveFromFavList(string msisdn)
-        {
-            if (_favList != null && _favList.Count > 0)
-            {
-                ConversationListObject favObj = null;
-                for (int i = _favList.Count - 1; i > 0; i--)
-                {
-                    if (_favList[i].Msisdn == msisdn)
-                    {
-                        favObj = _favList[i];
-                        break;
-                    }
-                }
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    _favList.Remove(favObj);
-                    MiscDBUtil.SaveFavourites();
-                    MiscDBUtil.DeleteFavourite(msisdn);
-                    int count = 0;
-                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
-                    return;
-                });
-            }
-        }
-
         public bool Isfavourite(string mContactNumber)
         {
             if (_favList.Count == 0)
@@ -350,8 +324,6 @@ namespace windows_client.ViewModel
                         }
                     }
                     #endregion
-                    if (_favList != null) // this will remove from UI too
-                        RemoveAndSaveFromFavList(msisdn);
                 }
                 catch (Exception e)
                 {
