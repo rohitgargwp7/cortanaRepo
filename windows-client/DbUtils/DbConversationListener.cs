@@ -206,8 +206,12 @@ namespace windows_client.DbUtils
                     string destinationFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" + convMessage.MessageId;
                     //while writing in iso, we write it as failed and then revert to started
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                    if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                    //since, Location & Contact has required info in metadata string, no need to use raw files
+                    if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) &&
+                        !convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                    {
                         MiscDBUtil.copyFileInIsolatedStorage(sourceFilePath, destinationFilePath);
+                    }
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
                 });
             }
@@ -244,7 +248,6 @@ namespace windows_client.DbUtils
                         App.ViewModel.MessageListPageCollection.Remove(convObj.ConvBoxObj);
                     }
                     App.ViewModel.MessageListPageCollection.Insert(0, convObj.ConvBoxObj);
-
                     //send attachment message (new attachment - upload case)
                     MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId, chatBubble);
                     convMessage.FileAttachment.FileState = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
