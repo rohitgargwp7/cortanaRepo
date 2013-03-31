@@ -483,9 +483,10 @@ namespace windows_client.Model
                 else
                 {
                     //add thumbnail here
-                    JObject uploadedJSON = JObject.Parse(this.MetaDataString);
-                    singleFileInfo = uploadedJSON[HikeConstants.FILES_DATA].ToObject<JArray>()[0].ToObject<JObject>();
+                    singleFileInfo = JObject.Parse(this.MetaDataString);
                     singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
+                    singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
+                    singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
                     if (FileAttachment.Thumbnail != null)
                         singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
                 }
