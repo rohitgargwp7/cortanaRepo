@@ -448,7 +448,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Looks like you haven't posted any status update yet..
+        ///   Looks up a localized string similar to Looks like you haven&apos;t posted any status update yet..
         /// </summary>
         public static string Conversations_EmptyStatus_AskPostStatus_Txt {
             get {
@@ -655,7 +655,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only your 'Circle of friends' can see your status updates.
+        ///   Looks up a localized string similar to Only your &apos;Circle of friends&apos; can see your status updates.
         /// </summary>
         public static string Conversations_StatusTutorials_Info_Txt {
             get {
@@ -673,7 +673,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You don't have anyone in your circle of friends..
+        ///   Looks up a localized string similar to You don&apos;t have anyone in your circle of friends..
         /// </summary>
         public static string Conversations_TapYesToAdd_Txt {
             get {
@@ -727,7 +727,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You've just earned {0} free SMS.
+        ///   Looks up a localized string similar to You&apos;ve just earned {0} free SMS.
         /// </summary>
         public static string CREDITS_EARNED {
             get {
@@ -916,7 +916,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hi! I've started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!.
+        ///   Looks up a localized string similar to Hi! I&apos;ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!.
         /// </summary>
         public static string Email_Invite_Txt {
             get {
@@ -997,7 +997,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You're all set on .
+        ///   Looks up a localized string similar to You&apos;re all set on .
         /// </summary>
         public static string EnterName_YourMsisdn_TxtBlk {
             get {
@@ -1060,7 +1060,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Couldn't call you. Try again later..
+        ///   Looks up a localized string similar to Couldn&apos;t call you. Try again later..
         /// </summary>
         public static string EnterPin_CallErrorMsg_MsgBox {
             get {
@@ -1114,7 +1114,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Didn't receive an SMS?.
+        ///   Looks up a localized string similar to Didn&apos;t receive an SMS?.
         /// </summary>
         public static string EnterPin_SMSError_TxtBlk {
             get {
@@ -1177,7 +1177,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feeling lazy? We'll do it for you..
+        ///   Looks up a localized string similar to Feeling lazy? We&apos;ll do it for you..
         /// </summary>
         public static string FeelingLazy_Txt {
             get {
@@ -1501,7 +1501,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group name will be changed to '{0}'.
+        ///   Looks up a localized string similar to Group name will be changed to &apos;{0}&apos;.
         /// </summary>
         public static string GroupInfo_GrpNameChangedTo_Txt {
             get {
@@ -2536,20 +2536,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to What's up, {0}?.
+        ///   Looks up a localized string similar to What&apos;s up, {0}?.
         /// </summary>
         public static string PostStatus_WhatsUp_Hint_txt {
             get {
                 return ResourceManager.GetString("PostStatus_WhatsUp_Hint_txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to What's up,{0}?.
-        /// </summary>
-        public static string PostStatus_WhatsUp_Txt {
-            get {
-                return ResourceManager.GetString("PostStatus_WhatsUp_Txt", resourceCulture);
             }
         }
         
@@ -2644,7 +2635,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to hike couldn't unlink your account. Please try again..
+        ///   Looks up a localized string similar to hike couldn&apos;t unlink your account. Please try again..
         /// </summary>
         public static string Privacy_UnlinkErrMsgBxText {
             get {
@@ -2707,7 +2698,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to hasn't posted anything :(.
+        ///   Looks up a localized string similar to hasn&apos;t posted anything :(.
         /// </summary>
         public static string Profile_NoStatus_Txt {
             get {
@@ -3193,7 +3184,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A list of people you've blocked.
+        ///   Looks up a localized string similar to A list of people you&apos;ve blocked.
         /// </summary>
         public static string Settings_BlocklistSettings_Txt {
             get {
@@ -3436,7 +3427,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I'm using @hikeapp 2.0 with status updates &amp; moods. Simple &amp; beautiful messaging, absolutely free..
+        ///   Looks up a localized string similar to I&apos;m using @hikeapp 2.0 with status updates &amp; moods. Simple &amp; beautiful messaging, absolutely free..
         /// </summary>
         public static string Social_Invite_Txt {
             get {
@@ -3832,7 +3823,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to let's hike.
+        ///   Looks up a localized string similar to let&apos;s hike.
         /// </summary>
         public static string Walkthrough_LetsHike_Txt {
             get {

@@ -1416,10 +1416,6 @@
   <data name="Stop_Contact_Scanning" xml:space="preserve">
     <value>Do you want to stop contact scanning?</value>
   </data>
-  <data name="PostStatus_WhatsUp_Txt" xml:space="preserve">
-    <value>What's up,{0}?</value>
-    <comment>{0} to be replaced by name</comment>
-  </data>
   <data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
     <value>Message {0} on Hike</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
@@ -1488,10 +1484,6 @@
   </data>
   <data name="Conversations_EmptyStatus_TeamHike_Txt" xml:space="preserve">
     <value>Team Hike</value>
-  </data>
-  <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
-    <value>What's up, {0}?</value>
-    <comment>{0} replaced by user name </comment>
   </data>
   <data name="Update_Profile_Pic_txt" xml:space="preserve">
     <value>Updated profile picture</value>
@@ -1679,5 +1671,9 @@
   </data>
   <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
     <value>Tap on + to add a contact to your circle of friends.</value>
+  </data>
+  <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
+    <value>What's up, {0}?</value>
+    <comment>{0} replaced by user name </comment>
   </data>
 </root>
