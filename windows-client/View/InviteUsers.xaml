@@ -72,8 +72,7 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="700"/>
-            <RowDefinition/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Grid.Row="0">
@@ -86,14 +85,13 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Grid.Row="1" GotFocus="enterNameTxt_GotFocus" Margin="-10,5,0,0" Width="440" HorizontalAlignment="Stretch" 
+            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Grid.Row="0" GotFocus="enterNameTxt_GotFocus" Margin="-10,5,0,0" Width="440" HorizontalAlignment="Stretch" 
                                   Hint="{Binding Path= LocalizedResources.SelectUser_TxtBoxHint_Txt, Source={StaticResource LocalizedStrings}}"
                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
 
-            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="24,15,0,56"
+            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="1" Margin="24,15,0,10"
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
                           IsGroupingEnabled="True" LayoutMode="List" HideEmptyGroups="True"
