@@ -209,9 +209,13 @@ namespace windows_client.DbUtils
                 string destinationFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" + convMessage.MessageId;
                 //while writing in iso, we write it as failed and then revert to started
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+                
+                //since, Location & Contact has required info in metadata string, no need to use raw files
                 if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) &&
                     !convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                {
                     MiscDBUtil.copyFileInIsolatedStorage(sourceFilePath, destinationFilePath);
+                }
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
             }
             #endregion
