@@ -11,7 +11,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
     toolkit:TiltEffect.IsTiltEnabled="True"
     shell:SystemTray.IsVisible="True" DataContext="{Binding}" Name="selectUserPage">
 
@@ -96,15 +96,10 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="700"/>
-            <RowDefinition/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Grid.Row="0">
-            <StackPanel Orientation="Horizontal">
-                <!--<Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>-->
-
-            </StackPanel>
             <TextBlock Name="txtChat" Text="{Binding Path= LocalizedResources.SelectUser_Header_Txt, Source={StaticResource LocalizedStrings}}" FontSize="22" FontFamily="Segoe WP Semibold" FontStretch="Expanded"  Margin="30,0,0,5" />
             <TextBlock Name="txtTitle" Text="{Binding Path= LocalizedResources.SelectUser_Title_Txt, Source={StaticResource LocalizedStrings}}" FontSize="68" Height="75" FontFamily="Segoe WP SemiLight" FontStretch="Expanded" Margin="30,-10,0,0" />
         </StackPanel>
@@ -114,14 +109,13 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Grid.Row="1" GotFocus="enterNameTxt_GotFocus" Margin="-10,5,0,0" Width="440" HorizontalAlignment="Stretch" 
+            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Grid.Row="0" GotFocus="enterNameTxt_GotFocus" Margin="-10,5,0,0" Width="440" HorizontalAlignment="Stretch" 
                                   Hint="{Binding Path= LocalizedResources.SelectUser_TxtBoxHint_Txt, Source={StaticResource LocalizedStrings}}"
                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
 
-            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="28,10,0,68"
+            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="1" Margin="28,10,0,10"
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
                           IsGroupingEnabled="True" LayoutMode="List" HideEmptyGroups="True"                
