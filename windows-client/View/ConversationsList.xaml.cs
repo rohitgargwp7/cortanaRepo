@@ -1208,19 +1208,27 @@ namespace windows_client.View
             #region UNBLOCK_USER
             else if (HikePubSub.UNBLOCK_USER == type)
             {
+                ContactInfo c = null;
                 if (obj is ContactInfo)
+                    c = obj as ContactInfo;
+                else
                 {
-                    ContactInfo c = obj as ContactInfo;
-
-                    // ignore if not onhike or not in addressbook
-                    if (!c.OnHike || string.IsNullOrEmpty(c.Name))
-                        return;
-
-                    Dispatcher.BeginInvoke(() =>
-                    {
-                        hikeContactList.Add(c);
-                    });
+                    string msisdn = obj as string;
+                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                        c = App.ViewModel.ContactsCache[msisdn];
+                    else
+                        c = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
                 }
+
+                // ignore if not onhike or not in addressbook
+                if (!c.OnHike || string.IsNullOrEmpty(c.Name))
+                    return;
+
+                Dispatcher.BeginInvoke(() =>
+                {
+                    hikeContactList.Add(c);
+                });
+
             }
             #endregion
             #region DELETE CONVERSATION

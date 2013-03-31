@@ -267,30 +267,40 @@ namespace windows_client
                 if (PhoneApplicationService.Current.State.ContainsKey("img"))
                 {
                     _avatar = (byte[])PhoneApplicationService.Current.State["img"];
+                    _avImg = (byte[])PhoneApplicationService.Current.State["img"];
+                    MemoryStream memStream = new MemoryStream(_avImg);
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    if (profileImage == null)
+                        profileImage = new BitmapImage();
+                    profileImage.SetSource(memStream);
+                    shellProgress.IsVisible = true;
+                    //send image to server here and insert in db after getting response
+                    AccountUtils.updateProfileIcon(_avImg, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
                     reloadImage = false;
                 }
                 else
-                    _avatar = MiscDBUtil.getThumbNailForMsisdn(HikeConstants.MY_PROFILE_PIC);
-
-                if (_avatar != null)
                 {
-                    try
+                    _avatar = MiscDBUtil.getThumbNailForMsisdn(HikeConstants.MY_PROFILE_PIC);
+                    if (_avatar != null)
                     {
-                        MemoryStream memStream = new MemoryStream(_avatar);
-                        memStream.Seek(0, SeekOrigin.Begin);
-                        BitmapImage empImage = new BitmapImage();
-                        empImage.SetSource(memStream);
-                        avatarImage.Source = empImage;
+                        try
+                        {
+                            MemoryStream memStream = new MemoryStream(_avatar);
+                            memStream.Seek(0, SeekOrigin.Begin);
+                            BitmapImage empImage = new BitmapImage();
+                            empImage.SetSource(memStream);
+                            avatarImage.Source = empImage;
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("Enter Name ::  OnNavigatedTo , Exception : " + ex.StackTrace);
+                            avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Debug.WriteLine("Enter Name ::  OnNavigatedTo , Exception : " + ex.StackTrace);
                         avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
                     }
-                }
-                else
-                {
-                    avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
                 }
             }
         }

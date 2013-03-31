@@ -19,6 +19,7 @@ using windows_client.utils;
 using windows_client.Misc;
 using windows_client.Languages;
 using windows_client.Controls;
+using windows_client.ViewModel;
 
 
 namespace windows_client.View
@@ -1173,8 +1174,21 @@ namespace windows_client.View
             {
                 btn.Content = AppResources.UnBlock_Txt;
                 App.ViewModel.BlockedHashset.Add(ci.Msisdn);
-                App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, ci);
+                if (App.ViewModel.FavList != null)
+                {
+                    ConversationListObject co = new ConversationListObject();
+                    co.Msisdn = ci.Msisdn;
+                    if (App.ViewModel.FavList.Remove(co))
+                    {
+                        MiscDBUtil.SaveFavourites();
+                        MiscDBUtil.DeleteFavourite(ci.Msisdn);
+                        int count = 0;
+                        App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                        App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
+                    }
+                }
                 FriendsTableUtils.SetFriendStatus(ci.Msisdn, FriendsTableUtils.FriendStatusEnum.NOT_SET);
+                App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, ci);
             }
             else // unblock request
             {
@@ -1206,8 +1220,21 @@ namespace windows_client.View
             {
                 contact.Msisdn = string.Format(TAP_MSG, AppResources.UnBlock_Txt.ToLower());
                 App.ViewModel.BlockedHashset.Add(c.Msisdn);
-                App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, c);
                 FriendsTableUtils.SetFriendStatus(c.Msisdn, FriendsTableUtils.FriendStatusEnum.NOT_SET);
+                if (App.ViewModel.FavList != null)
+                {
+                    ConversationListObject co = new ConversationListObject();
+                    co.Msisdn = c.Msisdn;
+                    if (App.ViewModel.FavList.Remove(co))
+                    {
+                        MiscDBUtil.SaveFavourites();
+                        MiscDBUtil.DeleteFavourite(co.Msisdn);
+                        int count = 0;
+                        App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                        App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
+                    }
+                }
+                App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, c);
             }
         }
 

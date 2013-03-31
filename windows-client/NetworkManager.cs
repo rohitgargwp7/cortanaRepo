@@ -531,11 +531,15 @@ namespace windows_client
                                                         if (pendingJSON.TryGetValue(HikeConstants.REQUEST_PENDING, out pToken))
                                                         {
                                                             bool rp = false;
-                                                            if (pToken != null && pToken.HasValues)
+                                                            if (pToken != null)
                                                             {
-                                                                object o = pToken.ToObject<object>();
-                                                                if (o is bool)
-                                                                    rp = (bool)o;
+                                                                try
+                                                                {
+                                                                    object o = pToken.ToObject<object>();
+                                                                    if (o is bool)
+                                                                        rp = (bool)o;
+                                                                }
+                                                                catch { }
                                                             }
                                                             if (rp)
                                                                 FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
@@ -1341,12 +1345,15 @@ namespace windows_client
                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
                     favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
                 }
-                App.ViewModel.FavList.Add(favObj);
-                MiscDBUtil.SaveFavourites();
-                MiscDBUtil.SaveFavourites(favObj);
-                int count = 0;
-                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                        App.ViewModel.FavList.Add(favObj);
+                        MiscDBUtil.SaveFavourites();
+                        MiscDBUtil.SaveFavourites(favObj);
+                        int count = 0;
+                        App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                        App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+                });
             }
             else // pending case
             {
