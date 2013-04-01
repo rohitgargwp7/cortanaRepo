@@ -440,11 +440,7 @@ namespace windows_client.utils
             string firstName = string.Empty;
             if (!string.IsNullOrEmpty(completeName))
             {
-                foreach (string fName in completeName.Split(' '))
-                {
-                    firstName = fName;
-                    break;
-                }
+                firstName = completeName.Split(' ')[0];
             }
             return firstName;
         }
