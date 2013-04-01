@@ -434,7 +434,8 @@ namespace windows_client
                 }
                 else
                 {
-                    App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
+                    if (App.MqttManagerInstance != null)
+                        App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
                 }
             }
         }
