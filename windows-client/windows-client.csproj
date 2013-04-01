@@ -580,6 +580,7 @@
     <Content Include="View\images\moods_status_icon_disabled.png" />
     <Content Include="View\images\notification_read.png" />
     <Content Include="View\images\notification_unread.png" />
+    <Content Include="View\images\profile_header_stock.png" />
     <Content Include="View\images\refresh_bar_arrow.png" />
     <Content Include="View\images\timeline_photo.png" />
     <Content Include="View\images\timeline_status_icon.png" />
