@@ -2108,11 +2108,12 @@ namespace windows_client.View
                 if (UnreadFriendRequests > 0 && (pendingCount > UnreadFriendRequests))
                 {
                     int x = pendingCount - UnreadFriendRequests;
-                    if(x >= 0) // this is dont to avoid index out of bounds exception
-                        statusLLS.ScrollIntoView(App.ViewModel.StatusList[x]);
+                    if (x >= 0 && App.ViewModel.StatusList.Count > x)
+                        statusLLS.ScrollIntoView(App.ViewModel.StatusList[x]); //handling index out of bounds exception
                 }
                 //scroll to latest unread status
-                else if (App.ViewModel.StatusList.Count > pendingCount && RefreshBarCount > 0)
+                else if ((App.ViewModel.StatusList.Count > pendingCount) && RefreshBarCount > 0
+                    && App.ViewModel.StatusList.Count > pendingCount) //handling index out of bounds exception
                 {
                     statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount]);
                 }

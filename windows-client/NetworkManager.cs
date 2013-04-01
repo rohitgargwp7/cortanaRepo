@@ -713,7 +713,10 @@ namespace windows_client
                     #region moods zone
                     if (data.TryGetValue(App.HIDE_CRICKET_MOODS, out rew))
                     {
-                        App.WriteToIsoStorageSettings(App.HIDE_CRICKET_MOODS, !(rew.ToObject<bool>()));
+                        //we are keeping state for hide because by default moods are ON. If server never sends this packet, no
+                        //appsetting would ever be stored
+                        bool showMoods = rew.ToObject<bool>();
+                        App.WriteToIsoStorageSettings(App.HIDE_CRICKET_MOODS, !showMoods);
                     }
                     #endregion
                 }
