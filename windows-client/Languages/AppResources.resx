@@ -1634,7 +1634,7 @@
     <value>Surprised</value>
   </data>
   <data name="Mood_Watching_tv" xml:space="preserve">
-    <value>Watching tv </value>
+    <value>Watching TV</value>
   </data>
   <data name="StatusDelete_NoNtwrk_Txt" xml:space="preserve">
     <value>Could not delete your status update. Please check your network connection and try again later.</value>

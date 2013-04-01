@@ -403,7 +403,7 @@ namespace windows_client
                     {
                         if (msisdn == null)
                             return;
-                        bool isPendingOrFav = false; 
+                        bool isPendingOrFav = false;
                         ConversationListObject c = App.ViewModel.GetFav(msisdn);
                         if (c != null) // for favourites
                         {
@@ -416,7 +416,7 @@ namespace windows_client
                             c.Avatar = imageBytes;
                             isPendingOrFav = true;
                         }
-                        
+
                         if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
                         {
                             // if bitmap is not already updated by fav or pending , simply remove the old image
@@ -1149,7 +1149,7 @@ namespace windows_client
                     long ts = 0;
                     if (jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out val) && val != null)
                         ts = val.ToObject<long>();
-                    
+
                     val = null;
                     #region HANDLE PROFILE PIC UPDATE
                     if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
@@ -1311,7 +1311,7 @@ namespace windows_client
                                     App.ViewModel.ConvMap.Remove(msisdn);
                                 }
                             }
-                        }                      
+                        }
                     }
                 }
                 catch (Exception e)
@@ -1350,12 +1350,12 @@ namespace windows_client
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                        App.ViewModel.FavList.Add(favObj);
-                        MiscDBUtil.SaveFavourites();
-                        MiscDBUtil.SaveFavourites(favObj);
-                        int count = 0;
-                        App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                        App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+                    App.ViewModel.FavList.Add(favObj);
+                    MiscDBUtil.SaveFavourites();
+                    MiscDBUtil.SaveFavourites(favObj);
+                    int count = 0;
+                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
                 });
             }
             else // pending case

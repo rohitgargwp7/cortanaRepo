@@ -2221,7 +2221,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Watching tv .
+        ///   Looks up a localized string similar to Watching TV.
         /// </summary>
         public static string Mood_Watching_tv {
             get {

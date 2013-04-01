@@ -423,8 +423,8 @@ namespace windows_client.View
             if (Utils.isDarkTheme())
             {
                 freeSmsImage.Source = new BitmapImage(new Uri("images/free_sms_dark.png", UriKind.Relative));
-                settingsImage.Source = new BitmapImage(new Uri("images/settings_dark.png", UriKind.Relative));
-                helpImage.Source = new BitmapImage(new Uri("images/help_dark.png", UriKind.Relative));
+                settingsImage.Source = new BitmapImage(new Uri("images/settings_icon_white.png", UriKind.Relative));
+                helpImage.Source = new BitmapImage(new Uri("images/help_icon_white.png", UriKind.Relative));
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_black.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_black.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite_dark.png", UriKind.Relative));
@@ -436,6 +436,8 @@ namespace windows_client.View
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_white.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite.png", UriKind.Relative));
                 rewards.Source = new BitmapImage(new Uri("images/rewards_link.png", UriKind.Relative));
+                helpImage.Source = new BitmapImage(new Uri("images/help_icon_dark.png", UriKind.Relative));
+                settingsImage.Source = new BitmapImage(new Uri("images/settings_icon_dark.png", UriKind.Relative));
             }
             bool showRewards;
             if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
