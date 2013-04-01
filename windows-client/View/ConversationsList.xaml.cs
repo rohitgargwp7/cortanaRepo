@@ -58,9 +58,9 @@ namespace windows_client.View
             initProfilePage();
             App.ViewModel.ConversationListPage = this;
             convListPagePivot.ApplicationBar = appBar;
-            App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out _totalUnreadStatuses);
-            App.appSettings.TryGetValue(HikeConstants.REFRESH_BAR, out _refreshBarCount);
-            App.appSettings.TryGetValue(HikeConstants.UNREAD_FRIEND_REQUESTS, out _unreadFriendRequests);
+            _totalUnreadStatuses = StatusMsgsTable.GetUnreadCount(HikeConstants.UNREAD_UPDATES);
+            _refreshBarCount = StatusMsgsTable.GetUnreadCount(HikeConstants.REFRESH_BAR);
+            _unreadFriendRequests = StatusMsgsTable.GetUnreadCount(HikeConstants.UNREAD_FRIEND_REQUESTS);
             setNotificationCounter(RefreshBarCount + UnreadFriendRequests);
             App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
 
@@ -1929,7 +1929,7 @@ namespace windows_client.View
                             setNotificationCounter(value + _unreadFriendRequests);
                         }
                         _refreshBarCount = value;
-                        App.WriteToIsoStorageSettings(HikeConstants.REFRESH_BAR, value);
+                        StatusMsgsTable.SaveUnreadCounts(HikeConstants.REFRESH_BAR,value);
                     });
                 }
             }
@@ -1955,7 +1955,7 @@ namespace windows_client.View
                             App.ViewModel.StatusList[i].IsUnread = false;
                         }
                     }
-                    App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, value);
+                    StatusMsgsTable.SaveUnreadCounts(HikeConstants.UNREAD_UPDATES, value);
                     _totalUnreadStatuses = value;
                 }
             }
@@ -1975,7 +1975,7 @@ namespace windows_client.View
                 {
                     _unreadFriendRequests = value;
                     setNotificationCounter(value + _refreshBarCount);
-                    App.WriteToIsoStorageSettings(HikeConstants.UNREAD_FRIEND_REQUESTS, value);
+                    StatusMsgsTable.SaveUnreadCounts(HikeConstants.UNREAD_FRIEND_REQUESTS, value);
                 }
             }
         }
@@ -2101,12 +2101,19 @@ namespace windows_client.View
             if (launchPagePivot.SelectedIndex != 3)
             {
                 launchPagePivot.SelectedIndex = 3;
+                int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
                 //if no new status scroll to latest unseen friends request
-                if (UnreadFriendRequests > 0 && (App.ViewModel.PendingRequests.Count > UnreadFriendRequests))
-                    statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count - UnreadFriendRequests]);
+                if (UnreadFriendRequests > 0 && (pendingCount > UnreadFriendRequests))
+                {
+                    int x = pendingCount - UnreadFriendRequests;
+                    if(x >= 0) // this is dont to avoid index out of bounds exception
+                        statusLLS.ScrollIntoView(App.ViewModel.StatusList[x]);
+                }
                 //scroll to latest unread status
-                else if (App.ViewModel.StatusList.Count > App.ViewModel.PendingRequests.Count && RefreshBarCount > 0)
-                    statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count]);
+                else if (App.ViewModel.StatusList.Count > pendingCount && RefreshBarCount > 0)
+                {
+                    statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount]);
+                }
             }
         }
 
