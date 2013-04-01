@@ -485,6 +485,7 @@
     <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
     <Content Include="View\images\add_favorites.png" />
     <Content Include="View\images\add_friend.png" />
+    <Content Include="View\images\add_icon.png" />
     <Content Include="View\images\add_user_icon.png" />
     <Content Include="View\images\appbar_addfriend.png" />
     <Content Include="View\images\appbar_icon_play.png" />
@@ -524,6 +525,8 @@
     <Content Include="View\images\fb_status.png" />
     <Content Include="View\images\fb_status_disabled.png" />
     <Content Include="View\images\group_name_changed.png" />
+    <Content Include="View\images\help_icon_dark.png" />
+    <Content Include="View\images\help_icon_white.png" />
     <Content Include="View\images\hike_favorite.png" />
     <Content Include="View\images\hike_users.png" />
     <Content Include="View\images\icon_cross.png" />
@@ -583,6 +586,8 @@
     <Content Include="View\images\profile_header_stock.png" />
     <Content Include="View\images\profile_header_stock_dark.png" />
     <Content Include="View\images\refresh_bar_arrow.png" />
+    <Content Include="View\images\settings_icon_dark.png" />
+    <Content Include="View\images\settings_icon_white.png" />
     <Content Include="View\images\timeline_photo.png" />
     <Content Include="View\images\timeline_status_icon.png" />
     <Content Include="View\images\tutorial_arrow.png" />
@@ -793,11 +798,9 @@
     <Content Include="View\images\emoticons\emo_im_98_money.png" />
     <Content Include="View\images\emoticons\emo_im_99_nothing.png" />
     <Content Include="View\images\enter_name.png" />
-    <Resource Include="View\images\help.png" />
     <Content Include="View\images\error_icon.png" />
     <Content Include="View\images\freesms.png" />
     <Content Include="View\images\free_sms.png" />
-    <Resource Include="View\images\help_dark.png" />
     <Content Include="View\images\hiketohike.jpg" />
     <Content Include="View\images\hiketosms.jpg" />
     <Content Include="View\images\hike_logo_small.png" />
@@ -819,8 +822,6 @@
     <Content Include="View\images\play_icon.png" />
     <Resource Include="View\images\privacy_dark.png" />
     <Content Include="View\images\send_button.png" />
-    <Resource Include="View\images\settings_dark.png" />
-    <Resource Include="View\images\settings.png" />
     <Content Include="View\images\signup_logo.png" />
     <Resource Include="View\images\free_sms_dark.png" />
     <Content Include="View\images\sms_pin.png" />
