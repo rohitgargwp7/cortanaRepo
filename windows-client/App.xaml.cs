@@ -416,10 +416,11 @@ namespace windows_client
             DeviceNetworkInformation.NetworkAvailabilityChanged -= OnNetworkChange;
         }
 
-        private void OnNetworkChange(object sender, EventArgs e)
+        private void OnNetworkChange(object sender, NetworkNotificationEventArgs e)
         {
             //reconnect mqtt whenever phone is reconnected without relaunch 
-            if (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            if (e.NotificationType == NetworkNotificationType.InterfaceConnected && 
+                Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
                 App.MqttManagerInstance.connect();
                 bool isPushEnabled = true;

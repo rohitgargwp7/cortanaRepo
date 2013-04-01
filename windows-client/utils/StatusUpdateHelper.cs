@@ -38,11 +38,19 @@ namespace windows_client.utils
             }
         }
 
+        // private constructor to avoid instantiation
+        private StatusUpdateHelper()
+        {
+        }
+
         public StatusUpdateBox createStatusUIObject(StatusMessage status, bool isShowOnTimeline,
             EventHandler<System.Windows.Input.GestureEventArgs> statusBoxTap,
             EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap,
             EventHandler<System.Windows.Input.GestureEventArgs> enlargePic_Tap)
         {
+            if (status == null) // TODO : Madhur garg : To handle null where this function is called
+                return null;
+
             string userName;
             BitmapImage userProfileThumbnail;
             if (App.MSISDN == status.Msisdn)
@@ -66,10 +74,12 @@ namespace windows_client.utils
                     else
                     {
                         cn = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
+                        if (cn == null)
+                            cn = new ContactInfo(status.Msisdn, null, true);
                         cn.FriendStatus = FriendsTableUtils.FriendStatusEnum.FRIENDS;
                         App.ViewModel.ContactsCache[status.Msisdn] = cn;
                     }
-                    userName = cn != null ? cn.Name : status.Msisdn;
+                    userName = (cn != null && string.IsNullOrWhiteSpace(cn.Name) )? cn.Name : status.Msisdn;
                     userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(status.Msisdn);
                 }
             }
