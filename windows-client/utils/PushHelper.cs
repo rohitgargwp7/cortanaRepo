@@ -107,8 +107,6 @@ namespace windows_client.utils
                     // Register for all the events before attempting to open the channel.
                     pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
                     pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-                    pushChannel.ShellToastNotificationReceived +=
-                        new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
                     pushChannel.Open();
                     // Bind this new channel for toast events.
                     pushChannel.BindToShellToast();
@@ -119,9 +117,6 @@ namespace windows_client.utils
                     // The channel was already open, so just register for all the events.
                     pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
                     pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-                    pushChannel.ShellToastNotificationReceived +=
-                        new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
-
                 }
                 if (pushChannel.ChannelUri != null)
                 {
@@ -154,14 +149,6 @@ namespace windows_client.utils
             //    MessageBox.Show(String.Format("A push notification {0} error occurred.  {1} ({2}) {3}",
             //        e.ErrorType, e.Message, e.ErrorCode, e.ErrorAdditionalData))
             //        );
-        }
-
-        void PushChannel_ShellToastNotificationReceived(object sender, NotificationEventArgs e)
-        {
-            if (App.MqttManagerInstance.connectionStatus != Mqtt.HikeMqttManager.MQTTConnectionStatus.CONNECTED)
-            {
-                App.MqttManagerInstance.connect();
-            }
         }
 
         public void postPushNotification_Callback(JObject obj)
