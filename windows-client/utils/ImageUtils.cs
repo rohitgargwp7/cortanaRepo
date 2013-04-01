@@ -68,6 +68,7 @@ namespace windows_client.utils
         private BitmapImage moodEnabledIcon;
         private BitmapImage userProfileLockImage;
         private BitmapImage userProfileInviteImage;
+        private BitmapImage userProfileStockImage;
 
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
@@ -749,6 +750,21 @@ namespace windows_client.utils
                         userProfileInviteImage = new BitmapImage(new Uri("/View/images/user_invite.png", UriKind.Relative));
                 }
                 return userProfileInviteImage;
+            }
+        }
+
+        public BitmapImage UserProfileStockImage
+        {
+            get
+            {
+                if (userProfileStockImage == null)
+                {
+                    if (Utils.isDarkTheme())
+                        userProfileStockImage = new BitmapImage(new Uri("/View/images/profile_header_stock_dark.png", UriKind.Relative));
+                    else
+                        userProfileStockImage = new BitmapImage(new Uri("/View/images/profile_header_stock.png", UriKind.Relative));
+                }
+                return userProfileStockImage;
             }
         }
         public SolidColorBrush ReceiveMessageForeground

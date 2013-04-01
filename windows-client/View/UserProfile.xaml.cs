@@ -53,6 +53,7 @@ namespace windows_client.View
             txtSmsUserNameBlk1.Foreground = UI_Utils.Instance.StatusTextForeground;
             txtSmsUserNameBlk2.Foreground = UI_Utils.Instance.StatusTextForeground;
             txtSmsUserNameBlk3.Foreground = UI_Utils.Instance.StatusTextForeground;
+            imgBackgrund.Source = UI_Utils.Instance.UserProfileStockImage;
         }
 
         #region Listeners
