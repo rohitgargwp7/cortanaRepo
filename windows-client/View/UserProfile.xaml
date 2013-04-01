@@ -26,7 +26,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Height="300" >
+        <Grid Grid.Row="0" Height="280" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -42,7 +42,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock x:Name="txtProfileHeader" Text="{Binding Path= LocalizedResources.OthersProfile_Txt, Source={StaticResource LocalizedStrings}}"  Grid.Column="0" HorizontalAlignment="Left" FontSize="22" FontFamily="Segoe WP" Foreground="White"  />
             </Grid>
-            <Grid Grid.Row="1" Margin="24,30,24,0" VerticalAlignment="Bottom" Tap="onProfilePicButtonTap">
+            <Grid Grid.Row="1" Margin="24,30,24,-10" VerticalAlignment="Bottom" Tap="onProfilePicButtonTap">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*" />
@@ -50,9 +50,9 @@
                 <Image Name="avatarImage" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="0" Height="90" Width="90"/>
                 <Image Name="changePic" Visibility="Collapsed" Grid.Column="0"  Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Source="images\change_pic.png" />
             </Grid>
-            <StackPanel Grid.Row="2" Margin="24,12,24,0" Orientation="Vertical" >
+            <StackPanel Grid.Row="2" Margin="24,-10,24,15" Orientation="Vertical"  VerticalAlignment="Bottom" >
                 <TextBlock Name="txtUserName" HorizontalAlignment="Left" FontSize="34" FontFamily="Segoe WP" Foreground="White"/>
-                <TextBlock Name="txtOnHikeSmsTime" HorizontalAlignment="Left" FontSize="18"  FontFamily="Segoe WP Semilight" Foreground="White" Margin="0 5 0 0" />
+                <TextBlock Name="txtOnHikeSmsTime" HorizontalAlignment="Left" FontSize="18"  FontFamily="Segoe WP Semilight" Foreground="White"  />
             </StackPanel>
         </Grid>
         <Grid Name="gridAddFriendStrip" Grid.Row="1" Visibility="Collapsed">
