@@ -182,7 +182,7 @@
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_Pending_Yes_Btn" xml:space="preserve">
-    <value>Ja</value>
+    <value>Bestätigen</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_Pivot_Chats_Header_Txt" xml:space="preserve">
@@ -602,7 +602,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>zu Freunden hinzufügen</value>
+    <value>um einen Kontakt zu deinem Freundeskreis hinzuzufügen.</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
@@ -1514,7 +1514,7 @@
     <value>Sofort</value>
   </data>
   <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
-    <value>Nur deine 'Freunde bei hike' können deine Statusmeldungen sehen.</value>
+    <value>Nur Ihr "Circle of friends" können Ihre Status-Updates sehen.</value>
   </data>
   <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
     <value>Tippe auf dieses Symbol, um eine neue Statusmeldung zu posten.</value>
@@ -1646,5 +1646,41 @@
   </data>
   <data name="Mood_Watching_tv" xml:space="preserve">
     <value>Fernsehen </value>
+  </data>
+  <data name="StatusDelete_NoNtwrk_Txt" xml:space="preserve">
+    <value>Deine Statusmeldung konnte nicht gelöscht werden. Bitte überprüfe die Netzwerkverbindung und versuche es erneut.</value>
+  </data>
+  <data name="StatusDetionFail_Txt" xml:space="preserve">
+    <value>Deine Statusmeldung konnte nicht gelöscht werden.</value>
+  </data>
+  <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
+    <value>Zu Kontakten hinzufügen</value>
+  </data>
+  <data name="SettingsSubtitle_Account_Txt" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="SettingsSubtitle_Blocklist_Txt" xml:space="preserve">
+    <value>Gesperrt-Liste</value>
+  </data>
+  <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="Settings_AccountSettings_Txt" xml:space="preserve">
+    <value>Verwalten hike Account</value>
+  </data>
+  <data name="Settings_BlocklistSettings_Txt" xml:space="preserve">
+    <value>Eine Liste der Leute, die Sie blockiert</value>
+  </data>
+  <data name="Settings_NotificationSettings_Txt" xml:space="preserve">
+    <value>Ihre Benachrichtigungseinstellungen</value>
+  </data>
+  <data name="Blocklist_user_txt" xml:space="preserve">
+    <value>user</value>
+  </data>
+  <data name="Conversations_InviteFriend_Btn" xml:space="preserve">
+    <value>Freunde einladen</value>
+  </data>
+  <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
+    <value>Tippe auf +, um einen Kontakt zu deinem Freundeskreis hinzuzufügen.</value>
   </data>
 </root>
