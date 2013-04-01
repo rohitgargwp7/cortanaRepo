@@ -26,6 +26,7 @@ namespace windows_client.utils
         private SolidColorBrush groupChatHeaderColor;
         private SolidColorBrush signUpForeground;
         private SolidColorBrush receivedChatBubbleColor;
+        private SolidColorBrush statusBubbleColor;
         private SolidColorBrush editProfileForeground;
         private SolidColorBrush receivedChatBubbleTimestamp;
         private SolidColorBrush hikeSentChatBubbleTimestamp;
@@ -60,6 +61,7 @@ namespace windows_client.utils
         private BitmapImage noNewNotificationImage;
         private BitmapImage newNotificationImage;
         private BitmapImage contactIcon;
+        private BitmapImage whiteContactIcon;
         private BitmapImage facebookDisabledIcon;
         private BitmapImage facebookEnabledIcon;
         private BitmapImage twitterDisabledIcon;
@@ -290,7 +292,20 @@ namespace windows_client.utils
                 return receivedChatBubbleColor;
             }
         }
-
+        public SolidColorBrush StatusBubbleColor
+        {
+            get
+            {
+                if (statusBubbleColor == null)
+                {
+                    if (Utils.isDarkTheme())
+                        statusBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0x26, 0x26, 0x26));
+                    else
+                        statusBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
+                }
+                return statusBubbleColor;
+            }
+        }
         public SolidColorBrush EditProfileForeground
         {
             get
@@ -655,7 +670,7 @@ namespace windows_client.utils
                 if (contactIcon == null)
                 {
                     if (Utils.isDarkTheme())
-                        contactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
+                        contactIcon = WhiteContactIcon;
                     else
                         contactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon_black.png", UriKind.Relative));
                 }
@@ -663,6 +678,17 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage WhiteContactIcon
+        {
+            get
+            {
+                if (whiteContactIcon == null)
+                {
+                    whiteContactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
+                }
+                return whiteContactIcon;
+            }
+        }
         public BitmapImage FacebookDisabledIcon
         {
             get
