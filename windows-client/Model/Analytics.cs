@@ -63,9 +63,9 @@ namespace windows_client.Model
         public static readonly string REMOVE_FAVS_CONTEXT_MENU_GROUP_INFO = "giRFFCM";
 
 
-        // NUX
-        public static readonly string SKIP_NUX_1 = "skipNux1";
-        public static readonly string SKIP_NUX_2 = "skipNux2";
+        // NUX TODO change for wp7 as well
+        public static readonly string SKIP_NUX_1 = "nuxSkip1";
+        public static readonly string SKIP_NUX_2 = "nuxSkip2";
 
         private Dictionary<string, int> eventMap = null;
 
