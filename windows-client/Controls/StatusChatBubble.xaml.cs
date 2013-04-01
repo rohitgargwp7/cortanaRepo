@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using windows_client.Languages;
@@ -14,7 +15,7 @@ namespace windows_client.Controls
             InitializeComponent();
             this.statusMessageTxtBlk.Text = this.Text = cm.Message;
             this.statusTimestampTxtBlk.Text = this.TimeStamp = TimeUtils.getRelativeTime(cm.Timestamp);
-            this.statusTypeImage.Source = UI_Utils.Instance.TextStatusImage;
+            this.statusTypeImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(GetMoodId(cm.MetaDataString));
             this.MetaDataString = cm.MetaDataString;
             InitialiseColor();
         }
@@ -33,6 +34,29 @@ namespace windows_client.Controls
             this.LayoutRoot.Background = UI_Utils.Instance.StatusBubbleColor;
             this.statusMessageTxtBlk.Foreground = UI_Utils.Instance.ReceiveMessageForeground;
             this.statusTimestampTxtBlk.Foreground = UI_Utils.Instance.ReceivedChatBubbleTimestamp;
+        }
+
+        private static int GetMoodId(string metadataJson)
+        {
+            int moodId = -1;
+            if(string.IsNullOrWhiteSpace(metadataJson))
+                return -1;
+            try
+            {
+                JObject metaData = JObject.Parse(metadataJson);
+                JObject data = (JObject)metaData[HikeConstants.DATA];
+                if (data[HikeConstants.MOOD] != null)
+                {
+                    string moodId_String = data[HikeConstants.MOOD].ToString();
+                    if (!string.IsNullOrEmpty(moodId_String))
+                    {
+                        int.TryParse(moodId_String, out moodId);
+                    }
+                }
+            }
+            catch (Exception)
+            { }
+            return moodId;
         }
     }
 }
