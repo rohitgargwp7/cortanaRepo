@@ -434,5 +434,19 @@ namespace windows_client.utils
                 return "";
             }
         }
+
+        public static string GetFirstName(string completeName)
+        {
+            string firstName = string.Empty;
+            if (!string.IsNullOrEmpty(completeName))
+            {
+                foreach (string fName in completeName.Split(' '))
+                {
+                    firstName = fName;
+                    break;
+                }
+            }
+            return firstName;
+        }
     }
 }

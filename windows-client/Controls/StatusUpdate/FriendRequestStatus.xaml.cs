@@ -3,6 +3,7 @@ using System.Windows.Media.Imaging;
 using windows_client.Languages;
 using Microsoft.Phone.Controls;
 using windows_client.Model;
+using windows_client.utils;
 
 namespace windows_client.Controls.StatusUpdate
 {
@@ -15,7 +16,8 @@ namespace windows_client.Controls.StatusUpdate
             : base(userName, userImage, msisdn, string.Empty)
         {
             InitializeComponent();
-            this.seeUpdatesTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, userName);
+            string firstName = Utils.GetFirstName(userName);
+            this.seeUpdatesTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, firstName);
             if (yesTap != null)
             {
                 var glYes = GestureService.GetGestureListener(this.yesBtn);
@@ -35,7 +37,8 @@ namespace windows_client.Controls.StatusUpdate
         {
             InitializeComponent();
             convObj = c;
-            this.seeUpdatesTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, c.NameToShow);
+            string firstName = Utils.GetFirstName(c.NameToShow);
+            this.seeUpdatesTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, firstName);
             if (yesTap != null)
             {
                 var glYes = GestureService.GetGestureListener(this.yesBtn);
@@ -51,7 +54,8 @@ namespace windows_client.Controls.StatusUpdate
 
         public void update(ConversationListObject c)
         {
-            this.seeUpdatesTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, c.NameToShow);
+            string firstName = Utils.GetFirstName(c.NameToShow);
+            this.seeUpdatesTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, firstName);
             this.UserImage = c.AvatarImage;
         }
     }

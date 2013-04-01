@@ -729,7 +729,8 @@ namespace windows_client.View
                         if (App.ViewModel.StatusList.Count == 0)
                         {
                             emptyStatusPlaceHolder.Visibility = Visibility.Visible;
-                            txtEmptyStatusFriendBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
+                            string firstName = Utils.GetFirstName(accountName.Text);
+                            txtEmptyStatusFriendBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName);
                             statusLLS.Visibility = Visibility.Collapsed;
                         }
                         RefreshBarCount = 0;
@@ -1041,7 +1042,8 @@ namespace windows_client.View
                         if (App.ViewModel.StatusList.Count == 0)
                         {
                             emptyStatusPlaceHolder.Visibility = Visibility.Visible;
-                            txtEmptyStatusFriendBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, accountName.Text);
+                            string firstName = Utils.GetFirstName(accountName.Text);
+                            txtEmptyStatusFriendBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName);
                             statusLLS.Visibility = Visibility.Collapsed;
                         }
                     }

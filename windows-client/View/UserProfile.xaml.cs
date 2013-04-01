@@ -33,6 +33,7 @@ namespace windows_client.View
         byte[] thumbnailBytes = null;
         bool isFirstLoad = true;
         string nameToShow = null;
+        string firstName = null;
         bool isOnHike = false;
         private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
         private ApplicationBar appBar;
@@ -336,7 +337,7 @@ namespace windows_client.View
 
                 avatarImage.Source = profileImage;
                 txtUserName.Text = nameToShow;
-
+                firstName = Utils.GetFirstName(nameToShow);
                 //if blocked user show block ui and return
                 if (msisdn != App.MSISDN && App.ViewModel.BlockedHashset.Contains(msisdn))
                 {
@@ -756,7 +757,10 @@ namespace windows_client.View
             string name;
             App.appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
             if (name != null)
+            {
                 nameToShow = name;
+                firstName = Utils.GetFirstName(nameToShow);
+            }
             isOnHike = true;
             changePic.Visibility = Visibility.Visible;
             txtOnHikeSmsTime.Visibility = Visibility.Visible;
@@ -863,7 +867,7 @@ namespace windows_client.View
         private void ShowAddToContacts()
         {
             imgInviteLock.Source = UI_Utils.Instance.ContactIcon;
-            txtSmsUserNameBlk1.Text = nameToShow;
+            txtSmsUserNameBlk1.Text = firstName;
             txtSmsUserNameBlk2.Text = AppResources.Profile_NotInAddressbook_Txt;
             txtSmsUserNameBlk3.Text = string.Empty;
             btnInvite.Content = AppResources.Profile_AddNow_Btn_Txt;
@@ -881,7 +885,7 @@ namespace windows_client.View
             txtSmsUserNameBlk1.Text = AppResources.Profile_RequestSent_Blk1;
             txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
             txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
-            txtSmsUserNameBlk2.Text = nameToShow;
+            txtSmsUserNameBlk2.Text = firstName;
             txtSmsUserNameBlk3.Text = AppResources.Profile_RequestSent_Blk3;
             gridHikeUser.Visibility = Visibility.Collapsed;
             btnInvite.Visibility = Visibility.Collapsed;
@@ -904,7 +908,7 @@ namespace windows_client.View
             txtSmsUserNameBlk1.Text = AppResources.ProfileToBeFriendBlk1;
             txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
             txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
-            txtSmsUserNameBlk2.Text = nameToShow;
+            txtSmsUserNameBlk2.Text = firstName;
             txtSmsUserNameBlk3.Text = AppResources.ProfileToBeFriendBlk3;
             btnInvite.Content = AppResources.btnAddAsFriend_Txt;
             btnInvite.Tap -= AddUserToContacts_Click;
@@ -930,15 +934,15 @@ namespace windows_client.View
         private void ShowRequestRecievedPanel()
         {
             spAddFriendInvite.Visibility = Visibility.Visible;
-            txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, nameToShow);
-            seeUpdatesTxtBlk1.Text = string.Format(AppResources.Profile_YouCanNowSeeUpdates, nameToShow);
+            txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, firstName);
+            seeUpdatesTxtBlk1.Text = string.Format(AppResources.Profile_YouCanNowSeeUpdates, firstName);
             gridAddFriendStrip.Visibility = Visibility.Visible;
             spAddFriend.Visibility = Visibility.Collapsed;
         }
 
         private void ShowEmptyStatus()
         {
-            txtSmsUserNameBlk1.Text = nameToShow;
+            txtSmsUserNameBlk1.Text = firstName;
             txtSmsUserNameBlk2.Text = AppResources.Profile_NoStatus_Txt;
             txtSmsUserNameBlk3.Text = string.Empty;
             txtSmsUserNameBlk1.FontWeight = FontWeights.SemiBold;
@@ -954,7 +958,7 @@ namespace windows_client.View
             imgInviteLock.Source = UI_Utils.Instance.UserProfileInviteImage;
             imgInviteLock.Visibility = Visibility.Visible;
             txtOnHikeSmsTime.Text = AppResources.OnSms_Txt;
-            txtSmsUserNameBlk1.Text = nameToShow;
+            txtSmsUserNameBlk1.Text = firstName;
             txtSmsUserNameBlk2.Text = AppResources.InviteOnHike_Txt;
             txtSmsUserNameBlk3.Text = AppResources.InviteOnHikeUpgrade_Txt;
             txtSmsUserNameBlk1.FontWeight = FontWeights.SemiBold;
@@ -977,7 +981,7 @@ namespace windows_client.View
             txtSmsUserNameBlk1.Text = AppResources.Profile_BlockedUser_Blk1;
             txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
             txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
-            txtSmsUserNameBlk2.Text = nameToShow;
+            txtSmsUserNameBlk2.Text = firstName;
             txtOnHikeSmsTime.Visibility = Visibility.Collapsed;
             txtSmsUserNameBlk3.Text = AppResources.Profile_BlockedUser_Blk3;
             addToFavBtn.Content = AppResources.UnBlock_Txt;
@@ -1205,8 +1209,9 @@ namespace windows_client.View
             {
                 nameToShow = contactInfo.Name;
                 txtUserName.Text = nameToShow;
-                txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, nameToShow);
-                seeUpdatesTxtBlk1.Text = string.Format(AppResources.Profile_YouCanNowSeeUpdates, nameToShow);
+                firstName = Utils.GetFirstName(nameToShow);
+                txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, firstName);
+                seeUpdatesTxtBlk1.Text = string.Format(AppResources.Profile_YouCanNowSeeUpdates, firstName);
                 isOnHike = contactInfo.OnHike;
 
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
@@ -1227,7 +1232,7 @@ namespace windows_client.View
                 {
                     addToFavBtn.Tap -= AddUserToContacts_Click;
                     addToFavBtn.Visibility = Visibility.Collapsed;
-                    txtSmsUserNameBlk2.Text = nameToShow;
+                    txtSmsUserNameBlk2.Text = firstName;
                 }
                 else
                 {
