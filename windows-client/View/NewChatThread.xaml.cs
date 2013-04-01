@@ -306,14 +306,14 @@ namespace windows_client.View
 
                 //MessageBox.Show(msisdn, "NEW CHAT", MessageBoxButton.OK);
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
-                    this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = App.ViewModel.ConvMap[msisdn];
+                    this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = statusObject = App.ViewModel.ConvMap[msisdn];
                 else if (Utils.isGroupConversation(msisdn))
                 {
                     ConversationListObject co = new ConversationListObject();
                     co.ContactName = AppResources.SelectUser_NewGroup_Text;
                     co.Msisdn = msisdn;
                     co.IsOnhike = true;
-                    this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = co;
+                    this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = statusObject = co;
                 }
                 else
                 {
@@ -325,7 +325,7 @@ namespace windows_client.View
                         contact.Name = null;
                         contact.OnHike = true; // this is assumed bcoz there is very less chance for an sms user to send push
                     }
-                    this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = contact;
+                    this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = statusObject = contact;
                 }
                 ManagePage();
                 isFirstLaunch = false;
@@ -999,7 +999,7 @@ namespace windows_client.View
                 });
             }
 
-                   #region perception fix update db
+            #region perception fix update db
             if (idsToUpdate != null && idsToUpdate.Count > 0)
             {
                 BackgroundWorker bw = new BackgroundWorker();
@@ -1584,8 +1584,8 @@ namespace windows_client.View
                         }
                         else
                         {
-                            chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, isGroupChat ? 
-                                GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName : mContactName, 
+                            chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, isGroupChat ?
+                                GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName : mContactName,
                                 pageOrientation);
                         }
                     }
@@ -2671,7 +2671,7 @@ namespace windows_client.View
             {
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
-                
+
                 //TODO handle vibration for user profile and GC.
                 if ((convMessage.Msisdn != mContactNumber && (convMessage.MetaDataString != null &&
                     convMessage.MetaDataString.Contains(HikeConstants.POKE))) &&
@@ -2686,7 +2686,7 @@ namespace windows_client.View
                      * 3. This group exists
                      * 4. This group is not muted
                      * */
-                    if (isVibrateEnabled && (!Utils.isGroupConversation(convMessage.Msisdn)|| App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn,out cobj) && !cobj.IsMute))
+                    if (isVibrateEnabled && (!Utils.isGroupConversation(convMessage.Msisdn) || App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out cobj) && !cobj.IsMute))
                     {
                         VibrateController vibrate = VibrateController.Default;
                         vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
