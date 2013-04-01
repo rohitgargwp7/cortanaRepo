@@ -88,7 +88,7 @@ namespace windows_client.View
 
             if (launchPagePivot.SelectedIndex == 3)
             {
-                TotalUnreadStatuses = RefreshBarCount - UnreadFriendRequests;
+                TotalUnreadStatuses = 0;
             }
             this.myListBox.SelectedIndex = -1;
             this.favourites.SelectedIndex = -1;
