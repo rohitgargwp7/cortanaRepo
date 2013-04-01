@@ -96,6 +96,7 @@ namespace windows_client.View
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (a, b) =>
             {
+                App.appInitialize();
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, App.LATEST_VERSION);
