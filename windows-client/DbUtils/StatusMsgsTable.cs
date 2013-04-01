@@ -20,6 +20,7 @@ namespace windows_client.DbUtils
         public static string LAST_STATUS_FILENAME = "_Last_Status";
         public static string UNREAD_COUNT_FILE = "unreadCountFile";
         public static object readWriteLock = new object();
+        private static object refreshLock = new object();
 
         /// <summary>
         /// Add single status msg
@@ -270,7 +271,6 @@ namespace windows_client.DbUtils
             }
         }
 
-        private static object refreshLock = new object();
         public static void SaveUnreadCounts(string type,int count)
         {
             // these are saved in this order only
