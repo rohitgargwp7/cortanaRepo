@@ -2734,6 +2734,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You haven&apos;t posted anything :(.
+        /// </summary>
+        public static string Profile_You_NoStatus_Txt {
+            get {
+                return ResourceManager.GetString("Profile_You_NoStatus_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You can now see updates from {0}. .
         /// </summary>
         public static string Profile_YouCanNowSeeUpdates {

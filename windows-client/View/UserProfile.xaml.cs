@@ -943,8 +943,17 @@ namespace windows_client.View
 
         private void ShowEmptyStatus()
         {
-            txtSmsUserNameBlk1.Text = firstName;
-            txtSmsUserNameBlk2.Text = AppResources.Profile_NoStatus_Txt;
+
+            if (msisdn == App.MSISDN)
+            {
+                txtSmsUserNameBlk1.Text = string.Empty;
+                txtSmsUserNameBlk2.Text = AppResources.Profile_You_NoStatus_Txt;
+            }
+            else
+            {
+                txtSmsUserNameBlk1.Text = firstName;
+                txtSmsUserNameBlk2.Text = AppResources.Profile_NoStatus_Txt;
+            }
             txtSmsUserNameBlk3.Text = string.Empty;
             txtSmsUserNameBlk1.FontWeight = FontWeights.SemiBold;
             txtSmsUserNameBlk2.FontWeight = FontWeights.Normal;

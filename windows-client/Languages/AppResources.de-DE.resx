@@ -1683,4 +1683,7 @@
   <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
     <value>Tippe auf +, um einen Kontakt zu deinem Freundeskreis hinzuzufügen.</value>
   </data>
+  <data name="Profile_You_NoStatus_Txt" xml:space="preserve">
+    <value>Sie haben noch nichts gepostet : (</value>
+  </data>
 </root>

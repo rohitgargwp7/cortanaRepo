@@ -1676,4 +1676,7 @@
     <value>What's up, {0}?</value>
     <comment>{0} replaced by user name </comment>
   </data>
+  <data name="Profile_You_NoStatus_Txt" xml:space="preserve">
+    <value>You haven't posted anything :(</value>
+  </data>
 </root>
