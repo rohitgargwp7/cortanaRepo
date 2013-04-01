@@ -10,6 +10,7 @@ using System;
 using windows_client.Misc;
 using System.Collections.ObjectModel;
 using windows_client.ViewModel;
+using windows_client.utils;
 
 namespace windows_client.DbUtils
 {
@@ -38,8 +39,10 @@ namespace windows_client.DbUtils
             DeleteAllAttachmentData();
             DeleteAllPicUpdates();
             DeleteAllLargeStatusImages();
+            UI_Utils.Instance.BitmapImageCache.Clear();
             StatusMsgsTable.DeleteAllStatusMsgs();
             StatusMsgsTable.DeleteLastStatusFile();
+            StatusMsgsTable.DeleteUnreadCountFile();
             GroupManager.Instance.DeleteAllGroups();
             FriendsTableUtils.DeleteAllFriends();
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
@@ -67,6 +70,10 @@ namespace windows_client.DbUtils
             }
             #endregion
             #region DELETE USERS, BLOCKLIST
+
+            App.ViewModel.BlockedHashset.Clear();
+            App.ViewModel.ContactsCache.Clear();
+
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.DeleteAllOnSubmit<Blocked>(context.GetTable<Blocked>());
