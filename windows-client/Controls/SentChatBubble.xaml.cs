@@ -352,7 +352,7 @@ namespace windows_client.Controls
                 }
                 else if (isContact)
                 {
-                    this.MessageImage.Source = UI_Utils.Instance.ContactIcon;
+                    this.MessageImage.Source = UI_Utils.Instance.WhiteContactIcon;
                     this.MessageImage.Height = 20;
                     this.MessageImage.Width = 30;
                     this.MessageImage.HorizontalAlignment = HorizontalAlignment.Left;

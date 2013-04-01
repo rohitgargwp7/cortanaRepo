@@ -43,19 +43,19 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" HorizontalAlignment="Left" Margin="20,-10,0, 0">
+        <Grid Grid.Row="0" HorizontalAlignment="Left" Margin="20,-20,0, 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Image x:Name="icon" Grid.Column="0" Source="images\hike_header.png" Height="40" Margin="4,25,0,0"/>
-            <StackPanel Grid.Column="1" Margin="270,25,0,0" Height="50" Tap="notification_Tap">
+            <StackPanel Grid.Column="1" Margin="295,25,0,0" Height="50" Tap="notification_Tap">
                 <Image x:Name="notificationIndicator" Source="images\notification_read.png" Margin="0,6,0,0" MaxHeight="35" Tap="notification_Tap"/>
             </StackPanel>
-            <TextBlock x:Name="notificationCountTxtBlk" Foreground="White" Grid.Column="1" HorizontalAlignment="Center" Margin="274,37,0,0" FontSize="18" FontFamily="Segoe WP Semibold" Tap="notification_Tap"/>
+            <TextBlock x:Name="notificationCountTxtBlk" Foreground="White" Grid.Column="1" HorizontalAlignment="Center" Margin="299,37,0,0" FontSize="18" FontFamily="Segoe WP Semibold" Tap="notification_Tap"/>
         </Grid>
 
-        <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,-10,0,0" SelectionChanged="Pivot_SelectionChanged">
+        <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,-20,0,0" SelectionChanged="Pivot_SelectionChanged">
             <controls:PivotItem Header="{Binding Path= LocalizedResources.Conversations_Pivot_Chats_Header_Txt, Source={StaticResource LocalizedStrings}}">
                 <Grid x:Name="ConversationList">
                     <Grid.RowDefinitions>
@@ -121,13 +121,13 @@
                             <Button Content="{Binding Path= LocalizedResources.Conversations_InviteFriend_Btn, Source={StaticResource LocalizedStrings}}"  FontSize="18" Height="70" Width="160"  Background="#e9ecee" BorderThickness="0" Foreground="#595959" HorizontalAlignment="Center" Tap="InviteBtn_Tap"/>
                         </StackPanel>
 
-                        <ListBox x:Name="hikeContactListBox" ItemsSource="{Binding Source={StaticResource contactsCollectionViewKey}}" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="3">
+                        <ListBox x:Name="hikeContactListBox" ItemsSource="{Binding Source={StaticResource contactsCollectionViewKey}}" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="3" >
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,5" >
-                                        <Image Source="{Binding AvatarImage}" Height="69" Margin="0,10,0,0" Tap="hikeContacts_Tap"></Image>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10" >
+                                        <Image Source="{Binding AvatarImage}" Height="69" Margin="0,5,0,5" Tap="hikeContacts_Tap"></Image>
                                         <TextBlock Text="{Binding Name}" FontSize="37" Width="300" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,2,0,0" Tap="hikeContacts_Tap"></TextBlock>
-                                        <Image Name="addUserImage" Source="images\add_friend.png" Tap="addToFriends_Tap" Width="40" Height="40" HorizontalAlignment="Right" Margin="10,0,0,0"></Image>
+                                        <Image Name="addUserImage" Source="images\add_icon.png" Tap="addToFriends_Tap" Width="40" Height="40" HorizontalAlignment="Right" Margin="10,0,0,0"></Image>
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -184,12 +184,12 @@
                             <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TellFriend_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
                         <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Settings_Tap" Margin="15,20,0,5">
-                            <Image Name="settingsImage" VerticalAlignment="Center" Source="images\settings.png" Height="34" Width="34">
+                            <Image Name="settingsImage" VerticalAlignment="Center" Height="35" >
                             </Image>
                             <TextBlock Text="{Binding Path= LocalizedResources.Settings, Source={StaticResource LocalizedStrings}}" FontSize="39" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0"></TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,20,0,5" Tap="Help_Tap">
-                            <Image Name="helpImage" VerticalAlignment="Center" Source="images\help.png" Height="35"></Image>
+                            <Image Name="helpImage" VerticalAlignment="Center" Height="35"></Image>
                             <TextBlock Text="{Binding Path= LocalizedResources.Help, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
 
@@ -203,7 +203,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Grid Name="emptyStatusPlaceHolder" HorizontalAlignment="Left" Margin="18,15,0,15" Grid.RowSpan="2" Visibility="Collapsed">
+                    <Grid Name="emptyStatusPlaceHolder" HorizontalAlignment="Left" Margin="18,0,0,15" Grid.RowSpan="2" Visibility="Collapsed">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
@@ -221,15 +221,15 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image Source="/View/images/avatars/CoffeePeople.png" Margin="0,5,10,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" VerticalAlignment="Top" Height="69" ></Image>
-                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_TeamHike_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Margin="8,2,0,0"  Grid.Column="2" Grid.Row="0" FontFamily="Segoe WP Semibold"/>
-                            <TextBlock Name="txtEmptyStatusFriendBlk1" FontSize="20" Margin="8,2,0,0"  Grid.Column="2" Grid.Row="1" FontFamily="Segoe WP Semibold"/>
-                            <TextBlock  Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="18" Grid.Column="2" Grid.Row="2" Width="300" Margin="8,0,5,0"/>
-                            <Button Background="#2e91d3" Foreground="White" Height="60" Width="140"  BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_BtnCircleOfFriends_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left"  FontSize="16" Grid.Column="2" Grid.Row="3" Margin="-5 0 0 0" FontFamily="Segoe WP " Tap="CircleOfFriends_Tap"/>
+                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_TeamHike_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18" Margin="8,2,0,0"  Grid.Column="2" Grid.Row="0" FontFamily="Segoe WP Semibold"/>
+                            <TextBlock Name="txtEmptyStatusFriendBlk1" FontSize="22" Margin="8,2,0,0"  Grid.Column="2" Grid.Row="1" FontFamily="Segoe WP Semibold"/>
+                            <TextBlock  Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="20" Grid.Column="2" Grid.Row="2" Width="300" Margin="8,0,5,0"/>
+                            <Button Background="#2e91d3" Foreground="White" Height="70" Width="150"  BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_BtnCircleOfFriends_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left"  FontSize="18" Grid.Column="2" Grid.Row="3" Margin="-5 0 0 0" FontFamily="Segoe WP " Tap="CircleOfFriends_Tap"/>
                         </Grid>
                         <Grid Grid.Row="1">
                             <StackPanel Margin="79 5 0 0">
-                                <TextBlock  Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_AskPostStatus_Txt, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="18" Grid.Column="2" Grid.Row="2" Width="300" Margin="8,0,5,0"/>
-                                <Button Foreground="#595959" Background="#e9ecee" Height="60" Width="150"  BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_BtnUpdateStatus_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left"  FontSize="16" Grid.Column="2" Grid.Row="3" Margin="-5 0 0 0" FontFamily="Segoe WP " Tap="UpdateStatus_Tap"/>
+                                <TextBlock  Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_AskPostStatus_Txt, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="20" Grid.Column="2" Grid.Row="2" Width="300" Margin="8,0,5,0"/>
+                                <Button Foreground="#595959" Background="#e9ecee" Height="70" Width="160"  BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_BtnUpdateStatus_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left"  FontSize="18" Grid.Column="2" Grid.Row="3" Margin="-5 0 0 0" FontFamily="Segoe WP " Tap="UpdateStatus_Tap"/>
                             </StackPanel>
                         </Grid>
                     </Grid>

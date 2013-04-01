@@ -30,7 +30,7 @@ namespace windows_client.Controls
         }
         public void InitialiseColor()
         {
-            this.LayoutRoot.Background = UI_Utils.Instance.ReceivedChatBubbleColor;
+            this.LayoutRoot.Background = UI_Utils.Instance.StatusBubbleColor;
             this.statusMessageTxtBlk.Foreground = UI_Utils.Instance.ReceiveMessageForeground;
             this.statusTimestampTxtBlk.Foreground = UI_Utils.Instance.ReceivedChatBubbleTimestamp;
         }
