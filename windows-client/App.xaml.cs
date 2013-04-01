@@ -419,20 +419,22 @@ namespace windows_client
         private void OnNetworkChange(object sender, NetworkNotificationEventArgs e)
         {
             //reconnect mqtt whenever phone is reconnected without relaunch 
-            if (e.NotificationType == NetworkNotificationType.InterfaceConnected && 
-                Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            if (e.NotificationType != NetworkNotificationType.CharacteristicUpdate) //TODO in wp7 branch - Madur Garg
             {
-                App.MqttManagerInstance.connect();
-                bool isPushEnabled = true;
-                App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
-                if (isPushEnabled)
+                if (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
                 {
-                    PushHelper.Instance.registerPushnotifications();
+                    App.MqttManagerInstance.connect();
+                    bool isPushEnabled = true;
+                    App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
+                    if (isPushEnabled)
+                    {
+                        PushHelper.Instance.registerPushnotifications();
+                    }
                 }
-            }
-            else
-            {
-                App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
+                else
+                {
+                    App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
+                }
             }
         }
 
@@ -470,7 +472,7 @@ namespace windows_client
                 PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
                 _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-      
+
                 instantiateClasses(false);
                 string param = Utils.GetParamFromUri(targetPage);
                 RootFrame.Dispatcher.BeginInvoke(delegate
@@ -495,7 +497,7 @@ namespace windows_client
                 PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
                 _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-            
+
                 instantiateClasses(false);
                 if (ps != PageState.CONVLIST_SCREEN)
                 {
@@ -518,7 +520,7 @@ namespace windows_client
                 PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
                 _appLaunchState = LaunchState.NORMAL_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-            
+
                 instantiateClasses(false);
                 RootFrame.Dispatcher.BeginInvoke(delegate
                 {
