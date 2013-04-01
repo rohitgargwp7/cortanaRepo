@@ -28,10 +28,17 @@ namespace windows_client.DbUtils
         /// <param name="sm"></param>
         public static void InsertStatusMsg(StatusMessage sm)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            try
             {
-                context.statusMessage.InsertOnSubmit(sm);
-                context.SubmitChanges();
+                using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+                {
+                    context.statusMessage.InsertOnSubmit(sm);
+                    context.SubmitChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("MessagesTableUtils :: addMessage : submit changes, Exception : " + e.StackTrace);
             }
         }
 
