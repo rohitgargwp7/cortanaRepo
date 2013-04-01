@@ -1343,6 +1343,7 @@ namespace windows_client.View
                     ToggleControlsToNoSms(true);
                 if (isGroupChat)
                 {
+                    App.ViewModel.BlockedHashset.Remove(groupOwner);
                     mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupOwner);
                 }
                 else

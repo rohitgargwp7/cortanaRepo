@@ -384,6 +384,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.ADD_FRIENDS, this);
             mPubSub.addListener(HikePubSub.BLOCK_USER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_USER, this);
+            mPubSub.addListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
             mPubSub.addListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
         }
 
@@ -406,6 +407,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.ADD_FRIENDS, this);
                 mPubSub.removeListener(HikePubSub.BLOCK_USER, this);
                 mPubSub.removeListener(HikePubSub.UNBLOCK_USER, this);
+                mPubSub.removeListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
                 mPubSub.removeListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
             }
             catch (Exception ex)
@@ -1210,7 +1212,7 @@ namespace windows_client.View
             }
             #endregion
             #region UNBLOCK_USER
-            else if (HikePubSub.UNBLOCK_USER == type)
+            else if (HikePubSub.UNBLOCK_USER == type || HikePubSub.UNBLOCK_GROUPOWNER == type)
             {
                 ContactInfo c = null;
                 if (obj is ContactInfo)
