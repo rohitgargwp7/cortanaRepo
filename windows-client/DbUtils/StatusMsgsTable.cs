@@ -278,7 +278,7 @@ namespace windows_client.DbUtils
             int _totalUnreadStatuses = 0;
             int _unreadFriendCount = 0;
 
-            if (count > 0)
+            if (count >= 0)
             {
                 lock (refreshLock)
                 {
