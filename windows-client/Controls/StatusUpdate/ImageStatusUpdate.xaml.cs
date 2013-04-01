@@ -25,13 +25,16 @@ namespace windows_client.Controls.StatusUpdate
                 if (value != base.IsUnread)
                 {
                     base.IsUnread = value;
-                    if (value == true) //unread status
+                    if (isShowOnTimeline)
                     {
-                        statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
-                    }
-                    else //read status
-                    {
-                        statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
+                        if (value == true) //unread status
+                        {
+                            statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+                        }
+                        else //read status
+                        {
+                            statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
+                        }
                     }
                 }
             }
@@ -53,18 +56,14 @@ namespace windows_client.Controls.StatusUpdate
             if (imageTap != null)
                 this.userProfileImage.Tap += imageTap;
             statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
-            if (sm.IsUnread)
-            {
-                statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
-            }
-            else
-            {
-                statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
-            }
             if (isShowOnTimeline)
             {
                 this.userProfileImage.Source = this.UserImage;
                 this.userProfileImage.Height = 69;
+                if (sm.IsUnread)
+                {
+                    statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+                }
             }
             else
             {

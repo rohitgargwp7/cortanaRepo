@@ -26,13 +26,16 @@ namespace windows_client.Controls.StatusUpdate
                 if (value != base.IsUnread)
                 {
                     base.IsUnread = value;
-                    if (value != true) //read status
+                    if (isShowOnTimeline)
                     {
-                        statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
-                    }
-                    else
-                    {
-                        statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+                        if (value != true) //read status
+                        {
+                            statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
+                        }
+                        else
+                        {
+                            statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+                        }
                     }
                 }
             }
@@ -53,14 +56,7 @@ namespace windows_client.Controls.StatusUpdate
             {
                 this.statusTypeImage.Tap += statusBubbleImageTap;
             }
-            if (sm.IsUnread)
-            {
-                statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
-            }
-            else
-            {
-                statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
-            }
+            statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
             if (isShowOnTimeline)
             {
                 this.statusTypeImage.Source = this.UserImage;
@@ -70,6 +66,10 @@ namespace windows_client.Controls.StatusUpdate
                 this.statusTypeImage.Margin = UI_Utils.Instance.TimelineStatusTypeMargin;
                 this.statusTextTxtBlk.Margin = UI_Utils.Instance.TimelineStatusTextMargin;
                 this.timestampTxtBlk.Margin = UI_Utils.Instance.TimelineStatusTextMargin;
+                if (sm.IsUnread)
+                {
+                    statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+                }
             }
             else
             {
