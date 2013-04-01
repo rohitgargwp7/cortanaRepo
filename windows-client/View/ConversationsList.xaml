@@ -127,7 +127,7 @@
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,10" >
                                         <Image Source="{Binding AvatarImage}" Height="69" Margin="0,5,0,5" Tap="hikeContacts_Tap"></Image>
                                         <TextBlock Text="{Binding Name}" FontSize="37" Width="300" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,2,0,0" Tap="hikeContacts_Tap"></TextBlock>
-                                        <Image Name="addUserImage" Source="images\add_icon.png" Tap="addToFriends_Tap" Width="40" Height="40" HorizontalAlignment="Right" Margin="10,0,0,0"></Image>
+                                        <Image Name="addUserImage" Source="images\add_friend.png" Tap="addToFriends_Tap" Width="40" Height="40" HorizontalAlignment="Right" Margin="10,0,0,0"></Image>
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
