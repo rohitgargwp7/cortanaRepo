@@ -419,7 +419,8 @@ namespace windows_client
         private void OnNetworkChange(object sender, NetworkNotificationEventArgs e)
         {
             //reconnect mqtt whenever phone is reconnected without relaunch 
-            if (e.NotificationType != NetworkNotificationType.CharacteristicUpdate) //TODO in wp7 branch - Madur Garg
+            if (e.NotificationType == NetworkNotificationType.InterfaceConnected ||
+                e.NotificationType == NetworkNotificationType.InterfaceDisconnected) //TODO in wp7 branch - Madur Garg
             {
                 if (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
                 {
