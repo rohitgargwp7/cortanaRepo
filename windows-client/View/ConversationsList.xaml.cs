@@ -482,7 +482,9 @@ namespace windows_client.View
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
             if (name != null)
                 accountName.Text = name;
-            creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, (int)App.appSettings[App.SMS_SETTING]);
+            int smsCount = 0;
+            App.appSettings.TryGetValue<int>(App.SMS_SETTING,out smsCount);
+            creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, smsCount);
 
             Stopwatch st = Stopwatch.StartNew();
             avatarImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
