@@ -65,13 +65,13 @@ namespace windows_client.utils
             {"/View/images/moods/10Television.png",    AppResources.Mood_Watching_tv       ,                   "",	"",	""},
             { "/View/images/moods/bangalore.png",      AppResources.Mood_Bangalore         ,                   "",	"",	""},
             { "/View/images/moods/chennai.png",        AppResources.Mood_Chennai           ,                   "",	"",	""},
-            { "/View/images/moods/hyderabad.png",      AppResources.Mood_Hyderabad         ,                   "",	"",	""},
             { "/View/images/moods/delhi.png",          AppResources.Mood_Delhi             ,                   "",	"",	""},
+            { "/View/images/moods/hyderabad.png",      AppResources.Mood_Hyderabad         ,                   "",	"",	""},
             { "/View/images/moods/kolkata.png",        AppResources.Mood_Kolkata           ,                   "",	"",	""},
             { "/View/images/moods/mumbai.png",         AppResources.Mood_Mumbai            ,                   "",	"",	""},
+            { "/View/images/moods/pune.png",           AppResources.Mood_Pune              ,                   "",	"",	""},
             { "/View/images/moods/punjab.png",         AppResources.Mood_Punjab            ,                   "",	"",	""},
-            { "/View/images/moods/rajasthan.png",      AppResources.Mood_Rajasthan         ,                   "",	"",	""},
-            { "/View/images/moods/pune.png",           AppResources.Mood_Pune              ,                   "",	"",	""}
+            { "/View/images/moods/rajasthan.png",      AppResources.Mood_Rajasthan         ,                   "",	"",	""}
         };    
         public BitmapImage GetMoodImageForMoodId(int moodId)
         {
