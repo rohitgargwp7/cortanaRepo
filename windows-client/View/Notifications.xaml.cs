@@ -172,11 +172,13 @@ namespace windows_client.View
 
         private void listBoxStatusSettings_Loaded(object sender, RoutedEventArgs e)
         {
+            listBoxStatusSettings.Loaded -= listBoxStatusSettings_Loaded;
             listBoxStatusSettings.SelectionChanged += lpkStatusSettings_SelectionChanged;
         }
 
         private void statusUpdateNotificationToggle_Loaded(object sender, RoutedEventArgs e)
         {
+            statusUpdateNotificationToggle.Loaded -= statusUpdateNotificationToggle_Loaded;
             statusUpdateNotificationToggle.Checked += statusUpdateNotification_Checked;
             statusUpdateNotificationToggle.Unchecked += statusUpdateNotification_Unchecked;
         }
