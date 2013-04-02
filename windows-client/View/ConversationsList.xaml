@@ -52,7 +52,7 @@
             <StackPanel Grid.Column="1" Margin="295,25,0,0" Height="50" Tap="notification_Tap">
                 <Image x:Name="notificationIndicator" Source="images\notification_read.png" Margin="0,6,0,0" MaxHeight="35"/>
             </StackPanel>
-            <TextBlock x:Name="notificationCountTxtBlk" Foreground="White" Grid.Column="1" HorizontalAlignment="Center" Margin="294,37,0,0" FontSize="18" FontFamily="Segoe WP Semibold" />
+            <TextBlock x:Name="notificationCountTxtBlk" Foreground="White" Grid.Column="1" HorizontalAlignment="Center" Margin="299,37,0,0" FontSize="18" FontFamily="Segoe WP Semibold" />
 
         </Grid>
 
@@ -204,7 +204,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Grid Name="emptyStatusPlaceHolder" HorizontalAlignment="Left" Margin="18,0,0,15" Grid.RowSpan="2" Visibility="Collapsed">
+                    <Grid Name="emptyStatusPlaceHolder" Grid.Row="1" HorizontalAlignment="Left" Margin="18,0,0,15" Visibility="Collapsed">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
