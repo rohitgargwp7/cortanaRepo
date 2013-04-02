@@ -956,10 +956,6 @@ namespace windows_client.View
                 StatusMessage sm = obj as StatusMessage;
                 if (sm == null)
                     return;
-                // TODO : Madhur Garg : Handle statusMsg of type IS_NOW_FRIENDS
-                // Currently its crashing on tapping UI
-                // Also in this i think we dont need to increase any counter.
-                // Also if i am on timeline , 1 update etc msg should not be shown in this case
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -1188,7 +1184,14 @@ namespace windows_client.View
                                             {
                                                 UnreadFriendRequests--;
                                             }
-                                            App.ViewModel.StatusList.RemoveAt(i);
+                                            try
+                                            {
+                                                App.ViewModel.StatusList.Remove(f);
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                Debug.WriteLine("ConversationsList :: BLOCK USER : Exception while removing a friendRequest, Exception : "+e.StackTrace);
+                                            }
                                         });
                                         break;
                                     }
