@@ -101,10 +101,14 @@ namespace windows_client.View
                 {
                     if (isStatusLoaded)
                     {
-                        statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(sm, false, null, null, enlargePic_Tap));
-                        this.statusLLS.ItemsSource = statusList;
-                        gridHikeUser.Visibility = Visibility.Visible;
-                        gridSmsUser.Visibility = Visibility.Collapsed;
+                        StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(sm, false, null, null, enlargePic_Tap);
+                        if (statusUpdate != null)
+                        {
+                            statusList.Insert(0, statusUpdate);
+                            this.statusLLS.ItemsSource = statusList;
+                            gridHikeUser.Visibility = Visibility.Visible;
+                            gridSmsUser.Visibility = Visibility.Collapsed;
+                        }
                     }
                 });
             }
@@ -536,8 +540,10 @@ namespace windows_client.View
             {
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
-                    statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null,
-                        null, enlargePic_Tap));
+                    StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null,
+                        null, enlargePic_Tap);
+                    if (statusUpdate != null)
+                        statusList.Add(statusUpdate);
                 }
             }
             if (statusList.Count == 0)
