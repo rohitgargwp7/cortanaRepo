@@ -274,7 +274,7 @@ namespace windows_client
         public static readonly string STAGING_SERVER = "stagingServer";
 
         public static readonly string ENABLE_PUSH_BATCH_SU = "enablepushbatchingforsu";
-        public static readonly string PUSH_SU = "pushu";
+        public static readonly string PUSH_SU = "pushsu";
         public static class Extras
         {
             public static readonly string ANIMATED_ONCE = "animatedOnce";

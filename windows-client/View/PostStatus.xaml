@@ -18,6 +18,7 @@
         <Style TargetType="ContentControl" x:Key="HintCustomStyle">
             <Setter Property="Height" Value="120"></Setter>
             <Setter Property="Width" Value="310"></Setter>
+            <Setter Property="Foreground" Value="#9b9b9b"></Setter>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="VerticalContentAlignment" Value="Top"/>
         </Style>

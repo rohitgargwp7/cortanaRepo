@@ -1292,7 +1292,7 @@
     <value>Du musst befreundet sein mit</value>
   </data>
   <data name="ProfileToBeFriendBlk3" xml:space="preserve">
-    <value>, um Statusmeldungen zu erhalten.</value>
+    <value>um Statusmeldungen zu erhalten.</value>
   </data>
   <data name="btnAddAsFriend_Txt" xml:space="preserve">
     <value>Als Freund hinzufügen</value>

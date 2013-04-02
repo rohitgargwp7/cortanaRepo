@@ -726,8 +726,10 @@ namespace windows_client.View
                                     continue;
                                 if (i < TotalUnreadStatuses)
                                     statusMessagesFromDB[i].IsUnread = true;
-                                App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], true,
-                                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
+                                StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], true,
+                                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap);
+                                if (statusUpdate != null)
+                                    App.ViewModel.StatusList.Add(statusUpdate);
                             }
                         }
                         this.statusLLS.ItemsSource = App.ViewModel.StatusList;
@@ -977,12 +979,16 @@ namespace windows_client.View
                         // be shown twice , one here and one from DB.
                         if (isStatusMessagesLoaded)
                         {
-                            App.ViewModel.StatusList.Insert(count, StatusUpdateHelper.Instance.createStatusUIObject(sm, true,
-                                statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
-                            if (emptyStatusPlaceHolder.Visibility == Visibility.Visible)
+                            StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(sm, true,
+                                statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap);
+                            if (statusUpdate != null)
                             {
-                                emptyStatusPlaceHolder.Visibility = Visibility.Collapsed;
-                                statusLLS.Visibility = Visibility.Visible;
+                                App.ViewModel.StatusList.Insert(count, statusUpdate);
+                                if (emptyStatusPlaceHolder.Visibility == Visibility.Visible)
+                                {
+                                    emptyStatusPlaceHolder.Visibility = Visibility.Collapsed;
+                                    statusLLS.Visibility = Visibility.Visible;
+                                }
                             }
                         }
                     }
@@ -1001,12 +1007,16 @@ namespace windows_client.View
                             // be shown twice , one here and one from DB.
                             if (isStatusMessagesLoaded)
                             {
-                                App.ViewModel.StatusList.Insert(count, StatusUpdateHelper.Instance.createStatusUIObject(sm, true,
-                                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
-                                if (emptyStatusPlaceHolder.Visibility == Visibility.Visible)
+                                StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(sm, true,
+                                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap);
+                                if (statusUpdate != null)
                                 {
-                                    emptyStatusPlaceHolder.Visibility = Visibility.Collapsed;
-                                    statusLLS.Visibility = Visibility.Visible;
+                                    App.ViewModel.StatusList.Insert(count, statusUpdate);
+                                    if (emptyStatusPlaceHolder.Visibility == Visibility.Visible)
+                                    {
+                                        emptyStatusPlaceHolder.Visibility = Visibility.Collapsed;
+                                        statusLLS.Visibility = Visibility.Visible;
+                                    }
                                 }
                             }
                         }
@@ -1937,7 +1947,7 @@ namespace windows_client.View
                             setNotificationCounter(value + _unreadFriendRequests);
                         }
                         _refreshBarCount = value;
-                        StatusMsgsTable.SaveUnreadCounts(HikeConstants.REFRESH_BAR,value);
+                        StatusMsgsTable.SaveUnreadCounts(HikeConstants.REFRESH_BAR, value);
                     });
                 }
             }
@@ -2012,9 +2022,12 @@ namespace windows_client.View
             int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
             for (int i = 0; i < (FreshStatusUpdates != null ? FreshStatusUpdates.Count : 0); i++)
             {
-                App.ViewModel.StatusList.Insert(pendingCount,
-                    StatusUpdateHelper.Instance.createStatusUIObject(FreshStatusUpdates[i], true,
-                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
+                StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(FreshStatusUpdates[i], true,
+                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap);
+                if (statusUpdate != null)
+                {
+                    App.ViewModel.StatusList.Insert(pendingCount, statusUpdate);
+                }
             }
             if (emptyStatusPlaceHolder.Visibility == Visibility.Visible)
             {
