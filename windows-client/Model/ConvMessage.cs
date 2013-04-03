@@ -483,7 +483,9 @@ namespace windows_client.Model
                 else
                 {
                     //add thumbnail here
-                    singleFileInfo = JObject.Parse(this.MetaDataString);
+                    JObject metadataFromConvMessage = JObject.Parse(this.MetaDataString);
+                    JArray tempFilesArray = metadataFromConvMessage["files"].ToObject<JArray>();
+                    singleFileInfo = tempFilesArray[0].ToObject<JObject>();
                     singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                     singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
                     singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
