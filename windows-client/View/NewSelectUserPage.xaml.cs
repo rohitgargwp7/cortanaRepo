@@ -789,13 +789,9 @@ namespace windows_client.View
             {
                 contact.Msisdn = Utils.NormalizeNumber(contact.Name);
                 contact = GetContactIfExists(contact);
+                contact.Name = contact.Msisdn;
             }
 
-            //if (!contact.OnHike && smsUserCount == MAX_SMS_USRES_ALLOWED)
-            //{
-            //    MessageBoxResult result = MessageBox.Show("5 SMS users already selected", AppResources.SelectUser_CantAddUser_Txt, MessageBoxButton.OK);
-            //    return;
-            //}
             if (existingGroupUsers == MAX_USERS_ALLOWED_IN_GROUP)
             {
                 MessageBoxResult result = MessageBox.Show(string.Format(AppResources.SelectUser_MaxUsersSelected_Txt, MAX_USERS_ALLOWED_IN_GROUP), AppResources.SelectUser_CantAddUser_Txt, MessageBoxButton.OK);

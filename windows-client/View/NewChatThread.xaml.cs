@@ -1477,7 +1477,7 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State["objectForFileTransfer"] = fileTapped;
                 NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
             }
-            else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.AUDIO) | chatBubble.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+            else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.AUDIO) || chatBubble.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
             {
                 MediaPlayerLauncher mediaPlayerLauncher = new MediaPlayerLauncher();
                 string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(chatBubble.MessageId);
@@ -1496,19 +1496,33 @@ namespace windows_client.View
             }
             else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
             {
-                string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + mContactNumber + "/" + Convert.ToString(chatBubble.MessageId);
-                byte[] filebytes;
-                MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
-
-                JObject locationJSON = JObject.Parse(chatBubble.MetaDataString);
-                if (this.bingMapsTask == null)
-                    bingMapsTask = new BingMapsTask();
-                double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
-                double longitude = Convert.ToDouble(locationJSON[HikeConstants.LONGITUDE].ToString());
-                double zoomLevel = Convert.ToDouble(locationJSON[HikeConstants.ZOOM_LEVEL].ToString());
-                bingMapsTask.Center = new GeoCoordinate(latitude, longitude);
-                bingMapsTask.ZoomLevel = zoomLevel;
-                bingMapsTask.Show();
+                try
+                {
+                    JObject metadataFromConvMessage = JObject.Parse(chatBubble.MetaDataString);
+                    JToken tempFileArrayToken;
+                    JObject locationJSON;
+                    if (metadataFromConvMessage.TryGetValue("files", out tempFileArrayToken) && tempFileArrayToken != null)
+                    {
+                        JArray tempFilesArray = tempFileArrayToken.ToObject<JArray>();
+                        locationJSON = tempFilesArray[0].ToObject<JObject>();
+                    }
+                    else
+                    {
+                        locationJSON = JObject.Parse(chatBubble.MetaDataString);
+                    }
+                    if (this.bingMapsTask == null)
+                        bingMapsTask = new BingMapsTask();
+                    double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
+                    double longitude = Convert.ToDouble(locationJSON[HikeConstants.LONGITUDE].ToString());
+                    double zoomLevel = Convert.ToDouble(locationJSON[HikeConstants.ZOOM_LEVEL].ToString());
+                    bingMapsTask.Center = new GeoCoordinate(latitude, longitude);
+                    bingMapsTask.ZoomLevel = zoomLevel;
+                    bingMapsTask.Show();
+                }
+                catch (Exception ex) //Code should never reach here
+                {
+                    Debug.WriteLine("NewChatTHread :: DisplayAttachment :: Exception while parsing lacation parameters" + ex.StackTrace);
+                }
                 return;
             }
             else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
