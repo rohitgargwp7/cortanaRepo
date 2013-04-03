@@ -83,7 +83,15 @@ namespace windows_client.Controls.StatusUpdate
             }
             if (sm.MoodId > 0)
             {
-                statusTypeImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
+                if (isShowOnTimeline)
+                {
+                    if (MoodsInitialiser.Instance.IsValidMoodId(sm.MoodId))
+                        statusTypeImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
+                }
+                else
+                {
+                    statusTypeImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
+                }
                 moodId = sm.MoodId;
             }
             else if (!isShowOnTimeline)
