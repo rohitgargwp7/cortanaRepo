@@ -72,10 +72,10 @@ namespace windows_client.utils
             { "/View/images/moods/pune.png",           AppResources.Mood_Pune              ,                   "",	"",	""},
             { "/View/images/moods/punjab.png",         AppResources.Mood_Punjab            ,                   "",	"",	""},
             { "/View/images/moods/rajasthan.png",      AppResources.Mood_Rajasthan         ,                   "",	"",	""}
-        };    
+        };
         public BitmapImage GetMoodImageForMoodId(int moodId)
         {
-            if (moodId < 1 || moodId > moodImages.Length)
+            if (!IsValidMoodId(moodId))
                 return UI_Utils.Instance.TextStatusImage;
             if (moodImages[moodId - 1] == null)
             {
@@ -87,6 +87,13 @@ namespace windows_client.utils
                 moodImages[moodId - 1] = moodImg;
             }
             return moodImages[moodId - 1];
+        }
+
+        public bool IsValidMoodId(int moodId)
+        {
+            if (moodId < 1 || moodId > moodImages.Length)
+                return false;
+            return true;
         }
 
         private List<Mood> _moodList;
