@@ -1544,7 +1544,6 @@ namespace windows_client.View
             {
                 try
                 {
-
                     JObject metadataFromConvMessage = JObject.Parse(chatBubble.MetaDataString);
                     JToken tempFileArrayToken;
                     JObject locationJSON;
@@ -1568,7 +1567,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex) //Code should never reach here
                 {
-                    Debug.WriteLine("Exception while parsing lacation parameters" + ex.StackTrace);
+                    Debug.WriteLine("NewChatTHread :: DisplayAttachment :: Exception while parsing lacation parameters" + ex.StackTrace);
                 }
                 return;
             }

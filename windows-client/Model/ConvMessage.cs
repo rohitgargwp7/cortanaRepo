@@ -511,7 +511,7 @@ namespace windows_client.Model
                 }
                 catch (Exception e) //Incase  of error receiver will see it as a normal text message with a link (same as sms user)
                 {                   //ideally code should never reach here.
-                    Debug.WriteLine("Exception while parsing metadat " + e.StackTrace);
+                    Debug.WriteLine("ConvMessage :: serialize :: Exception while parsing metadat " + e.StackTrace);
                 }
             }
             else if (this.MetaDataString != null && this.MetaDataString.Contains("poke"))
