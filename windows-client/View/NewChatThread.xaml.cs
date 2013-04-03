@@ -1524,7 +1524,7 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State["objectForFileTransfer"] = fileTapped;
                 NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
             }
-            else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.AUDIO) | chatBubble.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+            else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.AUDIO) || chatBubble.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
             {
                 MediaPlayerLauncher mediaPlayerLauncher = new MediaPlayerLauncher();
                 string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(chatBubble.MessageId);
