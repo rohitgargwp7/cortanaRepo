@@ -1027,13 +1027,15 @@ namespace windows_client
                     if (App.ViewModel.BlockedHashset.Contains(msisdn))
                         return;
                     FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
+                    if (friendStatus == FriendsTableUtils.FriendStatusEnum.ALREADY_FRIENDS)
+                        return;
+
                     if (friendStatus == FriendsTableUtils.FriendStatusEnum.FRIENDS)
                     {
                         StatusMessage sm = new StatusMessage(msisdn, AppResources.Friend_Confirm_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1, false);
                         App.HikePubSubInstance.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
                         App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                     }
-                    //"Friend_Confirm_Txt"
                     App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
                     if (App.ViewModel.Isfavourite(msisdn)) // already favourite
                         return;

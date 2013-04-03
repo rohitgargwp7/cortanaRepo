@@ -21,7 +21,7 @@ namespace windows_client.DbUtils
             UNFRIENDED_BY_YOU,
             IGNORED,
             FRIENDS,
-            NOT_FRIENDS //  this is just to signify that there is no 2 way friendship
+            ALREADY_FRIENDS//added state just to ignore add friends after two way friends
         }
 
         public static string FRIENDS_DIRECTORY = "FRIENDS";
@@ -52,6 +52,9 @@ namespace windows_client.DbUtils
                                     try
                                     {
                                         friendStatusDb = (FriendStatusEnum)(byte)reader.ReadByte();
+                                        //ignore add friend after becoming two way friends
+                                        if (friendStatusDb == FriendStatusEnum.FRIENDS && friendStatus == FriendStatusEnum.REQUEST_RECIEVED)
+                                            return FriendStatusEnum.ALREADY_FRIENDS;
                                     }
                                     catch (Exception e)
                                     {
@@ -66,6 +69,7 @@ namespace windows_client.DbUtils
                                         Debug.WriteLine("FriendsTableUtils :: SetFriendStatus : Reading timestamp, Exception : " + e.StackTrace);
                                     }
                                 }
+
                                 //not now and remove from friends are totally same state now
                                 if ((friendStatusDb == FriendStatusEnum.UNFRIENDED_BY_YOU && friendStatus == FriendStatusEnum.UNFRIENDED_BY_HIM) ||
                                     (friendStatusDb == FriendStatusEnum.UNFRIENDED_BY_HIM && friendStatus == FriendStatusEnum.UNFRIENDED_BY_YOU) ||
