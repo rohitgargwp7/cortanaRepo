@@ -28,6 +28,10 @@ namespace windows_client.View
         private bool isFirstLoad = true;
         private int moodId = 0;
         string hintText = string.Empty;
+        private const int TWITTER_CHAR_LIMIT = 140;
+        private const int TWITTER_WITH_MOOD_LIMIT = 130;
+        private int twitterPostLimit = TWITTER_CHAR_LIMIT;
+
         public PostStatus()
         {
             InitializeComponent();
@@ -157,8 +161,9 @@ namespace windows_client.View
                 {
                     twitterIconImage.Source = UI_Utils.Instance.TwitterEnabledIcon;
                     isTwitterPost = true;
-                    if (txtStatus.Text.Length > 140)
+                    if (txtStatus.Text.Length > twitterPostLimit)
                         postStatusIcon.IsEnabled = false;
+
                     txtCounter.Visibility = Visibility.Visible;
                 }
                 else
@@ -189,6 +194,13 @@ namespace windows_client.View
             windows_client.utils.MoodsInitialiser.Mood mood = this.moodListBox.SelectedItem as windows_client.utils.MoodsInitialiser.Mood;
             if (mood == null)
                 return;
+
+            if (moodId == 0)//initially moodid=0, so it will happen only 1 time
+            {
+                twitterPostLimit = TWITTER_WITH_MOOD_LIMIT;
+                txtCounter.Text = (twitterPostLimit - txtStatus.Text.Length).ToString();
+            }
+
             moodId = moodListBox.SelectedIndex + 1;
             txtStatus.Hint = hintText = mood.MoodText;
             moodImage.Source = mood.MoodImage;
@@ -255,7 +267,7 @@ namespace windows_client.View
                 {
                     twitterIconImage.Source = UI_Utils.Instance.TwitterEnabledIcon;
                     isTwitterPost = true;
-                    if (txtStatus.Text.Length > 140)
+                    if (txtStatus.Text.Length > twitterPostLimit)
                     {
                         postStatusIcon.IsEnabled = false;
                     }
@@ -267,11 +279,11 @@ namespace windows_client.View
         private void txtStatus_TextChanged(object sender, TextChangedEventArgs e)
         {
             int count = txtStatus.Text.Length;
-            if (count == 0 && moodId==0)
+            if (count == 0 && moodId == 0)
             {
                 postStatusIcon.IsEnabled = false;
             }
-            else if (isTwitterPost && count > 140)
+            else if (isTwitterPost && count > twitterPostLimit)
             {
                 postStatusIcon.IsEnabled = false;
             }
@@ -279,7 +291,7 @@ namespace windows_client.View
             {
                 postStatusIcon.IsEnabled = true;
             }
-            txtCounter.Text = (140 - count).ToString();
+            txtCounter.Text = (twitterPostLimit - count).ToString();
         }
     }
 }
