@@ -487,8 +487,18 @@ namespace windows_client.Model
                     {
                         //add thumbnail here
                         JObject metadataFromConvMessage = JObject.Parse(this.MetaDataString);
-                        JArray tempFilesArray = metadataFromConvMessage["files"].ToObject<JArray>();
-                        singleFileInfo = tempFilesArray[0].ToObject<JObject>();
+                        JToken tempFileArrayToken;
+                        //TODO - Madhur Garg - Metadata of sent & received location are different that's why this if statement is used.
+                        //Make it same for type of messages
+                        if (metadataFromConvMessage.TryGetValue("files", out tempFileArrayToken) && tempFileArrayToken != null)
+                        {
+                            JArray tempFilesArray = tempFileArrayToken.ToObject<JArray>();
+                            singleFileInfo = tempFilesArray[0].ToObject<JObject>();
+                        }
+                        else
+                        {
+                            singleFileInfo = JObject.Parse(this.MetaDataString);
+                        }
                         singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                         singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
                         singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;

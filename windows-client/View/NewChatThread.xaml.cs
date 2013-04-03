@@ -1544,9 +1544,19 @@ namespace windows_client.View
             {
                 try
                 {
+
                     JObject metadataFromConvMessage = JObject.Parse(chatBubble.MetaDataString);
-                    JArray tempFilesArray = metadataFromConvMessage["files"].ToObject<JArray>();
-                    JObject locationJSON = tempFilesArray[0].ToObject<JObject>();
+                    JToken tempFileArrayToken;
+                    JObject locationJSON;
+                    if (metadataFromConvMessage.TryGetValue("files", out tempFileArrayToken) && tempFileArrayToken != null)
+                    {
+                        JArray tempFilesArray = tempFileArrayToken.ToObject<JArray>();
+                        locationJSON = tempFilesArray[0].ToObject<JObject>();
+                    }
+                    else
+                    {
+                        locationJSON = JObject.Parse(chatBubble.MetaDataString);
+                    }
                     if (this.bingMapsTask == null)
                         bingMapsTask = new BingMapsTask();
                     double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
