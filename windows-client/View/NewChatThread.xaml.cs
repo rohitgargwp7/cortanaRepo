@@ -100,7 +100,7 @@ namespace windows_client.View
         #region UI VALUES
 
         private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
-        private Thickness imgMargin = new Thickness(0, 5, 0, 15);
+        private Thickness imgMargin = new Thickness(24, 5, 0, 15);
         private Image typingNotificationImage;
         private Image emptyImage;
 
