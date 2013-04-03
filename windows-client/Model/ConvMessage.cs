@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Microsoft.Phone.Shell;
 using windows_client.Misc;
 using windows_client.Languages;
+using System.Diagnostics;
 
 namespace windows_client.Model
 {
@@ -466,35 +467,42 @@ namespace windows_client.Model
 
             if (HasAttachment)
             {
-                metadata = new JObject();
-                filesData = new JArray();
-                if (!FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                try
                 {
-                    if (FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) && !string.IsNullOrEmpty(this.MetaDataString))
-                        singleFileInfo = JObject.Parse(this.MetaDataString);
+                    metadata = new JObject();
+                    filesData = new JArray();
+                    if (!FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                    {
+                        if (FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) && !string.IsNullOrEmpty(this.MetaDataString))
+                            singleFileInfo = JObject.Parse(this.MetaDataString);
+                        else
+                            singleFileInfo = new JObject();
+                        singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
+                        singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
+                        singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                        if (FileAttachment.Thumbnail != null)
+                            singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
+                    }
                     else
-                        singleFileInfo = new JObject();
-                    singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
-                    singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
-                    singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
-                    if (FileAttachment.Thumbnail != null)
-                        singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
+                    {
+                        //add thumbnail here
+                        JObject metadataFromConvMessage = JObject.Parse(this.MetaDataString);
+                        JArray tempFilesArray = metadataFromConvMessage["files"].ToObject<JArray>();
+                        singleFileInfo = tempFilesArray[0].ToObject<JObject>();
+                        singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
+                        singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
+                        singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                        if (FileAttachment.Thumbnail != null)
+                            singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
+                    }
+                    filesData.Add(singleFileInfo.ToObject<JToken>());
+                    metadata[HikeConstants.FILES_DATA] = filesData;
+                    data[HikeConstants.METADATA] = metadata;
                 }
-                else
-                {
-                    //add thumbnail here
-                    JObject metadataFromConvMessage = JObject.Parse(this.MetaDataString);
-                    JArray tempFilesArray = metadataFromConvMessage["files"].ToObject<JArray>();
-                    singleFileInfo = tempFilesArray[0].ToObject<JObject>();
-                    singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
-                    singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
-                    singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
-                    if (FileAttachment.Thumbnail != null)
-                        singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
+                catch (Exception e) //Incase  of error receiver will see it as a normal text message with a link (same as sms user)
+                {                   //ideally code should never reach here.
+                    Debug.WriteLine("Exception while parsing metadat " + e.StackTrace);
                 }
-                filesData.Add(singleFileInfo.ToObject<JToken>());
-                metadata[HikeConstants.FILES_DATA] = filesData;
-                data[HikeConstants.METADATA] = metadata;
             }
             else if (this.MetaDataString != null && this.MetaDataString.Contains("poke"))
             {
