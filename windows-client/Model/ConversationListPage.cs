@@ -96,6 +96,7 @@ namespace windows_client.Model
                     _timeStamp = value;
                     UpdateConvBoxTimeStamp();
                     NotifyPropertyChanged("TimeStamp");
+                    NotifyPropertyChanged("FormattedTimeStamp");
                 }
             }
         }
@@ -153,6 +154,9 @@ namespace windows_client.Model
                     _messageStatus = value;
                     UpdateConvBoxMsgStatus();
                     NotifyPropertyChanged("MessageStatus");
+                    NotifyPropertyChanged("LastMessageColor");
+                    NotifyPropertyChanged("SDRStatusImage");
+                    NotifyPropertyChanged("SDRStatusImageVisible");
                 }
             }
         }
@@ -207,7 +211,46 @@ namespace windows_client.Model
                     return false;
             }
         }
+public BitmapImage SDRStatusImage
+        {
+            get
+            {
+                switch (_messageStatus)
+                {
+                    case ConvMessage.State.SENT_CONFIRMED:
+                        return UI_Utils.Instance.Sent;
+                    case ConvMessage.State.SENT_DELIVERED:
+                        return UI_Utils.Instance.Delivered;
+                    case ConvMessage.State.SENT_DELIVERED_READ:
+                        return UI_Utils.Instance.Read;
+                    case ConvMessage.State.SENT_UNCONFIRMED:
+                        return UI_Utils.Instance.Trying;
+                        //todo:rohit
+                    //case ConvMessage.State.RECEIVED_UNREAD:
+                    //    return UI_Utils.Instance.Unread;
+                    default:
+                        return null;
+                }
+            }
+        }
 
+        public Visibility SDRStatusImageVisible
+        {
+            get
+            {
+                switch (_messageStatus)
+                {
+                    case ConvMessage.State.SENT_CONFIRMED:
+                    case ConvMessage.State.SENT_DELIVERED:
+                    case ConvMessage.State.SENT_DELIVERED_READ:
+                    case ConvMessage.State.SENT_UNCONFIRMED:
+                    case ConvMessage.State.RECEIVED_UNREAD:
+                        return Visibility.Visible;
+                    default:
+                        return Visibility.Collapsed;
+                }
+            }
+        }
         public bool IsLastMsgStatusUpdate
         {
             get
@@ -229,6 +272,14 @@ namespace windows_client.Model
                     return _contactName;
                 else
                     return _msisdn;
+            }
+        }
+
+        public string FormattedTimeStamp
+        {
+            get
+            {
+                return TimeUtils.getTimeString(_timeStamp);
             }
         }
 
@@ -280,6 +331,21 @@ namespace windows_client.Model
             }
         }
 
+        public string LastMessageColor
+        {
+            get
+            {
+                switch (_messageStatus)
+                {
+                    case ConvMessage.State.RECEIVED_UNREAD:
+                        Color currentAccentColorHex =
+                        (Color)Application.Current.Resources["PhoneAccentColor"];
+                        return currentAccentColorHex.ToString();
+                    default: return "gray";
+                }
+            }
+        }
+
         public Visibility IsLastMessageUnread // this too should be removed
         {
             get
@@ -287,6 +353,20 @@ namespace windows_client.Model
                 if (ConvMessage.State.RECEIVED_UNREAD == _messageStatus)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
+            }
+        }
+
+        public string SdrImage
+        {
+            get
+            {
+                switch (_messageStatus)
+                {
+                    case ConvMessage.State.SENT_CONFIRMED: return "images\\ic_sent.png";
+                    case ConvMessage.State.SENT_DELIVERED: return "images\\ic_delivered.png";
+                    case ConvMessage.State.SENT_DELIVERED_READ: return "images\\ic_read.png";
+                    default: return "";
+                }
             }
         }
 

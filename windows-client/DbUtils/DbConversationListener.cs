@@ -154,18 +154,12 @@ namespace windows_client.DbUtils
                         addSentMessageToMsgMap(chatBubble);
                     }
 
-                    if (convObj.ConvBoxObj == null)
+                    if (App.ViewModel.MessageListPageCollection.Contains(convObj))//cannot use convMap here because object has pushed to map but not to ui
                     {
-                        convObj.ConvBoxObj = new ConversationBox(convObj);
-                        if (App.ViewModel.ConversationListPage != null)
-                            ContextMenuService.SetContextMenu(convObj.ConvBoxObj, App.ViewModel.ConversationListPage.createConversationContextMenu(convObj));
-                    }
-                    else if (App.ViewModel.MessageListPageCollection.Contains(convObj.ConvBoxObj))//cannot use convMap here because object has pushed to map but not to ui
-                    {
-                        App.ViewModel.MessageListPageCollection.Remove(convObj.ConvBoxObj);
+                        App.ViewModel.MessageListPageCollection.Remove(convObj);
                     }
 
-                    App.ViewModel.MessageListPageCollection.Insert(0, convObj.ConvBoxObj);
+                    App.ViewModel.MessageListPageCollection.Insert(0, convObj);
 
                     if (!isNewGroup)
                         mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));
@@ -189,19 +183,12 @@ namespace windows_client.DbUtils
                 {
                     addSentMessageToMsgMap(chatBubble);
 
-                    if (convObj.ConvBoxObj == null)
+                    if (App.ViewModel.MessageListPageCollection.Contains(convObj))//cannot use convMap here because object has pushed to map but not to ui
                     {
-                        convObj.ConvBoxObj = new ConversationBox(convObj);
-                        if (App.ViewModel.ConversationListPage != null)
-                            ContextMenuService.SetContextMenu(convObj.ConvBoxObj, App.ViewModel.ConversationListPage.createConversationContextMenu(convObj));
-
-                    }
-                    else if (App.ViewModel.MessageListPageCollection.Contains(convObj.ConvBoxObj))//cannot use convMap here because object has pushed to map but not to ui
-                    {
-                        App.ViewModel.MessageListPageCollection.Remove(convObj.ConvBoxObj);
+                        App.ViewModel.MessageListPageCollection.Remove(convObj);
                     }
 
-                    App.ViewModel.MessageListPageCollection.Insert(0, convObj.ConvBoxObj);
+                    App.ViewModel.MessageListPageCollection.Insert(0, convObj);
                     //forward attachment message
                     string destinationFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" + convMessage.MessageId;
                     //while writing in iso, we write it as failed and then revert to started
@@ -236,18 +223,11 @@ namespace windows_client.DbUtils
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     addSentMessageToMsgMap(chatBubble);
-                    if (convObj.ConvBoxObj == null)
+                   if (App.ViewModel.MessageListPageCollection.Contains(convObj))
                     {
-                        convObj.ConvBoxObj = new ConversationBox(convObj);
-                        if (App.ViewModel.ConversationListPage != null)
-                            ContextMenuService.SetContextMenu(convObj.ConvBoxObj, App.ViewModel.ConversationListPage.createConversationContextMenu(convObj));
-
+                        App.ViewModel.MessageListPageCollection.Remove(convObj);
                     }
-                    else if (App.ViewModel.MessageListPageCollection.Contains(convObj.ConvBoxObj))
-                    {
-                        App.ViewModel.MessageListPageCollection.Remove(convObj.ConvBoxObj);
-                    }
-                    App.ViewModel.MessageListPageCollection.Insert(0, convObj.ConvBoxObj);
+                   App.ViewModel.MessageListPageCollection.Insert(0, convObj);
                     //send attachment message (new attachment - upload case)
                     MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId, chatBubble);
                     convMessage.FileAttachment.FileState = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;

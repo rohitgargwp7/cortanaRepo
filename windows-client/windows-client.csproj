@@ -107,7 +107,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Facebook.6.1.4\lib\wp71\Facebook.dll</HintPath>
     </Reference>
-    <Reference Include="finalmqtt">
+    <Reference Include="finalmqtt, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\finalmqtt.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Drawing" />
