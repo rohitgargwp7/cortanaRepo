@@ -540,13 +540,14 @@ namespace finalmqtt.Client
         {
             try
             {
-
                 sendAcknowledement(msg);
                 if (mqttListener != null)
                     mqttListener.onPublish(msg.getTopic(), msg.getData());
             }
-            catch (Exception)
-            { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("MqttConnection :: handleMessage : Exception -" + ex.StackTrace);
+            }
         }
 
         protected void handleMessage(PingRespMessage msg)
