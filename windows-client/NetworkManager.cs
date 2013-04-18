@@ -1691,7 +1691,8 @@ namespace windows_client
                 return;
             Stopwatch st = Stopwatch.StartNew();
             string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status);
-
+            if (msisdn == null)
+                return;
             // To update conversation object , we have to check if ids [] contains last msg id
             if (App.ViewModel.ConvMap.ContainsKey(msisdn))
             {
