@@ -916,7 +916,13 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hi! I&apos;ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!.
+        ///   Looks up a localized string similar to Hi!
+        ///
+        ///I just got hike, an amazing new messaging app! You can download hike at get.hike.in.
+        ///
+        ///hike comes with some hilarious emoticons. You can also post Status Updates to your close circle of friends! Think of it like BBM for non-Blackberry devices but much, much better!
+        ///
+        ///Get it now from get.hike.in and say good bye to plain boring SMS..
         /// </summary>
         public static string Email_Invite_Txt {
             get {
