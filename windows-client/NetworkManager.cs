@@ -1157,8 +1157,6 @@ namespace windows_client
                     JToken idToken;
                     if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
                         id = idToken.ToString();
-                    if (StatusMsgsTable.StatusMessageExists(id))
-                        return;
 
                     #region HANDLE PROFILE PIC UPDATE
                     if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
@@ -1169,7 +1167,8 @@ namespace windows_client
                         if (iconBase64 != null)
                         {
                             byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                            StatusMsgsTable.InsertStatusMsg(sm);
+                            if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
+                                return;
                             MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.ServerId);
                             jsonObj[HikeConstants.PROFILE_PIC_ID] = sm.ServerId;
                         }
@@ -1193,8 +1192,8 @@ namespace windows_client
                         }
                         sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts,
                             StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, moodId, tod, true);
-
-                        StatusMsgsTable.InsertStatusMsg(sm);
+                        if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
+                            return;
                     }
                     #endregion
 

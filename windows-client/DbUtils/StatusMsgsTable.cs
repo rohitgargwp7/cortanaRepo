@@ -26,12 +26,18 @@ namespace windows_client.DbUtils
         /// Add single status msg
         /// </summary>
         /// <param name="sm"></param>
-        public static void InsertStatusMsg(StatusMessage sm)
+        public static bool InsertStatusMsg(StatusMessage sm, bool checkAlreadyExists)
         {
             try
             {
                 using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
                 {
+                    if (checkAlreadyExists)
+                    {
+                        List<StatusMessage> smEn = DbCompiledQueries.GetStatusMsgForServerId(context, sm.ServerId).ToList();
+                        if (smEn.Count > 0)
+                            return false;
+                    }
                     context.statusMessage.InsertOnSubmit(sm);
                     context.SubmitChanges();
                 }
@@ -39,7 +45,9 @@ namespace windows_client.DbUtils
             catch (Exception e)
             {
                 Debug.WriteLine("MessagesTableUtils :: addMessage : submit changes, Exception : " + e.StackTrace);
+                return false;
             }
+            return true;
         }
 
         /// <summary>
@@ -96,26 +104,7 @@ namespace windows_client.DbUtils
                 return (res == null || res.Count == 0) ? null : res;
             }
         }
-        public static bool StatusMessageExists(string mappedId)
-        {
-            if (string.IsNullOrEmpty(mappedId))
-                return false;
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            {
-                try
-                {
-                    List<StatusMessage> smEn = DbCompiledQueries.GetStatusMsgForServerId(context, mappedId).ToList();
-                    if (smEn.Count > 0)
-                        return true;
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("StatusMsgsTable :: StatusMessageExists : StatusMessageExists, Exception : " + ex.StackTrace);
-                    return false;
-                }
-            }
-            return false;
-        }
+
         public static void DeleteAllStatusMsgs()
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))

@@ -79,7 +79,7 @@ namespace windows_client.utils
                         cn.FriendStatus = FriendsTableUtils.FriendStatusEnum.FRIENDS;
                         App.ViewModel.ContactsCache[status.Msisdn] = cn;
                     }
-                    userName = (cn != null && string.IsNullOrWhiteSpace(cn.Name) )? cn.Name : status.Msisdn;
+                    userName = (cn != null && string.IsNullOrWhiteSpace(cn.Name)) ? cn.Name : status.Msisdn;
                     userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(status.Msisdn);
                 }
             }
@@ -172,7 +172,7 @@ namespace windows_client.utils
                         // status should be in read state when posted yourself
                         StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
                             TimeUtils.getCurrentTimeStamp(), true, -1, moodId, tod, true);
-                        StatusMsgsTable.InsertStatusMsg(sm);
+                        StatusMsgsTable.InsertStatusMsg(sm, false);
                         App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                     }
                     catch (Exception ex)
