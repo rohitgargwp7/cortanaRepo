@@ -34,8 +34,9 @@ namespace windows_client.DbUtils
                 {
                     if (checkAlreadyExists)
                     {
-                        List<StatusMessage> smEn = DbCompiledQueries.GetStatusMsgForServerId(context, sm.ServerId).ToList();
-                        if (smEn.Count > 0)
+                        IQueryable<StatusMessage> sts = DbCompiledQueries.GetStatusMsgForServerId(context, sm.ServerId);
+                        StatusMessage sMsg = sts.FirstOrDefault();
+                        if (sMsg != null)
                             return false;
                     }
                     context.statusMessage.InsertOnSubmit(sm);
