@@ -1175,23 +1175,22 @@ namespace windows_client
                         ts = val.ToObject<long>();
 
                     val = null;
+                    string id = null;
+                    JToken idToken;
+                    if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
+                        id = idToken.ToString();
+
                     #region HANDLE PROFILE PIC UPDATE
                     if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
                     {
-                        string id = null;
-                        JToken idToken;
-                        if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
-                            id = idToken.ToString();
-
-
                         sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, ts,
                             StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, -1, 0, true);
-
                         idToken = null;
                         if (iconBase64 != null)
                         {
                             byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                            StatusMsgsTable.InsertStatusMsg(sm);
+                            if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
+                                return;
                             MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.ServerId);
                             jsonObj[HikeConstants.PROFILE_PIC_ID] = sm.ServerId;
                         }
@@ -1201,11 +1200,6 @@ namespace windows_client
                     #region HANDLE TEXT UPDATE
                     else if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
                     {
-                        string id = null;
-                        JToken idToken;
-                        if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken) && idToken != null)
-                            id = idToken.ToString();
-
                         int moodId = -1;
                         int tod = 0;
                         if (data[HikeConstants.MOOD] != null)
@@ -1220,8 +1214,8 @@ namespace windows_client
                         }
                         sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts,
                             StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, moodId, tod, true);
-
-                        StatusMsgsTable.InsertStatusMsg(sm);
+                        if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
+                            return;
                     }
                     #endregion
 
