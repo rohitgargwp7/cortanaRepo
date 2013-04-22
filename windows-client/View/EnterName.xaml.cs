@@ -210,6 +210,7 @@ namespace windows_client
 
             if (isFirstLaunch)
             {
+                PushHelper.Instance.registerPushnotifications();
                 string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
                 msisdn = msisdn.Substring(msisdn.Length - 10);
                 StringBuilder userMsisdn = new StringBuilder();

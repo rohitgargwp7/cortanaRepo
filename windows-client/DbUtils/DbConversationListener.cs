@@ -202,16 +202,19 @@ namespace windows_client.DbUtils
                     }
 
                     App.ViewModel.MessageListPageCollection.Insert(0, convObj.ConvBoxObj);
+                    //forward attachment message
+                    string destinationFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" + convMessage.MessageId;
+                    //while writing in iso, we write it as failed and then revert to started
+                    MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
+                    //since, Location & Contact has required info in metadata string, no need to use raw files
+                    if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) &&
+                        !convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                    {
+                        MiscDBUtil.copyFileInIsolatedStorage(sourceFilePath, destinationFilePath);
+                    }
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
                 });
-
-                //forward attachment message
-                string destinationFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" + convMessage.MessageId;
-                //while writing in iso, we write it as failed and then revert to started
-                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                    MiscDBUtil.copyFileInIsolatedStorage(sourceFilePath, destinationFilePath);
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
             }
             #endregion
             #region ATTACHMENT_SEND
@@ -246,20 +249,18 @@ namespace windows_client.DbUtils
                         App.ViewModel.MessageListPageCollection.Remove(convObj.ConvBoxObj);
                     }
                     App.ViewModel.MessageListPageCollection.Insert(0, convObj.ConvBoxObj);
+                    //send attachment message (new attachment - upload case)
+                    MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId, chatBubble);
+                    convMessage.FileAttachment.FileState = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                    MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+                    convMessage.FileAttachment.FileState = Attachment.AttachmentState.STARTED;
 
+                    AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
+                    if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                        MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                                Convert.ToString(convMessage.MessageId), fileBytes);
+                    AccountUtils.uploadFile(fileBytes, finalCallbackForUploadFile, convMessage, chatBubble);
                 });
-                //send attachment message (new attachment - upload case)
-                MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId, chatBubble);
-                convMessage.FileAttachment.FileState = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
-                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                convMessage.FileAttachment.FileState = Attachment.AttachmentState.STARTED;
-
-                AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
-                if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                    MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
-                            Convert.ToString(convMessage.MessageId), fileBytes);
-                AccountUtils.uploadFile(fileBytes, finalCallbackForUploadFile, convMessage, chatBubble);
-
             }
             #endregion
             #region ATTACHMENT_RESEND_OR_FORWARD

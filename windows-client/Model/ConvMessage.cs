@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Microsoft.Phone.Shell;
 using windows_client.Misc;
 using windows_client.Languages;
+using System.Diagnostics;
 
 namespace windows_client.Model
 {
@@ -466,32 +467,52 @@ namespace windows_client.Model
 
             if (HasAttachment)
             {
-                metadata = new JObject();
-                filesData = new JArray();
-                if (!FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                try
                 {
-                    if (FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) && !string.IsNullOrEmpty(this.MetaDataString))
-                        singleFileInfo = JObject.Parse(this.MetaDataString);
+                    metadata = new JObject();
+                    filesData = new JArray();
+                    if (!FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                    {
+                        if (FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) && !string.IsNullOrEmpty(this.MetaDataString))
+                            singleFileInfo = JObject.Parse(this.MetaDataString);
+                        else
+                            singleFileInfo = new JObject();
+                        singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
+                        singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
+                        singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                        if (FileAttachment.Thumbnail != null)
+                            singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
+                    }
                     else
-                        singleFileInfo = new JObject();
-                    singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
-                    singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
-                    singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
-                    if (FileAttachment.Thumbnail != null)
-                        singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
+                    {
+                        //add thumbnail here
+                        JObject metadataFromConvMessage = JObject.Parse(this.MetaDataString);
+                        JToken tempFileArrayToken;
+                        //TODO - Madhur Garg - Metadata of sent & received location are different that's why this if statement is used.
+                        //Make it same for type of messages
+                        if (metadataFromConvMessage.TryGetValue("files", out tempFileArrayToken) && tempFileArrayToken != null)
+                        {
+                            JArray tempFilesArray = tempFileArrayToken.ToObject<JArray>();
+                            singleFileInfo = tempFilesArray[0].ToObject<JObject>();
+                        }
+                        else
+                        {
+                            singleFileInfo = JObject.Parse(this.MetaDataString);
+                        }
+                        singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
+                        singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
+                        singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                        if (FileAttachment.Thumbnail != null)
+                            singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
+                    }
+                    filesData.Add(singleFileInfo.ToObject<JToken>());
+                    metadata[HikeConstants.FILES_DATA] = filesData;
+                    data[HikeConstants.METADATA] = metadata;
                 }
-                else
-                {
-                    //add thumbnail here
-                    JObject uploadedJSON = JObject.Parse(this.MetaDataString);
-                    singleFileInfo = uploadedJSON[HikeConstants.FILES_DATA].ToObject<JArray>()[0].ToObject<JObject>();
-                    singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
-                    if (FileAttachment.Thumbnail != null)
-                        singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
+                catch (Exception e) //Incase  of error receiver will see it as a normal text message with a link (same as sms user)
+                {                   //ideally code should never reach here.
+                    Debug.WriteLine("ConvMessage :: serialize :: Exception while parsing metadat " + e.StackTrace);
                 }
-                filesData.Add(singleFileInfo.ToObject<JToken>());
-                metadata[HikeConstants.FILES_DATA] = filesData;
-                data[HikeConstants.METADATA] = metadata;
             }
             else if (this.MetaDataString != null && this.MetaDataString.Contains("poke"))
             {
@@ -661,12 +682,12 @@ namespace windows_client.Model
                             locationFile[HikeConstants.LONGITUDE] = fileObject[HikeConstants.LONGITUDE];
                             locationFile[HikeConstants.ZOOM_LEVEL] = fileObject[HikeConstants.ZOOM_LEVEL];
                             locationFile[HikeConstants.LOCATION_ADDRESS] = fileObject[HikeConstants.LOCATION_ADDRESS];
-                            this.MetaDataString = locationFile.ToString();
+                            this.MetaDataString = locationFile.ToString(Newtonsoft.Json.Formatting.None);
                         }
 
                         if (contentType.ToString().Contains(HikeConstants.CONTACT))
                         {
-                            this.MetaDataString = fileObject.ToString();
+                            this.MetaDataString = fileObject.ToString(Newtonsoft.Json.Formatting.None);
                         }
                     }
                     else

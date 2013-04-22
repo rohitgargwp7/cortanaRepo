@@ -135,16 +135,11 @@ namespace windows_client
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
 
-                    if (convMessage.FileAttachment != null && convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                        convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
-
-                    if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
+                    if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT)
+                        || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
                     {
-                        byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(convMessage.MetaDataString);
-                        MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
-                    Convert.ToString(convMessage.MessageId), locationBytes);
+                        convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
                     }
-
                     if (obj == null)
                         return;
                     if (convMessage.FileAttachment != null)
@@ -1375,12 +1370,30 @@ namespace windows_client
 
         private void updateDbBatch(string fromUser, long[] ids, int status)
         {
+            if (ids == null || ids.Length == 0)
+                return;
             Stopwatch st = Stopwatch.StartNew();
             string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status);
-            ConversationTableUtils.updateLastMsgStatus(ids[ids.Length - 1], msisdn, status);
+
+            // To update conversation object , we have to check if ids [] contains last msg id
+            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+            {
+                if (ContainsLastMsgId(ids, App.ViewModel.ConvMap[msisdn]))
+                    ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[msisdn].LastMsgId, msisdn, status);
+            }
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to update msg status DELIVERED READ : {0}", msec);
+        }
+
+        private bool ContainsLastMsgId(long[] ids, ConversationListObject co)
+        {
+            for (int i = 0; i < ids.Length; i++)
+            {
+                if (ids[i] == co.LastMsgId)
+                    return true;
+            }
+            return false;
         }
     }
 }
