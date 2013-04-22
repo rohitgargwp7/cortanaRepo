@@ -103,7 +103,7 @@ namespace windows_client
             {
                 string token = (string)App.appSettings["token"];
                 AccountUtils.postAddressBook(ContactUtils.contactsMap, new AccountUtils.postResponseFunction(postAddressBook_Callback));
-                
+
             }
             else // if add book is already in posted state then run Background worker that waits for result
             {
@@ -493,10 +493,12 @@ namespace windows_client
                     ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_STORE_FAILED;
                     this.msgTxtBlk.Text = AppResources.EnterName_Failed_Txt;
                 });
+                return;
             }
 
-            if (addressbook != null)
+            try
             {
+                // if addressbook is null, then also user should be able to move inside app.
                 UsersTableUtils.deleteAllContacts();
                 UsersTableUtils.deleteBlocklist();
                 Stopwatch st = Stopwatch.StartNew();
@@ -505,10 +507,14 @@ namespace windows_client
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to add addressbook {0}", msec);
                 UsersTableUtils.addBlockList(blockList);
-                ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB;
-                Debug.WriteLine("Addbook stored in Hike Db .... ");
-                App.WriteToIsoStorageSettings(ContactUtils.IS_ADDRESS_BOOK_SCANNED, true);
             }
+            catch (Exception e)
+            {
+                Debug.WriteLine("EnterName :: postAddressBook_Callback : Exception : " + e.StackTrace);
+            }
+            Debug.WriteLine("Addbook stored in Hike Db .... ");
+            App.WriteToIsoStorageSettings(ContactUtils.IS_ADDRESS_BOOK_SCANNED, true);
+            ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB;
         }
     }
 }

@@ -395,13 +395,6 @@ namespace windows_client.utils
                     data = getJsonContactList(contactListMap);
                     string x = data.ToString(Newtonsoft.Json.Formatting.None);
                     Compress4(x, postStream);
-                    //Debug.WriteLine("Request gets compressed from {0} to {1} Length", x.Length, d.Length);
-                    //using (StreamWriter sw = new StreamWriter(postStream))
-                    //{
-                    //    sw.Write(d);
-                    //    sw.Flush();
-                    //    //postStream.Flush();
-                    //}
                     postStream.Close();
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
                     ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_POSTED;
@@ -693,9 +686,6 @@ namespace windows_client.utils
                 gZipStream.Write(buffer, 0, buffer.Length);
                 gZipStream.Flush();
             }
-            // memoryStream.Seek(0, SeekOrigin.Begin);
-            //postStream.Flush();
-            return;
         }
 
         public static byte[] Compress2(string text)
@@ -843,18 +833,27 @@ namespace windows_client.utils
         private static JObject getJsonContactList(Dictionary<string, List<ContactInfo>> contactsMap)
         {
             JObject updateContacts = new JObject();
+            if (contactsMap == null)
+                return updateContacts;
             foreach (string id in contactsMap.Keys)
             {
-                List<ContactInfo> list = contactsMap[id];
-                JArray contactInfoList = new JArray();
-                foreach (ContactInfo cInfo in list)
+                try
                 {
-                    JObject contactInfo = new JObject();
-                    contactInfo.Add("name", cInfo.Name);
-                    contactInfo.Add("phone_no", cInfo.PhoneNo);
-                    contactInfoList.Add(contactInfo);
+                    List<ContactInfo> list = contactsMap[id];
+                    JArray contactInfoList = new JArray();
+                    foreach (ContactInfo cInfo in list)
+                    {
+                        JObject contactInfo = new JObject();
+                        contactInfo.Add("name", cInfo.Name);
+                        contactInfo.Add("phone_no", cInfo.PhoneNo);
+                        contactInfoList.Add(contactInfo);
+                    }
+                    updateContacts.Add(id, contactInfoList);
                 }
-                updateContacts.Add(id, contactInfoList);
+                catch (Exception e)
+                {
+                    Debug.WriteLine("AccountUtils :: getJsonContactList(outer loop) : Exception : " + e.StackTrace);
+                }
             }
             return updateContacts;
         }
@@ -864,14 +863,13 @@ namespace windows_client.utils
             try
             {
                 if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
-                {
                     return null;
-                }
+
                 JObject addressbook = (JObject)obj["addressbook"];
-                if (addressbook == null)
-                {
+
+                if (addressbook == null || new_contacts_by_id == null || new_contacts_by_id.Count == 0)
                     return null;
-                }
+
                 bool isFavSaved = false;
                 bool isPendingSaved = false;
                 int hikeCount = 1, smsCount = 1, nonHikeCount = 0;
@@ -895,81 +893,88 @@ namespace windows_client.utils
 
                 while (keyVals.MoveNext())
                 {
-                    kv = keyVals.Current;
-                    JArray entries = (JArray)addressbook[kv.Key];
-                    List<ContactInfo> cList = new_contacts_by_id[kv.Key];
-                    for (int i = 0; i < entries.Count; ++i)
+                    try
                     {
-                        JObject entry = (JObject)entries[i];
-                        string msisdn = (string)entry["msisdn"];
-                        if (string.IsNullOrWhiteSpace(msisdn))
+                        kv = keyVals.Current;
+                        JArray entries = (JArray)addressbook[kv.Key];
+                        List<ContactInfo> cList = new_contacts_by_id[kv.Key];
+                        for (int i = 0; i < entries.Count; ++i)
                         {
-                            count++;
-                            continue;
-                        }
-                        bool onhike = (bool)entry["onhike"];
-                        ContactInfo cinfo = cList[i];
-                        ContactInfo cn = new ContactInfo(kv.Key, msisdn, cinfo.Name, onhike, cinfo.PhoneNo);
-
-                        if (!isRefresh) // this is case for new installation
-                        {
-                            if (cn.Msisdn != (string)App.appSettings[App.MSISDN_SETTING]) // do not add own number
+                            JObject entry = (JObject)entries[i];
+                            string msisdn = (string)entry["msisdn"];
+                            if (string.IsNullOrWhiteSpace(msisdn))
                             {
-                                if (onhike && hikeCount <= 3 && !msisdns.Contains(cn.Msisdn))
-                                {
-                                    msisdns.Add(cn.Msisdn);
-                                    msgToShow.Add(cn);
-                                    hikeCount++;
-                                }
-                                if (!onhike && smsCount <= 2 && cn.Msisdn.StartsWith("+91") && !msisdns.Contains(cn.Msisdn)) // allow only indian numbers for sms
-                                {
-                                    msisdns.Add(cn.Msisdn);
-                                    msgToShow.Add(cn);
-                                    smsCount++;
-                                }
-
-                                #region NUX RELATED
-                                if (!onhike)
-                                    nonHikeCount++;
-                                #endregion
+                                count++;
+                                continue;
                             }
-                        }
-                        else // this is refresh contacts case
-                        {
-                            if (App.ViewModel.ConvMap.ContainsKey(cn.Msisdn)) // update convlist
+                            bool onhike = (bool)entry["onhike"];
+                            ContactInfo cinfo = cList[i];
+                            ContactInfo cn = new ContactInfo(kv.Key, msisdn, cinfo.Name, onhike, cinfo.PhoneNo);
+
+                            if (!isRefresh) // this is case for new installation
                             {
-                                try
+                                if (cn.Msisdn != (string)App.appSettings[App.MSISDN_SETTING]) // do not add own number
                                 {
-                                    App.ViewModel.ConvMap[cn.Msisdn].ContactName = cn.Name;
-                                }
-                                catch (Exception e)
-                                {
-                                    Debug.WriteLine("REFRESH CONTACTS :: Update contact exception " + e.StackTrace);
-                                }
-                            }
-                            else // fav and pending case
-                            {
-                                ConversationListObject c = App.ViewModel.GetFav(cn.Msisdn);
-                                if (c != null) // this user is in favs
-                                {
-                                    c.ContactName = cn.Name;
-                                    MiscDBUtil.SaveFavourites(c);
-                                    isFavSaved = true;
-                                }
-                                else
-                                {
-                                    c = App.ViewModel.GetPending(cn.Msisdn);
-                                    if (c != null)
+                                    if (onhike && hikeCount <= 3 && !msisdns.Contains(cn.Msisdn))
                                     {
-                                        c.ContactName = cn.Name;
-                                        isPendingSaved = true;
+                                        msisdns.Add(cn.Msisdn);
+                                        msgToShow.Add(cn);
+                                        hikeCount++;
+                                    }
+                                    if (!onhike && smsCount <= 2 && cn.Msisdn.StartsWith("+91") && !msisdns.Contains(cn.Msisdn)) // allow only indian numbers for sms
+                                    {
+                                        msisdns.Add(cn.Msisdn);
+                                        msgToShow.Add(cn);
+                                        smsCount++;
+                                    }
+
+                                    #region NUX RELATED
+                                    if (!onhike)
+                                        nonHikeCount++;
+                                    #endregion
+                                }
+                            }
+                            else // this is refresh contacts case
+                            {
+                                if (App.ViewModel.ConvMap.ContainsKey(cn.Msisdn)) // update convlist
+                                {
+                                    try
+                                    {
+                                        App.ViewModel.ConvMap[cn.Msisdn].ContactName = cn.Name;
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Debug.WriteLine("REFRESH CONTACTS :: Update contact exception " + e.StackTrace);
                                     }
                                 }
+                                else // fav and pending case
+                                {
+                                    ConversationListObject c = App.ViewModel.GetFav(cn.Msisdn);
+                                    if (c != null) // this user is in favs
+                                    {
+                                        c.ContactName = cn.Name;
+                                        MiscDBUtil.SaveFavourites(c);
+                                        isFavSaved = true;
+                                    }
+                                    else
+                                    {
+                                        c = App.ViewModel.GetPending(cn.Msisdn);
+                                        if (c != null)
+                                        {
+                                            c.ContactName = cn.Name;
+                                            isPendingSaved = true;
+                                        }
+                                    }
+                                }
+                                GroupManager.Instance.RefreshGroupCache(cn);
                             }
-                            GroupManager.Instance.RefreshGroupCache(cn);
+                            server_contacts.Add(cn);
+                            totalContacts++;
                         }
-                        server_contacts.Add(cn);
-                        totalContacts++;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("AccountUtils : getContactList : Exception : " + ex.StackTrace);
                     }
                 }
                 if (isFavSaved)
