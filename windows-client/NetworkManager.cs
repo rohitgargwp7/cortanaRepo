@@ -871,9 +871,16 @@ namespace windows_client
                     string groupId = (string)jsonObj[HikeConstants.TO];
                     if (msisdn == App.MSISDN) // if I changed the name ignore
                         return;
-                    bool groupExist = ConversationTableUtils.updateGroupName(groupId, groupName);
-                    if (!groupExist)
-                        return;
+                    ConversationListObject cObj;
+                    if (App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
+                    {
+                        if (cObj.ContactName == groupName)//group name is same as previous
+                            return;
+                    }
+                    else
+                        return;//group doesn't exists
+
+                    ConversationTableUtils.updateGroupName(groupId, groupName);
                     ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE, jsonObj);
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
                     if (obj == null)
@@ -906,11 +913,26 @@ namespace windows_client
                 string from = (string)jsonObj[HikeConstants.FROM];
                 if (from == App.MSISDN) // if you changed the pic simply ignore
                     return;
+                ConversationListObject cObj;
+                if (!App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
+                    return;//if group doesn't exist return
                 JToken temp;
                 jsonObj.TryGetValue(HikeConstants.DATA, out temp);
                 if (temp == null)
                     return;
                 string iconBase64 = temp.ToString();
+                //check if same image is set
+
+                if (cObj.Avatar != null)
+                {
+                    string previousImage = System.Convert.ToBase64String(cObj.Avatar);
+                    if (previousImage.Length > 4 && iconBase64.Length > 4 &&
+                        previousImage.Substring(0, 5) == iconBase64.Substring(0, 5) &&
+                        previousImage.Substring(previousImage.Length - 5) == iconBase64.Substring(iconBase64.Length - 5))
+                    {
+                        return;
+                    }
+                }
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
                 ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED, jsonObj);
                 ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
