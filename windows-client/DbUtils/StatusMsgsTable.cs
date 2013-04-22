@@ -96,7 +96,26 @@ namespace windows_client.DbUtils
                 return (res == null || res.Count == 0) ? null : res;
             }
         }
-
+        public static bool StatusMessageExists(string mappedId)
+        {
+            if (string.IsNullOrEmpty(mappedId))
+                return false;
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                try
+                {
+                    List<StatusMessage> smEn = DbCompiledQueries.GetStatusMsgForServerId(context, mappedId).ToList();
+                    if (smEn.Count > 0)
+                        return true;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("StatusMsgsTable :: StatusMessageExists : StatusMessageExists, Exception : " + ex.StackTrace);
+                    return false;
+                }
+            }
+            return false;
+        }
         public static void DeleteAllStatusMsgs()
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
@@ -263,7 +282,7 @@ namespace windows_client.DbUtils
                 {
                     // add a status messages table to chats db  
                     schemaUpdater.AddTable<StatusMessage>();
-                    
+
                     // IMPORTANT: update database schema version before calling Execute
                     schemaUpdater.DatabaseSchemaVersion = MessagesDb_Latest_Version;
                     try
@@ -278,7 +297,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void SaveUnreadCounts(string type,int count)
+        public static void SaveUnreadCounts(string type, int count)
         {
             // these are saved in this order only
             int _refreshCount = 0;
