@@ -188,7 +188,7 @@ namespace windows_client.Model
             }
         }
 
-        public int IsOwner
+        public bool IsOwner
         {
             get;
             set;
@@ -208,7 +208,35 @@ namespace windows_client.Model
                 NotifyPropertyChanged("FavMsg");
             }
         }
-
+        public string GroupInfoBlockText
+        {
+            get
+            {
+                if (IsOwner)
+                {
+                    return AppResources.Owner_Txt;
+                }
+                else if (!_isOnHike)
+                {
+                    return AppResources.OnSms_Txt;
+                }
+                return string.Empty;
+            }
+        }
+        public Visibility ShowGroupInfoBLock
+        {
+            get
+            {
+                if (IsOwner || !_isOnHike)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Collapsed;
+                }
+            }
+        }
         public string FavMsg
         {
             get

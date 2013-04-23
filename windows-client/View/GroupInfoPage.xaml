@@ -94,7 +94,7 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <TextBlock Text="{Binding Name}" Width="120" Foreground="White" TextWrapping="Wrap" FontSize="22" Margin="10,14,20,0" Grid.Row="0"></TextBlock>
-                            <TextBlock Margin="17,0,0,30" Grid.Row="1" Text="{Binding Path= LocalizedResources.Owner_Txt, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" Foreground="White" FontSize="18" Opacity="{Binding IsOwner}"></TextBlock>
+                            <TextBlock Margin="17,0,0,30" Grid.Row="1" Text="{Binding GroupInfoBlockText}" VerticalAlignment="Center" Foreground="White" FontSize="18" Visibility="{Binding ShowGroupInfoBLock}"></TextBlock>
                             <toolkit:ContextMenuService.ContextMenu>
                                 <toolkit:ContextMenu Name="ctxMenu" Visibility="{Binding ContextMenuVisibility}" IsEnabled="{Binding ContextMenuIsEnabled}" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <toolkit:MenuItem Header="{Binding Path= LocalizedResources.SelectUser_AddUser_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding AddUserVisibility}" Tap="MenuItem_Tap_AddUser"/>
