@@ -637,7 +637,7 @@ namespace windows_client.View
                 mUserIsBlocked = App.ViewModel.BlockedHashset.Contains(groupOwner);
             else
                 mUserIsBlocked = App.ViewModel.BlockedHashset.Contains(mContactNumber);
-            initAppBar(isGroupChat, isAddUser);
+            initAppBar(isAddUser);
             if (!isOnHike)
             {
                 sendMsgTxtbox.Hint = ON_SMS_TEXT;
@@ -836,7 +836,7 @@ namespace windows_client.View
         #region APP BAR
 
         /* Should run on UI thread, based on mUserIsBlocked*/
-        private void initAppBar(bool isGroupChat, bool isAddUser)
+        private void initAppBar(bool isAddUser)
         {
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
@@ -870,7 +870,7 @@ namespace windows_client.View
 
             if (isGroupChat)
             {
-                userName.Tap += userName_Tap;
+                userName.Tap += userHeader_Tap;
                 userImage.Tap += userImage_Tap;
 
                 ApplicationBarMenuItem leaveMenuItem = new ApplicationBarMenuItem();
@@ -885,7 +885,7 @@ namespace windows_client.View
 
                 infoMenuItem = new ApplicationBarMenuItem();
                 infoMenuItem.Text = AppResources.GroupInfo_Txt;
-                infoMenuItem.Click += userName_Tap;
+                infoMenuItem.Click += userHeader_Tap;
                 infoMenuItem.IsEnabled = !mUserIsBlocked && isGroupAlive;
                 appBar.MenuItems.Add(infoMenuItem);
             }
@@ -1333,16 +1333,6 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 afterMute = false;
             }
-        }
-
-        private void userName_Tap(object sender, EventArgs e)
-        {
-            if (mUserIsBlocked || !isGroupAlive)
-                return;
-            App.AnalyticsInstance.addEvent(Analytics.GROUP_INFO);
-            PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = mContactNumber;
-            PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = mContactName;
-            NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
         }
 
         private void blockUnblock_Click(object sender, EventArgs e)
@@ -3369,7 +3359,16 @@ namespace windows_client.View
 
         private void userHeader_Tap(object sender, EventArgs e)
         {
-            if (!isGroupChat)
+            if (isGroupChat)
+            {
+                if (mUserIsBlocked || !isGroupAlive)
+                    return;
+                App.AnalyticsInstance.addEvent(Analytics.GROUP_INFO);
+                PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = mContactNumber;
+                PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = mContactName;
+                NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
+            }
+            else
             {
                 PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
