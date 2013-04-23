@@ -315,17 +315,17 @@ namespace windows_client.Model
 
             if (IsUsedAtMiscPlaces)
             {
-                // in equals if msisdn of two contacts are equal they should be equal
+                // if msisdn of two contacts are equal they should be equal
                 // if msisdn is not there then other things should be compared
-                if (string.IsNullOrWhiteSpace(_msisdn))
+                if (!string.IsNullOrEmpty(_msisdn))
                 {
-                    if (!string.IsNullOrWhiteSpace(other.Name))
+                    if (string.IsNullOrWhiteSpace(other.Msisdn))
                         return false;
                     else if (_msisdn == other.Msisdn)
                         return true;
                 }
             }
-            else if (string.IsNullOrWhiteSpace(Name))
+            if (string.IsNullOrWhiteSpace(Name))
             {
                 if (!string.IsNullOrWhiteSpace(other.Name))
                     return false;

@@ -929,6 +929,7 @@ namespace windows_client.utils
                 int hikeCount = 1, smsCount = 1, nonHikeCount = 0;
                 List<ContactInfo> msgToShow = null;
                 List<string> msisdns = null;
+                Dictionary<string,GroupInfo> allGroupsInfo = null;
                 if (!isRefresh)
                 {
                     msgToShow = new List<ContactInfo>(5);
@@ -937,6 +938,13 @@ namespace windows_client.utils
                 else // if refresh case load groups in cache
                 {
                     GroupManager.Instance.LoadGroupCache();
+                    List<GroupInfo> gl = GroupTableUtils.GetAllGroups();
+                    for (int i = 0; i < gl.Count; i++)
+                    {
+                        if (allGroupsInfo == null)
+                            allGroupsInfo = new Dictionary<string, GroupInfo>();
+                        allGroupsInfo[gl[i].GroupId] = gl[i];
+                    }
                 }
 
                 List<ContactInfo> server_contacts = new List<ContactInfo>();
@@ -1020,7 +1028,7 @@ namespace windows_client.utils
                                         }
                                     }
                                 }
-                                GroupManager.Instance.RefreshGroupCache(cn);
+                                GroupManager.Instance.RefreshGroupCache(cn,allGroupsInfo);
                             }
                             server_contacts.Add(cn);
                             totalContacts++;
