@@ -483,7 +483,6 @@ namespace windows_client.Misc
                     }
                     else // if this group is not present in conversation , remove it
                         DeleteGroup(grpId);
-
                     SaveGroupCache(grpId); // save the cache
                 }
             }
