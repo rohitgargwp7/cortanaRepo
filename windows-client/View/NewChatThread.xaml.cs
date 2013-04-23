@@ -81,6 +81,7 @@ namespace windows_client.View
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
         ApplicationBarMenuItem addUserMenuItem;
+        ApplicationBarMenuItem infoMenuItem;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
         ApplicationBarIconButton fileTransferIconButton = null;
@@ -881,6 +882,12 @@ namespace windows_client.View
                 muteGroupMenuItem.Text = IsMute ? AppResources.SelectUser_UnMuteGrp_Txt : AppResources.SelectUser_MuteGrp_Txt;
                 muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
                 appBar.MenuItems.Add(muteGroupMenuItem);
+
+                infoMenuItem = new ApplicationBarMenuItem();
+                infoMenuItem.Text = AppResources.GroupInfo_Txt;
+                infoMenuItem.Click += userName_Tap;
+                infoMenuItem.IsEnabled = !mUserIsBlocked && isGroupAlive;
+                appBar.MenuItems.Add(infoMenuItem);
             }
             else
             {
@@ -896,6 +903,11 @@ namespace windows_client.View
                 callMenuItem.Click += new EventHandler(callUser_Click);
                 appBar.MenuItems.Add(callMenuItem);
                 userHeader.Tap += userHeader_Tap;
+
+                infoMenuItem = new ApplicationBarMenuItem();
+                infoMenuItem.Text = AppResources.OthersProfile_Txt;
+                infoMenuItem.Click += userHeader_Tap;
+                appBar.MenuItems.Add(infoMenuItem);
             }
         }
 
@@ -1343,6 +1355,7 @@ namespace windows_client.View
                     ToggleControlsToNoSms(true);
                 if (isGroupChat)
                 {
+                    infoMenuItem.IsEnabled = true;
                     App.ViewModel.BlockedHashset.Remove(groupOwner);
                     mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupOwner);
                 }
@@ -3354,7 +3367,7 @@ namespace windows_client.View
             }
         }
 
-        private void userHeader_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void userHeader_Tap(object sender, EventArgs e)
         {
             if (!isGroupChat)
             {
