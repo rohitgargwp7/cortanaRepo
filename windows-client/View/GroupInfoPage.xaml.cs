@@ -117,7 +117,7 @@ namespace windows_client.View
             {
                 GroupParticipant gp = hikeUsersList[i];
                 if (gi.GroupOwner == gp.Msisdn)
-                    gp.IsOwner = 1;
+                    gp.IsOwner = true;
                 if (gi.GroupOwner == (string)App.appSettings[App.MSISDN_SETTING] && gp.Msisdn != gi.GroupOwner) // if this user is owner
                     gp.RemoveFromGroup = Visibility.Visible;
                 else
