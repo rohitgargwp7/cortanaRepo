@@ -502,6 +502,12 @@ namespace windows_client.View
                 return;
             }
             groupName = this.groupNameTxtBox.Text.Trim();
+            if (groupName.Length>30)
+            {
+                MessageBoxResult result = MessageBox.Show(AppResources.GroupInfo_GrpNameMaxLength_Txt, AppResources.Error_Txt, MessageBoxButton.OK);
+                groupNameTxtBox.Focus();
+                return;
+            }
             // if group name is changed
             if (groupName != (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD])
             {

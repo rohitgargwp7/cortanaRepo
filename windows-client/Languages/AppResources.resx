@@ -1685,4 +1685,8 @@ Get it now from get.hike.in and say good bye to plain boring SMS.</value>
   <data name="Profile_You_NoStatus_Txt" xml:space="preserve">
     <value>You haven't posted anything :(</value>
   </data>
+  <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
+    <value>Group Name can have maximum 30 chars.</value>
+    <comment>Warning Text</comment>
+  </data>
 </root>
