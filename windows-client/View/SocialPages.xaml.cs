@@ -125,7 +125,8 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         PhoneApplicationService.Current.State["socialState"] = FreeSMS.SocialState.FB_LOGOUT;
-                        NavigationService.GoBack();
+                        if (NavigationService.CanGoBack)
+                            NavigationService.GoBack();
                     });
                 }
 
@@ -142,7 +143,8 @@ namespace windows_client.View
                 else
                 {
                     MessageBox.Show(oauthResult.ErrorDescription);
-                    NavigationService.GoBack(); // take you to the proper page
+                    if (NavigationService.CanGoBack)
+                        NavigationService.GoBack(); // take you to the proper page
                 }
             }
             #endregion
@@ -164,7 +166,8 @@ namespace windows_client.View
                     Dispatcher.BeginInvoke(() =>
                         {
                             MessageBox.Show(e.Error.Message);
-                            NavigationService.GoBack();
+                            if (NavigationService.CanGoBack)
+                                NavigationService.GoBack();
                         });
                     return;
                 }
@@ -200,7 +203,8 @@ namespace windows_client.View
                             if (imgBytes != null)
                                 PhoneApplicationService.Current.State["img"] = imgBytes;
                             PhoneApplicationService.Current.State["fbName"] = (string)result["name"];
-                            NavigationService.GoBack();
+                            if (NavigationService.CanGoBack)
+                                NavigationService.GoBack();
                         });
                     };
                 }
@@ -210,7 +214,8 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         PhoneApplicationService.Current.State["socialState"] = FreeSMS.SocialState.FB_LOGIN;
-                        NavigationService.GoBack();
+                        if (NavigationService.CanGoBack)
+                            NavigationService.GoBack();
                     });
                 }
 
@@ -247,7 +252,8 @@ namespace windows_client.View
                     Dispatcher.BeginInvoke(() =>
                         {
                             MessageBox.Show(AppResources.SocialPages_UnableToRetrieveToken_Txt);
-                            NavigationService.GoBack();
+                            if (NavigationService.CanGoBack)
+                                NavigationService.GoBack();
                         });
                 }
             }, request);
@@ -467,7 +473,8 @@ namespace windows_client.View
                         Dispatcher.BeginInvoke(() =>
                         {
                             PhoneApplicationService.Current.State["socialState"] = FreeSMS.SocialState.TW_LOGIN;
-                            NavigationService.GoBack();
+                            if (NavigationService.CanGoBack)
+                                NavigationService.GoBack();
                         });
                     }
                 }
@@ -492,7 +499,10 @@ namespace windows_client.View
                 Dispatcher.BeginInvoke(() =>
                     {
                         if (uri.Contains("denied") && NavigationService.CanGoBack)
-                            NavigationService.GoBack();
+                        {
+                            if (NavigationService.CanGoBack)
+                                NavigationService.GoBack();
+                        }
                     });
             }
             else if (uri.Contains("invite") && (uri.Contains("Hike.in") || uri.Contains("hike.in")))
