@@ -303,16 +303,7 @@ namespace windows_client.Model
                 return false;
             ContactInfo other = (ContactInfo)obj;
 
-            // in equals if msisdn of two contacts are equal they should be equal
-            // if msisdn is not there then other things should be compared
-            if (string.IsNullOrWhiteSpace(_msisdn))
-            {
-                if (!string.IsNullOrWhiteSpace(other.Name))
-                    return false;
-                else if (_msisdn == other.Msisdn)
-                    return true;
-            }
-            else if (string.IsNullOrWhiteSpace(Name))
+            if (string.IsNullOrWhiteSpace(Name))
             {
                 if (!string.IsNullOrWhiteSpace(other.Name))
                     return false;
