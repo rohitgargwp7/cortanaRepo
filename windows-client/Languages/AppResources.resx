@@ -1374,4 +1374,10 @@
   <data name="Nux_Skip_btnTxt" xml:space="preserve">
     <value>Skip</value>
   </data>
+  <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
+    <value>Group Name can have maximum 30 chars.</value>
+  </data>
+  <data name="OnSms_Txt" xml:space="preserve">
+    <value>on SMS</value>
+  </data>
 </root>

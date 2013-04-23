@@ -1321,6 +1321,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Group Name can have maximum 30 chars..
+        /// </summary>
+        public static string GroupInfo_GrpNameMaxLength_Txt {
+            get {
+                return ResourceManager.GetString("GroupInfo_GrpNameMaxLength_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invite Sent.
         /// </summary>
         public static string GroupInfo_InviteSent_MsgBoxHeader_Txt {
@@ -1884,6 +1893,15 @@ namespace windows_client.Languages {
         public static string On {
             get {
                 return ResourceManager.GetString("On", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to on SMS.
+        /// </summary>
+        public static string OnSms_Txt {
+            get {
+                return ResourceManager.GetString("OnSms_Txt", resourceCulture);
             }
         }
         
