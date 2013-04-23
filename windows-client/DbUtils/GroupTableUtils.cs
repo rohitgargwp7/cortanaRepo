@@ -75,6 +75,14 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static List<GroupInfo> GetAllGroups()
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                return DbCompiledQueries.GetAllGroups(context).ToList();
+            }
+        }
+
         public static GroupInfo getGroupInfoForId(string groupId)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
