@@ -482,7 +482,7 @@ namespace windows_client.View
             if (name != null)
                 accountName.Text = name;
             int smsCount = 0;
-            App.appSettings.TryGetValue<int>(App.SMS_SETTING,out smsCount);
+            App.appSettings.TryGetValue<int>(App.SMS_SETTING, out smsCount);
             creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, smsCount);
 
             Stopwatch st = Stopwatch.StartNew();
@@ -642,6 +642,7 @@ namespace windows_client.View
                             // this loop will filter out already added fav and blocked contacts from hike user list
                             for (int i = count - 1; i >= 0; i--)
                             {
+                                tempHikeContactList[i].IsUsedAtMiscPlaces = true;
                                 // if user is not fav and is not blocked then add to hike contacts
                                 if (!msisdns.Contains(tempHikeContactList[i].Msisdn) && !App.ViewModel.Isfavourite(tempHikeContactList[i].Msisdn) && !App.ViewModel.BlockedHashset.Contains(tempHikeContactList[i].Msisdn))
                                 {
@@ -1094,7 +1095,10 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (c != null)
+                        {
+                            c.IsUsedAtMiscPlaces = true;
                             hikeContactList.Add(c);
+                        }
                         if (hikeContactList.Count > 0)
                         {
                             emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
@@ -1112,7 +1116,11 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (obj != null)
-                            hikeContactList.Remove(obj as ContactInfo);
+                        {
+                            ContactInfo c = obj as ContactInfo;
+                            c.IsUsedAtMiscPlaces = true;
+                            hikeContactList.Remove(c);
+                        }
                         if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                         {
                             emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
@@ -1134,6 +1142,7 @@ namespace windows_client.View
                         if (co != null && co.IsOnhike && !string.IsNullOrEmpty(co.ContactName))
                         {
                             ContactInfo c = new ContactInfo(ms, co.NameToShow, co.IsOnhike);
+                            c.IsUsedAtMiscPlaces = true;
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 hikeContactList.Remove(c);
@@ -1145,6 +1154,7 @@ namespace windows_client.View
                         ContactInfo c = UsersTableUtils.getContactInfoFromMSISDN(ms);
                         if (c != null)
                         {
+                            c.IsUsedAtMiscPlaces = true;
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 hikeContactList.Remove(c);
@@ -1200,7 +1210,7 @@ namespace windows_client.View
                                             }
                                             catch (Exception e)
                                             {
-                                                Debug.WriteLine("ConversationsList :: BLOCK USER : Exception while removing a friendRequest, Exception : "+e.StackTrace);
+                                                Debug.WriteLine("ConversationsList :: BLOCK USER : Exception while removing a friendRequest, Exception : " + e.StackTrace);
                                             }
                                         });
                                         break;
@@ -1216,6 +1226,7 @@ namespace windows_client.View
                     #region removing hike contact if blocked
                     if (c.OnHike && !string.IsNullOrEmpty(c.Name)) // if friend request is not there , try to remove from contacts
                     {
+                        c.IsUsedAtMiscPlaces = true;
                         Dispatcher.BeginInvoke(() =>
                         {
                             hikeContactList.Remove(c);
@@ -1246,6 +1257,7 @@ namespace windows_client.View
 
                 Dispatcher.BeginInvoke(() =>
                 {
+                    c.IsUsedAtMiscPlaces = true;
                     hikeContactList.Add(c);
                 });
 
@@ -1339,6 +1351,7 @@ namespace windows_client.View
                         else
                             c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                         c.Avatar = convObj.Avatar;
+                        c.IsUsedAtMiscPlaces = true;
                         hikeContactList.Add(c);
                     }
                     if (hikeContactList.Count > 0)
@@ -1356,6 +1369,7 @@ namespace windows_client.View
                         c = App.ViewModel.ContactsCache[convObj.Msisdn];
                     else
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
+                    c.IsUsedAtMiscPlaces = true;
                     hikeContactList.Remove(c);
                     FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
                     App.ViewModel.FavList.Insert(0, convObj);
@@ -1786,6 +1800,7 @@ namespace windows_client.View
                     else
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                     c.Avatar = convObj.Avatar;
+                    c.IsUsedAtMiscPlaces = true;
                     hikeContactList.Add(c);
                 }
             }
@@ -1827,6 +1842,7 @@ namespace windows_client.View
                     return;
                 if (App.ViewModel.Isfavourite(contactInfo.Msisdn))
                 {
+                    contactInfo.IsUsedAtMiscPlaces = true;
                     hikeContactList.Remove(contactInfo);
                     return;
                 }
@@ -1849,6 +1865,7 @@ namespace windows_client.View
                 {
                     cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, contactInfo.Avatar);
                 }
+                contactInfo.IsUsedAtMiscPlaces = true;
                 hikeContactList.Remove(contactInfo);
                 App.ViewModel.FavList.Add(cObj);
                 MiscDBUtil.SaveFavourites();
@@ -2077,6 +2094,7 @@ namespace windows_client.View
                 bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
                 cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
             }
+            cn.IsUsedAtMiscPlaces = true;
             hikeContactList.Remove(cn);
             App.ViewModel.FavList.Insert(0, cObj);
             App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
