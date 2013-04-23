@@ -299,7 +299,9 @@ namespace windows_client
                     }
                     else
                     {
-                        avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
+                        string myMsisdn = (string)App.appSettings[App.MSISDN_SETTING];
+                        avatarImage.Source = UI_Utils.Instance.getDefaultAvatar(myMsisdn);
+                        AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + myMsisdn, GetProfilePic_Callback, true, "");
                     }
                 }
             }
@@ -460,6 +462,24 @@ namespace windows_client
                 nextIconButton.IsEnabled = true;
                 txtBxEnterName.IsEnabled = true;
             });
+        }
+        public void GetProfilePic_Callback(byte[] fullBytes, object fName)
+        {
+            try
+            {
+                if (fullBytes != null && fullBytes.Length > 0)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                     {
+                         avatarImage.Source = UI_Utils.Instance.createImageFromBytes(fullBytes);
+                         MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, fullBytes, false);
+                     });
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("EnterName :: GetProfilePic_Callback, Exception : " + ex.StackTrace);
+            }
         }
 
         /* This is the callback function which is called when server returns the addressbook*/
