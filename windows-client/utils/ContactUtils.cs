@@ -86,7 +86,8 @@ namespace windows_client.utils
                 bw.DoWork += (ss, ee) =>
                 {
                     List<ContactInfo> l;
-                    contactsMap = getContactsListMapInitial(e.Results, out l);
+                    if(e != null && e.Results != null)
+                        contactsMap = getContactsListMapInitial(e.Results, out l);
                     cState = ContactScanState.ADDBOOK_SCANNED;
                 };
                 bw.RunWorkerAsync();
@@ -166,33 +167,47 @@ namespace windows_client.utils
 
             foreach (Contact cn in contacts)
             {
-                foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
+                try
                 {
-                    if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
+                    foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
                     {
-                        count++;
-                        continue;
-                    }
-                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
-                    int idd = cInfo.GetHashCode();
-                    cInfo.Id = Convert.ToString(Math.Abs(idd));
-
-                    if (contactListMap.ContainsKey(cInfo.Id))
-                    {
-                        if (!contactListMap[cInfo.Id].Contains(cInfo))
-                            contactListMap[cInfo.Id].Add(cInfo);
-                        else
+                        try
                         {
-                            duplicates++;
-                            Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                            if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
+                            {
+                                count++;
+                                continue;
+                            }
+                            ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
+                            int idd = cInfo.GetHashCode();
+                            cInfo.Id = Convert.ToString(Math.Abs(idd));
+
+                            if (contactListMap.ContainsKey(cInfo.Id))
+                            {
+                                if (!contactListMap[cInfo.Id].Contains(cInfo))
+                                    contactListMap[cInfo.Id].Add(cInfo);
+                                else
+                                {
+                                    duplicates++;
+                                    Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                                }
+                            }
+                            else
+                            {
+                                List<ContactInfo> contactList = new List<ContactInfo>();
+                                contactList.Add(cInfo);
+                                contactListMap.Add(cInfo.Id, contactList);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("ContactUtils : getContactsListMap(Inner loop) : Exception : " + ex.StackTrace);
                         }
                     }
-                    else
-                    {
-                        List<ContactInfo> contactList = new List<ContactInfo>();
-                        contactList.Add(cInfo);
-                        contactListMap.Add(cInfo.Id, contactList);
-                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("ContactUtils : getContactsListMap(Outer loop) : Exception : " + e.StackTrace);
                 }
             }
             Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
@@ -218,67 +233,81 @@ namespace windows_client.utils
             contactListMap = new Dictionary<string, List<ContactInfo>>();
             foreach (Contact cn in contacts)
             {
-                bool hasFacebookAccount = false;
-                byte accNumber = 0;
-                bool hasPicture = false;
-                foreach (Account acc in cn.Accounts)
+                try
                 {
-                    if (acc.Kind == StorageKind.Facebook)
-                        hasFacebookAccount = true;
-                    accNumber++;
-                }
-                bool addedBirthday = false;
-                foreach (DateTime birthDate in cn.Birthdays)
-                {
-                    addedBirthday = true;
-                    break;
-                }
-                Stream s = cn.GetPicture();
-                byte[] picBytes = null;
-                if (s != null)
-                {
-                    hasPicture = !hasFacebookAccount;
-                    picBytes = AccountUtils.StreamToByteArray(s);
-                }
-                foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
-                {
-                    if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
+                    bool hasFacebookAccount = false;
+                    byte accNumber = 0;
+                    bool hasPicture = false;
+                    foreach (Account acc in cn.Accounts)
                     {
-                        count++;
-                        continue;
+                        if (acc.Kind == StorageKind.Facebook)
+                            hasFacebookAccount = true;
+                        accNumber++;
                     }
-                    string nameToStore;
-                    if (cn.CompleteName != null && string.IsNullOrEmpty(cn.CompleteName.LastName) && !string.IsNullOrEmpty(cn.CompleteName.MiddleName))
-                        nameToStore = cn.CompleteName.FirstName.Trim() + " " + cn.CompleteName.MiddleName.Trim();
-                    else
-                        nameToStore = cn.DisplayName.Trim();
-                    ContactInfo cInfo = new ContactInfo(null, nameToStore, ph.PhoneNumber);
-                    int idd = cInfo.GetHashCode();
-                    cInfo.Id = Convert.ToString(Math.Abs(idd));
-                    cInfo.NuxMatchScore = Convert.ToByte((hasFacebookAccount ? 1 : 0) + ((accNumber > 1) ? 1 : 0) + (addedBirthday ? 1 : 0) + (hasPicture ? 1 : 0));
-                    cInfo.HasCustomPhoto = picBytes != null;
-                    cInfo.Avatar = picBytes;
+                    bool addedBirthday = false;
+                    foreach (DateTime birthDate in cn.Birthdays)
+                    {
+                        addedBirthday = true;
+                        break;
+                    }
+                    Stream s = cn.GetPicture();
+                    byte[] picBytes = null;
+                    if (s != null)
+                    {
+                        hasPicture = !hasFacebookAccount;
+                        picBytes = AccountUtils.StreamToByteArray(s);
+                    }
+                    foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
+                    {
+                        try
+                        {
+                            if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
+                            {
+                                count++;
+                                continue;
+                            }
+                            string nameToStore;
+                            if (cn.CompleteName != null && string.IsNullOrEmpty(cn.CompleteName.LastName) && !string.IsNullOrEmpty(cn.CompleteName.MiddleName))
+                                nameToStore = cn.CompleteName.FirstName.Trim() + " " + cn.CompleteName.MiddleName.Trim();
+                            else
+                                nameToStore = cn.DisplayName.Trim();
+                            ContactInfo cInfo = new ContactInfo(null, nameToStore, ph.PhoneNumber);
+                            int idd = cInfo.GetHashCode();
+                            cInfo.Id = Convert.ToString(Math.Abs(idd));
+                            cInfo.NuxMatchScore = Convert.ToByte((hasFacebookAccount ? 1 : 0) + ((accNumber > 1) ? 1 : 0) + (addedBirthday ? 1 : 0) + (hasPicture ? 1 : 0));
+                            cInfo.HasCustomPhoto = (picBytes != null);
+                            cInfo.Avatar = picBytes;
 
-                    if (contactListMap.ContainsKey(cInfo.Id))
-                    {
-                        if (!contactListMap[cInfo.Id].Contains(cInfo))
-                        {
-                            contactListMap[cInfo.Id].Add(cInfo);
-                            listContactsForNux.Add(cInfo);
+                            if (contactListMap.ContainsKey(cInfo.Id))
+                            {
+                                if (!contactListMap[cInfo.Id].Contains(cInfo))
+                                {
+                                    contactListMap[cInfo.Id].Add(cInfo);
+                                    listContactsForNux.Add(cInfo);
+                                }
+                                else
+                                {
+                                    duplicates++;
+                                    Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                                }
+                            }
+                            else
+                            {
+                                List<ContactInfo> contactList = new List<ContactInfo>();
+                                contactList.Add(cInfo);
+                                contactListMap.Add(cInfo.Id, contactList);
+                                listContactsForNux.Add(cInfo);
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            duplicates++;
-                            Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                            Debug.WriteLine("ContactUtils : getContactsListMapInitial (Inner loop): Exception : " + ex.StackTrace);
                         }
                     }
-                    else
-                    {
-                        List<ContactInfo> contactList = new List<ContactInfo>();
-                        contactList.Add(cInfo);
-                        contactListMap.Add(cInfo.Id, contactList);
-                        listContactsForNux.Add(cInfo);
-                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("ContactUtils : getContactsListMapInitial (Outer loop): Exception : " + e.StackTrace);
                 }
             }
 

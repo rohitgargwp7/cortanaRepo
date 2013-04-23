@@ -447,27 +447,43 @@ namespace windows_client.Misc
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
+                    if (groupCache != null)
+                        groupCache.Remove(grpId);
                     string grp = grpId.Replace(":", "_");
                     store.DeleteFile(GROUP_DIR + "\\" + grp);
                 }
             }
         }
-
-        public void RefreshGroupCache(ContactInfo cn)
+       
+        public void RefreshGroupCache(ContactInfo cn,Dictionary<string,GroupInfo> allGrpsInfo)
         {
+            if (allGrpsInfo == null || allGrpsInfo.Count == 0) // if no grp exists , do nothing
+                return;
+
             foreach (string grpId in groupCache.Keys)
             {
                 GroupParticipant gp = GetParticipant(grpId, cn.Msisdn);
                 if (gp != null) // represents this contact lies in the group
                 {
                     gp.Name = cn.Name;
-                    GetParticipantList(grpId).Sort();
-                    App.ViewModel.ConvMap[grpId].ContactName = defaultGroupName(grpId); // update groupname
-                    // update chat thread and group info page
-                    object[] o = new object[2];
-                    o[0] = grpId;
-                    o[1] = App.ViewModel.ConvMap[grpId].ContactName;
-                    App.HikePubSubInstance.publish(HikePubSub.GROUP_NAME_CHANGED, o);
+                    if (App.ViewModel.ConvMap.ContainsKey(grpId))
+                    {
+                        GroupInfo g = null;
+                        allGrpsInfo.TryGetValue(grpId, out g);
+                        if (g != null && string.IsNullOrEmpty(g.GroupName))  // update groupname if not already set
+                        {
+                            GetParticipantList(grpId).Sort();
+                            App.ViewModel.ConvMap[grpId].ContactName = defaultGroupName(grpId);
+                            // update chat thread and group info page
+                            object[] o = new object[2];
+                            o[0] = grpId;
+                            o[1] = App.ViewModel.ConvMap[grpId].ContactName;
+                            App.HikePubSubInstance.publish(HikePubSub.GROUP_NAME_CHANGED, o);
+                        }
+                    }
+                    else // if this group is not present in conversation , remove it
+                        DeleteGroup(grpId);
+
                     SaveGroupCache(grpId); // save the cache
                 }
             }
