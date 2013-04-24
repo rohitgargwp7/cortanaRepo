@@ -40,7 +40,7 @@ namespace windows_client.Misc
             public static string RequestTokenUri = "https://api.twitter.com/oauth/request_token";
             public static string AuthorizeUri = "https://api.twitter.com/oauth/authorize";
             public static string AccessTokenUri = "https://api.twitter.com/oauth/access_token";
-            public static string CallbackUri = "http://get.hike.in/";   // we've mentioned Google.com as our callback URL.
+            public static string CallbackUri = "http://get.hike.in/";
         }
     }
 }
