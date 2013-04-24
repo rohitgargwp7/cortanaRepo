@@ -31,7 +31,7 @@ namespace windows_client.Misc
             public static string OAuthTokenSecretKey = "oauth_token_secret";
             public static string OAuthVerifierKey = "oauth_verifier";
             public static string OAuthPostBodyKey = "post_body";
-            public static string OAuthVersion = "1.1";
+            public static string OAuthVersion = "1.0a";
            
             public static string Hmacsha1SignatureType = "HMAC-SHA1";
             public static string ConsumerKey = "7LFaGIe5QXj05WN1YDDVaA";
