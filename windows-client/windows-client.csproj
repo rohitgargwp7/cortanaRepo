@@ -59,6 +59,12 @@
     <Reference Include="finalmqtt">
       <HintPath>lib\finalmqtt.dll</HintPath>
     </Reference>
+    <Reference Include="Hammock.WindowsPhone.Mango">
+      <HintPath>..\packages\Hammock.1.3.1\lib\sl4-wp71\Hammock.WindowsPhone.Mango.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib.WindowsPhone">
+      <HintPath>..\packages\Hammock.1.3.1\lib\sl4-wp71\ICSharpCode.SharpZipLib.WindowsPhone.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Expression.Drawing" />
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Controls, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
@@ -154,6 +160,7 @@
     <Compile Include="Model\ConversationListPage.cs" />
     <Compile Include="utils\ContactUtils.cs" />
     <Compile Include="utils\ImageUtils.cs" />
+    <Compile Include="utils\OAuthUtil.cs" />
     <Compile Include="utils\PushHelper.cs" />
     <Compile Include="utils\RelativeAnimatingContentControl.cs" />
     <Compile Include="utils\SmileyParser.cs" />
