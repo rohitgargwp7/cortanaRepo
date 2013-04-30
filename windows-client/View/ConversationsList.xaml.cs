@@ -2094,8 +2094,16 @@ namespace windows_client.View
                 bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
                 cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
             }
-            cn.IsUsedAtMiscPlaces = true;
-            hikeContactList.Remove(cn);
+            if (cn == null)
+            {
+                if (App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
+                {
+                    cn = App.ViewModel.ContactsCache[fObj.Msisdn];
+                    cn.IsUsedAtMiscPlaces = true;
+                    hikeContactList.Remove(cn);
+                }
+            }
+            
             App.ViewModel.FavList.Insert(0, cObj);
             App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
             JObject data = new JObject();
