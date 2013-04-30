@@ -2878,7 +2878,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} just joined hike!.
+        ///   Looks up a localized string similar to {0} just joined hike, say &apos;Hi&apos; :).
         /// </summary>
         public static string USER_JOINED_HIKE {
             get {
