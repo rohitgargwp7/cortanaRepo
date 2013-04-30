@@ -427,6 +427,7 @@
     <Content Include="View\images\icon_play_stop.png" />
     <Content Include="View\images\icon_record.png" />
     <Content Include="View\images\icon_record_appbar.png" />
+    <Content Include="View\images\icon_sending.png" />
     <Content Include="View\images\icon_stop.png" />
     <Content Include="View\images\icon_stop_appbar.png" />
     <Content Include="View\images\invite.png" />
@@ -664,7 +665,6 @@
     <Content Include="View\images\ic_block_active.png" />
     <Resource Include="View\images\Splash.png" />
     <Content Include="View\images\terms_link.png" />
-    <Content Include="View\images\trying_icon.png" />
     <Content Include="View\images\typing.png" />
     <Content Include="View\images\key.jpg" />
     <Content Include="SplashScreenImage.jpg" />
