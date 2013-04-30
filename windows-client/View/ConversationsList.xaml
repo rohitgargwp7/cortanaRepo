@@ -91,7 +91,7 @@
                             <StackPanel x:Name="rewardsPanel" Visibility="Collapsed"  Orientation="Horizontal" Tap="Rewards_Tap" Margin="15,0,0,0">
                                 <Image Name ="rewards" VerticalAlignment="Center" Height="35"/>
                                 <StackPanel Orientation="Vertical">
-                                    <TextBlock Text="{Binding Path= LocalizedResources.Rewards_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
+                                    <TextBlock Text="{Binding Path= LocalizedResources.ConversationsList_New_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
                                     <TextBlock x:Name="rewardsTxtBlk" FontSize="18" Margin="15,0,0,0"></TextBlock>
                                 </StackPanel>
                             </StackPanel>

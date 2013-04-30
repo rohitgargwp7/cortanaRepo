@@ -511,6 +511,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to new.
+        /// </summary>
+        public static string ConversationsList_New_Txt {
+            get {
+                return ResourceManager.GetString("ConversationsList_New_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to copy.
         /// </summary>
         public static string Copy_txt {
@@ -2172,15 +2181,6 @@ namespace windows_client.Languages {
         public static string RemoveFromGrpConfirmation_Txt {
             get {
                 return ResourceManager.GetString("RemoveFromGrpConfirmation_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to rewards.
-        /// </summary>
-        public static string Rewards_Txt {
-            get {
-                return ResourceManager.GetString("Rewards_Txt", resourceCulture);
             }
         }
         

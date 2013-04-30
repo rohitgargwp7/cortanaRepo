@@ -412,16 +412,6 @@ namespace windows_client.View
 
             editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = rewardsTxtBlk.Foreground = UI_Utils.Instance.EditProfileForeground;
 
-            int rew_val = 0;
-            App.appSettings.TryGetValue<int>(HikeConstants.REWARDS_VALUE, out rew_val);
-            if (rew_val <= 0)
-                rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
-            else
-            {
-                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
-                rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
-            }
-
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
             if (name != null)
@@ -827,24 +817,24 @@ namespace windows_client.View
             #region REWARDS CHANGED
             else if (HikePubSub.REWARDS_CHANGED == type)
             {
-                int rew_val = (int)obj;
-                if (rew_val <= 0) // hide value
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Visible)
-                            rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
-                    });
-                }
-                else
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Collapsed)
-                            rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
-                        rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
-                    });
-                }
+                //int rew_val = (int)obj;
+                //if (rew_val <= 0) // hide value
+                //{
+                //    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                //    {
+                //        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Visible)
+                //            rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
+                //    });
+                //}
+                //else
+                //{
+                //    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                //    {
+                //        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Collapsed)
+                //            rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
+                //        rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
+                //    });
+                //}
             }
             #endregion
             #region BAD_USER_PASS
