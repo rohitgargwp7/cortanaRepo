@@ -434,6 +434,8 @@
     <Content Include="View\images\invite_dark.png" />
     <Content Include="View\images\menu_camera_icon.png" />
     <Content Include="View\images\menu_video_icon.png" />
+    <Content Include="View\images\new_icon.png" />
+    <Content Include="View\images\new_icon_white.png" />
     <Content Include="View\images\welome_screen.jpg" />
     <Resource Include="View\images\logo_main_white.png" />
     <Resource Include="View\images\logo_main_black.png" />
@@ -450,8 +452,6 @@
     <Content Include="View\images\nudge_tutorial.png" />
     <Content Include="View\images\plus_tap_on.png" />
     <Content Include="View\images\remove_icon.png" />
-    <Content Include="View\images\rewards_link.png" />
-    <Content Include="View\images\rewards_link_dark.png" />
     <Content Include="View\images\signupfb.png" />
     <Content Include="View\images\tick.png" />
     <Content Include="View\images\tw_icon.png" />
