@@ -94,8 +94,8 @@ namespace windows_client.View
             this.favourites.SelectedIndex = -1;
             this.hikeContactListBox.SelectedIndex = -1;
             this.statusLLS.SelectedIndex = -1;
-            if (App.ViewModel.MessageListPageCollection.Count > 0)
-                myListBox.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
+            //if (App.ViewModel.MessageListPageCollection.Count > 0)
+            //    myListBox.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
             App.IS_TOMBSTONED = false;
             App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
             App.newChatThreadPage = null;

@@ -96,7 +96,7 @@
 
                                     <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
                                         <Image x:Name="sdrImage" Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="15" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,-15,0"/>
-                                        <RichTextBox x:Name="lastMessageTxtBlck" Tag="{Binding LastMessage}" Foreground="{Binding LastMessageColor}"  Margin="10,0,0,0" FontSize="21" HorizontalAlignment="Left" Height="30" TextWrapping="Wrap" MaxWidth="325" VerticalAlignment="Bottom"/>
+                                        <local:MyRichTextBox Text="{Binding LastMessage}" />
                                     </StackPanel>
                                  
                                 </Grid>

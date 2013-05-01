@@ -134,6 +134,7 @@
     <Compile Include="Controls\ConversationBox.xaml.cs">
       <DependentUpon>ConversationBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MyRichTextBox.cs" />
     <Compile Include="Controls\StatusChatBubble.xaml.cs">
       <DependentUpon>StatusChatBubble.xaml</DependentUpon>
     </Compile>
