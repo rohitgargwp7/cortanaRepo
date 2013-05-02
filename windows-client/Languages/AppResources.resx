@@ -738,7 +738,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_JOINED_HIKE" xml:space="preserve">
-    <value>{0} just joined hike!</value>
+    <value>{0} just joined hike, say 'Hi' :)</value>
     <comment>General Text</comment>
   </data>
   <data name="USER_LEFT" xml:space="preserve">
@@ -1197,8 +1197,8 @@ Get hike: http://get.hike.in</value>
     <value>remove from group</value>
     <comment>General text</comment>
   </data>
-  <data name="Rewards_Txt" xml:space="preserve">
-    <value>rewards</value>
+  <data name="ConversationsList_New_Txt" xml:space="preserve">
+    <value>new</value>
     <comment>Rewards Text</comment>
   </data>
   <data name="Tap_To_Invite_Txt" xml:space="preserve">

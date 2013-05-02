@@ -429,22 +429,24 @@ namespace windows_client.View
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_black.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_black.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite_dark.png", UriKind.Relative));
-                rewards.Source = new BitmapImage(new Uri("images/rewards_link_dark.png", UriKind.Relative));
+                rewards.Source = new BitmapImage(new Uri("images/new_icon_white.png", UriKind.Relative));
+                //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x36, 0x36, 0x36));
             }
             else
             {
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_white.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_white.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite.png", UriKind.Relative));
-                rewards.Source = new BitmapImage(new Uri("images/rewards_link.png", UriKind.Relative));
+                rewards.Source = new BitmapImage(new Uri("images/new_icon.png", UriKind.Relative));
                 helpImage.Source = new BitmapImage(new Uri("images/help_icon_dark.png", UriKind.Relative));
                 settingsImage.Source = new BitmapImage(new Uri("images/settings_icon_dark.png", UriKind.Relative));
+                //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0xe9, 0xe9));
             }
             bool showRewards;
             if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
                 rewardsPanel.Visibility = Visibility.Visible;
 
-            txtStatus.Foreground = creditsTxtBlck.Foreground = rewardsTxtBlk.Foreground = UI_Utils.Instance.EditProfileForeground;
+            txtStatus.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
             int moodId;
             string lastStatus = StatusMsgsTable.GetLastStatusMessage(out moodId);
             if (!string.IsNullOrEmpty(lastStatus))
@@ -468,14 +470,6 @@ namespace windows_client.View
                 //todo:change default status
             }
             int rew_val = 0;
-            App.appSettings.TryGetValue<int>(HikeConstants.REWARDS_VALUE, out rew_val);
-            if (rew_val <= 0)
-                rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
-            else
-            {
-                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
-                rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
-            }
 
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
@@ -915,24 +909,24 @@ namespace windows_client.View
             #region REWARDS CHANGED
             else if (HikePubSub.REWARDS_CHANGED == type)
             {
-                int rew_val = (int)obj;
-                if (rew_val <= 0) // hide value
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Visible)
-                            rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
-                    });
-                }
-                else
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Collapsed)
-                            rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
-                        rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
-                    });
-                }
+                //int rew_val = (int)obj;
+                //if (rew_val <= 0) // hide value
+                //{
+                //    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                //    {
+                //        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Visible)
+                //            rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
+                //    });
+                //}
+                //else
+                //{
+                //    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                //    {
+                //        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Collapsed)
+                //            rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
+                //        rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
+                //    });
+                //}
             }
             #endregion
             #region BAD_USER_PASS
