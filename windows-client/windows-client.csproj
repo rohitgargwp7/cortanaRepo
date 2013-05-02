@@ -427,12 +427,15 @@
     <Content Include="View\images\icon_play_stop.png" />
     <Content Include="View\images\icon_record.png" />
     <Content Include="View\images\icon_record_appbar.png" />
+    <Content Include="View\images\icon_sending.png" />
     <Content Include="View\images\icon_stop.png" />
     <Content Include="View\images\icon_stop_appbar.png" />
     <Content Include="View\images\invite.png" />
     <Content Include="View\images\invite_dark.png" />
     <Content Include="View\images\menu_camera_icon.png" />
     <Content Include="View\images\menu_video_icon.png" />
+    <Content Include="View\images\new_icon.png" />
+    <Content Include="View\images\new_icon_white.png" />
     <Content Include="View\images\welome_screen.jpg" />
     <Resource Include="View\images\logo_main_white.png" />
     <Resource Include="View\images\logo_main_black.png" />
@@ -449,8 +452,6 @@
     <Content Include="View\images\nudge_tutorial.png" />
     <Content Include="View\images\plus_tap_on.png" />
     <Content Include="View\images\remove_icon.png" />
-    <Content Include="View\images\rewards_link.png" />
-    <Content Include="View\images\rewards_link_dark.png" />
     <Content Include="View\images\signupfb.png" />
     <Content Include="View\images\tick.png" />
     <Content Include="View\images\tw_icon.png" />
@@ -664,7 +665,6 @@
     <Content Include="View\images\ic_block_active.png" />
     <Resource Include="View\images\Splash.png" />
     <Content Include="View\images\terms_link.png" />
-    <Content Include="View\images\trying_icon.png" />
     <Content Include="View\images\typing.png" />
     <Content Include="View\images\key.jpg" />
     <Content Include="SplashScreenImage.jpg" />

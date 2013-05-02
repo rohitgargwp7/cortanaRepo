@@ -438,7 +438,9 @@ namespace windows_client.utils
             get
             {
                 if (trying == null)
-                    trying = new BitmapImage(new Uri("/View/images/trying_icon.png", UriKind.Relative));
+                {
+                    trying = new BitmapImage(new Uri("/View/images/icon_sending.png", UriKind.Relative));
+                }
                 return trying;
             }
         }
@@ -679,9 +681,9 @@ namespace windows_client.utils
                     return msLargeImage.ToArray();
                 }
             }
-            catch 
-            { 
-                return null; 
+            catch
+            {
+                return null;
             }
         }
         #endregion
