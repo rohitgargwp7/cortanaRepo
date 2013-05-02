@@ -918,11 +918,13 @@ namespace windows_client.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Hi!
         ///
-        ///I just got hike, an amazing new messaging app! You can download hike at get.hike.in.
+        ///I started using hike, a simple beautiful messaging app that&apos;s absolutely free.
         ///
-        ///hike comes with some hilarious emoticons. You can also post Status Updates to your close circle of friends! Think of it like BBM for non-Blackberry devices but much, much better!
+        ///hike comes with some hilarious emoticons. You can also post Status Updates to your close circle of friends! Think of it like BBM but much, much better!
         ///
-        ///Get it now from get.hike.in and say good bye to plain boring SMS..
+        ///Get it now and say good bye to plain boring SMS.
+        ///
+        ///Get hike: http://get.hike.in.
         /// </summary>
         public static string Email_Invite_Txt {
             get {
@@ -3415,7 +3417,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hi! I’m using hike, an awesome new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!.
+        ///   Looks up a localized string similar to Hi! Get hike 2.0. Free messaging worldwide. Now with Status Updates and Moods :) - http://get.hike.in/.
         /// </summary>
         public static string sms_invite_message {
             get {
@@ -3451,7 +3453,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I&apos;m using @hikeapp 2.0 with status updates &amp; moods. Simple &amp; beautiful messaging, absolutely free..
+        ///   Looks up a localized string similar to I&apos;m using @hikeapp 2.0 with status updates &amp; moods. Its like BBM but much, much better! Get hike at http://get.hike.in #gethike.
         /// </summary>
         public static string Social_Invite_Txt {
             get {
