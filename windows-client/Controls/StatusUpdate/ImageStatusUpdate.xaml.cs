@@ -84,7 +84,7 @@ namespace windows_client.Controls.StatusUpdate
         {
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
             if (isShowOnTimeline)
-                this.userProfileImage.Source = UI_Utils.Instance.GetBitmapImage(this.Msisdn);
+                this.userProfileImage.Source = UI_Utils.Instance.GetBitmapImage(this.Msisdn == App.MSISDN ? HikeConstants.MY_PROFILE_PIC : this.Msisdn);
         }
 
         public BitmapImage StatusImage
