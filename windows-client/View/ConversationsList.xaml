@@ -73,7 +73,7 @@
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
                                     
-                                <Grid Width="470" Margin="0,0,0,10">
+                                <Grid Width="460" Margin="0,0,0,10">
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Tap_Delete"/>
@@ -96,7 +96,7 @@
 
                                     <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
                                         <Image x:Name="sdrImage" Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="15" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,-15,0"/>
-                                        <local:MyRichTextBox Text="{Binding LastMessage}" />
+                                        <local:MyRichTextBox Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" Margin="10,0,0,0" FontSize="21" HorizontalAlignment="Left" Height="30" TextWrapping="Wrap" MaxWidth="325" VerticalAlignment="Bottom"/>
                                     </StackPanel>
                                  
                                 </Grid>

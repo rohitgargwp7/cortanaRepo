@@ -10,9 +10,6 @@
 	d:DesignWidth="1000" d:DesignHeight="70"
     DataContext="{Binding RelativeSource={RelativeSource Self}, Mode=OneTime}">
 
-    <local:MyChatBubble.Resources>
-        <toolkit:ThreadDateTimeConverter x:Key="TimeConverter" />
-    </local:MyChatBubble.Resources>
     <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,5,0,5">
         <Border x:Name="border" BorderThickness="1" Margin="24,0,24,0"/>
         <Grid Margin="24,3,24,3">

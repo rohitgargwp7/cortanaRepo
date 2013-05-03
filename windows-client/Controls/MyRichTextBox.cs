@@ -16,6 +16,10 @@ namespace windows_client.Controls
         public static readonly DependencyProperty TextProperty =
             DependencyProperty.Register("Text", typeof(string), typeof(MyRichTextBox), new PropertyMetadata(default(string), TextPropertyChanged));
 
+        public static readonly DependencyProperty TypeProperty =
+           DependencyProperty.Register("LinkifyAll", typeof(bool), typeof(MyRichTextBox), new PropertyMetadata(default(bool)));
+
+
         public string Text
         {
             get
@@ -28,11 +32,23 @@ namespace windows_client.Controls
             }
         }
 
+        public bool LinkifyAll
+        {
+            get
+            {
+                return (bool)GetValue(TypeProperty);
+            }
+            set
+            {
+                SetValue(TypeProperty, value);
+            }
+        }
+
         private static void TextPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             var richTextBox = (MyRichTextBox)dependencyObject;
             var text = (string)dependencyPropertyChangedEventArgs.NewValue;
-            var paragraph = SmileyParser.Instance.LinkifyEmoticons(text);
+            var paragraph = richTextBox.LinkifyAll ? SmileyParser.Instance.LinkifyAll(text) : SmileyParser.Instance.LinkifyEmoticons(text);
             richTextBox.Blocks.Clear();
             richTextBox.Blocks.Add(paragraph);
         }
