@@ -49,6 +49,8 @@ namespace windows_client.View
         public string mContactNumber;
         private string mContactName = null;
         private string lastText = "";
+        private string hintText = string.Empty;
+        private bool enableSendMsgButton = false;
 
         bool afterMute = true;
         private bool _isFav;
@@ -589,17 +591,16 @@ namespace windows_client.View
             initAppBar(isGroupChat, isAddUser);
             if (!isOnHike)
             {
-                sendMsgTxtbox.Hint = ON_SMS_TEXT;
+                sendMsgTxtbox.Hint = hintText = ON_SMS_TEXT;
                 initInviteMenuItem();
                 appBar.MenuItems.Add(inviteMenuItem);
             }
             else
             {
-                sendMsgTxtbox.Hint = ON_HIKE_TEXT;
+                sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
             }
             if (isGroupChat)
-                sendMsgTxtbox.Hint = ON_GROUP_TEXT;
-
+                sendMsgTxtbox.Hint = hintText = ON_GROUP_TEXT;
             initBlockUnblockState();
 
             if (isGroupChat && !isGroupAlive)
@@ -798,7 +799,7 @@ namespace windows_client.View
             sendIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
             sendIconButton.Text = AppResources.Send_Txt;
             sendIconButton.Click += new EventHandler(sendMsgBtn_Click);
-            sendIconButton.IsEnabled = true;
+            sendIconButton.IsEnabled = false;
             appBar.Buttons.Add(sendIconButton);
 
             //add icon for smiley
@@ -1401,7 +1402,8 @@ namespace windows_client.View
                 {
                     mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
                     emoticonsIconButton.IsEnabled = true;
-                    sendIconButton.IsEnabled = true;
+                    enableSendMsgButton = true;
+                    sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
                     isTypingNotificationEnabled = true;
                     blockUnblockMenuItem.Text = BLOCK_USER;
                     if (inviteMenuItem != null)
@@ -1917,9 +1919,11 @@ namespace windows_client.View
         {
             if (lastText.Equals(sendMsgTxtbox.Text))
                 return;
-            if (String.IsNullOrEmpty(sendMsgTxtbox.Text.Trim()))
+            string msgText = sendMsgTxtbox.Text.Trim();
+            if (String.IsNullOrEmpty(msgText))
             {
                 isEmptyString = true;
+                sendIconButton.IsEnabled = false;
                 return;
             }
             if (isEmptyString)
@@ -1927,7 +1931,7 @@ namespace windows_client.View
                 this.sendMsgTxtbox.Foreground = UI_Utils.Instance.Black;
                 isEmptyString = false;
             }
-            lastText = sendMsgTxtbox.Text;
+            lastText = msgText;
             lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
             scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(5));
 
@@ -1936,6 +1940,8 @@ namespace windows_client.View
                 endTypingSent = false;
                 sendTypingNotification(true);
             }
+
+            sendIconButton.IsEnabled = enableSendMsgButton;
         }
 
         private void sendMsgBtn_Click(object sender, EventArgs e)
@@ -2119,6 +2125,8 @@ namespace windows_client.View
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
             sendMsgTxtbox.Background = textBoxBackground;
+            sendMsgTxtbox.Hint = string.Empty;//done intentionally as hint is shown if text is changed
+            sendMsgTxtbox.Hint = hintText;
             //this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
             //ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
@@ -2528,7 +2536,7 @@ namespace windows_client.View
                 bottomPanel.IsHitTestVisible = false;
                 OverlayMessagePanel.Visibility = Visibility.Visible;
                 emoticonsIconButton.IsEnabled = false;
-                sendIconButton.IsEnabled = false;
+                sendIconButton.IsEnabled = enableSendMsgButton = false;
                 fileTransferIconButton.IsEnabled = false;
             }
             else
@@ -2541,13 +2549,14 @@ namespace windows_client.View
                 if (isGroupChat && !isGroupAlive)
                 {
                     emoticonsIconButton.IsEnabled = false;
-                    sendIconButton.IsEnabled = false;
+                    sendIconButton.IsEnabled = enableSendMsgButton = false;
                     fileTransferIconButton.IsEnabled = false;
                 }
                 else if (!showNoSmsLeftOverlay)
                 {
                     emoticonsIconButton.IsEnabled = true;
-                    sendIconButton.IsEnabled = true;
+                    enableSendMsgButton = true;
+                    sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
                     fileTransferIconButton.IsEnabled = true;
                 }
             }
@@ -3061,7 +3070,7 @@ namespace windows_client.View
             isGroupAlive = false;
             sendMsgTxtbox.IsHitTestVisible = false;
             appBar.IsMenuEnabled = false;
-            sendIconButton.IsEnabled = false;
+            sendIconButton.IsEnabled = enableSendMsgButton = false;
             emoticonsIconButton.IsEnabled = false;
             fileTransferIconButton.IsEnabled = false;
         }
@@ -3071,7 +3080,8 @@ namespace windows_client.View
             isGroupAlive = true;
             sendMsgTxtbox.IsHitTestVisible = true;
             appBar.IsMenuEnabled = true;
-            sendIconButton.IsEnabled = true;
+            enableSendMsgButton = true;
+            sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
             emoticonsIconButton.IsEnabled = true;
             fileTransferIconButton.IsEnabled = true;
         }
