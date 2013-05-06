@@ -990,7 +990,7 @@ namespace windows_client.View
                 });
             }
 
-                   #region perception fix update db
+            #region perception fix update db
             if (idsToUpdate != null && idsToUpdate.Count > 0)
             {
                 BackgroundWorker bw = new BackgroundWorker();
@@ -3135,6 +3135,11 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_RECORDED);
                 if (fileBytes == null)
                 {
+                    return;
+                }
+                else if (fileBytes.Length > 15000000)
+                {
+                    MessageBox.Show("Video recorded is greater than 15mb.Max file size supported 15mb", "Warning", MessageBoxButton.OK);
                     return;
                 }
                 isAudio = false;
