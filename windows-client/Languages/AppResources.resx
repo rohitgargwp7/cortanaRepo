@@ -1380,4 +1380,10 @@
   <data name="OnSms_Txt" xml:space="preserve">
     <value>on SMS</value>
   </data>
+  <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
+    <value>Could not send file</value>
+  </data>
+  <data name="CT_FileSizeExceed_Text" xml:space="preserve">
+    <value>Max file size can be 15 MB.</value>
+  </data>
 </root>

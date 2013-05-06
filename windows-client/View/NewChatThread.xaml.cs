@@ -44,7 +44,7 @@ namespace windows_client.View
         private readonly string ZERO_CREDITS_MSG = AppResources.SelectUser_ZeroCredits_Txt;
         private readonly string BLOCK_USER = AppResources.Block_Txt;
         private readonly string UNBLOCK_USER = AppResources.UnBlock_Txt;
-
+        private const int maxFileSize = 15728640;//in bytes
         private string groupOwner = null;
         public string mContactNumber;
         private string mContactName = null;
@@ -3147,12 +3147,13 @@ namespace windows_client.View
                 {
                     return;
                 }
-                else if (fileBytes.Length > 15000000)
-                {
-                    MessageBox.Show("Video recorded is greater than 15mb.Max file size supported 15mb", "Warning", MessageBoxButton.OK);
-                    return;
-                }
+
                 isAudio = false;
+            }
+            if (fileBytes.Length > maxFileSize)
+            {
+                MessageBox.Show(AppResources.CT_FileSizeExceed_Text, AppResources.CT_FileSizeExceed_Caption_Text, MessageBoxButton.OK);
+                return;
             }
             if (!isGroupChat || isGroupAlive)
             {
