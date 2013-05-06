@@ -46,7 +46,7 @@ namespace windows_client.View
             postStatusIcon.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
             postStatusIcon.Text = AppResources.Conversations_PostStatus_AppBar;
             postStatusIcon.Click += new EventHandler(btnPostStatus_Click);
-            postStatusIcon.IsEnabled = true;
+            postStatusIcon.IsEnabled = false;
             appBar.Buttons.Add(postStatusIcon);
             postStatusPage.ApplicationBar = appBar;
         }
@@ -207,6 +207,7 @@ namespace windows_client.View
             moodImage.Height = 60;
             moodImage.Width = 60;
             gridMood.Visibility = Visibility.Collapsed;
+            txtStatus.Focus();
             this.appBar.IsVisible = true;
         }
 
@@ -225,6 +226,7 @@ namespace windows_client.View
 
         private void txtStatus_GotFocus(object sender, RoutedEventArgs e)
         {
+            txtStatus.Hint = string.Empty;//done intentionally
             if (hintText == string.Empty)
             {
                 string name;
