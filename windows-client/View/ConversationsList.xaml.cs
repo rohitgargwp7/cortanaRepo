@@ -2083,7 +2083,8 @@ namespace windows_client.View
                 else
                 {
                     cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
-                    App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
+                    if (cn != null)
+                        App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
                 }
                 bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
                 cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
@@ -2097,7 +2098,7 @@ namespace windows_client.View
                     hikeContactList.Remove(cn);
                 }
             }
-            
+
             App.ViewModel.FavList.Insert(0, cObj);
             App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
             JObject data = new JObject();
