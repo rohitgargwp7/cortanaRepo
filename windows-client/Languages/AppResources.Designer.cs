@@ -556,6 +556,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not send file.
+        /// </summary>
+        public static string CT_FileSizeExceed_Caption_Text {
+            get {
+                return ResourceManager.GetString("CT_FileSizeExceed_Caption_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max file size can be 15 MB..
+        /// </summary>
+        public static string CT_FileSizeExceed_Text {
+            get {
+                return ResourceManager.GetString("CT_FileSizeExceed_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to delete.
         /// </summary>
         public static string Delete_Txt {
