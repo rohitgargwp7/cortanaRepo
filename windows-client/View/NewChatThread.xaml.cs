@@ -2072,13 +2072,13 @@ namespace windows_client.View
                         thumbnailBytes = msSmallImage.ToArray();
                     }
                 }
-
+                
                 if (fileName.StartsWith("{")) // this is from share picker
                 {
                     fileName = "PhotoChooser-" + fileName.Substring(1, fileName.Length - 2) + ".jpg";
                 }
                 else
-                    fileName = fileName.Substring(fileName.LastIndexOf("/") + 1);
+                    fileName = fileName.Substring(fileName.LastIndexOf("/") + 1) + ".jpg";
 
                 convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.STARTED);
                 convMessage.FileAttachment.ContentType = HikeConstants.IMAGE;
