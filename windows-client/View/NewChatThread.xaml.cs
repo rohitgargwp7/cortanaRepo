@@ -42,7 +42,7 @@ namespace windows_client.View
         private readonly string ZERO_CREDITS_MSG = AppResources.SelectUser_ZeroCredits_Txt;
         private readonly string UNBLOCK_USER = AppResources.UnBlock_Txt;
         private PageOrientation pageOrientation = PageOrientation.Portrait;
-      
+
         private const int maxFileSize = 15728640;//in bytes
         private string groupOwner = null;
         public string mContactNumber;
@@ -185,9 +185,14 @@ namespace windows_client.View
 
         private void ManagePageStateObjects()
         {
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE))
+            //or condition for case of tombstoning
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE) || this.State.ContainsKey(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE))
             {
-                object obj = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE];
+                Object obj;
+                if (!PhoneApplicationService.Current.State.TryGetValue(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE, out obj))
+                {
+                    obj = this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE];
+                }
                 if (obj is ConversationListObject)
                     statusObject = this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
 
@@ -195,26 +200,37 @@ namespace windows_client.View
                     statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = obj;
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE);
             }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE) || this.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
             {
                 //contact info object
-                statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.OBJ_FROM_SELECTUSER_PAGE, out statusObject))
+                    this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = statusObject;
+                else
+                    statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
+
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_SELECTUSER_PAGE);
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GROUP_CHAT))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GROUP_CHAT) || this.State.ContainsKey(HikeConstants.GROUP_CHAT))
             {
                 //list<Contact Info>
-                statusObject = this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.GROUP_CHAT, out statusObject))
+                    this.State[HikeConstants.GROUP_CHAT] = statusObject;
+                else
+                    statusObject = this.State[HikeConstants.GROUP_CHAT];
+
                 PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE) || this.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE))
             {
                 //contactInfo
-                statusObject = this.State[HikeConstants.OBJ_FROM_STATUSPAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE];
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.OBJ_FROM_STATUSPAGE, out statusObject))
+                    this.State[HikeConstants.OBJ_FROM_STATUSPAGE] = statusObject;
+                else
+                    statusObject = this.State[HikeConstants.OBJ_FROM_STATUSPAGE];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_STATUSPAGE);
                 IEnumerable<JournalEntry> entries = NavigationService.BackStack;
                 int count = 0;
@@ -2079,7 +2095,7 @@ namespace windows_client.View
                         thumbnailBytes = msSmallImage.ToArray();
                     }
                 }
-                
+
                 if (fileName.StartsWith("{")) // this is from share picker
                 {
                     fileName = "PhotoChooser-" + fileName.Substring(1, fileName.Length - 2) + ".jpg";
