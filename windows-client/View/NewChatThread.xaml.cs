@@ -1950,14 +1950,14 @@ namespace windows_client.View
                 if (numberOfMessages > 1)
                 {
                     txtMsgCount.Visibility = Visibility.Visible;
-                    txtMsgCount.Text = string.Format("{0} messages, ", numberOfMessages);
+                    txtMsgCount.Text = string.Format(AppResources.CT_MessageCount_Sms_User, numberOfMessages);
                 }
                 else
                 {
                     txtMsgCount.Visibility = Visibility.Collapsed;
                 }
 
-                txtMsgCharCount.Text = string.Format("{0}/{1}", msgText.Length, numberOfMessages * maxSmsCharLength);
+                txtMsgCharCount.Text = string.Format(AppResources.CT_CharCount_Sms_User, msgText.Length, numberOfMessages * maxSmsCharLength);
             }
             else
             {
