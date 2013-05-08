@@ -258,8 +258,8 @@
                                       MinHeight="68" MaxLength="10000"  Margin="0,-4,-8,0" MaxHeight="500" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 10 5" Visibility="Collapsed" Name="spSmsCharCounter">
-                <TextBlock Name="txtMsgCount" Text="1 message,"></TextBlock>
-                <TextBlock Name="txtMsgCharCount" Text="141/380"></TextBlock>
+                <TextBlock Name="txtMsgCount"></TextBlock>
+                <TextBlock Name="txtMsgCharCount"></TextBlock>
             </StackPanel>
         </StackPanel>
         <toolkit:PerformanceProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" 
