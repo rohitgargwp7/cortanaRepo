@@ -1972,7 +1972,9 @@ namespace windows_client.View
                 return;
 
             string message = sendMsgTxtbox.Text.Trim();
-            sendMsgTxtbox.Text = "";
+            sendMsgTxtbox.Text = string.Empty;
+            lastText = string.Empty;
+            sendMsgTxtbox.Focus();
 
             if (String.IsNullOrEmpty(message))
                 return;
