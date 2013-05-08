@@ -594,5 +594,11 @@ namespace windows_client.View
 
             StartVideoPreview();
         }
+
+        protected override void OnOrientationChanged(OrientationChangedEventArgs e)
+        {
+            if (e.Orientation == PageOrientation.LandscapeLeft)
+                base.OnOrientationChanged(e);
+        }
     }
 }
