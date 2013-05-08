@@ -45,6 +45,7 @@ namespace windows_client.View
         private readonly string BLOCK_USER = AppResources.Block_Txt;
         private readonly string UNBLOCK_USER = AppResources.UnBlock_Txt;
         private const int maxFileSize = 15728640;//in bytes
+        private const int maxSmsCharLength = 140;
         private string groupOwner = null;
         public string mContactNumber;
         private string mContactName = null;
@@ -1941,6 +1942,27 @@ namespace windows_client.View
                 sendTypingNotification(true);
             }
 
+            if (!isOnHike && msgText.Length > 130)
+            {
+                spSmsCharCounter.Visibility = Visibility.Visible;
+                int numberOfMessages = (msgText.Length / maxSmsCharLength) + 1;
+
+                if (numberOfMessages > 1)
+                {
+                    txtMsgCount.Visibility = Visibility.Visible;
+                    txtMsgCount.Text = string.Format("{0} messages, ", numberOfMessages);
+                }
+                else
+                {
+                    txtMsgCount.Visibility = Visibility.Collapsed;
+                }
+
+                txtMsgCharCount.Text = string.Format("{0}/{1}", msgText.Length, numberOfMessages * maxSmsCharLength);
+            }
+            else
+            {
+                spSmsCharCounter.Visibility = Visibility.Collapsed;
+            }
             sendIconButton.IsEnabled = enableSendMsgButton;
         }
 
