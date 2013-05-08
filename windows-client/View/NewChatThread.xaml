@@ -87,7 +87,7 @@
             </StackPanel>
             <StackPanel Visibility="Collapsed" Margin="0,0,0,-10" x:Name="emoticonPanel" LostFocus="emoticonPanel_LostFocus" Background="#323232">
 
-                <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" SelectionChanged="emoticonPivot_SelectionChanged" Foreground="Black" Height="220">
+                <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" SelectionChanged="emoticonPivot_SelectionChanged" Foreground="Black" Height="240">
                     <controls:PivotItem Margin="12,8,12,0">
                         <Grid x:Name="emotGrid0">
                             <Grid.RowDefinitions>
@@ -97,7 +97,7 @@
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Height="180" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList0_Tap">
+                            <ListBox Height="200" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList0_Tap">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
@@ -125,7 +125,7 @@
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Height="180" Name="emotList1" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList1_Tap">
+                            <ListBox Height="200" Name="emotList1" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList1_Tap">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
@@ -152,7 +152,7 @@
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Height="180" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList2_Tap">
+                            <ListBox Height="200" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList2_Tap">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
