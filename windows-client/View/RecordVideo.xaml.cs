@@ -22,6 +22,7 @@ using System.Windows.Navigation;
 using System.Windows.Threading;
 using windows_client.Languages;
 using System.Windows.Media.Imaging;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
@@ -439,13 +440,20 @@ namespace windows_client.View
         // Start the video recording.
         private void StartRecording_Click(object sender, EventArgs e)
         {
-            // Avoid duplicate taps.
-            recordIconButton.IsEnabled = false;
-            addOrRemoveAppBarButton(recordIconButton, false);
-            addOrRemoveAppBarButton(sendIconButton, false);
-            captureSource.CaptureImageAsync();
-            progressTimer.Start();
-            StartVideoRecording();
+            try
+            {
+                // Avoid duplicate taps.
+                recordIconButton.IsEnabled = false;
+                addOrRemoveAppBarButton(recordIconButton, false);
+                addOrRemoveAppBarButton(sendIconButton, false);
+                captureSource.CaptureImageAsync();
+                progressTimer.Start();
+                StartVideoRecording();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Record Video :: StartRecording_Click , Exception:" + ex.StackTrace);
+            }
         }
 
         // Handle stop requests.
