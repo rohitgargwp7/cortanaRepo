@@ -869,7 +869,7 @@ namespace windows_client.Model
                     this._groupParticipant = from;
                     this._msisdn = grpId;
                     gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
-                    this.Message = string.Format(AppResources.GroupNameChangedByGrpMember_Txt, gp.Name, grpName);
+                    this.Message = string.Format(AppResources.GroupNameChangedByGrpMember_Txt, gp.Msisdn == App.MSISDN ? AppResources.You_Txt : gp.Name, grpName);
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
                 case ParticipantInfoState.GROUP_PIC_CHANGED:

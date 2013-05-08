@@ -280,7 +280,7 @@ namespace windows_client.View
                     return;
                 string grpId = (string)obj;
                 if (grpId == groupId)
-                {                    
+                {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         this.groupNameTxtBox.Text = App.ViewModel.ConvMap[groupId].ContactName;
@@ -510,7 +510,7 @@ namespace windows_client.View
                 return;
             }
             groupName = this.groupNameTxtBox.Text.Trim();
-            if (groupName.Length>30)
+            if (groupName.Length > 30)
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.GroupInfo_GrpNameMaxLength_Txt, AppResources.Error_Txt, MessageBoxButton.OK);
                 groupNameTxtBox.Focus();
@@ -542,30 +542,11 @@ namespace windows_client.View
         {
             if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
             {
-                ConversationTableUtils.updateGroupName(groupId, groupName);
-                GroupTableUtils.updateGroupName(groupId, groupName);
-
-                string msg = string.Format(AppResources.GroupNameChangedByGrpMember_Txt , AppResources.You_Txt, groupName);
-                ConvMessage cm = new ConvMessage(msg,groupId,TimeUtils.getCurrentTimeStamp(),ConvMessage.State.RECEIVED_READ,-1,-1);
-                cm.GrpParticipantState = ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE;
-                cm.GroupParticipant = App.MSISDN;
-                JObject jo = new JObject();
-                jo[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME;
-                cm.MetaDataString = jo.ToString(Newtonsoft.Json.Formatting.None);
-                ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false);
-                if (cobj == null)
-                    return;
-
-                object[] vals = new object[2];
-                vals[0] = cm;
-                vals[1] = cobj;
-
+                //db and ui would be updated after server sends group name change packet 
                 isgroupNameSelfChanged = true;
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    App.ViewModel.ConvMap[groupId].ContactName = groupName;
-                    mPubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                     groupNameTxtBox.IsReadOnly = false;
                     saveIconButton.IsEnabled = true;
                     shellProgress.IsVisible = false;
@@ -747,7 +728,7 @@ namespace windows_client.View
                     if (App.ViewModel.ConvMap.ContainsKey(groupId))
                         App.ViewModel.ConvMap[groupId].ContactName = gpName;
                 }
-               
+
                 // update normal 1-1 chat contact
                 if (App.ViewModel.ConvMap.ContainsKey(gp_obj.Msisdn))
                 {
