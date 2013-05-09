@@ -1224,7 +1224,21 @@ namespace windows_client.View
                         Dispatcher.BeginInvoke(() =>
                         {
                             hikeContactList.Remove(c);
+                            if (hikeContactList.Count == 0)
+                            {
+                                emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
+                                hikeContactListBox.Visibility = Visibility.Collapsed;
+                            }
                         });
+                    }
+                    //if conatct is removed from circle of friends then show no friends placehoder
+                    if (App.ViewModel.FavList.Count == 0)
+                    {
+                        Dispatcher.BeginInvoke(() =>
+                       {
+                           emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
+                           favourites.Visibility = System.Windows.Visibility.Collapsed;
+                       });
                     }
                     #endregion
                 }
@@ -1253,6 +1267,11 @@ namespace windows_client.View
                 {
                     c.IsUsedAtMiscPlaces = true;
                     hikeContactList.Add(c);
+                    if (emptyListPlaceholderHikeContacts.Visibility == Visibility.Visible)
+                    {
+                        emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
+                        hikeContactListBox.Visibility = Visibility.Visible;
+                    }
                 });
 
             }
