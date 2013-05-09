@@ -200,7 +200,7 @@ namespace windows_client.View
                 twitterPostLimit = TWITTER_WITH_MOOD_LIMIT;
                 txtCounter.Text = (twitterPostLimit - txtStatus.Text.Length).ToString();
             }
-
+            postStatusIcon.IsEnabled = true;
             moodId = moodListBox.SelectedIndex + 1;
             txtStatus.Hint = hintText = mood.MoodText;
             moodImage.Source = mood.MoodImage;
