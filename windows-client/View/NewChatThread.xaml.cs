@@ -904,7 +904,7 @@ namespace windows_client.View
         #endregion
 
         #endregion
-
+        
         #region BACKGROUND WORKER
 
         long lastMessageId = -1;
@@ -1920,6 +1920,11 @@ namespace windows_client.View
         {
             if (lastText.Equals(sendMsgTxtbox.Text))
                 return;
+
+            //done as scrollviewer applied to textbox doesn't update its position on char enter
+            svMessage.UpdateLayout();
+            svMessage.ScrollToVerticalOffset(sendMsgTxtbox.GetRectFromCharacterIndex(sendMsgTxtbox.SelectionStart).Top - 50.0);
+
             string msgText = sendMsgTxtbox.Text.Trim();
             if (String.IsNullOrEmpty(msgText))
             {
