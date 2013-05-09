@@ -159,25 +159,23 @@ namespace windows_client.View
                     #endregion
                     #region REQUEST RECIEVED
                     case FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED:
-                        if (isInAddressBook)
-                        {
-                            statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                CreateStatusUi(statusMessagesFromDB);
-                                isStatusLoaded = true;
-                            });
-                        }
-                        else
-                        {
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                              {
-                                  ShowAddToContacts();
-                              });
-                        }
+                        //if (isInAddressBook)
+                        //{
 
+                        //}
+                        //else
+                        //{
+                        //    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        //      {
+                        //          ShowAddToContacts();
+                        //      });
+                        //}
+
+                        statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
+                            CreateStatusUi(statusMessagesFromDB);
+                            isStatusLoaded = true;
                             ShowRequestRecievedPanel();
                         });
                         break;
@@ -818,19 +816,19 @@ namespace windows_client.View
                         #region REQUEST RECIEVED
                         case FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED:
                             ShowRequestRecievedPanel();
-                            if (isInAddressBook)
-                                LoadStatuses();
-                            else
-                                ShowAddToContacts();
+                            //if (isInAddressBook)
+                            LoadStatuses();
+                            //else
+                            //    ShowAddToContacts();
                             break;
                         #endregion
                         #region UNFRIENDED_BY_YOU OR IGNORED
                         case FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU:
                         case FriendsTableUtils.FriendStatusEnum.IGNORED:
-                            if (isInAddressBook)
-                                LoadStatuses();
-                            else
-                                ShowAddToContacts();
+                            //if (isInAddressBook)
+                            LoadStatuses();
+                            //else
+                            //    ShowAddToContacts();
                             spAddFriend.Visibility = Visibility.Visible;
                             gridAddFriendStrip.Visibility = Visibility.Visible;
                             break;
