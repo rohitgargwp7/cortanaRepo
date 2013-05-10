@@ -226,6 +226,8 @@ namespace windows_client.View
 
         private void txtStatus_GotFocus(object sender, RoutedEventArgs e)
         {
+            gridContent.Height = 210;
+            svStatusText.Height = 165;
             txtStatus.Hint = string.Empty;//done intentionally
             if (hintText == string.Empty)
             {
@@ -280,6 +282,9 @@ namespace windows_client.View
 
         private void txtStatus_TextChanged(object sender, TextChangedEventArgs e)
         {
+            svStatusText.UpdateLayout();
+            svStatusText.ScrollToVerticalOffset(txtStatus.GetRectFromCharacterIndex(txtStatus.SelectionStart).Top - 40);
+
             int count = txtStatus.Text.Length;
             if (count == 0 && moodId == 0)
             {
@@ -294,6 +299,13 @@ namespace windows_client.View
                 postStatusIcon.IsEnabled = true;
             }
             txtCounter.Text = (twitterPostLimit - count).ToString();
+        }
+
+        private void txtStatus_LostFocus_1(object sender, RoutedEventArgs e)
+        {
+            gridContent.Height = 615;
+            svStatusText.Height = 565;
+
         }
     }
 }

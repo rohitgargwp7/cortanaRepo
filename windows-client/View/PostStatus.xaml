@@ -31,12 +31,12 @@
         </Grid.RowDefinitions>
 
         <TextBlock x:Name="txtStatusHeader" Margin="24, 20, 24, 5" Text="{Binding Path= LocalizedResources.NewStatus_Txt, Source={StaticResource LocalizedStrings}}"  Grid.Row="0" HorizontalAlignment="Left" FontSize="22" FontFamily="Segoe WP Regular" Foreground="White"  />
-        <Grid Grid.Row="1" Height="255" VerticalAlignment="Top" Background="#ffffff" Margin="0 12 0 0">
+        <Grid Grid.Row="1" VerticalAlignment="Top" Background="#ffffff" Margin="0 12 0 0">
             <Grid.RowDefinitions>
                 <RowDefinition  Height="Auto"/>
                 <RowDefinition  Height="*"/>
             </Grid.RowDefinitions>
-            <Grid Background="White" VerticalAlignment="Top" HorizontalAlignment="Left" Width="480" Height="190" Grid.Row="0" >
+            <Grid Name="gridContent" Background="White" VerticalAlignment="Top" HorizontalAlignment="Left" Width="480" Height="210" Grid.Row="0" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
@@ -44,7 +44,9 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Image Name="moodImage" Source="images/timeline_status_icon.png"  Height="40" Width="40" VerticalAlignment="Top" Margin="24 24 0 0" Grid.Column="0"/>
-                <toolkit:PhoneTextBox InputScope="Text" AcceptsReturn="True"  VerticalAlignment="Top" x:Name="txtStatus" HorizontalAlignment="Left" Background="White" BorderThickness="0"  TextWrapping="Wrap" HintStyle="{StaticResource HintCustomStyle}" VerticalContentAlignment="Top" GotFocus="txtStatus_GotFocus"  TextChanged="txtStatus_TextChanged" Grid.Column="2" Width="345" Height="155" Margin="0 10 0 0"/>
+                <ScrollViewer Name="svStatusText" Height="165" Grid.Column="2" Margin="0 -15 0 0">
+                    <toolkit:PhoneTextBox Name="txtStatus" InputScope="Text" AcceptsReturn="True"  VerticalAlignment="Top" HorizontalAlignment="Left" Background="White" BorderThickness="0"  TextWrapping="Wrap" HintStyle="{StaticResource HintCustomStyle}" VerticalContentAlignment="Top" GotFocus="txtStatus_GotFocus" LostFocus="txtStatus_LostFocus_1" TextChanged="txtStatus_TextChanged" Width="345"  />
+                </ScrollViewer>
                 <toolkit:PhoneTextBox Name="txtCounter" Width="70" Visibility="Collapsed" Background="White" Text="140"  BorderThickness="0" Foreground="Gray" Grid.Column="3"  IsHitTestVisible="False" TextAlignment="Right" Margin="0 10 0 0"/>
             </Grid>
             <Grid Grid.Row="1" >
