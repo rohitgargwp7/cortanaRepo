@@ -942,7 +942,7 @@ namespace windows_client.View
         #endregion
 
         #endregion
-        
+
         #region BACKGROUND WORKER
 
         long lastMessageId = -1;
@@ -1007,10 +1007,14 @@ namespace windows_client.View
 
                     if (refState == ConvMessage.State.SENT_DELIVERED_READ && messagesList[i].MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
                     {
-                        messagesList[i].MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
-                        if (idsToUpdate == null)
-                            idsToUpdate = new List<long>();
-                        idsToUpdate.Add(messagesList[i].MessageId);
+                        ConvMessage convMess = messagesList[i];
+                        if (convMess.FileAttachment == null || (convMess.FileAttachment.FileState == Attachment.AttachmentState.COMPLETED))
+                        {
+                            convMess.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
+                            if (idsToUpdate == null)
+                                idsToUpdate = new List<long>();
+                            idsToUpdate.Add(convMess.MessageId);
+                        }
                     }
                 }
 
@@ -2916,21 +2920,31 @@ namespace windows_client.View
                 if (msgMap.Count > 0)
                 {
 
-                    List<long> idsToUpdate = new List<long>();
-                    foreach (var kv in msgMap)
+                    try
                     {
-                        if (kv.Key < maxId)
+                        List<long> idsToUpdate = new List<long>();
+                        foreach (var kv in msgMap)
                         {
-                            idsToUpdate.Add(kv.Key);
-                            SentChatBubble msg = kv.Value;
-                            msg.SetSentMessageStatus(ConvMessage.State.SENT_DELIVERED_READ);
+                            if (kv.Key < maxId)
+                            {
+                                SentChatBubble msg = kv.Value;
+                                if (msg.FileAttachment == null || (msg.FileAttachment.FileState == Attachment.AttachmentState.COMPLETED))
+                                {
+                                    idsToUpdate.Add(kv.Key);
+                                    msg.SetSentMessageStatus(ConvMessage.State.SENT_DELIVERED_READ);
+                                }
+                            }
                         }
+                        // remove these ids from map
+                        foreach (long id in idsToUpdate)
+                            msgMap.Remove(id);
+                        MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ);
+                        idsToUpdate = null;
                     }
-                    // remove these ids from map
-                    foreach (long id in idsToUpdate)
-                        msgMap.Remove(id);
-                    MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ);
-                    idsToUpdate = null;
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NewChatThread :: OnEventRecieved, perception Fix, Exception:" + ex.StackTrace);
+                    }
                 }
                 #endregion
             }
