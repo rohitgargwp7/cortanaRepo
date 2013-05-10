@@ -65,14 +65,15 @@ namespace windows_client.View
             App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
+            {
                 this.Loaded += ConversationsList_Loaded;
+            }
         }
 
         private void ConversationsList_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             this.Loaded -= ConversationsList_Loaded;
             launchPagePivot.SelectedIndex = 3;
-            PhoneApplicationService.Current.State.Remove("IsStatusPush");
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
@@ -223,7 +224,10 @@ namespace windows_client.View
             appBar.Mode = ApplicationBarMode.Default;
             appBar.IsMenuEnabled = true;
             appBar.Opacity = 1;
-            NetworkManager.turnOffNetworkManager = false;
+            if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
+            {
+                NetworkManager.turnOffNetworkManager = false;
+            }
             App.MqttManagerInstance.connect();
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
@@ -737,6 +741,11 @@ namespace windows_client.View
                         }
                         RefreshBarCount = 0;
                         UnreadFriendRequests = 0;
+                        if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
+                        {
+                            NetworkManager.turnOffNetworkManager = false;
+                            PhoneApplicationService.Current.State.Remove("IsStatusPush");
+                        }
                         isStatusMessagesLoaded = true;
                     };
                     if (appSettings.Contains(App.SHOW_STATUS_UPDATES_TUTORIAL))
@@ -1224,7 +1233,21 @@ namespace windows_client.View
                         Dispatcher.BeginInvoke(() =>
                         {
                             hikeContactList.Remove(c);
+                            if (hikeContactList.Count == 0)
+                            {
+                                emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
+                                hikeContactListBox.Visibility = Visibility.Collapsed;
+                            }
                         });
+                    }
+                    //if conatct is removed from circle of friends then show no friends placehoder
+                    if (App.ViewModel.FavList.Count == 0)
+                    {
+                        Dispatcher.BeginInvoke(() =>
+                       {
+                           emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
+                           favourites.Visibility = System.Windows.Visibility.Collapsed;
+                       });
                     }
                     #endregion
                 }
@@ -1253,6 +1276,11 @@ namespace windows_client.View
                 {
                     c.IsUsedAtMiscPlaces = true;
                     hikeContactList.Add(c);
+                    if (emptyListPlaceholderHikeContacts.Visibility == Visibility.Visible)
+                    {
+                        emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
+                        hikeContactListBox.Visibility = Visibility.Visible;
+                    }
                 });
 
             }
@@ -2083,7 +2111,8 @@ namespace windows_client.View
                 else
                 {
                     cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
-                    App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
+                    if (cn != null)
+                        App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
                 }
                 bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
                 cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
@@ -2097,7 +2126,7 @@ namespace windows_client.View
                     hikeContactList.Remove(cn);
                 }
             }
-            
+
             App.ViewModel.FavList.Insert(0, cObj);
             App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
             JObject data = new JObject();
