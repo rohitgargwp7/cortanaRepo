@@ -1915,7 +1915,7 @@ namespace windows_client.View
         #region PAGE EVENTS
 
         private bool isEmptyString = true;
-
+        private int lastMessageCount = 0;
         private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (lastText.Equals(sendMsgTxtbox.Text))
@@ -1955,7 +1955,11 @@ namespace windows_client.View
                 if (numberOfMessages > 1)
                 {
                     txtMsgCount.Visibility = Visibility.Visible;
-                    txtMsgCount.Text = string.Format(AppResources.CT_MessageCount_Sms_User, numberOfMessages);
+                    if (lastMessageCount != numberOfMessages)
+                    {
+                        txtMsgCount.Text = string.Format(AppResources.CT_MessageCount_Sms_User, numberOfMessages);
+                        lastMessageCount = numberOfMessages;
+                    }
                 }
                 else
                 {
