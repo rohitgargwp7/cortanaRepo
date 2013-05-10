@@ -227,8 +227,8 @@ namespace windows_client.View
             if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
             {
                 NetworkManager.turnOffNetworkManager = false;
-                App.MqttManagerInstance.connect();
             }
+            App.MqttManagerInstance.connect();
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
                 Utils.requestAccountInfo();
@@ -744,7 +744,6 @@ namespace windows_client.View
                         if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                         {
                             NetworkManager.turnOffNetworkManager = false;
-                            App.MqttManagerInstance.connect();
                             PhoneApplicationService.Current.State.Remove("IsStatusPush");
                         }
                         isStatusMessagesLoaded = true;
