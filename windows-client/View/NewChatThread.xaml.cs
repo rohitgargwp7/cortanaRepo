@@ -892,21 +892,21 @@ namespace windows_client.View
                 userName.Tap += userHeader_Tap;
                 userImage.Tap += userImage_Tap;
 
-                ApplicationBarMenuItem leaveMenuItem = new ApplicationBarMenuItem();
-                leaveMenuItem.Text = AppResources.SelectUser_LeaveGrp_Txt;
-                leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
-                appBar.MenuItems.Add(leaveMenuItem);
+                infoMenuItem = new ApplicationBarMenuItem();
+                infoMenuItem.Text = AppResources.GroupInfo_Txt;
+                infoMenuItem.Click += userHeader_Tap;
+                infoMenuItem.IsEnabled = !mUserIsBlocked && isGroupAlive;
+                appBar.MenuItems.Add(infoMenuItem);
 
                 muteGroupMenuItem = new ApplicationBarMenuItem();
                 muteGroupMenuItem.Text = IsMute ? AppResources.SelectUser_UnMuteGrp_Txt : AppResources.SelectUser_MuteGrp_Txt;
                 muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
                 appBar.MenuItems.Add(muteGroupMenuItem);
 
-                infoMenuItem = new ApplicationBarMenuItem();
-                infoMenuItem.Text = AppResources.GroupInfo_Txt;
-                infoMenuItem.Click += userHeader_Tap;
-                infoMenuItem.IsEnabled = !mUserIsBlocked && isGroupAlive;
-                appBar.MenuItems.Add(infoMenuItem);
+                ApplicationBarMenuItem leaveMenuItem = new ApplicationBarMenuItem();
+                leaveMenuItem.Text = AppResources.SelectUser_LeaveGrp_Txt;
+                leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
+                appBar.MenuItems.Add(leaveMenuItem);
             }
             else
             {
