@@ -87,7 +87,7 @@
             </StackPanel>
             <StackPanel Visibility="Collapsed" Margin="0,0,0,-10" x:Name="emoticonPanel" LostFocus="emoticonPanel_LostFocus" Background="#323232">
 
-                <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" SelectionChanged="emoticonPivot_SelectionChanged" Foreground="Black" Height="220">
+                <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" SelectionChanged="emoticonPivot_SelectionChanged" Foreground="Black" Height="240">
                     <controls:PivotItem Margin="12,8,12,0">
                         <Grid x:Name="emotGrid0">
                             <Grid.RowDefinitions>
@@ -97,7 +97,7 @@
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Height="180" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList0_Tap">
+                            <ListBox Height="200" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList0_Tap">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
@@ -125,7 +125,7 @@
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Height="180" Name="emotList1" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList1_Tap">
+                            <ListBox Height="200" Name="emotList1" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList1_Tap">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
@@ -152,7 +152,7 @@
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Height="180" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList2_Tap">
+                            <ListBox Height="200" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList2_Tap">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
@@ -254,8 +254,14 @@
 
             <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <StackPanel Background="#eeeeec">
+                <ScrollViewer Name="svMessage" MaxHeight="500" >
                 <toolkit:PhoneTextBox TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
-                                      MinHeight="68" MaxLength="10000"  Margin="0,-4,-8,0" Height="Auto" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" />
+                                      MinHeight="68" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto" />
+                </ScrollViewer>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 10 5" Visibility="Collapsed" Name="spSmsCharCounter">
+                <TextBlock Name="txtMsgCount"></TextBlock>
+                <TextBlock Name="txtMsgCharCount"></TextBlock>
             </StackPanel>
         </StackPanel>
         <toolkit:PerformanceProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" 

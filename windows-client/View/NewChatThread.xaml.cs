@@ -45,6 +45,7 @@ namespace windows_client.View
         private readonly string BLOCK_USER = AppResources.Block_Txt;
         private readonly string UNBLOCK_USER = AppResources.UnBlock_Txt;
         private const int maxFileSize = 15728640;//in bytes
+        private const int maxSmsCharLength = 140;
         private string groupOwner = null;
         public string mContactNumber;
         private string mContactName = null;
@@ -903,7 +904,7 @@ namespace windows_client.View
         #endregion
 
         #endregion
-
+        
         #region BACKGROUND WORKER
 
         long lastMessageId = -1;
@@ -1914,11 +1915,16 @@ namespace windows_client.View
         #region PAGE EVENTS
 
         private bool isEmptyString = true;
-
+        private int lastMessageCount = 0;
         private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (lastText.Equals(sendMsgTxtbox.Text))
                 return;
+
+            //done as scrollviewer applied to textbox doesn't update its position on char enter
+            svMessage.UpdateLayout();
+            svMessage.ScrollToVerticalOffset(sendMsgTxtbox.GetRectFromCharacterIndex(sendMsgTxtbox.SelectionStart).Top - 50.0);
+
             string msgText = sendMsgTxtbox.Text.Trim();
             if (String.IsNullOrEmpty(msgText))
             {
@@ -1941,6 +1947,31 @@ namespace windows_client.View
                 sendTypingNotification(true);
             }
 
+            if (!isOnHike && msgText.Length > 130)
+            {
+                spSmsCharCounter.Visibility = Visibility.Visible;
+                int numberOfMessages = (msgText.Length / maxSmsCharLength) + 1;
+
+                if (numberOfMessages > 1)
+                {
+                    txtMsgCount.Visibility = Visibility.Visible;
+                    if (lastMessageCount != numberOfMessages)
+                    {
+                        txtMsgCount.Text = string.Format(AppResources.CT_MessageCount_Sms_User, numberOfMessages);
+                        lastMessageCount = numberOfMessages;
+                    }
+                }
+                else
+                {
+                    txtMsgCount.Visibility = Visibility.Collapsed;
+                }
+
+                txtMsgCharCount.Text = string.Format(AppResources.CT_CharCount_Sms_User, msgText.Length, numberOfMessages * maxSmsCharLength);
+            }
+            else
+            {
+                spSmsCharCounter.Visibility = Visibility.Collapsed;
+            }
             sendIconButton.IsEnabled = enableSendMsgButton;
         }
 
@@ -1950,7 +1981,9 @@ namespace windows_client.View
                 return;
 
             string message = sendMsgTxtbox.Text.Trim();
-            sendMsgTxtbox.Text = "";
+            sendMsgTxtbox.Text = string.Empty;
+            lastText = string.Empty;
+            sendMsgTxtbox.Focus();
 
             if (String.IsNullOrEmpty(message))
                 return;

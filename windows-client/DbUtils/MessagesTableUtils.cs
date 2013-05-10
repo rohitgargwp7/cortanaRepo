@@ -85,7 +85,7 @@ namespace windows_client.DbUtils
             }
 
         }
-     
+
         public static List<ConvMessage> getAllMessages()
         {
             List<ConvMessage> res;
@@ -337,7 +337,16 @@ namespace windows_client.DbUtils
                 #endregion
                 #region NO_INFO or OTHER MSGS
                 else
-                    obj.LastMessage = convMsg.Message;
+                {
+                    //convMsg.GroupParticipant is null means message sent by urself
+                    if (convMsg.GroupParticipant != null && Utils.isGroupConversation(convMsg.Msisdn))
+                    {
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
+                        obj.LastMessage = gp != null ? (gp.FirstName + "- " + convMsg.Message) : convMsg.Message;
+                    }
+                    else
+                        obj.LastMessage = convMsg.Message;
+                }
                 #endregion
 
                 Stopwatch st1 = Stopwatch.StartNew();

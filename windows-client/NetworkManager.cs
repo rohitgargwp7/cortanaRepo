@@ -765,8 +765,8 @@ namespace windows_client
                 {
                     string groupName = (string)jsonObj[HikeConstants.DATA];
                     string groupId = (string)jsonObj[HikeConstants.TO];
-                    if (msisdn == App.MSISDN) // if I changed the name ignore
-                        return;
+                    //no self check as server will send packet of group name change if changed by self
+                    //we need to use this in case of self name change and unlink account
                     ConversationListObject cObj;
                     if (App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
                     {
