@@ -65,14 +65,15 @@ namespace windows_client.View
             App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
+            {
                 this.Loaded += ConversationsList_Loaded;
+            }
         }
 
         private void ConversationsList_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             this.Loaded -= ConversationsList_Loaded;
             launchPagePivot.SelectedIndex = 3;
-            PhoneApplicationService.Current.State.Remove("IsStatusPush");
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
@@ -223,8 +224,11 @@ namespace windows_client.View
             appBar.Mode = ApplicationBarMode.Default;
             appBar.IsMenuEnabled = true;
             appBar.Opacity = 1;
-            NetworkManager.turnOffNetworkManager = false;
-            App.MqttManagerInstance.connect();
+            if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
+            {
+                NetworkManager.turnOffNetworkManager = false;
+                App.MqttManagerInstance.connect();
+            }
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
                 Utils.requestAccountInfo();
@@ -737,6 +741,12 @@ namespace windows_client.View
                         }
                         RefreshBarCount = 0;
                         UnreadFriendRequests = 0;
+                        if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
+                        {
+                            NetworkManager.turnOffNetworkManager = false;
+                            App.MqttManagerInstance.connect();
+                            PhoneApplicationService.Current.State.Remove("IsStatusPush");
+                        }
                         isStatusMessagesLoaded = true;
                     };
                     if (appSettings.Contains(App.SHOW_STATUS_UPDATES_TUTORIAL))
