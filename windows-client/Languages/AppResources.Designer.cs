@@ -763,6 +763,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}/{1}.
+        /// </summary>
+        public static string CT_CharCount_Sms_User {
+            get {
+                return ResourceManager.GetString("CT_CharCount_Sms_User", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not send file.
         /// </summary>
         public static string CT_FileSizeExceed_Caption_Text {
@@ -777,6 +786,15 @@ namespace windows_client.Languages {
         public static string CT_FileSizeExceed_Text {
             get {
                 return ResourceManager.GetString("CT_FileSizeExceed_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} messages,.
+        /// </summary>
+        public static string CT_MessageCount_Sms_User {
+            get {
+                return ResourceManager.GetString("CT_MessageCount_Sms_User", resourceCulture);
             }
         }
         

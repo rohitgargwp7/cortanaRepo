@@ -1697,4 +1697,12 @@ Get hike: http://get.hike.in</value>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
     <value>Max file size can be 15 MB.</value>
   </data>
+  <data name="CT_CharCount_Sms_User" xml:space="preserve">
+    <value>{0}/{1}</value>
+    <comment>{0}-number , {1} number</comment>
+  </data>
+  <data name="CT_MessageCount_Sms_User" xml:space="preserve">
+    <value>{0} messages,</value>
+    <comment>{0} replaced by number</comment>
+  </data>
 </root>
