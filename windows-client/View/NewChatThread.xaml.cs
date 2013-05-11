@@ -1983,6 +1983,7 @@ namespace windows_client.View
             string message = sendMsgTxtbox.Text.Trim();
             sendMsgTxtbox.Text = string.Empty;
             lastText = string.Empty;
+            sendIconButton.IsEnabled = false;
             sendMsgTxtbox.Focus();
 
             if (String.IsNullOrEmpty(message))
