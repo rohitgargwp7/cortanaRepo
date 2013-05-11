@@ -67,14 +67,14 @@ namespace windows_client.Controls
         //    InitializeComponent();
         //}
 
-        public LinkifiedTextBox(int fontSize, string text)
-        {
-            InitializeComponent();
-            this.RichText.FontSize = fontSize;
-            this.Text = text;
-            Paragraph richtext = SmileyParser.Instance.LinkifyAll(this.Text);
-            RichText.Blocks.Add(richtext);
-        }
+        //public LinkifiedTextBox(int fontSize, string text)
+        //{
+        //    InitializeComponent();
+        //    this.RichText.FontSize = fontSize;
+        //    this.Text = text;
+        //    Paragraph richtext = SmileyParser.Instance.LinkifyAll(this.Text);
+        //    RichText.Blocks.Add(richtext);
+        //}
 
         public LinkifiedTextBox(SolidColorBrush foreground, int fontSize, string text)
         {
@@ -82,7 +82,7 @@ namespace windows_client.Controls
             this.RichText.Foreground = foreground;
             this.RichText.FontSize = fontSize;
             this.Text = text;
-            Paragraph richtext = SmileyParser.Instance.LinkifyAll(this.Text);
+            Paragraph richtext = SmileyParser.Instance.LinkifyAll(this.Text, foreground);
             RichText.Blocks.Add(richtext);
         }
 

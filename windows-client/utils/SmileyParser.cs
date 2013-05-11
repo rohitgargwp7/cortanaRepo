@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using windows_client.utils;
 using Microsoft.Phone.Tasks;
 using System.Diagnostics;
+using System.Windows.Media;
 
 namespace windows_client
 {
@@ -575,7 +576,7 @@ namespace windows_client
                 patternString.Append(phoneNumberRegexPattern);
                 patternString.Append(')');
             }
-            return new Regex("(" + patternString.ToString());
+            return new Regex("(" + patternString.ToString(), RegexOptions.IgnoreCase | RegexOptions.Compiled);
         }
 
         public Paragraph LinkifyEmoticons(string messageString)
@@ -638,7 +639,7 @@ namespace windows_client
             }
         }
 
-        public Paragraph LinkifyAll(string message)
+        public Paragraph LinkifyAll(string message, SolidColorBrush foreground)
         {
             MatchCollection matchCollection = ChatThreadRegex.Matches(message);
             var p = new Paragraph();
@@ -672,6 +673,7 @@ namespace windows_client
                     try
                     {
                         Hyperlink MyLink = new Hyperlink();
+                        MyLink.Foreground = foreground;
                         string url = regexMatch;
                         if (regexType == RegexType.EMAIL)
                             url = "mailto:" + regexMatch;
