@@ -868,8 +868,15 @@ namespace windows_client.Model
                     string grpName = (string)jsonObj[HikeConstants.DATA];
                     this._groupParticipant = from;
                     this._msisdn = grpId;
-                    gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
-                    this.Message = string.Format(AppResources.GroupNameChangedByGrpMember_Txt, gp.Msisdn == App.MSISDN ? AppResources.You_Txt : gp.Name, grpName);
+                    if (from == App.MSISDN)
+                    {
+                        this.Message = string.Format(AppResources.GroupNameChangedByGrpMember_Txt, AppResources.You_Txt, grpName);
+                    }
+                    else
+                    {
+                        gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
+                        this.Message = string.Format(AppResources.GroupNameChangedByGrpMember_Txt, gp.Name, grpName);
+                    }
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
                 case ParticipantInfoState.GROUP_PIC_CHANGED:
