@@ -271,6 +271,7 @@ namespace windows_client
         public static readonly string SHOW_REWARDS = "show_rewards";
         public static readonly string REWARDS_VALUE = "tt";
 
+        public static readonly string LOCALE = "locale";
         public static readonly string STAGING_SERVER = "stagingServer";
 
         public static readonly string ENABLE_PUSH_BATCH_SU = "enablepushbatchingforsu";

@@ -16,6 +16,8 @@ using System.ComponentModel;
 using windows_client.Misc;
 using System.Net.NetworkInformation;
 using Microsoft.Phone.Net.NetworkInformation;
+using System.Globalization;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client
 {
@@ -63,6 +65,8 @@ namespace windows_client
         public static readonly string LAST_CRITICAL_VERSION = "lastCriticalVersion";
         public static readonly string APP_ID_FOR_LAST_UPDATE = "appID";
         public static readonly string LAST_ANALYTICS_POST_TIME = "analyticsTime";
+
+        public static readonly string CURRENT_LOCALE = "curLocale";
 
 
         #endregion
@@ -755,6 +759,9 @@ namespace windows_client
             // if app info is already sent to server , this function will automatically handle
             UpdatePostHelper.Instance.postAppInfo();
             #endregion
+            #region Post App Locale
+            PostLocaleInfo();
+            #endregion
         }
 
         public static void createDatabaseAsync()
@@ -956,6 +963,23 @@ namespace windows_client
                     convList = ConversationTableUtils.GetConvsFromIndividualFiles();
 
                 return convList;
+            }
+        }
+
+        public static void PostLocaleInfo()
+        {
+            string savedLocale;
+            if (!App.appSettings.TryGetValue(App.CURRENT_LOCALE, out savedLocale) ||
+                savedLocale != CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
+            {
+                string currentLocale = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+                App.WriteToIsoStorageSettings(App.CURRENT_LOCALE, currentLocale);
+                JObject obj = new JObject();
+                obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+                JObject data = new JObject();
+                data.Add(HikeConstants.LOCALE, currentLocale);
+                obj.Add(HikeConstants.DATA, data);
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
         }
     }
