@@ -327,7 +327,12 @@ namespace windows_client.View
 
                 //MessageBox.Show(msisdn, "NEW CHAT", MessageBoxButton.OK);
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                {
+                    string id = msisdn.Replace(":", "_");
+                    byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(id);
+                    App.ViewModel.ConvMap[msisdn].Avatar = _avatar;
                     this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = statusObject = App.ViewModel.ConvMap[msisdn];
+                }
                 else if (Utils.isGroupConversation(msisdn))
                 {
                     ConversationListObject co = new ConversationListObject();
