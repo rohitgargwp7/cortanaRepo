@@ -111,11 +111,11 @@ namespace windows_client.View
                     empImage.SetSource(memStream);
                     groupImage.Source = empImage;
                 }
-                if (Utils.isDarkTheme())
-                {
-                    addUserImage.Source = new BitmapImage(new Uri("images/add_users_dark.png", UriKind.Relative));
-                }
                 GroupManager.Instance.LoadGroupParticipants(groupId);
+            }
+            if (Utils.isDarkTheme())
+            {
+                addUserImage.Source = new BitmapImage(new Uri("images/add_users_white.png", UriKind.Relative));
             }
             this.groupNameTxtBox.Text = groupName;
             List<GroupParticipant> hikeUsersList = new List<GroupParticipant>();
