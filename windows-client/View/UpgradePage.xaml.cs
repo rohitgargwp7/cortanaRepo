@@ -43,6 +43,9 @@ namespace windows_client.View
                     // if app info is already sent to server , this function will automatically handle
                     UpdatePostHelper.Instance.postAppInfo();
                     #endregion
+                    #region Post App Locale
+                    App.PostLocaleInfo();
+                    #endregion
                 }
 
                 // if current version is less than equal to 1.8.0.0 then upgrade Chats DB to add statusMessages table
