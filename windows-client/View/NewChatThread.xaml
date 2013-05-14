@@ -10,6 +10,7 @@
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     xmlns:c4fToolkit="clr-namespace:Coding4Fun.Phone.Controls;assembly=Coding4Fun.Phone.Controls"
+    xmlns:test="clr-namespace:windows_client.View"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -22,6 +23,67 @@
         <Style x:Key="ListBoxItemStretchContentStyle" TargetType="ListBoxItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         </Style>
+
+        <DataTemplate x:Name="Notification">
+            <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,5,0,5">
+                <Border x:Name="border" BorderThickness="1" Margin="24,0,24,0"/>
+                <Grid Margin="24,3,24,3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Image x:Name="NotificationImage" Height="20" Width="20" Grid.Column="0" VerticalAlignment="Center" Margin="10,0,0,0" HorizontalAlignment="Left"></Image>
+                    <TextBlock x:Name="UserName" Height="Auto" Grid.Column="1" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
+                          Text="{Binding Text, Mode=OneTime}" Margin="3,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Grid>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Name="RecievedMessage" >
+            <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24,0,90,14" HorizontalAlignment="Left">
+                <Grid d:LayoutOverrides="Width">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="14" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
+
+                    <Grid x:Name="wrapperGrid" Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                    </Grid>
+
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Rectangle Grid.RowSpan="2" Fill="#eeeeec" />
+                        <local:MyRichTextBox Width="340" Grid.Row="0" Text="{Binding Text, Mode=OneTime}" x:Name="MessageText" Foreground="Black" Margin="0,6,0,0" />
+                        <TextBlock Grid.Row="1" Text="{Binding TimeStamp, Mode=OneTime}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="Black" Opacity="0.3" />
+
+                        <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Image Grid.Row="0" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" />
+                            <Image x:Name="PlayIcon" Visibility="Collapsed" Source="/View/images/play_icon.png" Grid.Row="0" MaxWidth="43" MaxHeight="42" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <ProgressBar Grid.Row="1" x:Name="downloadProgress" Margin="0,5,0,0" Grid.Column="1" Height="10" Background="Transparent" Foreground="#333333" Minimum="0" Maximum="100"></ProgressBar>
+                        </Grid>
+
+                    </Grid>
+                </Grid>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="SelectingTemplate">
+            <test:ChatThreadTemplateSelector Content="{Binding}"/>
+        </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
 
     <shell:SystemTray.ProgressIndicator>

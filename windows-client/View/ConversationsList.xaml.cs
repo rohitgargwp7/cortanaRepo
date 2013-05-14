@@ -346,7 +346,7 @@ namespace windows_client.View
                 return;
 
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = convListObj;
-            string uri = "/View/NewChatThread.xaml";
+            string uri = "/View/testPage.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 

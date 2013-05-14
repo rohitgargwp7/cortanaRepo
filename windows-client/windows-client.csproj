@@ -162,6 +162,7 @@
       <DependentUpon>ImageStatusUpdate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\StatusUpdate\StatusUpdateBox.cs" />
+    <Compile Include="Controls\TemplateSelector.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbCompiledQueries.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
@@ -285,6 +286,9 @@
     </Compile>
     <Compile Include="View\ShareLocation.xaml.cs">
       <DependentUpon>ShareLocation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\testPage.xaml.cs">
+      <DependentUpon>testPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\UserProfile.xaml.cs">
       <DependentUpon>UserProfile.xaml</DependentUpon>
@@ -437,6 +441,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ShareLocation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\testPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
