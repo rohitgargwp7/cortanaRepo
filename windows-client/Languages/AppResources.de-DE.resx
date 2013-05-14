@@ -784,6 +784,7 @@
     <value>Um hike weiterhin zu verwenden, ist ein Update notwendig.</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
+    <value>
  Hi! Ich verwende hike - eine einfache, schöne Messaging-App, die absolut kostenlos ist. Bei hike gibt es total witzige Emoticons. Außerdem kannst du Statusmeldungen für deinen Freundeskreis posten. Genau wie BBM, nur viel, viel besser! Hol dir jetzt hike und verabschiede dich von langweiligen SMS. Hol dir hike: http://get.hike.in</value>
     <comment>Email Invite Text</comment>
   </data>
