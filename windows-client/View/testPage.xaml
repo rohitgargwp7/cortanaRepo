@@ -29,47 +29,148 @@
                     </Grid.ColumnDefinitions>
                     <Image x:Name="NotificationImage" Height="20" Width="20" Grid.Column="0" VerticalAlignment="Center" Margin="10,0,0,0" HorizontalAlignment="Left"></Image>
                     <TextBlock x:Name="UserName" Height="Auto" Grid.Column="1" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
-                          Text="{Binding Text, Mode=OneTime}" Margin="3,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                          Text="{Binding Message}" Margin="3,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </Grid>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="RecievedMessage" >
+        <DataTemplate x:Name="dtRecText" >
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24,0,90,14" HorizontalAlignment="Left">
-                <Grid d:LayoutOverrides="Width">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="14" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="#eeeeec" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
+                <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="14" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
-
-                    <Grid x:Name="wrapperGrid" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Rectangle Grid.RowSpan="2" Fill="#eeeeec" />
+                    <local:MyRichTextBox Width="330" Grid.Row="0" Text="{Binding Message}" x:Name="MessageText" LinkifyAll="True" Foreground="Black" Margin="0,6,12,0" />
+                    <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="0,0,24,6" FontSize="18" Foreground="Black" Opacity="0.3" />
+                </Grid>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Name="dtRecFile" >
+            <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24,0,90,14" HorizontalAlignment="Left"   >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="14" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="#eeeeec" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
+                <TextBlock Width="340"/>
+                <!--to maintain width-->
+                <Grid Grid.Row="1" HorizontalAlignment="Left">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Rectangle Grid.RowSpan="2" Fill="#eeeeec" />
+                    <Grid x:Name="attachment" Grid.Row="0"  >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
+                        <Image Grid.Row="0" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
+                        <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="0" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center"/>
+                        <ProgressBar Grid.Row="1" x:Name="downloadProgress" Margin="0,5,0,0" Height="10" Background="Transparent" Foreground="#333333" Minimum="0" Maximum="100"></ProgressBar>
                     </Grid>
-
-                    <Grid Grid.Row="1">
+                    <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="Black" Opacity="0.3" />
+                </Grid>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Name="dtRecNudge" >
+            <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24,0,90,14" HorizontalAlignment="Left">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="14" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{StaticResource PhoneAccentBrush}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
+                <TextBlock Width="340"/>
+                <!--to maintain width-->
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Rectangle Grid.RowSpan="2" Fill="{StaticResource PhoneAccentBrush}" />
+                    <Image Grid.Row="0" Width="46" Height="35" Margin="12,12,12,10" HorizontalAlignment="Left" Source="/View/images/nudge_received.png"/>
+                </Grid>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Name="dtRecContact" >
+            <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24,0,90,14" HorizontalAlignment="Left"   >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="14" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="#eeeeec" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
+                <TextBlock Width="340"/>
+                <!--to maintain width-->
+                <Grid Grid.Row="1" HorizontalAlignment="Left">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Rectangle Grid.RowSpan="2" Fill="#eeeeec" />
+                    <Grid x:Name="attachment" Grid.Row="0"  >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <Rectangle Grid.RowSpan="2" Fill="#eeeeec" />
-                        <local:MyRichTextBox Width="340" Grid.Row="0" Text="{Binding Text, Mode=OneTime}" x:Name="MessageText" Foreground="Black" Margin="0,6,0,0" />
-                        <TextBlock Grid.Row="1" Text="{Binding TimeStamp, Mode=OneTime}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="Black" Opacity="0.3" />
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Width="35" Height="25" Margin="12,12,12,0" HorizontalAlignment="Left" Source="{Binding MessageImage}" />
+                        <TextBlock Text="{Binding DispMessage}" Grid.Column="1" Margin="0,8,5,0" TextWrapping="Wrap" MinWidth="150" MaxWidth="330"/>
+                        <ProgressBar Grid.Row="1"  x:Name="downloadProgress" Margin="0,5,0,0" Grid.ColumnSpan="2" Height="10" Background="Transparent" Foreground="#333333" Minimum="0" Maximum="100"></ProgressBar>
 
-                        <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1">
+                    </Grid>
+                    <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="Black" Opacity="0.3" />
+                </Grid>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Name="SentMessage">
+            <Grid x:Name="LayoutRoot" Background="Transparent" Margin="44,12,24,10" HorizontalAlignment="Right">
+
+                <Grid d:LayoutOverrides="Width">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="14" />
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Rectangle Name="BubbleBg" Grid.Column="1" Grid.RowSpan="2" Fill="#1ba1e2"  />
+                        <local:MyRichTextBox Width="340" Grid.Row="0" Grid.Column="1" Text="{Binding Message}" x:Name="MessageText" Margin="0,6,0,0" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStampStr}" Foreground="White" Opacity=".6" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" />
+                        <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
+
+                        <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <Image Grid.Row="0" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" />
+                            <Image Grid.Row="0" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Right" x:Name="MessageImage" />
                             <Image x:Name="PlayIcon" Visibility="Collapsed" Source="/View/images/play_icon.png" Grid.Row="0" MaxWidth="43" MaxHeight="42" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <ProgressBar Grid.Row="1" x:Name="downloadProgress" Margin="0,5,0,0" Grid.Column="1" Height="10" Background="Transparent" Foreground="#333333" Minimum="0" Maximum="100"></ProgressBar>
+                            <ProgressBar Grid.Row="1" x:Name="uploadProgress" Margin="0,5,0,0" Grid.Column="1" Height="8" Background="Transparent" Foreground="#333333" Minimum="0" Maximum="100"></ProgressBar>
                         </Grid>
-
                     </Grid>
+                    <Path Grid.Column="1" Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="#1ba1e2"  />
                 </Grid>
             </Grid>
         </DataTemplate>

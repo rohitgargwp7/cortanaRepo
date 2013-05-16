@@ -119,13 +119,15 @@ namespace windows_client.DbUtils
         }
 
         //call this from UI thread
-        private void addSentMessageToMsgMap(SentChatBubble sentChatBubble)
+        private void addSentMessageToMsgMap(SentChatBubble sentChatBubble, ConvMessage convMess)
         {
             NewChatThread currentPage = App.newChatThreadPage;
-            if (currentPage != null)
+            if (currentPage != null && sentChatBubble != null)
             {
                 currentPage.OutgoingMsgsMap[sentChatBubble.MessageId] = sentChatBubble;
             }
+            if (NewChatThread_1.instance != null)
+                NewChatThread_1.instance.OutgoingMsgsMap.Add(convMess.MessageId, convMess);
         }
 
 
@@ -149,10 +151,7 @@ namespace windows_client.DbUtils
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (chatBubble != null)
-                    {
-                        addSentMessageToMsgMap(chatBubble);
-                    }
+                    addSentMessageToMsgMap(chatBubble, convMessage);
 
                     if (App.ViewModel.MessageListPageCollection.Contains(convObj))//cannot use convMap here because object has pushed to map but not to ui
                     {
@@ -181,7 +180,7 @@ namespace windows_client.DbUtils
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    addSentMessageToMsgMap(chatBubble);
+                    addSentMessageToMsgMap(chatBubble, convMessage);
 
                     if (App.ViewModel.MessageListPageCollection.Contains(convObj))//cannot use convMap here because object has pushed to map but not to ui
                     {
@@ -222,12 +221,12 @@ namespace windows_client.DbUtils
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    addSentMessageToMsgMap(chatBubble);
-                   if (App.ViewModel.MessageListPageCollection.Contains(convObj))
+                    addSentMessageToMsgMap(chatBubble, convMessage);
+                    if (App.ViewModel.MessageListPageCollection.Contains(convObj))
                     {
                         App.ViewModel.MessageListPageCollection.Remove(convObj);
                     }
-                   App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                    App.ViewModel.MessageListPageCollection.Insert(0, convObj);
                     //send attachment message (new attachment - upload case)
                     MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId, chatBubble);
                     convMessage.FileAttachment.FileState = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;

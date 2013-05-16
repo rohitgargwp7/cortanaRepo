@@ -80,6 +80,24 @@ namespace windows_client.Model
             STATUS_UPDATE
         }
 
+        public enum MessageType
+        {
+            HIKE_PARTICIPANT_JOINED, // hike participant has left
+            SMS_PARTICIPANT_OPTED_IN, // sms participant has joined Group Chat
+            SMS_PARTICIPANT_INVITED, // sms participant has invited
+            PARTICIPANT_LEFT, // The participant has joined
+            GROUP_END, // Group chat has ended
+            USER_JOINED_HIKE, // Sms user joined hike
+            WAITING,
+            REWARD,
+            INTERNATIONAL_USER_BLOCKED,
+            TEXT_UPDATE,
+            PIC_UPDATE,
+            GROUP_NAME_CHANGED,
+            GROUP_PIC_CHANGED,
+            DEFAULT,
+            UNKNOWN
+        }
         public static ParticipantInfoState fromJSON(JObject obj)
         {
             if (obj == null)
@@ -232,7 +250,9 @@ namespace windows_client.Model
                 if (_messageStatus != value)
                 {
                     NotifyPropertyChanging("MessageStatus");
+                    NotifyPropertyChanging("SdrImage");
                     _messageStatus = value;
+                    NotifyPropertyChanged("SdrImage");
                     NotifyPropertyChanged("MessageStatus");
                 }
             }
@@ -250,6 +270,7 @@ namespace windows_client.Model
                 if (_timestamp != value)
                 {
                     NotifyPropertyChanging("Timestamp");
+                    NotifyPropertyChanging("TimeStampStr");
                     _timestamp = value;
                 }
             }
@@ -436,6 +457,96 @@ namespace windows_client.Model
             }
         }
 
+        public string TimeStampStr
+        {
+            get
+            {
+                return TimeUtils.getTimeStringForChatThread(_timestamp);//todo:optimise do it once only
+            }
+        }
+
+        public string DispMessage
+        {
+            get
+            {
+                if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                {
+                    return string.IsNullOrEmpty(_fileAttachment.FileName) ? "contact" : _fileAttachment.FileName;
+                }
+                else
+                    return _message;
+            }
+        }
+        public BitmapImage SdrImage
+        {
+            get
+            {
+                switch (_messageStatus)
+                {
+                    case ConvMessage.State.SENT_CONFIRMED:
+                        return UI_Utils.Instance.Sent;
+                    case ConvMessage.State.SENT_DELIVERED:
+                        return UI_Utils.Instance.Delivered;
+                    case ConvMessage.State.SENT_DELIVERED_READ:
+                        return UI_Utils.Instance.Read;
+                    case ConvMessage.State.SENT_FAILED:
+                        return UI_Utils.Instance.HttpFailed;
+                    case ConvMessage.State.SENT_UNCONFIRMED:
+                        return UI_Utils.Instance.Trying;
+                    default:
+                        return UI_Utils.Instance.Trying;
+
+                }
+            }
+        }
+
+        public BitmapImage MessageImage
+        {
+            get
+            {
+                if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                {
+                    if (_isSent)
+                        return UI_Utils.Instance.WhiteContactIcon;
+                    else
+                        return UI_Utils.Instance.ContactIcon;
+                }
+                else
+                    if (_fileAttachment != null && _fileAttachment.Thumbnail != null)
+                    {
+                        return UI_Utils.Instance.createImageFromBytes(_fileAttachment.Thumbnail);
+                    }
+                    else
+                    {
+                        return UI_Utils.Instance.AudioAttachmentSend;
+                    }
+
+            }
+        }
+
+        public Visibility PlayIconVisibility
+        {
+            get
+            {
+                if (_fileAttachment != null && ((_fileAttachment.FileState == Attachment.AttachmentState.CANCELED || _fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
+                    || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO) || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
+                {
+                    return Visibility.Visible;
+                }
+                return Visibility.Collapsed;
+            }
+        }
+
+        public BitmapImage PlayIconImage
+        {
+            get
+            {
+                if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                    return UI_Utils.Instance.DownloadIcon;
+                else
+                    return UI_Utils.Instance.PlayIcon;
+            }
+        }
         public ConvMessage(string message, string msisdn, long timestamp, State msgState)
             : this(message, msisdn, timestamp, msgState, -1, -1)
         {
@@ -456,6 +567,22 @@ namespace windows_client.Model
             MessageStatus = msgState;
         }
 
+        public ConvMessage(string message, ConvMessage convMessage)
+        {
+            this._message = message;
+            _messageId = convMessage.MessageId;
+            _msisdn = convMessage.Msisdn;
+            _messageStatus = convMessage.MessageStatus;
+            _timestamp = convMessage.Timestamp;
+            _mappedMessageId = convMessage.MappedMessageId;
+            _isInvite = convMessage.IsInvite;
+            _isSent = convMessage.IsSent;
+            _isSms = convMessage.IsSms;
+            _groupParticipant = convMessage.GroupParticipant;
+            metadataJsonString = convMessage.metadataJsonString;
+            participantInfoState = convMessage.participantInfoState;
+            _fileAttachment = convMessage._fileAttachment;
+        }
         public JObject serialize(bool isHikeMsg)
         {
             JObject obj = new JObject();
@@ -942,5 +1069,6 @@ namespace windows_client.Model
                     break;
             }
         }
+
     }
 }

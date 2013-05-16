@@ -48,7 +48,7 @@ namespace windows_client.View
         private bool isStatusMessagesLoaded = false;
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
         #endregion
-
+        int i = 0;
         #region Page Based Functions
 
         public ConversationsList()
@@ -346,7 +346,13 @@ namespace windows_client.View
                 return;
 
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = convListObj;
-            string uri = "/View/testPage.xaml";
+
+            string uri;
+            if (i % 2 == 0)
+                uri = "/View/NewChatThread.xaml";
+            else
+                uri = "/View/NewChatThread_1.xaml";
+            i++;
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 
