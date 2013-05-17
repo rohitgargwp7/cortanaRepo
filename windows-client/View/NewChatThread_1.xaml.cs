@@ -1406,9 +1406,9 @@ namespace windows_client.View
                     {
                         if (NetworkInterface.GetIsNetworkAvailable())
                         {
-                            //    chatBubble.setAttachmentState(Attachment.AttachmentState.STARTED);
-                            //    FileTransfer.Instance.downloadFile(chatBubble, mContactNumber.Replace(":", "_"));
-                            //    MessagesTableUtils.addUploadingOrDownloadingMessage(chatBubble.MessageId, chatBubble);
+                            //chatBubble.setAttachmentState(Attachment.AttachmentState.STARTED);
+                            //FileTransfer.Instance.downloadFile(chatBubble, mContactNumber.Replace(":", "_"));
+                            //MessagesTableUtils.addUploadingOrDownloadingMessage(chatBubble.MessageId, chatBubble);
                         }
                         else
                         {
