@@ -80,6 +80,15 @@ namespace windows_client.utils
         private Thickness convListEmoticonMargin = new Thickness(0, 5, 0, 0);
         private Thickness chatThreadKeyPadUpMargin = new Thickness(0, 315, 15, 0);
         private Thickness chatThreadKeyPadDownMargin = new Thickness(0, 0, 15, 0);
+        private Thickness recMessTextMarginPortrait = new Thickness(0, 0, 90, 14);
+        private Thickness recFileMarginPortrait = new Thickness(0, 0, 185, 14);
+        private Thickness sentMessTextMarginPortrait = new Thickness(55, 12, 0, 10);
+        private Thickness sentFileMarginPortrait = new Thickness(185, 12, 0, 10);
+        private Thickness recMessTextMarginLS = new Thickness(0, 0, 285, 14);
+        private Thickness recFileMarginLS = new Thickness(0, 0, 380, 14);
+        private Thickness sentMessTextMarginLS = new Thickness(250, 12, 0, 10);
+        private Thickness sentFileMarginLS = new Thickness(380, 12, 0, 10);
+
         private FontFamily groupChatMessageHeader;
         private FontFamily messageText;
 
@@ -852,6 +861,70 @@ namespace windows_client.utils
             get
             {
                 return chatThreadKeyPadDownMargin;
+            }
+        }
+
+        public Thickness RecMessTextMarginPortrait
+        {
+            get
+            {
+                return recMessTextMarginPortrait;
+            }
+        }
+
+        public Thickness RecFileMarginPortrait
+        {
+            get
+            {
+                return recFileMarginPortrait;
+            }
+        }
+        
+        public Thickness SentMessTextMarginPortrait
+        {
+            get
+            {
+                return sentMessTextMarginPortrait;
+            }
+        }
+        
+        public Thickness SentFileMarginPortrait
+        {
+            get
+            {
+                return sentFileMarginPortrait;
+            }
+        }
+        
+        public Thickness RecMessTextMarginLS
+        {
+            get
+            {
+                return recMessTextMarginLS;
+            }
+        }
+        
+        public Thickness RecFileMarginLS
+        {
+            get
+            {
+                return recFileMarginLS;
+            }
+        }
+        
+        public Thickness SentMessTextMarginLS
+        {
+            get
+            {
+                return sentMessTextMarginLS;
+            }
+        }
+        
+        public Thickness SentFileMarginLS
+        {
+            get
+            {
+                return sentFileMarginLS;
             }
         }
 

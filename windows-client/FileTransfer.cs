@@ -30,7 +30,7 @@ namespace windows_client
         bool WaitingForNonVoiceBlockingNetwork;
         bool WaitingForWiFi;
 
-        private static Dictionary<string, ReceivedChatBubble> requestIdChatBubbleMap = new Dictionary<string, ReceivedChatBubble>();
+        private static Dictionary<string, ConvMessage> requestIdConvMsgMap = new Dictionary<string, ConvMessage>();
 
         private static volatile FileTransfer instance = null;
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
@@ -51,13 +51,13 @@ namespace windows_client
             }
         }
 
-        public void downloadFile(MyChatBubble chatBubble, string msisdn)
+        public void downloadFile(ConvMessage conMessage, string msisdn)
         {
-            Uri downloadUriSource = new Uri(Uri.EscapeUriString(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + chatBubble.FileAttachment.FileKey),
+            Uri downloadUriSource = new Uri(Uri.EscapeUriString(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + conMessage.FileAttachment.FileKey),
                 UriKind.RelativeOrAbsolute);
 
-            string relativeFilePath = "/" + msisdn + "/" + Convert.ToString(chatBubble.MessageId);
-            string destinationPath = "shared/transfers" + "/" + Convert.ToString(chatBubble.MessageId);
+            string relativeFilePath = "/" + msisdn + "/" + Convert.ToString(conMessage.MessageId);
+            string destinationPath = "shared/transfers" + "/" + Convert.ToString(conMessage.MessageId);
             Uri destinationUri = new Uri(destinationPath, UriKind.RelativeOrAbsolute);
 
             BackgroundTransferRequest transferRequest = new BackgroundTransferRequest(downloadUriSource);
@@ -72,7 +72,7 @@ namespace windows_client
             {
                 transferRequest.TransferPreferences = TransferPreferences.AllowCellularAndBattery;
                 BackgroundTransferService.Add(transferRequest);
-                requestIdChatBubbleMap.Add(transferRequest.RequestId, chatBubble as ReceivedChatBubble);
+                requestIdConvMsgMap.Add(transferRequest.RequestId, conMessage);
             }
             catch (InvalidOperationException ex)
             {
@@ -96,10 +96,11 @@ namespace windows_client
                         // Remove the transfer request in order to make room in the 
                         // queue for more transfers. Transfers are not automatically
                         // removed by the system.
-                        ReceivedChatBubble chatBubble;
-                        requestIdChatBubbleMap.TryGetValue(transfer.RequestId, out chatBubble);
-                        if (chatBubble != null)
-                            chatBubble.setAttachmentState(Attachment.AttachmentState.COMPLETED);
+                        ConvMessage convMessage;
+                        requestIdConvMsgMap.TryGetValue(transfer.RequestId, out convMessage);
+                        //todo:
+                        if (convMessage != null)
+                            convMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
                         RemoveTransferRequest(transfer.RequestId);
                         //RemoveTransferRequest(transfer.RequestId);
                         // In this example, the downloaded file is moved into the root
@@ -121,17 +122,17 @@ namespace windows_client
                                 isoStore.MoveFile(transfer.DownloadLocation.OriginalString, destinationPath);
                                 isoStore.DeleteFile(transfer.DownloadLocation.OriginalString);
 
-                                if (chatBubble != null && chatBubble.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                                if (convMessage != null && convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                                 {
                                     IsolatedStorageFileStream myFileStream = isoStore.OpenFile(destinationPath, FileMode.Open, FileAccess.Read);
                                     MediaLibrary library = new MediaLibrary();
                                     myFileStream.Seek(0, 0);
-                                    library.SavePicture(chatBubble.FileAttachment.FileName, myFileStream);
+                                    library.SavePicture(convMessage.FileAttachment.FileName, myFileStream);
                                 }
                                 var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
                                 if (currentPage != null)
                                 {
-                                    currentPage.displayAttachment(chatBubble, true);
+                                    currentPage.displayAttachment(convMessage, true);
                                 }
                             }
                         }
@@ -184,13 +185,13 @@ namespace windows_client
 
         void transfer_TransferProgressChanged(object sender, BackgroundTransferEventArgs e)
         {
-            ReceivedChatBubble chatBubble;
-            requestIdChatBubbleMap.TryGetValue(e.Request.RequestId, out chatBubble);
-            if (chatBubble != null)
+            ConvMessage convMessage;
+            requestIdConvMsgMap.TryGetValue(e.Request.RequestId, out convMessage);
+            if (convMessage != null)
             {
-                if (chatBubble.FileAttachment.FileState != Attachment.AttachmentState.CANCELED)
+                if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.CANCELED)
                 {
-                    chatBubble.updateProgress(e.Request.BytesReceived * 100 / e.Request.TotalBytesToReceive);
+                    convMessage.ProgressBarValue = e.Request.BytesReceived * 100 / e.Request.TotalBytesToReceive;
                 }
                 else
                 {
@@ -209,7 +210,7 @@ namespace windows_client
 
         private void RemoveTransferRequest(string transferID)
         {
-            requestIdChatBubbleMap.Remove(transferID);
+            requestIdConvMsgMap.Remove(transferID);
             // Use Find to retrieve the transfer request with the specified ID.
             BackgroundTransferRequest transferToRemove = BackgroundTransferService.Find(transferID);
             try

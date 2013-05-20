@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -19,7 +20,7 @@ namespace windows_client.Controls
         public static readonly DependencyProperty TypeProperty =
            DependencyProperty.Register("LinkifyAll", typeof(bool), typeof(MyRichTextBox), new PropertyMetadata(default(bool)));
 
-
+        private string lastText = string.Empty;
         public string Text
         {
             get
@@ -46,11 +47,23 @@ namespace windows_client.Controls
 
         private static void TextPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
-            var richTextBox = (MyRichTextBox)dependencyObject;
-            var text = (string)dependencyPropertyChangedEventArgs.NewValue;
-            var paragraph = richTextBox.LinkifyAll ? SmileyParser.Instance.LinkifyAll(text) : SmileyParser.Instance.LinkifyEmoticons(text);
-            richTextBox.Blocks.Clear();
-            richTextBox.Blocks.Add(paragraph);
+            try
+            {
+                var richTextBox = (MyRichTextBox)dependencyObject;
+                var text = (string)dependencyPropertyChangedEventArgs.NewValue;
+
+                if (text == richTextBox.lastText)
+                    return;
+                richTextBox.lastText = text;
+
+                var paragraph = richTextBox.LinkifyAll ? SmileyParser.Instance.LinkifyAll(text) : SmileyParser.Instance.LinkifyEmoticons(text);
+                richTextBox.Blocks.Clear();
+                richTextBox.Blocks.Add(paragraph);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
     }
 }

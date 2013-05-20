@@ -48,7 +48,6 @@ namespace windows_client.View
         private bool isStatusMessagesLoaded = false;
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
         #endregion
-        int i = 0;
         #region Page Based Functions
 
         public ConversationsList()
@@ -90,12 +89,11 @@ namespace windows_client.View
             {
                 TotalUnreadStatuses = 0;
             }
-            //this.myListBox.SelectedIndex = -1;
+            this.myListBox.SelectedItem = null;
             this.favourites.SelectedIndex = -1;
             this.hikeContactListBox.SelectedIndex = -1;
             this.statusLLS.SelectedIndex = -1;
-            //if (App.ViewModel.MessageListPageCollection.Count > 0)
-            //    myListBox.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
+
             App.IS_TOMBSTONED = false;
             App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
             App.newChatThreadPage = null;
@@ -137,7 +135,9 @@ namespace windows_client.View
             {
                 emptyScreenImage.Opacity = 0;
                 emptyScreenTip.Opacity = 0;
+                myListBox.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
             }
+
             App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
             if (showFreeSMS)
             {
@@ -347,12 +347,7 @@ namespace windows_client.View
 
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = convListObj;
 
-            string uri;
-            if (i % 2 == 0)
-                uri = "/View/NewChatThread.xaml";
-            else
-                uri = "/View/NewChatThread_1.xaml";
-            i++;
+            string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 
@@ -1709,10 +1704,6 @@ namespace windows_client.View
             if (convObj != null)
             {
                 convObj.IsFav = false;
-                if (convObj.ConvBoxObj != null && convObj.ConvBoxObj.FavouriteMenuItem != null)
-                {
-                    convObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.Add_To_Fav_Txt;
-                }
                 App.ViewModel.FavList.Remove(convObj);
                 JObject data = new JObject();
                 data["id"] = convObj.Msisdn;
@@ -1793,8 +1784,6 @@ namespace windows_client.View
                 {
                     cObj = App.ViewModel.ConvMap[contactInfo.Msisdn];
                     cObj.IsFav = true;
-                    if (cObj.ConvBoxObj != null && cObj.ConvBoxObj.FavouriteMenuItem != null)
-                        cObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.RemFromFav_Txt;
                 }
                 else
                 {
@@ -2013,8 +2002,6 @@ namespace windows_client.View
             {
                 cObj = App.ViewModel.ConvMap[fObj.Msisdn];
                 cObj.IsFav = true;
-                if (cObj.ConvBoxObj != null && cObj.ConvBoxObj.FavouriteMenuItem != null)
-                    cObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.RemFromFav_Txt;
             }
             else
             {

@@ -136,7 +136,7 @@ namespace windows_client.utils
         public delegate void postResponseFunction(JObject obj);
         public delegate void parametrisedPostResponseFunction(JObject jObj, Object obj);
         public delegate void downloadFile(byte[] downloadedData, object metadata);
-        public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble);
+        public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage);
 
         private enum RequestType
         {
@@ -295,8 +295,7 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_INFO_ON_APP_UPDATE, finalCallbackFunction });
         }
 
-        public static void uploadFile(byte[] dataBytes, postUploadPhotoFunction finalCallbackFunction, ConvMessage convMessage,
-            SentChatBubble chatbubble)
+        public static void uploadFile(byte[] dataBytes, postUploadPhotoFunction finalCallbackFunction, ConvMessage convMessage)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
             addToken(req);
@@ -307,8 +306,7 @@ namespace windows_client.utils
             req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
             req.Headers["X-Thumbnail-Required"] = "0";
 
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPLOAD_FILE, dataBytes, finalCallbackFunction, convMessage, 
-                chatbubble });
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPLOAD_FILE, dataBytes, finalCallbackFunction, convMessage });
         }
 
         public static void postStatus(JObject statusJSON, postResponseFunction finalCallbackFunction)
@@ -491,7 +489,7 @@ namespace windows_client.utils
                     byte[] dataBytes = (byte[])vars[2];
                     postUploadPhotoFunction finalCallbackForUploadFile = vars[3] as postUploadPhotoFunction;
                     ConvMessage convMessage = vars[4] as ConvMessage;
-                    SentChatBubble chatBubble = vars[5] as SentChatBubble;
+                    // SentChatBubble chatBubble = vars[5] as SentChatBubble;
                     int bufferSize = 2048;
                     int startIndex = 0;
                     int noOfBytesToWrite = 0;
@@ -503,17 +501,15 @@ namespace windows_client.utils
                         noOfBytesToWrite = noOfBytesToWrite < bufferSize ? noOfBytesToWrite : bufferSize;
                         postStream.Write(dataBytes, startIndex, noOfBytesToWrite);
                         progressValue = ((double)(startIndex + noOfBytesToWrite) / dataBytes.Length) * 100;
-                        bool updated = chatBubble.updateProgress(progressValue);
-                        if (!updated)
-                        {
-                            chatBubble.setAttachmentState(Attachment.AttachmentState.CANCELED);
+                        if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.CANCELED)
                             break;
-                        }
+                        progressValue -= 10;
+                        convMessage.ProgressBarValue = progressValue < 0 ? 0 : progressValue;
                         startIndex += noOfBytesToWrite;
                     }
 
                     postStream.Close();
-                    req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage, chatBubble });
+                    req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage });
                     return;
                 #endregion
                 #region POST STATUS
@@ -847,8 +843,8 @@ namespace windows_client.utils
                 {
                     postUploadPhotoFunction finalCallbackFunctionForUpload = vars[2] as postUploadPhotoFunction;
                     convMessage = vars[3] as ConvMessage;
-                    SentChatBubble chatBubble = vars[4] as SentChatBubble;
-                    finalCallbackFunctionForUpload(obj, convMessage, chatBubble);
+                    // SentChatBubble chatBubble = vars[4] as SentChatBubble;
+                    finalCallbackFunctionForUpload(obj, convMessage);
                 }
                 else if (vars[2] is parametrisedPostResponseFunction)
                 {

@@ -131,27 +131,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ConversationBox.xaml.cs">
-      <DependentUpon>ConversationBox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\MyRichTextBox.cs" />
-    <Compile Include="Controls\StatusChatBubble.xaml.cs">
-      <DependentUpon>StatusChatBubble.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\MyChatBubble.cs" />
-    <Compile Include="Controls\NotificationChatBubble.xaml.cs">
-      <DependentUpon>NotificationChatBubble.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\LinkifiedTextBox.xaml.cs">
-      <DependentUpon>LinkifiedTextBox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ProgressIndicator.cs" />
-    <Compile Include="Controls\ReceivedChatBubble.xaml.cs">
-      <DependentUpon>ReceivedChatBubble.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\SentChatBubble.xaml.cs">
-      <DependentUpon>SentChatBubble.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\StatusUpdate\FriendRequestStatus.xaml.cs">
       <DependentUpon>FriendRequestStatus.xaml</DependentUpon>
     </Compile>
@@ -239,8 +220,8 @@
     <Compile Include="View\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\NewChatThread_1.xaml.cs">
-      <DependentUpon>NewChatThread_1.xaml</DependentUpon>
+    <Compile Include="View\NewChatThread.xaml.cs">
+      <DependentUpon>NewChatThread.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\PostStatus.xaml.cs">
       <DependentUpon>PostStatus.xaml</DependentUpon>
@@ -271,9 +252,6 @@
     </Compile>
     <Compile Include="View\InviteUsers.xaml.cs">
       <DependentUpon>InviteUsers.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\NewChatThread.xaml.cs">
-      <DependentUpon>NewChatThread.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\NewSelectUserPage.xaml.cs">
       <DependentUpon>NewSelectUserPage.xaml</DependentUpon>
@@ -313,29 +291,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
-    <Page Include="Controls\ConversationBox.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\StatusChatBubble.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\NotificationChatBubble.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\LinkifiedTextBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\ReceivedChatBubble.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\SentChatBubble.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\StatusUpdate\FriendRequestStatus.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -380,7 +335,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\NewChatThread_1.xaml">
+    <Page Include="View\NewChatThread.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -421,10 +376,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\InviteUsers.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\NewChatThread.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
