@@ -64,14 +64,15 @@ namespace windows_client.View
             App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
+            {
                 this.Loaded += ConversationsList_Loaded;
+            }
         }
 
         private void ConversationsList_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             this.Loaded -= ConversationsList_Loaded;
             launchPagePivot.SelectedIndex = 3;
-            PhoneApplicationService.Current.State.Remove("IsStatusPush");
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
@@ -218,7 +219,10 @@ namespace windows_client.View
             appBar.Mode = ApplicationBarMode.Default;
             appBar.IsMenuEnabled = true;
             appBar.Opacity = 1;
-            NetworkManager.turnOffNetworkManager = false;
+            if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
+            {
+                NetworkManager.turnOffNetworkManager = false;
+            }
             App.MqttManagerInstance.connect();
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
@@ -418,22 +422,24 @@ namespace windows_client.View
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_black.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_black.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite_dark.png", UriKind.Relative));
-                rewards.Source = new BitmapImage(new Uri("images/rewards_link_dark.png", UriKind.Relative));
+                rewards.Source = new BitmapImage(new Uri("images/new_icon_white.png", UriKind.Relative));
+                //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x36, 0x36, 0x36));
             }
             else
             {
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_white.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_white.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite.png", UriKind.Relative));
-                rewards.Source = new BitmapImage(new Uri("images/rewards_link.png", UriKind.Relative));
+                rewards.Source = new BitmapImage(new Uri("images/new_icon.png", UriKind.Relative));
                 helpImage.Source = new BitmapImage(new Uri("images/help_icon_dark.png", UriKind.Relative));
                 settingsImage.Source = new BitmapImage(new Uri("images/settings_icon_dark.png", UriKind.Relative));
+                //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0xe9, 0xe9));
             }
             bool showRewards;
             if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
                 rewardsPanel.Visibility = Visibility.Visible;
 
-            txtStatus.Foreground = creditsTxtBlck.Foreground = rewardsTxtBlk.Foreground = UI_Utils.Instance.EditProfileForeground;
+            txtStatus.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
             int moodId;
             string lastStatus = StatusMsgsTable.GetLastStatusMessage(out moodId);
             if (!string.IsNullOrEmpty(lastStatus))
@@ -457,14 +463,6 @@ namespace windows_client.View
                 //todo:change default status
             }
             int rew_val = 0;
-            App.appSettings.TryGetValue<int>(HikeConstants.REWARDS_VALUE, out rew_val);
-            if (rew_val <= 0)
-                rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
-            else
-            {
-                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
-                rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
-            }
 
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
@@ -631,6 +629,7 @@ namespace windows_client.View
                             // this loop will filter out already added fav and blocked contacts from hike user list
                             for (int i = count - 1; i >= 0; i--)
                             {
+                                tempHikeContactList[i].IsUsedAtMiscPlaces = true;
                                 // if user is not fav and is not blocked then add to hike contacts
                                 if (!msisdns.Contains(tempHikeContactList[i].Msisdn) && !App.ViewModel.Isfavourite(tempHikeContactList[i].Msisdn) && !App.ViewModel.BlockedHashset.Contains(tempHikeContactList[i].Msisdn))
                                 {
@@ -731,6 +730,11 @@ namespace windows_client.View
                         }
                         RefreshBarCount = 0;
                         UnreadFriendRequests = 0;
+                        if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
+                        {
+                            NetworkManager.turnOffNetworkManager = false;
+                            PhoneApplicationService.Current.State.Remove("IsStatusPush");
+                        }
                         isStatusMessagesLoaded = true;
                     };
                     if (appSettings.Contains(App.SHOW_STATUS_UPDATES_TUTORIAL))
@@ -903,24 +907,24 @@ namespace windows_client.View
             #region REWARDS CHANGED
             else if (HikePubSub.REWARDS_CHANGED == type)
             {
-                int rew_val = (int)obj;
-                if (rew_val <= 0) // hide value
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Visible)
-                            rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
-                    });
-                }
-                else
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Collapsed)
-                            rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
-                        rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
-                    });
-                }
+                //int rew_val = (int)obj;
+                //if (rew_val <= 0) // hide value
+                //{
+                //    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                //    {
+                //        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Visible)
+                //            rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
+                //    });
+                //}
+                //else
+                //{
+                //    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                //    {
+                //        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Collapsed)
+                //            rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
+                //        rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
+                //    });
+                //}
             }
             #endregion
             #region BAD_USER_PASS
@@ -1083,7 +1087,10 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (c != null)
+                        {
+                            c.IsUsedAtMiscPlaces = true;
                             hikeContactList.Add(c);
+                        }
                         if (hikeContactList.Count > 0)
                         {
                             emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
@@ -1101,7 +1108,11 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (obj != null)
-                            hikeContactList.Remove(obj as ContactInfo);
+                        {
+                            ContactInfo c = obj as ContactInfo;
+                            c.IsUsedAtMiscPlaces = true;
+                            hikeContactList.Remove(c);
+                        }
                         if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                         {
                             emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
@@ -1123,6 +1134,7 @@ namespace windows_client.View
                         if (co != null && co.IsOnhike && !string.IsNullOrEmpty(co.ContactName))
                         {
                             ContactInfo c = new ContactInfo(ms, co.NameToShow, co.IsOnhike);
+                            c.IsUsedAtMiscPlaces = true;
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 hikeContactList.Remove(c);
@@ -1134,6 +1146,7 @@ namespace windows_client.View
                         ContactInfo c = UsersTableUtils.getContactInfoFromMSISDN(ms);
                         if (c != null)
                         {
+                            c.IsUsedAtMiscPlaces = true;
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 hikeContactList.Remove(c);
@@ -1205,10 +1218,25 @@ namespace windows_client.View
                     #region removing hike contact if blocked
                     if (c.OnHike && !string.IsNullOrEmpty(c.Name)) // if friend request is not there , try to remove from contacts
                     {
+                        c.IsUsedAtMiscPlaces = true;
                         Dispatcher.BeginInvoke(() =>
                         {
                             hikeContactList.Remove(c);
+                            if (hikeContactList.Count == 0)
+                            {
+                                emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
+                                hikeContactListBox.Visibility = Visibility.Collapsed;
+                            }
                         });
+                    }
+                    //if conatct is removed from circle of friends then show no friends placehoder
+                    if (App.ViewModel.FavList.Count == 0)
+                    {
+                        Dispatcher.BeginInvoke(() =>
+                       {
+                           emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
+                           favourites.Visibility = System.Windows.Visibility.Collapsed;
+                       });
                     }
                     #endregion
                 }
@@ -1235,7 +1263,13 @@ namespace windows_client.View
 
                 Dispatcher.BeginInvoke(() =>
                 {
+                    c.IsUsedAtMiscPlaces = true;
                     hikeContactList.Add(c);
+                    if (emptyListPlaceholderHikeContacts.Visibility == Visibility.Visible)
+                    {
+                        emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
+                        hikeContactListBox.Visibility = Visibility.Visible;
+                    }
                 });
 
             }
@@ -1273,7 +1307,6 @@ namespace windows_client.View
 
         private void MenuItem_Tap_AddRemoveFav(object sender, System.Windows.Input.GestureEventArgs e)
         {
-
             ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
             if (convObj == null)
                 return;
@@ -1302,7 +1335,6 @@ namespace windows_client.View
                     favourites.Visibility = System.Windows.Visibility.Collapsed;
                     //addFavsPanel.Opacity = 0;
                 }
-
                 App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CONVLIST);
 
                 FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
@@ -1316,6 +1348,7 @@ namespace windows_client.View
                     else
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                     c.Avatar = convObj.Avatar;
+                    c.IsUsedAtMiscPlaces = true;
                     hikeContactList.Add(c);
                 }
                 if (hikeContactList.Count > 0)
@@ -1333,6 +1366,7 @@ namespace windows_client.View
                     c = App.ViewModel.ContactsCache[convObj.Msisdn];
                 else
                     c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
+                c.IsUsedAtMiscPlaces = true;
                 hikeContactList.Remove(c);
                 FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
                 App.ViewModel.FavList.Insert(0, convObj);
@@ -1364,10 +1398,10 @@ namespace windows_client.View
                     emptyListPlaceholderHikeContacts.Visibility = System.Windows.Visibility.Visible;
                     hikeContactListBox.Visibility = Visibility.Collapsed;
                 }
-
                 App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
             }
         }
+        
 
         #endregion
 
@@ -1728,6 +1762,7 @@ namespace windows_client.View
                     else
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                     c.Avatar = convObj.Avatar;
+                    c.IsUsedAtMiscPlaces = true;
                     hikeContactList.Add(c);
                 }
             }
@@ -1769,6 +1804,7 @@ namespace windows_client.View
                     return;
                 if (App.ViewModel.Isfavourite(contactInfo.Msisdn))
                 {
+                    contactInfo.IsUsedAtMiscPlaces = true;
                     hikeContactList.Remove(contactInfo);
                     return;
                 }
@@ -1789,6 +1825,7 @@ namespace windows_client.View
                 {
                     cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, contactInfo.Avatar);
                 }
+                contactInfo.IsUsedAtMiscPlaces = true;
                 hikeContactList.Remove(contactInfo);
                 App.ViewModel.FavList.Add(cObj);
                 MiscDBUtil.SaveFavourites();
@@ -2010,12 +2047,22 @@ namespace windows_client.View
                 else
                 {
                     cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
-                    App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
+                    if (cn != null)
+                        App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
                 }
                 bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
                 cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
             }
-            hikeContactList.Remove(cn);
+            if (cn == null)
+            {
+                if (App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
+                {
+                    cn = App.ViewModel.ContactsCache[fObj.Msisdn];
+                    cn.IsUsedAtMiscPlaces = true;
+                    hikeContactList.Remove(cn);
+                }
+            }
+
             App.ViewModel.FavList.Insert(0, cObj);
             App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
             JObject data = new JObject();

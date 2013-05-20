@@ -718,6 +718,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to new.
+        /// </summary>
+        public static string ConversationsList_New_Txt {
+            get {
+                return ResourceManager.GetString("ConversationsList_New_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to copy.
         /// </summary>
         public static string Copy_txt {
@@ -750,6 +759,42 @@ namespace windows_client.Languages {
         public static string CRITICAL_UPDATE_TEXT {
             get {
                 return ResourceManager.GetString("CRITICAL_UPDATE_TEXT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}/{1}.
+        /// </summary>
+        public static string CT_CharCount_Sms_User {
+            get {
+                return ResourceManager.GetString("CT_CharCount_Sms_User", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not send file.
+        /// </summary>
+        public static string CT_FileSizeExceed_Caption_Text {
+            get {
+                return ResourceManager.GetString("CT_FileSizeExceed_Caption_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max file size can be 15 MB..
+        /// </summary>
+        public static string CT_FileSizeExceed_Text {
+            get {
+                return ResourceManager.GetString("CT_FileSizeExceed_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} messages,.
+        /// </summary>
+        public static string CT_MessageCount_Sms_User {
+            get {
+                return ResourceManager.GetString("CT_MessageCount_Sms_User", resourceCulture);
             }
         }
         
@@ -916,7 +961,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hi! I&apos;ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!.
+        ///   Looks up a localized string similar to Hi!
+        ///
+        ///I started using hike, a simple beautiful messaging app that&apos;s absolutely free.
+        ///
+        ///hike comes with some hilarious emoticons. You can also post Status Updates to your close circle of friends! Think of it like BBM but much, much better!
+        ///
+        ///Get it now and say good bye to plain boring SMS.
+        ///
+        ///Get hike: http://get.hike.in.
         /// </summary>
         public static string Email_Invite_Txt {
             get {
@@ -1506,6 +1559,15 @@ namespace windows_client.Languages {
         public static string GroupInfo_GrpNameChangedTo_Txt {
             get {
                 return ResourceManager.GetString("GroupInfo_GrpNameChangedTo_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group Name can have maximum 30 chars..
+        /// </summary>
+        public static string GroupInfo_GrpNameMaxLength_Txt {
+            get {
+                return ResourceManager.GetString("GroupInfo_GrpNameMaxLength_Txt", resourceCulture);
             }
         }
         
@@ -2887,15 +2949,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to rewards.
-        /// </summary>
-        public static string Rewards_Txt {
-            get {
-                return ResourceManager.GetString("Rewards_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to save.
         /// </summary>
         public static string Save_AppBar_Btn {
@@ -3400,7 +3453,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hi! I’m using hike, an awesome new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!.
+        ///   Looks up a localized string similar to Hi! Get hike 2.0. Free messaging worldwide. Now with Status Updates and Moods :) - http://get.hike.in/.
         /// </summary>
         public static string sms_invite_message {
             get {
@@ -3436,7 +3489,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I&apos;m using @hikeapp 2.0 with status updates &amp; moods. Simple &amp; beautiful messaging, absolutely free..
+        ///   Looks up a localized string similar to I&apos;m using @hikeapp 2.0 with status updates &amp; moods. Its like BBM but much, much better! Get hike at http://get.hike.in #gethike.
         /// </summary>
         public static string Social_Invite_Txt {
             get {
@@ -3733,7 +3786,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} just joined hike!.
+        ///   Looks up a localized string similar to {0} just joined hike, say &apos;Hi&apos; :).
         /// </summary>
         public static string USER_JOINED_HIKE {
             get {

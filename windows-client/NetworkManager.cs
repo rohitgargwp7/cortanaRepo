@@ -869,11 +869,18 @@ namespace windows_client
                 {
                     string groupName = (string)jsonObj[HikeConstants.DATA];
                     string groupId = (string)jsonObj[HikeConstants.TO];
-                    if (msisdn == App.MSISDN) // if I changed the name ignore
-                        return;
-                    bool groupExist = ConversationTableUtils.updateGroupName(groupId, groupName);
-                    if (!groupExist)
-                        return;
+                    //no self check as server will send packet of group name change if changed by self
+                    //we need to use this in case of self name change and unlink account
+                    ConversationListObject cObj;
+                    if (App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
+                    {
+                        if (cObj.ContactName == groupName)//group name is same as previous
+                            return;
+                    }
+                    else
+                        return;//group doesn't exists
+
+                    ConversationTableUtils.updateGroupName(groupId, groupName);
                     ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE, jsonObj);
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
                     if (obj == null)
@@ -906,11 +913,26 @@ namespace windows_client
                 string from = (string)jsonObj[HikeConstants.FROM];
                 if (from == App.MSISDN) // if you changed the pic simply ignore
                     return;
+                ConversationListObject cObj;
+                if (!App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
+                    return;//if group doesn't exist return
                 JToken temp;
                 jsonObj.TryGetValue(HikeConstants.DATA, out temp);
                 if (temp == null)
                     return;
                 string iconBase64 = temp.ToString();
+                //check if same image is set
+
+                if (cObj.Avatar != null)
+                {
+                    string previousImage = System.Convert.ToBase64String(cObj.Avatar);
+                    if (previousImage.Length > 4 && iconBase64.Length > 4 &&
+                        previousImage.Substring(0, 5) == iconBase64.Substring(0, 5) &&
+                        previousImage.Substring(previousImage.Length - 5) == iconBase64.Substring(iconBase64.Length - 5))
+                    {
+                        return;
+                    }
+                }
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
                 ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED, jsonObj);
                 ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
@@ -1153,23 +1175,22 @@ namespace windows_client
                         ts = val.ToObject<long>();
 
                     val = null;
+                    string id = null;
+                    JToken idToken;
+                    if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
+                        id = idToken.ToString();
+
                     #region HANDLE PROFILE PIC UPDATE
                     if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
                     {
-                        string id = null;
-                        JToken idToken;
-                        if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
-                            id = idToken.ToString();
-
-
                         sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, ts,
                             StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, -1, 0, true);
-
                         idToken = null;
                         if (iconBase64 != null)
                         {
                             byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                            StatusMsgsTable.InsertStatusMsg(sm);
+                            if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
+                                return;
                             MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.ServerId);
                             jsonObj[HikeConstants.PROFILE_PIC_ID] = sm.ServerId;
                         }
@@ -1179,11 +1200,6 @@ namespace windows_client
                     #region HANDLE TEXT UPDATE
                     else if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
                     {
-                        string id = null;
-                        JToken idToken;
-                        if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken) && idToken != null)
-                            id = idToken.ToString();
-
                         int moodId = -1;
                         int tod = 0;
                         if (data[HikeConstants.MOOD] != null)
@@ -1198,8 +1214,8 @@ namespace windows_client
                         }
                         sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts,
                             StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, moodId, tod, true);
-
-                        StatusMsgsTable.InsertStatusMsg(sm);
+                        if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
+                            return;
                     }
                     #endregion
 
@@ -1691,7 +1707,16 @@ namespace windows_client
                 return;
             Stopwatch st = Stopwatch.StartNew();
             string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status);
-
+            if (msisdn == null)
+            {
+                string idsString = string.Empty;
+                foreach (long id in ids)
+                {
+                    idsString = string.Format("{0}, {1}", idsString, id.ToString());
+                }
+                Debug.WriteLine("NetworkManager :: UpdateDbBatch : msisdn null for user:{0} ,ids:{1}, status:{2}", fromUser, idsString, status);
+                return;
+            }
             // To update conversation object , we have to check if ids [] contains last msg id
             if (App.ViewModel.ConvMap.ContainsKey(msisdn))
             {

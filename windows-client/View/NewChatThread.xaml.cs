@@ -44,10 +44,14 @@ namespace windows_client.View
         private readonly string UNBLOCK_USER = AppResources.UnBlock_Txt;
         private PageOrientation pageOrientation = PageOrientation.Portrait;
 
+        private const int maxFileSize = 15728640;//in bytes
+        private const int maxSmsCharLength = 140;
         private string groupOwner = null;
         public string mContactNumber;
         private string mContactName = null;
         private string lastText = "";
+        private string hintText = string.Empty;
+        private bool enableSendMsgButton = false;
 
         bool afterMute = true;
 
@@ -82,6 +86,7 @@ namespace windows_client.View
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
         ApplicationBarMenuItem addUserMenuItem;
+        ApplicationBarMenuItem infoMenuItem;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
         ApplicationBarIconButton fileTransferIconButton = null;
@@ -177,9 +182,14 @@ namespace windows_client.View
 
         private void ManagePageStateObjects()
         {
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE))
+            //or condition for case of tombstoning
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE) || this.State.ContainsKey(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE))
             {
-                object obj = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE];
+                Object obj;
+                if (!PhoneApplicationService.Current.State.TryGetValue(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE, out obj))
+                {
+                    obj = this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE];
+                }
                 if (obj is ConversationListObject)
                     statusObject = this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
 
@@ -187,26 +197,37 @@ namespace windows_client.View
                     statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = obj;
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE);
             }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE) || this.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
             {
                 //contact info object
-                statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.OBJ_FROM_SELECTUSER_PAGE, out statusObject))
+                    this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = statusObject;
+                else
+                    statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
+
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_SELECTUSER_PAGE);
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GROUP_CHAT))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GROUP_CHAT) || this.State.ContainsKey(HikeConstants.GROUP_CHAT))
             {
                 //list<Contact Info>
-                statusObject = this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.GROUP_CHAT, out statusObject))
+                    this.State[HikeConstants.GROUP_CHAT] = statusObject;
+                else
+                    statusObject = this.State[HikeConstants.GROUP_CHAT];
+
                 PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE) || this.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE))
             {
                 //contactInfo
-                statusObject = this.State[HikeConstants.OBJ_FROM_STATUSPAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE];
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.OBJ_FROM_STATUSPAGE, out statusObject))
+                    this.State[HikeConstants.OBJ_FROM_STATUSPAGE] = statusObject;
+                else
+                    statusObject = this.State[HikeConstants.OBJ_FROM_STATUSPAGE];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_STATUSPAGE);
                 IEnumerable<JournalEntry> entries = NavigationService.BackStack;
                 int count = 0;
@@ -296,7 +317,12 @@ namespace windows_client.View
 
                 //MessageBox.Show(msisdn, "NEW CHAT", MessageBoxButton.OK);
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                {
+                    string id = msisdn.Replace(":", "_");
+                    byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(id);
+                    App.ViewModel.ConvMap[msisdn].Avatar = _avatar;
                     this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = statusObject = App.ViewModel.ConvMap[msisdn];
+                }
                 else if (Utils.isGroupConversation(msisdn))
                 {
                     ConversationListObject co = new ConversationListObject();
@@ -632,20 +658,19 @@ namespace windows_client.View
                 mUserIsBlocked = App.ViewModel.BlockedHashset.Contains(groupOwner);
             else
                 mUserIsBlocked = App.ViewModel.BlockedHashset.Contains(mContactNumber);
-            initAppBar(isGroupChat, isAddUser);
+            initAppBar(isAddUser);
             if (!isOnHike)
             {
-                sendMsgTxtbox.Hint = ON_SMS_TEXT;
+                sendMsgTxtbox.Hint = hintText = ON_SMS_TEXT;
                 initInviteMenuItem();
                 appBar.MenuItems.Add(inviteMenuItem);
             }
             else
             {
-                sendMsgTxtbox.Hint = ON_HIKE_TEXT;
+                sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
             }
             if (isGroupChat)
-                sendMsgTxtbox.Hint = ON_GROUP_TEXT;
-
+                sendMsgTxtbox.Hint = hintText = ON_GROUP_TEXT;
             initBlockUnblockState();
 
             if (isGroupChat && !isGroupAlive)
@@ -830,7 +855,7 @@ namespace windows_client.View
         #region APP BAR
 
         /* Should run on UI thread, based on mUserIsBlocked*/
-        private void initAppBar(bool isGroupChat, bool isAddUser)
+        private void initAppBar(bool isAddUser)
         {
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
@@ -842,7 +867,7 @@ namespace windows_client.View
             sendIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
             sendIconButton.Text = AppResources.Send_Txt;
             sendIconButton.Click += new EventHandler(sendMsgBtn_Click);
-            sendIconButton.IsEnabled = true;
+            sendIconButton.IsEnabled = false;
             appBar.Buttons.Add(sendIconButton);
 
             //add icon for smiley
@@ -864,18 +889,24 @@ namespace windows_client.View
 
             if (isGroupChat)
             {
-                userName.Tap += userName_Tap;
+                userName.Tap += userHeader_Tap;
                 userImage.Tap += userImage_Tap;
 
-                ApplicationBarMenuItem leaveMenuItem = new ApplicationBarMenuItem();
-                leaveMenuItem.Text = AppResources.SelectUser_LeaveGrp_Txt;
-                leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
-                appBar.MenuItems.Add(leaveMenuItem);
+                infoMenuItem = new ApplicationBarMenuItem();
+                infoMenuItem.Text = AppResources.GroupInfo_Txt;
+                infoMenuItem.Click += userHeader_Tap;
+                infoMenuItem.IsEnabled = !mUserIsBlocked && isGroupAlive;
+                appBar.MenuItems.Add(infoMenuItem);
 
                 muteGroupMenuItem = new ApplicationBarMenuItem();
                 muteGroupMenuItem.Text = IsMute ? AppResources.SelectUser_UnMuteGrp_Txt : AppResources.SelectUser_MuteGrp_Txt;
                 muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
                 appBar.MenuItems.Add(muteGroupMenuItem);
+
+                ApplicationBarMenuItem leaveMenuItem = new ApplicationBarMenuItem();
+                leaveMenuItem.Text = AppResources.SelectUser_LeaveGrp_Txt;
+                leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
+                appBar.MenuItems.Add(leaveMenuItem);
             }
             else
             {
@@ -891,6 +922,11 @@ namespace windows_client.View
                 callMenuItem.Click += new EventHandler(callUser_Click);
                 appBar.MenuItems.Add(callMenuItem);
                 userHeader.Tap += userHeader_Tap;
+
+                infoMenuItem = new ApplicationBarMenuItem();
+                infoMenuItem.Text = AppResources.OthersProfile_Txt;
+                infoMenuItem.Click += userHeader_Tap;
+                appBar.MenuItems.Add(infoMenuItem);
             }
         }
 
@@ -971,10 +1007,14 @@ namespace windows_client.View
 
                     if (refState == ConvMessage.State.SENT_DELIVERED_READ && messagesList[i].MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
                     {
-                        messagesList[i].MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
-                        if (idsToUpdate == null)
-                            idsToUpdate = new List<long>();
-                        idsToUpdate.Add(messagesList[i].MessageId);
+                        ConvMessage convMess = messagesList[i];
+                        if (convMess.FileAttachment == null || (convMess.FileAttachment.FileState == Attachment.AttachmentState.COMPLETED))
+                        {
+                            convMess.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
+                            if (idsToUpdate == null)
+                                idsToUpdate = new List<long>();
+                            idsToUpdate.Add(convMess.MessageId);
+                        }
                     }
                 }
 
@@ -1298,16 +1338,6 @@ namespace windows_client.View
             }
         }
 
-        private void userName_Tap(object sender, EventArgs e)
-        {
-            if (mUserIsBlocked || !isGroupAlive)
-                return;
-            App.AnalyticsInstance.addEvent(Analytics.GROUP_INFO);
-            PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = mContactNumber;
-            PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = mContactName;
-            NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
-        }
-
         private void blockUnblock_Click(object sender, EventArgs e)
         {
 
@@ -1318,6 +1348,7 @@ namespace windows_client.View
                     ToggleControlsToNoSms(true);
                 if (isGroupChat)
                 {
+                    infoMenuItem.IsEnabled = true;
                     App.ViewModel.BlockedHashset.Remove(groupOwner);
                     mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupOwner);
                 }
@@ -1326,7 +1357,8 @@ namespace windows_client.View
                     App.ViewModel.BlockedHashset.Remove(mContactNumber);
                     mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
                     emoticonsIconButton.IsEnabled = true;
-                    sendIconButton.IsEnabled = true;
+                    enableSendMsgButton = true;
+                    sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
                     isTypingNotificationEnabled = true;
                     if (inviteMenuItem != null)
                         inviteMenuItem.IsEnabled = true;
@@ -1906,14 +1938,21 @@ namespace windows_client.View
         #region PAGE EVENTS
 
         private bool isEmptyString = true;
-
+        private int lastMessageCount = 0;
         private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (lastText.Equals(sendMsgTxtbox.Text))
                 return;
-            if (String.IsNullOrEmpty(sendMsgTxtbox.Text.Trim()))
+
+            //done as scrollviewer applied to textbox doesn't update its position on char enter
+            svMessage.UpdateLayout();
+            svMessage.ScrollToVerticalOffset(sendMsgTxtbox.GetRectFromCharacterIndex(sendMsgTxtbox.SelectionStart).Top - 50.0);
+
+            string msgText = sendMsgTxtbox.Text.Trim();
+            if (String.IsNullOrEmpty(msgText))
             {
                 isEmptyString = true;
+                sendIconButton.IsEnabled = false;
                 return;
             }
             if (isEmptyString)
@@ -1921,7 +1960,7 @@ namespace windows_client.View
                 this.sendMsgTxtbox.Foreground = UI_Utils.Instance.Black;
                 isEmptyString = false;
             }
-            lastText = sendMsgTxtbox.Text;
+            lastText = msgText;
             lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
             scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(5));
 
@@ -1930,6 +1969,33 @@ namespace windows_client.View
                 endTypingSent = false;
                 sendTypingNotification(true);
             }
+
+            if (!isOnHike && msgText.Length > 130)
+            {
+                spSmsCharCounter.Visibility = Visibility.Visible;
+                int numberOfMessages = (msgText.Length / maxSmsCharLength) + 1;
+
+                if (numberOfMessages > 1)
+                {
+                    txtMsgCount.Visibility = Visibility.Visible;
+                    if (lastMessageCount != numberOfMessages)
+                    {
+                        txtMsgCount.Text = string.Format(AppResources.CT_MessageCount_Sms_User, numberOfMessages);
+                        lastMessageCount = numberOfMessages;
+                    }
+                }
+                else
+                {
+                    txtMsgCount.Visibility = Visibility.Collapsed;
+                }
+
+                txtMsgCharCount.Text = string.Format(AppResources.CT_CharCount_Sms_User, msgText.Length, numberOfMessages * maxSmsCharLength);
+            }
+            else
+            {
+                spSmsCharCounter.Visibility = Visibility.Collapsed;
+            }
+            sendIconButton.IsEnabled = enableSendMsgButton;
         }
 
         private void sendMsgBtn_Click(object sender, EventArgs e)
@@ -1940,6 +2006,8 @@ namespace windows_client.View
             this.Focus();
             string message = sendMsgTxtbox.Text.Trim();
             sendMsgTxtbox.Text = string.Empty;
+            lastText = string.Empty;
+            sendIconButton.IsEnabled = false;
             sendMsgTxtbox.Focus();
 
             if (String.IsNullOrEmpty(message))
@@ -2054,7 +2122,7 @@ namespace windows_client.View
                     fileName = "PhotoChooser-" + fileName.Substring(1, fileName.Length - 2) + ".jpg";
                 }
                 else
-                    fileName = fileName.Substring(fileName.LastIndexOf("/") + 1);
+                    fileName = fileName.Substring(fileName.LastIndexOf("/") + 1) + ".jpg";
 
                 convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.STARTED);
                 convMessage.FileAttachment.ContentType = HikeConstants.IMAGE;
@@ -2096,6 +2164,8 @@ namespace windows_client.View
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
             sendMsgTxtbox.Background = textBoxBackground;
+            sendMsgTxtbox.Hint = string.Empty;//done intentionally as hint is shown if text is changed
+            sendMsgTxtbox.Hint = hintText;
             //this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
             //ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
@@ -2523,7 +2593,7 @@ namespace windows_client.View
                 bottomPanel.IsHitTestVisible = false;
                 OverlayMessagePanel.Visibility = Visibility.Visible;
                 emoticonsIconButton.IsEnabled = false;
-                sendIconButton.IsEnabled = false;
+                sendIconButton.IsEnabled = enableSendMsgButton = false;
                 fileTransferIconButton.IsEnabled = false;
             }
             else
@@ -2536,13 +2606,14 @@ namespace windows_client.View
                 if (isGroupChat && !isGroupAlive)
                 {
                     emoticonsIconButton.IsEnabled = false;
-                    sendIconButton.IsEnabled = false;
+                    sendIconButton.IsEnabled = enableSendMsgButton = false;
                     fileTransferIconButton.IsEnabled = false;
                 }
                 else if (!showNoSmsLeftOverlay)
                 {
                     emoticonsIconButton.IsEnabled = true;
-                    sendIconButton.IsEnabled = true;
+                    enableSendMsgButton = true;
+                    sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
                     fileTransferIconButton.IsEnabled = true;
                 }
             }
@@ -2824,21 +2895,34 @@ namespace windows_client.View
                 if (msgMap.Count > 0)
                 {
 
-                    List<long> idsToUpdate = new List<long>();
-                    foreach (var kv in msgMap)
+                    try
                     {
-                        if (kv.Key < maxId)
+                        List<long> idsToUpdate = new List<long>();
+                        foreach (var kv in msgMap)
                         {
-                            idsToUpdate.Add(kv.Key);
-                            ConvMessage msg = kv.Value;
-                            msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
+                            if (kv.Key < maxId)
+                            {
+
+                                ConvMessage msg = kv.Value;
+                                if (msg.FileAttachment == null || (msg.FileAttachment.FileState == Attachment.AttachmentState.COMPLETED))
+                                {
+                                    idsToUpdate.Add(kv.Key);
+                                    msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
+                                }
+
+                            }
+
                         }
+                        // remove these ids from map
+                        foreach (long id in idsToUpdate)
+                            msgMap.Remove(id);
+                        MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ);
+                        idsToUpdate = null;
                     }
-                    // remove these ids from map
-                    foreach (long id in idsToUpdate)
-                        msgMap.Remove(id);
-                    MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ);
-                    idsToUpdate = null;
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NewChatThread :: OnEventRecieved, perception Fix, Exception:" + ex.StackTrace);
+                    }
                 }
                 #endregion
             }
@@ -3082,7 +3166,7 @@ namespace windows_client.View
             isGroupAlive = false;
             sendMsgTxtbox.IsHitTestVisible = false;
             appBar.IsMenuEnabled = false;
-            sendIconButton.IsEnabled = false;
+            sendIconButton.IsEnabled = enableSendMsgButton = false;
             emoticonsIconButton.IsEnabled = false;
             fileTransferIconButton.IsEnabled = false;
         }
@@ -3092,7 +3176,8 @@ namespace windows_client.View
             isGroupAlive = true;
             sendMsgTxtbox.IsHitTestVisible = true;
             appBar.IsMenuEnabled = true;
-            sendIconButton.IsEnabled = true;
+            enableSendMsgButton = true;
+            sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
             emoticonsIconButton.IsEnabled = true;
             fileTransferIconButton.IsEnabled = true;
         }
@@ -3155,7 +3240,13 @@ namespace windows_client.View
                 {
                     return;
                 }
+
                 isAudio = false;
+            }
+            if (fileBytes.Length > maxFileSize)
+            {
+                MessageBox.Show(AppResources.CT_FileSizeExceed_Text, AppResources.CT_FileSizeExceed_Caption_Text, MessageBoxButton.OK);
+                return;
             }
             if (!isGroupChat || isGroupAlive)
             {
@@ -3307,9 +3398,18 @@ namespace windows_client.View
             }
         }
 
-        private void userHeader_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void userHeader_Tap(object sender, EventArgs e)
         {
-            if (!isGroupChat)
+            if (isGroupChat)
+            {
+                if (mUserIsBlocked || !isGroupAlive)
+                    return;
+                App.AnalyticsInstance.addEvent(Analytics.GROUP_INFO);
+                PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = mContactNumber;
+                PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = mContactName;
+                NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
+            }
+            else
             {
                 PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));

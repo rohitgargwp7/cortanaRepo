@@ -12,6 +12,19 @@ namespace windows_client.DbUtils
 
         #region GroupTable Queries
 
+        public static Func<HikeChatsDb, IQueryable<GroupInfo>> GetAllGroups
+        {
+            get
+            {
+                Func<HikeChatsDb, IQueryable<GroupInfo>> q =
+                     CompiledQuery.Compile<HikeChatsDb, IQueryable<GroupInfo>>
+                     ((HikeChatsDb hdc) =>
+                         from o in hdc.groupInfo
+                         select o);
+                return q;
+            }
+        }
+
         public static Func<HikeChatsDb, string, IQueryable<GroupInfo>> GetGroupInfoForID
         {
             get

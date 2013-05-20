@@ -538,9 +538,16 @@ namespace finalmqtt.Client
 
         protected void handleMessage(PublishMessage msg)
         {
-            sendAcknowledement(msg);
-            if (mqttListener != null)
-                mqttListener.onPublish(msg.getTopic(), msg.getData());
+            try
+            {
+                sendAcknowledement(msg);
+                if (mqttListener != null)
+                    mqttListener.onPublish(msg.getTopic(), msg.getData());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("MqttConnection :: handleMessage : Exception -" + ex.StackTrace);
+            }
         }
 
         protected void handleMessage(PingRespMessage msg)

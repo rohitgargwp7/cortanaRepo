@@ -101,11 +101,11 @@ namespace windows_client.View
             {
                 string grpId = groupId.Replace(":", "_");
                 groupImage.Source = UI_Utils.Instance.GetBitmapImage(grpId);
-                if (Utils.isDarkTheme())
-                {
-                    addUserImage.Source = new BitmapImage(new Uri("images/add_users_dark.png", UriKind.Relative));
-                }
                 GroupManager.Instance.LoadGroupParticipants(groupId);
+            }
+            if (Utils.isDarkTheme())
+            {
+                addUserImage.Source = new BitmapImage(new Uri("images/add_users_white.png", UriKind.Relative));
             }
             this.groupNameTxtBox.Text = groupName;
             List<GroupParticipant> hikeUsersList = new List<GroupParticipant>();
@@ -117,7 +117,7 @@ namespace windows_client.View
             {
                 GroupParticipant gp = hikeUsersList[i];
                 if (gi.GroupOwner == gp.Msisdn)
-                    gp.IsOwner = 1;
+                    gp.IsOwner = true;
                 if (gi.GroupOwner == (string)App.appSettings[App.MSISDN_SETTING] && gp.Msisdn != gi.GroupOwner) // if this user is owner
                     gp.RemoveFromGroup = Visibility.Visible;
                 else
@@ -502,6 +502,12 @@ namespace windows_client.View
                 return;
             }
             groupName = this.groupNameTxtBox.Text.Trim();
+            if (groupName.Length > 30)
+            {
+                MessageBoxResult result = MessageBox.Show(AppResources.GroupInfo_GrpNameMaxLength_Txt, AppResources.Error_Txt, MessageBoxButton.OK);
+                groupNameTxtBox.Focus();
+                return;
+            }
             // if group name is changed
             if (groupName != (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD])
             {
@@ -528,30 +534,11 @@ namespace windows_client.View
         {
             if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
             {
-                ConversationTableUtils.updateGroupName(groupId, groupName);
-                GroupTableUtils.updateGroupName(groupId, groupName);
-
-                string msg = string.Format(AppResources.GroupNameChangedByGrpMember_Txt, AppResources.You_Txt, groupName);
-                ConvMessage cm = new ConvMessage(msg, groupId, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.RECEIVED_READ, -1, -1);
-                cm.GrpParticipantState = ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE;
-                cm.GroupParticipant = App.MSISDN;
-                JObject jo = new JObject();
-                jo[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME;
-                cm.MetaDataString = jo.ToString(Newtonsoft.Json.Formatting.None);
-                ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false);
-                if (cobj == null)
-                    return;
-
-                object[] vals = new object[2];
-                vals[0] = cm;
-                vals[1] = cobj;
-
+                //db and ui would be updated after server sends group name change packet 
                 isgroupNameSelfChanged = true;
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    App.ViewModel.ConvMap[groupId].ContactName = groupName;
-                    mPubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                     groupNameTxtBox.IsReadOnly = false;
                     saveIconButton.IsEnabled = true;
                     shellProgress.IsVisible = false;

@@ -32,10 +32,9 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.INVITE_SOCIAL);
             string inviteToken = null;
             //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-            string inviteMsg = string.Format(AppResources.Social_Invite_Txt, inviteToken == null ? "" : inviteToken);
             ShareLinkTask shareLinkTask = new ShareLinkTask();
             shareLinkTask.LinkUri = new Uri("http://get.hike.in/" + inviteToken, UriKind.Absolute);
-            shareLinkTask.Message = inviteMsg;
+            shareLinkTask.Message = AppResources.Social_Invite_Txt;
             try
             {
                 shareLinkTask.Show();

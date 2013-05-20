@@ -56,7 +56,7 @@ namespace windows_client.Controls
                     return;
                 richTextBox.lastText = text;
 
-                var paragraph = richTextBox.LinkifyAll ? SmileyParser.Instance.LinkifyAll(text) : SmileyParser.Instance.LinkifyEmoticons(text);
+                var paragraph = richTextBox.LinkifyAll ? SmileyParser.Instance.LinkifyAll(text, (SolidColorBrush)richTextBox.Foreground) : SmileyParser.Instance.LinkifyEmoticons(text);
                 richTextBox.Blocks.Clear();
                 richTextBox.Blocks.Add(paragraph);
             }

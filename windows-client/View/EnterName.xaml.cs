@@ -299,7 +299,9 @@ namespace windows_client
                     }
                     else
                     {
-                        avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
+                        string myMsisdn = (string)App.appSettings[App.MSISDN_SETTING];
+                        avatarImage.Source = UI_Utils.Instance.getDefaultAvatar(myMsisdn);
+                        AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + myMsisdn, GetProfilePic_Callback, true, "");
                     }
                 }
             }
@@ -461,6 +463,24 @@ namespace windows_client
                 txtBxEnterName.IsEnabled = true;
             });
         }
+        public void GetProfilePic_Callback(byte[] fullBytes, object fName)
+        {
+            try
+            {
+                if (fullBytes != null && fullBytes.Length > 0)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                     {
+                         avatarImage.Source = UI_Utils.Instance.createImageFromBytes(fullBytes);
+                         MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, fullBytes, false);
+                     });
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("EnterName :: GetProfilePic_Callback, Exception : " + ex.StackTrace);
+            }
+        }
 
         /* This is the callback function which is called when server returns the addressbook*/
         public void postAddressBook_Callback(JObject jsonForAddressBookAndBlockList)
@@ -507,10 +527,12 @@ namespace windows_client
                     ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_STORE_FAILED;
                     this.msgTxtBlk.Text = AppResources.EnterName_Failed_Txt;
                 });
+                return;
             }
 
-            if (addressbook != null)
+            try
             {
+                // if addressbook is null, then also user should be able to move inside app.
                 UsersTableUtils.deleteAllContacts();
                 UsersTableUtils.deleteBlocklist();
                 Stopwatch st = Stopwatch.StartNew();
@@ -519,10 +541,14 @@ namespace windows_client
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to add addressbook {0}", msec);
                 UsersTableUtils.addBlockList(blockList);
-                ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB;
-                Debug.WriteLine("Addbook stored in Hike Db .... ");
-                App.WriteToIsoStorageSettings(ContactUtils.IS_ADDRESS_BOOK_SCANNED, true);
             }
+            catch (Exception e)
+            {
+                Debug.WriteLine("EnterName :: postAddressBook_Callback : Exception : " + e.StackTrace);
+            }
+            Debug.WriteLine("Addbook stored in Hike Db .... ");
+            App.WriteToIsoStorageSettings(ContactUtils.IS_ADDRESS_BOOK_SCANNED, true);
+            ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB;
         }
     }
 }

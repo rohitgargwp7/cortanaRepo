@@ -42,15 +42,14 @@ namespace windows_client
             if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
 
-            //if (!App.IS_MARKETPLACE)
-            //{
-            //    signupPanel.Tap += signupPanel_Tap;
-            //    serverTxtBlk.Visibility = System.Windows.Visibility.Visible;
-            //    if(!AccountUtils.IsProd)
-            //        serverTxtBlk.Text = "staging";
-            //    else
-            //        serverTxtBlk.Text = "production";
-            //}
+            if (!App.IS_MARKETPLACE)
+            {
+                serverTxtBlk.Visibility = System.Windows.Visibility.Visible;
+                if (!AccountUtils.IsProd)
+                    serverTxtBlk.Text = "staging";
+                else
+                    serverTxtBlk.Text = "production";
+            }
         }
 
         private void signupPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)

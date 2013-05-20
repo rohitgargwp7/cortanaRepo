@@ -159,25 +159,23 @@ namespace windows_client.View
                     #endregion
                     #region REQUEST RECIEVED
                     case FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED:
-                        if (isInAddressBook)
-                        {
-                            statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                CreateStatusUi(statusMessagesFromDB);
-                                isStatusLoaded = true;
-                            });
-                        }
-                        else
-                        {
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                              {
-                                  ShowAddToContacts();
-                              });
-                        }
+                        //if (isInAddressBook)
+                        //{
 
+                        //}
+                        //else
+                        //{
+                        //    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        //      {
+                        //          ShowAddToContacts();
+                        //      });
+                        //}
+
+                        statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
+                            CreateStatusUi(statusMessagesFromDB);
+                            isStatusLoaded = true;
                             ShowRequestRecievedPanel();
                         });
                         break;
@@ -484,7 +482,7 @@ namespace windows_client.View
                     MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
                     StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
                         serverId, TimeUtils.getCurrentTimeStamp(), -1, true);
-                    StatusMsgsTable.InsertStatusMsg(sm);
+                    StatusMsgsTable.InsertStatusMsg(sm, false);
                     App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                 }
             }
@@ -816,19 +814,19 @@ namespace windows_client.View
                         #region REQUEST RECIEVED
                         case FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED:
                             ShowRequestRecievedPanel();
-                            if (isInAddressBook)
-                                LoadStatuses();
-                            else
-                                ShowAddToContacts();
+                            //if (isInAddressBook)
+                            LoadStatuses();
+                            //else
+                            //    ShowAddToContacts();
                             break;
                         #endregion
                         #region UNFRIENDED_BY_YOU OR IGNORED
                         case FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU:
                         case FriendsTableUtils.FriendStatusEnum.IGNORED:
-                            if (isInAddressBook)
-                                LoadStatuses();
-                            else
-                                ShowAddToContacts();
+                            //if (isInAddressBook)
+                            LoadStatuses();
+                            //else
+                            //    ShowAddToContacts();
                             spAddFriend.Visibility = Visibility.Visible;
                             gridAddFriendStrip.Visibility = Visibility.Visible;
                             break;

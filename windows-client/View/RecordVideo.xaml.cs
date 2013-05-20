@@ -443,13 +443,20 @@ namespace windows_client.View
         // Start the video recording.
         private void StartRecording_Click(object sender, EventArgs e)
         {
-            // Avoid duplicate taps.
-            recordIconButton.IsEnabled = false;
-            addOrRemoveAppBarButton(recordIconButton, false);
-            addOrRemoveAppBarButton(sendIconButton, false);
-            captureSource.CaptureImageAsync();
-            progressTimer.Start();
-            StartVideoRecording();
+            try
+            {
+                // Avoid duplicate taps.
+                recordIconButton.IsEnabled = false;
+                addOrRemoveAppBarButton(recordIconButton, false);
+                addOrRemoveAppBarButton(sendIconButton, false);
+                captureSource.CaptureImageAsync();
+                progressTimer.Start();
+                StartVideoRecording();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Record Video :: StartRecording_Click , Exception:" + ex.StackTrace);
+            }
         }
 
         // Handle stop requests.
@@ -597,6 +604,12 @@ namespace windows_client.View
             DisposeVideoPlayer();
 
             StartVideoPreview();
+        }
+
+        protected override void OnOrientationChanged(OrientationChangedEventArgs e)
+        {
+            if (e.Orientation == PageOrientation.LandscapeLeft)
+                base.OnOrientationChanged(e);
         }
     }
 }

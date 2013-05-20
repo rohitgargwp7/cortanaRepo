@@ -378,7 +378,7 @@ namespace windows_client.DbUtils
             else if (type == HikePubSub.SAVE_STATUS_IN_DB)
             {
                 StatusMessage sm = obj as StatusMessage;
-                StatusMsgsTable.InsertStatusMsg(sm);
+                StatusMsgsTable.InsertStatusMsg(sm,false);
             }
         }
 

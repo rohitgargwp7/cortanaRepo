@@ -46,7 +46,7 @@ namespace windows_client.View
             postStatusIcon.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
             postStatusIcon.Text = AppResources.Conversations_PostStatus_AppBar;
             postStatusIcon.Click += new EventHandler(btnPostStatus_Click);
-            postStatusIcon.IsEnabled = true;
+            postStatusIcon.IsEnabled = false;
             appBar.Buttons.Add(postStatusIcon);
             postStatusPage.ApplicationBar = appBar;
         }
@@ -200,13 +200,14 @@ namespace windows_client.View
                 twitterPostLimit = TWITTER_WITH_MOOD_LIMIT;
                 txtCounter.Text = (twitterPostLimit - txtStatus.Text.Length).ToString();
             }
-
+            postStatusIcon.IsEnabled = true;
             moodId = moodListBox.SelectedIndex + 1;
             txtStatus.Hint = hintText = mood.MoodText;
             moodImage.Source = mood.MoodImage;
             moodImage.Height = 60;
             moodImage.Width = 60;
             gridMood.Visibility = Visibility.Collapsed;
+            txtStatus.Focus();
             this.appBar.IsVisible = true;
         }
 
@@ -225,6 +226,9 @@ namespace windows_client.View
 
         private void txtStatus_GotFocus(object sender, RoutedEventArgs e)
         {
+            gridContent.Height = 210;
+            svStatusText.Height = 165;
+            txtStatus.Hint = string.Empty;//done intentionally
             if (hintText == string.Empty)
             {
                 string name;
@@ -278,6 +282,9 @@ namespace windows_client.View
 
         private void txtStatus_TextChanged(object sender, TextChangedEventArgs e)
         {
+            svStatusText.UpdateLayout();
+            svStatusText.ScrollToVerticalOffset(txtStatus.GetRectFromCharacterIndex(txtStatus.SelectionStart).Top - 40);
+
             int count = txtStatus.Text.Length;
             if (count == 0 && moodId == 0)
             {
@@ -292,6 +299,13 @@ namespace windows_client.View
                 postStatusIcon.IsEnabled = true;
             }
             txtCounter.Text = (twitterPostLimit - count).ToString();
+        }
+
+        private void txtStatus_LostFocus_1(object sender, RoutedEventArgs e)
+        {
+            gridContent.Height = 615;
+            svStatusText.Height = 565;
+
         }
     }
 }

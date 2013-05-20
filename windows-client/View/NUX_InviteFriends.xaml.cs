@@ -142,7 +142,7 @@ namespace windows_client.View
                     if (i == 15)
                         break;
                     ContactInfo cn = listContactInfo[i];
-                    cn.IsCloseFriendNux = true;
+                    cn.IsUsedAtMiscPlaces = true;
                 }
             }
         }
@@ -157,7 +157,7 @@ namespace windows_client.View
             NetworkManager.turnOffNetworkManager = false;
             foreach (ContactInfo cinfo in listContactInfo)
             {
-                if (cinfo.IsCloseFriendNux)
+                if (cinfo.IsUsedAtMiscPlaces)
                 {
                     JObject obj = new JObject();
                     JObject data = new JObject();
@@ -198,7 +198,7 @@ namespace windows_client.View
 
             foreach (ContactInfo cinfo in listContactInfo)
             {
-                if (cinfo.IsCloseFriendNux)
+                if (cinfo.IsUsedAtMiscPlaces)
                 {
                     JObject obj = new JObject();
                     JObject data = new JObject();

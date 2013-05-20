@@ -26,12 +26,19 @@ namespace windows_client.DbUtils
         /// Add single status msg
         /// </summary>
         /// <param name="sm"></param>
-        public static void InsertStatusMsg(StatusMessage sm)
+        public static bool InsertStatusMsg(StatusMessage sm, bool checkAlreadyExists)
         {
             try
             {
                 using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
                 {
+                    if (checkAlreadyExists)
+                    {
+                        IQueryable<StatusMessage> sts = DbCompiledQueries.GetStatusMsgForServerId(context, sm.ServerId);
+                        StatusMessage sMsg = sts.FirstOrDefault();
+                        if (sMsg != null)
+                            return false;
+                    }
                     context.statusMessage.InsertOnSubmit(sm);
                     context.SubmitChanges();
                 }
@@ -39,7 +46,9 @@ namespace windows_client.DbUtils
             catch (Exception e)
             {
                 Debug.WriteLine("MessagesTableUtils :: addMessage : submit changes, Exception : " + e.StackTrace);
+                return false;
             }
+            return true;
         }
 
         /// <summary>
@@ -263,7 +272,7 @@ namespace windows_client.DbUtils
                 {
                     // add a status messages table to chats db  
                     schemaUpdater.AddTable<StatusMessage>();
-                    
+
                     // IMPORTANT: update database schema version before calling Execute
                     schemaUpdater.DatabaseSchemaVersion = MessagesDb_Latest_Version;
                     try
@@ -278,7 +287,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void SaveUnreadCounts(string type,int count)
+        public static void SaveUnreadCounts(string type, int count)
         {
             // these are saved in this order only
             int _refreshCount = 0;

@@ -722,7 +722,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="sms_invite_message" xml:space="preserve">
-    <value>Hi! I’m using hike, an awesome new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!</value>
+    <value>Hi! Get hike 2.0. Free messaging worldwide. Now with Status Updates and Moods :) - http://get.hike.in/</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="UnBlock_Txt" xml:space="preserve">
@@ -738,7 +738,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_JOINED_HIKE" xml:space="preserve">
-    <value>{0} just joined hike!</value>
+    <value>{0} just joined hike, say 'Hi' :)</value>
     <comment>General Text</comment>
   </data>
   <data name="USER_LEFT" xml:space="preserve">
@@ -784,7 +784,15 @@
     <value>To continue using hike, an update is required.</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Hi! I've started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!</value>
+    <value>Hi!
+
+I started using hike, a simple beautiful messaging app that's absolutely free.
+
+hike comes with some hilarious emoticons. You can also post Status Updates to your close circle of friends! Think of it like BBM but much, much better!
+
+Get it now and say good bye to plain boring SMS.
+
+Get hike: http://get.hike.in</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -905,7 +913,7 @@
     <comment>cs</comment>
   </data>
   <data name="Social_Invite_Txt" xml:space="preserve">
-    <value>I'm using @hikeapp 2.0 with status updates &amp; moods. Simple &amp; beautiful messaging, absolutely free.</value>
+    <value>I'm using @hikeapp 2.0 with status updates &amp; moods. Its like BBM but much, much better! Get hike at http://get.hike.in #gethike</value>
     <comment>This is used in case of Facebook and Twitter</comment>
   </data>
   <data name="Social_Txt" xml:space="preserve">
@@ -1189,8 +1197,8 @@
     <value>remove from group</value>
     <comment>General text</comment>
   </data>
-  <data name="Rewards_Txt" xml:space="preserve">
-    <value>rewards</value>
+  <data name="ConversationsList_New_Txt" xml:space="preserve">
+    <value>new</value>
     <comment>Rewards Text</comment>
   </data>
   <data name="Tap_To_Invite_Txt" xml:space="preserve">
@@ -1678,5 +1686,23 @@
   </data>
   <data name="Profile_You_NoStatus_Txt" xml:space="preserve">
     <value>You haven't posted anything :(</value>
+  </data>
+  <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
+    <value>Group Name can have maximum 30 chars.</value>
+    <comment>Warning Text</comment>
+  </data>
+  <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
+    <value>Could not send file</value>
+  </data>
+  <data name="CT_FileSizeExceed_Text" xml:space="preserve">
+    <value>Max file size can be 15 MB.</value>
+  </data>
+  <data name="CT_CharCount_Sms_User" xml:space="preserve">
+    <value>{0}/{1}</value>
+    <comment>{0}-number , {1} number</comment>
+  </data>
+  <data name="CT_MessageCount_Sms_User" xml:space="preserve">
+    <value>{0} messages,</value>
+    <comment>{0} replaced by number</comment>
   </data>
 </root>
