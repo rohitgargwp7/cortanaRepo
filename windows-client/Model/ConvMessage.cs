@@ -472,18 +472,18 @@ namespace windows_client.Model
                 }
             }
         }
-        private bool isLandscapeMode;
-        public bool IsLandScapeMode
+        private PageOrientation _currentOrientation;
+        public PageOrientation CurrentOrientation
         {
             get
             {
-                return isLandscapeMode;
+                return _currentOrientation;
             }
             set
             {
                 NotifyPropertyChanging("LayoutGridWidth");
                 NotifyPropertyChanging("DataTemplateMargin");
-                isLandscapeMode = value;
+                _currentOrientation = value;
                 NotifyPropertyChanged("LayoutGridWidth");
                 NotifyPropertyChanged("DataTemplateMargin");
             }
@@ -693,7 +693,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (isLandscapeMode)
+                if (_currentOrientation == PageOrientation.Landscape || _currentOrientation == PageOrientation.LandscapeLeft || _currentOrientation == PageOrientation.LandscapeRight)
                     return 768;
                 return 480;
             }
@@ -774,7 +774,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (isLandscapeMode)
+                if (_currentOrientation == PageOrientation.Landscape || _currentOrientation == PageOrientation.LandscapeLeft || _currentOrientation == PageOrientation.LandscapeRight)
                 {
                     if (IsSent)
                     {
@@ -810,18 +810,22 @@ namespace windows_client.Model
                 }
             }
         }
-        public ConvMessage(string message, string msisdn, long timestamp, State msgState)
-            : this(message, msisdn, timestamp, msgState, -1, -1)
+        public ConvMessage(string message, string msisdn, long timestamp, State msgState, PageOrientation isLandscapeMode)
+            : this(message, msisdn, timestamp, msgState, -1, -1, isLandscapeMode)
         {
         }
-
-        public ConvMessage(string message, string msisdn, long timestamp, State msgState, long msgid, long mappedMsgId)
+        public ConvMessage(string message, string msisdn, long timestamp, State msgState)
+            : this(message, msisdn, timestamp, msgState, -1, -1, PageOrientation.Portrait)
+        {
+        }
+        public ConvMessage(string message, string msisdn, long timestamp, State msgState, long msgid, long mappedMsgId, PageOrientation isLandscapeMode)
         {
             this._msisdn = msisdn;
             this._message = message;
             this._timestamp = timestamp;
             this._messageId = msgid;
             this._mappedMessageId = mappedMsgId;
+            this._currentOrientation = isLandscapeMode;
             _isSent = (msgState == State.SENT_UNCONFIRMED ||
                         msgState == State.SENT_CONFIRMED ||
                         msgState == State.SENT_DELIVERED ||
@@ -830,9 +834,10 @@ namespace windows_client.Model
             MessageStatus = msgState;
         }
 
-        public ConvMessage(string message, ConvMessage convMessage)
+        public ConvMessage(string message, PageOrientation currentOrientation, ConvMessage convMessage)
         {
             this._message = message;
+            this._currentOrientation = currentOrientation;
             _messageId = convMessage.MessageId;
             _msisdn = convMessage.Msisdn;
             _messageStatus = convMessage.MessageStatus;
