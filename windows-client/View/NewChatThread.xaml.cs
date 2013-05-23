@@ -188,16 +188,16 @@ namespace windows_client.View
         {
             InitializeComponent();
 
-            if (Utils.isDarkTheme())
-            {
-                micImage.Source = new BitmapImage(new Uri("/View/images/mic_icon.png", UriKind.Relative));
-                deleteRecImage.Source = new BitmapImage(new Uri("/View/images/WTDelete_White.png", UriKind.Relative));
-            }
-            else
-            {
-                micImage.Source = new BitmapImage(new Uri("/View/images/mic_icon_black.png", UriKind.Relative));
-                deleteRecImage.Source = new BitmapImage(new Uri("/View/images/WTDelete_Black.png", UriKind.Relative));
-            }
+            //if (Utils.isDarkTheme())
+            //{
+            //    micImage.Source = new BitmapImage(new Uri("/View/images/mic_icon.png", UriKind.Relative));
+            //    deleteRecImage.Source = new BitmapImage(new Uri("/View/images/WTDelete_White.png", UriKind.Relative));
+            //}
+            //else
+            //{
+            //    micImage.Source = new BitmapImage(new Uri("/View/images/mic_icon_black.png", UriKind.Relative));
+            //    deleteRecImage.Source = new BitmapImage(new Uri("/View/images/WTDelete_Black.png", UriKind.Relative));
+            //}
 
             // Timer to simulate the XNA Framework game loop (Microphone is 
             // from the XNA Framework). We also use this timer to monitor the 
@@ -3820,13 +3820,16 @@ namespace windows_client.View
             if (this.ApplicationBar != null)
                 (this.ApplicationBar.Buttons[0] as ApplicationBarIconButton).IsEnabled = false;
 
-            recordButton.Content = HOLD_TO_RECORD;
+            recordGrid.Background = gridBackgroundBeforeRecording;
+            recordButton.Text = HOLD_TO_RECORD;
         }
 
         void Hold_To_Record(object sender, System.Windows.Input.GestureEventArgs e)
         {
             WalkieTalkieGrid.Visibility = Visibility.Visible;
-            recordButton.Content = RELEASE_TO_SEND;
+            recordButton.Text = RELEASE_TO_SEND;
+            cancelRecord.Opacity = 0; 
+            recordGrid.Background = UI_Utils.Instance.HikeMsgBackground;
 
             recordWalkieTalkieMessage();
         }
@@ -3844,7 +3847,9 @@ namespace windows_client.View
             stopWalkieTalkieRecording();
             sendWalkieTalkieMessage();
 
-            recordButton.Content = HOLD_TO_RECORD;
+            recordGrid.Background = gridBackgroundBeforeRecording;
+            recordButton.Text = HOLD_TO_RECORD;
+            cancelRecord.Opacity = 1;
         }
 
 
@@ -3855,9 +3860,10 @@ namespace windows_client.View
             stopWalkieTalkieRecording();
             _recorderState = RecorderState.NOTHING_RECORDED;
 
+            cancelRecord.Opacity = 1; 
             WalkieTalkieGrid.Visibility = Visibility.Collapsed;
-
-            recordButton.Content = HOLD_TO_RECORD;
+            recordButton.Text = HOLD_TO_RECORD;
+            recordGrid.Background = gridBackgroundBeforeRecording;
         }
 
         void cancelRecord_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3865,7 +3871,7 @@ namespace windows_client.View
             sendMsgTxtbox.Visibility = Visibility.Visible;
             recordGrid.Visibility = Visibility.Collapsed;
 
-            if (this.ApplicationBar != null)
+            if (this.ApplicationBar != null && !sendMsgTxtbox.Text.Trim().Equals(String.Empty))
                 (this.ApplicationBar.Buttons[0] as ApplicationBarIconButton).IsEnabled = true;
         }
 
@@ -4026,6 +4032,7 @@ namespace windows_client.View
             return minute.ToString("00") + ":" + secs.ToString("00");
         }
 
+        private readonly SolidColorBrush gridBackgroundBeforeRecording = new SolidColorBrush(Colors.Black);
         private Microphone _microphone = Microphone.Default;     // Object representing the physical microphone on the device
         private byte[] _buffer;                                  // Dynamic buffer to retrieve audio data from the microphone
         private MemoryStream _stream = new MemoryStream();       // Stores the audio data for later playback

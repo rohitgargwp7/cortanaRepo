@@ -1,6 +1,6 @@
-﻿<xapCache source="C:\Users\milan\Desktop\windows-hike-client\windows-client\Bin\Debug\windows-client_Debug_AnyCPU.xap" wasSigned="False" certificateThumbprint="" TimeStampUrl="" lastWriteTime="23-05-2013 17:58:59">
-  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\windows-client.dll" archivePath="windows-client.dll" lastWriteTime="23-05-2013 17:58:57" />
-  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\de-DE\windows-client.resources.dll" archivePath="de-DE\windows-client.resources.dll" lastWriteTime="23-05-2013 17:58:57" />
+﻿<xapCache source="C:\Users\milan\Desktop\windows-hike-client\windows-client\Bin\Debug\windows-client_Debug_AnyCPU.xap" wasSigned="False" certificateThumbprint="" TimeStampUrl="" lastWriteTime="23-05-2013 19:27:44">
+  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\windows-client.dll" archivePath="windows-client.dll" lastWriteTime="23-05-2013 19:27:42" />
+  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\de-DE\windows-client.resources.dll" archivePath="de-DE\windows-client.resources.dll" lastWriteTime="23-05-2013 19:27:42" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\ApplicationIcon.png" archivePath="ApplicationIcon.png" lastWriteTime="21-05-2013 14:43:43" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\Assets\LockImage.png" archivePath="Assets\LockImage.png" lastWriteTime="21-05-2013 14:45:32" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\Background.png" archivePath="Background.png" lastWriteTime="21-05-2013 14:43:43" />
@@ -56,6 +56,7 @@
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\fb_icon.png" archivePath="View\images\fb_icon.png" lastWriteTime="21-05-2013 14:43:44" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\fb_status.png" archivePath="View\images\fb_status.png" lastWriteTime="21-05-2013 14:45:33" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\fb_status_disabled.png" archivePath="View\images\fb_status_disabled.png" lastWriteTime="21-05-2013 14:45:33" />
+  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\delete_bin.png" archivePath="View\images\delete_bin.png" lastWriteTime="23-05-2013 18:40:13" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\group_name_changed.png" archivePath="View\images\group_name_changed.png" lastWriteTime="21-05-2013 14:43:44" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\help_icon_dark.png" archivePath="View\images\help_icon_dark.png" lastWriteTime="21-05-2013 14:45:33" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\help_icon_white.png" archivePath="View\images\help_icon_white.png" lastWriteTime="21-05-2013 14:45:33" />
@@ -119,6 +120,7 @@
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\profile_header_stock.png" archivePath="View\images\profile_header_stock.png" lastWriteTime="21-05-2013 14:45:33" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\profile_header_stock_dark.png" archivePath="View\images\profile_header_stock_dark.png" lastWriteTime="21-05-2013 14:45:33" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\refresh_bar_arrow.png" archivePath="View\images\refresh_bar_arrow.png" lastWriteTime="21-05-2013 14:45:33" />
+  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\remove_wt_icon.png" archivePath="View\images\remove_wt_icon.png" lastWriteTime="23-05-2013 19:02:43" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\settings_icon_dark.png" archivePath="View\images\settings_icon_dark.png" lastWriteTime="21-05-2013 14:45:33" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\settings_icon_white.png" archivePath="View\images\settings_icon_white.png" lastWriteTime="21-05-2013 14:45:33" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\timeline_photo.png" archivePath="View\images\timeline_photo.png" lastWriteTime="21-05-2013 14:45:33" />
@@ -135,9 +137,8 @@
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\user_lock_white.png" archivePath="View\images\user_lock_white.png" lastWriteTime="21-05-2013 14:45:33" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\new_icon.png" archivePath="View\images\new_icon.png" lastWriteTime="21-05-2013 14:43:44" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\new_icon_white.png" archivePath="View\images\new_icon_white.png" lastWriteTime="21-05-2013 14:43:44" />
+  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\walkie_talkie.png" archivePath="View\images\walkie_talkie.png" lastWriteTime="23-05-2013 18:33:32" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\welome_screen.jpg" archivePath="View\images\welome_screen.jpg" lastWriteTime="21-05-2013 14:43:44" />
-  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\WTDelete_Black.png" archivePath="View\images\WTDelete_Black.png" lastWriteTime="23-05-2013 17:58:03" />
-  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\WTDelete_White.png" archivePath="View\images\WTDelete_White.png" lastWriteTime="23-05-2013 17:58:03" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\made_with_love_dark.png" archivePath="View\images\made_with_love_dark.png" lastWriteTime="21-05-2013 14:43:44" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\map-pin.png" archivePath="View\images\map-pin.png" lastWriteTime="21-05-2013 14:43:44" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\menu_audio_icon.png" archivePath="View\images\menu_audio_icon.png" lastWriteTime="21-05-2013 14:43:44" />

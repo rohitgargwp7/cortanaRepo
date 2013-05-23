@@ -531,6 +531,7 @@
     <Content Include="View\images\fb_icon.png" />
     <Content Include="View\images\fb_status.png" />
     <Content Include="View\images\fb_status_disabled.png" />
+    <Content Include="View\images\delete_bin.png" />
     <Content Include="View\images\group_name_changed.png" />
     <Content Include="View\images\help_icon_dark.png" />
     <Content Include="View\images\help_icon_white.png" />
@@ -594,6 +595,7 @@
     <Content Include="View\images\profile_header_stock.png" />
     <Content Include="View\images\profile_header_stock_dark.png" />
     <Content Include="View\images\refresh_bar_arrow.png" />
+    <Content Include="View\images\remove_wt_icon.png" />
     <Content Include="View\images\settings_icon_dark.png" />
     <Content Include="View\images\settings_icon_white.png" />
     <Content Include="View\images\timeline_photo.png" />
@@ -610,9 +612,8 @@
     <Content Include="View\images\user_lock_white.png" />
     <Content Include="View\images\new_icon.png" />
     <Content Include="View\images\new_icon_white.png" />
+    <Content Include="View\images\walkie_talkie.png" />
     <Content Include="View\images\welome_screen.jpg" />
-    <Content Include="View\images\WTDelete_Black.png" />
-    <Content Include="View\images\WTDelete_White.png" />
     <Resource Include="View\images\logo_main_white.png" />
     <Resource Include="View\images\logo_main_black.png" />
     <Content Include="View\images\made_with_love_dark.png" />
