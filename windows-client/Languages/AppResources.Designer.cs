@@ -1842,6 +1842,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hold to record.
+        /// </summary>
+        public static string Hold_To_Record {
+            get {
+                return ResourceManager.GetString("Hold_To_Record", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ignore.
         /// </summary>
         public static string Ignore_Txt {
@@ -2918,6 +2927,15 @@ namespace windows_client.Languages {
         public static string RecordMedia_Title {
             get {
                 return ResourceManager.GetString("RecordMedia_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Release to Send.
+        /// </summary>
+        public static string Release_To_Send {
+            get {
+                return ResourceManager.GetString("Release_To_Send", resourceCulture);
             }
         }
         

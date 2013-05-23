@@ -255,10 +255,20 @@
 
             <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <StackPanel Background="#eeeeec">
-                <ScrollViewer Name="svMessage" MaxHeight="500" >
-                <toolkit:PhoneTextBox TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
-                                      MinHeight="68" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto" />
-                </ScrollViewer>
+                <Grid>
+                    <ScrollViewer Name="svMessage" MaxHeight="500" >
+                        <toolkit:PhoneTextBox TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
+                                              MinHeight="68" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto" ActionIcon="/View/images/mic_icon_black.png" ActionIconTapped="Record_ActionIconTapped" />
+                    </ScrollViewer>
+                    <Grid x:Name="recordGrid" Visibility="Collapsed" HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="recordButton" ManipulationCompleted="recordButton_ManipulationCompleted" Content="Hold to Record" Hold="Hold_To_Record" HorizontalAlignment="Stretch" />
+                        <Image x:Name="cancelRecord" Source="/View/images/remove_icon.png" Tap="cancelRecord_Tap" Grid.Column="1" Stretch="None" Margin="5,0"/>
+                    </Grid>
+                </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 10 5" Visibility="Collapsed" Name="spSmsCharCounter">
                 <TextBlock Name="txtMsgCount"></TextBlock>
@@ -293,6 +303,25 @@
             <TextBlock Text="{Binding Path= LocalizedResources.Nudge, Source={StaticResource LocalizedStrings}}" FontSize="24" FontFamily="Segoe WP Semibold" Foreground="White" HorizontalAlignment="Center" Grid.Row="1"/>
             <TextBlock Margin="0,5,0,0" Text="{Binding Path= LocalizedResources.Nudge_Tute, Source={StaticResource LocalizedStrings}}" Foreground="White" TextAlignment="Center" Width="250" FontSize="18" HorizontalAlignment="Center" TextWrapping="Wrap" Grid.Row="2"/>
             <Button Content="{Binding Path= LocalizedResources.OK, Source={StaticResource LocalizedStrings}}" BorderThickness="0" Margin="-12,25,-12,-12" Foreground="#c6c6c6" FontSize="20" Height="90" Background="#212121" Tap="dismissNudgeTutorial_Tap" Grid.Row="3"/>
+        </Grid>
+        
+        <Grid x:Name="WalkieTalkieGrid" Visibility="Collapsed" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image x:Name="micImage" Height="161" HorizontalAlignment="Center" Margin="0,0,20,45"/>
+                <Image x:Name="deleteRecImage" Grid.Column="1" MouseEnter="deleteRecImage_MouseEnter" Height="161" Stretch="Uniform" HorizontalAlignment="Center" Margin="0,0,0,45"/>
+            </Grid>
+            <StackPanel Grid.Row="1" x:Name="timeBar" Orientation="Horizontal" Opacity="0" HorizontalAlignment="Center">
+                <TextBlock x:Name="runningTime" FontFamily="Segoe WP SemiLight" FontSize="50" Text="00:00" ></TextBlock>
+                <TextBlock x:Name="maxPlayingTime" Text=" / 2:00" FontFamily="Segoe WP SemiLight" FontSize="50"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>
