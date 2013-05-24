@@ -10,7 +10,7 @@
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     xmlns:c4fToolkit="clr-namespace:Coding4Fun.Phone.Controls;assembly=Coding4Fun.Phone.Controls"
-    xmlns:test="clr-namespace:windows_client.View"
+    xmlns:view="clr-namespace:windows_client.View"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -345,7 +345,7 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="SelectingTemplate">
-            <test:ChatThreadTemplateSelector Content="{Binding}"/>
+            <view:ChatThreadTemplateSelector Content="{Binding}"/>
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
 
@@ -568,7 +568,7 @@
             <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <StackPanel Background="#eeeeec">
                 <ScrollViewer Name="svMessage" MaxHeight="500" >
-                <toolkit:PhoneTextBox TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
+                    <toolkit:PhoneTextBox TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
                                       MinHeight="68" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto" />
                 </ScrollViewer>
             </StackPanel>
