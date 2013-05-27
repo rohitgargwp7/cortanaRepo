@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -195,12 +195,12 @@
     <Compile Include="utils\ContactUtils.cs" />
     <Compile Include="utils\ImageUtils.cs" />
     <Compile Include="utils\MoodsInitialiser.cs" />
-
     <Compile Include="utils\OAuthUtil.cs" />
     <Compile Include="utils\PushHelper.cs" />
     <Compile Include="utils\RelativeAnimatingContentControl.cs" />
     <Compile Include="utils\SmileyParser.cs" />
     <Compile Include="utils\StatusUpdateHelper.cs" />
+    <Compile Include="utils\StickerHelper.cs" />
     <Compile Include="utils\UpdatePostHelper.cs" />
     <Compile Include="utils\Utils.cs" />
     <Compile Include="ViewModel\HikeViewModel.cs" />
@@ -452,7 +452,6 @@
     <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
     <Content Include="View\images\add_favorites.png" />
-
     <Content Include="View\images\add_friend.png" />
     <Content Include="View\images\add_users_white.png" />
     <Content Include="View\images\add_user_icon.png" />
@@ -473,6 +472,7 @@
     <Content Include="View\images\avatars\Sneakers.png" />
     <Content Include="View\images\avatars\Space.png" />
     <Content Include="View\images\avatars\TealPeople.png" />
+    <Content Include="View\images\back.png" />
     <Content Include="View\images\blocklist_holder.png" />
     <Content Include="View\images\block_list_icon.png" />
     <Content Include="View\images\block_list_icon_white.png" />
@@ -558,6 +558,20 @@
     <Content Include="View\images\refresh_bar_arrow.png" />
     <Content Include="View\images\settings_icon_dark.png" />
     <Content Include="View\images\settings_icon_white.png" />
+    <Content Include="View\images\stickers\BRB.png" />
+    <Content Include="View\images\stickers\Callme.png" />
+    <Content Include="View\images\stickers\Gift-box.png" />
+    <Content Include="View\images\stickers\GM.png" />
+    <Content Include="View\images\stickers\GTG.png" />
+    <Content Include="View\images\stickers\Kitty.png" />
+    <Content Include="View\images\stickers\Kitty1.png" />
+    <Content Include="View\images\stickers\Kitty2.png" />
+    <Content Include="View\images\stickers\Kitty4.png" />
+    <Content Include="View\images\stickers\LMAO.png" />
+    <Content Include="View\images\stickers\LOL.png" />
+    <Content Include="View\images\stickers\OMG.png" />
+    <Content Include="View\images\stickers\yum.png" />
+    <Content Include="View\images\stickrcat1.png" />
     <Content Include="View\images\timeline_photo.png" />
     <Content Include="View\images\timeline_status_icon.png" />
     <Content Include="View\images\tutorial_arrow.png" />
@@ -570,7 +584,6 @@
     <Content Include="View\images\menu_camera_icon.png" />
     <Content Include="View\images\menu_video_icon.png" />
     <Content Include="View\images\user_lock_white.png" />
-
     <Content Include="View\images\new_icon.png" />
     <Content Include="View\images\new_icon_white.png" />
     <Content Include="View\images\welome_screen.jpg" />

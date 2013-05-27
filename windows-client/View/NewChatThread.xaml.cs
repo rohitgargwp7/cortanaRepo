@@ -421,7 +421,11 @@ namespace windows_client.View
 
             #endregion
             App.newChatThreadPage = this;
-
+            if (App.stickerHelper == null)
+            {
+                App.stickerHelper = new StickerHelper();
+            }
+            App.stickerHelper.InitialiseStickers();
             #region AUDIO FT
             if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
                 PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED)))
@@ -462,6 +466,7 @@ namespace windows_client.View
 
                 if (App.newChatThreadPage == this)
                     App.newChatThreadPage = null;
+                App.stickerHelper = null;
             }
             catch (Exception ex)
             {
@@ -961,8 +966,10 @@ namespace windows_client.View
             bool isPublish = false;
             hasMoreMessages = false;
 
-            List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber, lastMessageId < 0 ? long.MaxValue : lastMessageId, messageFetchCount);
-            //List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
+            try
+            {
+                List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber, lastMessageId < 0 ? long.MaxValue : lastMessageId, messageFetchCount);
+           
             if (messagesList == null) // represents there are no chat messages for this msisdn
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -1082,6 +1089,11 @@ namespace windows_client.View
                 progressBar.IsEnabled = false;
                 NetworkManager.turnOffNetworkManager = false;
             });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         private void forwardAttachmentMessage()
@@ -1888,6 +1900,14 @@ namespace windows_client.View
                     insertPosition++;
                 }
                 #endregion
+                //#region STICKER
+                //else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STICKER)
+                //{
+                //    this.ocMessages.Insert(insertPosition, convMessage);
+                //    insertPosition++;
+                //}
+                //#endregion
+
                 if (!insertAtTop)
                     ScrollToBottom();
 
@@ -3643,6 +3663,88 @@ namespace windows_client.View
             }
         }
 
+        #region Stickers_Selection
+
+        private SolidColorBrush _seletedCategory = new SolidColorBrush(Color.FromArgb(255, 0x1b, 0xa1, 0xe2));
+        private SolidColorBrush _categoryBackGround = new SolidColorBrush(Color.FromArgb(255, 0x4d, 0x4d, 0x4d));
+
+        private void StickersTab_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            gridEmoticons.Visibility = Visibility.Collapsed;
+            gridStickers.Visibility = Visibility.Visible;
+            if (imageBox.ItemsSource == null)
+            {
+                imageBox.ItemsSource = App.stickerHelper.GetStickersByCategory("category1");
+            }
+        }
+        private void Stickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Sticker sticker = imageBox.SelectedItem as Sticker;
+            if (sticker == null)
+                return;
+            ConvMessage conv = new ConvMessage("Sticker", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+            conv.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
+            conv.StickerId = sticker.StickerId;
+            AddMessageToOcMessages(conv, false);
+
+            mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
+
+            emoticonPanel.Visibility = Visibility.Collapsed;
+
+        }
+
+        private void StickersBack_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            gridEmoticons.Visibility = Visibility.Visible;
+            gridStickers.Visibility = Visibility.Collapsed;
+        }
+
+        private void Category1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            stCategory1.Background = _seletedCategory;
+            stCategory2.Background = _categoryBackGround;
+            stCategory3.Background = _categoryBackGround;
+            stCategory4.Background = _categoryBackGround;
+
+            imageBox.Visibility = Visibility.Visible;
+            stLoading.Visibility = Visibility.Collapsed;
+        }
+
+        private void Category2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            stCategory1.Background = _categoryBackGround;
+            stCategory2.Background = _seletedCategory;
+            stCategory3.Background = _categoryBackGround;
+            stCategory4.Background = _categoryBackGround;
+
+            imageBox.Visibility = Visibility.Collapsed;
+            stLoading.Visibility = Visibility.Visible;
+        }
+
+        private void Category3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            stCategory1.Background = _categoryBackGround;
+            stCategory2.Background = _categoryBackGround;
+            stCategory3.Background = _seletedCategory;
+            stCategory4.Background = _categoryBackGround;
+
+            imageBox.Visibility = Visibility.Collapsed;
+            stLoading.Visibility = Visibility.Visible;
+        }
+
+        private void Category4_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            stCategory1.Background = _categoryBackGround;
+            stCategory2.Background = _categoryBackGround;
+            stCategory3.Background = _categoryBackGround;
+            stCategory4.Background = _seletedCategory;
+
+            imageBox.Visibility = Visibility.Collapsed;
+            stLoading.Visibility = Visibility.Visible;
+        }
+
+        #endregion
+
     }
     public class ChatThreadTemplateSelector : TemplateSelector
     {
@@ -3656,6 +3758,8 @@ namespace windows_client.View
                 {
                     if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
                         return App.newChatThreadPage.dtSentNudge;
+                    if (!string.IsNullOrEmpty(convMesssage.StickerId))
+                        return App.newChatThreadPage.dtSentSticker;
                     else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                         return App.newChatThreadPage.dtSentContact;
                     else if (convMesssage.FileAttachment != null)
@@ -3667,6 +3771,8 @@ namespace windows_client.View
                 {
                     if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
                         return App.newChatThreadPage.dtRecNudge;
+                    if (!string.IsNullOrEmpty(convMesssage.StickerId))
+                        return App.newChatThreadPage.dtSentSticker;
                     else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                         return App.newChatThreadPage.dtRecContact;
                     else if (convMesssage.FileAttachment != null)
@@ -3675,6 +3781,7 @@ namespace windows_client.View
                         return App.newChatThreadPage.dtRecText;
                 }
             }
+
             else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 return App.newChatThreadPage.dtStatusUpdate;
             else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.TYPING_NOTIFICATION)

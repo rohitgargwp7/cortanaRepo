@@ -38,7 +38,7 @@ namespace windows_client.Model
         private string metadataJsonString;
         private ParticipantInfoState participantInfoState;
         private Attachment _fileAttachment = null;
-
+        private string _stickerId;
         // private bool _hasFileAttachment = false;
         private bool _hasAttachment = false;
 
@@ -397,6 +397,26 @@ namespace windows_client.Model
             }
         }
 
+        public string StickerId
+        {
+            set
+            {
+                _stickerId = value;
+                metadataJsonString = string.Format("{{{0}:'{1}'}}", HikeConstants.STICKER_ID, value);
+            }
+            get
+            {
+                if (_stickerId == null)
+                {
+                    if (!string.IsNullOrEmpty(this.MetaDataString) && this.MetaDataString.Contains(HikeConstants.STICKER_ID))
+                    {
+                        JObject jsonSticker = JObject.Parse(this.MetaDataString);
+                        _stickerId = (string)jsonSticker[HikeConstants.STICKER_ID];
+                    }
+                }
+                return _stickerId;
+            }
+        }
         public ParticipantInfoState GrpParticipantState
         {
             get
@@ -492,6 +512,11 @@ namespace windows_client.Model
         {
             get
             {
+                if (!string.IsNullOrEmpty(_stickerId))
+                {
+                    BitmapImage stickerImage = App.stickerHelper.GetStickerImageById(_stickerId);
+                    return stickerImage;//todo:if null return loading image
+                }
 
                 if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                 {
@@ -920,7 +945,10 @@ namespace windows_client.Model
             {
                 data["poke"] = true;
             }
-
+            else if (!string.IsNullOrEmpty(StickerId))
+            {
+                data[HikeConstants.STICKER_ID] = _stickerId;
+            }
             obj[HikeConstants.TO] = _msisdn;
             obj[HikeConstants.DATA] = data;
             obj[HikeConstants.TYPE] = _isInvite ? NetworkManager.INVITE : NetworkManager.MESSAGE;
@@ -1157,6 +1185,12 @@ namespace windows_client.Model
                     metadataJsonString = "{poke: true}";
                 }
 
+                JToken stickerId;
+                if (data.TryGetValue(HikeConstants.STICKER_ID, out stickerId))
+                {
+                    metadataJsonString = string.Format("{{{0}:'{1}'}}", HikeConstants.STICKER_ID, (string)stickerId);
+                    _stickerId = (string)stickerId;
+                }
                 //JToken ts = null;
                 //if (data.TryGetValue(HikeConstants.TIMESTAMP, out ts))
                 _timestamp = TimeUtils.getCurrentTimeStamp();
