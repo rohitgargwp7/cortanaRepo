@@ -872,10 +872,10 @@ namespace windows_client.utils
 
                 bool isFavSaved = false;
                 bool isPendingSaved = false;
-                int hikeCount = 1, smsCount = 1, nonHikeCount = 0;
+                int hikeCount = 1, smsCount = 1;
                 List<ContactInfo> msgToShow = null;
                 List<string> msisdns = null;
-                Dictionary<string,GroupInfo> allGroupsInfo = null;
+                Dictionary<string, GroupInfo> allGroupsInfo = null;
                 if (!isRefresh)
                 {
                     msgToShow = new List<ContactInfo>(5);
@@ -935,11 +935,6 @@ namespace windows_client.utils
                                         msgToShow.Add(cn);
                                         smsCount++;
                                     }
-
-                                    #region NUX RELATED
-                                    if (!onhike)
-                                        nonHikeCount++;
-                                    #endregion
                                 }
                             }
                             else // this is refresh contacts case
@@ -974,7 +969,7 @@ namespace windows_client.utils
                                         }
                                     }
                                 }
-                                GroupManager.Instance.RefreshGroupCache(cn,allGroupsInfo);
+                                GroupManager.Instance.RefreshGroupCache(cn, allGroupsInfo);
                             }
                             server_contacts.Add(cn);
                             totalContacts++;
@@ -993,13 +988,7 @@ namespace windows_client.utils
                 Debug.WriteLine("Total contacts with no msisdn : {0}", count);
                 Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
                 if (!isRefresh)
-                {
-                    #region NUX RELATED
-                    if (nonHikeCount > 2)
-                        App.appSettings["showNux"] = true;
-                    #endregion
                     App.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, msgToShow);
-                }
                 return server_contacts;
             }
             catch (ArgumentException)
