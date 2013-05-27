@@ -80,14 +80,14 @@ namespace windows_client.utils
         private Thickness convListEmoticonMargin = new Thickness(0, 5, 0, 0);
         private Thickness chatThreadKeyPadUpMargin = new Thickness(0, 315, 15, 0);
         private Thickness chatThreadKeyPadDownMargin = new Thickness(0, 0, 15, 0);
-        public Thickness RecMessTextMarginPortrait = new Thickness(0, 0, 90, 14);
-        public Thickness RecFileMarginPortrait = new Thickness(0, 0, 185, 14);
-        public Thickness SentMessTextMarginPortrait = new Thickness(55, 12, 0, 10);
-        public Thickness SentFileMarginPortrait = new Thickness(185, 12, 0, 10);
-        public Thickness RecMessTextMarginLS = new Thickness(0, 0, 285, 14);
-        public Thickness RecFileMarginLS = new Thickness(0, 0, 380, 14);
-        public Thickness SentMessTextMarginLS = new Thickness(250, 12, 0, 10);
-        public Thickness SentFileMarginLS = new Thickness(380, 12, 0, 10);
+        public Thickness RecMessageBubbleTextMarginPortrait = new Thickness(0, 0, 90, 14);
+        public Thickness ReceivedBubbleFileMarginPortrait = new Thickness(0, 0, 185, 14);
+        public Thickness SentBubbleTextMarginPortrait = new Thickness(55, 12, 0, 10);
+        public Thickness SentBubbleFileMarginPortrait = new Thickness(185, 12, 0, 10);
+        public Thickness RecievedBubbleTextMarginLS = new Thickness(0, 0, 285, 14);
+        public Thickness ReceivedBubbleFileMarginLS = new Thickness(0, 0, 380, 14);
+        public Thickness SentBubbleTextMarginLS = new Thickness(250, 12, 0, 10);
+        public Thickness SentBubbleFileMarginLS = new Thickness(380, 12, 0, 10);
 
         private FontFamily groupChatMessageHeader;
         private FontFamily messageText;

@@ -3637,32 +3637,32 @@ namespace windows_client.View
                 if (convMesssage.IsSent)
                 {
                     if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
-                        return App.newChatThreadPage.dtSentNudge;
+                        return App.newChatThreadPage.dtSentBubbleNudge;
                     else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                        return App.newChatThreadPage.dtSentContact;
+                        return App.newChatThreadPage.dtSentBubbleContact;
                     else if (convMesssage.FileAttachment != null)
-                        return App.newChatThreadPage.dtSentFile;
+                        return App.newChatThreadPage.dtSentBubbleFile;
                     else
-                        return App.newChatThreadPage.dtSentText;
+                        return App.newChatThreadPage.dtSentBubbleText;
                 }
                 else
                 {
                     if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
-                        return App.newChatThreadPage.dtRecNudge;
+                        return App.newChatThreadPage.dtRecievedBubbleNudge;
                     else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                        return App.newChatThreadPage.dtRecContact;
+                        return App.newChatThreadPage.dtRecievedBubbleContact;
                     else if (convMesssage.FileAttachment != null)
-                        return App.newChatThreadPage.dtRecFile;
+                        return App.newChatThreadPage.dtRecievedBubbleFile;
                     else
-                        return App.newChatThreadPage.dtRecText;
+                        return App.newChatThreadPage.dtRecievedBubbleText;
                 }
             }
             else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
-                return App.newChatThreadPage.dtStatusUpdate;
+                return App.newChatThreadPage.dtStatusUpdateBubble;
             else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.TYPING_NOTIFICATION)
-                return App.newChatThreadPage.dtTypingNotification;
+                return App.newChatThreadPage.dtTypingNotificationBubble;
             else
-                return App.newChatThreadPage.dtNotification;
+                return App.newChatThreadPage.dtNotificationBubble;
         }
     }
 

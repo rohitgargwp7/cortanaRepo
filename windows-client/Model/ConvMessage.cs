@@ -771,16 +771,16 @@ namespace windows_client.Model
                     if (IsSent)
                     {
                         if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                            return UI_Utils.Instance.SentMessTextMarginLS;
+                            return UI_Utils.Instance.SentBubbleTextMarginLS;
                         else
-                            return UI_Utils.Instance.SentFileMarginLS;
+                            return UI_Utils.Instance.SentBubbleFileMarginLS;
                     }
                     else
                     {
                         if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                            return UI_Utils.Instance.RecMessTextMarginLS;
+                            return UI_Utils.Instance.RecievedBubbleTextMarginLS;
                         else
-                            return UI_Utils.Instance.RecFileMarginLS;
+                            return UI_Utils.Instance.ReceivedBubbleFileMarginLS;
                     }
                 }
                 else
@@ -788,16 +788,16 @@ namespace windows_client.Model
                     if (IsSent)
                     {
                         if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                            return UI_Utils.Instance.SentMessTextMarginPortrait;
+                            return UI_Utils.Instance.SentBubbleTextMarginPortrait;
                         else
-                            return UI_Utils.Instance.SentFileMarginPortrait;
+                            return UI_Utils.Instance.SentBubbleFileMarginPortrait;
                     }
                     else
                     {
                         if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                            return UI_Utils.Instance.RecMessTextMarginPortrait;
+                            return UI_Utils.Instance.RecMessageBubbleTextMarginPortrait;
                         else
-                            return UI_Utils.Instance.RecFileMarginPortrait;
+                            return UI_Utils.Instance.ReceivedBubbleFileMarginPortrait;
                     }
                 }
             }
