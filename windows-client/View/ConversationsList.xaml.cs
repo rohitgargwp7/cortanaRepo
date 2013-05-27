@@ -90,7 +90,7 @@ namespace windows_client.View
             {
                 TotalUnreadStatuses = 0;
             }
-            this.myListBox.SelectedItem = null;
+            this.llsConversations.SelectedItem = null;
             this.favourites.SelectedIndex = -1;
             this.hikeContactListBox.SelectedIndex = -1;
             this.statusLLS.SelectedIndex = -1;
@@ -136,7 +136,7 @@ namespace windows_client.View
             {
                 emptyScreenImage.Opacity = 0;
                 emptyScreenTip.Opacity = 0;
-                myListBox.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
+                llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
             }
 
             App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
@@ -203,7 +203,7 @@ namespace windows_client.View
                 ShowLaunchMessages();
             }
             shellProgress.IsVisible = false;
-            myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
+            llsConversations.ItemsSource = App.ViewModel.MessageListPageCollection;
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
@@ -345,7 +345,7 @@ namespace windows_client.View
 
         private void btnGetSelected_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            ConversationListObject convListObj = myListBox.SelectedItem as ConversationListObject;
+            ConversationListObject convListObj = llsConversations.SelectedItem as ConversationListObject;
             if (convListObj == null)
                 return;
 
@@ -789,7 +789,7 @@ namespace windows_client.View
                                 emptyScreenImage.Opacity = 0;
                             }
                             if (App.ViewModel.MessageListPageCollection.Count > 0)
-                                myListBox.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
+                                llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
                         }
                         catch (Exception ex)
                         {
@@ -1401,7 +1401,7 @@ namespace windows_client.View
                 App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
             }
         }
-        
+
 
         #endregion
 

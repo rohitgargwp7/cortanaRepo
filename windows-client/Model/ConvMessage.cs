@@ -247,8 +247,6 @@ namespace windows_client.Model
             {
                 if (_messageStatus != value)
                 {
-                    NotifyPropertyChanging("MessageStatus");
-                    NotifyPropertyChanging("SdrImage");
                     _messageStatus = value;
                     NotifyPropertyChanged("SdrImage");
                     NotifyPropertyChanged("MessageStatus");
@@ -267,9 +265,9 @@ namespace windows_client.Model
             {
                 if (_timestamp != value)
                 {
-                    NotifyPropertyChanging("Timestamp");
-                    NotifyPropertyChanging("TimeStampStr");
                     _timestamp = value;
+                    NotifyPropertyChanged("Timestamp");
+                    NotifyPropertyChanged("TimeStampStr");
                 }
             }
         }
@@ -302,7 +300,6 @@ namespace windows_client.Model
             {
                 if (_groupParticipant != value)
                 {
-                    NotifyPropertyChanging("GroupParticipant");
                     _groupParticipant = value;
                     NotifyPropertyChanged("GroupParticipant");
                 }
@@ -365,7 +362,6 @@ namespace windows_client.Model
             {
                 if (_isInvite != value)
                 {
-                    NotifyPropertyChanging("IsInvite");
                     _isInvite = value;
                     NotifyPropertyChanged("IsInvite");
                 }
@@ -501,8 +497,6 @@ namespace windows_client.Model
             }
             set
             {
-                NotifyPropertyChanging("LayoutGridWidth");
-                NotifyPropertyChanging("DataTemplateMargin");
                 _currentOrientation = value;
                 NotifyPropertyChanged("LayoutGridWidth");
                 NotifyPropertyChanged("DataTemplateMargin");
@@ -566,8 +560,6 @@ namespace windows_client.Model
         {
             set
             {
-                NotifyPropertyChanging("ProgressBarValue");
-                NotifyPropertyChanging("ProgressBarVisibility");
                 _progressBarValue = value;
                 if (_progressBarValue >= 100)
                     NotifyPropertyChanging("PlayIconVisibility");
@@ -718,7 +710,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (_currentOrientation == PageOrientation.Landscape || _currentOrientation == PageOrientation.LandscapeLeft || _currentOrientation == PageOrientation.LandscapeRight)
+                if (_currentOrientation == PageOrientation.LandscapeLeft || _currentOrientation == PageOrientation.LandscapeRight)
                     return 768;
                 return 480;
             }
@@ -799,21 +791,21 @@ namespace windows_client.Model
         {
             get
             {
-                if (_currentOrientation == PageOrientation.Landscape || _currentOrientation == PageOrientation.LandscapeLeft || _currentOrientation == PageOrientation.LandscapeRight)
+                if (_currentOrientation == PageOrientation.LandscapeLeft || _currentOrientation == PageOrientation.LandscapeRight)
                 {
                     if (IsSent)
                     {
                         if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                            return UI_Utils.Instance.SentMessTextMarginLS;
+                            return UI_Utils.Instance.SentBubbleTextMarginLS;
                         else
-                            return UI_Utils.Instance.SentFileMarginLS;
+                            return UI_Utils.Instance.SentBubbleFileMarginLS;
                     }
                     else
                     {
                         if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                            return UI_Utils.Instance.RecMessTextMarginLS;
+                            return UI_Utils.Instance.RecievedBubbleTextMarginLS;
                         else
-                            return UI_Utils.Instance.RecFileMarginLS;
+                            return UI_Utils.Instance.ReceivedBubbleFileMarginLS;
                     }
                 }
                 else
@@ -821,36 +813,36 @@ namespace windows_client.Model
                     if (IsSent)
                     {
                         if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                            return UI_Utils.Instance.SentMessTextMarginPortrait;
+                            return UI_Utils.Instance.SentBubbleTextMarginPortrait;
                         else
-                            return UI_Utils.Instance.SentFileMarginPortrait;
+                            return UI_Utils.Instance.SentBubbleFileMarginPortrait;
                     }
                     else
                     {
                         if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                            return UI_Utils.Instance.RecMessTextMarginPortrait;
+                            return UI_Utils.Instance.RecMessageBubbleTextMarginPortrait;
                         else
-                            return UI_Utils.Instance.RecFileMarginPortrait;
+                            return UI_Utils.Instance.ReceivedBubbleFileMarginPortrait;
                     }
                 }
             }
         }
-        public ConvMessage(string message, string msisdn, long timestamp, State msgState, PageOrientation isLandscapeMode)
-            : this(message, msisdn, timestamp, msgState, -1, -1, isLandscapeMode)
+        public ConvMessage(string message, string msisdn, long timestamp, State msgState, PageOrientation currentOrientation)
+            : this(message, msisdn, timestamp, msgState, -1, -1, currentOrientation)
         {
         }
         public ConvMessage(string message, string msisdn, long timestamp, State msgState)
             : this(message, msisdn, timestamp, msgState, -1, -1, PageOrientation.Portrait)
         {
         }
-        public ConvMessage(string message, string msisdn, long timestamp, State msgState, long msgid, long mappedMsgId, PageOrientation isLandscapeMode)
+        public ConvMessage(string message, string msisdn, long timestamp, State msgState, long msgid, long mappedMsgId, PageOrientation currentOrientation)
         {
             this._msisdn = msisdn;
             this._message = message;
             this._timestamp = timestamp;
             this._messageId = msgid;
             this._mappedMessageId = mappedMsgId;
-            this._currentOrientation = isLandscapeMode;
+            this._currentOrientation = currentOrientation;
             _isSent = (msgState == State.SENT_UNCONFIRMED ||
                         msgState == State.SENT_CONFIRMED ||
                         msgState == State.SENT_DELIVERED ||
@@ -1320,10 +1312,6 @@ namespace windows_client.Model
         public void SetAttachmentState(Attachment.AttachmentState attachmentState)
         {
             this.FileAttachment.FileState = attachmentState;
-            NotifyPropertyChanging("ShowCancelMenu");
-            NotifyPropertyChanging("ShowForwardMenu");
-            NotifyPropertyChanging("ShowDeleteMenu");
-            NotifyPropertyChanging("SdrImage");
             if (FileAttachment.FileState == Attachment.AttachmentState.CANCELED || FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
                 ProgressBarValue = 0;
             NotifyPropertyChanged("ShowCancelMenu");

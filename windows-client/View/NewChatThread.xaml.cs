@@ -720,7 +720,7 @@ namespace windows_client.View
                 //overlayForNudge.Opacity = 0.65;
                 overlayForNudge.Opacity = 0.3;
                 nudgeTuteGrid.Visibility = Visibility.Visible;
-                // MessageList.IsHitTestVisible = bottomPanel.IsHitTestVisible = false;
+                llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = false;
                 //SystemTray.IsVisible = false;
             }
             else
@@ -733,7 +733,7 @@ namespace windows_client.View
         {
             overlayForNudge.Visibility = Visibility.Collapsed;
             nudgeTuteGrid.Visibility = Visibility.Collapsed;
-            // MessageList.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
+            llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
             chatThreadMainPage.ApplicationBar = appBar;
             App.RemoveKeyFromAppSettings(App.SHOW_NUDGE_TUTORIAL);
         }
@@ -969,126 +969,125 @@ namespace windows_client.View
             try
             {
                 List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber, lastMessageId < 0 ? long.MaxValue : lastMessageId, messageFetchCount);
-           
-            if (messagesList == null) // represents there are no chat messages for this msisdn
-            {
+
+                if (messagesList == null) // represents there are no chat messages for this msisdn
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        //messageListBox.Opacity = 1;
+                        progressBar.Opacity = 0;
+                        progressBar.IsEnabled = false;
+                        forwardAttachmentMessage();
+                    });
+                    NetworkManager.turnOffNetworkManager = false;
+                    return;
+                }
+
+                bool isHandled = false;
+                JArray ids = new JArray();
+                List<long> dbIds = new List<long>();
+                int count = 0;
+                for (i = 0; i < messagesList.Count; i++)
+                {
+                    ConvMessage cm = messagesList[i];
+                    Debug.WriteLine(cm.MessageId);
+                    if (i == messageFetchCount - 1)
+                    {
+                        hasMoreMessages = true;
+                        lastMessageId = cm.MessageId;
+                        break;
+                    }
+                    count++;
+                    if (count % 5 == 0)
+                        Thread.Sleep(5);
+                    messagesList[i].IsSms = !isOnHike;
+
+                    #region PERCEPTION FIX ZONE
+
+                    // perception fix is only used for msgs of normal type in which SDR applies
+                    if (messagesList[i].GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                    {
+                        if (!isHandled && messagesList[i].IsSent && messageFetchCount == INITIAL_FETCH_COUNT) // this has to be done for first load and not paging
+                        {
+                            refState = messagesList[i].MessageStatus;
+                            isHandled = true;
+                        }
+
+                        if (refState == ConvMessage.State.SENT_DELIVERED_READ && messagesList[i].MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                        {
+                            ConvMessage convMess = messagesList[i];
+                            if (convMess.FileAttachment == null || (convMess.FileAttachment.FileState == Attachment.AttachmentState.COMPLETED))
+                            {
+                                convMess.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
+                                if (idsToUpdate == null)
+                                    idsToUpdate = new List<long>();
+                                idsToUpdate.Add(convMess.MessageId);
+                            }
+                        }
+                    }
+
+                    #endregion
+
+                    if (messagesList[i].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
+                    {
+                        isPublish = true;
+                        if (messagesList[i].GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                            ids.Add(Convert.ToString(messagesList[i].MappedMessageId));
+                        dbIds.Add(messagesList[i].MessageId);
+                        messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
+                    }
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        AddMessageToOcMessages(cm, true);
+                    });
+                }
+
+                #region perception fix update db
+                if (idsToUpdate != null && idsToUpdate.Count > 0)
+                {
+                    BackgroundWorker bw = new BackgroundWorker();
+                    bw.DoWork += (ss, ee) =>
+                    {
+                        MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ);
+                        idsToUpdate = null;
+                    };
+                    bw.RunWorkerAsync();
+                }
+                #endregion
+
+
+                if (isPublish)
+                {
+                    JObject obj = new JObject();
+                    obj.Add(HikeConstants.TYPE, NetworkManager.MESSAGE_READ);
+                    obj.Add(HikeConstants.TO, mContactNumber);
+                    obj.Add(HikeConstants.DATA, ids);
+
+                    mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, dbIds.ToArray()); // this is to notify DB
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // handle return to sender
+                    updateLastMsgColor(mContactNumber);
+                    isPublish = false;
+                }
+                if (App.IS_TOMBSTONED) // tombstone , chat thread not created , add GC members.
+                {
+                    if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
+                    {
+                        this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
+                        processGroupJoin(false);
+                    }
+                }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    // Scroller.Opacity = 1;
+                    forwardAttachmentMessage();
+                    isMessageLoaded = true;
+                    //Scroller.Opacity = 1;
                     //messageListBox.Opacity = 1;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
-                    forwardAttachmentMessage();
+                    NetworkManager.turnOffNetworkManager = false;
                 });
-                NetworkManager.turnOffNetworkManager = false;
-                return;
-            }
-
-            bool isHandled = false;
-            JArray ids = new JArray();
-            List<long> dbIds = new List<long>();
-            int count = 0;
-            for (i = 0; i < messagesList.Count; i++)
-            {
-                ConvMessage cm = messagesList[i];
-                Debug.WriteLine(cm.MessageId);
-                if (i == messageFetchCount - 1)
-                {
-                    hasMoreMessages = true;
-                    lastMessageId = cm.MessageId;
-                    break;
-                }
-                count++;
-                if (count % 5 == 0)
-                    Thread.Sleep(5);
-                messagesList[i].IsSms = !isOnHike;
-
-                #region PERCEPTION FIX ZONE
-
-                // perception fix is only used for msgs of normal type in which SDR applies
-                if (messagesList[i].GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                {
-                    if (!isHandled && messagesList[i].IsSent && messageFetchCount == INITIAL_FETCH_COUNT) // this has to be done for first load and not paging
-                    {
-                        refState = messagesList[i].MessageStatus;
-                        isHandled = true;
-                    }
-
-                    if (refState == ConvMessage.State.SENT_DELIVERED_READ && messagesList[i].MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
-                    {
-                        ConvMessage convMess = messagesList[i];
-                        if (convMess.FileAttachment == null || (convMess.FileAttachment.FileState == Attachment.AttachmentState.COMPLETED))
-                        {
-                            convMess.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
-                            if (idsToUpdate == null)
-                                idsToUpdate = new List<long>();
-                            idsToUpdate.Add(convMess.MessageId);
-                        }
-                    }
-                }
-
-                #endregion
-
-                if (messagesList[i].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
-                {
-                    isPublish = true;
-                    if (messagesList[i].GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                        ids.Add(Convert.ToString(messagesList[i].MappedMessageId));
-                    dbIds.Add(messagesList[i].MessageId);
-                    messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
-                }
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    AddMessageToOcMessages(cm, true);
-                });
-            }
-
-            #region perception fix update db
-            if (idsToUpdate != null && idsToUpdate.Count > 0)
-            {
-                BackgroundWorker bw = new BackgroundWorker();
-                bw.DoWork += (ss, ee) =>
-                {
-                    MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ);
-                    idsToUpdate = null;
-                };
-                bw.RunWorkerAsync();
-            }
-            #endregion
-
-
-            if (isPublish)
-            {
-                JObject obj = new JObject();
-                obj.Add(HikeConstants.TYPE, NetworkManager.MESSAGE_READ);
-                obj.Add(HikeConstants.TO, mContactNumber);
-                obj.Add(HikeConstants.DATA, ids);
-
-                mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, dbIds.ToArray()); // this is to notify DB
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // handle return to sender
-                updateLastMsgColor(mContactNumber);
-                isPublish = false;
-            }
-            if (App.IS_TOMBSTONED) // tombstone , chat thread not created , add GC members.
-            {
-                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
-                {
-                    this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
-                    processGroupJoin(false);
-                }
-            }
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                forwardAttachmentMessage();
-                isMessageLoaded = true;
-                //Scroller.Opacity = 1;
-                //messageListBox.Opacity = 1;
-                progressBar.Opacity = 0;
-                progressBar.IsEnabled = false;
-                NetworkManager.turnOffNetworkManager = false;
-            });
             }
             catch (Exception ex)
             {
@@ -1171,22 +1170,6 @@ namespace windows_client.View
                 shareLocation();
             }
 
-        }
-
-        private void scheduledScrolling()
-        {
-            //Deployment.Current.Dispatcher.BeginInvoke(() =>
-            //{
-            //    if (messagesCollection.Contains(emptyImage))
-            //        messagesCollection.Remove(emptyImage);
-            //    messagesCollection.Add(emptyImage);
-            //    messageListBox.UpdateLayout();
-            //    messageListBox.SelectedIndex = messagesCollection.Count - 1;
-            //    messageListBox.UpdateLayout();
-            //    messageListBox.ScrollIntoView(emptyImage);
-            //    messageListBox.UpdateLayout();
-            //    messageListBox.ScrollToBottom();
-            //});
         }
 
         //this function is called from UI thread only. No need to synch.
@@ -1590,7 +1573,6 @@ namespace windows_client.View
       */
         private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop)
         {
-            bool isLanscapeMode = this.Orientation == PageOrientation.Landscape || this.Orientation == PageOrientation.LandscapeLeft || this.Orientation == PageOrientation.LandscapeRight;
             int insertPosition = 0;
             if (!insertAtTop)
                 insertPosition = this.ocMessages.Count;
@@ -2612,7 +2594,7 @@ namespace windows_client.View
                 overlayRectangle.Visibility = System.Windows.Visibility.Visible;
                 overlayRectangle.Opacity = 0.85;
                 HikeTitle.IsHitTestVisible = false;
-                //MessageList.IsHitTestVisible = false;
+                llsMessages.IsHitTestVisible = false;
                 bottomPanel.IsHitTestVisible = false;
                 OverlayMessagePanel.Visibility = Visibility.Visible;
                 emoticonsIconButton.IsEnabled = false;
@@ -2623,7 +2605,7 @@ namespace windows_client.View
             {
                 overlayRectangle.Visibility = System.Windows.Visibility.Collapsed;
                 HikeTitle.IsHitTestVisible = true;
-                //  MessageList.IsHitTestVisible = true;
+                llsMessages.IsHitTestVisible = true;
                 bottomPanel.IsHitTestVisible = true;
                 OverlayMessagePanel.Visibility = Visibility.Collapsed;
                 if (isGroupChat && !isGroupAlive)
@@ -3757,37 +3739,37 @@ namespace windows_client.View
                 if (convMesssage.IsSent)
                 {
                     if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
-                        return App.newChatThreadPage.dtSentNudge;
+                        return App.newChatThreadPage.dtSentBubbleNudge;
                     if (!string.IsNullOrEmpty(convMesssage.StickerId))
                         return App.newChatThreadPage.dtSentSticker;
                     else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                        return App.newChatThreadPage.dtSentContact;
+                        return App.newChatThreadPage.dtSentBubbleContact;
                     else if (convMesssage.FileAttachment != null)
-                        return App.newChatThreadPage.dtSentFile;
+                        return App.newChatThreadPage.dtSentBubbleFile;
                     else
-                        return App.newChatThreadPage.dtSentText;
+                        return App.newChatThreadPage.dtSentBubbleText;
                 }
                 else
                 {
                     if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
-                        return App.newChatThreadPage.dtRecNudge;
+                        return App.newChatThreadPage.dtRecievedBubbleNudge;
                     if (!string.IsNullOrEmpty(convMesssage.StickerId))
                         return App.newChatThreadPage.dtSentSticker;
                     else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                        return App.newChatThreadPage.dtRecContact;
+                        return App.newChatThreadPage.dtRecievedBubbleContact;
                     else if (convMesssage.FileAttachment != null)
-                        return App.newChatThreadPage.dtRecFile;
+                        return App.newChatThreadPage.dtRecievedBubbleFile;
                     else
-                        return App.newChatThreadPage.dtRecText;
+                        return App.newChatThreadPage.dtRecievedBubbleText;
                 }
             }
 
             else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
-                return App.newChatThreadPage.dtStatusUpdate;
+                return App.newChatThreadPage.dtStatusUpdateBubble;
             else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.TYPING_NOTIFICATION)
-                return App.newChatThreadPage.dtTypingNotification;
+                return App.newChatThreadPage.dtTypingNotificationBubble;
             else
-                return App.newChatThreadPage.dtNotification;
+                return App.newChatThreadPage.dtNotificationBubble;
         }
     }
 

@@ -20,7 +20,7 @@
     shell:SystemTray.IsVisible="True" Visibility="Visible" Name="chatThreadMainPage">
 
     <phone:PhoneApplicationPage.Resources>
-        <DataTemplate x:Name="dtNotification">
+        <DataTemplate x:Name="dtNotificationBubble">
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,5,0,5" Width="{Binding LayoutGridWidth}" >
                 <Border x:Name="border" BorderThickness="1" Margin="24,0,24,0" BorderBrush="#cdcdcd"/>
                 <Grid Margin="36,3,36,3">
@@ -37,12 +37,12 @@
                 </Grid>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="dtTypingNotification" >
+        <DataTemplate x:Name="dtTypingNotificationBubble" >
             <Grid Width="{Binding LayoutGridWidth}" >
                 <Image Source="/View/images/typing.png" Height="28" Width="55" HorizontalAlignment="Left" Margin="24, 5, 0, 15"></Image>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="dtRecText" >
+        <DataTemplate x:Name="dtRecievedBubbleText" >
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}"  HorizontalAlignment="Left">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -72,7 +72,7 @@
                 </Grid>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="dtRecFile" >
+        <DataTemplate x:Name="dtRecievedBubbleFile" >
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}" HorizontalAlignment="Left">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -109,7 +109,7 @@
                 </Grid>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="dtRecNudge" >
+        <DataTemplate x:Name="dtRecievedBubbleNudge" >
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24,0,0,14" Width="{Binding LayoutGridWidth}" HorizontalAlignment="Left">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -135,7 +135,7 @@
                 </Grid>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="dtRecContact" >
+        <DataTemplate x:Name="dtRecievedBubbleContact" >
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}" HorizontalAlignment="Left">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -175,7 +175,7 @@
                 </Grid>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="dtSentText" >
+        <DataTemplate x:Name="dtSentBubbleText" >
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}" HorizontalAlignment="Right">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -208,7 +208,7 @@
 
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="dtSentFile" >
+        <DataTemplate x:Name="dtSentBubbleFile" >
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}" HorizontalAlignment="Right"   >
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -250,7 +250,7 @@
 
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="dtSentNudge" >
+        <DataTemplate x:Name="dtSentBubbleNudge" >
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,12,24,10" Width="{Binding LayoutGridWidth}" HorizontalAlignment="Right">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -279,7 +279,7 @@
                 <Path Grid.Column="1" Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{StaticResource PhoneAccentBrush}"/>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="dtSentContact" >
+        <DataTemplate x:Name="dtSentBubbleContact" >
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}" HorizontalAlignment="Right"   >
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -324,7 +324,7 @@
                 <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="dtStatusUpdate">
+        <DataTemplate x:Name="dtStatusUpdateBubble">
             <Grid x:Name="LayoutRoot"  Margin="0,5,0,5"  Background="{Binding BubbleBackGroundColor}" Width="{Binding LayoutGridWidth}">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -393,7 +393,7 @@
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" HorizontalAlignment="Left" DoubleTap="MessageList_DoubleTap">
             <StackPanel Orientation="Vertical" Margin="0,0,0,0">
-                <Grid x:Name="gcMuteGrid" Background="Gray" Visibility="Collapsed" >
+                <Grid x:Name="gcMuteGrid" Visibility="Collapsed" Background="#414141">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
