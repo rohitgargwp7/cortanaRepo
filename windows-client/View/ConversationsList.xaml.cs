@@ -1401,7 +1401,7 @@ namespace windows_client.View
                 App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
             }
         }
-        
+
 
         #endregion
 

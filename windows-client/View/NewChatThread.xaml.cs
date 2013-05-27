@@ -715,7 +715,7 @@ namespace windows_client.View
                 //overlayForNudge.Opacity = 0.65;
                 overlayForNudge.Opacity = 0.3;
                 nudgeTuteGrid.Visibility = Visibility.Visible;
-                // MessageList.IsHitTestVisible = bottomPanel.IsHitTestVisible = false;
+                llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = false;
                 //SystemTray.IsVisible = false;
             }
             else
@@ -728,7 +728,7 @@ namespace windows_client.View
         {
             overlayForNudge.Visibility = Visibility.Collapsed;
             nudgeTuteGrid.Visibility = Visibility.Collapsed;
-            // MessageList.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
+            llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
             chatThreadMainPage.ApplicationBar = appBar;
             App.RemoveKeyFromAppSettings(App.SHOW_NUDGE_TUTORIAL);
         }
@@ -967,7 +967,6 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    // Scroller.Opacity = 1;
                     //messageListBox.Opacity = 1;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
@@ -1159,22 +1158,6 @@ namespace windows_client.View
                 shareLocation();
             }
 
-        }
-
-        private void scheduledScrolling()
-        {
-            //Deployment.Current.Dispatcher.BeginInvoke(() =>
-            //{
-            //    if (messagesCollection.Contains(emptyImage))
-            //        messagesCollection.Remove(emptyImage);
-            //    messagesCollection.Add(emptyImage);
-            //    messageListBox.UpdateLayout();
-            //    messageListBox.SelectedIndex = messagesCollection.Count - 1;
-            //    messageListBox.UpdateLayout();
-            //    messageListBox.ScrollIntoView(emptyImage);
-            //    messageListBox.UpdateLayout();
-            //    messageListBox.ScrollToBottom();
-            //});
         }
 
         //this function is called from UI thread only. No need to synch.
@@ -1578,7 +1561,6 @@ namespace windows_client.View
       */
         private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop)
         {
-            bool isLanscapeMode = this.Orientation == PageOrientation.Landscape || this.Orientation == PageOrientation.LandscapeLeft || this.Orientation == PageOrientation.LandscapeRight;
             int insertPosition = 0;
             if (!insertAtTop)
                 insertPosition = this.ocMessages.Count;
@@ -2592,7 +2574,7 @@ namespace windows_client.View
                 overlayRectangle.Visibility = System.Windows.Visibility.Visible;
                 overlayRectangle.Opacity = 0.85;
                 HikeTitle.IsHitTestVisible = false;
-                //MessageList.IsHitTestVisible = false;
+                llsMessages.IsHitTestVisible = false;
                 bottomPanel.IsHitTestVisible = false;
                 OverlayMessagePanel.Visibility = Visibility.Visible;
                 emoticonsIconButton.IsEnabled = false;
@@ -2603,7 +2585,7 @@ namespace windows_client.View
             {
                 overlayRectangle.Visibility = System.Windows.Visibility.Collapsed;
                 HikeTitle.IsHitTestVisible = true;
-                //  MessageList.IsHitTestVisible = true;
+                llsMessages.IsHitTestVisible = true;
                 bottomPanel.IsHitTestVisible = true;
                 OverlayMessagePanel.Visibility = Visibility.Collapsed;
                 if (isGroupChat && !isGroupAlive)

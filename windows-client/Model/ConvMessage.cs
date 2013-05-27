@@ -693,7 +693,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (_currentOrientation == PageOrientation.Landscape || _currentOrientation == PageOrientation.LandscapeLeft || _currentOrientation == PageOrientation.LandscapeRight)
+                if (_currentOrientation == PageOrientation.LandscapeLeft || _currentOrientation == PageOrientation.LandscapeRight)
                     return 768;
                 return 480;
             }
@@ -774,7 +774,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (_currentOrientation == PageOrientation.Landscape || _currentOrientation == PageOrientation.LandscapeLeft || _currentOrientation == PageOrientation.LandscapeRight)
+                if (_currentOrientation == PageOrientation.LandscapeLeft || _currentOrientation == PageOrientation.LandscapeRight)
                 {
                     if (IsSent)
                     {
