@@ -69,7 +69,7 @@
                     <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenImage" Width="135" Height="152" Opacity="0" VerticalAlignment="Center" Margin="0,0,0,100">
                     </Image>
                     <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenTip" MaxWidth="265" MaxHeight="111" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,4,10"/>
-                    <phone:LongListSelector Grid.Row="0" Grid.Column="0" x:Name="myListBox" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Tap" Margin="15,0,5,5" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
+                    <phone:LongListSelector Grid.Row="0" Grid.Column="0" x:Name="llsConversations" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Tap" Margin="15,0,5,5" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
                                     
