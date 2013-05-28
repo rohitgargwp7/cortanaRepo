@@ -302,6 +302,7 @@ namespace windows_client.Model
             {
                 if (_groupParticipant != value)
                 {
+                    NotifyPropertyChanging("GroupParticipant");
                     _groupParticipant = value;
                     NotifyPropertyChanged("GroupParticipant");
                 }
@@ -317,6 +318,7 @@ namespace windows_client.Model
             }
             set
             {
+                NotifyPropertyChanging("MetaDataString");
                 metadataJsonString = value;
                 if (string.IsNullOrEmpty(metadataJsonString))
                     participantInfoState = ParticipantInfoState.NO_INFO;
@@ -336,6 +338,7 @@ namespace windows_client.Model
             {
                 if (_hasAttachment != value)
                 {
+                    NotifyPropertyChanging("HasAttachment");
                     _hasAttachment = value;
                 }
             }
