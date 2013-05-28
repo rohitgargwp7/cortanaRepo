@@ -53,9 +53,9 @@ namespace windows_client.ViewModel
             }
         }
 
-        private ObservableCollection<ConversationBox> _messageListPageCollection;
+        private ObservableCollection<ConversationListObject> _messageListPageCollection;
 
-        public ObservableCollection<ConversationBox> MessageListPageCollection
+        public ObservableCollection<ConversationListObject> MessageListPageCollection
         {
             get
             {
@@ -157,16 +157,15 @@ namespace windows_client.ViewModel
             _pendingReq = new Dictionary<string, ConversationListObject>();
             _favList = new ObservableCollection<ConversationListObject>();
 
-            List<ConversationBox> listConversationBox = new List<ConversationBox>();
+            List<ConversationListObject> listConversationBox = new List<ConversationListObject>();
             // this order should be maintained as _convMap should be populated before loading fav list
             for (int i = 0; i < convList.Count; i++)
             {
                 ConversationListObject convListObj = convList[i];
                 _convMap[convListObj.Msisdn] = convListObj;
-                convListObj.ConvBoxObj = new ConversationBox(convListObj);//context menu wil bind on page load
-                listConversationBox.Add(convListObj.ConvBoxObj);
+                listConversationBox.Add(convListObj);
             }
-            _messageListPageCollection = new ObservableCollection<ConversationBox>(listConversationBox);
+            _messageListPageCollection = new ObservableCollection<ConversationListObject>(listConversationBox);
             MiscDBUtil.LoadFavourites(_favList, _convMap);
             int count = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
@@ -180,7 +179,7 @@ namespace windows_client.ViewModel
 
         public HikeViewModel()
         {
-            _messageListPageCollection = new ObservableCollection<ConversationBox>();
+            _messageListPageCollection = new ObservableCollection<ConversationListObject>();
             _convMap = new Dictionary<string, ConversationListObject>();
             _favList = new ObservableCollection<ConversationListObject>();
             _pendingReq = new Dictionary<string, ConversationListObject>();
@@ -269,16 +268,9 @@ namespace windows_client.ViewModel
                         ConversationListObject mObj = (ConversationListObject)vals[1];
                         if (mObj == null)
                             return;
-
-                        if (mObj.ConvBoxObj == null)
-                        {
-                            mObj.ConvBoxObj = new ConversationBox(mObj);
-                            if (App.ViewModel.ConversationListPage != null)
-                                ContextMenuService.SetContextMenu(mObj.ConvBoxObj, App.ViewModel.ConversationListPage.createConversationContextMenu(mObj));
-                        }
-                        App.ViewModel.MessageListPageCollection.Remove(mObj.ConvBoxObj);
+                        App.ViewModel.MessageListPageCollection.Remove(mObj);
                         App.ViewModel.ConvMap[mObj.Msisdn] = mObj;
-                        App.ViewModel.MessageListPageCollection.Insert(0, mObj.ConvBoxObj);
+                        App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                     });
             }
             #endregion

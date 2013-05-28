@@ -18,16 +18,16 @@ namespace windows_client.DbUtils
         private static object lockObj = new object();
 
         //keep a set of currently uploading or downloading messages.
-        private static Dictionary<long, MyChatBubble> uploadingOrDownloadingMessages = new Dictionary<long, MyChatBubble>();
+        private static Dictionary<long, ConvMessage> uploadingOrDownloadingMessages = new Dictionary<long, ConvMessage>();
 
-        public static void addUploadingOrDownloadingMessage(long messageId, MyChatBubble chatBubble)
+        public static void addUploadingOrDownloadingMessage(long messageId, ConvMessage conMessage)
         {
             if (messageId == -1)
                 return;
             lock (lockObj)
             {
                 if (!uploadingOrDownloadingMessages.ContainsKey(messageId))
-                    uploadingOrDownloadingMessages.Add(messageId, chatBubble);
+                    uploadingOrDownloadingMessages.Add(messageId, conMessage);
             }
         }
 
@@ -50,7 +50,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static MyChatBubble getUploadingOrDownloadingMessage(long messageId)
+        public static ConvMessage getUploadingOrDownloadingMessage(long messageId)
         {
             if (messageId == -1)
                 return null;

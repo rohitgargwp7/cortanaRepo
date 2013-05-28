@@ -134,8 +134,8 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.FORWARD_MSG, out obj) && obj is object[])
             {
                 object[] attachmentForwardMessage = (object[])obj;
-                if (attachmentForwardMessage.Length == 2 && attachmentForwardMessage[0] is MyChatBubble
-                    && ((MyChatBubble)attachmentForwardMessage[0]).FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                if (attachmentForwardMessage.Length == 2 && attachmentForwardMessage[0] is ConvMessage
+                    && ((ConvMessage)attachmentForwardMessage[0]).FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
                 {
                     hideSmsContacts = false;
                     isContactShared = true;
