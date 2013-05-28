@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -161,6 +162,28 @@ namespace windows_client.utils
                 }
             }
 
+        }
+        public static int GetMoodId(string metadataJson)
+        {
+            int moodId = -1;
+            if (string.IsNullOrWhiteSpace(metadataJson))
+                return -1;
+            try
+            {
+                JObject metaData = JObject.Parse(metadataJson);
+                JObject data = (JObject)metaData[HikeConstants.DATA];
+                if (data[HikeConstants.MOOD] != null)
+                {
+                    string moodId_String = data[HikeConstants.MOOD].ToString();
+                    if (!string.IsNullOrEmpty(moodId_String))
+                    {
+                        int.TryParse(moodId_String, out moodId);
+                    }
+                }
+            }
+            catch (Exception)
+            { }
+            return moodId;
         }
 
     }

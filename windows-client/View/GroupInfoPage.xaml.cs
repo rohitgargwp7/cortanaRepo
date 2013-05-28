@@ -429,7 +429,7 @@ namespace windows_client.View
                     groupImage.Width = 83;
 
                     string msg = string.Format(AppResources.GroupImgChangedByGrpMember_Txt, AppResources.You_Txt);
-                    ConvMessage cm = new ConvMessage(msg, groupId, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.RECEIVED_READ, -1, -1);
+                    ConvMessage cm = new ConvMessage(msg, groupId, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.RECEIVED_READ, -1, -1,this.Orientation);
                     cm.GrpParticipantState = ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED;
                     cm.GroupParticipant = App.MSISDN;
                     JObject jo = new JObject();
@@ -881,8 +881,6 @@ namespace windows_client.View
                     {
                         favObj = App.ViewModel.ConvMap[gp.Msisdn];
                         favObj.IsFav = true;
-                        if (favObj.ConvBoxObj != null && favObj.ConvBoxObj.FavouriteMenuItem != null)
-                            favObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.Add_To_Fav_Txt;
                     }
                     else
                         favObj = new ConversationListObject(gp.Msisdn, gp.Name, gp.IsOnHike, MiscDBUtil.getThumbNailForMsisdn(gp.Msisdn));
