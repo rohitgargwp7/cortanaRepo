@@ -247,6 +247,7 @@ namespace windows_client.Model
             {
                 if (_messageStatus != value)
                 {
+                    NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
                     NotifyPropertyChanged("SdrImage");
                     NotifyPropertyChanged("MessageStatus");
@@ -265,6 +266,7 @@ namespace windows_client.Model
             {
                 if (_timestamp != value)
                 {
+                    NotifyPropertyChanging("Timestamp");
                     _timestamp = value;
                     NotifyPropertyChanged("Timestamp");
                     NotifyPropertyChanged("TimeStampStr");
@@ -939,10 +941,16 @@ namespace windows_client.Model
             }
             else if (!string.IsNullOrEmpty(StickerId))
             {
-                data[HikeConstants.STICKER_ID] = _stickerId;
+                string[] stickers = _stickerId.Split('_');
+
+                JObject jobj = new JObject();
+                jobj[HikeConstants.CATEGORY_ID] = stickers[0];
+                jobj[HikeConstants.STICKER_ID] = stickers[1];
+                data["md"] = jobj;
             }
             obj[HikeConstants.TO] = _msisdn;
             obj[HikeConstants.DATA] = data;
+            obj["st"] = "stk";
             obj[HikeConstants.TYPE] = _isInvite ? NetworkManager.INVITE : NetworkManager.MESSAGE;
 
             return obj;

@@ -200,6 +200,7 @@
     <Compile Include="utils\RelativeAnimatingContentControl.cs" />
     <Compile Include="utils\SmileyParser.cs" />
     <Compile Include="utils\StatusUpdateHelper.cs" />
+    <Compile Include="utils\StickerCategory.cs" />
     <Compile Include="utils\StickerHelper.cs" />
     <Compile Include="utils\UpdatePostHelper.cs" />
     <Compile Include="utils\Utils.cs" />

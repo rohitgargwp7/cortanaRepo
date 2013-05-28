@@ -361,7 +361,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
-                <Image Grid.Row="0" Grid.Column="1"  MaxHeight="230" MaxWidth="230" Margin="12,12,12,10" HorizontalAlignment="Right" Source="{Binding MessageImage}"/>
+                <Image Grid.Row="0" Grid.Column="1"  Margin="12,12,12,10" MaxHeight="200" MaxWidth="200" HorizontalAlignment="Right" Source="{Binding MessageImage}"/>
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
             </Grid>
         </DataTemplate>
@@ -595,7 +595,7 @@
                         </StackPanel>
                     </Grid>
 
-                    <ListBox  Grid.Row="1" x:Name="imageBox" Height="310" Margin="0,10,0,0" Tap="Stickers_Tap">
+                    <ListBox  Grid.Row="1" x:Name="listBoxStickerCategory" Height="310" Margin="0,10,0,0" Tap="Stickers_Tap">
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <toolkit:WrapPanel ItemHeight="130" ItemWidth="140">

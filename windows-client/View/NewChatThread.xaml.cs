@@ -3649,19 +3649,22 @@ namespace windows_client.View
 
         private SolidColorBrush _seletedCategory = new SolidColorBrush(Color.FromArgb(255, 0x1b, 0xa1, 0xe2));
         private SolidColorBrush _categoryBackGround = new SolidColorBrush(Color.FromArgb(255, 0x4d, 0x4d, 0x4d));
-
+        bool isStickersLoaded = false;
+        private string _selectedCategory = string.Empty;
         private void StickersTab_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             gridEmoticons.Visibility = Visibility.Collapsed;
             gridStickers.Visibility = Visibility.Visible;
-            if (imageBox.ItemsSource == null)
+            if (!isStickersLoaded)
             {
-                imageBox.ItemsSource = App.stickerHelper.GetStickersByCategory("category1");
+                Category1_Tap(sender, e);
+                isStickersLoaded = true;
             }
         }
+
         private void Stickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            Sticker sticker = imageBox.SelectedItem as Sticker;
+            Sticker sticker = listBoxStickerCategory.SelectedItem as Sticker;
             if (sticker == null)
                 return;
             ConvMessage conv = new ConvMessage("Sticker", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
@@ -3683,48 +3686,147 @@ namespace windows_client.View
 
         private void Category1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            _selectedCategory = StickerHelper.CATEGORY_1;
             stCategory1.Background = _seletedCategory;
             stCategory2.Background = _categoryBackGround;
             stCategory3.Background = _categoryBackGround;
             stCategory4.Background = _categoryBackGround;
 
-            imageBox.Visibility = Visibility.Visible;
-            stLoading.Visibility = Visibility.Collapsed;
+            StickerCategory s2 = App.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_1);
+            if (s2 == null || s2.dictStickers.Count == 0)
+            {
+                stLoading.Visibility = Visibility.Visible;
+                listBoxStickerCategory.Visibility = Visibility.Collapsed;
+                //make http call
+                PostReqForStickers(StickerHelper.CATEGORY_1);
+            }
+            else
+            {
+                listBoxStickerCategory.ItemsSource = s2.dictStickers.Values;
+            }
         }
 
         private void Category2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            _selectedCategory = StickerHelper.CATEGORY_2;
             stCategory1.Background = _categoryBackGround;
             stCategory2.Background = _seletedCategory;
             stCategory3.Background = _categoryBackGround;
             stCategory4.Background = _categoryBackGround;
 
-            imageBox.Visibility = Visibility.Collapsed;
-            stLoading.Visibility = Visibility.Visible;
+            StickerCategory s2 = App.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_2);
+            if (s2 == null || s2.dictStickers.Count == 0)
+            {
+                stLoading.Visibility = Visibility.Visible;
+                listBoxStickerCategory.Visibility = Visibility.Collapsed;
+                //make http call
+                PostReqForStickers(StickerHelper.CATEGORY_2);
+            }
+            else
+            {
+                listBoxStickerCategory.ItemsSource = s2.dictStickers.Values;
+            }
         }
 
         private void Category3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            _selectedCategory = StickerHelper.CATEGORY_3;
             stCategory1.Background = _categoryBackGround;
             stCategory2.Background = _categoryBackGround;
             stCategory3.Background = _seletedCategory;
             stCategory4.Background = _categoryBackGround;
 
-            imageBox.Visibility = Visibility.Collapsed;
+            listBoxStickerCategory.Visibility = Visibility.Collapsed;
             stLoading.Visibility = Visibility.Visible;
         }
 
         private void Category4_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            _selectedCategory = StickerHelper.CATEGORY_4;
             stCategory1.Background = _categoryBackGround;
             stCategory2.Background = _categoryBackGround;
             stCategory3.Background = _categoryBackGround;
             stCategory4.Background = _seletedCategory;
 
-            imageBox.Visibility = Visibility.Collapsed;
+            listBoxStickerCategory.Visibility = Visibility.Collapsed;
             stLoading.Visibility = Visibility.Visible;
         }
 
+        private void PostReqForStickers(string category)
+        {
+            JObject json = new JObject();
+            json["catId"] = "Expressions";
+            StickerCategory stickerCategory = App.stickerHelper.GetStickersByCategory(category);
+            //if (!stickerCategory.IsDownLoading && stickerCategory.HasMoreStickers)
+            {
+                List<string> listStickerIds = new List<string>();
+                foreach (int id in stickerCategory.dictStickers.Keys)
+                {
+                    listStickerIds.Add(id.ToString());
+                }
+                if (listStickerIds.Count > 0)
+                {
+                    json["stIds"] = string.Join(",", listStickerIds.ToArray());
+                }
+                json["stIds"] = new JArray();
+
+                json["resId"] = 1;
+                json["nos"] = 3;
+                stickerCategory.IsDownLoading = true;
+                AccountUtils.GetStickers(json, new AccountUtils.postResponseFunction(responseCallback));
+                //AccountUtils.createGetRequest("/stickers?catId=Expressions&stId=lol.png", new AccountUtils.postResponseFunction(responseCallback), true);
+            }
+        }
+
+
+        private void responseCallback(JObject json)
+        {
+            if ((json == null) || HikeConstants.FAIL == (string)json[HikeConstants.STAT])
+            {
+                return;
+            }
+
+            string category = (string)json["catId"];
+            JObject stickers = (JObject)json["data"];
+            Dictionary<int, byte[]> dictStickers = new Dictionary<int, byte[]>();
+            bool hasMoreStickers = true;
+            if (json["st"] != null)
+            {
+                hasMoreStickers = false;
+            }
+            StickerCategory stickerCategory = App.stickerHelper.GetStickersByCategory(category);
+
+            IEnumerator<KeyValuePair<string, JToken>> keyVals = stickers.GetEnumerator();
+            while (keyVals.MoveNext())
+            {
+                try
+                {
+                    KeyValuePair<string, JToken> kv = keyVals.Current;
+                    int id;
+                    if (int.TryParse(kv.Key, out id))
+                    {
+                        string iconBase64 = stickers[kv.Key].ToString();
+                        byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
+                        dictStickers.Add(id, imageBytes);
+                        Sticker sticker = new Sticker(category, id, UI_Utils.Instance.createImageFromBytes(imageBytes));
+                        stickerCategory.dictStickers[id] = sticker;
+                        App.stickerHelper.dictStickerImages[sticker.StickerId] = sticker.StickerImage;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NewChatThread : callBack : Exception : " + ex.Message);
+                }
+            }
+            stickerCategory.WriteToFile(dictStickers, hasMoreStickers);
+            if (category == _selectedCategory)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    listBoxStickerCategory.ItemsSource = stickerCategory.dictStickers.Values;
+                });
+            }
+        }
         #endregion
 
     }

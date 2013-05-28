@@ -21,7 +21,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static readonly bool IS_PRODUCTION = true;
+        private static readonly bool IS_PRODUCTION = false;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -33,7 +33,7 @@ namespace windows_client.utils
 
         private static readonly int PRODUCTION_PORT = 80;
 
-        private static readonly int STAGING_PORT = 8080;
+        private static readonly int STAGING_PORT = 80;
 
         public static bool IsProd
         {
@@ -81,7 +81,7 @@ namespace windows_client.utils
 
         public static int PORT = IsProd ? PRODUCTION_PORT : STAGING_PORT;
 
-        public static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
+        public static readonly string BASE = "http://" + HOST + "/v1";
         public static readonly string AVATAR_BASE = "http://" + HOST + ":" + Convert.ToString(PORT);
 
         public static readonly string NETWORK_PREFS_NAME = "NetworkPrefs";
@@ -141,7 +141,7 @@ namespace windows_client.utils
         private enum RequestType
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
-            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS, GET_ONHIKE_DATE, POST_INFO_ON_APP_UPDATE
+            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS, GET_ONHIKE_DATE, POST_INFO_ON_APP_UPDATE, GET_STICKERS
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -318,6 +318,14 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_STATUS, statusJSON, finalCallbackFunction });
         }
 
+        public static void GetStickers(JObject stickerJson, postResponseFunction finalCallBackFunc)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/stickers")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_STATUS, stickerJson, finalCallBackFunc });
+        }
 
         public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction, string socialNetowrk, bool isPost)
         {
@@ -507,6 +515,12 @@ namespace windows_client.utils
                 #endregion
                 #region POST STATUS
                 case RequestType.POST_STATUS:
+                    data = vars[2] as JObject;
+                    finalCallbackFunction = vars[3] as postResponseFunction;
+                    break;
+                #endregion
+                #region GET STICKERS
+                case RequestType.GET_STICKERS:
                     data = vars[2] as JObject;
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     break;
@@ -925,7 +939,7 @@ namespace windows_client.utils
                 int hikeCount = 1, smsCount = 1, nonHikeCount = 0;
                 List<ContactInfo> msgToShow = null;
                 List<string> msisdns = null;
-                Dictionary<string,GroupInfo> allGroupsInfo = null;
+                Dictionary<string, GroupInfo> allGroupsInfo = null;
                 if (!isRefresh)
                 {
                     msgToShow = new List<ContactInfo>(5);
@@ -1024,7 +1038,7 @@ namespace windows_client.utils
                                         }
                                     }
                                 }
-                                GroupManager.Instance.RefreshGroupCache(cn,allGroupsInfo);
+                                GroupManager.Instance.RefreshGroupCache(cn, allGroupsInfo);
                             }
                             server_contacts.Add(cn);
                             totalContacts++;
