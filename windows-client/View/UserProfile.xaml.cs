@@ -614,8 +614,6 @@ namespace windows_client.View
                 {
                     favObj = App.ViewModel.ConvMap[msisdn];
                     favObj.IsFav = true;
-                    if (favObj.ConvBoxObj != null && favObj.ConvBoxObj.FavouriteMenuItem != null)
-                        favObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.Add_To_Fav_Txt;
                 }
                 else
                     favObj = new ConversationListObject(msisdn, nameToShow, isOnHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));//todo:change
@@ -1023,8 +1021,6 @@ namespace windows_client.View
             {
                 cObj = App.ViewModel.ConvMap[msisdn];
                 cObj.IsFav = true;
-                if (cObj.ConvBoxObj != null && cObj.ConvBoxObj.FavouriteMenuItem != null)
-                    cObj.ConvBoxObj.FavouriteMenuItem.Header = AppResources.RemFromFav_Txt;
             }
             else
             {

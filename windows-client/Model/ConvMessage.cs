@@ -14,6 +14,9 @@ using Microsoft.Phone.Shell;
 using windows_client.Misc;
 using windows_client.Languages;
 using System.Diagnostics;
+using System.Windows.Media;
+using System.Windows.Controls;
+using Microsoft.Phone.Controls;
 
 namespace windows_client.Model
 {
@@ -52,12 +55,6 @@ namespace windows_client.Model
             UNKNOWN
         }
 
-        public enum ChatBubbleType
-        {
-            RECEIVED = 0,
-            HIKE_SENT,
-            SMS_SENT
-        }
 
         public enum ParticipantInfoState
         {
@@ -77,9 +74,28 @@ namespace windows_client.Model
             CREDITS_GAINED,
             INTERNATIONAL_USER,
             INTERNATIONAL_GROUP_USER,
+            TYPING_NOTIFICATION,
             STATUS_UPDATE
         }
 
+        public enum MessageType
+        {
+            HIKE_PARTICIPANT_JOINED, // hike participant has left
+            SMS_PARTICIPANT_OPTED_IN, // sms participant has joined Group Chat
+            SMS_PARTICIPANT_INVITED, // sms participant has invited
+            PARTICIPANT_LEFT, // The participant has joined
+            GROUP_END, // Group chat has ended
+            USER_JOINED_HIKE, // Sms user joined hike
+            WAITING,
+            REWARD,
+            INTERNATIONAL_USER_BLOCKED,
+            TEXT_UPDATE,
+            PIC_UPDATE,
+            GROUP_NAME_CHANGED,
+            GROUP_PIC_CHANGED,
+            DEFAULT,
+            UNKNOWN
+        }
         public static ParticipantInfoState fromJSON(JObject obj)
         {
             if (obj == null)
@@ -231,8 +247,8 @@ namespace windows_client.Model
             {
                 if (_messageStatus != value)
                 {
-                    NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
+                    NotifyPropertyChanged("SdrImage");
                     NotifyPropertyChanged("MessageStatus");
                 }
             }
@@ -249,8 +265,9 @@ namespace windows_client.Model
             {
                 if (_timestamp != value)
                 {
-                    NotifyPropertyChanging("Timestamp");
                     _timestamp = value;
+                    NotifyPropertyChanged("Timestamp");
+                    NotifyPropertyChanged("TimeStampStr");
                 }
             }
         }
@@ -283,7 +300,6 @@ namespace windows_client.Model
             {
                 if (_groupParticipant != value)
                 {
-                    NotifyPropertyChanging("GroupParticipant");
                     _groupParticipant = value;
                     NotifyPropertyChanged("GroupParticipant");
                 }
@@ -336,19 +352,6 @@ namespace windows_client.Model
             }
         }
 
-        public ChatBubbleType MsgType
-        {
-            get
-            {
-                if (!IsSent)
-                    return ChatBubbleType.RECEIVED;
-                if (IsSms)
-                    return ChatBubbleType.SMS_SENT;
-                return ChatBubbleType.HIKE_SENT;
-            }
-
-        }
-
         public bool IsInvite
         {
             get
@@ -359,7 +362,6 @@ namespace windows_client.Model
             {
                 if (_isInvite != value)
                 {
-                    NotifyPropertyChanging("IsInvite");
                     _isInvite = value;
                     NotifyPropertyChanged("IsInvite");
                 }
@@ -403,32 +405,113 @@ namespace windows_client.Model
                 {
                     participantInfoState = value;
                     NotifyPropertyChanged("GrpParticipantState");
-                    NotifyPropertyChanged("ChatBubbleVisiblity");
-                    NotifyPropertyChanged("NotificationMessageVisiblity");
-
                 }
             }
         }
 
-        public Visibility ChatBubbleVisiblity
+        private MessageType _notificationType;
+        private BitmapImage _statusUpdateImage;
+        public MessageType NotificationType
         {
             get
             {
+                return _notificationType;
+            }
+            set
+            {
+                _notificationType = value;
+            }
+        }
+        public string TimeStampStr
+        {
+            get
+            {
+                if (participantInfoState == ParticipantInfoState.STATUS_UPDATE)
+                    return TimeUtils.getRelativeTime(_timestamp);
+                else
+                    return TimeUtils.getTimeStringForChatThread(_timestamp);
+            }
+        }
 
-                if (participantInfoState != ConvMessage.ParticipantInfoState.NO_INFO)
+        public string DispMessage
+        {
+            get
+            {
+                if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                 {
-                    return Visibility.Collapsed;
+                    return string.IsNullOrEmpty(_fileAttachment.FileName) ? "contact" : _fileAttachment.FileName;
                 }
-                return Visibility.Visible;
+                else
+                    return _message;
             }
         }
 
-        public Visibility NotificationMessageVisiblity
+        public BitmapImage SdrImage
+        {
+            get
+            {
+                switch (_messageStatus)
+                {
+                    case ConvMessage.State.SENT_CONFIRMED:
+                        return UI_Utils.Instance.Sent;
+                    case ConvMessage.State.SENT_DELIVERED:
+                        return UI_Utils.Instance.Delivered;
+                    case ConvMessage.State.SENT_DELIVERED_READ:
+                        return UI_Utils.Instance.Read;
+                    case ConvMessage.State.SENT_FAILED:
+                        return UI_Utils.Instance.HttpFailed;
+                    case ConvMessage.State.SENT_UNCONFIRMED:
+                        return UI_Utils.Instance.Trying;
+                    default:
+                        return UI_Utils.Instance.Trying;
+
+                }
+            }
+        }
+        private PageOrientation _currentOrientation;
+        public PageOrientation CurrentOrientation
+        {
+            get
+            {
+                return _currentOrientation;
+            }
+            set
+            {
+                _currentOrientation = value;
+                NotifyPropertyChanged("LayoutGridWidth");
+                NotifyPropertyChanged("DataTemplateMargin");
+            }
+        }
+        public BitmapImage MessageImage
         {
             get
             {
 
-                if (participantInfoState != ConvMessage.ParticipantInfoState.NO_INFO)
+                if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                {
+                    if (_isSent)
+                        return UI_Utils.Instance.WhiteContactIcon;
+                    else
+                        return UI_Utils.Instance.ContactIcon;
+                }
+                else if (_fileAttachment != null && _fileAttachment.Thumbnail != null)
+                {
+                    return UI_Utils.Instance.createImageFromBytes(_fileAttachment.Thumbnail);
+                }
+                else
+                {
+                    return UI_Utils.Instance.AudioAttachmentSend;
+                }
+
+            }
+        }
+
+        public Visibility PlayIconVisibility
+        {
+            get
+            {
+                if (_fileAttachment != null && ((_fileAttachment.FileState == Attachment.AttachmentState.CANCELED || _fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
+                    || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO) || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
                 {
                     return Visibility.Visible;
                 }
@@ -436,24 +519,330 @@ namespace windows_client.Model
             }
         }
 
-        public ConvMessage(string message, string msisdn, long timestamp, State msgState)
-            : this(message, msisdn, timestamp, msgState, -1, -1)
+        public BitmapImage PlayIconImage
         {
+            get
+            {
+                if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                    return UI_Utils.Instance.DownloadIcon;
+                else
+                    return UI_Utils.Instance.PlayIcon;
+            }
         }
 
-        public ConvMessage(string message, string msisdn, long timestamp, State msgState, long msgid, long mappedMsgId)
+        double _progressBarValue = 0;
+        public double ProgressBarValue
+        {
+            set
+            {
+                _progressBarValue = value;
+                if (_progressBarValue >= 100)
+                    NotifyPropertyChanging("PlayIconVisibility");
+                NotifyPropertyChanged("ProgressBarVisibility");
+                NotifyPropertyChanged("ProgressBarValue");
+            }
+            get
+            {
+                return _progressBarValue;
+            }
+        }
+
+        public Visibility ProgressBarVisibility
+        {
+            get
+            {
+                if (_progressBarValue <= 0 || _progressBarValue >= 100)
+                {
+                    return Visibility.Collapsed;
+                }
+                return Visibility.Visible;
+            }
+        }
+
+        public BitmapImage NotificationImage
+        {
+            get
+            {
+                switch (_notificationType)
+                {
+                    case MessageType.HIKE_PARTICIPANT_JOINED:
+                        return UI_Utils.Instance.OnHikeImage;
+
+                    case MessageType.SMS_PARTICIPANT_INVITED:
+                        return UI_Utils.Instance.NotOnHikeImage;
+
+                    case MessageType.SMS_PARTICIPANT_OPTED_IN:
+                        return UI_Utils.Instance.ChatAcceptedImage;
+
+                    case MessageType.USER_JOINED_HIKE:
+                        return UI_Utils.Instance.OnHikeImage;
+
+                    case MessageType.PARTICIPANT_LEFT:
+                        return UI_Utils.Instance.ParticipantLeft;
+
+                    case MessageType.GROUP_END:
+                        return UI_Utils.Instance.ParticipantLeft;
+
+                    case MessageType.WAITING:
+                        return UI_Utils.Instance.Waiting;
+
+                    case MessageType.REWARD:
+                        return UI_Utils.Instance.Reward;
+
+                    case MessageType.INTERNATIONAL_USER_BLOCKED:
+                        return UI_Utils.Instance.IntUserBlocked;
+
+                    case MessageType.PIC_UPDATE:
+                        return UI_Utils.Instance.OnHikeImage;
+
+                    case MessageType.GROUP_NAME_CHANGED:
+                        return UI_Utils.Instance.GrpNameOrPicChanged;
+
+                    case MessageType.GROUP_PIC_CHANGED:
+                        return UI_Utils.Instance.GrpNameOrPicChanged;
+
+                    case MessageType.TEXT_UPDATE:
+                    default:
+                        return UI_Utils.Instance.OnHikeImage;
+
+                }
+            }
+        }
+
+        public BitmapImage StatusUpdateImage
+        {
+            set
+            {
+                _statusUpdateImage = value;
+            }
+            get
+            {
+                if (_statusUpdateImage != null)
+                    return _statusUpdateImage;
+                else
+                    return MoodsInitialiser.Instance.GetMoodImageForMoodId(MoodsInitialiser.GetMoodId(metadataJsonString));
+            }
+        }
+
+        public Visibility ShowCancelMenu
+        {
+            get
+            {
+                if (FileAttachment.FileState == Attachment.AttachmentState.STARTED)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public Visibility ShowForwardMenu
+        {
+            get
+            {
+                if (FileAttachment.FileState == Attachment.AttachmentState.COMPLETED)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public Visibility ShowDeleteMenu
+        {
+            get
+            {
+                if (FileAttachment.FileState == Attachment.AttachmentState.STARTED)
+                    return Visibility.Collapsed;
+                else
+                    return Visibility.Visible;
+            }
+        }
+
+        public Visibility GroupMemberVisibility
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_groupMemeberName))
+                {
+                    return Visibility.Collapsed;
+                }
+                return Visibility.Visible;
+            }
+        }
+        private string _groupMemeberName;
+        public string GroupMemberName
+        {
+            get
+            {
+                return _groupMemeberName;
+            }
+            set
+            {
+                _groupMemeberName = value;
+            }
+        }
+
+        public double LayoutGridWidth
+        {
+            get
+            {
+                if (_currentOrientation == PageOrientation.LandscapeLeft || _currentOrientation == PageOrientation.LandscapeRight)
+                    return 768;
+                return 480;
+            }
+        }
+
+        public SolidColorBrush BubbleBackGroundColor
+        {
+            get
+            {
+                if (participantInfoState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                {
+                    return UI_Utils.Instance.StatusBubbleColor;
+                }
+                else if (IsSent)
+                {
+                    if (IsSms)
+                    {
+                        return UI_Utils.Instance.SmsBackground;
+                    }
+                    else
+                    {
+                        return UI_Utils.Instance.HikeMsgBackground;
+                    }
+                }
+                else
+                {
+                    return UI_Utils.Instance.ReceivedChatBubbleColor;
+                }
+            }
+        }
+
+        public SolidColorBrush TimeStampForeGround
+        {
+            get
+            {
+                if (participantInfoState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                {
+                    return UI_Utils.Instance.ReceivedChatBubbleTimestamp;
+                }
+                else if (IsSent)
+                {
+                    if (IsSms)
+                    {
+                        return UI_Utils.Instance.SMSSentChatBubbleTimestamp;
+                    }
+                    else
+                    {
+                        return UI_Utils.Instance.HikeSentChatBubbleTimestamp;
+                    }
+                }
+                else
+                {
+                    return UI_Utils.Instance.ReceivedChatBubbleTimestamp;
+                }
+            }
+        }
+
+        public SolidColorBrush MessageTextForeGround
+        {
+            get
+            {
+                if (participantInfoState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                {
+                    return UI_Utils.Instance.ReceiveMessageForeground;
+                }
+                else if (IsSent)
+                {
+                    return UI_Utils.Instance.White;
+                }
+                else
+                {
+                    return UI_Utils.Instance.ReceiveMessageForeground;
+                }
+            }
+        }
+
+        public Thickness DataTemplateMargin
+        {
+            get
+            {
+                if (_currentOrientation == PageOrientation.LandscapeLeft || _currentOrientation == PageOrientation.LandscapeRight)
+                {
+                    if (IsSent)
+                    {
+                        if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                            return UI_Utils.Instance.SentBubbleTextMarginLS;
+                        else
+                            return UI_Utils.Instance.SentBubbleFileMarginLS;
+                    }
+                    else
+                    {
+                        if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                            return UI_Utils.Instance.RecievedBubbleTextMarginLS;
+                        else
+                            return UI_Utils.Instance.ReceivedBubbleFileMarginLS;
+                    }
+                }
+                else
+                {
+                    if (IsSent)
+                    {
+                        if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                            return UI_Utils.Instance.SentBubbleTextMarginPortrait;
+                        else
+                            return UI_Utils.Instance.SentBubbleFileMarginPortrait;
+                    }
+                    else
+                    {
+                        if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                            return UI_Utils.Instance.RecMessageBubbleTextMarginPortrait;
+                        else
+                            return UI_Utils.Instance.ReceivedBubbleFileMarginPortrait;
+                    }
+                }
+            }
+        }
+        public ConvMessage(string message, string msisdn, long timestamp, State msgState, PageOrientation currentOrientation)
+            : this(message, msisdn, timestamp, msgState, -1, -1, currentOrientation)
+        {
+        }
+        public ConvMessage(string message, string msisdn, long timestamp, State msgState)
+            : this(message, msisdn, timestamp, msgState, -1, -1, PageOrientation.Portrait)
+        {
+        }
+        public ConvMessage(string message, string msisdn, long timestamp, State msgState, long msgid, long mappedMsgId, PageOrientation currentOrientation)
         {
             this._msisdn = msisdn;
             this._message = message;
             this._timestamp = timestamp;
             this._messageId = msgid;
             this._mappedMessageId = mappedMsgId;
+            this._currentOrientation = currentOrientation;
             _isSent = (msgState == State.SENT_UNCONFIRMED ||
                         msgState == State.SENT_CONFIRMED ||
                         msgState == State.SENT_DELIVERED ||
                         msgState == State.SENT_DELIVERED_READ ||
                         msgState == State.SENT_FAILED);
             MessageStatus = msgState;
+        }
+
+        public ConvMessage(string message, PageOrientation currentOrientation, ConvMessage convMessage)
+        {
+            this._message = message;
+            this._currentOrientation = currentOrientation;
+            _messageId = convMessage.MessageId;
+            _msisdn = convMessage.Msisdn;
+            _messageStatus = convMessage.MessageStatus;
+            _timestamp = convMessage.Timestamp;
+            _mappedMessageId = convMessage.MappedMessageId;
+            _isInvite = convMessage.IsInvite;
+            _isSent = convMessage.IsSent;
+            _isSms = convMessage.IsSms;
+            _groupParticipant = convMessage.GroupParticipant;
+            metadataJsonString = convMessage.metadataJsonString;
+            participantInfoState = convMessage.participantInfoState;
+            _fileAttachment = convMessage._fileAttachment;
+            _hasAttachment = convMessage._fileAttachment != null;
         }
 
         public JObject serialize(bool isHikeMsg)
@@ -886,6 +1275,17 @@ namespace windows_client.Model
             }
         }
 
+        public void SetAttachmentState(Attachment.AttachmentState attachmentState)
+        {
+            this.FileAttachment.FileState = attachmentState;
+            if (FileAttachment.FileState == Attachment.AttachmentState.CANCELED || FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
+                ProgressBarValue = 0;
+            NotifyPropertyChanged("ShowCancelMenu");
+            NotifyPropertyChanged("ShowForwardMenu");
+            NotifyPropertyChanged("ShowDeleteMenu");
+            NotifyPropertyChanged("SdrImage");
+        }
+
         public ConvMessage(ParticipantInfoState participantInfoState, JObject jsonObj)
         {
             string grpId;
@@ -949,5 +1349,6 @@ namespace windows_client.Model
                     break;
             }
         }
+
     }
 }

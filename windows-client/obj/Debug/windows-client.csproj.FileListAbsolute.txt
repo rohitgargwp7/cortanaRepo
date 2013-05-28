@@ -23,12 +23,6 @@ C:\Users\milan\Desktop\windows-hike-client\windows-client\Bin\Debug\ICSharpCode.
 C:\Users\milan\Desktop\windows-hike-client\windows-client\Bin\Debug\Newtonsoft.Json.xml
 C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\windows-client.csprojResolveAssemblyReference.cache
 C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\App.g.cs
-C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\Controls\ConversationBox.g.cs
-C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\Controls\StatusChatBubble.g.cs
-C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\Controls\NotificationChatBubble.g.cs
-C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\Controls\LinkifiedTextBox.g.cs
-C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\Controls\ReceivedChatBubble.g.cs
-C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\Controls\SentChatBubble.g.cs
 C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\Controls\StatusUpdate\FriendRequestStatus.g.cs
 C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\Controls\StatusUpdate\TextStatusUpdate.g.cs
 C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\Controls\StatusUpdate\ImageStatusUpdate.g.cs

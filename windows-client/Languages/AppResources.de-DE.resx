@@ -206,11 +206,11 @@
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>Von Freundesliste entfernen</value>
-    <comment>cs</comment>
+    <value>aus Freundeskreis entfernen</value>
+    <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>Du hast derzeit keine Kontakte im Freundeskreis.</value>
+    <value>Du hast noch niemanden in deinem Freundeskreis.</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -602,8 +602,8 @@
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>um einen Kontakt zu deinem Freundeskreis hinzuzufügen.</value>
-    <comment>cs</comment>
+    <value>zu Freundeskreis hinzufügen</value>
+    <comment>fix length(24)</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
     <value>Benutzer hinzufügen</value>
@@ -722,7 +722,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="sms_invite_message" xml:space="preserve">
-    <value>Hallo! Ich benutze hike, eine tolle neue kostenlose Messaging-App von Bharti SoftBank. Lade die App auf http://get.hike.in/{0} herunter, um mir kostenlos Nachrichten zu senden!</value>
+    <value>Hi! Hol dir hike 2.0. Kostenloses, weltweites Messaging. Jetzt mit Statusmeldungen und Smileys :) - http://get.hike.in/</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="UnBlock_Txt" xml:space="preserve">
@@ -738,7 +738,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_JOINED_HIKE" xml:space="preserve">
-    <value>{0} ist gerade bei hike Mitglied geworden!</value>
+    <value>{0} ist gerade hike beigetreten, sag doch 'Hi' :)</value>
     <comment>General Text</comment>
   </data>
   <data name="USER_LEFT" xml:space="preserve">
@@ -784,7 +784,8 @@
     <value>Um hike weiterhin zu verwenden, ist ein Update notwendig.</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Hallo! Ich habe angefangen hike zu benutzen, eine tolle neue kostenlose Messaging-App. Du kannst Freunden, die bei hike sind und auch denen, die es noch nicht sind, kostenlos Nachrichten schicken! Messaging war noch nie simpler. Lade die App auf http://get.hike.in/{0} herunter, um kostenlose Nachrichten zu senden!</value>
+    <value>
+ Hi! Ich verwende hike - eine einfache, schöne Messaging-App, die absolut kostenlos ist. Bei hike gibt es total witzige Emoticons. Außerdem kannst du Statusmeldungen für deinen Freundeskreis posten. Genau wie BBM, nur viel, viel besser! Hol dir jetzt hike und verabschiede dich von langweiligen SMS. Hol dir hike: http://get.hike.in</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -905,7 +906,7 @@
     <comment>cs</comment>
   </data>
   <data name="Social_Invite_Txt" xml:space="preserve">
-    <value>Hallo! Ich benutze hike, eine tolle neue kostenlose Messaging-App! Lade die App herunter, um mir kostenlos Nachrichten zu senden! @hikeapp</value>
+    <value>Ich verwende @hikeapp 2.0 mit Statusmeldungen &amp; Smileys. Genau wie BBM, nur viel besser! Hol dir hike auf http://get.hike.in #gethike</value>
     <comment>This is used in case of Facebook and Twitter</comment>
   </data>
   <data name="Social_Txt" xml:space="preserve">
@@ -1189,8 +1190,8 @@
     <value>Aus Gruppe entfernen</value>
     <comment>General text</comment>
   </data>
-  <data name="Rewards_Txt" xml:space="preserve">
-    <value>Belohnung</value>
+  <data name="ConversationsList_New_Txt" xml:space="preserve">
+    <value>neu</value>
     <comment>Rewards Text</comment>
   </data>
   <data name="Tap_To_Invite_Txt" xml:space="preserve">
@@ -1292,7 +1293,7 @@
     <value>Du musst befreundet sein mit</value>
   </data>
   <data name="ProfileToBeFriendBlk3" xml:space="preserve">
-    <value>um Statusmeldungen zu erhalten.</value>
+    <value>, um Statusmeldungen zu erhalten.</value>
   </data>
   <data name="btnAddAsFriend_Txt" xml:space="preserve">
     <value>Als Freund hinzufügen</value>
@@ -1416,10 +1417,6 @@
   <data name="Stop_Contact_Scanning" xml:space="preserve">
     <value>Möchtest du das Durchsuchen der Kontakte stoppen?</value>
   </data>
-  <data name="PostStatus_WhatsUp_Txt" xml:space="preserve">
-    <value>Was geht,{0}?</value>
-    <comment>{0} to be replaced by name</comment>
-  </data>
   <data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
     <value>Schreibe {0} bei Hike</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
@@ -1489,10 +1486,6 @@
   <data name="Conversations_EmptyStatus_TeamHike_Txt" xml:space="preserve">
     <value>Hike-Team</value>
   </data>
-  <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
-    <value>Was geht, {0}?</value>
-    <comment>{0} replaced by user name </comment>
-  </data>
   <data name="Update_Profile_Pic_txt" xml:space="preserve">
     <value>Aktualisiertes Profilbild</value>
     <comment>Used to show for pp update in last msg of convlist</comment>
@@ -1514,7 +1507,7 @@
     <value>Sofort</value>
   </data>
   <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
-    <value>Nur Ihr "Circle of friends" können Ihre Status-Updates sehen.</value>
+    <value>Nur dein 'Freundeskreis' sieht deine Statusmeldungen</value>
   </data>
   <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
     <value>Tippe auf dieses Symbol, um eine neue Statusmeldung zu posten.</value>
@@ -1537,16 +1530,13 @@
     <value>Ich</value>
   </data>
   <data name="Conversations_BtnCircleOfFriends_Txt" xml:space="preserve">
-    <value>Freundeskreis anzeigen</value>
+    <value>Freunde anzeigen</value>
   </data>
   <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
     <value>Hier siehst du Updates aus deinem Freundeskreis.</value>
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
     <value>Lade deine Freunde zu hike ein.</value>
-  </data>
-  <data name="Conversations_NoFriendsOnHike_Txt" xml:space="preserve">
-    <value>Du hast derzeit keine Kontakte bei hike.</value>
   </data>
   <data name="Mood_Angry" xml:space="preserve">
     <value>Verärgert </value>
@@ -1645,13 +1635,13 @@
     <value>Überrascht</value>
   </data>
   <data name="Mood_Watching_tv" xml:space="preserve">
-    <value>Fernsehen </value>
+    <value>Fernsehen</value>
   </data>
   <data name="StatusDelete_NoNtwrk_Txt" xml:space="preserve">
     <value>Deine Statusmeldung konnte nicht gelöscht werden. Bitte überprüfe die Netzwerkverbindung und versuche es erneut.</value>
   </data>
   <data name="StatusDetionFail_Txt" xml:space="preserve">
-    <value>Deine Statusmeldung konnte nicht gelöscht werden.</value>
+    <value>Status kann nicht gelöscht werden.</value>
   </data>
   <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
     <value>Zu Kontakten hinzufügen</value>
@@ -1663,19 +1653,19 @@
     <value>Gesperrt-Liste</value>
   </data>
   <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
-    <value>Notifications</value>
+    <value>Benachrichtigungen</value>
   </data>
   <data name="Settings_AccountSettings_Txt" xml:space="preserve">
-    <value>Verwalten hike Account</value>
+    <value>Verwalte deinen hike-Account</value>
   </data>
   <data name="Settings_BlocklistSettings_Txt" xml:space="preserve">
-    <value>Eine Liste der Leute, die Sie blockiert</value>
+    <value>Eine Liste der gesperrten Nutzer</value>
   </data>
   <data name="Settings_NotificationSettings_Txt" xml:space="preserve">
-    <value>Ihre Benachrichtigungseinstellungen</value>
+    <value>Deine Benachrichtigungseinstellungen</value>
   </data>
   <data name="Blocklist_user_txt" xml:space="preserve">
-    <value>user</value>
+    <value>Benutzer</value>
   </data>
   <data name="Conversations_InviteFriend_Btn" xml:space="preserve">
     <value>Freunde einladen</value>
@@ -1683,7 +1673,29 @@
   <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
     <value>Tippe auf +, um einen Kontakt zu deinem Freundeskreis hinzuzufügen.</value>
   </data>
+  <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
+    <value>Was geht, {0}?</value>
+    <comment>{0} replaced by user name </comment>
+  </data>
   <data name="Profile_You_NoStatus_Txt" xml:space="preserve">
-    <value>Sie haben noch nichts gepostet : (</value>
+    <value>Du hast bis jetzt noch nichts gepostet :(</value>
+  </data>
+  <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
+    <value>Gruppenname kann maximal 30 Zeichen betragen.</value>
+    <comment>Warning Text</comment>
+  </data>
+  <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
+    <value>Datei senden fehlgeschlagen</value>
+  </data>
+  <data name="CT_FileSizeExceed_Text" xml:space="preserve">
+    <value>Maximale Dateigröße ist 15 MB.</value>
+  </data>
+  <data name="CT_CharCount_Sms_User" xml:space="preserve">
+    <value>{0}/{1}</value>
+    <comment>{0}-number , {1} number</comment>
+  </data>
+  <data name="CT_MessageCount_Sms_User" xml:space="preserve">
+    <value>{0} Nachrichten,</value>
+    <comment>{0} replaced by number</comment>
   </data>
 </root>

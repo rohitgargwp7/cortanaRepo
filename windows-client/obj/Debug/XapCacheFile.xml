@@ -1,6 +1,6 @@
-﻿<xapCache source="C:\Users\milan\Desktop\windows-hike-client\windows-client\Bin\Debug\windows-client_Debug_AnyCPU.xap" wasSigned="False" certificateThumbprint="" TimeStampUrl="" lastWriteTime="23-05-2013 19:27:44">
-  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\windows-client.dll" archivePath="windows-client.dll" lastWriteTime="23-05-2013 19:27:42" />
-  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\de-DE\windows-client.resources.dll" archivePath="de-DE\windows-client.resources.dll" lastWriteTime="23-05-2013 19:27:42" />
+﻿<xapCache source="C:\Users\milan\Desktop\windows-hike-client\windows-client\Bin\Debug\windows-client_Debug_AnyCPU.xap" wasSigned="False" certificateThumbprint="" TimeStampUrl="" lastWriteTime="28-05-2013 15:40:12">
+  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\windows-client.dll" archivePath="windows-client.dll" lastWriteTime="28-05-2013 15:40:10" />
+  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\obj\Debug\de-DE\windows-client.resources.dll" archivePath="de-DE\windows-client.resources.dll" lastWriteTime="28-05-2013 15:40:10" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\ApplicationIcon.png" archivePath="ApplicationIcon.png" lastWriteTime="21-05-2013 14:43:43" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\Assets\LockImage.png" archivePath="Assets\LockImage.png" lastWriteTime="21-05-2013 14:45:32" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\Background.png" archivePath="Background.png" lastWriteTime="21-05-2013 14:43:43" />
@@ -120,7 +120,7 @@
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\profile_header_stock.png" archivePath="View\images\profile_header_stock.png" lastWriteTime="21-05-2013 14:45:33" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\profile_header_stock_dark.png" archivePath="View\images\profile_header_stock_dark.png" lastWriteTime="21-05-2013 14:45:33" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\refresh_bar_arrow.png" archivePath="View\images\refresh_bar_arrow.png" lastWriteTime="21-05-2013 14:45:33" />
-  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\remove_wt_icon.png" archivePath="View\images\remove_wt_icon.png" lastWriteTime="23-05-2013 19:02:43" />
+  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\remove_wt_icon.png" archivePath="View\images\remove_wt_icon.png" lastWriteTime="28-05-2013 15:26:00" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\settings_icon_dark.png" archivePath="View\images\settings_icon_dark.png" lastWriteTime="21-05-2013 14:45:33" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\settings_icon_white.png" archivePath="View\images\settings_icon_white.png" lastWriteTime="21-05-2013 14:45:33" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\timeline_photo.png" archivePath="View\images\timeline_photo.png" lastWriteTime="21-05-2013 14:45:33" />
@@ -353,10 +353,10 @@
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\terms_link.png" archivePath="View\images\terms_link.png" lastWriteTime="21-05-2013 14:43:44" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\typing.png" archivePath="View\images\typing.png" lastWriteTime="21-05-2013 14:43:44" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\View\images\key.jpg" archivePath="View\images\key.jpg" lastWriteTime="21-05-2013 14:43:44" />
-  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\Bin\Debug\AppManifest.xaml" archivePath="AppManifest.xaml" lastWriteTime="23-05-2013 14:42:27" />
+  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\Bin\Debug\AppManifest.xaml" archivePath="AppManifest.xaml" lastWriteTime="28-05-2013 15:26:00" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\lib\Coding4Fun.Phone.Controls.dll" archivePath="Coding4Fun.Phone.Controls.dll" lastWriteTime="21-05-2013 14:43:45" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\packages\Facebook.6.1.4\lib\wp71\Facebook.dll" archivePath="Facebook.dll" lastWriteTime="21-05-2013 14:43:41" />
-  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\lib\finalmqtt.dll" archivePath="finalmqtt.dll" lastWriteTime="21-05-2013 14:45:33" />
+  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\lib\finalmqtt.dll" archivePath="finalmqtt.dll" lastWriteTime="28-05-2013 15:36:02" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\packages\Hammock.1.3.1\lib\sl4-wp71\Hammock.WindowsPhone.Mango.dll" archivePath="Hammock.WindowsPhone.Mango.dll" lastWriteTime="21-05-2013 14:43:42" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\packages\Hammock.1.3.1\lib\sl4-wp71\ICSharpCode.SharpZipLib.WindowsPhone.dll" archivePath="ICSharpCode.SharpZipLib.WindowsPhone.dll" lastWriteTime="21-05-2013 14:43:42" />
   <file source="C:\Program Files (x86)\Microsoft SDKs\Expression\Blend\Windows Phone\v8.0\Libraries\Microsoft.Expression.Drawing.dll" archivePath="Microsoft.Expression.Drawing.dll" lastWriteTime="25-09-2012 01:41:02" />
@@ -367,6 +367,6 @@
   <file source="C:\Users\milan\Desktop\windows-hike-client\packages\sharpcompress.0.8.2\lib\sl3-wp\SharpCompress.WP7.dll" archivePath="SharpCompress.WP7.dll" lastWriteTime="21-05-2013 14:43:43" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\packages\Facebook.6.1.4\lib\wp71\Facebook.xml" archivePath="Facebook.xml" lastWriteTime="21-05-2013 14:43:41" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\packages\Newtonsoft.Json.4.5.11\lib\sl4-windowsphone71\Newtonsoft.Json.xml" archivePath="Newtonsoft.Json.xml" lastWriteTime="21-05-2013 14:43:43" />
-  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\Bin\Debug\Properties\WMAppManifest.xml" archivePath="WMAppManifest.xml" lastWriteTime="23-05-2013 14:42:27" />
+  <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\Bin\Debug\Properties\WMAppManifest.xml" archivePath="WMAppManifest.xml" lastWriteTime="28-05-2013 15:40:12" />
   <file source="C:\Users\milan\Desktop\windows-hike-client\windows-client\Application_IconImage_62x62.png" archivePath="Application_IconImage_62x62.png" lastWriteTime="21-05-2013 14:45:32" />
 </xapCache>
