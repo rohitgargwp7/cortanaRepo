@@ -42,6 +42,8 @@ namespace windows_client
 
         public static readonly string ICON = "ic";
 
+        public static readonly string LAST_SEEN = "ls";
+
         public static bool turnOffNetworkManager = true;
 
         private HikePubSub pubSub;
@@ -198,6 +200,36 @@ namespace windows_client
                 vals[1] = sentTo;
                 if (msisdn != null)
                     this.pubSub.publish(HikePubSub.END_TYPING_CONVERSATION, vals);
+                return;
+            }
+            #endregion
+            #region LAST_SEEN
+            else if (LAST_SEEN == type) /* Last Seen received */
+            {
+                long lastSeen = 0;
+
+                try
+                {
+                    var data = jsonObj[HikeConstants.DATA];
+                    lastSeen = (long)data[HikeConstants.LASTSEEN];
+
+                    if (lastSeen.Equals("-1"))
+                        FriendsTableUtils.SetFriendLastSeenTSToFile(msisdn, TimeUtils.getCurrentTimeStamp());
+                    else
+                        FriendsTableUtils.SetFriendLastSeenTSToFile(msisdn, lastSeen);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NetworkManager ::  Last Seen :  TimeStamp, Exception : " + ex.StackTrace);
+                }
+
+                object[] vals = new object[2];
+                vals[0] = msisdn;
+                vals[1] = lastSeen;
+
+                if (msisdn != null)
+                    this.pubSub.publish(HikePubSub.LAST_SEEN, vals);
+
                 return;
             }
             #endregion

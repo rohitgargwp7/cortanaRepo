@@ -1705,12 +1705,15 @@ Get hike: http://get.hike.in</value>
     <value>{0} messages,</value>
     <comment>{0} replaced by number</comment>
   </data>
-  <data name="Hold_To_Record" xml:space="preserve">
-    <value>Hold to record</value>
+  <data name="Hold_And_Talk" xml:space="preserve">
+    <value>Hold and Talk</value>
     <comment>Long press to start recording</comment>
   </data>
   <data name="Release_To_Send" xml:space="preserve">
     <value>Release to Send</value>
     <comment>Release to send recorded data</comment>
+  </data>
+  <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
+    <value>Show my last seen time stamp</value>
   </data>
 </root>

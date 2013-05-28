@@ -41,6 +41,7 @@ namespace windows_client
         public static readonly string STATUS_UPDATE_SETTING = "stUpSet";
         public static readonly string STATUS_UPDATE_FIRST_SETTING = "stUpFirSet";
         public static readonly string STATUS_UPDATE_SECOND_SETTING = "stUpSecSet";
+        public static readonly string LAST_SEEN_SEETING = "lstSeenSet";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
         public static readonly string HIDE_CRICKET_MOODS = "cmoods";
@@ -372,7 +373,11 @@ namespace windows_client
             {
                 if (ps == PageState.CONVLIST_SCREEN)
                     MqttManagerInstance.connect();
+
+                if (MqttManagerInstance.connectionStatus == HikeMqttManager.MQTTConnectionStatus.CONNECTED)
+                    sendAppStatusToServer(true);
             }
+
             NetworkManager.turnOffNetworkManager = false;
         }
 
@@ -381,6 +386,7 @@ namespace windows_client
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
             NetworkManager.turnOffNetworkManager = true;
+            sendAppStatusToServer(false);
             App.AnalyticsInstance.saveObject();
             PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
             if (IS_VIEWMODEL_LOADED)
@@ -398,6 +404,7 @@ namespace windows_client
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             App.AnalyticsInstance.saveObject();
+            sendAppStatusToServer(false);
             //appDeinitialize();
         }
 
@@ -746,6 +753,9 @@ namespace windows_client
                         WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
                         if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                             MqttDBUtils.MqttDbUpdateToLatestVersion();
+
+                        if (Utils.compareVersion(_latestVersion, "2.5.0.0") == 0) // upgrade friend files for last seen time stamp
+                            FriendsTableUtils.UpdateOldFilesWithDefaultLastSeen();
                     }
                 }
                 st.Stop();
@@ -981,6 +991,24 @@ namespace windows_client
                 obj.Add(HikeConstants.DATA, data);
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
+        }
+
+        private void sendAppStatusToServer(bool justOpened)
+        {
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
+            obj.Add(HikeConstants.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
+
+            if(justOpened)
+                obj.Add(HikeConstants.STATUS, "f");
+            else
+                obj.Add(HikeConstants.STATUS, "b");
+
+            JObject data = new JObject();
+            data.Add(HikeConstants.JUSTOPENED, justOpened.ToString());
+            obj.Add(HikeConstants.DATA, data);
+
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
     }
 }

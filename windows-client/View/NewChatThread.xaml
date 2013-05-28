@@ -57,7 +57,10 @@
                 </Grid>
                 <StackPanel Name="userHeader" Orientation="Horizontal" Margin="24,0,20,10">
                     <Image Name="userImage" Height="50" ></Image>
-                    <TextBlock x:Name="userName" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="50" Margin="18,-4,0,0" Width="Auto" />
+                    <StackPanel>
+                        <TextBlock x:Name="userName" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="46" Margin="18,-4,0,0" Width="Auto" />
+                        <TextBlock x:Name="lastSeenTxt" Text="last seen at" FontFamily="Segoe WP SemiLight" FontSize="22" Margin="18,-4,0,0" />
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
         </StackPanel>
@@ -256,22 +259,23 @@
             <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <Grid Background="#eeeeec">
                 <ScrollViewer Name="svMessage" MaxHeight="500" >
-                    <toolkit:PhoneTextBox TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
-                                            MinHeight="68" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto" ActionIcon="/View/images/mic_icon_black.png" ActionIconTapped="Record_ActionIconTapped" />
+                    <Grid Background="#eeeeec">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <toolkit:PhoneTextBox TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
+                                            MinHeight="68" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto"  />
+                        <Image Grid.Column="1" MaxHeight="48" Source="/View/images/mic_icon_black.png" Tap="Record_ActionIconTapped" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="Uniform" Margin="5"/>
+                    </Grid>
                 </ScrollViewer>
                 <Grid x:Name="recordGrid" Background="Black" Visibility="Collapsed" HorizontalAlignment="Stretch" Margin="0,-4,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Hold="Hold_To_Record" HorizontalAlignment="Center" ManipulationCompleted="recordButton_ManipulationCompleted">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Image Source="/View/images/walkie_talkie.png" Height="72" Stretch="Uniform"/>
-                            <TextBlock x:Name="recordButton" MinWidth="250" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24" Text="" Foreground="White"/>
-                        </StackPanel>
-                    </Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Hold="Hold_To_Record" ManipulationCompleted="recordButton_ManipulationCompleted">
+                        <Image Source="/View/images/walkie_talkie.png" Height="72" Stretch="Uniform"/>
+                        <TextBlock x:Name="recordButton" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24" Text="" Foreground="White"/>
+                    </StackPanel>
                     <!--<Button x:Name="recordButton"  Content="Hold to Record"  HorizontalAlignment="Stretch" />-->
-                    <Image x:Name="cancelRecord" HorizontalAlignment="Right" Source="/View/images/remove_wt_icon.png" Tap="cancelRecord_Tap" Grid.Column="1" Stretch="Uniform" Height="72"/>
+                    <Image Canvas.ZIndex="2" x:Name="cancelRecord" HorizontalAlignment="Right" Source="/View/images/remove_wt_icon.png" Tap="cancelRecord_Tap" Stretch="Uniform" Height="72"/>
                 </Grid>
             </Grid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 10 5" Visibility="Collapsed" Name="spSmsCharCounter">
@@ -315,15 +319,15 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Border Background="Black" Margin="-20" Opacity="0.55" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3" />
+            <Border Background="Black" Margin="-15" Opacity="0.55" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3" />
             <Image x:Name="micImage" Source="/View/images/walkie_talkie.png" Height="161" HorizontalAlignment="Center"/>
             <StackPanel Grid.Row="1" x:Name="timeBar" Orientation="Horizontal" Opacity="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Ellipse Height="15" Width="15" Fill="Red" Margin="0,0,5,0"/>
                 <TextBlock x:Name="runningTime" FontFamily="Segoe WP SemiLight" FontSize="24" Text="00:00" Foreground="White" ></TextBlock>
                 <TextBlock x:Name="maxPlayingTime" Text=" / 2:00" FontFamily="Segoe WP SemiLight" Foreground="White" FontSize="24"/>
             </StackPanel>
-            <Border Grid.Row="2" Margin="0,15,0,0" MouseEnter="deleteRecImage_MouseEnter" Background="Black" Opacity="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2" >
-                <StackPanel Margin="25" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Border Grid.Row="2" Margin="0,15,0,0" MouseLeave="deleteRecImage_MouseLeave" MouseEnter="deleteRecImage_MouseEnter" Background="Black" Opacity="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2" >
+                <StackPanel Margin="15" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Image x:Name="deleteRecImage" Margin="0,0,10,0" Source="/View/images/delete_bin.png" Grid.Column="0"  Height="35" Stretch="Uniform" HorizontalAlignment="Center"/>
                     <TextBlock TextAlignment="Center" Grid.Column="1" FontSize="24" Foreground="White" Text="Drag here to delete"/>
                 </StackPanel>

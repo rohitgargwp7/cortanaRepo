@@ -183,6 +183,137 @@ namespace windows_client.DbUtils
                 return GetFriendStatusFromFile(msisdn);
         }
 
+        public static long GetFriendLastSeenTSFromFile(string msisdn)
+        {
+            long ts = 0;
+            lock (readWriteLock)
+            {
+                try
+                {
+                    string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (store.FileExists(fileName))
+                        {
+                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
+                            {
+                                using (var reader = new BinaryReader(file))
+                                {
+                                    var st = (FriendStatusEnum)reader.ReadByte();
+                                    var temp = reader.ReadInt64();
+                                    ts = reader.ReadInt64();
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("FriendsTableUtils :: GetFriendStatus :GetFriendStatus, Exception : " + ex.StackTrace);
+                }
+            }
+            return ts;
+        }
+
+        public static void SetFriendLastSeenTSToFile(string msisdn, long newTimeStamp)
+        {
+            lock (readWriteLock)
+            {
+                try
+                {
+                    long joinTime = 0;
+                    FriendStatusEnum fStatus = FriendStatusEnum.NOT_SET;
+                    string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (!store.DirectoryExists(FRIENDS_DIRECTORY))
+                            store.CreateDirectory(FRIENDS_DIRECTORY);
+
+                        if (store.FileExists(fileName))
+                        {
+                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.ReadWrite))
+                            {
+                                if (file.Length > 0)
+                                {
+                                    using (var reader = new BinaryReader(file))
+                                    {
+                                        fStatus = (FriendStatusEnum)reader.ReadByte();
+                                        joinTime = reader.ReadInt64();
+                                    }
+                                }
+                             
+                                using (BinaryWriter writer = new BinaryWriter(file))
+                                {
+                                    writer.Seek(0, SeekOrigin.Begin);
+                                    writer.Write((byte)fStatus);
+                                    writer.Write(joinTime);
+                                    writer.Write(newTimeStamp);
+                                    writer.Flush();
+                                    writer.Close();
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("FriendsTableUtils :: SetFriendTimeStamp :SetFriendTimeStamp, Exception : " + ex.StackTrace);
+                }
+            }
+        }
+
+        public static void UpdateOldFilesWithDefaultLastSeen()
+        {
+            lock (readWriteLock)
+            {
+                try
+                {
+                    long joinTime = 0, lastSeenTS = 0;
+                    FriendStatusEnum fStatus = FriendStatusEnum.NOT_SET;
+
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        if (!store.DirectoryExists(FRIENDS_DIRECTORY))
+                            return;
+
+                        var fileNames = store.GetFileNames(FRIENDS_DIRECTORY + "\\*");
+
+                        foreach (var fileName in fileNames)
+                        {
+                            if (store.FileExists(fileName))
+                            {
+                                using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.ReadWrite))
+                                {
+                                    if (file.Length > 0)
+                                    {
+                                        using (var reader = new BinaryReader(file))
+                                        {
+                                            fStatus = (FriendStatusEnum)reader.ReadByte();
+                                            joinTime = reader.ReadInt64();
+                                        }
+                                    }
+
+                                    using (BinaryWriter writer = new BinaryWriter(file))
+                                    {
+                                        writer.Seek(0, SeekOrigin.Begin);
+                                        writer.Write((byte)fStatus);
+                                        writer.Write(joinTime);
+                                        writer.Write(lastSeenTS);
+                                        writer.Flush();
+                                        writer.Close();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("FriendsTableUtils :: UpdateFriendTimeStamp :UpdateFriendTimeStamp, Exception : " + ex.StackTrace);
+                }
+            }
+        }
+
         public static long GetFriendOnHIke(string msisdn)
         {
             long ts = 0;
@@ -208,7 +339,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("FriendsTableUtils :: GetFriendStatus :GetFriendStatus, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: GetFriendTimeStamp :GetFriendTimeStamp, Exception : " + ex.StackTrace);
                 }
             }
             return ts;
@@ -221,6 +352,7 @@ namespace windows_client.DbUtils
                 try
                 {
                     FriendStatusEnum friendStatusDb = FriendStatusEnum.NOT_SET;
+                    long lsts=0;
                     string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
@@ -237,6 +369,8 @@ namespace windows_client.DbUtils
                                     try
                                     {
                                         friendStatusDb = (FriendStatusEnum)(byte)reader.ReadByte();
+                                        reader.ReadInt64();
+                                        lsts = reader.ReadInt64();
                                     }
                                     catch (Exception e)
                                     {
@@ -251,6 +385,7 @@ namespace windows_client.DbUtils
                                 writer.Seek(0, SeekOrigin.Begin);
                                 writer.Write((byte)friendStatusDb);
                                 writer.Write(ts);
+                                writer.Write(lsts);
                                 writer.Flush();
                                 writer.Close();
                             }

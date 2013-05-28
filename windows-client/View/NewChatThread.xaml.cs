@@ -18,6 +18,7 @@ using windows_client.utils;
 using Coding4Fun.Phone.Controls;
 using Microsoft.Phone.Tasks;
 using System.IO;
+using System.IO.IsolatedStorage;
 using windows_client.Controls;
 using System.Text;
 using Microsoft.Devices;
@@ -31,6 +32,7 @@ using windows_client.Languages;
 using System.Net.NetworkInformation;
 using System.Windows.Controls.Primitives;
 using System.Windows.Navigation;
+using Microsoft.Phone.BackgroundAudio;
 
 namespace windows_client.View
 {
@@ -44,7 +46,7 @@ namespace windows_client.View
         private readonly string ON_GROUP_TEXT = AppResources.SelectUser_GroupMsg_Txt;
         private readonly string ZERO_CREDITS_MSG = AppResources.SelectUser_ZeroCredits_Txt;
         private readonly string UNBLOCK_USER = AppResources.UnBlock_Txt;
-        private readonly string HOLD_TO_RECORD = AppResources.Hold_To_Record;
+        private readonly string HOLD_AND_TALK = AppResources.Hold_And_Talk;
         private readonly string RELEASE_TO_SEND = AppResources.Release_To_Send;
         private PageOrientation pageOrientation = PageOrientation.Portrait;
 
@@ -56,6 +58,7 @@ namespace windows_client.View
         private string lastText = "";
         private string hintText = string.Empty;
         private bool enableSendMsgButton = false;
+        private long _lastUpdatedLastSeenTimeStamp = 0;
 
         bool afterMute = true;
 
@@ -100,6 +103,9 @@ namespace windows_client.View
         private bool isShowNudgeTute = true;
         private object statusObject = null;
 
+        private DispatcherTimer _lastSeenTimer;
+        private LastSeenHelper _lastSeenHelper;
+
         //        private ObservableCollection<MyChatBubble> chatThreadPageCollection = new ObservableCollection<MyChatBubble>();
         private Dictionary<long, SentChatBubble> msgMap = new Dictionary<long, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
         //private Dictionary<ConvMessage, SentChatBubble> _convMessageSentBubbleMap = new Dictionary<ConvMessage, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
@@ -113,6 +119,8 @@ namespace windows_client.View
         private Thickness imgMargin = new Thickness(24, 5, 0, 15);
         private Image typingNotificationImage;
         private Image emptyImage;
+
+        MediaElement mediaElement;
 
         #endregion
 
@@ -188,17 +196,6 @@ namespace windows_client.View
         {
             InitializeComponent();
 
-            //if (Utils.isDarkTheme())
-            //{
-            //    micImage.Source = new BitmapImage(new Uri("/View/images/mic_icon.png", UriKind.Relative));
-            //    deleteRecImage.Source = new BitmapImage(new Uri("/View/images/WTDelete_White.png", UriKind.Relative));
-            //}
-            //else
-            //{
-            //    micImage.Source = new BitmapImage(new Uri("/View/images/mic_icon_black.png", UriKind.Relative));
-            //    deleteRecImage.Source = new BitmapImage(new Uri("/View/images/WTDelete_Black.png", UriKind.Relative));
-            //}
-
             // Timer to simulate the XNA Framework game loop (Microphone is 
             // from the XNA Framework). We also use this timer to monitor the 
             // state of audio playback so we can update the UI appropriately.
@@ -215,6 +212,46 @@ namespace windows_client.View
             _progressTimer = new DispatcherTimer();
             _progressTimer.Interval = TimeSpan.FromSeconds(1);
             _progressTimer.Tick += new EventHandler(showWalkieTalkieProgress);
+
+            _lastSeenHelper = new LastSeenHelper();
+            _lastSeenHelper.UpdateLastSeen += LastSeenResponseReceived;
+        }
+
+        void LastSeenResponseReceived(object sender, LastSeenEventArgs e)
+        {
+            if (e != null)
+            {
+                if (e.ContactNumber == mContactNumber)
+                {
+                    _lastSeenHelper.UpdateLastSeen -= LastSeenResponseReceived;
+
+                    _lastUpdatedLastSeenTimeStamp = e.TimeStamp == -1 ? TimeUtils.getCurrentTimeStamp() : e.TimeStamp;
+
+                    Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
+                    {
+                        lastSeenTxt.Text = lastSeenStatus;
+                    }), _lastSeenHelper.GetLastSeenTimeStampStatus(e.TimeStamp));
+
+                    _lastSeenTimer.Start();
+
+                    if (e.TimeStamp.Equals("-1"))
+                        FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, TimeUtils.getCurrentTimeStamp());
+                    else
+                        FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, e.TimeStamp);
+                }
+            }
+            else
+            {
+                // update old last seen from file
+                _lastUpdatedLastSeenTimeStamp = FriendsTableUtils.GetFriendLastSeenTSFromFile(mContactNumber);
+                Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
+                {
+                    lastSeenTxt.Text = lastSeenStatus;
+                }), _lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
+
+                if (_lastUpdatedLastSeenTimeStamp != 0)
+                    _lastSeenTimer.Start();
+            }
         }
 
         private void ManagePageStateObjects()
@@ -488,6 +525,10 @@ namespace windows_client.View
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
+
+            if (mediaElement != null)
+                mediaElement.Stop();
+
             if (!string.IsNullOrWhiteSpace(sendMsgTxtbox.Text))
                 this.State["sendMsgTxtbox.Text"] = sendMsgTxtbox.Text;
             else
@@ -539,6 +580,10 @@ namespace windows_client.View
                 Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
                 NavigationService.Navigate(nUri);
             }
+
+            if (mediaElement != null)
+                mediaElement.Stop();
+
             base.OnBackKeyPress(e);
         }
 
@@ -609,6 +654,7 @@ namespace windows_client.View
             }
 
             #endregion
+            
             #region OBJECT FROM SELECT USER PAGE
 
             else if (this.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
@@ -698,6 +744,37 @@ namespace windows_client.View
             }
             userName.Text = mContactName;
 
+            #region LAST SEEN TIMER
+
+            BackgroundWorker _worker = new BackgroundWorker();
+
+            _worker.DoWork += (ss, ee) =>
+            {
+                var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
+
+                if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat)
+                {
+                    _lastSeenTimer = new DispatcherTimer();
+                    _lastSeenTimer.Interval = TimeSpan.FromMinutes(5);
+                    _lastSeenTimer.Tick += _lastSeenTimer_Tick;
+                    _lastSeenTimer.Start();
+
+                    _lastSeenHelper.requestLastSeen(mContactNumber);
+                }
+                else
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        userName.FontSize = 50;
+                        lastSeenTxt.Visibility = Visibility.Collapsed;
+                    });
+                }
+            };
+
+            _worker.RunWorkerAsync();
+
+            #endregion
+            
             // if hike bot msg disable appbar, textbox etc
             if (Utils.IsHikeBotMsg(mContactNumber))
             {
@@ -755,6 +832,22 @@ namespace windows_client.View
 
             if (isShowNudgeTute)
                 showNudgeTute();
+        }
+
+        void _lastSeenTimer_Tick(object sender, EventArgs e)
+        {
+            _lastSeenTimer.Stop();
+
+            if (_lastUpdatedLastSeenTimeStamp != 0)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
+                {
+                    //update ui if prev last seen is greater than current last seen, db updated everytime in backend
+                    lastSeenTxt.Text = lastSeenStatus;
+                }), _lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
+
+                _lastSeenTimer.Start();
+            }
         }
 
         private void showNudgeTute()
@@ -1302,6 +1395,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.GROUP_ALIVE, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
+            mPubSub.addListener(HikePubSub.LAST_SEEN, this);
         }
 
         private void removeListeners()
@@ -1322,6 +1416,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.GROUP_ALIVE, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
+                mPubSub.removeListener(HikePubSub.LAST_SEEN, this);
             }
             catch (Exception ex)
             {
@@ -1556,7 +1651,7 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State["objectForFileTransfer"] = fileTapped;
                 NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
             }
-            else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.AUDIO) || chatBubble.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+            else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
             {
                 MediaPlayerLauncher mediaPlayerLauncher = new MediaPlayerLauncher();
                 string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(chatBubble.MessageId);
@@ -1572,6 +1667,49 @@ namespace windows_client.View
                 {
                     Debug.WriteLine("NewChatThread.xaml ::  displayAttachment ,Ausio video , Exception : " + ex.StackTrace);
                 }
+            }
+            else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+            {
+                string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(chatBubble.MessageId);
+
+                if (mediaElement != null)
+                {
+                    if (mediaElement.Source != null)
+                    {
+                        if (mediaElement.Source.OriginalString.Contains(fileLocation))
+                        {
+                            mediaElement.Position = new TimeSpan(0, 0, 0, 0);
+                            mediaElement.Play();
+                            return;
+                        }
+                        else
+                        {
+                            mediaElement.Source = null;
+                            mediaElement.Stop();
+                        }
+                    }
+                }
+                else
+                {
+                    mediaElement = new MediaElement();
+                    LayoutRoot.Children.Add(mediaElement);
+                }
+
+                using (var store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (store.FileExists(fileLocation))
+                    {
+                        using (var isfs = new IsolatedStorageFileStream(fileLocation, FileMode.Open, store))
+                        {
+                            this.mediaElement.SetSource(isfs);
+                        }
+                    }
+                }
+
+                mediaElement.Position = new TimeSpan(0, 0, 0, 0); 
+                mediaElement.Play();
+                mediaElement.MediaEnded += mediaPlayback_MediaEnded;
+                mediaElement.MediaFailed += mediaPlayback_MediaFailed;
             }
             else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
             {
@@ -1611,6 +1749,15 @@ namespace windows_client.View
                 SaveContactTask sct = con.GetSaveCotactTask();
                 sct.Show();
             }
+        }
+
+        void mediaPlayback_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+        }
+
+        void mediaPlayback_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            mediaElement.Stop();
         }
 
         private void addNewAttachmentMessageToUI(SentChatBubble chatBubble)
@@ -3139,6 +3286,35 @@ namespace windows_client.View
 
             #endregion
 
+            #region LAST SEEN
+
+            else if (HikePubSub.LAST_SEEN == type && !isGroupChat)
+            {
+                object[] vals = (object[])obj;
+                string fromMsisdn = (string)vals[0];
+                long lastSeen = (long)vals[1];
+
+                var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
+
+                if (fromMsisdn == mContactNumber && fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT)
+                {
+                    if (lastSeen > _lastUpdatedLastSeenTimeStamp || lastSeen == -1)
+                    {
+                        _lastUpdatedLastSeenTimeStamp = lastSeen == -1 ? TimeUtils.getCurrentTimeStamp() : lastSeen;
+
+                        Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
+                        {
+                            //update ui if prev last seen is greater than current last seen, db updated everytime in backend
+                            lastSeenTxt.Text = lastSeenStatus;
+                        }), _lastSeenHelper.GetLastSeenTimeStampStatus(lastSeen));
+
+                        _lastSeenTimer.Start();
+                    }
+                }
+            }
+
+            #endregion
+
             #region UPDATE_UI
 
             else if (HikePubSub.UPDATE_UI == type)
@@ -3812,7 +3988,7 @@ namespace windows_client.View
 
         #region Walkie Talkie
 
-        private void Record_ActionIconTapped(object sender, EventArgs e)
+        private void Record_ActionIconTapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             recordGrid.Visibility = Visibility.Visible;
             sendMsgTxtbox.Visibility = Visibility.Collapsed;
@@ -3821,7 +3997,7 @@ namespace windows_client.View
                 (this.ApplicationBar.Buttons[0] as ApplicationBarIconButton).IsEnabled = false;
 
             recordGrid.Background = gridBackgroundBeforeRecording;
-            recordButton.Text = HOLD_TO_RECORD;
+            recordButton.Text = HOLD_AND_TALK;
         }
 
         void Hold_To_Record(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3839,6 +4015,13 @@ namespace windows_client.View
             if (_isWalkieTalkieMessgeDelete)
             {
                 _isWalkieTalkieMessgeDelete = false;
+                stopWalkieTalkieRecording();
+                _recorderState = RecorderState.NOTHING_RECORDED;
+
+                cancelRecord.Opacity = 1;
+                WalkieTalkieGrid.Visibility = Visibility.Collapsed;
+                recordButton.Text = HOLD_AND_TALK;
+                recordGrid.Background = gridBackgroundBeforeRecording;
                 return;
             }
 
@@ -3848,22 +4031,18 @@ namespace windows_client.View
             sendWalkieTalkieMessage();
 
             recordGrid.Background = gridBackgroundBeforeRecording;
-            recordButton.Text = HOLD_TO_RECORD;
+            recordButton.Text = HOLD_AND_TALK;
             cancelRecord.Opacity = 1;
         }
 
+        void deleteRecImage_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            _isWalkieTalkieMessgeDelete = false;
+        }
 
         void deleteRecImage_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = true;
-
-            stopWalkieTalkieRecording();
-            _recorderState = RecorderState.NOTHING_RECORDED;
-
-            cancelRecord.Opacity = 1; 
-            WalkieTalkieGrid.Visibility = Visibility.Collapsed;
-            recordButton.Text = HOLD_TO_RECORD;
-            recordGrid.Background = gridBackgroundBeforeRecording;
         }
 
         void cancelRecord_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -4060,6 +4239,5 @@ namespace windows_client.View
         private RecorderState _recorderState = RecorderState.NOTHING_RECORDED;
 
         #endregion
-    
     }
 }

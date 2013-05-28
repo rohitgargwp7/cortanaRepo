@@ -141,7 +141,8 @@ namespace windows_client.utils
         private enum RequestType
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
-            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS, GET_ONHIKE_DATE, POST_INFO_ON_APP_UPDATE
+            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS, GET_ONHIKE_DATE, POST_INFO_ON_APP_UPDATE,
+            LAST_SEEN_POST
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -320,7 +321,6 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_STATUS, statusJSON, finalCallbackFunction });
         }
 
-
         public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction, string socialNetowrk, bool isPost)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/connect/" + socialNetowrk)) as HttpWebRequest;
@@ -336,6 +336,15 @@ namespace windows_client.utils
                 req.Method = "DELETE";
                 req.BeginGetResponse(json_Callback, new object[] { req, RequestType.SOCIAL_DELETE, finalCallbackFunction });
             }
+        }
+
+        public static void LastSeenRequest(postResponseFunction finalCallbackFunction, string userNumber)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/lastseen/" + userNumber)) as HttpWebRequest;
+            addToken(req);
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.LAST_SEEN_POST, finalCallbackFunction });
         }
 
         private static void setParams_Callback(IAsyncResult result)
@@ -513,6 +522,11 @@ namespace windows_client.utils
                 case RequestType.POST_STATUS:
                     data = vars[2] as JObject;
                     finalCallbackFunction = vars[3] as postResponseFunction;
+                    break;
+                #endregion
+                #region LAST SEEN
+                case RequestType.LAST_SEEN_POST:
+                    finalCallbackFunction = vars[2] as postResponseFunction;
                     break;
                 #endregion
                 #region DEFAULT

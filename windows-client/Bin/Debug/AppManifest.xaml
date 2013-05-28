@@ -7,11 +7,13 @@
     <AssemblyPart x:Name="Hammock.WindowsPhone.Mango" Source="Hammock.WindowsPhone.Mango.dll" />
     <AssemblyPart x:Name="ICSharpCode.SharpZipLib.WindowsPhone" Source="ICSharpCode.SharpZipLib.WindowsPhone.dll" />
     <AssemblyPart x:Name="Microsoft.Expression.Drawing" Source="Microsoft.Expression.Drawing.dll" />
+    <AssemblyPart x:Name="Microsoft.Expression.Interactions" Source="Microsoft.Expression.Interactions.dll" />
     <AssemblyPart x:Name="Microsoft.Phone.Controls" Source="Microsoft.Phone.Controls.dll" />
     <AssemblyPart x:Name="Microsoft.Phone.Controls.Maps" Source="Microsoft.Phone.Controls.Maps.dll" />
     <AssemblyPart x:Name="Microsoft.Phone.Controls.Toolkit" Source="Microsoft.Phone.Controls.Toolkit.dll" />
     <AssemblyPart x:Name="Newtonsoft.Json" Source="Newtonsoft.Json.dll" />
     <AssemblyPart x:Name="SharpCompress.WP7" Source="SharpCompress.WP7.dll" />
+    <AssemblyPart x:Name="System.Windows.Interactivity" Source="System.Windows.Interactivity.dll" />
     <AssemblyPart Source="de-DE/windows-client.resources.dll" />
   </Deployment.Parts>
 </Deployment>

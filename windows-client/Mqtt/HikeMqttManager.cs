@@ -421,6 +421,7 @@ namespace windows_client.Mqtt
                 return;
             Debug.WriteLine("MQTT MANAGER:: NUmber os unsent messages" + packets.Count);
             sendAllUnsentMessages(packets);
+            sendAppFGStatusToServer();
         }
 
         public void onDisconnected()
@@ -488,5 +489,17 @@ namespace windows_client.Mqtt
             send(packet, qos);
         }
 
+        private void sendAppFGStatusToServer()
+        {
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
+            obj.Add(HikeConstants.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
+            obj.Add(HikeConstants.STATUS, "f");
+            JObject data = new JObject();
+            data.Add(HikeConstants.JUSTOPENED, "true");
+            obj.Add(HikeConstants.DATA, data);
+
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
     }
 }

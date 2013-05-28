@@ -1,3 +1,17 @@
 windows-client/windows-client.csproj.user
 windows-client.sln
-
+# git ls-files --others --exclude-from=.git/info/exclude
+# Lines that start with '#' are comments.
+# For a project mostly in C, the following would be a good set of
+# exclude patterns (uncomment them if you want to use them):
+# *.[oa]
+# *~
+windows-client/Bin/
+windows-client/obj/
+finalmqtt/finalmqtt/Bin/
+finalmqtt/finalmqtt/obj/
+Phone.Controls/Bin/
+Phone.Controls/obj/
+PageTransitions/Bin/
+PageTransitions/obj/
+*.suo

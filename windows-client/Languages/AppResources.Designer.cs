@@ -1842,11 +1842,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hold to record.
+        ///   Looks up a localized string similar to Hold and Talk.
         /// </summary>
-        public static string Hold_To_Record {
+        public static string Hold_And_Talk {
             get {
-                return ResourceManager.GetString("Hold_To_Record", resourceCulture);
+                return ResourceManager.GetString("Hold_And_Talk", resourceCulture);
             }
         }
         
@@ -3449,6 +3449,15 @@ namespace windows_client.Languages {
         public static string ShareLocation_Txt {
             get {
                 return ResourceManager.GetString("ShareLocation_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show my last seen time stamp.
+        /// </summary>
+        public static string Show_LastSeen_TimeStamp {
+            get {
+                return ResourceManager.GetString("Show_LastSeen_TimeStamp", resourceCulture);
             }
         }
         
