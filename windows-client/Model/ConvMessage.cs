@@ -247,6 +247,7 @@ namespace windows_client.Model
             {
                 if (_messageStatus != value)
                 {
+                    NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
                     NotifyPropertyChanged("SdrImage");
                     NotifyPropertyChanged("MessageStatus");
@@ -265,6 +266,7 @@ namespace windows_client.Model
             {
                 if (_timestamp != value)
                 {
+                    NotifyPropertyChanging("Timestamp");
                     _timestamp = value;
                     NotifyPropertyChanged("Timestamp");
                     NotifyPropertyChanged("TimeStampStr");
@@ -300,6 +302,7 @@ namespace windows_client.Model
             {
                 if (_groupParticipant != value)
                 {
+                    NotifyPropertyChanging("GroupParticipant");
                     _groupParticipant = value;
                     NotifyPropertyChanged("GroupParticipant");
                 }
@@ -315,6 +318,7 @@ namespace windows_client.Model
             }
             set
             {
+                NotifyPropertyChanging("MetaDataString");
                 metadataJsonString = value;
                 if (string.IsNullOrEmpty(metadataJsonString))
                     participantInfoState = ParticipantInfoState.NO_INFO;
@@ -334,6 +338,7 @@ namespace windows_client.Model
             {
                 if (_hasAttachment != value)
                 {
+                    NotifyPropertyChanging("HasAttachment");
                     _hasAttachment = value;
                 }
             }
