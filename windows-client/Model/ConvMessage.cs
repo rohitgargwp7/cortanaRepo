@@ -532,16 +532,16 @@ namespace windows_client.Model
             }
         }
 
+        Visibility _playIconVisibility = Visibility.Visible;
         public Visibility PlayIconVisibility
         {
             get
             {
                 if (_fileAttachment != null && ((_fileAttachment.FileState == Attachment.AttachmentState.CANCELED || _fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
                     || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO) || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
-                {
                     return Visibility.Visible;
-                }
-                return Visibility.Collapsed;
+                else
+                    return Visibility.Collapsed;
             }
         }
 
@@ -551,8 +551,66 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                     return UI_Utils.Instance.DownloadIcon;
+                else if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.AUDIO) && IsPlaying)
+                    return UI_Utils.Instance.PauseIcon;
                 else
                     return UI_Utils.Instance.PlayIcon;
+            }
+        }
+
+        Boolean _isPlaying = false;
+        public Boolean IsPlaying
+        {
+            get
+            {
+                return _isPlaying;
+            }
+            set
+            {
+                _isPlaying = value;
+                NotifyPropertyChanged("PlayIconImage");
+            }
+        }
+
+        string _playTimeText;
+        public String PlayTimeText
+        {
+            get
+            {
+                return _playTimeText;
+            }
+            set
+            {
+                if (_playTimeText != value)
+                {
+                    _playTimeText = value;
+                    NotifyPropertyChanged("PlayTimeText");
+                }
+            }
+        }
+
+        double _playProgressBarValue = 0;
+        public double PlayProgressBarValue
+        {
+            set
+            {
+                _playProgressBarValue = value;
+                if (_playProgressBarValue >= 100)
+                {
+                    IsPlaying = false;
+                    _playProgressBarValue = 0;
+                }
+
+                if (_playProgressBarValue == 0)
+                    PlayTimeText = "";
+
+                Debug.WriteLine(_playProgressBarValue);
+
+                NotifyPropertyChanged("PlayProgressBarValue");
+            }
+            get
+            {
+                return _playProgressBarValue;
             }
         }
 

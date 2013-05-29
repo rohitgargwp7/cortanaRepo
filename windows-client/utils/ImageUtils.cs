@@ -36,10 +36,14 @@ namespace windows_client.utils
         private SolidColorBrush statusTextForeground;
         private SolidColorBrush tappedCategoryColor;
         private SolidColorBrush untappedCategoryColor;
+        private SolidColorBrush deleteGreyBackground;
+        private SolidColorBrush deleteBlackBackground;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
         private BitmapImage playIcon;
+        private BitmapImage pauseIcon;
+        private BitmapImage audioMicIcon;
         private BitmapImage downloadIcon;
         private BitmapImage audioAttachmentReceive;
         private BitmapImage audioAttachmentSend;
@@ -91,7 +95,10 @@ namespace windows_client.utils
         public Thickness ReceivedBubbleFileMarginLS = new Thickness(0, 0, 380, 14);
         public Thickness SentBubbleTextMarginLS = new Thickness(250, 12, 0, 10);
         public Thickness SentBubbleFileMarginLS = new Thickness(380, 12, 0, 10);
-
+        BitmapImage walkieTalkieGreyImage;
+        BitmapImage walkieTalkieWhiteImage;
+        SolidColorBrush whiteTextForeGround;
+        SolidColorBrush greyTextForeGround;
         private FontFamily groupChatMessageHeader;
         private FontFamily messageText;
 
@@ -468,7 +475,19 @@ namespace windows_client.utils
             {
                 if (playIcon == null)
                     playIcon = new BitmapImage(new Uri("/View/images/play_icon.png", UriKind.Relative));
+
                 return playIcon;
+            }
+        }
+
+        public BitmapImage PauseIcon
+        {
+            get
+            {
+                if (pauseIcon == null)
+                    pauseIcon = new BitmapImage(new Uri("/View/images/pause_icon.png", UriKind.Relative));
+
+                return pauseIcon;
             }
         }
 
@@ -850,7 +869,27 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush GreyTextForeGround
+        {
+            get
+            {
+                if (greyTextForeGround == null)
+                        greyTextForeGround = new SolidColorBrush(Color.FromArgb(255, 104, 104, 104));
+                
+                return greyTextForeGround;
+            }
+        }
 
+        public SolidColorBrush WhiteTextForeGround
+        {
+            get
+            {
+                if (whiteTextForeGround == null)
+                    whiteTextForeGround = new SolidColorBrush(Colors.White);
+
+                return whiteTextForeGround;
+            }
+        }
 
         public FontFamily SemiBoldFont
         {
@@ -894,6 +933,48 @@ namespace windows_client.utils
             get
             {
                 return chatThreadKeyPadDownMargin;
+            }
+        }
+
+        public SolidColorBrush DeleteBlackBackground
+        {
+            get
+            {
+                if (deleteBlackBackground == null)
+                    deleteBlackBackground = new SolidColorBrush(Colors.Black);
+                return deleteBlackBackground;
+        }
+        }
+
+        public SolidColorBrush DeleteGreyBackground
+        {
+            get
+            {
+                if (deleteGreyBackground == null)
+                    deleteGreyBackground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 105, 105, 105));
+                return deleteGreyBackground;
+            }
+        }
+
+        public BitmapImage WalkieTalkieGreyImage
+        {
+            get
+            {
+                if (walkieTalkieGreyImage == null)
+                    walkieTalkieGreyImage = new BitmapImage(new Uri("/View/images/Walkie_Talkie_Grey_small.png", UriKind.Relative));
+
+                return walkieTalkieGreyImage;
+            }
+        }
+        
+        public BitmapImage WalkieTalkieWhiteImage
+        {
+            get
+            {
+                if (walkieTalkieWhiteImage == null)
+                    walkieTalkieWhiteImage = new BitmapImage(new Uri("/View/images/Walkie_Talkie_White_small.png", UriKind.Relative));
+
+                return walkieTalkieWhiteImage;
             }
         }
 
