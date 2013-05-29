@@ -184,7 +184,7 @@ namespace windows_client.View
         public NewChatThread()
         {
             InitializeComponent();
-            
+
             _dt = new DispatcherTimer();
             _dt.Interval = TimeSpan.FromMilliseconds(33);
             _dt.Tick += new EventHandler(dt_Tick);
@@ -215,7 +215,7 @@ namespace windows_client.View
                         else
                             currentAudioMessage.PlayProgressBarValue = pos * 100 / dur;
 
-                        currentAudioMessage.PlayTimeText = pos == dur || pos==0 ? "" : mediaElement.Position.ToString("mm\\:ss");
+                        currentAudioMessage.PlayTimeText = pos == dur || pos == 0 ? "" : mediaElement.Position.ToString("mm\\:ss");
                     }
                 }
             };
@@ -504,7 +504,7 @@ namespace windows_client.View
                 this.State["sendMsgTxtbox.Text"] = sendMsgTxtbox.Text;
             else
                 this.State.Remove("sendMsgTxtbox.Text");
-            
+
             App.IS_TOMBSTONED = false;
         }
 
@@ -1241,12 +1241,20 @@ namespace windows_client.View
 
         }
 
+        Object obj = new object();
         //this function is called from UI thread only. No need to synch.
         private void ScrollToBottom()
         {
-            if (this.ocMessages.Count > 0 && (!IsMute || this.ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
+            try
             {
-                llsMessages.ScrollTo(this.ocMessages[this.ocMessages.Count - 1]);
+                if (this.ocMessages.Count > 0 && (!IsMute || this.ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
+                {
+                    llsMessages.ScrollTo(this.ocMessages[this.ocMessages.Count - 1]);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("NewChatThread::ScrollToBottom , Exception:" + ex.Message);
             }
         }
 
@@ -2897,7 +2905,7 @@ namespace windows_client.View
             {
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
-
+                Thread.Sleep(500);
                 //TODO handle vibration for user profile and GC.
                 if ((convMessage.Msisdn != mContactNumber && (convMessage.MetaDataString != null &&
                     convMessage.MetaDataString.Contains(HikeConstants.POKE))) &&
@@ -3811,7 +3819,7 @@ namespace windows_client.View
                 }
             }
         }
-    
+
         #region Walkie Talkie
 
         private void Record_ActionIconTapped(object sender, EventArgs e)
@@ -3902,9 +3910,9 @@ namespace windows_client.View
 
         void dt_Tick(object sender, EventArgs e)
         {
-            try 
-            { 
-                FrameworkDispatcher.Update(); 
+            try
+            {
+                FrameworkDispatcher.Update();
             }
             catch (Exception ex)
             {
