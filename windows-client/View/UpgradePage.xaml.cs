@@ -53,45 +53,9 @@ namespace windows_client.View
                     StatusMsgsTable.MessagesDbUpdateToLatestVersion();
                 if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                     MqttDBUtils.MqttDbUpdateToLatestVersion();
-                if (Utils.compareVersion(App.CURRENT_VERSION, "1.7.1.2") != 1)// if current version is less than equal to 1.7.1.2 then show NUX
-                {
-                    //in case of upgrade if 10 hike users then skip NUX
-                    if (UsersTableUtils.GetAllHikeContactsCount() < 10 && UsersTableUtils.GetAllNonHikeContactsCount() > 2)
-                    {
-                        if (listContactInfo == null)
-                        {
-                            ContactUtils.getContacts(contactSearchCompletedForNux_Callback);
-                            int count = 0;
-                            while (listContactInfo == null && count < 120000)//wait for 2 mins
-                            {
-                                count += 2;
-                                Thread.Sleep(2);
-                            }
-                        }
-                        if (listContactInfo != null)
-                        {
-                            navigateTo = "/View/NUX_InviteFriends.xaml";
-                            App.appSettings[App.PAGE_STATE] = App.PageState.NUX_SCREEN_FRIENDS;
-                        }
-                        else
-                        {
-                            navigateTo = "/View/ConversationsList.xaml";
-                            App.appSettings[App.PAGE_STATE] = App.PageState.CONVLIST_SCREEN;
-                        }
-                    }
-                    else
-                    {
-                        navigateTo = "/View/ConversationsList.xaml";
-                        App.appSettings[App.PAGE_STATE] = App.PageState.CONVLIST_SCREEN;
-                    }
-                    Thread.Sleep(2000);//added so that this shows at least for 2 sec
-                    App.appSettings[HikeConstants.AppSettings.APP_LAUNCH_COUNT] = 1;
-                }
-                else
-                {
-                    navigateTo = "/View/ConversationsList.xaml";
-                    App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
-                }
+
+                navigateTo = "/View/ConversationsList.xaml";
+                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
                 Thread.Sleep(2000);//added so that this shows at least for 2 sec
                 App.appSettings[HikeConstants.AppSettings.APP_LAUNCH_COUNT] = 1;
                 App.WriteToIsoStorageSettings(App.SHOW_STATUS_UPDATES_TUTORIAL, true);
@@ -103,12 +67,6 @@ namespace windows_client.View
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, App.LATEST_VERSION);
-
-                if (App.PageState.NUX_SCREEN_FRIENDS == (App.PageState)App.appSettings[App.PAGE_STATE])
-                {
-                    NavigationService.Navigate(new Uri(navigateTo, UriKind.Relative));
-                    return;
-                }
 
                 string targetPage = (string)PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO];
                 if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
@@ -140,11 +98,6 @@ namespace windows_client.View
                     NavigationService.Navigate(nUri);
                 }
             };
-        }
-
-        public static void contactSearchCompletedForNux_Callback(object sender, ContactsSearchEventArgs e)
-        {
-            ContactUtils.getContactsListMapInitial(e.Results, out listContactInfo);
         }
     }
 }

@@ -62,11 +62,6 @@ namespace windows_client.Model
         public static readonly string ADD_FAVS_CONTEXT_MENU_GROUP_INFO = "giATFCM";
         public static readonly string REMOVE_FAVS_CONTEXT_MENU_GROUP_INFO = "giRFFCM";
 
-
-        // NUX TODO change for wp7 as well
-        public static readonly string SKIP_NUX_1 = "nuxSkip1";
-        public static readonly string SKIP_NUX_2 = "nuxSkip2";
-
         private Dictionary<string, int> eventMap = null;
 
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
