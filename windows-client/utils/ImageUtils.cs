@@ -34,6 +34,8 @@ namespace windows_client.utils
         private SolidColorBrush receivedChatBubbleProgress;
         private SolidColorBrush phoneThemeColor;
         private SolidColorBrush statusTextForeground;
+        private SolidColorBrush deleteGreyBackground;
+        private SolidColorBrush deleteBlackBackground;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
@@ -880,6 +882,26 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush DeleteBlackBackground
+        {
+            get
+            {
+                if (deleteBlackBackground == null)
+                    deleteBlackBackground = new SolidColorBrush(Colors.Black);
+                return deleteBlackBackground;
+        }
+        }
+
+        public SolidColorBrush DeleteGreyBackground
+        {
+            get
+            {
+                if (deleteGreyBackground == null)
+                    deleteGreyBackground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 105, 105, 105));
+                return deleteGreyBackground;
+            }
+        }
+        
         #endregion
 
         #region DEFAULT AVATARS

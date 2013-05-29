@@ -113,9 +113,6 @@ namespace windows_client.View
 
         #region UI VALUES
 
-        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 238, 238, 236));
-        private readonly SolidColorBrush deleteBlackBackground = new SolidColorBrush(Colors.Black);
-        private readonly SolidColorBrush deleteGreyBackground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 105, 105, 105));
         private Thickness imgMargin = new Thickness(24, 5, 0, 15);
         private Image emptyImage;
         MediaElement mediaElement;
@@ -2338,7 +2335,7 @@ namespace windows_client.View
 
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
-            sendMsgTxtbox.Background = textBoxBackground;
+            sendMsgTxtbox.Background = UI_Utils.Instance.TextBoxBackground;
             sendMsgTxtbox.Hint = string.Empty;//done intentionally as hint is shown if text is changed
             sendMsgTxtbox.Hint = hintText;
             //this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
@@ -3853,7 +3850,7 @@ namespace windows_client.View
                 recordButton.Text = HOLD_AND_TALK;
                 recordGrid.Background = gridBackgroundBeforeRecording;
 
-                deleteBorder.Background = deleteBlackBackground;
+                deleteBorder.Background = UI_Utils.Instance.DeleteBlackBackground;
 
                 return;
             }
@@ -3871,13 +3868,13 @@ namespace windows_client.View
         private void deleteRecImage_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = false;
-            deleteBorder.Background = deleteBlackBackground;
+            deleteBorder.Background = UI_Utils.Instance.DeleteBlackBackground;
         }
 
         void deleteRecImage_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = true;
-            deleteBorder.Background = deleteGreyBackground;
+            deleteBorder.Background = UI_Utils.Instance.DeleteGreyBackground;
         }
 
         void cancelRecord_Tap(object sender, System.Windows.Input.GestureEventArgs e)
