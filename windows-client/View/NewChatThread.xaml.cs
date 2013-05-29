@@ -1674,6 +1674,37 @@ namespace windows_client.View
                 mediaElement.MediaEnded += mediaPlayback_MediaEnded;
                 mediaElement.MediaFailed += mediaPlayback_MediaFailed;
             }
+            else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+            {
+                try
+                {
+                    JObject metadataFromConvMessage = JObject.Parse(convMessage.MetaDataString);
+                    JToken tempFileArrayToken;
+                    JObject locationJSON;
+                    if (metadataFromConvMessage.TryGetValue("files", out tempFileArrayToken) && tempFileArrayToken != null)
+                    {
+                        JArray tempFilesArray = tempFileArrayToken.ToObject<JArray>();
+                        locationJSON = tempFilesArray[0].ToObject<JObject>();
+                    }
+                    else
+                    {
+                        locationJSON = JObject.Parse(convMessage.MetaDataString);
+                    }
+                    if (this.bingMapsTask == null)
+                        bingMapsTask = new BingMapsTask();
+                    double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
+                    double longitude = Convert.ToDouble(locationJSON[HikeConstants.LONGITUDE].ToString());
+                    double zoomLevel = Convert.ToDouble(locationJSON[HikeConstants.ZOOM_LEVEL].ToString());
+                    bingMapsTask.Center = new GeoCoordinate(latitude, longitude);
+                    bingMapsTask.ZoomLevel = zoomLevel;
+                    bingMapsTask.Show();
+                }
+                catch (Exception ex) //Code should never reach here
+                {
+                    Debug.WriteLine("NewChatTHread :: DisplayAttachment :: Exception while parsing lacation parameters" + ex.StackTrace);
+                }
+                return;
+            }
             else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
             {
                 JObject contactInfoJobject = JObject.Parse(convMessage.MetaDataString);
