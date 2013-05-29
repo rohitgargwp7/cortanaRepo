@@ -534,15 +534,6 @@
     <Content Include="View\images\moods\21OMG.png" />
     <Content Include="View\images\moods\22Sleepy.png" />
     <Content Include="View\images\moods\23Hungover.png" />
-    <Content Include="View\images\moods\bangalore.png" />
-    <Content Include="View\images\moods\chennai.png" />
-    <Content Include="View\images\moods\delhi.png" />
-    <Content Include="View\images\moods\hyderabad.png" />
-    <Content Include="View\images\moods\kolkata.png" />
-    <Content Include="View\images\moods\mumbai.png" />
-    <Content Include="View\images\moods\pune.png" />
-    <Content Include="View\images\moods\punjab.png" />
-    <Content Include="View\images\moods\rajasthan.png" />
     <Content Include="View\images\moods_status_icon.png" />
     <Content Include="View\images\moods_status_icon_disabled.png" />
     <Content Include="View\images\notification_read.png" />
