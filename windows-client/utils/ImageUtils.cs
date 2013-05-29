@@ -34,10 +34,14 @@ namespace windows_client.utils
         private SolidColorBrush receivedChatBubbleProgress;
         private SolidColorBrush phoneThemeColor;
         private SolidColorBrush statusTextForeground;
+        private SolidColorBrush deleteGreyBackground;
+        private SolidColorBrush deleteBlackBackground;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
         private BitmapImage playIcon;
+        private BitmapImage pauseIcon;
+        private BitmapImage audioMicIcon;
         private BitmapImage downloadIcon;
         private BitmapImage audioAttachmentReceive;
         private BitmapImage audioAttachmentSend;
@@ -447,7 +451,19 @@ namespace windows_client.utils
             {
                 if (playIcon == null)
                     playIcon = new BitmapImage(new Uri("/View/images/play_icon.png", UriKind.Relative));
+
                 return playIcon;
+            }
+        }
+
+        public BitmapImage PauseIcon
+        {
+            get
+            {
+                if (pauseIcon == null)
+                    pauseIcon = new BitmapImage(new Uri("/View/images/pause_icon.png", UriKind.Relative));
+
+                return pauseIcon;
             }
         }
 
@@ -866,6 +882,26 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush DeleteBlackBackground
+        {
+            get
+            {
+                if (deleteBlackBackground == null)
+                    deleteBlackBackground = new SolidColorBrush(Colors.Black);
+                return deleteBlackBackground;
+        }
+        }
+
+        public SolidColorBrush DeleteGreyBackground
+        {
+            get
+            {
+                if (deleteGreyBackground == null)
+                    deleteGreyBackground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 105, 105, 105));
+                return deleteGreyBackground;
+            }
+        }
+        
         #endregion
 
         #region DEFAULT AVATARS

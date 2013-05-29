@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -195,7 +195,6 @@
     <Compile Include="utils\ContactUtils.cs" />
     <Compile Include="utils\ImageUtils.cs" />
     <Compile Include="utils\MoodsInitialiser.cs" />
-
     <Compile Include="utils\OAuthUtil.cs" />
     <Compile Include="utils\PushHelper.cs" />
     <Compile Include="utils\RelativeAnimatingContentControl.cs" />
@@ -452,7 +451,6 @@
     <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
     <Content Include="View\images\add_favorites.png" />
-
     <Content Include="View\images\add_friend.png" />
     <Content Include="View\images\add_users_white.png" />
     <Content Include="View\images\add_user_icon.png" />
@@ -493,6 +491,7 @@
     <Content Include="View\images\fb_icon.png" />
     <Content Include="View\images\fb_status.png" />
     <Content Include="View\images\fb_status_disabled.png" />
+    <Content Include="View\images\delete_bin.png" />
     <Content Include="View\images\group_name_changed.png" />
     <Content Include="View\images\help_icon_dark.png" />
     <Content Include="View\images\help_icon_white.png" />
@@ -553,9 +552,11 @@
     <Content Include="View\images\moods_status_icon_disabled.png" />
     <Content Include="View\images\notification_read.png" />
     <Content Include="View\images\notification_unread.png" />
+    <Content Include="View\images\pause_icon.png" />
     <Content Include="View\images\profile_header_stock.png" />
     <Content Include="View\images\profile_header_stock_dark.png" />
     <Content Include="View\images\refresh_bar_arrow.png" />
+    <Content Include="View\images\remove_wt_icon.png" />
     <Content Include="View\images\settings_icon_dark.png" />
     <Content Include="View\images\settings_icon_white.png" />
     <Content Include="View\images\timeline_photo.png" />
@@ -570,9 +571,9 @@
     <Content Include="View\images\menu_camera_icon.png" />
     <Content Include="View\images\menu_video_icon.png" />
     <Content Include="View\images\user_lock_white.png" />
-
     <Content Include="View\images\new_icon.png" />
     <Content Include="View\images\new_icon_white.png" />
+    <Content Include="View\images\walkie_talkie.png" />
     <Content Include="View\images\welome_screen.jpg" />
     <Resource Include="View\images\logo_main_white.png" />
     <Resource Include="View\images\logo_main_black.png" />

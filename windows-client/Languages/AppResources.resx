@@ -1705,4 +1705,12 @@ Get hike: http://get.hike.in</value>
     <value>{0} messages,</value>
     <comment>{0} replaced by number</comment>
   </data>
+  <data name="Hold_And_Talk" xml:space="preserve">
+    <value>Hold and talk</value>
+    <comment>Long press to start audio recording</comment>
+  </data>
+  <data name="Release_To_Send" xml:space="preserve">
+    <value>Release to Send</value>
+    <comment>Release to send recorded data</comment>
+  </data>
 </root>
