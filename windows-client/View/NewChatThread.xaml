@@ -678,10 +678,12 @@
                     </Grid>
                 </ScrollViewer>
                 <Grid x:Name="recordGrid" Background="Black" Visibility="Collapsed" HorizontalAlignment="Stretch" Margin="0,-4,0,0">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Hold="Hold_To_Record" ManipulationCompleted="recordButton_ManipulationCompleted">
-                        <Image Source="/View/images/walkie_talkie.png" Height="72" Stretch="Uniform"/>
-                        <TextBlock x:Name="recordButton" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24" Text="" Foreground="White"/>
-                    </StackPanel>
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ManipulationStarted="Hold_To_Record" ManipulationCompleted="recordButton_ManipulationCompleted"> 
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                            <Image Source="/View/images/walkie_talkie.png" Height="72" Stretch="Uniform"/>
+                            <TextBlock x:Name="recordButton" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24" Text="" Foreground="White"/>
+                        </StackPanel>
+                    </Grid>
                     <Image Canvas.ZIndex="2" x:Name="cancelRecord" HorizontalAlignment="Right" Source="/View/images/remove_wt_icon.png" Tap="cancelRecord_Tap" Stretch="Uniform" Height="72"/>
                 </Grid>
             </Grid>
@@ -733,7 +735,7 @@
                 <TextBlock x:Name="runningTime" FontFamily="Segoe WP SemiLight" FontSize="24" Text="00:00" Foreground="White" ></TextBlock>
                 <TextBlock x:Name="maxPlayingTime" Text=" / 2:00" FontFamily="Segoe WP SemiLight" Foreground="White" FontSize="24"/>
             </StackPanel>
-            <Border Grid.Row="2" Margin="-10,15,-10,-10" MouseLeave="deleteRecImage_MouseLeave" MouseEnter="deleteRecImage_MouseEnter" Background="Black" Opacity="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2" >
+            <Border Grid.Row="2" Margin="-10,15,-10,-10" Background="Black" MouseLeave="deleteRecImage_MouseLeave" x:Name="deleteBorder" MouseEnter="deleteRecImage_MouseEnter" Opacity="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2" >
                 <StackPanel Margin="35" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Image x:Name="deleteRecImage" Margin="0,0,10,0" Source="/View/images/delete_bin.png" Grid.Column="0"  Height="35" Stretch="Uniform" HorizontalAlignment="Center"/>
                     <TextBlock TextAlignment="Center" Grid.Column="1" FontSize="24" Foreground="White" Text="Drag here to delete"/>

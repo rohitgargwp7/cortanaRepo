@@ -114,6 +114,8 @@ namespace windows_client.View
         #region UI VALUES
 
         private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 238, 238, 236));
+        private readonly SolidColorBrush deleteBlackBackground = new SolidColorBrush(Colors.Black);
+        private readonly SolidColorBrush deleteGreyBackground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 105, 105, 105));
         private Thickness imgMargin = new Thickness(24, 5, 0, 15);
         private Image emptyImage;
         MediaElement mediaElement;
@@ -3842,7 +3844,7 @@ namespace windows_client.View
             recordButton.Text = HOLD_AND_TALK;
         }
 
-        void Hold_To_Record(object sender, System.Windows.Input.GestureEventArgs e)
+        void Hold_To_Record(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
         {
             WalkieTalkieGrid.Visibility = Visibility.Visible;
             recordButton.Text = RELEASE_TO_SEND;
@@ -3866,6 +3868,8 @@ namespace windows_client.View
                 recordButton.Text = HOLD_AND_TALK;
                 recordGrid.Background = gridBackgroundBeforeRecording;
 
+                deleteBorder.Background = deleteBlackBackground;
+
                 return;
             }
 
@@ -3882,11 +3886,13 @@ namespace windows_client.View
         private void deleteRecImage_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = false;
+            deleteBorder.Background = deleteBlackBackground;
         }
 
         void deleteRecImage_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = true;
+            deleteBorder.Background = deleteGreyBackground;
         }
 
         void cancelRecord_Tap(object sender, System.Windows.Input.GestureEventArgs e)
