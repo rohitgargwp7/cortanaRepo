@@ -545,14 +545,6 @@ namespace windows_client.Model
             }
         }
 
-        public BitmapImage AudioMicIconImage
-        {
-            get
-            {
-                return UI_Utils.Instance.AudioMicIcon;
-            }
-        }
-
         Visibility _pauseIconVisibility = Visibility.Collapsed;
         public Visibility PauseIconVisibility
         {

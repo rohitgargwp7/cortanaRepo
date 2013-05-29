@@ -465,17 +465,6 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage AudioMicIcon
-        {
-            get
-            {
-                if (audioMicIcon == null)
-                    audioMicIcon = new BitmapImage(new Uri("/View/images/mic_icon.png", UriKind.Relative));
-
-                return audioMicIcon;
-            }
-        }
-
         public BitmapImage DownloadIcon
         {
             get

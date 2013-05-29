@@ -148,7 +148,7 @@
                             <Image x:Name="PauseIcon" Source="{Binding PauseIconImage}" Visibility="{Binding PauseIconVisibility}" Grid.Row="1" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
                             <Grid Grid.Column="1">
                                 <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
-                                    <Image Margin="10,0,0,0" MaxWidth="20" MaxHeight="20" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="{Binding AudioMicIconImage}"/>
+                                    <Image Margin="10,0,0,0" MaxWidth="20" MaxHeight="20" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="/View/images/mic_icon.png"/>
                                     <TextBlock Margin="10,0,0,0" Text="{Binding PlayTimeText}" Foreground="White" FontSize="24" VerticalAlignment="Center" TextAlignment="Left"/>
                                 </StackPanel>
                                 <ProgressBar Style="{StaticResource PlayProgressBarStyle}" x:Name="playProgress" Value="{Binding PlayProgressBarValue}" Width="180" Height="45" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100"/>
@@ -337,7 +337,7 @@
                         <Image x:Name="PauseIcon" Source="{Binding PauseIconImage}" Visibility="{Binding PauseIconVisibility}" Grid.Row="1" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
                         <Grid Grid.Column="1">
                             <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
-                                <Image Margin="10,0,0,0" MaxWidth="20" MaxHeight="20" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="{Binding AudioMicIconImage}"/>
+                                <Image Margin="10,0,0,0" MaxWidth="20" MaxHeight="20" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="/View/images/mic_icon.png"/>
                                 <TextBlock Margin="10,0,0,0" Text="{Binding PlayTimeText}" Foreground="White" FontSize="24" VerticalAlignment="Center" TextAlignment="Left"/>
                             </StackPanel>
                             <ProgressBar Style="{StaticResource PlayProgressBarStyle}" x:Name="playProgress" Value="{Binding PlayProgressBarValue}" Width="180" Height="45" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100"/>
