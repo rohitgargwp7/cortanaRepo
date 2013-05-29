@@ -3824,15 +3824,18 @@ namespace windows_client.View
 
             recordGrid.Background = gridBackgroundBeforeRecording;
             recordButton.Text = HOLD_AND_TALK;
+            recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
+            walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
         }
 
         void Hold_To_Record(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
         {
             WalkieTalkieGrid.Visibility = Visibility.Visible;
             recordButton.Text = RELEASE_TO_SEND;
-            cancelRecord.Opacity = 0; 
+            cancelRecord.Opacity = 0;
+            recordButton.Foreground = UI_Utils.Instance.WhiteTextForeGround;
             recordGrid.Background = UI_Utils.Instance.HikeMsgBackground;
-
+            walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieWhiteImage;
             recordWalkieTalkieMessage();
         }
 
@@ -3848,7 +3851,9 @@ namespace windows_client.View
                 cancelRecord.Opacity = 1;
                 WalkieTalkieGrid.Visibility = Visibility.Collapsed;
                 recordButton.Text = HOLD_AND_TALK;
+                recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
                 recordGrid.Background = gridBackgroundBeforeRecording;
+                walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
 
                 deleteBorder.Background = UI_Utils.Instance.DeleteBlackBackground;
 
@@ -3860,6 +3865,8 @@ namespace windows_client.View
             stopWalkieTalkieRecording();
             sendWalkieTalkieMessage();
 
+            walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
+            recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
             recordGrid.Background = gridBackgroundBeforeRecording;
             recordButton.Text = HOLD_AND_TALK;
             cancelRecord.Opacity = 1;
@@ -3868,13 +3875,13 @@ namespace windows_client.View
         private void deleteRecImage_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = false;
-            deleteBorder.Background = UI_Utils.Instance.DeleteBlackBackground;
+            //deleteBorder.Background = UI_Utils.Instance.DeleteBlackBackground;
         }
 
         void deleteRecImage_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = true;
-            deleteBorder.Background = UI_Utils.Instance.DeleteGreyBackground;
+            //deleteBorder.Background = UI_Utils.Instance.DeleteGreyBackground;
         }
 
         void cancelRecord_Tap(object sender, System.Windows.Input.GestureEventArgs e)
