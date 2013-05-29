@@ -92,7 +92,10 @@ namespace windows_client.utils
         public Thickness ReceivedBubbleFileMarginLS = new Thickness(0, 0, 380, 14);
         public Thickness SentBubbleTextMarginLS = new Thickness(250, 12, 0, 10);
         public Thickness SentBubbleFileMarginLS = new Thickness(380, 12, 0, 10);
-
+        BitmapImage walkieTalkieGreyImage;
+        BitmapImage walkieTalkieWhiteImage;
+        SolidColorBrush whiteTextForeGround;
+        SolidColorBrush greyTextForeGround;
         private FontFamily groupChatMessageHeader;
         private FontFamily messageText;
 
@@ -835,7 +838,27 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush GreyTextForeGround
+        {
+            get
+            {
+                if (greyTextForeGround == null)
+                        greyTextForeGround = new SolidColorBrush(Color.FromArgb(255, 104, 104, 104));
+                
+                return greyTextForeGround;
+            }
+        }
 
+        public SolidColorBrush WhiteTextForeGround
+        {
+            get
+            {
+                if (whiteTextForeGround == null)
+                    whiteTextForeGround = new SolidColorBrush(Colors.White);
+
+                return whiteTextForeGround;
+            }
+        }
 
         public FontFamily SemiBoldFont
         {
@@ -901,7 +924,29 @@ namespace windows_client.utils
                 return deleteGreyBackground;
             }
         }
+
+        public BitmapImage WalkieTalkieGreyImage
+        {
+            get
+            {
+                if (walkieTalkieGreyImage == null)
+                    walkieTalkieGreyImage = new BitmapImage(new Uri("/View/images/Walkie_Talkie_Grey_small.png", UriKind.Relative));
+
+                return walkieTalkieGreyImage;
+            }
+        }
         
+        public BitmapImage WalkieTalkieWhiteImage
+        {
+            get
+            {
+                if (walkieTalkieWhiteImage == null)
+                    walkieTalkieWhiteImage = new BitmapImage(new Uri("/View/images/Walkie_Talkie_White_small.png", UriKind.Relative));
+
+                return walkieTalkieWhiteImage;
+            }
+        }
+
         #endregion
 
         #region DEFAULT AVATARS
