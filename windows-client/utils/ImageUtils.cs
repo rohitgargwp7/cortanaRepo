@@ -38,6 +38,8 @@ namespace windows_client.utils
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
         private BitmapImage playIcon;
+        private BitmapImage pauseIcon;
+        private BitmapImage audioMicIcon;
         private BitmapImage downloadIcon;
         private BitmapImage audioAttachmentReceive;
         private BitmapImage audioAttachmentSend;
@@ -447,7 +449,30 @@ namespace windows_client.utils
             {
                 if (playIcon == null)
                     playIcon = new BitmapImage(new Uri("/View/images/play_icon.png", UriKind.Relative));
+
                 return playIcon;
+            }
+        }
+
+        public BitmapImage PauseIcon
+        {
+            get
+            {
+                if (pauseIcon == null)
+                    pauseIcon = new BitmapImage(new Uri("/View/images/pause_icon.png", UriKind.Relative));
+
+                return pauseIcon;
+            }
+        }
+
+        public BitmapImage AudioMicIcon
+        {
+            get
+            {
+                if (audioMicIcon == null)
+                    audioMicIcon = new BitmapImage(new Uri("/View/images/mic_icon.png", UriKind.Relative));
+
+                return audioMicIcon;
             }
         }
 

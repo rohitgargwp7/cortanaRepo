@@ -18,6 +18,7 @@ using windows_client.utils;
 using Coding4Fun.Phone.Controls;
 using Microsoft.Phone.Tasks;
 using System.IO;
+using System.IO.IsolatedStorage;
 using windows_client.Controls;
 using System.Text;
 using Microsoft.Devices;
@@ -45,7 +46,7 @@ namespace windows_client.View
         private readonly string ON_GROUP_TEXT = AppResources.SelectUser_GroupMsg_Txt;
         private readonly string ZERO_CREDITS_MSG = AppResources.SelectUser_ZeroCredits_Txt;
         private readonly string UNBLOCK_USER = AppResources.UnBlock_Txt;
-        private readonly string HOLD_TO_RECORD = AppResources.Hold_To_Record;
+        private readonly string HOLD_AND_TALK = AppResources.Hold_And_Talk;
         private readonly string RELEASE_TO_SEND = AppResources.Release_To_Send;
         private PageOrientation pageOrientation = PageOrientation.Portrait;
 
@@ -115,6 +116,9 @@ namespace windows_client.View
         private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 238, 238, 236));
         private Thickness imgMargin = new Thickness(24, 5, 0, 15);
         private Image emptyImage;
+        MediaElement mediaElement;
+        ConvMessage currentAudioMessage;
+        bool isPlaying = false;
 
         #endregion
 
@@ -198,6 +202,25 @@ namespace windows_client.View
             _progressTimer.Tick += new EventHandler(showWalkieTalkieProgress);
 
             ocMessages = new ObservableCollection<ConvMessage>();
+
+            CompositionTarget.Rendering += (sender, args) =>
+            {
+                if (mediaElement != null && mediaElement.Source != null)
+                {
+                    var pos = mediaElement.Position.TotalSeconds;
+                    var dur = mediaElement.NaturalDuration.TimeSpan.TotalSeconds;
+
+                    if (currentAudioMessage != null && dur != 0)
+                    {
+                        if (pos == dur)
+                            currentAudioMessage.PlayProgressBarValue = 0;
+                        else
+                            currentAudioMessage.PlayProgressBarValue = pos * 100 / dur;
+
+                        currentAudioMessage.PlayTimeText = pos == dur || pos==0 ? "" : mediaElement.Position.ToString("mm\\:ss");
+                    }
+                }
+            };
         }
 
         private void ManagePageStateObjects()
@@ -466,10 +489,26 @@ namespace windows_client.View
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
+
+            if (mediaElement != null)
+            {
+                isPlaying = false;
+                mediaElement.Stop();
+
+                if (currentAudioMessage != null)
+                {
+                    currentAudioMessage.PauseIconVisibility = Visibility.Collapsed;
+                    currentAudioMessage.PlayIconVisibility = Visibility.Visible;
+                    currentAudioMessage.PlayProgressBarValue = 0;
+                    currentAudioMessage = null;
+                }
+            }
+
             if (!string.IsNullOrWhiteSpace(sendMsgTxtbox.Text))
                 this.State["sendMsgTxtbox.Text"] = sendMsgTxtbox.Text;
             else
                 this.State.Remove("sendMsgTxtbox.Text");
+            
             App.IS_TOMBSTONED = false;
         }
 
@@ -479,6 +518,20 @@ namespace windows_client.View
             {
                 base.OnRemovedFromJournal(e);
                 removeListeners();
+
+                if (mediaElement != null)
+                {
+                    isPlaying = false;
+                    mediaElement.Stop();
+
+                    if (currentAudioMessage != null)
+                    {
+                        currentAudioMessage.PauseIconVisibility = Visibility.Collapsed;
+                        currentAudioMessage.PlayIconVisibility = Visibility.Visible;
+                        currentAudioMessage.PlayProgressBarValue = 0;
+                        currentAudioMessage = null;
+                    }
+                }
 
                 try
                 {
@@ -1515,7 +1568,7 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State["objectForFileTransfer"] = fileTapped;
                 NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
             }
-            else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+            else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
             {
                 MediaPlayerLauncher mediaPlayerLauncher = new MediaPlayerLauncher();
                 string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(convMessage.MessageId);
@@ -1532,36 +1585,94 @@ namespace windows_client.View
                     Debug.WriteLine("NewChatThread.xaml ::  displayAttachment ,Ausio video , Exception : " + ex.StackTrace);
                 }
             }
-            else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+            else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
             {
-                try
+                string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(convMessage.MessageId);
+
+                if (mediaElement != null)
                 {
-                    JObject metadataFromConvMessage = JObject.Parse(convMessage.MetaDataString);
-                    JToken tempFileArrayToken;
-                    JObject locationJSON;
-                    if (metadataFromConvMessage.TryGetValue("files", out tempFileArrayToken) && tempFileArrayToken != null)
+                    if (mediaElement.Source != null)
                     {
-                        JArray tempFilesArray = tempFileArrayToken.ToObject<JArray>();
-                        locationJSON = tempFilesArray[0].ToObject<JObject>();
+                        if (mediaElement.Source.OriginalString.Contains(fileLocation))
+                        {
+                            if (currentAudioMessage != null)
+                            {
+                                if (isPlaying)
+                                {
+                                    currentAudioMessage.PauseIconVisibility = Visibility.Collapsed;
+                                    currentAudioMessage.PlayIconVisibility = Visibility.Visible;
+                                    isPlaying = false;
+                                    mediaElement.Pause();
+
+                                }
+                                else
+                                {
+                                    currentAudioMessage.PauseIconVisibility = Visibility.Visible;
+                                    currentAudioMessage.PlayIconVisibility = Visibility.Collapsed;
+                                    isPlaying = true;
+                                    mediaElement.Play();
+                                }
+                            }
+                            else
+                            {
+                                currentAudioMessage = convMessage;
+                                currentAudioMessage.PauseIconVisibility = Visibility.Visible;
+                                currentAudioMessage.PlayIconVisibility = Visibility.Collapsed;
+                                isPlaying = true;
+                                mediaElement.Play();
+                            }
+
+                            return;
+                        }
+                        else
+                        {
+                            mediaElement.Source = null;
+
+                            if (currentAudioMessage != null)
+                            {
+                                currentAudioMessage.PauseIconVisibility = Visibility.Collapsed;
+                                currentAudioMessage.PlayIconVisibility = Visibility.Visible;
+                                currentAudioMessage.PlayProgressBarValue = 0;
+                                currentAudioMessage = null;
+                            }
+
+                            currentAudioMessage = convMessage;
+                            isPlaying = false;
+                            mediaElement.Stop();
+                        }
                     }
-                    else
-                    {
-                        locationJSON = JObject.Parse(convMessage.MetaDataString);
-                    }
-                    if (this.bingMapsTask == null)
-                        bingMapsTask = new BingMapsTask();
-                    double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
-                    double longitude = Convert.ToDouble(locationJSON[HikeConstants.LONGITUDE].ToString());
-                    double zoomLevel = Convert.ToDouble(locationJSON[HikeConstants.ZOOM_LEVEL].ToString());
-                    bingMapsTask.Center = new GeoCoordinate(latitude, longitude);
-                    bingMapsTask.ZoomLevel = zoomLevel;
-                    bingMapsTask.Show();
                 }
-                catch (Exception ex) //Code should never reach here
+                else
                 {
-                    Debug.WriteLine("NewChatTHread :: DisplayAttachment :: Exception while parsing lacation parameters" + ex.StackTrace);
+                    mediaElement = new MediaElement();
+                    currentAudioMessage = convMessage;
+                    LayoutRoot.Children.Add(mediaElement);
                 }
-                return;
+
+                using (var store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (store.FileExists(fileLocation))
+                    {
+                        using (var isfs = new IsolatedStorageFileStream(fileLocation, FileMode.Open, store))
+                        {
+                            this.mediaElement.SetSource(isfs);
+                        }
+                    }
+                }
+
+                mediaElement.Position = new TimeSpan(0, 0, 0, 0);
+                
+                if (currentAudioMessage != null)
+                {
+                    currentAudioMessage.PauseIconVisibility = Visibility.Visible;
+                    currentAudioMessage.PlayIconVisibility = Visibility.Collapsed;
+                    currentAudioMessage.PlayProgressBarValue = 0;
+                }
+
+                isPlaying = true;
+                mediaElement.Play();
+                mediaElement.MediaEnded += mediaPlayback_MediaEnded;
+                mediaElement.MediaFailed += mediaPlayback_MediaFailed;
             }
             else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
             {
@@ -1570,6 +1681,33 @@ namespace windows_client.View
                 SaveContactTask sct = con.GetSaveCotactTask();
                 sct.Show();
             }
+        }
+
+        void mediaPlayback_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            if (currentAudioMessage != null)
+            {
+                currentAudioMessage.PauseIconVisibility = Visibility.Collapsed;
+                currentAudioMessage.PlayIconVisibility = Visibility.Visible;
+                currentAudioMessage.PlayProgressBarValue = 0;
+                currentAudioMessage = null;
+            }
+
+            isPlaying = false;
+        }
+
+        void mediaPlayback_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            if (currentAudioMessage != null)
+            {
+                currentAudioMessage.PauseIconVisibility = Visibility.Collapsed;
+                currentAudioMessage.PlayIconVisibility = Visibility.Visible;
+                currentAudioMessage.PlayProgressBarValue = 0;
+                currentAudioMessage = null;
+            }
+
+            isPlaying = false;
+            mediaElement.Stop();
         }
 
         private void AddNewMessageToUI(ConvMessage convMessage, bool insertAtTop)
@@ -3670,7 +3808,7 @@ namespace windows_client.View
                 (this.ApplicationBar.Buttons[0] as ApplicationBarIconButton).IsEnabled = false;
 
             recordGrid.Background = gridBackgroundBeforeRecording;
-            recordButton.Text = HOLD_TO_RECORD;
+            recordButton.Text = HOLD_AND_TALK;
         }
 
         void Hold_To_Record(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3688,6 +3826,15 @@ namespace windows_client.View
             if (_isWalkieTalkieMessgeDelete)
             {
                 _isWalkieTalkieMessgeDelete = false;
+
+                stopWalkieTalkieRecording();
+                _recorderState = RecorderState.NOTHING_RECORDED;
+
+                cancelRecord.Opacity = 1;
+                WalkieTalkieGrid.Visibility = Visibility.Collapsed;
+                recordButton.Text = HOLD_AND_TALK;
+                recordGrid.Background = gridBackgroundBeforeRecording;
+
                 return;
             }
 
@@ -3697,22 +3844,18 @@ namespace windows_client.View
             sendWalkieTalkieMessage();
 
             recordGrid.Background = gridBackgroundBeforeRecording;
-            recordButton.Text = HOLD_TO_RECORD;
+            recordButton.Text = HOLD_AND_TALK;
             cancelRecord.Opacity = 1;
         }
 
+        private void deleteRecImage_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            _isWalkieTalkieMessgeDelete = false;
+        }
 
         void deleteRecImage_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = true;
-
-            stopWalkieTalkieRecording();
-            _recorderState = RecorderState.NOTHING_RECORDED;
-
-            cancelRecord.Opacity = 1; 
-            WalkieTalkieGrid.Visibility = Visibility.Collapsed;
-            recordButton.Text = HOLD_TO_RECORD;
-            recordGrid.Background = gridBackgroundBeforeRecording;
         }
 
         void cancelRecord_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3909,7 +4052,6 @@ namespace windows_client.View
         private RecorderState _recorderState = RecorderState.NOTHING_RECORDED;
 
         #endregion
-    
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector
@@ -3926,6 +4068,8 @@ namespace windows_client.View
                         return App.newChatThreadPage.dtSentBubbleNudge;
                     else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                         return App.newChatThreadPage.dtSentBubbleContact;
+                    else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                        return App.newChatThreadPage.dtSentBubbleAudioFile;
                     else if (convMesssage.FileAttachment != null)
                         return App.newChatThreadPage.dtSentBubbleFile;
                     else
@@ -3937,6 +4081,8 @@ namespace windows_client.View
                         return App.newChatThreadPage.dtRecievedBubbleNudge;
                     else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                         return App.newChatThreadPage.dtRecievedBubbleContact;
+                    else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                        return App.newChatThreadPage.dtRecievedBubbleAudioFile;
                     else if (convMesssage.FileAttachment != null)
                         return App.newChatThreadPage.dtRecievedBubbleFile;
                     else

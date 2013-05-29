@@ -506,16 +506,31 @@ namespace windows_client.Model
             }
         }
 
+        Visibility _playIconVisibility = Visibility.Visible;
         public Visibility PlayIconVisibility
         {
             get
             {
                 if (_fileAttachment != null && ((_fileAttachment.FileState == Attachment.AttachmentState.CANCELED || _fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
-                    || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO) || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
+                    || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO)))
                 {
                     return Visibility.Visible;
                 }
-                return Visibility.Collapsed;
+                else if (_fileAttachment != null && ((_fileAttachment.FileState == Attachment.AttachmentState.COMPLETED || _fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
+                    || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
+                {
+                    return _playIconVisibility;
+                }
+                else
+                    return Visibility.Collapsed;
+            }
+            set
+            {
+                if (_playIconVisibility != value)
+                {
+                    _playIconVisibility = value;
+                    NotifyPropertyChanged("PlayIconVisibility");
+                }
             }
         }
 
@@ -527,6 +542,82 @@ namespace windows_client.Model
                     return UI_Utils.Instance.DownloadIcon;
                 else
                     return UI_Utils.Instance.PlayIcon;
+            }
+        }
+
+        public BitmapImage AudioMicIconImage
+        {
+            get
+            {
+                return UI_Utils.Instance.AudioMicIcon;
+            }
+        }
+
+        Visibility _pauseIconVisibility = Visibility.Collapsed;
+        public Visibility PauseIconVisibility
+        {
+            get
+            {
+                return _pauseIconVisibility;
+            }
+            set
+            {
+                if (_pauseIconVisibility != value)
+                {
+                    _pauseIconVisibility = value;
+                    NotifyPropertyChanged("PauseIconVisibility");
+                }
+            }
+        }
+
+        public BitmapImage PauseIconImage
+        {
+            get
+            {
+                return UI_Utils.Instance.PauseIcon;
+            }
+        }
+
+        string _playTimeText;
+        public String PlayTimeText
+        {
+            get
+            {
+                return _playTimeText;
+            }
+            set
+            {
+                if (_playTimeText != value)
+                {
+                    _playTimeText = value;
+                    NotifyPropertyChanged("PlayTimeText");
+                }
+            }
+        }
+
+        double _playProgressBarValue = 0;
+        public double PlayProgressBarValue
+        {
+            set
+            {
+                _playProgressBarValue = value;
+                if (_playProgressBarValue >= 100)
+                {
+                    PlayIconVisibility = Visibility.Visible;
+                    PauseIconVisibility = Visibility.Collapsed;
+                    _playProgressBarValue = 0;
+                }
+
+                if (_playProgressBarValue == 0)
+                    PlayTimeText = "";
+
+                Debug.WriteLine(_playProgressBarValue);
+
+                NotifyPropertyChanged("PlayProgressBarValue");
+            }
+            get
+            {
+                return _playProgressBarValue;
             }
         }
 

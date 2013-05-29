@@ -1842,11 +1842,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hold to record.
+        ///   Looks up a localized string similar to Hold and talk.
         /// </summary>
-        public static string Hold_To_Record {
+        public static string Hold_And_Talk {
             get {
-                return ResourceManager.GetString("Hold_To_Record", resourceCulture);
+                return ResourceManager.GetString("Hold_And_Talk", resourceCulture);
             }
         }
         
