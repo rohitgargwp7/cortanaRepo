@@ -1327,18 +1327,6 @@ Get hike: http://get.hike.in</value>
   <data name="Help_System_Health_Title" xml:space="preserve">
     <value>System Health</value>
   </data>
-  <data name="Nux_CloseFriendsConnect_txt" xml:space="preserve">
-    <value>Send your friends a Free SMS invite.</value>
-  </data>
-  <data name="Nux_FamilyMembersConnect_txt" xml:space="preserve">
-    <value>Send your family members a Free SMS invite. </value>
-  </data>
-  <data name="Nux_InviteFamily_Txt" xml:space="preserve">
-    <value>INVITE FAMILY</value>
-  </data>
-  <data name="Nux_InviteFriends_Txt" xml:space="preserve">
-    <value>INVITE FRIENDS</value>
-  </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
     <value>Contact Info</value>
   </data>
@@ -1427,9 +1415,6 @@ Get hike: http://get.hike.in</value>
   <data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
     <value>Message {0} on Hike</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
-  </data>
-  <data name="Nux_Skip_btnTxt" xml:space="preserve">
-    <value>Skip</value>
   </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
     <value>{0} has added you as a friend.</value>
@@ -1548,9 +1533,6 @@ Get hike: http://get.hike.in</value>
   <data name="Mood_Angry" xml:space="preserve">
     <value>Angry </value>
   </data>
-  <data name="Mood_Bangalore" xml:space="preserve">
-    <value>Bangalore</value>
-  </data>
   <data name="Mood_Boozing" xml:space="preserve">
     <value>Boozing </value>
   </data>
@@ -1560,9 +1542,6 @@ Get hike: http://get.hike.in</value>
   <data name="Mood_Caffeinated" xml:space="preserve">
     <value>Caffeinated </value>
   </data>
-  <data name="Mood_Chennai" xml:space="preserve">
-    <value>Chennai</value>
-  </data>
   <data name="Mood_Chilling" xml:space="preserve">
     <value>Chilling </value>
   </data>
@@ -1571,9 +1550,6 @@ Get hike: http://get.hike.in</value>
   </data>
   <data name="Mood_Confused" xml:space="preserve">
     <value>Confused </value>
-  </data>
-  <data name="Mood_Delhi" xml:space="preserve">
-    <value>Delhi</value>
   </data>
   <data name="Mood_Driving" xml:space="preserve">
     <value>Driving </value>
@@ -1587,9 +1563,6 @@ Get hike: http://get.hike.in</value>
   <data name="Mood_Hungover" xml:space="preserve">
     <value>Hungover </value>
   </data>
-  <data name="Mood_Hyderabad" xml:space="preserve">
-    <value>Hyderabad</value>
-  </data>
   <data name="Mood_Insomniac" xml:space="preserve">
     <value>Insomniac </value>
   </data>
@@ -1599,26 +1572,11 @@ Get hike: http://get.hike.in</value>
   <data name="Mood_In_love" xml:space="preserve">
     <value>In love </value>
   </data>
-  <data name="Mood_Kolkata" xml:space="preserve">
-    <value>Kolkata</value>
-  </data>
   <data name="Mood_Love_it" xml:space="preserve">
     <value>Love it </value>
   </data>
   <data name="Mood_Middle_finger" xml:space="preserve">
     <value>Middle finger </value>
-  </data>
-  <data name="Mood_Mumbai" xml:space="preserve">
-    <value>Mumbai</value>
-  </data>
-  <data name="Mood_Pune" xml:space="preserve">
-    <value>Pune</value>
-  </data>
-  <data name="Mood_Punjab" xml:space="preserve">
-    <value>Punjab</value>
-  </data>
-  <data name="Mood_Rajasthan" xml:space="preserve">
-    <value>Rajasthan</value>
   </data>
   <data name="Mood_Running_late" xml:space="preserve">
     <value>Running late </value>

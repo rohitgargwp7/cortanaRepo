@@ -1320,18 +1320,6 @@
   <data name="Help_System_Health_Title" xml:space="preserve">
     <value>Systemintegrität</value>
   </data>
-  <data name="Nux_CloseFriendsConnect_txt" xml:space="preserve">
-    <value>Sende deinen Freunden eine Frei-SMS-Einladung.</value>
-  </data>
-  <data name="Nux_FamilyMembersConnect_txt" xml:space="preserve">
-    <value>Sende deiner Familie eine Frei-SMS-Einladung. </value>
-  </data>
-  <data name="Nux_InviteFamily_Txt" xml:space="preserve">
-    <value>FAMILIE EINLADEN</value>
-  </data>
-  <data name="Nux_InviteFriends_Txt" xml:space="preserve">
-    <value>FREUNDE EINLADEN</value>
-  </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
     <value>Kontaktinfos</value>
   </data>
@@ -1420,9 +1408,6 @@
   <data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
     <value>Schreibe {0} bei Hike</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
-  </data>
-  <data name="Nux_Skip_btnTxt" xml:space="preserve">
-    <value>Überspringen</value>
   </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
     <value>{0} hat dich als Freund hinzugefügt.</value>
