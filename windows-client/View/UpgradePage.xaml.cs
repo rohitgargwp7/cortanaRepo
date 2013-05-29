@@ -29,35 +29,8 @@ namespace windows_client.View
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (a, b) =>
             {
-                //in case of upgrade if 10 hike users then skip NUX
-                if (UsersTableUtils.GetAllHikeContactsCount() < 10 && UsersTableUtils.GetAllNonHikeContactsCount() > 2)
-                {
-                    if (listContactInfo == null)
-                    {
-                        ContactUtils.getContacts(contactSearchCompletedForNux_Callback);
-                        int count = 0;
-                        while (listContactInfo == null && count < 120000)//wait for 2 mins
-                        {
-                            count += 2;
-                            Thread.Sleep(2);
-                        }
-                    }
-                    if (listContactInfo != null)
-                    {
-                        navigateTo = "/View/NUX_InviteFriends.xaml";
-                        App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN_FRIENDS);
-                    }
-                    else
-                    {
-                        navigateTo = "/View/ConversationsList.xaml";
-                        App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
-                    }
-                }
-                else
-                {
-                    navigateTo = "/View/ConversationsList.xaml";
-                    App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
-                }
+                navigateTo = "/View/ConversationsList.xaml";
+                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
                 Thread.Sleep(2000);//added so that this shows at least for 2 sec
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, 1);
             };
@@ -68,11 +41,6 @@ namespace windows_client.View
                 progressBar.IsEnabled = false;
                 NavigationService.Navigate(new Uri(navigateTo, UriKind.Relative));
             };
-        }
-
-        public static void contactSearchCompletedForNux_Callback(object sender, ContactsSearchEventArgs e)
-        {
-            ContactUtils.getContactsListMapInitial(e.Results, out listContactInfo);
         }
     }
 }

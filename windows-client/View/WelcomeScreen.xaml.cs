@@ -51,17 +51,9 @@ namespace windows_client.View
         public void OnNextClick(object sender, EventArgs e)
         {
             SmileyParser.Instance.initializeSmileyParser();
-            if (App.appSettings.Contains("showNux"))
-            {
-                App.appSettings.Remove("showNux");
-                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN_FRIENDS);
-                NavigationService.Navigate(new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative));
-            }
-            else
-            {
-                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
-                NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
-            }
+
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+            NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
         }
     }
 }

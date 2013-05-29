@@ -58,32 +58,6 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static int GetAllHikeContactsCount()
-        {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
-            {
-                int res;
-                try
-                {
-                    res = DbCompiledQueries.GetAllHikeContacts(context).Count();
-                }
-                catch (Exception)
-                {
-                    res = 0;
-                }
-                return res;
-            }
-        }
-
-        public static int GetAllNonHikeContactsCount()
-        {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
-            {
-                var users = from user in context.users where user.OnHike == false select user;
-                return users.Count();
-            }
-        }
-
         public static List<ContactInfo> GetAllHikeContacts()
         {
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
@@ -318,110 +292,7 @@ namespace windows_client.DbUtils
             context.SubmitChanges(ConflictMode.FailOnFirstConflict);
         }
 
-        public static void SaveContactsToFile(List<ContactInfo> listContacts)
-        {
-            Stopwatch st = Stopwatch.StartNew();
-            if (listContacts != null && listContacts.Count > 0)
-            {
-                lock (readWriteLock)
-                {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
-                    {
-                        string fileName = CONTACTS_FILENAME;
-                        try
-                        {
-                            if (store.FileExists(fileName))
-                                store.DeleteFile(fileName);
-                        }
-                        catch { }
-                        try
-                        {
-                            using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
-                            {
-                                using (BinaryWriter writer = new BinaryWriter(file))
-                                {
-                                    writer.Seek(0, SeekOrigin.Begin);
 
-                                    writer.Write(listContacts.Count);
-                                    foreach (ContactInfo item in listContacts)
-                                    {
-                                        item.Write(writer);
-                                    }
-                                    writer.Flush();
-                                    writer.Close();
-                                }
-                                file.Close();
-                                file.Dispose();
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.WriteLine("Exception while writing file : " + e.StackTrace);
-                        }
-                    }
-                }
-            }
-            st.Stop();
-            Debug.WriteLine("Time to save {0} contacts in file is {1} ms", listContacts.Count, st.ElapsedMilliseconds);
-        }
 
-        public static List<ContactInfo> GetContactsFromFile()
-        {
-            List<ContactInfo> listContacts = null;
-            lock (readWriteLock)
-            {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
-                {
-                    try
-                    {
-                        if (store.FileExists(CONTACTS_FILENAME))
-                        {
-                            listContacts = new List<ContactInfo>();
-                            using (var file = store.OpenFile(CONTACTS_FILENAME, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                            {
-                                using (BinaryReader reader = new BinaryReader(file))
-                                {
-                                    int count = reader.ReadInt32();
-                                    for (int i = 0; i < count; i++)
-                                    {
-                                        ContactInfo contact = new ContactInfo();
-                                        contact.Read(reader);
-                                        listContacts.Add(contact);
-                                    }
-                                    reader.Close();
-                                }
-                                file.Close();
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine("Exception while reading file : " + e.StackTrace);
-                    }
-                }
-            }
-            return listContacts;
-        }
-
-        public static void DeleteContactsFile()
-        {
-            lock (readWriteLock)
-            {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
-                {
-                    try
-                    {
-                        if (store.FileExists(CONTACTS_FILENAME))
-                        {
-                            store.DeleteFile(CONTACTS_FILENAME);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("Error while deleting contacts :" + ex.StackTrace);
-                    }
-                }
-            }
-        }
     }
 }
