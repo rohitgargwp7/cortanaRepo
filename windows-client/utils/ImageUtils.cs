@@ -34,6 +34,8 @@ namespace windows_client.utils
         private SolidColorBrush receivedChatBubbleProgress;
         private SolidColorBrush phoneThemeColor;
         private SolidColorBrush statusTextForeground;
+        private SolidColorBrush tappedCategoryColor;
+        private SolidColorBrush untappedCategoryColor;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
@@ -71,6 +73,7 @@ namespace windows_client.utils
         private BitmapImage userProfileLockImage;
         private BitmapImage userProfileInviteImage;
         private BitmapImage userProfileStockImage;
+        private BitmapImage loadingImage;
 
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
@@ -411,6 +414,24 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush TappedCategoryColor
+        {
+            get
+            {
+                if (tappedCategoryColor == null)
+                    tappedCategoryColor = new SolidColorBrush(Color.FromArgb(255, 0x1b, 0xa1, 0xe2));
+                return tappedCategoryColor;
+            }
+        }
+        public SolidColorBrush UntappedCategoryColor
+        {
+            get
+            {
+                if (untappedCategoryColor == null)
+                    untappedCategoryColor = new SolidColorBrush(Color.FromArgb(255, 0x4d, 0x4d, 0x4d));
+                return untappedCategoryColor;
+            }
+        }
         public BitmapImage OnHikeImage
         {
             get
@@ -804,6 +825,16 @@ namespace windows_client.utils
                 return userProfileStockImage;
             }
         }
+
+        public BitmapImage StickerLoadingImage
+        {
+            get
+            {
+                if (loadingImage == null)
+                    loadingImage = new BitmapImage(new Uri("/View/images/loading.jpg", UriKind.Relative));
+                return loadingImage;
+            }
+        }
         public SolidColorBrush ReceiveMessageForeground
         {
             get
@@ -970,6 +1001,28 @@ namespace windows_client.utils
             }
         }
 
+        public byte[] PngImgToJpegByteArray(BitmapImage image)
+        {
+            try
+            {
+                WriteableBitmap writeableBitmap = new WriteableBitmap(image);
+                WriteableBitmap mergedBItmpapImage = new WriteableBitmap(writeableBitmap.PixelWidth, writeableBitmap.PixelHeight); //size of mergedBItmpapImage canvas
+                double aspectratio = writeableBitmap.PixelHeight / writeableBitmap.PixelWidth;
+                mergedBItmpapImage.Clear(Color.FromArgb(255, 0x31, 0x33, 0x34));
+                Rect rec = new Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight);
+                mergedBItmpapImage.Blit(rec, writeableBitmap, rec);
+                using (var msLargeImage = new MemoryStream())
+                {
+                    mergedBItmpapImage.SaveJpeg(msLargeImage, Convert.ToInt32(140 * aspectratio), 140, 0, 100);
+                    return msLargeImage.ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ImageUtils ::  BitmapImgToByteArray :  BitmapImgToByteArray , Exception : " + ex.StackTrace);
+                return null;
+            }
+        }
         public BitmapImage createImageFromBytes(byte[] imagebytes)
         {
             if (imagebytes == null || imagebytes.Length == 0)

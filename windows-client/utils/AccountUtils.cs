@@ -318,13 +318,22 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_STATUS, statusJSON, finalCallbackFunction });
         }
 
-        public static void GetStickers(JObject stickerJson, postResponseFunction finalCallBackFunc)
+        public static void GetStickers(JObject stickerJson, parametrisedPostResponseFunction finalCallBackFunc, Object obj)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/stickers")) as HttpWebRequest;
             addToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_STATUS, stickerJson, finalCallBackFunc });
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.GET_STICKERS, stickerJson, finalCallBackFunc, obj });
+        }
+        public static void GetSingleSticker(Sticker sticker, parametrisedPostResponseFunction finalCallBackFunc)
+        {
+            string requestUrl = string.Format("{0}/stickers?catId={1}&stId={2}", BASE, sticker.Category, sticker.Id);
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(requestUrl)) as HttpWebRequest;
+            addToken(req);
+            req.Method = "GET";
+            //req.ContentType = "application/json";
+            req.BeginGetResponse(GetRequestCallback, new object[] { req, finalCallBackFunc, sticker });
         }
 
         public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction, string socialNetowrk, bool isPost)
@@ -350,9 +359,9 @@ namespace windows_client.utils
             JObject data = new JObject();
             HttpWebRequest req = vars[0] as HttpWebRequest;
             Stream postStream = req.EndGetRequestStream(result);
-            postResponseFunction finalCallbackFunction = null;
+            Object finalCallbackFunction = null;
             RequestType type = (RequestType)vars[1];
-
+            Object obj = new object();
             switch (type)
             {
                 #region REGISTER ACCOUNT
@@ -522,7 +531,8 @@ namespace windows_client.utils
                 #region GET STICKERS
                 case RequestType.GET_STICKERS:
                     data = vars[2] as JObject;
-                    finalCallbackFunction = vars[3] as postResponseFunction;
+                    finalCallbackFunction = vars[3] ;
+                    obj = vars[4];
                     break;
                 #endregion
                 #region DEFAULT
@@ -537,7 +547,7 @@ namespace windows_client.utils
                 sw.Write(json);
             }
             postStream.Close();
-            req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
+            req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction, obj });
         }
 
         public static void GetOnhikeDate(string msisdn, postResponseFunction finalCallbackFunction)
@@ -591,7 +601,7 @@ namespace windows_client.utils
                     }
                     else
                     {
-                        if (vars[1] is postResponseFunction)
+                        if (vars[1] is postResponseFunction || vars[1] is parametrisedPostResponseFunction)
                         {
                             using (var reader = new StreamReader(responseStream))
                             {
@@ -636,6 +646,11 @@ namespace windows_client.utils
                     {
                         downloadFile downloadFileCallback = vars[1] as downloadFile;
                         downloadFileCallback(fileBytes, vars[2] as object);
+                    }
+                    else if (vars[1] is parametrisedPostResponseFunction)
+                    {
+                        parametrisedPostResponseFunction parametrisedCallBack = vars[1] as parametrisedPostResponseFunction;
+                        parametrisedCallBack(jObject, vars[2]);
                     }
                 }
             }
@@ -853,8 +868,7 @@ namespace windows_client.utils
                 else if (vars[2] is parametrisedPostResponseFunction)
                 {
                     parametrisedPostResponseFunction finalCallbackFunctionForStatus = vars[2] as parametrisedPostResponseFunction;
-                    StatusUpdateBox sb = vars[3] as StatusUpdateBox;
-                    finalCallbackFunctionForStatus(obj, sb);
+                    finalCallbackFunctionForStatus(obj, vars[3]);
                 }
             }
         }

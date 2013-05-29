@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace windows_client.utils
@@ -11,59 +14,55 @@ namespace windows_client.utils
 
     public class StickerHelper
     {
-        public const string CATEGORY_1 = "category1";
-        public const string CATEGORY_2 = "Expressions";
-        public const string CATEGORY_3 = "Expressions";
-        public const string CATEGORY_4 = "Expressions";
-        public const string CATEGORY_5 = "Expressions";
-        private string[] stickers = new string[]
+        public static readonly string CATEGORY_1 = "category1";
+        public static readonly string CATEGORY_2 = "Expressions";
+        public static readonly string CATEGORY_3 = "Expressions";
+        public static readonly string CATEGORY_4 = "Expressions";
+        public static readonly string CATEGORY_5 = "Expressions";
+        private static readonly int cate1Stickers = 13;
+        private string[,] stickers = new string[,]
         {
-            "/View/images/stickers/BRB.png", 
-            "/View/images/stickers/Callme.png",
-            "/View/images/stickers/Gift-box.png",
-            "/View/images/stickers/GM.png",
-            "/View/images/stickers/GTG.png",
-            "/View/images/stickers/Kitty.png",
-            "/View/images/stickers/Kitty1.png",
-            "/View/images/stickers/Kitty2.png",
-            "/View/images/stickers/Kitty4.png",
-            "/View/images/stickers/LMAO.png",
-            "/View/images/stickers/LOL.png",
-            "/View/images/stickers/OMG.png",
-            "/View/images/stickers/yum.png"
+        {"100.png",                 "/View/images/stickers/100.png"     }        ,
+        {"200.png",              "/View/images/stickers/200.png"  }        ,
+        {"xoxo.png",            "/View/images/stickers/xoxo.png"   }     ,
+        {"GM.png",                   "/View/images/stickers/GM.png"      }       ,
+        {"GTG.png",                "/View/images/stickers/GTG.png"       }       ,
+        {"Kitty.png",              "/View/images/stickers/Kitty.png"      }      ,
+        {"Kitty1.png",             "/View/images/stickers/Kitty1.png"     }      ,
+        {"Kitty2.png",             "/View/images/stickers/Kitty2.png"      }     ,
+        {"Kitty4.png",             "/View/images/stickers/Kitty4.png"      }     ,
+        {"LMAO.png",               "/View/images/stickers/LMAO.png"       }      ,
+        {"LOL.png",               "/View/images/stickers/LOL.png"         }      ,
+        {"OMG.png",                 "/View/images/stickers/OMG.png"        }     ,
+        {"yum.png",                  "/View/images/stickers/yum.png"         }    
         };
+
         private bool _isInitialised;
         private Dictionary<string, StickerCategory> dictStickers;
-        public Dictionary<string, BitmapImage> dictStickerImages;
 
-
-        public void InitialiseStickers()
+        //call from background
+        public void InitialiseLowResStickers()
         {
             try
             {
                 if (!_isInitialised)
                 {
                     dictStickers = new Dictionary<string, StickerCategory>();
-                    dictStickerImages = new Dictionary<string, BitmapImage>();
                     StickerCategory category1Stickers = new StickerCategory(CATEGORY_1, false);
-                    for (int i = 0; i < stickers.Length; i++)
-                    {
-                        BitmapImage bitmap = new BitmapImage();
-                        bitmap.CreateOptions = BitmapCreateOptions.BackgroundCreation;
-                        bitmap.UriSource = new Uri(stickers[i], UriKind.Relative);
-                        Sticker sticker = new Sticker("category1", i + 1, bitmap);
-                        category1Stickers.dictStickers[sticker.Id] = sticker;
-                        dictStickerImages[sticker.StickerId] = bitmap;
-                    }
-                    dictStickers[category1Stickers.Category] = category1Stickers;
-
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            for (int i = 0; i < cate1Stickers; i++)
+                            {
+                                BitmapImage bitmap = new BitmapImage();
+                                bitmap.CreateOptions = BitmapCreateOptions.BackgroundCreation;
+                                bitmap.UriSource = new Uri(stickers[i, 1], UriKind.Relative);
+                                Sticker sticker = new Sticker(category1Stickers.Category, stickers[i, 0], bitmap);
+                                category1Stickers.dictStickers[sticker.Id] = sticker;
+                            }
+                            dictStickers[category1Stickers.Category] = category1Stickers;
+                        });
                     StickerCategory category2Stickers = new StickerCategory(CATEGORY_2);
                     category2Stickers.CreateFromFile();
-                    foreach (int id in category2Stickers.dictStickers.Keys)
-                    {
-                        Sticker sticker = category2Stickers.dictStickers[id];
-                        dictStickerImages[sticker.StickerId] = sticker.StickerImage;
-                    }
                     dictStickers[category2Stickers.Category] = category2Stickers;
 
                     //do same for all categories
@@ -76,15 +75,11 @@ namespace windows_client.utils
             }
         }
 
-
         public StickerCategory GetStickersByCategory(string category)
         {
             if (String.IsNullOrEmpty(category))
                 return null;
-            if (!_isInitialised)
-            {
-                InitialiseStickers();
-            }
+
             if (dictStickers.ContainsKey(category))
             {
                 return dictStickers[category];
@@ -93,45 +88,23 @@ namespace windows_client.utils
             return null;
         }
 
-        public BitmapImage GetStickerImageById(string stickerId)
-        {
-            BitmapImage stickerImage;
-            if (_isInitialised)
-            {
-                InitialiseStickers();
-            }
-            if (!string.IsNullOrEmpty(stickerId) && dictStickerImages.TryGetValue(stickerId, out stickerImage))
-            {
-                return stickerImage;
-            }
-            return null;
-        }
     }
 
     public class Sticker
     {
-        private int _id;
+        private string _id;
         private string _category;
-        private string _stickerId;
         private BitmapImage _stickerImage;
 
-        public Sticker(string category, int id, BitmapImage stickerImage)
+        public Sticker(string category, string id, BitmapImage stickerImage)
         {
             this._category = category;
             this._id = id;
-            this._stickerId = string.Format("{0}_{1}", category, id);
             this._stickerImage = stickerImage;
         }
 
-        public string StickerId
-        {
-            get
-            {
-                return _stickerId;
-            }
-        }
 
-        public int Id
+        public string Id
         {
             get
             {
@@ -152,6 +125,10 @@ namespace windows_client.utils
             get
             {
                 return _stickerImage;
+            }
+            set
+            {
+                _stickerImage = value;
             }
         }
     }

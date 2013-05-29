@@ -38,7 +38,7 @@ namespace windows_client.Model
         private string metadataJsonString;
         private ParticipantInfoState participantInfoState;
         private Attachment _fileAttachment = null;
-        private string _stickerId;
+        private Sticker _stickerObj;
         // private bool _hasFileAttachment = false;
         private bool _hasAttachment = false;
 
@@ -398,24 +398,18 @@ namespace windows_client.Model
             }
         }
 
-        public string StickerId
+        public Sticker StickerObj
         {
             set
             {
-                _stickerId = value;
-                metadataJsonString = string.Format("{{{0}:'{1}'}}", HikeConstants.STICKER_ID, value);
+                if (value != null)
+                {
+                    _stickerObj = value;
+                }
             }
             get
             {
-                if (_stickerId == null)
-                {
-                    if (!string.IsNullOrEmpty(this.MetaDataString) && this.MetaDataString.Contains(HikeConstants.STICKER_ID))
-                    {
-                        JObject jsonSticker = JObject.Parse(this.MetaDataString);
-                        _stickerId = (string)jsonSticker[HikeConstants.STICKER_ID];
-                    }
-                }
-                return _stickerId;
+                return _stickerObj;
             }
         }
         public ParticipantInfoState GrpParticipantState
@@ -511,10 +505,12 @@ namespace windows_client.Model
         {
             get
             {
-                if (!string.IsNullOrEmpty(_stickerId))
+                if (_stickerObj != null)
                 {
-                    BitmapImage stickerImage = App.stickerHelper.GetStickerImageById(_stickerId);
-                    return stickerImage;//todo:if null return loading image
+                    if (_stickerObj.StickerImage != null)
+                        return _stickerObj.StickerImage;//todo:if null return loading image
+                    else
+                        return UI_Utils.Instance.StickerLoadingImage ;
                 }
 
                 if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
@@ -800,14 +796,18 @@ namespace windows_client.Model
                 {
                     if (IsSent)
                     {
-                        if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                        if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
+                            return UI_Utils.Instance.SentBubbleFileMarginLS;
+                        else if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
                             return UI_Utils.Instance.SentBubbleTextMarginLS;
                         else
                             return UI_Utils.Instance.SentBubbleFileMarginLS;
                     }
                     else
                     {
-                        if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                        if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
+                            return UI_Utils.Instance.ReceivedBubbleFileMarginLS;
+                        else if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
                             return UI_Utils.Instance.RecievedBubbleTextMarginLS;
                         else
                             return UI_Utils.Instance.ReceivedBubbleFileMarginLS;
@@ -817,13 +817,17 @@ namespace windows_client.Model
                 {
                     if (IsSent)
                     {
-                        if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                        if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
+                            return UI_Utils.Instance.SentBubbleFileMarginPortrait;
+                        else if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
                             return UI_Utils.Instance.SentBubbleTextMarginPortrait;
                         else
                             return UI_Utils.Instance.SentBubbleFileMarginPortrait;
                     }
                     else
                     {
+                        if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
+                            return UI_Utils.Instance.ReceivedBubbleFileMarginPortrait;
                         if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
                             return UI_Utils.Instance.RecMessageBubbleTextMarginPortrait;
                         else
@@ -942,18 +946,14 @@ namespace windows_client.Model
             {
                 data["poke"] = true;
             }
-            else if (!string.IsNullOrEmpty(StickerId))
+            else if (metadataJsonString != null && metadataJsonString.Contains(HikeConstants.STICKER_ID))
             {
-                string[] stickers = _stickerId.Split('_');
-
-                JObject jobj = new JObject();
-                jobj[HikeConstants.CATEGORY_ID] = stickers[0];
-                jobj[HikeConstants.STICKER_ID] = stickers[1];
-                data["md"] = jobj;
+                data[HikeConstants.METADATA] = JObject.Parse(metadataJsonString);
+                obj[HikeConstants.SUB_TYPE] = HikeConstants.SUBTYPE_STICKER;
             }
             obj[HikeConstants.TO] = _msisdn;
             obj[HikeConstants.DATA] = data;
-            obj["st"] = "stk";
+
             obj[HikeConstants.TYPE] = _isInvite ? NetworkManager.INVITE : NetworkManager.MESSAGE;
 
             return obj;
@@ -1187,15 +1187,12 @@ namespace windows_client.Model
                 {
                     metadataJsonString = "{poke: true}";
                 }
-
-                JToken stickerId;
-                if (data.TryGetValue(HikeConstants.STICKER_ID, out stickerId))
+                JToken isSticker;
+                JToken stickerJson;
+                if (obj.TryGetValue(HikeConstants.SUB_TYPE, out isSticker) && data.TryGetValue(HikeConstants.METADATA, out stickerJson))
                 {
-                    metadataJsonString = string.Format("{{{0}:'{1}'}}", HikeConstants.STICKER_ID, (string)stickerId);
-                    _stickerId = (string)stickerId;
+                    metadataJsonString = stickerJson.ToString(Newtonsoft.Json.Formatting.None);
                 }
-                //JToken ts = null;
-                //if (data.TryGetValue(HikeConstants.TIMESTAMP, out ts))
                 _timestamp = TimeUtils.getCurrentTimeStamp();
 
                 /* prevent us from receiving a message from the future */
@@ -1329,6 +1326,15 @@ namespace windows_client.Model
             NotifyPropertyChanged("ShowForwardMenu");
             NotifyPropertyChanged("ShowDeleteMenu");
             NotifyPropertyChanged("SdrImage");
+        }
+
+        public void SetStickerImage(BitmapImage stickerImage)
+        {
+            if (_stickerObj != null)
+            {
+                _stickerObj.StickerImage = stickerImage;
+                NotifyPropertyChanged("MessageImage");
+            }
         }
 
         public ConvMessage(ParticipantInfoState participantInfoState, JObject jsonObj)

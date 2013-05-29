@@ -15,6 +15,8 @@ namespace windows_client
         public static readonly string DATA = "d";
         public static readonly string TO = "to";
         public static readonly string FROM = "f";
+        public static readonly string SUB_TYPE = "st";
+        public static readonly string SUBTYPE_STICKER = "stk";
 
         public static readonly string HIKE_MESSAGE = "hm";
         public static readonly string SMS_MESSAGE = "sm";
