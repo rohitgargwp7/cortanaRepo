@@ -144,8 +144,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Border Margin="0" Background="Black" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
-                            <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="1" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
-                            <Image x:Name="PauseIcon" Source="{Binding PauseIconImage}" Visibility="{Binding PauseIconVisibility}" Grid.Row="1" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
+                            <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
                             <Grid Grid.Column="1">
                                 <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
                                     <Image Margin="10,0,0,0" MaxWidth="20" MaxHeight="20" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="/View/images/mic_icon.png"/>
@@ -333,8 +332,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Border Margin="0" Background="Black" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
-                        <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="1" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
-                        <Image x:Name="PauseIcon" Source="{Binding PauseIconImage}" Visibility="{Binding PauseIconVisibility}" Grid.Row="1" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
+                        <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
                         <Grid Grid.Column="1">
                             <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
                                 <Image Margin="10,0,0,0" MaxWidth="20" MaxHeight="20" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="/View/images/mic_icon.png"/>

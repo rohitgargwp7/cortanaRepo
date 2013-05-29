@@ -512,25 +512,10 @@ namespace windows_client.Model
             get
             {
                 if (_fileAttachment != null && ((_fileAttachment.FileState == Attachment.AttachmentState.CANCELED || _fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
-                    || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO)))
-                {
+                    || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO) || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
                     return Visibility.Visible;
-                }
-                else if (_fileAttachment != null && ((_fileAttachment.FileState == Attachment.AttachmentState.COMPLETED || _fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
-                    || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
-                {
-                    return _playIconVisibility;
-                }
                 else
                     return Visibility.Collapsed;
-            }
-            set
-            {
-                if (_playIconVisibility != value)
-                {
-                    _playIconVisibility = value;
-                    NotifyPropertyChanged("PlayIconVisibility");
-                }
             }
         }
 
@@ -540,33 +525,24 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                     return UI_Utils.Instance.DownloadIcon;
+                else if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.AUDIO) && IsPlaying)
+                    return UI_Utils.Instance.PauseIcon;
                 else
                     return UI_Utils.Instance.PlayIcon;
             }
         }
 
-        Visibility _pauseIconVisibility = Visibility.Collapsed;
-        public Visibility PauseIconVisibility
+        Boolean _isPlaying = false;
+        public Boolean IsPlaying
         {
             get
             {
-                return _pauseIconVisibility;
+                return _isPlaying;
             }
             set
             {
-                if (_pauseIconVisibility != value)
-                {
-                    _pauseIconVisibility = value;
-                    NotifyPropertyChanged("PauseIconVisibility");
-                }
-            }
-        }
-
-        public BitmapImage PauseIconImage
-        {
-            get
-            {
-                return UI_Utils.Instance.PauseIcon;
+                _isPlaying = value;
+                NotifyPropertyChanged("PlayIconImage");
             }
         }
 
@@ -595,8 +571,7 @@ namespace windows_client.Model
                 _playProgressBarValue = value;
                 if (_playProgressBarValue >= 100)
                 {
-                    PlayIconVisibility = Visibility.Visible;
-                    PauseIconVisibility = Visibility.Collapsed;
+                    IsPlaying = false;
                     _playProgressBarValue = 0;
                 }
 

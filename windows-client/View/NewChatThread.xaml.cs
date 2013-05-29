@@ -120,7 +120,6 @@ namespace windows_client.View
         private Image emptyImage;
         MediaElement mediaElement;
         ConvMessage currentAudioMessage;
-        bool isPlaying = false;
 
         #endregion
 
@@ -494,13 +493,11 @@ namespace windows_client.View
 
             if (mediaElement != null)
             {
-                isPlaying = false;
                 mediaElement.Stop();
 
                 if (currentAudioMessage != null)
                 {
-                    currentAudioMessage.PauseIconVisibility = Visibility.Collapsed;
-                    currentAudioMessage.PlayIconVisibility = Visibility.Visible;
+                    currentAudioMessage.IsPlaying = false;
                     currentAudioMessage.PlayProgressBarValue = 0;
                     currentAudioMessage = null;
                 }
@@ -523,13 +520,11 @@ namespace windows_client.View
 
                 if (mediaElement != null)
                 {
-                    isPlaying = false;
                     mediaElement.Stop();
 
                     if (currentAudioMessage != null)
                     {
-                        currentAudioMessage.PauseIconVisibility = Visibility.Collapsed;
-                        currentAudioMessage.PlayIconVisibility = Visibility.Visible;
+                        currentAudioMessage.IsPlaying = false;
                         currentAudioMessage.PlayProgressBarValue = 0;
                         currentAudioMessage = null;
                     }
@@ -1597,84 +1592,79 @@ namespace windows_client.View
                     {
                         if (mediaElement.Source.OriginalString.Contains(fileLocation))
                         {
-                            if (currentAudioMessage != null)
+                            if (currentAudioMessage != null) // case pause/play the alresdy playing/paused file
                             {
-                                if (isPlaying)
+                                if (currentAudioMessage.IsPlaying)
                                 {
-                                    currentAudioMessage.PauseIconVisibility = Visibility.Collapsed;
-                                    currentAudioMessage.PlayIconVisibility = Visibility.Visible;
-                                    isPlaying = false;
+                                    currentAudioMessage.IsPlaying = false;
                                     mediaElement.Pause();
-
                                 }
                                 else
                                 {
-                                    currentAudioMessage.PauseIconVisibility = Visibility.Visible;
-                                    currentAudioMessage.PlayIconVisibility = Visibility.Collapsed;
-                                    isPlaying = true;
+                                    currentAudioMessage.IsPlaying = true;
                                     mediaElement.Play();
                                 }
                             }
-                            else
+                            else // restart audio
                             {
                                 currentAudioMessage = convMessage;
-                                currentAudioMessage.PauseIconVisibility = Visibility.Visible;
-                                currentAudioMessage.PlayIconVisibility = Visibility.Collapsed;
-                                isPlaying = true;
+                                currentAudioMessage.IsPlaying = true;
                                 mediaElement.Play();
                             }
 
                             return;
                         }
-                        else
+                        else // start new audio
                         {
                             mediaElement.Source = null;
 
                             if (currentAudioMessage != null)
                             {
-                                currentAudioMessage.PauseIconVisibility = Visibility.Collapsed;
-                                currentAudioMessage.PlayIconVisibility = Visibility.Visible;
+                                currentAudioMessage.IsPlaying = false;
                                 currentAudioMessage.PlayProgressBarValue = 0;
                                 currentAudioMessage = null;
                             }
 
                             currentAudioMessage = convMessage;
-                            isPlaying = false;
-                            mediaElement.Stop();
                         }
                     }
                 }
-                else
+                else // play first audio
                 {
                     mediaElement = new MediaElement();
                     currentAudioMessage = convMessage;
                     LayoutRoot.Children.Add(mediaElement);
                 }
 
-                using (var store = IsolatedStorageFile.GetUserStoreForApplication())
+                try
                 {
-                    if (store.FileExists(fileLocation))
+                    using (var store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        using (var isfs = new IsolatedStorageFileStream(fileLocation, FileMode.Open, store))
+                        if (store.FileExists(fileLocation))
                         {
-                            this.mediaElement.SetSource(isfs);
+                            using (var isfs = new IsolatedStorageFileStream(fileLocation, FileMode.Open, store))
+                            {
+                                this.mediaElement.SetSource(isfs);
+                            }
                         }
                     }
-                }
 
-                mediaElement.Position = new TimeSpan(0, 0, 0, 0);
-                
-                if (currentAudioMessage != null)
+                    mediaElement.Position = new TimeSpan(0, 0, 0, 0);
+
+                    if (currentAudioMessage != null)
+                    {
+                        currentAudioMessage.IsPlaying = true;
+                        currentAudioMessage.PlayProgressBarValue = 0;
+                    }
+
+                    mediaElement.Play();
+                    mediaElement.MediaEnded += mediaPlayback_MediaEnded;
+                    mediaElement.MediaFailed += mediaPlayback_MediaFailed;
+                }
+                catch (Exception ex) //Code should never reach here
                 {
-                    currentAudioMessage.PauseIconVisibility = Visibility.Visible;
-                    currentAudioMessage.PlayIconVisibility = Visibility.Collapsed;
-                    currentAudioMessage.PlayProgressBarValue = 0;
+                    Debug.WriteLine("NewChatTHread :: Play Audio Attachment :: Exception while playing audio file" + ex.StackTrace);
                 }
-
-                isPlaying = true;
-                mediaElement.Play();
-                mediaElement.MediaEnded += mediaPlayback_MediaEnded;
-                mediaElement.MediaFailed += mediaPlayback_MediaFailed;
             }
             else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
             {
@@ -1720,26 +1710,21 @@ namespace windows_client.View
         {
             if (currentAudioMessage != null)
             {
-                currentAudioMessage.PauseIconVisibility = Visibility.Collapsed;
-                currentAudioMessage.PlayIconVisibility = Visibility.Visible;
+                currentAudioMessage.IsPlaying = false;
                 currentAudioMessage.PlayProgressBarValue = 0;
                 currentAudioMessage = null;
             }
-
-            isPlaying = false;
         }
 
         void mediaPlayback_MediaEnded(object sender, RoutedEventArgs e)
         {
             if (currentAudioMessage != null)
             {
-                currentAudioMessage.PauseIconVisibility = Visibility.Collapsed;
-                currentAudioMessage.PlayIconVisibility = Visibility.Visible;
+                currentAudioMessage.IsPlaying = false;
                 currentAudioMessage.PlayProgressBarValue = 0;
                 currentAudioMessage = null;
             }
 
-            isPlaying = false;
             mediaElement.Stop();
         }
 
