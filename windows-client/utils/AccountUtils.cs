@@ -60,7 +60,7 @@ namespace windows_client.utils
             get
             {
                 if (IsProd)
-                    return STAGING_PORT;
+                    return 8080;
                 return 1883;
             }
         }
