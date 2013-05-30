@@ -187,8 +187,6 @@ namespace windows_client.View
             
             _dt = new DispatcherTimer();
             _dt.Interval = TimeSpan.FromMilliseconds(33);
-            _dt.Tick += new EventHandler(dt_Tick);
-            _dt.Start();
 
             _duration = _microphone.BufferDuration;
 
@@ -350,7 +348,6 @@ namespace windows_client.View
             if (_dt != null)
             {
                 _dt.Tick -= dt_Tick;
-                _dt.Stop();
                 _dt.Tick += dt_Tick;
                 _dt.Start();
             }
@@ -510,10 +507,7 @@ namespace windows_client.View
             }
 
             if (_dt != null)
-            {
-                _dt.Tick -= dt_Tick;
                 _dt.Stop();
-            }
 
             if (!string.IsNullOrWhiteSpace(sendMsgTxtbox.Text))
                 this.State["sendMsgTxtbox.Text"] = sendMsgTxtbox.Text;
@@ -530,12 +524,6 @@ namespace windows_client.View
                 base.OnRemovedFromJournal(e);
                 removeListeners();
 
-                if (_dt != null)
-                {
-                    _dt.Stop();
-                    _dt.Tick -= dt_Tick;
-                }
- 
                 if (mediaElement != null)
                 {
                     mediaElement.Stop();
