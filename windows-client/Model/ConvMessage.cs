@@ -510,7 +510,7 @@ namespace windows_client.Model
                     if (_stickerObj.StickerImage != null)
                         return _stickerObj.StickerImage;//todo:if null return loading image
                     else
-                        return UI_Utils.Instance.StickerLoadingImage ;
+                        return UI_Utils.Instance.StickerLoadingImage;
                 }
 
                 if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
@@ -858,7 +858,7 @@ namespace windows_client.Model
                             return UI_Utils.Instance.SentBubbleFileMarginLS;
                         else if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
                             return UI_Utils.Instance.SentBubbleTextMarginLS;
-                        else if(FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                        else if (FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
                             return UI_Utils.Instance.SentBubbleAudioFileMarginLS;
                         else
                             return UI_Utils.Instance.SentBubbleFileMarginLS;
@@ -1255,7 +1255,16 @@ namespace windows_client.Model
                 {
                     metadataJsonString = stickerJson.ToString(Newtonsoft.Json.Formatting.None);
                 }
-                _timestamp = TimeUtils.getCurrentTimeStamp();
+
+                long serverTimeStamp = (long)data[HikeConstants.TIMESTAMP];
+
+                long timedifference;
+                if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                {
+                    _timestamp = serverTimeStamp - timedifference;
+                }
+                else
+                    _timestamp = serverTimeStamp;
 
                 /* prevent us from receiving a message from the future */
 

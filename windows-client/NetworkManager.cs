@@ -42,6 +42,8 @@ namespace windows_client
 
         public static readonly string ICON = "ic";
 
+        public static readonly string SERVER_TIMESTAMP = "sts";
+
         public static bool turnOffNetworkManager = true;
 
         private HikePubSub pubSub;
@@ -1336,6 +1338,13 @@ namespace windows_client
                 {
                     Debug.WriteLine("NETWORK MANAGER :: Exception in DELETE STATUS : " + e.StackTrace);
                 }
+            }
+            #endregion
+            #region SERVER TIMESTAMP
+            else if (type == SERVER_TIMESTAMP)
+            {
+                long timediff = (long)jsonObj[HikeConstants.TIMESTAMP] - TimeUtils.getCurrentTimeStamp();
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.TIME_DIFF_EPOCH, timediff);
             }
             #endregion
             #region OTHER

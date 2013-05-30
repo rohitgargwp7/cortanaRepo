@@ -27,7 +27,8 @@ namespace windows_client
         public static readonly string ANALYTICS_EVENT = "ae";
         public static readonly string LOG_EVENT = "le";//for analytics
         public static readonly string FILE_SYSTEM_VERSION = "File_System_Version";
-
+        public static readonly string REQUEST_SERVER_TIME = "rsts";
+        
         public static readonly string CRITICAL = "critical";
         public static readonly string LATEST = "latest";
         public static readonly string APP_ID = "appID";
@@ -344,6 +345,7 @@ namespace windows_client
             public static readonly string CONTACTS_TO_SHOW = "ContactsToShow";
             public static readonly string NEW_UPDATE = "New_Update";
             public static readonly string APP_LAUNCH_COUNT = "App_Launch_Count";
+            public static readonly string TIME_DIFF_EPOCH = "serverEpochTime";
         }
     }
 }
