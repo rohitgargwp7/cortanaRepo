@@ -3822,7 +3822,7 @@ namespace windows_client.View
             if (this.ApplicationBar != null)
                 (this.ApplicationBar.Buttons[0] as ApplicationBarIconButton).IsEnabled = false;
 
-            recordGrid.Background = gridBackgroundBeforeRecording;
+            recordButtonGrid.Background = gridBackgroundBeforeRecording;
             recordButton.Text = HOLD_AND_TALK;
             recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
             walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
@@ -3834,7 +3834,7 @@ namespace windows_client.View
             recordButton.Text = RELEASE_TO_SEND;
             cancelRecord.Opacity = 0;
             recordButton.Foreground = UI_Utils.Instance.WhiteTextForeGround;
-            recordGrid.Background = UI_Utils.Instance.HikeMsgBackground;
+            recordButtonGrid.Background = UI_Utils.Instance.HikeMsgBackground;
             walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieWhiteImage;
             recordWalkieTalkieMessage();
         }
@@ -3852,7 +3852,7 @@ namespace windows_client.View
                 WalkieTalkieGrid.Visibility = Visibility.Collapsed;
                 recordButton.Text = HOLD_AND_TALK;
                 recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
-                recordGrid.Background = gridBackgroundBeforeRecording;
+                recordButtonGrid.Background = gridBackgroundBeforeRecording;
                 walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
 
                 deleteBorder.Background = UI_Utils.Instance.DeleteBlackBackground;
@@ -3867,7 +3867,7 @@ namespace windows_client.View
 
             walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
             recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
-            recordGrid.Background = gridBackgroundBeforeRecording;
+            recordButtonGrid.Background = gridBackgroundBeforeRecording;
             recordButton.Text = HOLD_AND_TALK;
             cancelRecord.Opacity = 1;
         }
