@@ -313,10 +313,10 @@ namespace windows_client.View
                 if (isGC)
                 {
                     ConvMessage groupCreateCM = new ConvMessage(groupCreateJson, true, false);
-                    groupCreateCM.CurrentOrientation = this.Orientation;
                     groupCreateCM.GroupParticipant = groupOwner;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        groupCreateCM.CurrentOrientation = this.Orientation;
                         sendMsg(groupCreateCM, true);
                         mPubSub.publish(HikePubSub.MQTT_PUBLISH, groupCreateJson); // inform others about group
                     });
