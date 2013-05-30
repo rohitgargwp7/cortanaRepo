@@ -389,8 +389,8 @@
     <value>accept</value>
     <comment>accept button in appbar</comment>
   </data>
-  <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
-    <value>Fun, free messaging for life</value>
+  <data name="Messaging_Made_Personal_Txt" xml:space="preserve">
+    <value>Messaging made personal again</value>
     <comment>This is text below hike logo on welcome screen.</comment>
   </data>
   <data name="WelcomePage_PushMsg_TxtBlk" xml:space="preserve">

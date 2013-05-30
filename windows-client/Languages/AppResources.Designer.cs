@@ -1491,15 +1491,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fun, free messaging for life.
-        /// </summary>
-        public static string Fun_Free_Messaging_Txt {
-            get {
-                return ResourceManager.GetString("Fun_Free_Messaging_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This group chat has ended..
         /// </summary>
         public static string GROUP_CHAT_END {
@@ -1982,6 +1973,15 @@ namespace windows_client.Languages {
         public static string MessageNonHikeFriends_Blk2_Txt {
             get {
                 return ResourceManager.GetString("MessageNonHikeFriends_Blk2_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Messaging made personal again.
+        /// </summary>
+        public static string Messaging_Made_Personal_Txt {
+            get {
+                return ResourceManager.GetString("Messaging_Made_Personal_Txt", resourceCulture);
             }
         }
         

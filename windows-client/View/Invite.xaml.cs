@@ -52,7 +52,7 @@ namespace windows_client.View
             //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
             string inviteMsg = string.Format(AppResources.Email_Invite_Txt, inviteToken);
             EmailComposeTask f5EmailCompose = new EmailComposeTask();
-            f5EmailCompose.Subject = AppResources.Hike_txt + AppResources.Fun_Free_Messaging_Txt;
+            f5EmailCompose.Subject = AppResources.Hike_txt + AppResources.Messaging_Made_Personal_Txt;
             f5EmailCompose.Body = inviteMsg;
             try
             {
