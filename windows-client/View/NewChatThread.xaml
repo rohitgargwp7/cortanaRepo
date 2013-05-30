@@ -546,8 +546,8 @@
                         <Image Grid.Column="1" Source="/View/images/Mic_icon_black_small.png" Tap="Record_ActionIconTapped" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="None" Margin="0,0,15,15"/>
                     </Grid>
                 </ScrollViewer>
-                <Grid x:Name="recordGrid" Background="Black" Visibility="Collapsed" HorizontalAlignment="Stretch" Margin="0,-4,0,0">
-                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ManipulationStarted="Hold_To_Record" ManipulationCompleted="recordButton_ManipulationCompleted">
+                <Grid x:Name="recordGrid" Visibility="Collapsed" HorizontalAlignment="Stretch" Margin="0,-4,0,0">
+                    <Grid x:Name="recordButtonGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ManipulationStarted="Hold_To_Record" ManipulationCompleted="recordButton_ManipulationCompleted">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" >
                             <Image Stretch="None" Margin="10,0" x:Name="walkieTalkieImage" Source="/View/images/walkie_talkie_Grey_small.png" VerticalAlignment="Center"/>
                             <TextBlock x:Name="recordButton" Foreground="#686868" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24" Text=""/>

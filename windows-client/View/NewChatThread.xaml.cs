@@ -187,8 +187,6 @@ namespace windows_client.View
 
             _dt = new DispatcherTimer();
             _dt.Interval = TimeSpan.FromMilliseconds(33);
-            _dt.Tick += new EventHandler(dt_Tick);
-            _dt.Start();
 
             _duration = _microphone.BufferDuration;
 
@@ -313,10 +311,10 @@ namespace windows_client.View
                 if (isGC)
                 {
                     ConvMessage groupCreateCM = new ConvMessage(groupCreateJson, true, false);
-                    groupCreateCM.CurrentOrientation = this.Orientation;
                     groupCreateCM.GroupParticipant = groupOwner;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        groupCreateCM.CurrentOrientation = this.Orientation;
                         sendMsg(groupCreateCM, true);
                         mPubSub.publish(HikePubSub.MQTT_PUBLISH, groupCreateJson); // inform others about group
                     });
@@ -346,6 +344,14 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            if (_dt != null)
+            {
+                _dt.Tick -= dt_Tick;
+                _dt.Tick += dt_Tick;
+                _dt.Start();
+            }
+
             #region PUSH NOTIFICATION
             // push notification , needs to be handled just once.
             if (this.NavigationContext.QueryString.ContainsKey("msisdn"))
@@ -508,6 +514,9 @@ namespace windows_client.View
                     currentAudioMessage = null;
                 }
             }
+
+            if (_dt != null)
+                _dt.Stop();
 
             if (!string.IsNullOrWhiteSpace(sendMsgTxtbox.Text))
                 this.State["sendMsgTxtbox.Text"] = sendMsgTxtbox.Text;
@@ -3865,7 +3874,7 @@ namespace windows_client.View
             if (this.ApplicationBar != null)
                 (this.ApplicationBar.Buttons[0] as ApplicationBarIconButton).IsEnabled = false;
 
-            recordGrid.Background = gridBackgroundBeforeRecording;
+            recordButtonGrid.Background = gridBackgroundBeforeRecording;
             recordButton.Text = HOLD_AND_TALK;
             recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
             walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
@@ -3877,7 +3886,7 @@ namespace windows_client.View
             recordButton.Text = RELEASE_TO_SEND;
             cancelRecord.Opacity = 0;
             recordButton.Foreground = UI_Utils.Instance.WhiteTextForeGround;
-            recordGrid.Background = UI_Utils.Instance.HikeMsgBackground;
+            recordButtonGrid.Background = UI_Utils.Instance.HikeMsgBackground;
             walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieWhiteImage;
             recordWalkieTalkieMessage();
         }
@@ -4152,7 +4161,7 @@ namespace windows_client.View
                 WalkieTalkieGrid.Visibility = Visibility.Collapsed;
                 recordButton.Text = HOLD_AND_TALK;
                 recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
-                recordGrid.Background = gridBackgroundBeforeRecording;
+                recordButtonGrid.Background = gridBackgroundBeforeRecording;
                 walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
 
                 deleteBorder.Background = UI_Utils.Instance.DeleteBlackBackground;
@@ -4167,7 +4176,7 @@ namespace windows_client.View
 
             walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
             recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
-            recordGrid.Background = gridBackgroundBeforeRecording;
+            recordButtonGrid.Background = gridBackgroundBeforeRecording;
             recordButton.Text = HOLD_AND_TALK;
             cancelRecord.Opacity = 1;
         }
@@ -4208,7 +4217,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("RecordMedia.xaml :: dt_Tick, update, Exception : " + ex.StackTrace);
+                Debug.WriteLine("NewChatThread.xaml :: dt_Tick, update, Exception : " + ex.StackTrace);
             }
         }
 
