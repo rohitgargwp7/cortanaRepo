@@ -346,6 +346,15 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            if (_dt != null)
+            {
+                _dt.Tick -= dt_Tick;
+                _dt.Stop();
+                _dt.Tick += dt_Tick;
+                _dt.Start();
+            }
+
             #region PUSH NOTIFICATION
             // push notification , needs to be handled just once.
             if (this.NavigationContext.QueryString.ContainsKey("msisdn"))
@@ -500,6 +509,12 @@ namespace windows_client.View
                 }
             }
 
+            if (_dt != null)
+            {
+                _dt.Tick -= dt_Tick;
+                _dt.Stop();
+            }
+
             if (!string.IsNullOrWhiteSpace(sendMsgTxtbox.Text))
                 this.State["sendMsgTxtbox.Text"] = sendMsgTxtbox.Text;
             else
@@ -515,6 +530,12 @@ namespace windows_client.View
                 base.OnRemovedFromJournal(e);
                 removeListeners();
 
+                if (_dt != null)
+                {
+                    _dt.Stop();
+                    _dt.Tick -= dt_Tick;
+                }
+ 
                 if (mediaElement != null)
                 {
                     mediaElement.Stop();
@@ -3908,7 +3929,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("RecordMedia.xaml :: dt_Tick, update, Exception : " + ex.StackTrace);
+                Debug.WriteLine("NewChatThread.xaml :: dt_Tick, update, Exception : " + ex.StackTrace);
             }
         }
 
