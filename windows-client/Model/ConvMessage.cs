@@ -835,6 +835,8 @@ namespace windows_client.Model
                     {
                         if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
                             return UI_Utils.Instance.SentBubbleTextMarginLS;
+                        else if(FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                            return UI_Utils.Instance.SentBubbleAudioFileMarginLS;
                         else
                             return UI_Utils.Instance.SentBubbleFileMarginLS;
                     }
@@ -852,6 +854,8 @@ namespace windows_client.Model
                     {
                         if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
                             return UI_Utils.Instance.SentBubbleTextMarginPortrait;
+                        else if (FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                            return UI_Utils.Instance.SentBubbleAudioFileMarginPortrait;
                         else
                             return UI_Utils.Instance.SentBubbleFileMarginPortrait;
                     }
