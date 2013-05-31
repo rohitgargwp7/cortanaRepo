@@ -115,8 +115,8 @@ namespace windows_client.utils
         public Thickness TimelineStatusTextMargin = new Thickness(20, 0, 5, 0);
         public Thickness UserProfileStatusTextMargin = new Thickness(18, 0, 5, 0);
         public Thickness StatusImageMargin = new Thickness(12, 28, 0, 12);
-        public SolidColorBrush ShowBorderBrush = new SolidColorBrush(Colors.Red);
-        public SolidColorBrush HideBorderBrush = new SolidColorBrush(Colors.Black);
+        public SolidColorBrush RedBorderBrush = new SolidColorBrush(Colors.Red);
+        public SolidColorBrush BlackBorderBrush = new SolidColorBrush(Colors.Black);
         #endregion
 
         private Dictionary<string, BitmapImage> _bitMapImageCache = null;
