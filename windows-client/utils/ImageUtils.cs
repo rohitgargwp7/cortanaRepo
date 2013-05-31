@@ -96,6 +96,10 @@ namespace windows_client.utils
         public Thickness SentBubbleAudioFileMarginLS = new Thickness(345, 12, 0, 10);
         BitmapImage walkieTalkieGreyImage;
         BitmapImage walkieTalkieWhiteImage;
+        BitmapImage walkieTalkieGreyImageBig;
+        BitmapImage walkieTalkieWhiteImageBig;
+        BitmapImage dustbinGreyImage;
+        BitmapImage dustbinWhiteImage;
         SolidColorBrush whiteTextForeGround;
         SolidColorBrush greyTextForeGround;
         private FontFamily groupChatMessageHeader;
@@ -111,6 +115,8 @@ namespace windows_client.utils
         public Thickness TimelineStatusTextMargin = new Thickness(20, 0, 5, 0);
         public Thickness UserProfileStatusTextMargin = new Thickness(18, 0, 5, 0);
         public Thickness StatusImageMargin = new Thickness(12, 28, 0, 12);
+        public SolidColorBrush ShowBorderBrush = new SolidColorBrush(Colors.Red);
+        public SolidColorBrush HideBorderBrush = new SolidColorBrush(Colors.Black);
         #endregion
 
         private Dictionary<string, BitmapImage> _bitMapImageCache = null;
@@ -927,6 +933,28 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage DustbinGreyImage
+        {
+            get
+            {
+                if (dustbinGreyImage == null)
+                    dustbinGreyImage = new BitmapImage(new Uri("/View/images/deleted_grey_icon.png", UriKind.Relative));
+
+                return dustbinGreyImage;
+            }
+        }
+
+        public BitmapImage DustbinWhiteImage
+        {
+            get
+            {
+                if (dustbinWhiteImage == null)
+                    dustbinWhiteImage = new BitmapImage(new Uri("/View/images/deleted_white_icon.png", UriKind.Relative));
+
+                return dustbinWhiteImage;
+            }
+        }
+
         public BitmapImage WalkieTalkieGreyImage
         {
             get
@@ -946,6 +974,48 @@ namespace windows_client.utils
                     walkieTalkieWhiteImage = new BitmapImage(new Uri("/View/images/Walkie_Talkie_White_small.png", UriKind.Relative));
 
                 return walkieTalkieWhiteImage;
+            }
+        }
+
+        public BitmapImage WalkieTalkieBigImage
+        {
+            get
+            {
+                if (Utils.isDarkTheme())
+                {
+                    if (walkieTalkieGreyImageBig == null)
+                        walkieTalkieGreyImageBig = new BitmapImage(new Uri("/View/images/Walkie_Talkie_Black_big.png", UriKind.Relative));
+
+                    return walkieTalkieGreyImageBig;
+                }
+                else
+                {
+                    if (walkieTalkieWhiteImageBig == null)
+                        walkieTalkieWhiteImageBig = new BitmapImage(new Uri("/View/images/Walkie_Talkie_White_big.png", UriKind.Relative));
+
+                    return walkieTalkieWhiteImageBig;
+                }
+            }
+        }
+
+        public BitmapImage WalkieTalkieDeleteSucImage
+        {
+            get
+            {
+                if (Utils.isDarkTheme())
+                {
+                    if (walkieTalkieGreyImageBig == null)
+                        walkieTalkieGreyImageBig = new BitmapImage(new Uri("/View/images/deleted_grey_icon.png", UriKind.Relative));
+
+                    return walkieTalkieGreyImageBig;
+                }
+                else
+                {
+                    if (walkieTalkieWhiteImageBig == null)
+                        walkieTalkieWhiteImageBig = new BitmapImage(new Uri("/View/images/deleted_white_icon.png", UriKind.Relative));
+
+                    return walkieTalkieWhiteImageBig;
+                }
             }
         }
 

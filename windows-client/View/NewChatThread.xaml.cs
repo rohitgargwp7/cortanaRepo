@@ -199,6 +199,16 @@ namespace windows_client.View
 
             ocMessages = new ObservableCollection<ConvMessage>();
 
+            walkieTalkie.Source = UI_Utils.Instance.WalkieTalkieBigImage;
+            deleteRecImageSuc.Source = UI_Utils.Instance.WalkieTalkieDeleteSucImage;
+
+            if (Utils.isDarkTheme())
+            {
+                deleteRecTextSuc.Foreground = UI_Utils.Instance.DeleteGreyBackground;
+                WalkieTalkieDeleteGrid.Background = UI_Utils.Instance.WhiteTextForeGround;
+                WalkieTalkieGridOverlayLayer.Opacity = 1;
+            }
+
             CompositionTarget.Rendering += (sender, args) =>
             {
                 if (mediaElement != null && mediaElement.Source != null)
@@ -2609,6 +2619,7 @@ namespace windows_client.View
 
         private void emotList0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            recordGrid.Visibility = Visibility.Collapsed;
             int index = emotList0.SelectedIndex;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             //emoticonPanel.Visibility = Visibility.Collapsed;
@@ -2616,6 +2627,7 @@ namespace windows_client.View
 
         private void emotList1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            recordGrid.Visibility = Visibility.Collapsed;
             int index = emotList1.SelectedIndex + SmileyParser.Instance.emoticon0Size;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             //emoticonPanel.Visibility = Visibility.Collapsed;
@@ -2623,6 +2635,7 @@ namespace windows_client.View
 
         private void emotList2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            recordGrid.Visibility = Visibility.Collapsed;
             int index = emotList2.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             //emoticonPanel.Visibility = Visibility.Collapsed;
@@ -3791,6 +3804,16 @@ namespace windows_client.View
             {
                 ocMessages[i].CurrentOrientation = e.Orientation;
             }
+
+            //handled textbox hight to accomodate other data on screen in diff orientations
+            if (e.Orientation == PageOrientation.Portrait ||e.Orientation == PageOrientation.PortraitUp|| e.Orientation == PageOrientation.PortraitDown)
+            {
+                svMessage.MaxHeight = 150;
+            }
+            else if (e.Orientation == PageOrientation.Landscape || e.Orientation == PageOrientation.LandscapeLeft || e.Orientation == PageOrientation.LandscapeRight)
+            {
+                svMessage.MaxHeight = 70;
+            }
         }
         #endregion
 
@@ -3825,6 +3848,7 @@ namespace windows_client.View
 
         private void Record_ActionIconTapped(object sender, EventArgs e)
         {
+            this.Focus(); // remove focus from textbox
             recordGrid.Visibility = Visibility.Visible;
             sendMsgTxtbox.Visibility = Visibility.Collapsed;
 
@@ -3839,6 +3863,15 @@ namespace windows_client.View
 
         void Hold_To_Record(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
         {
+            if (mediaElement != null)
+            {
+                if (currentAudioMessage != null && currentAudioMessage.IsPlaying)
+                {
+                    currentAudioMessage.IsPlaying = false;
+                    mediaElement.Pause();
+                }
+            }
+
             WalkieTalkieGrid.Visibility = Visibility.Visible;
             recordButton.Text = RELEASE_TO_SEND;
             cancelRecord.Opacity = 0;
@@ -3850,47 +3883,62 @@ namespace windows_client.View
 
         void recordButton_ManipulationCompleted(object sender, System.Windows.Input.ManipulationCompletedEventArgs e)
         {
+            if (isRecordingForceStop)
+            {
+                isRecordingForceStop = false;
+                return;
+            }
+
+            deleteRecImage.Source = UI_Utils.Instance.DustbinGreyImage;
+            deleteRecText.Foreground = UI_Utils.Instance.DeleteGreyBackground;
+
+            cancelRecord.Opacity = 1;
+            deleteBorder.BorderBrush = UI_Utils.Instance.HideBorderBrush;
+            WalkieTalkieGrid.Visibility = Visibility.Collapsed;
+            recordButton.Text = HOLD_AND_TALK;
+            recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
+            recordButtonGrid.Background = gridBackgroundBeforeRecording;
+            walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
+
+            deleteBorder.Background = UI_Utils.Instance.DeleteBlackBackground;
+
+            stopWalkieTalkieRecording();
+
             if (_isWalkieTalkieMessgeDelete)
             {
                 _isWalkieTalkieMessgeDelete = false;
-
-                stopWalkieTalkieRecording();
                 _recorderState = RecorderState.NOTHING_RECORDED;
 
-                cancelRecord.Opacity = 1;
-                WalkieTalkieGrid.Visibility = Visibility.Collapsed;
-                recordButton.Text = HOLD_AND_TALK;
-                recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
-                recordButtonGrid.Background = gridBackgroundBeforeRecording;
-                walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
+                if (_deleteTimer == null)
+                {
+                    _deleteTimer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 1) };
+                    _deleteTimer.Tick += _deleteTimer_Tick;
+                }
 
-                deleteBorder.Background = UI_Utils.Instance.DeleteBlackBackground;
+                _deleteTimer.Start();
+                WalkieTalkieDeleteGrid.Visibility = Visibility.Visible;
 
                 return;
             }
 
-            WalkieTalkieGrid.Visibility = Visibility.Collapsed;
-
-            stopWalkieTalkieRecording();
+            _recorderState = RecorderState.RECORDED;
             sendWalkieTalkieMessage();
-
-            walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
-            recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
-            recordButtonGrid.Background = gridBackgroundBeforeRecording;
-            recordButton.Text = HOLD_AND_TALK;
-            cancelRecord.Opacity = 1;
         }
 
         private void deleteRecImage_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = false;
-            //deleteBorder.Background = UI_Utils.Instance.DeleteBlackBackground;
+            deleteBorder.BorderBrush = UI_Utils.Instance.HideBorderBrush;
+            deleteRecImage.Source = UI_Utils.Instance.DustbinGreyImage;
+            deleteRecText.Foreground = UI_Utils.Instance.DeleteGreyBackground;
         }
 
         void deleteRecImage_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = true;
-            //deleteBorder.Background = UI_Utils.Instance.DeleteGreyBackground;
+            deleteBorder.BorderBrush = UI_Utils.Instance.ShowBorderBrush;
+            deleteRecImage.Source = UI_Utils.Instance.DustbinWhiteImage;
+            deleteRecText.Foreground = UI_Utils.Instance.WhiteTextForeGround;
         }
 
         void cancelRecord_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3923,6 +3971,7 @@ namespace windows_client.View
 
         private void recordWalkieTalkieMessage()
         {
+            isRecordingForceStop = false;
             runningTime.Text = "00:00";
             _progressTimer.Start();
 
@@ -3948,9 +3997,31 @@ namespace windows_client.View
             runningTime.Text = formatTime(_runningSeconds + 1);
 
             if (_runningSeconds >= HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED)
+            {
+                cancelRecord.Opacity = 1;
+                deleteBorder.BorderBrush = UI_Utils.Instance.HideBorderBrush;
+                WalkieTalkieGrid.Visibility = Visibility.Collapsed;
+                recordButton.Text = HOLD_AND_TALK;
+                recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
+                recordButtonGrid.Background = gridBackgroundBeforeRecording;
+                walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
+                deleteRecImage.Source = UI_Utils.Instance.DustbinGreyImage;
+                deleteRecText.Foreground = UI_Utils.Instance.DeleteGreyBackground;
+                deleteBorder.Background = UI_Utils.Instance.DeleteBlackBackground;
+
                 stopWalkieTalkieRecording();
+                sendWalkieTalkieMessage();
+
+                isRecordingForceStop = true;
+            }
 
             _runningSeconds++;
+        }
+
+        void _deleteTimer_Tick(object sender, EventArgs e)
+        {
+            _deleteTimer.Stop();
+            WalkieTalkieDeleteGrid.Visibility = Visibility.Collapsed;
         }
 
         private void stopWalkieTalkieRecording()
@@ -4063,8 +4134,9 @@ namespace windows_client.View
         private Microphone _microphone = Microphone.Default;     // Object representing the physical microphone on the device
         private byte[] _buffer;                                  // Dynamic buffer to retrieve audio data from the microphone
         private MemoryStream _stream = new MemoryStream();       // Stores the audio data for later playback
-
+        private bool isRecordingForceStop = false;
         private DispatcherTimer _progressTimer;
+        private DispatcherTimer _deleteTimer;
         private int _runningSeconds = 0;
 
         // Status images

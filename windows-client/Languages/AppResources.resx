@@ -1713,4 +1713,12 @@ Get hike: http://get.hike.in</value>
     <value>Release to Send</value>
     <comment>Release to send recorded data</comment>
   </data>
+  <data name="Drag_Here_To_Delete" xml:space="preserve">
+    <value>Drag here to delete</value>
+    <comment>Drag to a specified area to delete ongoing recording</comment>
+  </data>
+  <data name="Message_Cancelled" xml:space="preserve">
+    <value>Message cancelled</value>
+    <comment>Notify user that recording has been deleted</comment>
+  </data>
 </root>
