@@ -2620,6 +2620,7 @@ namespace windows_client.View
         private void emotList0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             recordGrid.Visibility = Visibility.Collapsed;
+            sendMsgTxtbox.Visibility = Visibility.Visible;
             int index = emotList0.SelectedIndex;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             //emoticonPanel.Visibility = Visibility.Collapsed;
@@ -2628,6 +2629,7 @@ namespace windows_client.View
         private void emotList1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             recordGrid.Visibility = Visibility.Collapsed;
+            sendMsgTxtbox.Visibility = Visibility.Visible;
             int index = emotList1.SelectedIndex + SmileyParser.Instance.emoticon0Size;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             //emoticonPanel.Visibility = Visibility.Collapsed;
@@ -2636,6 +2638,7 @@ namespace windows_client.View
         private void emotList2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             recordGrid.Visibility = Visibility.Collapsed;
+            sendMsgTxtbox.Visibility = Visibility.Visible;
             int index = emotList2.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             //emoticonPanel.Visibility = Visibility.Collapsed;
@@ -3893,7 +3896,7 @@ namespace windows_client.View
             deleteRecText.Foreground = UI_Utils.Instance.DeleteGreyBackground;
 
             cancelRecord.Opacity = 1;
-            deleteBorder.BorderBrush = UI_Utils.Instance.HideBorderBrush;
+            deleteBorder.BorderBrush = UI_Utils.Instance.BlackBorderBrush;
             WalkieTalkieGrid.Visibility = Visibility.Collapsed;
             recordButton.Text = HOLD_AND_TALK;
             recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
@@ -3928,7 +3931,7 @@ namespace windows_client.View
         private void deleteRecImage_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = false;
-            deleteBorder.BorderBrush = UI_Utils.Instance.HideBorderBrush;
+            deleteBorder.BorderBrush = UI_Utils.Instance.BlackBorderBrush;
             deleteRecImage.Source = UI_Utils.Instance.DustbinGreyImage;
             deleteRecText.Foreground = UI_Utils.Instance.DeleteGreyBackground;
         }
@@ -3936,7 +3939,7 @@ namespace windows_client.View
         void deleteRecImage_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = true;
-            deleteBorder.BorderBrush = UI_Utils.Instance.ShowBorderBrush;
+            deleteBorder.BorderBrush = UI_Utils.Instance.RedBorderBrush;
             deleteRecImage.Source = UI_Utils.Instance.DustbinWhiteImage;
             deleteRecText.Foreground = UI_Utils.Instance.WhiteTextForeGround;
         }
@@ -3999,7 +4002,7 @@ namespace windows_client.View
             if (_runningSeconds >= HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED)
             {
                 cancelRecord.Opacity = 1;
-                deleteBorder.BorderBrush = UI_Utils.Instance.HideBorderBrush;
+                deleteBorder.BorderBrush = UI_Utils.Instance.BlackBorderBrush;
                 WalkieTalkieGrid.Visibility = Visibility.Collapsed;
                 recordButton.Text = HOLD_AND_TALK;
                 recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
