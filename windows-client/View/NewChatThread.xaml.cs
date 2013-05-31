@@ -48,6 +48,8 @@ namespace windows_client.View
         private readonly string UNBLOCK_USER = AppResources.UnBlock_Txt;
         private readonly string HOLD_AND_TALK = AppResources.Hold_And_Talk;
         private readonly string RELEASE_TO_SEND = AppResources.Release_To_Send;
+        private readonly string MESSAGE_TOO_SHORT = AppResources.Message_Too_Short;
+        private readonly string MESSAGE_CANCELLED = AppResources.Message_Cancelled;
         private PageOrientation pageOrientation = PageOrientation.Portrait;
 
         private const int maxFileSize = 15728640;//in bytes
@@ -3921,14 +3923,33 @@ namespace windows_client.View
                     _deleteTimer.Tick += _deleteTimer_Tick;
                 }
 
+                deleteRecTextSuc.Text = MESSAGE_CANCELLED;
+                deleteRecImageSuc.Visibility = Visibility.Visible;
                 _deleteTimer.Start();
                 WalkieTalkieDeleteGrid.Visibility = Visibility.Visible;
 
                 return;
             }
 
-            _recorderState = RecorderState.RECORDED;
-            sendWalkieTalkieMessage();
+            if (_recordedDuration > 0)
+            {
+                _recorderState = RecorderState.RECORDED;
+                sendWalkieTalkieMessage();
+            }
+            else
+            {
+                _recorderState = RecorderState.NOTHING_RECORDED;
+                if (_deleteTimer == null)
+                {
+                    _deleteTimer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 1) };
+                    _deleteTimer.Tick += _deleteTimer_Tick;
+                }
+
+                deleteRecTextSuc.Text = MESSAGE_TOO_SHORT;
+                deleteRecImageSuc.Visibility = Visibility.Collapsed;
+                _deleteTimer.Start();
+                WalkieTalkieDeleteGrid.Visibility = Visibility.Visible;
+            }
         }
 
         private void deleteRecImage_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)

@@ -729,7 +729,7 @@
             <Button Content="{Binding Path= LocalizedResources.OK, Source={StaticResource LocalizedStrings}}" BorderThickness="0" Margin="-12,25,-12,-12" Foreground="#c6c6c6" FontSize="20" Height="90" Background="#212121" Tap="dismissNudgeTutorial_Tap" Grid.Row="3"/>
         </Grid>
 
-        <Grid Canvas.ZIndex="1" x:Name="WalkieTalkieGrid" IsHitTestVisible="False" Visibility="Collapsed" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Grid Canvas.ZIndex="1" x:Name="WalkieTalkieGrid" Visibility="Collapsed" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
