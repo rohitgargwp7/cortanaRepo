@@ -1623,9 +1623,12 @@ namespace windows_client.View
                             }
                             else // restart audio
                             {
-                                currentAudioMessage = convMessage;
-                                currentAudioMessage.IsPlaying = true;
-                                mediaElement.Play();
+                                if (mediaElement.NaturalDuration.TimeSpan.TotalMilliseconds > 0)
+                                {
+                                    currentAudioMessage = convMessage;
+                                    currentAudioMessage.IsPlaying = true;
+                                    mediaElement.Play();
+                                }
                             }
 
                             return;
