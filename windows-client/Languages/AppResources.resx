@@ -1721,4 +1721,8 @@ Get hike: http://get.hike.in</value>
     <value>Message cancelled</value>
     <comment>Notify user that recording has been deleted</comment>
   </data>
+  <data name="Message_Too_Short" xml:space="preserve">
+    <value>Message too short</value>
+    <comment>Message is too short to be sent</comment>
+  </data>
 </root>

@@ -1986,6 +1986,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Message too short.
+        /// </summary>
+        public static string Message_Too_Short {
+            get {
+                return ResourceManager.GetString("Message_Too_Short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You can also message friends not.
         /// </summary>
         public static string MessageNonHikeFriends_Blk1_Txt {
