@@ -178,6 +178,9 @@ namespace windows_client.View
             }
         }
 
+        private Dictionary<string, BitmapImage> dictStickerCache;
+
+        private Dictionary<string, ConvMessage> dictDownloadingStickers;
         #region PAGE BASED FUNCTIONS
 
         //        private ObservableCollection<UIElement> messagesCollection;
@@ -198,7 +201,8 @@ namespace windows_client.View
             _progressTimer.Tick += new EventHandler(showWalkieTalkieProgress);
 
             ocMessages = new ObservableCollection<ConvMessage>();
-
+            dictStickerCache = new Dictionary<string, BitmapImage>();
+            dictDownloadingStickers = new Dictionary<string, ConvMessage>();
             CompositionTarget.Rendering += (sender, args) =>
             {
                 if (mediaElement != null && mediaElement.Source != null)
@@ -1350,8 +1354,6 @@ namespace windows_client.View
         }
         #endregion
 
-        private Dictionary<string, List<ConvMessage>> dictDownloadingStickers = new Dictionary<string, List<ConvMessage>>();
-        private Dictionary<string, BitmapImage> dictStickerCache = new Dictionary<string, BitmapImage>();
         #region APPBAR CLICK EVENTS
 
         private void callUser_Click(object sender, EventArgs e)
@@ -1818,24 +1820,14 @@ namespace windows_client.View
                             }
                             else
                             {
-                                BackgroundWorker bw = new BackgroundWorker();
                                 convMessage.StickerObj.StickerImage = StickerCategory.GetStickerFromDb(convMessage.StickerObj.Id, convMessage.StickerObj.Category);
                                 if (convMessage.StickerObj.StickerImage == null)
                                 {
-                                    List<ConvMessage> listConvMessage = null;
-                                    if (dictDownloadingStickers.TryGetValue(categoryStickerId, out listConvMessage))
-                                    {
-                                        listConvMessage.Add(convMessage);
-                                    }
-                                    else
-                                    {
-                                        AccountUtils.GetSingleSticker(convMessage.StickerObj, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
-                                        dictDownloadingStickers.Add(categoryStickerId, new List<ConvMessage>() { convMessage });
-                                    }
+                                    AccountUtils.GetSingleSticker(convMessage.StickerObj, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
+                                    dictDownloadingStickers.Add(categoryStickerId, convMessage);
                                 }
                                 else
                                     dictStickerCache[categoryStickerId] = convMessage.StickerObj.StickerImage;
-
                             }
                             chatBubble = convMessage;
                         }
@@ -3857,33 +3849,6 @@ namespace windows_client.View
             }
         }
 
-        #region Walkie Talkie
-
-        private void Record_ActionIconTapped(object sender, EventArgs e)
-        {
-            recordGrid.Visibility = Visibility.Visible;
-            sendMsgTxtbox.Visibility = Visibility.Collapsed;
-
-            if (this.ApplicationBar != null)
-                (this.ApplicationBar.Buttons[0] as ApplicationBarIconButton).IsEnabled = false;
-
-            recordButtonGrid.Background = gridBackgroundBeforeRecording;
-            recordButton.Text = HOLD_AND_TALK;
-            recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
-            walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
-        }
-
-        void Hold_To_Record(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
-        {
-            WalkieTalkieGrid.Visibility = Visibility.Visible;
-            recordButton.Text = RELEASE_TO_SEND;
-            cancelRecord.Opacity = 0;
-            recordButton.Foreground = UI_Utils.Instance.WhiteTextForeGround;
-            recordButtonGrid.Background = UI_Utils.Instance.HikeMsgBackground;
-            walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieWhiteImage;
-            recordWalkieTalkieMessage();
-        }
-
         #region Stickers
 
 
@@ -3934,7 +3899,7 @@ namespace windows_client.View
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
 
             StickerCategory s2 = App.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_1);
-            if (s2 == null || s2.dictStickers.Count == 0)
+            if (s2 == null || s2.ListStickers.Count == 0)
             {
                 stLoading.Visibility = Visibility.Visible;
                 listBoxStickerCategory.Visibility = Visibility.Collapsed;
@@ -3947,7 +3912,7 @@ namespace windows_client.View
                 stLoading.Visibility = Visibility.Collapsed;
                 listBoxStickerCategory.Visibility = Visibility.Visible;
                 stNoStickers.Visibility = Visibility.Collapsed;
-                listBoxStickerCategory.ItemsSource = s2.dictStickers.Values;
+                listBoxStickerCategory.ItemsSource = s2.ListStickers;
             }
         }
 
@@ -4004,7 +3969,7 @@ namespace windows_client.View
                 stNoStickers.Visibility = Visibility.Collapsed;
                 PostRequestForBatchStickers(s2);
             }
-            else if (s2 == null || s2.dictStickers.Count == 0)
+            else if (s2 == null || s2.ListStickers.Count == 0)
             {
                 stLoading.Visibility = Visibility.Collapsed;
                 listBoxStickerCategory.Visibility = Visibility.Collapsed;
@@ -4015,7 +3980,7 @@ namespace windows_client.View
                 stLoading.Visibility = Visibility.Collapsed;
                 listBoxStickerCategory.Visibility = Visibility.Visible;
                 stNoStickers.Visibility = Visibility.Collapsed;
-                listBoxStickerCategory.ItemsSource = s2.dictStickers.Values;
+                listBoxStickerCategory.ItemsSource = s2.ListStickers;
             }
         }
 
@@ -4027,9 +3992,9 @@ namespace windows_client.View
             {
                 List<string> listStickerIds = new List<string>();
                 JArray existingIds = new JArray();
-                foreach (string id in stickerCategory.dictStickers.Keys)
+                foreach (Sticker sticker in stickerCategory.ListStickers)
                 {
-                    existingIds.Add(id);
+                    existingIds.Add(sticker.Id);
                 }
                 json["stIds"] = existingIds;
 
@@ -4042,8 +4007,8 @@ namespace windows_client.View
 
         private void StickersRequestCallBack(JObject json, Object obj)
         {
-            StickerCategory stickerCategory = null;
-            Sticker sticker = null;
+            StickerCategory stickerCategory = null;//to show batch sticker request
+            Sticker sticker = null;//to show single sticker request
             if (obj == null)
                 return;
             if (obj is StickerCategory)
@@ -4054,10 +4019,6 @@ namespace windows_client.View
                 return;
             if ((json == null) || HikeConstants.FAIL == (string)json[HikeConstants.STAT])
             {
-                if (sticker != null)
-                {
-                    dictDownloadingStickers.Remove(sticker.Category + sticker.Id);
-                }
                 if (stickerCategory != null)
                 {
                     stickerCategory.IsDownLoading = false;
@@ -4067,7 +4028,7 @@ namespace windows_client.View
 
             string category = (string)json["catId"];
             JObject stickers = (JObject)json["data"];
-            Dictionary<string, byte[]> dictStickers = new Dictionary<string, byte[]>();
+            Dictionary<string, byte[]> dictHighResStickersBytes = new Dictionary<string, byte[]>();
             bool hasMoreStickers = true;
             if (json["st"] != null)
             {
@@ -4090,56 +4051,83 @@ namespace windows_client.View
                     string id = (string)kv.Key;
                     string iconBase64 = stickers[kv.Key].ToString();
                     byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                    dictStickers[id] = imageBytes;
-                    stickerCategory.dictStickers[id] = new Sticker(category, id, null);
+                    dictHighResStickersBytes[id] = imageBytes;
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine("NewChatThread : callBack : Exception : " + ex.Message);
                 }
             }
-            stickerCategory.WriteHighResToFile(dictStickers);
+            stickerCategory.WriteHighResToFile(dictHighResStickersBytes);
 
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                Dictionary<string, byte[]> dictStickers1 = new Dictionary<string, byte[]>();
-                foreach (string stickerid in dictStickers.Keys)
+                Dictionary<string, byte[]> dictLowResStickersBytes = new Dictionary<string, byte[]>();
+                foreach (string stickerid in dictHighResStickersBytes.Keys)
                 {
-                    BitmapImage imag = UI_Utils.Instance.createImageFromBytes(dictStickers[stickerid]);
-                    if (sticker != null && dictDownloadingStickers.ContainsKey(sticker.Category + sticker.Id))
+                    BitmapImage highResImage = UI_Utils.Instance.createImageFromBytes(dictHighResStickersBytes[stickerid]);
+                    if (sticker != null)
                     {
                         string key = sticker.Category + sticker.Id;
-                        List<ConvMessage> listConvMessage = dictDownloadingStickers[key];
-                        foreach (ConvMessage convMessage in listConvMessage)
+                        ConvMessage convMessage;
+                        if (dictDownloadingStickers.TryGetValue(key, out convMessage))
                         {
-                            convMessage.SetStickerImage(imag);
+                            convMessage.SetStickerImage(highResImage);
+                            dictDownloadingStickers.Remove(key);
                         }
-                        dictDownloadingStickers.Remove(key);
+                        dictStickerCache[key] = highResImage;
                     }
-                    Byte[] lowResImageBytes = UI_Utils.Instance.PngImgToJpegByteArray(imag);
-
-                    dictStickers1[stickerid] = lowResImageBytes;
-                    stickerCategory.dictStickers[stickerid].StickerImage = UI_Utils.Instance.createImageFromBytes(lowResImageBytes);
+                    Byte[] lowResImageBytes = UI_Utils.Instance.PngImgToJpegByteArray(highResImage);
+                    dictLowResStickersBytes[stickerid] = lowResImageBytes;
+                    stickerCategory.ListStickers.Add(new Sticker(category, stickerid, UI_Utils.Instance.createImageFromBytes(lowResImageBytes)));
                 }
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (s, e) =>
-                    {
-                        stickerCategory.WriteLowResToFile(dictStickers1, hasMoreStickers);
-                    };
+                {
+                    stickerCategory.WriteLowResToFile(dictLowResStickersBytes, hasMoreStickers);
+                };
                 bw.RunWorkerAsync();
                 if (stickerCategory != null && category == _selectedCategory)
                 {
                     stLoading.Visibility = Visibility.Collapsed;
                     listBoxStickerCategory.Visibility = Visibility.Visible;
-                    listBoxStickerCategory.ItemsSource = stickerCategory.dictStickers.Values;
+                    listBoxStickerCategory.ItemsSource = stickerCategory.ListStickers;
                 }
                 stickerCategory.IsDownLoading = false;
             });
         }
 
-
         #endregion
+
+        #region Walkie Talkie
+
+        private void Record_ActionIconTapped(object sender, EventArgs e)
+        {
+            recordGrid.Visibility = Visibility.Visible;
+            sendMsgTxtbox.Visibility = Visibility.Collapsed;
+
+            if (this.ApplicationBar != null)
+                (this.ApplicationBar.Buttons[0] as ApplicationBarIconButton).IsEnabled = false;
+
+            recordButtonGrid.Background = gridBackgroundBeforeRecording;
+            recordButton.Text = HOLD_AND_TALK;
+            recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
+            walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
+        }
+
+        void Hold_To_Record(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
+        {
+            WalkieTalkieGrid.Visibility = Visibility.Visible;
+            recordButton.Text = RELEASE_TO_SEND;
+            cancelRecord.Opacity = 0;
+            recordButton.Foreground = UI_Utils.Instance.WhiteTextForeGround;
+            recordButtonGrid.Background = UI_Utils.Instance.HikeMsgBackground;
+            walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieWhiteImage;
+            recordWalkieTalkieMessage();
+        }
+
+
 
         void recordButton_ManipulationCompleted(object sender, System.Windows.Input.ManipulationCompletedEventArgs e)
         {

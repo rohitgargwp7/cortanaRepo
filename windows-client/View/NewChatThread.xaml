@@ -562,7 +562,7 @@
                 <TextBlock Name="txtMsgCount"></TextBlock>
                 <TextBlock Name="txtMsgCharCount"></TextBlock>
             </StackPanel>
-           
+
 
             <StackPanel Margin="0,0,0,0" Visibility="Collapsed"  x:Name="emoticonPanel" Height="350" LostFocus="emoticonPanel_LostFocus" Background="#323232">
                 <Grid Name="gridEmoticons"  Margin="12">
@@ -570,7 +570,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                  
+
                     <controls:Pivot Name="emoticonPivot" Grid.Row="0" SelectionChanged="emoticonPivot_SelectionChanged" Foreground="Black" Height="240">
                         <controls:PivotItem Margin="0,8,0,0">
                             <Grid x:Name="emotGrid0">
@@ -584,12 +584,10 @@
                                 <ListBox Height="230" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="0,0,0,0" Tap="emotList0_Tap">
                                     <ListBox.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <toolkit:WrapPanel ItemHeight="65" ItemWidth="65"/>
+                                            <toolkit:WrapPanel Height="65" Width="65"/>
                                         </ItemsPanelTemplate>
                                     </ListBox.ItemsPanel>
-
                                     <ListBox.ItemTemplate>
-
                                         <DataTemplate>
                                             <Image Margin="5,5,5,5" Height="40" Width="40" Source="{Binding}">
                                             </Image>
@@ -692,23 +690,16 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                  
 
-                    <ListBox  Grid.Row="0" x:Name="listBoxStickerCategory" Height="230" Margin="0,10,0,0" Tap="Stickers_Tap">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <toolkit:WrapPanel ItemHeight="130" ItemWidth="150">
-                                </toolkit:WrapPanel>
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                        <ListBox.ItemTemplate>
 
+                    <phone:LongListSelector  Grid.Row="0" x:Name="listBoxStickerCategory" Height="230" Margin="0,10,0,0" Tap="Stickers_Tap" LayoutMode="Grid" GridCellSize="145,150">
+                        <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
                                 <Image Margin="8,6,8,6" MaxHeight="120" MaxWidth="120" Source="{Binding StickerImage}">
                                 </Image>
                             </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                        </phone:LongListSelector.ItemTemplate>
+                    </phone:LongListSelector>
                     <StackPanel Visibility="Collapsed" Grid.Row="0" x:Name="stLoading" Height="230" Margin="0 10 0 0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
                         <TextBlock Text="loading" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 100 0 0"/>
                         <ProgressBar Height="5"  VerticalContentAlignment="Bottom" IsIndeterminate="True" IsEnabled="True" Foreground="White" HorizontalAlignment="Stretch" VerticalAlignment="Center"></ProgressBar>
