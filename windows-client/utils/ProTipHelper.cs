@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using System.IO.IsolatedStorage;
 using System.IO;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using windows_client.Misc;
 using System.Windows;
 
@@ -13,6 +15,7 @@ namespace windows_client.utils
 {
     class ProTipHelper
     {
+        readonly Int32 MAX_QUEUE_SIZE = 1000;
         private static string PROTIPS_DIRECTORY = "ProTips";
         private static string proTipsListFileName = "proTipList";
         
@@ -67,6 +70,9 @@ namespace windows_client.utils
 
             if (_proTipsQueue == null)
                 _proTipsQueue = new Queue<string>();
+
+            if (_proTipsQueue.Count == MAX_QUEUE_SIZE)
+                RemoveProTip(GetProTipFromFile(_proTipsQueue.Dequeue()));
 
             WriteProTipIdsToFile(); // new protip added, persist it before-hand in case of crash
             WriteProTipToFile(id, header, body, imageUrl);
@@ -133,6 +139,30 @@ namespace windows_client.utils
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
                 string fileName = PROTIPS_DIRECTORY + "\\" + CurrentProTip._id;
+
+                if (store.FileExists(fileName))
+                    store.DeleteFile(fileName);
+
+                fileName = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
+
+                if (store.FileExists(fileName))
+                    store.DeleteFile(fileName);
+            }
+        }
+
+        public void RemoveProTip(ProTip tip)
+        {
+            if (tip == null)
+                return;
+
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                string fileName = PROTIPS_DIRECTORY + "\\" + tip._id;
+
+                if (store.FileExists(fileName))
+                    store.DeleteFile(fileName);
+
+                fileName = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(tip.ImageUrl);
 
                 if (store.FileExists(fileName))
                     store.DeleteFile(fileName);
@@ -281,10 +311,10 @@ namespace windows_client.utils
                                         proTip._body = null;
 
                                     count = reader.ReadInt32();
-                                    proTip._imageUrl = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                                    proTip.ImageUrl = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
 
-                                    if (proTip._imageUrl == "*@N@*")
-                                        proTip._imageUrl = null;
+                                    if (proTip.ImageUrl == "*@N@*")
+                                        proTip.ImageUrl = null;
                                 }
 
                                 file.Close();
@@ -334,7 +364,32 @@ namespace windows_client.utils
         public string _id;
         public string _header;
         public string _body;
-        public string _imageUrl;
+        public string ImageUrl;
+
+        ImageSource _tipImage;
+        public ImageSource TipImage
+        {
+            get
+            {
+                if (_tipImage == null)
+                {
+                    _tipImage = ProcesImageSource();
+                    return _tipImage;
+                }
+                else
+                    return _tipImage;
+            }
+        }
+
+        private ImageSource ProcesImageSource()
+        {
+            ImageSource source = null;
+
+            if (!String.IsNullOrEmpty(ImageUrl))
+                ImageLoader.Load(source as BitmapImage, new Uri(ImageUrl), null, "ProTips\\" + Utils.ConvertUrlToFileName(ImageUrl));
+
+            return source;
+        }
 
         public ProTip() { }
 
@@ -343,7 +398,8 @@ namespace windows_client.utils
             _id = id;
             _header = header;
             _body = body;
-            _imageUrl = imageUrl;
+            ImageUrl = imageUrl;
+            _tipImage = ProcesImageSource();
         }
 
         public void Write(BinaryWriter writer)
@@ -363,10 +419,10 @@ namespace windows_client.utils
                     writer.WriteStringBytes(_body);
 
 
-                if (_imageUrl == null)
+                if (ImageUrl == null)
                     writer.WriteStringBytes("*@N@*");
                 else
-                    writer.WriteStringBytes(_imageUrl);
+                    writer.WriteStringBytes(ImageUrl);
             }
             catch (Exception ex)
             {
@@ -393,10 +449,10 @@ namespace windows_client.utils
                     _body = null;
                 
                 count = reader.ReadInt32();
-                _imageUrl = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                ImageUrl = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 
-                if (_imageUrl == "*@N@*")
-                    _imageUrl = null;
+                if (ImageUrl == "*@N@*")
+                    ImageUrl = null;
             }
             catch (Exception ex)
             {

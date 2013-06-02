@@ -2286,8 +2286,12 @@ namespace windows_client.View
                 proTipTitleText.Text = proTip._header;
                 proTipContentText.Text = proTip._body;
 
-                if(!String.IsNullOrEmpty(proTip._imageUrl))
-                    AccountUtils.createGetRequest(proTip._imageUrl, getProTipPic_Callback, true, Utils.ConvertUrlToFileName(proTip._imageUrl));
+                if (!String.IsNullOrEmpty(proTip.ImageUrl))
+                {
+                    proTipImage.Source = proTip.TipImage;
+                    proTipImage.Visibility = Visibility.Visible;
+                    //AccountUtils.createGetRequest(proTip.ImageUrl, getProTipPic_Callback, true, Utils.ConvertUrlToFileName(proTip.ImageUrl));
+                }
 
                 proTipsGrid.Visibility = Visibility.Visible;
             }
@@ -2307,6 +2311,14 @@ namespace windows_client.View
             });
         }
 
+        private void ProTipImage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY] = proTipImage.Source as BitmapImage;
+            Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
+            NavigationService.Navigate(nextPage);
+        }
+
         #endregion
+
     }
 }

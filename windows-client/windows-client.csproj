@@ -193,6 +193,7 @@
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
     <Compile Include="utils\ContactUtils.cs" />
+    <Compile Include="utils\ImageLoader.cs" />
     <Compile Include="utils\ImageUtils.cs" />
     <Compile Include="utils\MoodsInitialiser.cs" />
     <Compile Include="utils\OAuthUtil.cs" />

@@ -16,7 +16,6 @@ namespace windows_client.utils
 {
     public class Utils
     {
-
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
         public static void savedAccountCredentials(JObject obj)
@@ -43,7 +42,6 @@ namespace windows_client.utils
 
         public static string ConvertUrlToFileName(string url)
         {
-
             var restrictedCharaters = new[] { '/', '\\', '*', '"', '|', '<', '>', ':', '?', '.' };
             url = restrictedCharaters.Aggregate(url, (current, restrictedCharater) => current.Replace(restrictedCharater, '_'));
 
