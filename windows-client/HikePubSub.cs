@@ -152,6 +152,7 @@ namespace windows_client
         public static readonly string BAD_USER_PASS = "badUserPass";
 
         public static readonly string UPDATE_GRP_PIC = "up_grp_pic";
+        public static readonly string PRO_TIPS_REC = "proTipRec";
 
         private readonly Thread mThread;
 

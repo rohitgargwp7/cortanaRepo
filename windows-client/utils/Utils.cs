@@ -7,6 +7,7 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using System.IO;
+using System.Linq;
 using Microsoft.Phone.Info;
 using Microsoft.Phone.Net.NetworkInformation;
 using System.Security.Cryptography;
@@ -38,6 +39,16 @@ namespace windows_client.utils
             if (msisdn == HikeConstants.MY_PROFILE_PIC)
                 return false;
             return !msisdn.StartsWith("+");
+        }
+
+        public static string ConvertUrlToFileName(string url)
+        {
+
+            var restrictedCharaters = new[] { '/', '\\', '*', '"', '|', '<', '>', ':', '?', '.' };
+            url = restrictedCharaters.Aggregate(url, (current, restrictedCharater) => current.Replace(restrictedCharater, '_'));
+
+            url = url + ".png";
+            return url;
         }
 
         public static int CompareByName<T>(T a, T b)

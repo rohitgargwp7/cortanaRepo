@@ -1,0 +1,407 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Threading;
+using System.IO.IsolatedStorage;
+using System.IO;
+using windows_client.Misc;
+using System.Windows;
+
+namespace windows_client.utils
+{
+    class ProTipHelper
+    {
+        private static string PROTIPS_DIRECTORY = "ProTips";
+        private static string proTipsListFileName = "proTipList";
+        
+        private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
+        private static object readWriteLock = new object();
+        
+        private static volatile ProTipHelper instance = null;
+        private DispatcherTimer proTipTimer;
+        private static ProTip _currentProTip = null;
+        
+        public event EventHandler<EventArgs> ShowProTip;
+
+        public static ProTip CurrentProTip
+        {
+            get
+            {
+                return _currentProTip;
+            }
+            private set
+            {
+                _currentProTip = value;
+            }
+        }
+
+        public static ProTipHelper Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (instance == null)
+                        {
+                            instance = new ProTipHelper();
+
+                            App.appSettings.TryGetValue(App.PRO_TIP, out _currentProTip);
+
+                            if (_currentProTip == null)
+                                instance.StartTimer();
+                        }
+                    }
+                }
+                return instance;
+            }
+        }
+
+        public void AddProTip(string id, string header, string body, string imageUrl)
+        {
+            if (_proTipsQueue == null)
+                ReadProTipIdsFromFile();
+
+            if (_proTipsQueue == null)
+                _proTipsQueue = new Queue<string>();
+
+            WriteProTipIdsToFile(); // new protip added, persist it before-hand in case of crash
+            WriteProTipToFile(id, header, body, imageUrl);
+
+            ProTip currentProTip = null;
+            App.appSettings.TryGetValue<ProTip>(App.PRO_TIP, out currentProTip);
+
+            if (currentProTip == null)
+            {
+                if (_proTipsQueue.Count == 0)
+                    currentProTip = new ProTip(id, header, body, imageUrl);
+                else
+                    currentProTip = GetProTipFromFile(_proTipsQueue.Dequeue());
+
+                if (currentProTip != null)
+                {
+                    App.WriteToIsoStorageSettings(App.PRO_TIP, currentProTip);
+                    CurrentProTip = currentProTip;
+
+                    if (ShowProTip != null)
+                        ShowProTip(null, null);
+                }
+            }
+            else
+                _proTipsQueue.Enqueue(id);
+        }
+
+        void getNextProTip()
+        {
+            if (_proTipsQueue == null)
+                ReadProTipIdsFromFile();
+
+            if (_proTipsQueue != null && _proTipsQueue.Count > 0)
+            {
+                CurrentProTip = GetProTipFromFile(_proTipsQueue.Dequeue());
+
+                if (CurrentProTip != null)
+                {
+                    App.WriteToIsoStorageSettings(App.PRO_TIP,CurrentProTip);
+
+                    if (ShowProTip != null)
+                        ShowProTip(null, null);
+                }
+            }
+            else
+                CurrentProTip = null;
+            //still currentprotip may be null if queue is empty
+        }
+
+        public void ChangeTimerTime(Int64 time)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(new Action<Int64>(delegate(Int64 newTime)
+            {
+                if (proTipTimer != null)
+                    proTipTimer.Interval = new TimeSpan(newTime * 1000); //time might have changed, hence reinitializing timer
+            }),time);
+        }
+
+        public void RemoveCurrentProTip()
+        {
+            if (CurrentProTip == null)
+                return;
+
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                string fileName = PROTIPS_DIRECTORY + "\\" + CurrentProTip._id;
+
+                if (store.FileExists(fileName))
+                    store.DeleteFile(fileName);
+            }
+        }
+
+        void WriteProTipIdsToFile()
+        {
+            lock (readWriteLock)
+            {
+                try
+                {
+                    string fileName = PROTIPS_DIRECTORY + "\\" + proTipsListFileName;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (!store.DirectoryExists(PROTIPS_DIRECTORY))
+                            store.CreateDirectory(PROTIPS_DIRECTORY);
+
+                        if (store.FileExists(fileName))
+                            store.DeleteFile(fileName);
+
+                        using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                        {
+                            using (BinaryWriter writer = new BinaryWriter(file))
+                            {
+                                writer.Seek(0, SeekOrigin.Begin);
+                                writer.Write(_proTipsQueue.Count);
+
+                                foreach (var id in _proTipsQueue)
+                                    writer.Write(id);
+
+                                writer.Flush();
+                                writer.Close();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("ProTip Helper :: Write ProTip Ids To File, Exception : " + ex.StackTrace);
+                }
+            }
+        }
+
+        void ReadProTipIdsFromFile()
+        {
+             lock (readWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                {
+                    try
+                    {
+                        string fileName = PROTIPS_DIRECTORY + "\\" + proTipsListFileName;
+                        if (store.FileExists(fileName))
+                        {
+                            _proTipsQueue = new Queue<string>();
+                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            {
+                                using (BinaryReader reader = new BinaryReader(file))
+                                {
+                                    int count = reader.ReadInt32();
+                                    
+                                    for (int i = 0; i < count; i++)
+                                        _proTipsQueue.Enqueue(reader.ReadString());
+
+                                    reader.Close();
+                                }
+
+                                file.Close();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("ProTip Helper :: Get ProTip ids From File, Exception : " + ex.StackTrace);
+                    }
+                }
+            }
+        }
+
+        void WriteProTipToFile(string id, string header, string body, string imageUrl)
+        {
+            lock (readWriteLock)
+            {
+                ProTip proTip = new ProTip(id,header,body,imageUrl);
+
+                try
+                {
+                    string fileName = PROTIPS_DIRECTORY + "\\" + id;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (!store.DirectoryExists(PROTIPS_DIRECTORY))
+                            store.CreateDirectory(PROTIPS_DIRECTORY);
+
+                        using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                        {
+                            using (BinaryWriter writer = new BinaryWriter(file))
+                            {
+                                writer.Seek(0, SeekOrigin.Begin);
+                                proTip.Write(writer);
+                                writer.Flush();
+                                writer.Close();
+                            }
+
+                            file.Close();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("ProTip Helper :: WriteProTip To File, Exception : " + ex.StackTrace);
+                }
+            }
+        }
+
+        ProTip GetProTipFromFile(string id)
+        {
+            ProTip proTip = null;
+
+            lock (readWriteLock)
+            {
+                try
+                {
+                    string fileName = PROTIPS_DIRECTORY + "\\" + id;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (store.FileExists(fileName))
+                        {
+                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
+                            {
+                                using (var reader = new BinaryReader(file))
+                                {
+                                    proTip = new ProTip();
+                                    
+                                    var count = reader.ReadInt32();
+                                    proTip._id = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+
+                                    count = reader.ReadInt32();
+                                    proTip._header = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                                    if (proTip._header == "*@N@*")
+                                        proTip._header = null;
+
+                                    count = reader.ReadInt32();
+                                    proTip._body = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                                    if (proTip._body == "*@N@*")
+                                        proTip._body = null;
+
+                                    count = reader.ReadInt32();
+                                    proTip._imageUrl = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+
+                                    if (proTip._imageUrl == "*@N@*")
+                                        proTip._imageUrl = null;
+                                }
+
+                                file.Close();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    proTip = null;
+                    System.Diagnostics.Debug.WriteLine("ProTip Helper :: Get ProTip From File, Exception : " + ex.StackTrace);
+                }
+            }
+
+            return proTip;
+        }
+
+        public void StartTimer()
+        {
+            Int64 time = 0;
+            App.appSettings.TryGetValue(App.DISMISS_TIME, out time);
+
+            if (time > 0)
+            {
+                if (proTipTimer == null)
+                    proTipTimer = new DispatcherTimer();
+
+                proTipTimer.Interval = new TimeSpan(time * 1000); //time might have changed, hence reinitializing timer
+
+                proTipTimer.Tick += proTipTimer_Tick;
+
+                proTipTimer.Start();
+            }
+        }
+
+        void proTipTimer_Tick(object sender, EventArgs e)
+        {
+            proTipTimer.Stop();
+            getNextProTip();
+        }
+
+        Queue<string> _proTipsQueue;
+    }
+
+    public class ProTip
+    {
+        public string _id;
+        public string _header;
+        public string _body;
+        public string _imageUrl;
+
+        public ProTip() { }
+
+        public ProTip(string id, string header, string body, string imageUrl)
+        {
+            _id = id;
+            _header = header;
+            _body = body;
+            _imageUrl = imageUrl;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            try
+            {
+                writer.WriteStringBytes(_id);
+                
+                if (_header == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(_header);
+
+                if (_body == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(_body);
+
+
+                if (_imageUrl == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(_imageUrl);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("ProTip :: Write : Unable To write, Exception : " + ex.StackTrace);
+            }
+
+        }
+
+        public void Read(BinaryReader reader)
+        {
+            try
+            {
+                int count = reader.ReadInt32();
+                _id = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                
+                count = reader.ReadInt32();
+                _header = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (_header == "*@N@*")
+                    _header = null;
+                
+                count = reader.ReadInt32();
+                _body = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (_body == "*@N@*")
+                    _body = null;
+                
+                count = reader.ReadInt32();
+                _imageUrl = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                
+                if (_imageUrl == "*@N@*")
+                    _imageUrl = null;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("ContactInfo :: Read : Read, Exception : " + ex.StackTrace);
+            }
+        }
+    }
+}

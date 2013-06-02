@@ -201,6 +201,13 @@ namespace windows_client
         public static readonly string MOOD = "mood";
         public static readonly string TIME_OF_DAY = "timeofday";
 
+        public static readonly string PRO_TIP_ID = "i";
+        public static readonly string PRO_TIP_HEADER = "h";
+        public static readonly string PRO_TIP_TEXT = "t";
+        public static readonly string PRO_TIP_IMAGE = "img";
+        public static readonly string PRO_TIP_TIME = "wt";
+        public static readonly Int64 DEFAULT_PRO_TIP_TIME = 1;
+
         public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
         public static string MSISDN = "msisdn";
@@ -326,7 +333,7 @@ namespace windows_client
             public static readonly string STATUS_UPDATE = "su";
             public static readonly string DELETE_STATUS_UPDATE = "dsu";
             public static readonly string GROUP_DISPLAY_PIC = "dp";
-
+            public static readonly string PRO_TIPS = "pt";
         }
 
         public static class AppSettings

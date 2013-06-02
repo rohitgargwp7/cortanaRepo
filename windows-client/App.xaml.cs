@@ -50,6 +50,9 @@ namespace windows_client
         public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
         public static readonly string APP_UPDATE_POSTPENDING = "updatePost";
 
+        public static readonly string PRO_TIP = "proTip";
+        public static readonly string DISMISS_TIME = "dismissTime";
+
         public static readonly string INVITED = "invited";
         public static readonly string INVITED_JOINED = "invitedJoined";
 

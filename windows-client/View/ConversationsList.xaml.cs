@@ -67,6 +67,20 @@ namespace windows_client.View
             {
                 this.Loaded += ConversationsList_Loaded;
             }
+
+            ProTipHelper.Instance.ShowProTip -= Instance_ShowProTip;
+            ProTipHelper.Instance.ShowProTip += Instance_ShowProTip;
+
+            if (ProTipHelper.CurrentProTip != null)
+                showProTip();
+        }
+
+        void Instance_ShowProTip(object sender, EventArgs e)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    showProTip();
+                });
         }
 
         private void ConversationsList_Loaded(object sender, System.Windows.RoutedEventArgs e)
@@ -378,6 +392,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.UNBLOCK_USER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
             mPubSub.addListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
+            mPubSub.addListener(HikePubSub.PRO_TIPS_REC, this);
         }
 
         private void removeListeners()
@@ -401,6 +416,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.UNBLOCK_USER, this);
                 mPubSub.removeListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
                 mPubSub.removeListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
+                mPubSub.removeListener(HikePubSub.PRO_TIPS_REC, this);
             }
             catch (Exception ex)
             {
@@ -1272,6 +1288,42 @@ namespace windows_client.View
                     }
                 });
 
+            }
+            #endregion
+            #region PRO_TIPS
+            else if (HikePubSub.PRO_TIPS_REC == type)
+            {
+                var vals = obj as object[];
+
+                var id = (string)vals[0];
+                var header = (string)vals[1];
+                var text = (string)vals[2];
+                var imageUrl = (string)vals[3];
+                Int64 time = 0;
+                try
+                {
+                    time = (Int64)vals[4];
+                }
+                catch
+                {
+                }
+
+                if (time > 0)
+                {
+                    if (App.appSettings.Contains(App.DISMISS_TIME))
+                        App.appSettings[App.DISMISS_TIME] = time;
+                    else
+                        App.WriteToIsoStorageSettings(App.DISMISS_TIME, time);
+
+                    ProTipHelper.Instance.ChangeTimerTime(time);
+                }
+                else
+                {
+                    if (!App.appSettings.Contains(App.DISMISS_TIME))
+                        App.WriteToIsoStorageSettings(App.DISMISS_TIME, HikeConstants.DEFAULT_PRO_TIP_TIME);
+                }
+
+                ProTipHelper.Instance.AddProTip(id, header, text, imageUrl);
             }
             #endregion
             #region DELETE CONVERSATION
@@ -2204,8 +2256,57 @@ namespace windows_client.View
 
         #endregion
 
+        #region Pro Tips
+     
+        private void dismissProTip_Click(object sender, RoutedEventArgs e)
+        {
+            proTipsGrid.Visibility = Visibility.Collapsed;
 
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.DoWork += (ss, ee) =>
+                {
+                    if (App.appSettings.Contains(App.PRO_TIP))
+                    {
+                        ProTipHelper.Instance.RemoveCurrentProTip();
+                        App.appSettings.Remove(App.PRO_TIP);
+                    }
+                };
+            worker.RunWorkerAsync();
 
+            ProTipHelper.Instance.StartTimer();
+        }
 
+        void showProTip()
+        {
+            ProTip proTip;
+            App.appSettings.TryGetValue(App.PRO_TIP, out proTip);
+
+            if (proTip != null)
+            {
+                proTipTitleText.Text = proTip._header;
+                proTipContentText.Text = proTip._body;
+
+                if(!String.IsNullOrEmpty(proTip._imageUrl))
+                    AccountUtils.createGetRequest(proTip._imageUrl, getProTipPic_Callback, true, Utils.ConvertUrlToFileName(proTip._imageUrl));
+
+                proTipsGrid.Visibility = Visibility.Visible;
+            }
+        }
+
+        public void getProTipPic_Callback(byte[] fullBytes, object fName)
+        {
+            string fileName = fName as string; //fname can be used in future.
+
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                if (proTipsGrid.Visibility == Visibility.Visible)
+                {
+                    if (fullBytes != null && fullBytes.Length > 0)
+                        proTipImage.Source = UI_Utils.Instance.createImageFromBytes(fullBytes);
+                }
+            });
+        }
+
+        #endregion
     }
 }
