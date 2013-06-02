@@ -555,7 +555,11 @@ namespace windows_client.Model
             }
             set
             {
-                _isStopped = value;
+                if (_isStopped != value)
+                {
+                    _isStopped = value;
+                    NotifyPropertyChanged("PlayTimeText");
+                }
             }
         }
 

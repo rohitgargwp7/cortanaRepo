@@ -225,7 +225,14 @@ namespace windows_client.View
                         else
                             currentAudioMessage.PlayProgressBarValue = pos * 100 / dur;
 
-                        currentAudioMessage.PlayTimeText = pos == dur ? currentAudioMessage.DurationText : currentAudioMessage.DurationTimeSpan.Subtract(mediaElement.Position).ToString("mm\\:ss");
+                        if(!String.IsNullOrEmpty(currentAudioMessage.DurationText))
+                        {
+                            currentAudioMessage.PlayTimeText = pos == dur ? currentAudioMessage.DurationText : currentAudioMessage.DurationTimeSpan.Subtract(mediaElement.Position).ToString("mm\\:ss");
+                        }
+                        else
+                        {
+                            currentAudioMessage.PlayTimeText = pos == dur || pos == 0 ? "" : mediaElement.NaturalDuration.TimeSpan.Subtract(mediaElement.Position).ToString("mm\\:ss");
+                        }
                     }
                 }
             };
@@ -1650,6 +1657,7 @@ namespace windows_client.View
                             {
                                 currentAudioMessage.IsPlaying = false;
                                 currentAudioMessage.IsStopped = false;
+                                currentAudioMessage.PlayTimeText = currentAudioMessage.DurationText;
                                 currentAudioMessage.PlayProgressBarValue = 0;
                                 currentAudioMessage = null;
                             }
