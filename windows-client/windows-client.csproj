@@ -137,6 +137,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\InAppTipUC.xaml.cs">
+      <DependentUpon>InAppTipUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MyRichTextBox.cs" />
     <Compile Include="Controls\ProgressIndicator.cs" />
     <Compile Include="Controls\StatusUpdate\FriendRequestStatus.xaml.cs">
@@ -181,6 +184,7 @@
     <Compile Include="Model\MessageMetadata.cs" />
     <Compile Include="Model\MiscDatabases.cs" />
     <Compile Include="Model\StatusMessage.cs" />
+    <Compile Include="Model\ToolTip.cs" />
     <Compile Include="Mqtt\ConnectCB.cs" />
     <Compile Include="Mqtt\DisconnectCB.cs" />
     <Compile Include="Mqtt\HikeMqttManager.cs" />
@@ -298,6 +302,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="Controls\InAppTipUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\StatusUpdate\FriendRequestStatus.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

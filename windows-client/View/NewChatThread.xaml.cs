@@ -186,7 +186,7 @@ namespace windows_client.View
         public NewChatThread()
         {
             InitializeComponent();
-            
+
             _dt = new DispatcherTimer();
             _dt.Interval = TimeSpan.FromMilliseconds(33);
 
@@ -194,7 +194,7 @@ namespace windows_client.View
 
             // Event handler for getting audio data when the buffer is full
             _microphone.BufferReady += new EventHandler<EventArgs>(microphone_BufferReady);
-
+            
             _progressTimer = new DispatcherTimer();
             _progressTimer.Interval = TimeSpan.FromSeconds(1);
             _progressTimer.Tick += new EventHandler(showWalkieTalkieProgress);
@@ -211,6 +211,21 @@ namespace windows_client.View
                 WalkieTalkieGridOverlayLayer.Opacity = 1;
             }
 
+            #region Create tip
+            InAppTipUC inAppTipUC = new Controls.InAppTipUC();
+            Canvas.SetTop(inAppTipUC, 0);
+            Canvas.SetLeft(inAppTipUC, 0);
+            Canvas.SetZIndex(inAppTipUC, 3);
+            inAppTipUC.Visibility = Visibility.Visible;
+            inAppTipUC.TopPathMargin = new Thickness(20, 0, 0, 0);
+            inAppTipUC.TopPathVisibility = Visibility.Visible;
+            inAppTipUC.BottomPathVisibility = Visibility.Collapsed;
+            inAppTipUC.Tip = "Click here to dismiss tip.Click here to dismiss tip.Click here to dismiss tip.";
+            inAppTipUC.Margin = new Thickness(50, 70, 50, 0);
+
+            LayoutRoot.Children.Add(inAppTipUC);
+            #endregion
+
             CompositionTarget.Rendering += (sender, args) =>
             {
                 if (mediaElement != null && mediaElement.Source != null)
@@ -225,7 +240,7 @@ namespace windows_client.View
                         else
                             currentAudioMessage.PlayProgressBarValue = pos * 100 / dur;
 
-                        currentAudioMessage.PlayTimeText = pos == dur || pos==0 ? "" : mediaElement.Position.ToString("mm\\:ss");
+                        currentAudioMessage.PlayTimeText = pos == dur || pos == 0 ? "" : mediaElement.Position.ToString("mm\\:ss");
                     }
                 }
             };

@@ -362,6 +362,31 @@ namespace windows_client.ViewModel
             }
         }
 
+        public List<ToolTip> TipList = new List<ToolTip>();
+
+        void LoadTips()
+        {
+            byte marked;
+            App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
+
+            if (marked == null)
+            {
+                marked = (byte)0;
+                App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
+            }
+
+            bool isShownVal = (marked & 0x01) == 1;
+            TipList.Add(new ToolTip() { Tip = "A", IsShown = isShownVal, IsTop = true, TipMargin = new Thickness(10, 0, 0, 0), FullTipMargin = new Thickness(20, 30, 20, 0) });
+            isShownVal = (marked & 0x02) == 1;
+            TipList.Add(new ToolTip() { Tip = "B", IsShown = isShownVal, IsTop = false, TipMargin = new Thickness(10, 0, 0, 0), FullTipMargin = new Thickness(20, 30, 20, 0) });
+            isShownVal = (marked & 0x04) == 1;
+            TipList.Add(new ToolTip() { Tip = "C", IsShown = isShownVal, IsTop = true, TipMargin = new Thickness(10, 0, 0, 0), FullTipMargin = new Thickness(20, 30, 20, 0) });
+            isShownVal = (marked & 0x08) == 1;
+            TipList.Add(new ToolTip() { Tip = "D", IsShown = isShownVal, IsTop = true, TipMargin = new Thickness(10, 0, 0, 0), FullTipMargin = new Thickness(20, 30, 20, 0) });
+            isShownVal = (marked & 0x10) == 1;
+            TipList.Add(new ToolTip() { Tip = "E", IsShown = isShownVal, IsTop = true, TipMargin = new Thickness(10, 0, 0, 0), FullTipMargin = new Thickness(20, 30, 20, 0) });
+        }
+
         public void RemoveFrndReqFromTimeline(string msisdn, FriendsTableUtils.FriendStatusEnum friendStatus)
         {
             if (friendStatus == FriendsTableUtils.FriendStatusEnum.FRIENDS)
