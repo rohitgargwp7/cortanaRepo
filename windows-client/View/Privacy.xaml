@@ -6,6 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -32,23 +33,30 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+            <toolkit:ToggleSwitch Margin="-12,0,-12,-12" x:Name="lastSeenTimeStampToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="lastSeenTimeStampToggle_Loaded"
+                                  Header="{Binding Path= LocalizedResources.Show_LastSeen_TimeStamp, Source={StaticResource LocalizedStrings}}" />
+            <Grid Grid.Row="1" Margin="0,-20,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <Image x:Name="unlinkAccount" Width="32" Source="/View/images/unlink_account_white.png" VerticalAlignment="Center" Margin="0,17,0,0" Grid.Row="1" Grid.Column="0"></Image>
-            <Image x:Name="deleteAccount" Width="28" Source="/View/images/delete_account_white.png" VerticalAlignment="Center" Margin="0,17,0,0" Grid.Row="0" Grid.Column="0"></Image>
-            <StackPanel Grid.Row="0" Grid.Column="1" Margin="20,30,0,0" Tap="Delete_Tap">
-                <TextBlock Name="deleteTxtBlk" Text="{Binding Path= LocalizedResources.Delete_Txt_Caps, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                <TextBlock Text="{Binding Path= LocalizedResources.Privacy_DeleteAccountText, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="1" Margin="20,30,0,0" Tap="Unlink_Tap">
-                <TextBlock Name="unlinkTxtBlk" Text="{Binding Path= LocalizedResources.Unlink_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                <TextBlock Text="{Binding Path= LocalizedResources.Privacy_UnlinkAccountText, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
-            </StackPanel>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
+                <Image x:Name="unlinkAccount" Width="32" Source="/View/images/unlink_account_white.png" VerticalAlignment="Center" Margin="0,17,0,0" Grid.Row="1" Grid.Column="0"></Image>
+                <Image x:Name="deleteAccount" Width="28" Source="/View/images/delete_account_white.png" VerticalAlignment="Center" Margin="0,17,0,0" Grid.Row="0" Grid.Column="0"></Image>
+                <StackPanel Grid.Row="0" Grid.Column="1" Margin="20,30,0,0" Tap="Delete_Tap">
+                    <TextBlock Name="deleteTxtBlk" Text="{Binding Path= LocalizedResources.Delete_Txt_Caps, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Privacy_DeleteAccountText, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="1" Margin="20,30,0,0" Tap="Unlink_Tap">
+                    <TextBlock Name="unlinkTxtBlk" Text="{Binding Path= LocalizedResources.Unlink_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Privacy_UnlinkAccountText, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
+                </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
 

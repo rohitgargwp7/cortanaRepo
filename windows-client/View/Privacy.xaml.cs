@@ -40,6 +40,22 @@ namespace windows_client.View
                 this.unlinkAccount.Source = new BitmapImage(new Uri("images/unlink_account_black.png", UriKind.Relative));
                 this.deleteAccount.Source = new BitmapImage(new Uri("images/delete_account_black.png", UriKind.Relative));
             }
+
+            byte lastSeenSettingsValue;
+            if (App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out lastSeenSettingsValue))
+            {
+                if (lastSeenSettingsValue > 0)
+                {
+                    lastSeenTimeStampToggle.IsChecked = true;
+                    lastSeenTimeStampToggle.Content = AppResources.On;
+                }
+                else
+                {
+                    lastSeenTimeStampToggle.IsChecked = false;
+                    lastSeenTimeStampToggle.Content = AppResources.Off;
+                }
+            }
+
             RegisterListeners();
         }
 
@@ -198,6 +214,39 @@ namespace windows_client.View
         public void onEventReceived(string type, object obj)
         {
 
+        }
+
+        private void lastSeenTimeStampToggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            lastSeenTimeStampToggle.Loaded -= lastSeenTimeStampToggle_Loaded;
+            lastSeenTimeStampToggle.Checked += lastSeenTimeStampToggle_Checked;
+            lastSeenTimeStampToggle.Unchecked += lastSeenTimeStampToggle_Unchecked;
+        }
+
+        private void lastSeenTimeStampToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.lastSeenTimeStampToggle.Content = AppResources.On;
+            App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, (byte)1);
+
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            JObject data = new JObject();
+            data.Add(HikeConstants.LASTSEENONOFF, "true");
+            obj.Add(HikeConstants.DATA, data);
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
+
+        private void lastSeenTimeStampToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.lastSeenTimeStampToggle.Content = AppResources.Off;
+            App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, (byte)0);
+
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            JObject data = new JObject();
+            data.Add(HikeConstants.LASTSEENONOFF, "false");
+            obj.Add(HikeConstants.DATA, data);
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
     }
 }

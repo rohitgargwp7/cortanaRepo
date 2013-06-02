@@ -1714,7 +1714,7 @@ Get hike: http://get.hike.in</value>
     <comment>Release to send recorded data</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>Show my last seen time stamp</value>
+    <value>Show my last seen</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
     <value>Last seen</value>

@@ -3471,7 +3471,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show my last seen time stamp.
+        ///   Looks up a localized string similar to Show my last seen.
         /// </summary>
         public static string Show_LastSeen_TimeStamp {
             get {
