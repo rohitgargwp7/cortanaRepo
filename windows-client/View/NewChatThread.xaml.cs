@@ -809,14 +809,23 @@ namespace windows_client.View
 
             if (keyExist)
             {
-                if (chatThreadCount == 0 && !App.ViewModel.TipList[0].IsShown || App.ViewModel.TipList[0].IsCurrentlyShown)
-                    App.ViewModel.DisplayTip(LayoutRoot, 0);
-                else if (chatThreadCount == 1 && (!App.ViewModel.TipList[1].IsShown || App.ViewModel.TipList[1].IsCurrentlyShown))
-                    App.ViewModel.DisplayTip(LayoutRoot, 1);
+                if (chatThreadCount == 0)
+                {
+                    if (!App.ViewModel.TipList[0].IsShown || App.ViewModel.TipList[0].IsCurrentlyShown)
+                        App.ViewModel.DisplayTip(LayoutRoot, 0);
+                    else
+                        chatThreadCount++;
+                }
+                else if (chatThreadCount == 1)
+                {
+                    if (!App.ViewModel.TipList[1].IsShown || App.ViewModel.TipList[1].IsCurrentlyShown)
+                        App.ViewModel.DisplayTip(LayoutRoot, 1);
+                    else
+                        chatThreadCount++;
+                }
                 else
                     showNudgeTute();
-
-                chatThreadCount++;
+                
                 App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
             }
         }

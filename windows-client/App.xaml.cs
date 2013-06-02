@@ -468,11 +468,17 @@ namespace windows_client
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
-            if (isNewInstall || _latestVersion != _currentVersion)
+            if (isNewInstall)
             {
                 App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, 0);
                 App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, (byte)0);
                 App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0);
+            }
+            else if (_latestVersion != _currentVersion)
+            {
+                App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, 0);
+                App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, (byte)0x18);
+                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0x18);
             }
 
             // if not new install && current version is less than equal to version 1.8.0.0  and upgrade is done for wp8 device
