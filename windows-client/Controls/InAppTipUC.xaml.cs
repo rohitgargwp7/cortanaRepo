@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using windows_client.utils;
 
 namespace windows_client.Controls
 {
@@ -15,12 +16,29 @@ namespace windows_client.Controls
         public InAppTipUC()
         {
             InitializeComponent();
+            closeButtonImage.Source = UI_Utils.Instance.CloseButtonImage;
         }
 
-        private void LayoutRoot_Tap_1(object sender, System.Windows.Input.GestureEventArgs e)
+        private void LayoutRoot_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-
+            if (Dismissed != null)
+                Dismissed(this, null);
         }
+
+        public Int32 TipIndex
+        {
+            get
+            {
+                return (Int32)GetValue(TipIndexProperty);
+            }
+            set
+            {
+                SetValue(TipIndexProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty TipIndexProperty = DependencyProperty.Register(
+            "TipIndex", typeof(Int32), typeof(InAppTipUC), null);
 
         public String Tip
         {
@@ -125,6 +143,14 @@ namespace windows_client.Controls
         {
             InAppTipUC tipControl = obj as InAppTipUC;
             tipControl.bottomBubblePointer.Margin = (Thickness)e.NewValue;
+        }
+
+        public event EventHandler<EventArgs> Dismissed;
+
+        private void close_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (Dismissed != null)
+                Dismissed(this, null);
         }
     }
 }

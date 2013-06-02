@@ -50,7 +50,9 @@ namespace windows_client
         public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
         public static readonly string APP_UPDATE_POSTPENDING = "updatePost";
 
+        public static readonly string CHAT_THREAD_COUNT_KEY = "chatThreadCountKey";
         public static readonly string TIP_MARKED_KEY = "tipMarkedKey";
+        public static readonly string TIP_SHOW_KEY = "tipShowKey";
 
         public static readonly string INVITED = "invited";
         public static readonly string INVITED_JOINED = "invitedJoined";
@@ -465,6 +467,13 @@ namespace windows_client
             e.Cancel = true;
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
+
+            if (isNewInstall || _latestVersion != _currentVersion)
+            {
+                App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, 0);
+                App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, (byte)0);
+                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0);
+            }
 
             // if not new install && current version is less than equal to version 1.8.0.0  and upgrade is done for wp8 device
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "1.8.0.0") != 1 && Utils.IsWP8)

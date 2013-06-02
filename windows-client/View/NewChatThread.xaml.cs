@@ -101,7 +101,6 @@ namespace windows_client.View
         private PhotoChooserTask photoChooserTask;
         private CameraCaptureTask cameraCaptureTask;
         private BingMapsTask bingMapsTask = null;
-        private bool isShowNudgeTute = true;
         private object statusObject = null;
 
         //        private ObservableCollection<MyChatBubble> chatThreadPageCollection = new ObservableCollection<MyChatBubble>();
@@ -210,21 +209,6 @@ namespace windows_client.View
                 WalkieTalkieDeleteGrid.Background = UI_Utils.Instance.WhiteTextForeGround;
                 WalkieTalkieGridOverlayLayer.Opacity = 1;
             }
-
-            #region Create tip
-            InAppTipUC inAppTipUC = new Controls.InAppTipUC();
-            Canvas.SetTop(inAppTipUC, 0);
-            Canvas.SetLeft(inAppTipUC, 0);
-            Canvas.SetZIndex(inAppTipUC, 3);
-            inAppTipUC.Visibility = Visibility.Visible;
-            inAppTipUC.TopPathMargin = new Thickness(20, 0, 0, 0);
-            inAppTipUC.TopPathVisibility = Visibility.Visible;
-            inAppTipUC.BottomPathVisibility = Visibility.Collapsed;
-            inAppTipUC.Tip = "Click here to dismiss tip.Click here to dismiss tip.Click here to dismiss tip.";
-            inAppTipUC.Margin = new Thickness(50, 70, 50, 0);
-
-            LayoutRoot.Children.Add(inAppTipUC);
-            #endregion
 
             CompositionTarget.Rendering += (sender, args) =>
             {
@@ -820,8 +804,21 @@ namespace windows_client.View
                 }
             }
 
-            if (isShowNudgeTute)
-                showNudgeTute();
+            int chatThreadCount;
+            var keyExist = App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out chatThreadCount); //initilaized in upgrade logic
+
+            if (keyExist)
+            {
+                if (chatThreadCount == 0 && !App.ViewModel.TipList[0].IsShown || App.ViewModel.TipList[0].IsCurrentlyShown)
+                    App.ViewModel.DisplayTip(LayoutRoot, 0);
+                else if (chatThreadCount == 1 && (!App.ViewModel.TipList[1].IsShown || App.ViewModel.TipList[1].IsCurrentlyShown))
+                    App.ViewModel.DisplayTip(LayoutRoot, 1);
+                else
+                    showNudgeTute();
+
+                chatThreadCount++;
+                App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
+            }
         }
 
         private void showNudgeTute()

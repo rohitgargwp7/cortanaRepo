@@ -184,7 +184,7 @@
     <Compile Include="Model\MessageMetadata.cs" />
     <Compile Include="Model\MiscDatabases.cs" />
     <Compile Include="Model\StatusMessage.cs" />
-    <Compile Include="Model\ToolTip.cs" />
+    <Compile Include="Model\HikeToolTip.cs" />
     <Compile Include="Mqtt\ConnectCB.cs" />
     <Compile Include="Mqtt\DisconnectCB.cs" />
     <Compile Include="Mqtt\HikeMqttManager.cs" />
@@ -570,6 +570,8 @@
     <Content Include="View\images\remove_wt_icon.png" />
     <Content Include="View\images\settings_icon_dark.png" />
     <Content Include="View\images\settings_icon_white.png" />
+    <Content Include="View\images\close_white.png" />
+    <Content Include="View\images\close_black.png" />
     <Content Include="View\images\timeline_photo.png" />
     <Content Include="View\images\timeline_status_icon.png" />
     <Content Include="View\images\tutorial_arrow.png" />
