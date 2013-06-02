@@ -21,7 +21,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static readonly bool IS_PRODUCTION = true;
+        private static readonly bool IS_PRODUCTION = false;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -340,11 +340,15 @@ namespace windows_client.utils
 
         public static void LastSeenRequest(postResponseFunction finalCallbackFunction, string userNumber)
         {
+            //HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/lastseen/" + userNumber)) as HttpWebRequest;
+            //addToken(req);
+            //req.Method = "GET";
+            //req.BeginGetRequestStream(GetRequestCallback, new object[] { req, finalCallbackFunction });
+
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/lastseen/" + userNumber)) as HttpWebRequest;
             addToken(req);
-            req.Method = "POST";
-            req.ContentType = "application/json";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.LAST_SEEN_POST, finalCallbackFunction });
+            req.Method = "GET";
+            req.BeginGetResponse(GetRequestCallback, new object[] { req, finalCallbackFunction });
         }
 
         private static void setParams_Callback(IAsyncResult result)
@@ -522,11 +526,6 @@ namespace windows_client.utils
                 case RequestType.POST_STATUS:
                     data = vars[2] as JObject;
                     finalCallbackFunction = vars[3] as postResponseFunction;
-                    break;
-                #endregion
-                #region LAST SEEN
-                case RequestType.LAST_SEEN_POST:
-                    finalCallbackFunction = vars[2] as postResponseFunction;
                     break;
                 #endregion
                 #region DEFAULT

@@ -214,7 +214,7 @@ namespace windows_client.View
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
-            data.Add(HikeConstants.LASTSEENONOFF, true);
+            data.Add(HikeConstants.LASTSEENONOFF, "true");
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
@@ -227,7 +227,7 @@ namespace windows_client.View
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
-            data.Add(HikeConstants.LASTSEENONOFF, false);
+            data.Add(HikeConstants.LASTSEENONOFF, "false");
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }

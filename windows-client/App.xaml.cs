@@ -763,6 +763,9 @@ namespace windows_client
                 Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
                 IS_VIEWMODEL_LOADED = true;
 
+
+                if (!appSettings.Contains(App.LAST_SEEN_SEETING))
+                    App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, (byte)1);
             }
             #endregion
             #region POST APP INFO ON UPDATE
@@ -993,20 +996,22 @@ namespace windows_client
             }
         }
 
-        private void sendAppStatusToServer(bool justOpened)
+        private void sendAppStatusToServer(bool foreGrounded)
         {
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
             obj.Add(HikeConstants.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
 
-            if(justOpened)
-                obj.Add(HikeConstants.STATUS, "f");
+            if (foreGrounded)
+            {
+                obj.Add(HikeConstants.STATUS, "fg");
+                JObject data = new JObject();
+                data.Add(HikeConstants.JUSTOPENED, "false");
+                obj.Add(HikeConstants.DATA, data);
+            }
             else
-                obj.Add(HikeConstants.STATUS, "b");
+                obj.Add(HikeConstants.STATUS, "bg");
 
-            JObject data = new JObject();
-            data.Add(HikeConstants.JUSTOPENED, justOpened.ToString());
-            obj.Add(HikeConstants.DATA, data);
 
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }

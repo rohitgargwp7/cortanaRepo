@@ -1941,6 +1941,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last seen.
+        /// </summary>
+        public static string Last_Seen {
+            get {
+                return ResourceManager.GetString("Last_Seen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Location.
         /// </summary>
         public static string Location_Txt {
@@ -2522,6 +2531,15 @@ namespace windows_client.Languages {
         public static string OnHIkeSince_Txt {
             get {
                 return ResourceManager.GetString("OnHIkeSince_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to online.
+        /// </summary>
+        public static string Online {
+            get {
+                return ResourceManager.GetString("Online", resourceCulture);
             }
         }
         

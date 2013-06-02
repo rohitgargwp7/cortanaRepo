@@ -41,7 +41,7 @@ namespace windows_client.DbUtils
                         {
                             store.CreateDirectory(FRIENDS_DIRECTORY);
                         }
-                        long ts = 0;
+                        long ts = 0, lsts=0;
                         using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
                         {
                             if (file.Length > 0)
@@ -68,6 +68,14 @@ namespace windows_client.DbUtils
                                     {
                                         Debug.WriteLine("FriendsTableUtils :: SetFriendStatus : Reading timestamp, Exception : " + e.StackTrace);
                                     }
+                                    try
+                                    {
+                                        lsts = reader.ReadInt64();
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Debug.WriteLine("FriendsTableUtils :: SetFriendStatus : Reading last Seen timestamp, Exception : " + e.StackTrace);
+                                    } 
                                 }
 
                                 //not now and remove from friends are totally same state now
@@ -92,6 +100,7 @@ namespace windows_client.DbUtils
                                 writer.Seek(0, SeekOrigin.Begin);
                                 writer.Write((byte)friendStatus);
                                 writer.Write(ts);
+                                writer.Write(lsts);
                                 writer.Flush();
                                 writer.Close();
                             }
@@ -141,6 +150,7 @@ namespace windows_client.DbUtils
         public static FriendStatusEnum GetFriendInfo(string msisdn, out long ts)
         {
             ts = 0;
+            long lsts = 0;
             FriendStatusEnum friendStatus = FriendStatusEnum.NOT_SET;
             lock (readWriteLock)
             {
@@ -156,7 +166,23 @@ namespace windows_client.DbUtils
                                 using (var reader = new BinaryReader(file))
                                 {
                                     friendStatus = (FriendStatusEnum)reader.ReadByte();
-                                    ts = reader.ReadInt64();
+                                    try
+                                    {
+                                        ts = reader.ReadInt64();
+                                    }
+                                    catch
+                                    {
+                                        ts = 0;
+                                    }
+                                    try
+                                    {
+                                        lsts = reader.ReadInt64();
+                                    }
+                                    catch
+                                    {
+                                        lsts = 0;
+                                    }
+                                    
                                 }
                             }
                         }
@@ -185,7 +211,7 @@ namespace windows_client.DbUtils
 
         public static long GetFriendLastSeenTSFromFile(string msisdn)
         {
-            long ts = 0;
+            long lsts = 0;
             lock (readWriteLock)
             {
                 try
@@ -201,7 +227,7 @@ namespace windows_client.DbUtils
                                 {
                                     var st = (FriendStatusEnum)reader.ReadByte();
                                     var temp = reader.ReadInt64();
-                                    ts = reader.ReadInt64();
+                                    lsts = reader.ReadInt64();
                                 }
                             }
                         }
@@ -212,10 +238,10 @@ namespace windows_client.DbUtils
                     Debug.WriteLine("FriendsTableUtils :: GetFriendStatus :GetFriendStatus, Exception : " + ex.StackTrace);
                 }
             }
-            return ts;
+            return lsts;
         }
 
-        public static void SetFriendLastSeenTSToFile(string msisdn, long newTimeStamp)
+        public static void SetFriendLastSeenTSToFile(string msisdn, long newLSTimeStamp)
         {
             lock (readWriteLock)
             {
@@ -247,7 +273,7 @@ namespace windows_client.DbUtils
                                     writer.Seek(0, SeekOrigin.Begin);
                                     writer.Write((byte)fStatus);
                                     writer.Write(joinTime);
-                                    writer.Write(newTimeStamp);
+                                    writer.Write(newLSTimeStamp);
                                     writer.Flush();
                                     writer.Close();
                                 }

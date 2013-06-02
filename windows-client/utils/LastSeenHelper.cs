@@ -65,21 +65,22 @@ namespace windows_client.utils
                 jObj.TryGetValue(HikeConstants.LASTSEEN, out lastSeenToken);
 
                 if (lastSeenToken != null && UpdateLastSeen != null)
-                    UpdateLastSeen(this, new LastSeenEventArgs() { TimeStamp = Convert.ToInt64(lastSeenToken), ContactNumber = cNumber });
+                    UpdateLastSeen(this, new LastSeenEventArgs() { TimeStamp = Convert.ToInt64(lastSeenToken.ToString()), ContactNumber = cNumber });
             }
         }
 
         public string GetLastSeenTimeStampStatus(long timeStamp)
         {
-            if (timeStamp == -1)
-                return "online";
-
             if (timeStamp == 0)
-                return "unknown";
+                return Languages.AppResources.Online;
 
-            return "Last Seen " + TimeUtils.getRelativeTime(timeStamp);
+            if (timeStamp == -1)
+                return "";
+
+            return "\uE121 " + Languages.AppResources.Last_Seen + " " + TimeUtils.getRelativeTime(timeStamp / 1000);
         }
 
+        readonly DateTime EPOCH_TIME = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public event EventHandler<LastSeenEventArgs> UpdateLastSeen;
     }
 
