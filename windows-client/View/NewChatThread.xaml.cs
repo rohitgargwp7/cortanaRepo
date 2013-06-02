@@ -225,7 +225,7 @@ namespace windows_client.View
                         else
                             currentAudioMessage.PlayProgressBarValue = pos * 100 / dur;
 
-                        currentAudioMessage.PlayTimeText = pos == dur || pos==0 ? "" : mediaElement.Position.ToString("mm\\:ss");
+                        currentAudioMessage.PlayTimeText = pos == dur ? currentAudioMessage.DurationText : currentAudioMessage.DurationTimeSpan.Subtract(mediaElement.Position).ToString("mm\\:ss");
                     }
                 }
             };
@@ -512,6 +512,7 @@ namespace windows_client.View
 
                 if (currentAudioMessage != null)
                 {
+                    currentAudioMessage.IsStopped = true;
                     currentAudioMessage.IsPlaying = false;
                     currentAudioMessage.PlayProgressBarValue = 0;
                     currentAudioMessage = null;
@@ -542,6 +543,7 @@ namespace windows_client.View
 
                     if (currentAudioMessage != null)
                     {
+                        currentAudioMessage.IsStopped = true;
                         currentAudioMessage.IsPlaying = false;
                         currentAudioMessage.PlayProgressBarValue = 0;
                         currentAudioMessage = null;
@@ -1207,7 +1209,10 @@ namespace windows_client.View
                 if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                     convMessage.Message = AppResources.Image_Txt;
                 else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                {
                     convMessage.Message = AppResources.Audio_Txt;
+                    convMessage.MetaDataString = forwardedMsg.MetaDataString;
+                }
                 else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
                     convMessage.Message = AppResources.Video_Txt;
                 else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
@@ -1620,6 +1625,7 @@ namespace windows_client.View
                                 else
                                 {
                                     currentAudioMessage.IsPlaying = true;
+                                    currentAudioMessage.IsStopped = false;
                                     mediaElement.Play();
                                 }
                             }
@@ -1629,6 +1635,7 @@ namespace windows_client.View
                                 {
                                     currentAudioMessage = convMessage;
                                     currentAudioMessage.IsPlaying = true;
+                                    currentAudioMessage.IsStopped = false;
                                     mediaElement.Play();
                                 }
                             }
@@ -1642,6 +1649,7 @@ namespace windows_client.View
                             if (currentAudioMessage != null)
                             {
                                 currentAudioMessage.IsPlaying = false;
+                                currentAudioMessage.IsStopped = false;
                                 currentAudioMessage.PlayProgressBarValue = 0;
                                 currentAudioMessage = null;
                             }
@@ -1674,6 +1682,7 @@ namespace windows_client.View
 
                     if (currentAudioMessage != null)
                     {
+                        currentAudioMessage.IsStopped = false;
                         currentAudioMessage.IsPlaying = true;
                         currentAudioMessage.PlayProgressBarValue = 0;
                     }
@@ -1732,6 +1741,7 @@ namespace windows_client.View
             if (currentAudioMessage != null)
             {
                 currentAudioMessage.IsPlaying = false;
+                currentAudioMessage.IsStopped = true;
                 currentAudioMessage.PlayProgressBarValue = 0;
                 currentAudioMessage = null;
             }
@@ -1742,6 +1752,7 @@ namespace windows_client.View
             if (currentAudioMessage != null)
             {
                 currentAudioMessage.IsPlaying = false;
+                currentAudioMessage.IsStopped = true;
                 currentAudioMessage.PlayProgressBarValue = 0;
                 currentAudioMessage = null;
             }
@@ -3462,6 +3473,9 @@ namespace windows_client.View
                     fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString();
                     convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
                     convMessage.FileAttachment.ContentType = "audio/voice";
+
+                    convMessage.MetaDataString = "{\"" + HikeConstants.FILE_PLAY_TIME + "\":\"" + _recordedDuration.ToString() + "\"}";
+
                     convMessage.Message = AppResources.Audio_Txt;
                 }
                 else
