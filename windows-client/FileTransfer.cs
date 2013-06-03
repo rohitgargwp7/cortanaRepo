@@ -29,7 +29,7 @@ namespace windows_client
         bool WaitingForExternalPowerDueToBatterySaverMode;
         bool WaitingForNonVoiceBlockingNetwork;
         bool WaitingForWiFi;
-
+        IEnumerable<BackgroundTransferRequest> transferRequests;
         private static Dictionary<string, ConvMessage> requestIdConvMsgMap = new Dictionary<string, ConvMessage>();
 
         private static volatile FileTransfer instance = null;
@@ -44,7 +44,10 @@ namespace windows_client
                     lock (syncRoot)
                     {
                         if (instance == null)
+                        {
                             instance = new FileTransfer();
+                            instance.InitialTransferStatusCheck();
+                        }
                     }
                 }
                 return instance;
@@ -98,10 +101,12 @@ namespace windows_client
                         // removed by the system.
                         ConvMessage convMessage;
                         requestIdConvMsgMap.TryGetValue(transfer.RequestId, out convMessage);
-                        //todo:
+                        
                         if (convMessage != null)
                             convMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
+                        
                         RemoveTransferRequest(transfer.RequestId);
+                        
                         //RemoveTransferRequest(transfer.RequestId);
                         // In this example, the downloaded file is moved into the root
                         // Isolated Storage directory
@@ -111,14 +116,13 @@ namespace windows_client
                             {
                                 string destinationPath = HikeConstants.FILES_BYTE_LOCATION + transfer.Tag;
                                 string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));
+                             
                                 if (isoStore.FileExists(destinationPath))
-                                {
                                     isoStore.DeleteFile(destinationPath);
-                                }
+
                                 if (!isoStore.DirectoryExists(destinationDirectory))
-                                {
                                     isoStore.CreateDirectory(destinationDirectory);
-                                }
+                                
                                 isoStore.MoveFile(transfer.DownloadLocation.OriginalString, destinationPath);
                                 isoStore.DeleteFile(transfer.DownloadLocation.OriginalString);
 
@@ -129,10 +133,14 @@ namespace windows_client
                                     myFileStream.Seek(0, 0);
                                     library.SavePicture(convMessage.FileAttachment.FileName, myFileStream);
                                 }
-                                var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
-                                if (currentPage != null)
+
+                                if (convMessage != null)
                                 {
-                                    currentPage.displayAttachment(convMessage, true);
+                                    var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
+                                    if (currentPage != null)
+                                    {
+                                        currentPage.displayAttachment(convMessage, true);
+                                    }
                                 }
                             }
                         }
@@ -207,6 +215,54 @@ namespace windows_client
                 }
             }
         }
+
+        private void UpdateRequestsList()
+        {
+            // The Requests property returns new references, so make sure that
+            // you dispose of the old references to avoid memory leaks.
+            if (transferRequests != null)
+            {
+                foreach (var request in transferRequests)
+                {
+                    request.Dispose();
+                }
+            }
+            transferRequests = BackgroundTransferService.Requests;
+        }
+
+        private void InitialTransferStatusCheck()
+        {
+            UpdateRequestsList();
+
+            foreach (var transfer in transferRequests)
+            {
+                transfer.TransferStatusChanged -= transfer_TransferStatusChanged;
+                transfer.TransferStatusChanged += new EventHandler<BackgroundTransferEventArgs>(transfer_TransferStatusChanged);
+
+                transfer.TransferProgressChanged -= transfer_TransferProgressChanged;
+                transfer.TransferProgressChanged += new EventHandler<BackgroundTransferEventArgs>(transfer_TransferProgressChanged);
+
+                ProcessTransfer(transfer);
+            }
+
+            //if (WaitingForExternalPower)
+            //{
+            //    MessageBox.Show("You have one or more file transfers waiting for external power. Connect your device to external power to continue transferring.");
+            //}
+            //if (WaitingForExternalPowerDueToBatterySaverMode)
+            //{
+            //    MessageBox.Show("You have one or more file transfers waiting for external power. Connect your device to external power or disable Battery Saver Mode to continue transferring.");
+            //}
+            //if (WaitingForNonVoiceBlockingNetwork)
+            //{
+            //    MessageBox.Show("You have one or more file transfers waiting for a network that supports simultaneous voice and data.");
+            //}
+            //if (WaitingForWiFi)
+            //{
+            //    MessageBox.Show("You have one or more file transfers waiting for a WiFi connection. Connect your device to a WiFi network to continue transferring.");
+            //}
+        }
+
 
         private void RemoveTransferRequest(string transferID)
         {
