@@ -1523,18 +1523,15 @@ namespace windows_client.View
                 {
                     if (!convMessage.IsSent)
                     {
-                        if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.STARTED)
+                        if (NetworkInterface.GetIsNetworkAvailable())
                         {
-                            if (NetworkInterface.GetIsNetworkAvailable())
-                            {
-                                convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
-                                FileTransfer.Instance.downloadFile(convMessage, mContactNumber.Replace(":", "_"));
-                                MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId, convMessage);
-                            }
-                            else
-                            {
-                                MessageBox.Show(AppResources.No_Network_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
-                            }
+                            convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
+                            FileTransfer.Instance.downloadFile(convMessage, mContactNumber.Replace(":", "_"));
+                            MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId, convMessage);
+                        }
+                        else
+                        {
+                            MessageBox.Show(AppResources.No_Network_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
                         }
                     }
                     else

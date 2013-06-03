@@ -46,7 +46,7 @@ namespace windows_client
                         if (instance == null)
                         {
                             instance = new FileTransfer();
-                            instance.InitialTransferStatusCheck();
+                            instance.RemoveOldTransferRequests();
                         }
                     }
                 }
@@ -216,10 +216,8 @@ namespace windows_client
             }
         }
 
-        private void UpdateRequestsList()
+        private void RemoveOldTransferRequests()
         {
-            // The Requests property returns new references, so make sure that
-            // you dispose of the old references to avoid memory leaks.
             if (transferRequests != null)
             {
                 foreach (var request in transferRequests)
@@ -227,12 +225,8 @@ namespace windows_client
                     request.Dispose();
                 }
             }
-            transferRequests = BackgroundTransferService.Requests;
-        }
 
-        private void InitialTransferStatusCheck()
-        {
-            UpdateRequestsList();
+            transferRequests = BackgroundTransferService.Requests;
 
             foreach (var transfer in transferRequests)
             {
