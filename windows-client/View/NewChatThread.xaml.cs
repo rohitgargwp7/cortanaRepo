@@ -948,7 +948,7 @@ namespace windows_client.View
                 {
                     //update ui if prev last seen is greater than current last seen, db updated everytime in backend
                     lastSeenTxt.Text = lastSeenStatus;
-                    onlineStatus.Visibility = lastSeenStatus == "online" ? Visibility.Collapsed : Visibility.Visible;
+                    onlineStatus.Visibility = lastSeenStatus == AppResources.Online ? Visibility.Collapsed : Visibility.Visible;
 
                     _lastSeenTimer.Start();
                 }), _lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
@@ -3523,6 +3523,28 @@ namespace windows_client.View
 
             else if (HikePubSub.TYPING_CONVERSATION == type)
             {
+                byte lastSeenSettingsValue;
+                App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out lastSeenSettingsValue);
+
+                if (lastSeenSettingsValue > 0)
+                {
+                    var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
+                    if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (!String.IsNullOrEmpty(lastSeenTxt.Text))
+                            {
+                                //update ui if prev last seen is greater than current last seen, db updated everytime in backend
+                                lastSeenTxt.Text = AppResources.Online;
+                                onlineStatus.Visibility = Visibility.Visible;
+                                userName.FontSize = 36;
+                                lastSeenPannel.Visibility = Visibility.Visible;
+                            }
+                        });
+                    }
+                }
+                
                 object[] vals = (object[])obj;
                 string typingNotSenderOrSendee = "";
                 if (isGroupChat)
@@ -3572,7 +3594,7 @@ namespace windows_client.View
             {
                 byte lastSeenSettingsValue;
                 App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out lastSeenSettingsValue);
-
+                
                 if (lastSeenSettingsValue > 0)
                 {
                     object[] vals = (object[])obj;

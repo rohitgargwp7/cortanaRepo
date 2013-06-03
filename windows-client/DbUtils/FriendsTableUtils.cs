@@ -410,8 +410,16 @@ namespace windows_client.DbUtils
                                     try
                                     {
                                         friendStatusDb = (FriendStatusEnum)(byte)reader.ReadByte();
-                                        reader.ReadInt64();
-                                        lsts = reader.ReadInt64();
+                                        try
+                                        {
+                                            reader.ReadInt64();
+                                        }
+                                        catch { }
+                                        try
+                                        {
+                                            lsts = reader.ReadInt64();
+                                        }
+                                        catch { }
                                     }
                                     catch (Exception e)
                                     {
