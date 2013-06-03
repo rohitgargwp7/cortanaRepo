@@ -57,7 +57,7 @@ namespace windows_client.utils
                                 bitmap.CreateOptions = BitmapCreateOptions.BackgroundCreation;
                                 bitmap.UriSource = new Uri(stickers[i, 1], UriKind.Relative);
                                 Sticker sticker = new Sticker(category1Stickers.Category, stickers[i, 0], bitmap);
-                                category1Stickers.dictStickers[sticker.Id] = sticker;
+                                category1Stickers.ListStickers.Add(sticker);
                             }
                             dictStickers[category1Stickers.Category] = category1Stickers;
                         });

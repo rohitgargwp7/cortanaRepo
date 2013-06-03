@@ -178,6 +178,9 @@ namespace windows_client.View
             }
         }
 
+        private Dictionary<string, BitmapImage> dictStickerCache;
+
+        private Dictionary<string, ConvMessage> dictDownloadingStickers;
         #region PAGE BASED FUNCTIONS
 
         //        private ObservableCollection<UIElement> messagesCollection;
@@ -198,7 +201,8 @@ namespace windows_client.View
             _progressTimer.Tick += new EventHandler(showWalkieTalkieProgress);
 
             ocMessages = new ObservableCollection<ConvMessage>();
-
+            dictStickerCache = new Dictionary<string, BitmapImage>();
+            dictDownloadingStickers = new Dictionary<string, ConvMessage>();
             CompositionTarget.Rendering += (sender, args) =>
             {
                 if (mediaElement != null && mediaElement.Source != null)
@@ -1184,47 +1188,60 @@ namespace windows_client.View
 
         private void forwardAttachmentMessage()
         {
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG) &&
-                PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
             {
-                object[] attachmentData = (object[])PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
-                ConvMessage forwardedMsg = (ConvMessage)attachmentData[0];
-                string sourceMsisdn = (string)attachmentData[1];
 
-                string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + forwardedMsg.MessageId;
-
-                ConvMessage convMessage = new ConvMessage("", mContactNumber,
-                    TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                convMessage.IsSms = !isOnHike;
-                convMessage.HasAttachment = true;
-                convMessage.FileAttachment = forwardedMsg.FileAttachment;
-                convMessage.IsSms = !isOnHike;
-                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
-
-                if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                    convMessage.Message = AppResources.Image_Txt;
-                else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                    convMessage.Message = AppResources.Audio_Txt;
-                else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
-                    convMessage.Message = AppResources.Video_Txt;
-                else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
                 {
-                    convMessage.Message = AppResources.Location_Txt;
-                    convMessage.MetaDataString = forwardedMsg.MetaDataString;
-                }
-                else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                {
-                    convMessage.Message = AppResources.ContactTransfer_Text;
-                    convMessage.MetaDataString = forwardedMsg.MetaDataString;
-                }
+                    object[] attachmentData = (object[])PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                    ConvMessage forwardedMsg = (ConvMessage)attachmentData[0];
+                    string sourceMsisdn = (string)attachmentData[1];
 
-                convMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
-                AddMessageToOcMessages(convMessage, false);
-                object[] vals = new object[3];
-                vals[0] = convMessage;
-                vals[1] = sourceFilePath;
-                mPubSub.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
-                PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                    string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + forwardedMsg.MessageId;
+
+                    ConvMessage convMessage = new ConvMessage("", mContactNumber,
+                        TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                    convMessage.IsSms = !isOnHike;
+                    convMessage.HasAttachment = true;
+                    convMessage.FileAttachment = forwardedMsg.FileAttachment;
+                    convMessage.IsSms = !isOnHike;
+                    convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+
+                    if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                        convMessage.Message = AppResources.Image_Txt;
+                    else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                        convMessage.Message = AppResources.Audio_Txt;
+                    else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                        convMessage.Message = AppResources.Video_Txt;
+                    else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                    {
+                        convMessage.Message = AppResources.Location_Txt;
+                        convMessage.MetaDataString = forwardedMsg.MetaDataString;
+                    }
+                    else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                    {
+                        convMessage.Message = AppResources.ContactTransfer_Text;
+                        convMessage.MetaDataString = forwardedMsg.MetaDataString;
+                    }
+
+                    convMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
+                    AddMessageToOcMessages(convMessage, false);
+                    object[] vals = new object[3];
+                    vals[0] = convMessage;
+                    vals[1] = sourceFilePath;
+                    mPubSub.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                }
+                else if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is ConvMessage)
+                {
+                    ConvMessage conv = (ConvMessage)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                    conv.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                    conv.IsSms = !isOnHike;
+                    AddNewMessageToUI(conv, false);
+
+                    mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                }
             }
             else if (PhoneApplicationService.Current.State.ContainsKey("SharePicker"))
             {
@@ -1350,8 +1367,6 @@ namespace windows_client.View
         }
         #endregion
 
-        private Dictionary<string, List<ConvMessage>> dictDownloadingStickers = new Dictionary<string, List<ConvMessage>>();
-        private Dictionary<string, BitmapImage> dictStickerCache = new Dictionary<string, BitmapImage>();
         #region APPBAR CLICK EVENTS
 
         private void callUser_Click(object sender, EventArgs e)
@@ -1818,24 +1833,14 @@ namespace windows_client.View
                             }
                             else
                             {
-                                BackgroundWorker bw = new BackgroundWorker();
                                 convMessage.StickerObj.StickerImage = StickerCategory.GetStickerFromDb(convMessage.StickerObj.Id, convMessage.StickerObj.Category);
                                 if (convMessage.StickerObj.StickerImage == null)
                                 {
-                                    List<ConvMessage> listConvMessage = null;
-                                    if (dictDownloadingStickers.TryGetValue(categoryStickerId, out listConvMessage))
-                                    {
-                                        listConvMessage.Add(convMessage);
-                                    }
-                                    else
-                                    {
-                                        AccountUtils.GetSingleSticker(convMessage.StickerObj, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
-                                        dictDownloadingStickers.Add(categoryStickerId, new List<ConvMessage>() { convMessage });
-                                    }
+                                    AccountUtils.GetSingleSticker(convMessage.StickerObj, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
+                                    dictDownloadingStickers.Add(categoryStickerId, convMessage);
                                 }
                                 else
                                     dictStickerCache[categoryStickerId] = convMessage.StickerObj.StickerImage;
-
                             }
                             chatBubble = convMessage;
                         }
@@ -2424,10 +2429,13 @@ namespace windows_client.View
         {
             isContextMenuTapped = true;
             ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
-            if (convMessage.FileAttachment == null)
+            if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.STICKER_ID))
+            {
+                PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = convMessage;
+            }
+            else if (convMessage.FileAttachment == null)
             {
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = convMessage.Message;
-                NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
             }
             else
             {
@@ -2435,8 +2443,9 @@ namespace windows_client.View
                 attachmentForwardMessage[0] = convMessage;
                 attachmentForwardMessage[1] = mContactNumber;
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
-                NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
             }
+            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
+
         }
 
         private void MenuItem_Click_Copy(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3857,33 +3866,6 @@ namespace windows_client.View
             }
         }
 
-        #region Walkie Talkie
-
-        private void Record_ActionIconTapped(object sender, EventArgs e)
-        {
-            recordGrid.Visibility = Visibility.Visible;
-            sendMsgTxtbox.Visibility = Visibility.Collapsed;
-
-            if (this.ApplicationBar != null)
-                (this.ApplicationBar.Buttons[0] as ApplicationBarIconButton).IsEnabled = false;
-
-            recordButtonGrid.Background = gridBackgroundBeforeRecording;
-            recordButton.Text = HOLD_AND_TALK;
-            recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
-            walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
-        }
-
-        void Hold_To_Record(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
-        {
-            WalkieTalkieGrid.Visibility = Visibility.Visible;
-            recordButton.Text = RELEASE_TO_SEND;
-            cancelRecord.Opacity = 0;
-            recordButton.Foreground = UI_Utils.Instance.WhiteTextForeGround;
-            recordButtonGrid.Background = UI_Utils.Instance.HikeMsgBackground;
-            walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieWhiteImage;
-            recordWalkieTalkieMessage();
-        }
-
         #region Stickers
 
 
@@ -3903,7 +3885,8 @@ namespace windows_client.View
 
         private void Stickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            Sticker sticker = listBoxStickerCategory.SelectedItem as Sticker;
+            Sticker sticker = llsStickerCategory.SelectedItem as Sticker;
+            llsStickerCategory.SelectedItem = null;
             if (sticker == null)
                 return;
             ConvMessage conv = new ConvMessage("Sticker", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
@@ -3916,6 +3899,7 @@ namespace windows_client.View
             mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
 
             emoticonPanel.Visibility = Visibility.Collapsed;
+
 
         }
 
@@ -3934,10 +3918,10 @@ namespace windows_client.View
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
 
             StickerCategory s2 = App.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_1);
-            if (s2 == null || s2.dictStickers.Count == 0)
+            if (s2 == null || s2.ListStickers.Count == 0)
             {
                 stLoading.Visibility = Visibility.Visible;
-                listBoxStickerCategory.Visibility = Visibility.Collapsed;
+                llsStickerCategory.Visibility = Visibility.Collapsed;
                 stNoStickers.Visibility = Visibility.Collapsed;
                 //make http call
                 PostRequestForBatchStickers(s2);
@@ -3945,9 +3929,9 @@ namespace windows_client.View
             else
             {
                 stLoading.Visibility = Visibility.Collapsed;
-                listBoxStickerCategory.Visibility = Visibility.Visible;
+                llsStickerCategory.Visibility = Visibility.Visible;
                 stNoStickers.Visibility = Visibility.Collapsed;
-                listBoxStickerCategory.ItemsSource = s2.dictStickers.Values;
+                llsStickerCategory.ItemsSource = s2.ListStickers;
             }
         }
 
@@ -4000,22 +3984,37 @@ namespace windows_client.View
             if (downloadStickers)
             {
                 stLoading.Visibility = Visibility.Visible;
-                listBoxStickerCategory.Visibility = Visibility.Collapsed;
+                llsStickerCategory.Visibility = Visibility.Collapsed;
                 stNoStickers.Visibility = Visibility.Collapsed;
                 PostRequestForBatchStickers(s2);
             }
-            else if (s2 == null || s2.dictStickers.Count == 0)
+            else if (s2 == null || s2.ListStickers.Count == 0)
             {
                 stLoading.Visibility = Visibility.Collapsed;
-                listBoxStickerCategory.Visibility = Visibility.Collapsed;
+                llsStickerCategory.Visibility = Visibility.Collapsed;
                 stNoStickers.Visibility = Visibility.Visible;
             }
             else
             {
                 stLoading.Visibility = Visibility.Collapsed;
-                listBoxStickerCategory.Visibility = Visibility.Visible;
+                llsStickerCategory.Visibility = Visibility.Visible;
                 stNoStickers.Visibility = Visibility.Collapsed;
-                listBoxStickerCategory.ItemsSource = s2.dictStickers.Values;
+                llsStickerCategory.ItemsSource = s2.ListStickers;
+            }
+        }
+
+        private void llsStickersCategory_OnItemsRealised(object sender, ItemRealizationEventArgs e)
+        {
+            StickerCategory stickerCategory;
+            if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0 && (stickerCategory = App.stickerHelper.GetStickersByCategory(_selectedCategory)) != null && stickerCategory.HasMoreStickers && !stickerCategory.IsDownLoading)
+            {
+                if (e.ItemKind == LongListSelectorItemKind.Item)
+                {
+                    if ((e.Container.Content as Sticker).Equals(llsStickerCategory.ItemsSource[llsStickerCategory.ItemsSource.Count - 1]))
+                    {
+                        PostRequestForBatchStickers(stickerCategory);
+                    }
+                }
             }
         }
 
@@ -4027,14 +4026,14 @@ namespace windows_client.View
             {
                 List<string> listStickerIds = new List<string>();
                 JArray existingIds = new JArray();
-                foreach (string id in stickerCategory.dictStickers.Keys)
+                foreach (Sticker sticker in stickerCategory.ListStickers)
                 {
-                    existingIds.Add(id);
+                    existingIds.Add(sticker.Id);
                 }
                 json["stIds"] = existingIds;
 
                 json["resId"] = 1;
-                json["nos"] = 20;
+                json["nos"] = 10;
                 stickerCategory.IsDownLoading = true;
                 AccountUtils.GetStickers(json, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack), stickerCategory);
             }
@@ -4042,8 +4041,8 @@ namespace windows_client.View
 
         private void StickersRequestCallBack(JObject json, Object obj)
         {
-            StickerCategory stickerCategory = null;
-            Sticker sticker = null;
+            StickerCategory stickerCategory = null;//to show batch sticker request
+            Sticker sticker = null;//to show single sticker request
             if (obj == null)
                 return;
             if (obj is StickerCategory)
@@ -4054,10 +4053,6 @@ namespace windows_client.View
                 return;
             if ((json == null) || HikeConstants.FAIL == (string)json[HikeConstants.STAT])
             {
-                if (sticker != null)
-                {
-                    dictDownloadingStickers.Remove(sticker.Category + sticker.Id);
-                }
                 if (stickerCategory != null)
                 {
                     stickerCategory.IsDownLoading = false;
@@ -4067,7 +4062,7 @@ namespace windows_client.View
 
             string category = (string)json["catId"];
             JObject stickers = (JObject)json["data"];
-            Dictionary<string, byte[]> dictStickers = new Dictionary<string, byte[]>();
+            Dictionary<string, byte[]> dictHighResStickersBytes = new Dictionary<string, byte[]>();
             bool hasMoreStickers = true;
             if (json["st"] != null)
             {
@@ -4090,56 +4085,83 @@ namespace windows_client.View
                     string id = (string)kv.Key;
                     string iconBase64 = stickers[kv.Key].ToString();
                     byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                    dictStickers[id] = imageBytes;
-                    stickerCategory.dictStickers[id] = new Sticker(category, id, null);
+                    dictHighResStickersBytes[id] = imageBytes;
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine("NewChatThread : callBack : Exception : " + ex.Message);
                 }
             }
-            stickerCategory.WriteHighResToFile(dictStickers);
+            stickerCategory.WriteHighResToFile(dictHighResStickersBytes);
 
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                Dictionary<string, byte[]> dictStickers1 = new Dictionary<string, byte[]>();
-                foreach (string stickerid in dictStickers.Keys)
+                Dictionary<string, byte[]> dictLowResStickersBytes = new Dictionary<string, byte[]>();
+                foreach (string stickerid in dictHighResStickersBytes.Keys)
                 {
-                    BitmapImage imag = UI_Utils.Instance.createImageFromBytes(dictStickers[stickerid]);
-                    if (sticker != null && dictDownloadingStickers.ContainsKey(sticker.Category + sticker.Id))
+                    BitmapImage highResImage = UI_Utils.Instance.createImageFromBytes(dictHighResStickersBytes[stickerid]);
+                    if (sticker != null)
                     {
                         string key = sticker.Category + sticker.Id;
-                        List<ConvMessage> listConvMessage = dictDownloadingStickers[key];
-                        foreach (ConvMessage convMessage in listConvMessage)
+                        ConvMessage convMessage;
+                        if (dictDownloadingStickers.TryGetValue(key, out convMessage))
                         {
-                            convMessage.SetStickerImage(imag);
+                            convMessage.SetStickerImage(highResImage);
+                            dictDownloadingStickers.Remove(key);
                         }
-                        dictDownloadingStickers.Remove(key);
+                        dictStickerCache[key] = highResImage;
                     }
-                    Byte[] lowResImageBytes = UI_Utils.Instance.PngImgToJpegByteArray(imag);
-
-                    dictStickers1[stickerid] = lowResImageBytes;
-                    stickerCategory.dictStickers[stickerid].StickerImage = UI_Utils.Instance.createImageFromBytes(lowResImageBytes);
+                    Byte[] lowResImageBytes = UI_Utils.Instance.PngImgToJpegByteArray(highResImage);
+                    dictLowResStickersBytes[stickerid] = lowResImageBytes;
+                    stickerCategory.ListStickers.Add(new Sticker(category, stickerid, UI_Utils.Instance.createImageFromBytes(lowResImageBytes)));
                 }
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (s, e) =>
-                    {
-                        stickerCategory.WriteLowResToFile(dictStickers1, hasMoreStickers);
-                    };
+                {
+                    stickerCategory.WriteLowResToFile(dictLowResStickersBytes, hasMoreStickers);
+                };
                 bw.RunWorkerAsync();
                 if (stickerCategory != null && category == _selectedCategory)
                 {
                     stLoading.Visibility = Visibility.Collapsed;
-                    listBoxStickerCategory.Visibility = Visibility.Visible;
-                    listBoxStickerCategory.ItemsSource = stickerCategory.dictStickers.Values;
+                    llsStickerCategory.Visibility = Visibility.Visible;
+                    llsStickerCategory.ItemsSource = stickerCategory.ListStickers;
                 }
                 stickerCategory.IsDownLoading = false;
             });
         }
 
-
         #endregion
+
+        #region Walkie Talkie
+
+        private void Record_ActionIconTapped(object sender, EventArgs e)
+        {
+            recordGrid.Visibility = Visibility.Visible;
+            sendMsgTxtbox.Visibility = Visibility.Collapsed;
+
+            if (this.ApplicationBar != null)
+                (this.ApplicationBar.Buttons[0] as ApplicationBarIconButton).IsEnabled = false;
+
+            recordButtonGrid.Background = gridBackgroundBeforeRecording;
+            recordButton.Text = HOLD_AND_TALK;
+            recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
+            walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
+        }
+
+        void Hold_To_Record(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
+        {
+            WalkieTalkieGrid.Visibility = Visibility.Visible;
+            recordButton.Text = RELEASE_TO_SEND;
+            cancelRecord.Opacity = 0;
+            recordButton.Foreground = UI_Utils.Instance.WhiteTextForeGround;
+            recordButtonGrid.Background = UI_Utils.Instance.HikeMsgBackground;
+            walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieWhiteImage;
+            recordWalkieTalkieMessage();
+        }
+
+
 
         void recordButton_ManipulationCompleted(object sender, System.Windows.Input.ManipulationCompletedEventArgs e)
         {
@@ -4380,6 +4402,7 @@ namespace windows_client.View
         private RecorderState _recorderState = RecorderState.NOTHING_RECORDED;
 
         #endregion
+
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector

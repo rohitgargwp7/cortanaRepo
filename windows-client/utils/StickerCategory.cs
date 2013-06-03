@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.IsolatedStorage;
@@ -14,15 +15,16 @@ namespace windows_client.utils
 {
     public class StickerCategory
     {
-        public static readonly string STICKERS_DIR = "stickers";
-        public static readonly string HIGH_RESOLUTION_DIR = "highres";
-        public static readonly string LOW_RESOLUTION_DIR = "lowres";
-        public static readonly string METADATA = "hasmorestickers";
-        string _category;
-        bool _hasMoreStickers = true;
-        bool showDownloadMessage = true;
-        public Dictionary<string, Sticker> dictStickers = new Dictionary<string, Sticker>();
-        private bool isDownLoading;
+        public const string STICKERS_DIR = "stickers";
+        public const string HIGH_RESOLUTION_DIR = "highres";
+        public const string LOW_RESOLUTION_DIR = "lowres";
+        public const string METADATA = "metadata";
+
+        private string _category;
+        private bool _hasMoreStickers = true;
+        private bool _showDownloadMessage = true;
+        private ObservableCollection<Sticker> _listStickers;
+        private bool _isDownLoading;
         private static object readWriteLock = new object();
 
         public string Category
@@ -37,11 +39,11 @@ namespace windows_client.utils
         {
             get
             {
-                return isDownLoading;
+                return _isDownLoading;
             }
             set
             {
-                isDownLoading = value;
+                _isDownLoading = value;
             }
         }
 
@@ -57,25 +59,34 @@ namespace windows_client.utils
         {
             get
             {
-                return showDownloadMessage;
+                return _showDownloadMessage;
             }
             set
             {
-                showDownloadMessage = value;
+                _showDownloadMessage = value;
+            }
+        }
+
+        public ObservableCollection<Sticker> ListStickers
+        {
+            get
+            {
+                return _listStickers;
             }
         }
         public StickerCategory(string category, bool hasMoreStickers)
+            : this(category)
         {
-            this._category = category;
             this._hasMoreStickers = hasMoreStickers;
         }
 
         public StickerCategory(string category)
         {
             this._category = category;
+            _listStickers = new ObservableCollection<Sticker>();
         }
 
-        
+
         public void CreateFromFile()
         {
             lock (readWriteLock)
@@ -98,7 +109,7 @@ namespace windows_client.utils
                                         if (stickerId == METADATA)
                                         {
                                             _hasMoreStickers = reader.ReadBoolean();
-                                            showDownloadMessage = reader.ReadBoolean();
+                                            _showDownloadMessage = reader.ReadBoolean();
                                         }
                                         else
                                         {
@@ -108,11 +119,11 @@ namespace windows_client.utils
                                     }
                                 }
                             }
-                        Deployment.Current.Dispatcher.BeginInvoke(()=>
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                foreach(string stickerId in dictImageBytes.Keys)
+                                foreach (string stickerId in dictImageBytes.Keys)
                                 {
-                                    this.dictStickers.Add(stickerId,new Sticker(_category,stickerId,UI_Utils.Instance.createImageFromBytes(dictImageBytes[stickerId])));
+                                    this._listStickers.Add(new Sticker(_category, stickerId, UI_Utils.Instance.createImageFromBytes(dictImageBytes[stickerId])));
                                 }
                             });
                     }
@@ -221,7 +232,7 @@ namespace windows_client.utils
                                 {
                                     _hasMoreStickers = hasMoreStickers;
                                     writer.Write(_hasMoreStickers);
-                                    writer.Write(showDownloadMessage);
+                                    writer.Write(_showDownloadMessage);
                                     writer.Flush();
                                     writer.Close();
                                 }
@@ -262,7 +273,7 @@ namespace windows_client.utils
                         {
                             using (BinaryWriter writer = new BinaryWriter(file))
                             {
-                                this.showDownloadMessage = showDownloadMessage;
+                                this._showDownloadMessage = showDownloadMessage;
                                 writer.Write(_hasMoreStickers);
                                 writer.Write(showDownloadMessage);
                                 writer.Flush();
