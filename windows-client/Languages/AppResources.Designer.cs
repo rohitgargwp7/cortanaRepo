@@ -1878,6 +1878,51 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Now send stickers and emoticons!.
+        /// </summary>
+        public static string In_App_Tip_1 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap here to see stickers.
+        /// </summary>
+        public static string In_App_Tip_2 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can now send Voice messages to your friends with the new Walkie Talkie feature.
+        /// </summary>
+        public static string In_App_Tip_3 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap here to use some cute moods in your Status Update.
+        /// </summary>
+        public static string In_App_Tip_4 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is a status update from {0}.
+        /// </summary>
+        public static string In_App_Tip_5 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invite.
         /// </summary>
         public static string Invite_Small {

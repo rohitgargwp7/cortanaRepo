@@ -805,8 +805,8 @@ namespace windows_client.View
             }
 
             int chatThreadCount;
-            var keyExist = App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out chatThreadCount); //initilaized in upgrade logic
 
+            var keyExist = App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out chatThreadCount); //initilaized in upgrade logic
             if (keyExist)
             {
                 if (chatThreadCount == 0)
@@ -815,6 +815,8 @@ namespace windows_client.View
                         App.ViewModel.DisplayTip(LayoutRoot, 0);
                     else
                         chatThreadCount++;
+
+                    chatThreadMainPage.ApplicationBar = appBar;
                 }
                 else if (chatThreadCount == 1)
                 {
@@ -822,10 +824,12 @@ namespace windows_client.View
                         App.ViewModel.DisplayTip(LayoutRoot, 1);
                     else
                         chatThreadCount++;
+
+                    chatThreadMainPage.ApplicationBar = appBar;
                 }
                 else
                     showNudgeTute();
-                
+
                 App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
             }
         }
@@ -2538,6 +2542,11 @@ namespace windows_client.View
 
         private void emoticonButton_Click(object sender, EventArgs e)
         {
+            App.ViewModel.HideToolTip(LayoutRoot,0);
+
+            if (!App.ViewModel.TipList[1].IsShown || App.ViewModel.TipList[1].IsCurrentlyShown)
+                App.ViewModel.DisplayTip(LayoutRoot, 1);
+                    
             if (emoticonPanel.Visibility == Visibility.Collapsed)
                 emoticonPanel.Visibility = Visibility.Visible;
             else
@@ -3877,6 +3886,8 @@ namespace windows_client.View
 
         private void Record_ActionIconTapped(object sender, EventArgs e)
         {
+            App.ViewModel.HideToolTip(LayoutRoot, 2);
+
             this.Focus(); // remove focus from textbox
             recordGrid.Visibility = Visibility.Visible;
             sendMsgTxtbox.Visibility = Visibility.Collapsed;

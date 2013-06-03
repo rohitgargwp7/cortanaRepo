@@ -49,6 +49,9 @@ namespace windows_client.View
             postStatusIcon.IsEnabled = false;
             appBar.Buttons.Add(postStatusIcon);
             postStatusPage.ApplicationBar = appBar;
+
+            if (!App.ViewModel.TipList[3].IsShown || App.ViewModel.TipList[3].IsCurrentlyShown)
+                App.ViewModel.DisplayTip(MoodPanel, 3);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -184,6 +187,7 @@ namespace windows_client.View
 
         private void Mood_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.ViewModel.HideToolTip(LayoutRoot, 3);
             gridMood.Visibility = Visibility.Visible;
             this.appBar.IsVisible = false;
         }
