@@ -45,7 +45,6 @@ namespace windows_client.utils
             var restrictedCharaters = new[] { '/', '\\', '*', '"', '|', '<', '>', ':', '?', '.' };
             url = restrictedCharaters.Aggregate(url, (current, restrictedCharater) => current.Replace(restrictedCharater, '_'));
 
-            url = url + ".png";
             return url;
         }
 

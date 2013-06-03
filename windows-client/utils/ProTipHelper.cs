@@ -342,7 +342,7 @@ namespace windows_client.utils
                 if (proTipTimer == null)
                     proTipTimer = new DispatcherTimer();
 
-                proTipTimer.Interval = new TimeSpan(time * 1000); //time might have changed, hence reinitializing timer
+                proTipTimer.Interval = TimeSpan.FromSeconds(time); //time might have changed, hence reinitializing timer
 
                 proTipTimer.Tick += proTipTimer_Tick;
 
@@ -385,13 +385,10 @@ namespace windows_client.utils
         {
             ImageSource source = null;
 
-            Deployment.Current.Dispatcher.BeginInvoke(new Action<BitmapImage>(delegate(BitmapImage imgSource)
-                {
-                    imgSource = new BitmapImage();
+            source = new BitmapImage();
 
-                    if (!String.IsNullOrEmpty(ImageUrl))
-                        ImageLoader.Load(imgSource as BitmapImage, new Uri(ImageUrl), null, Utils.ConvertUrlToFileName(ImageUrl));
-                }), source);
+            if (!String.IsNullOrEmpty(ImageUrl))
+                ImageLoader.Load(source as BitmapImage, new Uri(ImageUrl), null, Utils.ConvertUrlToFileName(ImageUrl));
 
             return source;
         }
@@ -404,7 +401,11 @@ namespace windows_client.utils
             _header = header;
             _body = body;
             ImageUrl = imageUrl;
-            _tipImage = ProcesImageSource();
+         
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    _tipImage = ProcesImageSource();
+                });
         }
 
         public void Write(BinaryWriter writer)

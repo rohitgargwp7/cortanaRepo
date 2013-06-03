@@ -61,7 +61,7 @@ namespace windows_client.View
             _totalUnreadStatuses = StatusMsgsTable.GetUnreadCount(HikeConstants.UNREAD_UPDATES);
             _refreshBarCount = StatusMsgsTable.GetUnreadCount(HikeConstants.REFRESH_BAR);
             _unreadFriendRequests = StatusMsgsTable.GetUnreadCount(HikeConstants.UNREAD_FRIEND_REQUESTS);
-            setNotificationCounter(RefreshBarCount + UnreadFriendRequests);
+            setNotificationCounter(RefreshBarCount + UnreadFriendRequests + ProTipCount);
             App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
@@ -1974,10 +1974,37 @@ namespace windows_client.View
                         }
                         else
                         {
-                            setNotificationCounter(value + _unreadFriendRequests);
+                            setNotificationCounter(value + _unreadFriendRequests + _proTipCount);
                         }
                         _refreshBarCount = value;
                         StatusMsgsTable.SaveUnreadCounts(HikeConstants.REFRESH_BAR, value);
+                    });
+                }
+            }
+        }
+
+        private int _proTipCount = 0;
+        private int ProTipCount
+        {
+            get
+            {
+                return _proTipCount;
+            }
+            set
+            {
+                if (value != _proTipCount)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (launchPagePivot.SelectedIndex == 3)
+                        {
+                            setNotificationCounter(0);
+                        }
+                        else
+                        {
+                            setNotificationCounter(value + _unreadFriendRequests + _refreshBarCount);
+                        }
+                        _proTipCount = value;
                     });
                 }
             }
@@ -2022,7 +2049,7 @@ namespace windows_client.View
                 if (value != _unreadFriendRequests)
                 {
                     _unreadFriendRequests = value;
-                    setNotificationCounter(value + _refreshBarCount);
+                    setNotificationCounter(value + _refreshBarCount + _proTipCount);
                     StatusMsgsTable.SaveUnreadCounts(HikeConstants.UNREAD_FRIEND_REQUESTS, value);
                 }
             }
@@ -2262,6 +2289,7 @@ namespace windows_client.View
         private void dismissProTip_Click(object sender, RoutedEventArgs e)
         {
             proTipsGrid.Visibility = Visibility.Collapsed;
+            ProTipCount = 0;
 
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (ss, ee) =>
@@ -2290,31 +2318,16 @@ namespace windows_client.View
                 if (!String.IsNullOrEmpty(proTip.ImageUrl))
                 {
                     Binding myBinding = new Binding();
-                    myBinding.Source = proTip;
-                    myBinding.Path = new PropertyPath("TipImage");
-                    //myBinding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-                    BindingOperations.SetBinding(proTipImage, Image.SourceProperty, myBinding);
+                    myBinding.Source = proTip.TipImage;
+                    proTipImage.SetBinding(Image.SourceProperty, myBinding);
                     proTipImage.Visibility = Visibility.Visible;
-                    //AccountUtils.createGetRequest(proTip.ImageUrl, getProTipPic_Callback, true, Utils.ConvertUrlToFileName(proTip.ImageUrl));
                 }
 
                 proTipsGrid.Visibility = Visibility.Visible;
+
+                ProTipCount = 1;
             }
         }
-
-        //public void getProTipPic_Callback(byte[] fullBytes, object fName)
-        //{
-        //    string fileName = fName as string; //fname can be used in future.
-
-        //    Deployment.Current.Dispatcher.BeginInvoke(() =>
-        //    {
-        //        if (proTipsGrid.Visibility == Visibility.Visible)
-        //        {
-        //            if (fullBytes != null && fullBytes.Length > 0)
-        //                proTipImage.Source = UI_Utils.Instance.createImageFromBytes(fullBytes);
-        //        }
-        //    });
-        //}
 
         private void ProTipImage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {

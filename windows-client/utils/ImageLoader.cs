@@ -206,13 +206,13 @@ namespace windows_client.utils
             try
             {
                 string fileName = fName as string;
-                ImageInfo imgInfo = Sources.Where(i => i.FileName == fileName) as ImageInfo;
+                ImageInfo imgInfo = Sources.Where(i => i.FileName == fileName).First() as ImageInfo;
 
                 if (imgInfo != null)
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(new Action<ImageInfo, Byte[]>(SetImageSource), imgInfo as ImageInfo, fullBytes);
                     SaveFileInIsolatedStorage(fName as String, fullBytes);
-                    
+                    Sources.Remove(imgInfo);
                 }
             }
             catch (Exception ex)

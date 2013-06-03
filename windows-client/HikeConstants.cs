@@ -206,7 +206,7 @@ namespace windows_client
         public static readonly string PRO_TIP_TEXT = "t";
         public static readonly string PRO_TIP_IMAGE = "img";
         public static readonly string PRO_TIP_TIME = "wt";
-        public static readonly Int64 DEFAULT_PRO_TIP_TIME = 1;
+        public static readonly Int64 DEFAULT_PRO_TIP_TIME = 300;
 
         public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
