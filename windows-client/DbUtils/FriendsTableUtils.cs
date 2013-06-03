@@ -314,8 +314,21 @@ namespace windows_client.DbUtils
                                     {
                                         using (var reader = new BinaryReader(file))
                                         {
-                                            fStatus = (FriendStatusEnum)reader.ReadByte();
-                                            joinTime = reader.ReadInt64();
+                                            try
+                                            {
+                                                fStatus = (FriendStatusEnum)reader.ReadByte();
+                                            }
+                                            catch
+                                            {
+                                            } 
+                                            
+                                            try
+                                            {
+                                                joinTime = reader.ReadInt64();
+                                            }
+                                            catch
+                                            {
+                                            }
                                         }
                                     }
 
