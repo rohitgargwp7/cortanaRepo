@@ -320,6 +320,7 @@ namespace windows_client.DbUtils
                                             }
                                             catch
                                             {
+                                                fStatus = FriendStatusEnum.NOT_SET;
                                             } 
                                             
                                             try
@@ -328,6 +329,7 @@ namespace windows_client.DbUtils
                                             }
                                             catch
                                             {
+                                                joinTime = 0;
                                             }
                                         }
                                     }
