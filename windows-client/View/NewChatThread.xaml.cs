@@ -3482,7 +3482,16 @@ namespace windows_client.View
                     convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
                     convMessage.FileAttachment.ContentType = "audio/voice";
 
-                    convMessage.MetaDataString = "{\"" + HikeConstants.FILE_PLAY_TIME + "\":\"" + _recordedDuration.ToString() + "\"}";
+                    var fileInfo = new JObject();
+                    fileInfo[HikeConstants.FILE_NAME] = convMessage.FileAttachment.FileName;
+                    fileInfo[HikeConstants.FILE_KEY] = convMessage.FileAttachment.FileKey;
+                    fileInfo[HikeConstants.FILE_CONTENT_TYPE] = convMessage.FileAttachment.ContentType;
+                    fileInfo[HikeConstants.FILE_PLAY_TIME] = _recordedDuration.ToString();
+
+                    if (convMessage.FileAttachment.Thumbnail != null)
+                        fileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(convMessage.FileAttachment.Thumbnail);
+
+                    convMessage.MetaDataString = fileInfo.ToString(Newtonsoft.Json.Formatting.None);
 
                     convMessage.Message = AppResources.Audio_Txt;
                 }

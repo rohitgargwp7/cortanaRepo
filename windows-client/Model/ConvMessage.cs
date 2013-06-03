@@ -1204,14 +1204,9 @@ namespace windows_client.Model
                             this.MetaDataString = locationFile.ToString(Newtonsoft.Json.Formatting.None);
                         }
 
-                        if (contentType.ToString().Contains(HikeConstants.CONTACT))
+                        if (contentType.ToString().Contains(HikeConstants.CONTACT) || contentType.ToString().Contains(HikeConstants.AUDIO))
                         {
                             this.MetaDataString = fileObject.ToString(Newtonsoft.Json.Formatting.None);
-                        }
-
-                        if (contentType.ToString().Contains(HikeConstants.AUDIO))
-                        {
-                            this.MetaDataString = "{\"" + HikeConstants.FILE_PLAY_TIME + "\":\"" + fileObject[HikeConstants.FILE_PLAY_TIME] + "\"}";
                         }
                     }
                     else
