@@ -56,7 +56,6 @@ namespace windows_client.utils
         /// </summary>
         static ImageLoader()
         {
-            _client.OpenReadCompleted += new OpenReadCompletedEventHandler(_client_OpenReadCompleted);
         }
 
         #region "Isolated Storage"
@@ -74,16 +73,17 @@ namespace windows_client.utils
         /// </returns>
         private static Byte[] ReadFromIsolatedStorage(ImageInfo imgInfo)
         {
+            string fileName = "ProTips//" + imgInfo.FileName;
             using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                if (!myIsolatedStorage.FileExists(imgInfo.FileName))
+                if (!myIsolatedStorage.FileExists(fileName))
                     return null;
 
                 MemoryStream retStream = new MemoryStream();
 
                 try
                 {
-                    using (IsolatedStorageFileStream fileStream = myIsolatedStorage.OpenFile(imgInfo.FileName, FileMode.Open, FileAccess.Read))
+                    using (IsolatedStorageFileStream fileStream = myIsolatedStorage.OpenFile(fileName, FileMode.Open, FileAccess.Read))
                     {
                         fileStream.CopyTo(retStream);
                         fileStream.Close();
@@ -99,30 +99,6 @@ namespace windows_client.utils
         }
 
         /// <summary>
-        /// Clears older files and images stored by the app in isolated storage to free used memory
-        /// </summary>
-        public static void ClearOlderUnusedFilesFromIsolatedStorage()
-        {
-            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                String[] fileNames = myIsolatedStorage.GetFileNames();
-
-                foreach (String fileName in fileNames)
-                {
-                    DateTimeOffset dtOffset = myIsolatedStorage.GetLastAccessTime(fileName);
-
-                    if ((DateTime.Now - dtOffset.DateTime).TotalDays > 30)
-                    {
-                        if (myIsolatedStorage.FileExists(fileName))
-                        {
-                            myIsolatedStorage.DeleteFile(fileName);
-                        }
-                    }
-                }
-            }
-        }
-        
-        /// <summary>
         /// Writes ImageBytes to Isolated Storage
         /// </summary>
         /// 
@@ -133,27 +109,19 @@ namespace windows_client.utils
         /// <param name="imageData">
         /// Image in bytes which needs to be stored in the Isolated Storage
         /// </param>
-        private static void SaveFileInIsolatedStorage(ImageInfo imgInfo, Byte[] imageData)
-        {   
-            // Create a filename for JPEG file in isolated storage.
-            String tempJPEG = imgInfo.FileName;
-            System.Windows.Resources.StreamResourceInfo streamResourceInfo = Application.GetResourceStream(new Uri(tempJPEG, UriKind.Relative));
+        private static void SaveFileInIsolatedStorage(String fileName, Byte[] imageData)
+        {
+            System.Windows.Resources.StreamResourceInfo streamResourceInfo = Application.GetResourceStream(new Uri(fileName, UriKind.Relative));
 
             // Create virtual store and file stream. Check for duplicate tempJPEG files.
             using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
             {
+                fileName = "ProTips//" + fileName;
 
-                Double availSpaceMb = (myIsolatedStorage.AvailableFreeSpace / 1024) / 1024;
+                if (myIsolatedStorage.FileExists(fileName))
+                    myIsolatedStorage.DeleteFile(fileName);
 
-                if (availSpaceMb < 1)
-                    ClearOlderUnusedFilesFromIsolatedStorage();
-
-                if (myIsolatedStorage.FileExists(tempJPEG))
-                {   
-                    myIsolatedStorage.DeleteFile(tempJPEG);
-                }
-
-                using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(tempJPEG, FileMode.Create, myIsolatedStorage))
+                using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(fileName, FileMode.Create, myIsolatedStorage))
                 {
                     using (BinaryWriter writer = new BinaryWriter(fileStream))
                     {
@@ -183,114 +151,28 @@ namespace windows_client.utils
 
         #endregion
 
-        /// <summary>
-        /// The function takes in an ImageInfo and returns the imageStream in Byte if it exists in the local cache
-        /// </summary>
-        /// 
-        /// <param name="imageInfo">
-        /// Info of image Required
-        /// </param>
-        /// 
-        /// <returns>
-        /// Image in byte stored in localCache if present else null
-        /// </returns>
-        private static Byte[] ReadFromLocalImageCache(ImageInfo imageInfo)
-        {
-            if (LocalImageCache.Count> 0 && LocalImageCache.ContainsKey(imageInfo.FileName))
-            {
-                return LocalImageCache[imageInfo.FileName];
-            }
-            else
-                return null;
-        }
-
-        /// <summary>
-        /// Saves Image to LocalImageCache which is a dictionary
-        /// </summary>
-        /// 
-        /// <param name="imgInfo">
-        /// Info of image to be saved
-        /// </param>
-        /// <param name="imageData">
-        /// Image in Bytes
-        /// </param>
-        private static void SaveToLocalImageCache(ImageInfo imgInfo, Byte[] imageData)
-        {
-            if (LocalImageCache.ContainsKey(imgInfo.FileName))
-                LocalImageCache[imgInfo.FileName] = imageData;
-            else
-                LocalImageCache.Add(imgInfo.FileName, imageData);
-        }
-        
-        /// <summary>
-        /// Loading Image
-        /// 1) from localcache
-        /// 2) if not present then from isolatedstorage
-        /// 3) if not present then download using webclient and saving to localCache
-        /// </summary>
-        /// 
-        /// <param name="forceEntry">
-        /// forcing the function to download the image even if the webclient is busy
-        /// </param>
         private static void LoadReq()
-        {   
+        {
             if (Sources.Count > 0)
-            {   
-                ImageInfo imgInfo = Sources.Dequeue();
+            {
+                ImageInfo imgInfo = Sources[Sources.Count - 1];
 
-                Byte[] bytes = ReadFromLocalImageCache(imgInfo);
+                Byte[] bytes = ReadFromIsolatedStorage(imgInfo);
 
                 if (bytes == null)
-                {   
-                    bytes = ReadFromIsolatedStorage(imgInfo);
-
-                    if (bytes == null)
-                    {
-                        Boolean isDownloadSuccessfullyPlaced = Download(imgInfo);
-
-                        if (!isDownloadSuccessfullyPlaced)
-                        {
-                            // So need to wait for downloader. So add it back to the end of the queue
-                            Sources.Enqueue(imgInfo);
-                        }
-                    }
-                    else
-                    {   
-                        SaveToLocalImageCache(imgInfo, bytes);
-                        //System.Threading.Thread.Sleep(400); lazy loading
-                        Deployment.Current.Dispatcher.BeginInvoke(new Action<ImageInfo, Byte[]>(SetImageSource), imgInfo, bytes);
-                    }
-                }
+                    Download(imgInfo);
                 else
-                {   
-                    //System.Threading.Thread.Sleep(400); lazy loading
                     Deployment.Current.Dispatcher.BeginInvoke(new Action<ImageInfo, Byte[]>(SetImageSource), imgInfo, bytes);
-                }
             }
         }
 
         static System.ComponentModel.BackgroundWorker _loadWorker;
 
-        /// <summary>
-        /// Called from ResultItemViewModel while assigning images to layout
-        /// </summary>
-        /// 
-        /// <param name="imageSource">
-        /// ImageSource to which the downloaded image needs to be attached with
-        /// </param>
-        /// 
-        /// <param name="uri">
-        /// URI of the image to be downloaded
-        /// </param>
-        /// 
-        /// <param name="DefaultImgUrl">
-        /// If Image fails due to network problems or if its a gif image, display a default Image
-        /// </param>
         public static void Load(BitmapImage imageSource, Uri uri, Uri defaultImgUrl = null, String fileName = null)
         {
             imageSource.CreateOptions = BitmapCreateOptions.DelayCreation;
             ImageInfo imgInfo = new ImageInfo(imageSource, uri, defaultImgUrl, fileName);
-            Sources.Enqueue(imgInfo);
+            Sources.Add(imgInfo);
 
             if (_loadWorker == null)
             {
@@ -314,54 +196,24 @@ namespace windows_client.utils
                 _loadWorker.RunWorkerAsync();
         }
 
-        /// <summary>
-        /// Downloads the Image using the uri provided via a webclient in the background
-        /// <returns>
-        /// Whether Download request is successfully placed
-        /// </returns>
-        /// </summary>
-        private static Boolean Download(ImageInfo imgInfo)
-        {   
-            if (_client.IsBusy)
-                return false;
-            else
-            {
-                System.Threading.Thread.Sleep(100);
-                _client.OpenReadAsync(imgInfo.Uri, imgInfo);
-                return true;
-            }
+        private static void Download(ImageInfo imgInfo)
+        {
+            AccountUtils.createGetRequest(imgInfo.Uri.OriginalString, getProTipPic_Callback, true, Utils.ConvertUrlToFileName(imgInfo.FileName));
         }
 
-        /// <summary>
-        /// Invoked after download of image. 
-        /// 
-        /// Saves it to local cache and isolated storage both. 
-        /// And links the image to the bitmap imagesource.
-        /// </summary>
-        /// 
-        /// <param name="sender"></param>
-        /// <param name="e">
-        /// Contains the image downloaded as Result
-        /// </param>
-        static void _client_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
+        public static void getProTipPic_Callback(byte[] fullBytes, object fName)
         {   
             try
-            {   
-                var resInfo = new System.Windows.Resources.StreamResourceInfo(e.Result, null);
-                var reader = new StreamReader(resInfo.Stream);
-                byte[] myByte;
+            {
+                string fileName = fName as string;
+                ImageInfo imgInfo = Sources.Where(i => i.FileName == fileName) as ImageInfo;
 
-                using (BinaryReader bReader = new BinaryReader(reader.BaseStream))
+                if (imgInfo != null)
                 {
-                    myByte = bReader.ReadBytes((int)reader.BaseStream.Length);
+                    Deployment.Current.Dispatcher.BeginInvoke(new Action<ImageInfo, Byte[]>(SetImageSource), imgInfo as ImageInfo, fullBytes);
+                    SaveFileInIsolatedStorage(fName as String, fullBytes);
+                    
                 }
-
-                System.Diagnostics.Debug.WriteLine("Image Was Under Download " + (e.UserState as ImageInfo).Uri);
-                Deployment.Current.Dispatcher.BeginInvoke(new Action<ImageInfo, Byte[]>(SetImageSource), e.UserState as ImageInfo, myByte);
-
-                SaveToLocalImageCache(e.UserState as ImageInfo, myByte);
-                SaveFileInIsolatedStorage(e.UserState as ImageInfo, myByte);
-                
             }
             catch (Exception ex)
             {
@@ -372,17 +224,6 @@ namespace windows_client.utils
                 _loadWorker.RunWorkerAsync();
         }
 
-        /// <summary>
-        /// Maps the image downloaded as bytes to imageSource present in the ImageInfo
-        /// </summary>
-        /// 
-        /// <param name="imgInfo">
-        /// Stores the imageSource to which the image needs to be mapped
-        /// </param>
-        /// <param name="imgData">
-        /// The Image in Bytes. 
-        /// Needs to be converted into Stream/MemoryStream inorder to link it to BitmapImageSource
-        /// </param>
         private static void SetImageSource(ImageInfo imgInfo, Byte[] imgData)
         {
             try
@@ -401,16 +242,6 @@ namespace windows_client.utils
         /// <summary>
         /// Queue of Images which have been downloaded but need to be linked to their respective imageSource
         /// </summary>
-        static Queue<ImageInfo> Sources = new Queue<ImageInfo>();
-
-        /// <summary>
-        /// Dictionary to maintain images in LocalCache
-        /// </summary>
-        public static Dictionary<String, Byte[]> LocalImageCache = new Dictionary<String, Byte[]>();
-        
-        /// <summary>
-        /// Webclient to download Images from http uri
-        /// </summary>
-        private static WebClient _client = new WebClient();
+        static List<ImageInfo> Sources = new List<ImageInfo>();
     }
 }

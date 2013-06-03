@@ -385,8 +385,13 @@ namespace windows_client.utils
         {
             ImageSource source = null;
 
-            if (!String.IsNullOrEmpty(ImageUrl))
-                ImageLoader.Load(source as BitmapImage, new Uri(ImageUrl), null, "ProTips\\" + Utils.ConvertUrlToFileName(ImageUrl));
+            Deployment.Current.Dispatcher.BeginInvoke(new Action<BitmapImage>(delegate(BitmapImage imgSource)
+                {
+                    imgSource = new BitmapImage();
+
+                    if (!String.IsNullOrEmpty(ImageUrl))
+                        ImageLoader.Load(imgSource as BitmapImage, new Uri(ImageUrl), null, Utils.ConvertUrlToFileName(ImageUrl));
+                }), source);
 
             return source;
         }

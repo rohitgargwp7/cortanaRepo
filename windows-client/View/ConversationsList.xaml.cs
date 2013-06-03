@@ -14,6 +14,7 @@ using Microsoft.Phone.Tasks;
 using System.IO;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Windows.Data;
 using System.Windows.Documents;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.GamerServices;
@@ -2288,7 +2289,11 @@ namespace windows_client.View
 
                 if (!String.IsNullOrEmpty(proTip.ImageUrl))
                 {
-                    proTipImage.Source = proTip.TipImage;
+                    Binding myBinding = new Binding();
+                    myBinding.Source = proTip;
+                    myBinding.Path = new PropertyPath("TipImage");
+                    //myBinding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+                    BindingOperations.SetBinding(proTipImage, Image.SourceProperty, myBinding);
                     proTipImage.Visibility = Visibility.Visible;
                     //AccountUtils.createGetRequest(proTip.ImageUrl, getProTipPic_Callback, true, Utils.ConvertUrlToFileName(proTip.ImageUrl));
                 }
@@ -2297,19 +2302,19 @@ namespace windows_client.View
             }
         }
 
-        public void getProTipPic_Callback(byte[] fullBytes, object fName)
-        {
-            string fileName = fName as string; //fname can be used in future.
+        //public void getProTipPic_Callback(byte[] fullBytes, object fName)
+        //{
+        //    string fileName = fName as string; //fname can be used in future.
 
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                if (proTipsGrid.Visibility == Visibility.Visible)
-                {
-                    if (fullBytes != null && fullBytes.Length > 0)
-                        proTipImage.Source = UI_Utils.Instance.createImageFromBytes(fullBytes);
-                }
-            });
-        }
+        //    Deployment.Current.Dispatcher.BeginInvoke(() =>
+        //    {
+        //        if (proTipsGrid.Visibility == Visibility.Visible)
+        //        {
+        //            if (fullBytes != null && fullBytes.Length > 0)
+        //                proTipImage.Source = UI_Utils.Instance.createImageFromBytes(fullBytes);
+        //        }
+        //    });
+        //}
 
         private void ProTipImage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
