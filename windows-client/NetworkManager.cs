@@ -213,12 +213,12 @@ namespace windows_client
                     var data = jsonObj[HikeConstants.DATA];
                     lastSeen = (long)data[HikeConstants.LASTSEEN];
 
-                    if (lastSeen.Equals("-1"))
-                        FriendsTableUtils.SetFriendLastSeenTSToFile(msisdn, 0);
-                    else if (lastSeen.Equals("0"))
-                        FriendsTableUtils.SetFriendLastSeenTSToFile(msisdn, TimeUtils.getCurrentTimeStamp());
-                    else
-                        FriendsTableUtils.SetFriendLastSeenTSToFile(msisdn, lastSeen);
+                    if (lastSeen > 0)
+                    {
+                        //long timedifference;
+                        //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                        //    lastSeen = lastSeen - timedifference;
+                    }           
                 }
                 catch (Exception ex)
                 {

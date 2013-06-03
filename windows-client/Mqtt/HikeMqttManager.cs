@@ -421,9 +421,12 @@ namespace windows_client.Mqtt
                 return;
             Debug.WriteLine("MQTT MANAGER:: NUmber os unsent messages" + packets.Count);
             sendAllUnsentMessages(packets);
-            
-            if(!isConnectedLastSeenPacketSent)
+
+            if (!isConnectedLastSeenPacketSent)
+            {
+                isConnectedLastSeenPacketSent = true;
                 sendAppFGStatusToServer();
+            }
         }
 
         public void onDisconnected()

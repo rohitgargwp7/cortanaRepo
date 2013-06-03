@@ -299,16 +299,16 @@ namespace windows_client.View
 
                 if (_lastUpdatedLastSeenTimeStamp != 0)
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(new Action<string, bool>(delegate(string lastSeenStatus, bool isOnline)
+                    Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
                     {
                         //update ui if prev last seen is greater than current last seen, db updated everytime in backend
                         lastSeenTxt.Text = lastSeenStatus;
-                        onlineStatus.Visibility = isOnline  ? Visibility.Collapsed : Visibility.Visible;
+                        onlineStatus.Visibility =  Visibility.Collapsed;
                         userName.FontSize = 36;
                         lastSeenPannel.Visibility = Visibility.Visible;
 
                         _lastSeenTimer.Start();
-                    }), _lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp), false);
+                    }), _lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
                 }
             }
         }
@@ -3588,12 +3588,7 @@ namespace windows_client.View
                             if (lastSeen == 0)
                                 _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
                             else
-                            {
-                                //long timedifference,actualTimeStamp;
-                                //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
-                                //    actualTimeStamp = lastSeen - timedifference;
                                 _lastUpdatedLastSeenTimeStamp = lastSeen;
-                            }
 
                             Deployment.Current.Dispatcher.BeginInvoke(new Action<string, bool>(delegate(string lastSeenStatus, bool isOnline)
                             {
@@ -3606,7 +3601,7 @@ namespace windows_client.View
                                 _lastSeenTimer.Start();
                             }), _lastSeenHelper.GetLastSeenTimeStampStatus(lastSeen), lastSeen == 0);
                         }
-                        else
+                        else if (lastSeen == -1)
                         {
                             _lastUpdatedLastSeenTimeStamp = 0;
 
