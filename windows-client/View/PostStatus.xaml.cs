@@ -50,8 +50,16 @@ namespace windows_client.View
             appBar.Buttons.Add(postStatusIcon);
             postStatusPage.ApplicationBar = appBar;
 
-            if (!App.ViewModel.TipList[3].IsShown || App.ViewModel.TipList[3].IsCurrentlyShown)
+            App.ViewModel.TipList[3].TipDismissed += PostStatus_TipDismissed;
+            //if (!App.ViewModel.TipList[3].IsShown || App.ViewModel.TipList[3].IsCurrentlyShown)
                 App.ViewModel.DisplayTip(MoodPanel, 3);
+        }
+
+        void PostStatus_TipDismissed(object sender, EventArgs e)
+        {
+            App.ViewModel.TipList[3].TipDismissed -= PostStatus_TipDismissed;
+
+            txtStatus.Focus();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

@@ -411,39 +411,42 @@ namespace windows_client.ViewModel
             marked |= (byte)(1 << index);
             App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
 
-            InAppTipUC inAppTipUC = new Controls.InAppTipUC() { Name = "tip" + index };
-            Canvas.SetTop(inAppTipUC, 0);
-            Canvas.SetLeft(inAppTipUC, 0);
-            Canvas.SetZIndex(inAppTipUC, 3);
-            inAppTipUC.Visibility = Visibility.Visible;
-
-            if (index == 0 || index == 1 || index == 2)
-                inAppTipUC.SetValue(Grid.RowSpanProperty, 3);
-            else if (index == 3)
-                inAppTipUC.SetValue(Grid.RowSpanProperty, 2);
-
-            if (tip.IsTop)
+            if (element != null)
             {
-                inAppTipUC.VerticalAlignment = VerticalAlignment.Top;
-                inAppTipUC.TopPathMargin = tip.TipMargin;
-                inAppTipUC.TopPathVisibility = Visibility.Visible;
-                inAppTipUC.BottomPathVisibility = Visibility.Collapsed;
+                InAppTipUC inAppTipUC = new Controls.InAppTipUC() { Name = "tip" + index };
+                Canvas.SetTop(inAppTipUC, 0);
+                Canvas.SetLeft(inAppTipUC, 0);
+                Canvas.SetZIndex(inAppTipUC, 3);
+                inAppTipUC.Visibility = Visibility.Visible;
+
+                if (index == 0 || index == 1 || index == 2)
+                    inAppTipUC.SetValue(Grid.RowSpanProperty, 3);
+                else if (index == 3)
+                    inAppTipUC.SetValue(Grid.RowSpanProperty, 2);
+
+                if (tip.IsTop)
+                {
+                    inAppTipUC.VerticalAlignment = VerticalAlignment.Top;
+                    inAppTipUC.TopPathMargin = tip.TipMargin;
+                    inAppTipUC.TopPathVisibility = Visibility.Visible;
+                    inAppTipUC.BottomPathVisibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    inAppTipUC.VerticalAlignment = VerticalAlignment.Bottom;
+                    inAppTipUC.BottomPathMargin = tip.TipMargin;
+                    inAppTipUC.TopPathVisibility = Visibility.Collapsed;
+                    inAppTipUC.BottomPathVisibility = Visibility.Visible;
+                }
+
+                inAppTipUC.Tip = tip.Tip;
+                inAppTipUC.Margin = tip.FullTipMargin;
+                inAppTipUC.TipIndex = index;
+
+                inAppTipUC.Dismissed += inAppTipUC_Dismissed;
+
+                element.Children.Add(inAppTipUC);
             }
-            else
-            {
-                inAppTipUC.VerticalAlignment = VerticalAlignment.Bottom;
-                inAppTipUC.BottomPathMargin = tip.TipMargin;
-                inAppTipUC.TopPathVisibility = Visibility.Collapsed;
-                inAppTipUC.BottomPathVisibility = Visibility.Visible;
-            }
-
-            inAppTipUC.Tip = tip.Tip;
-            inAppTipUC.Margin = tip.FullTipMargin;
-            inAppTipUC.TipIndex = index;
-
-            inAppTipUC.Dismissed += inAppTipUC_Dismissed;
-
-            element.Children.Add(inAppTipUC);
         }
 
         /// <summary>
@@ -453,13 +456,26 @@ namespace windows_client.ViewModel
         /// <param name="index">tool tip index to be removed</param>
         public void HideToolTip(Panel element, int index)
         {
-            InAppTipUC tip = element.FindName("tip" + index) as InAppTipUC;
-
-            if (tip != null)
+            if (element != null)
             {
-                element.Children.Remove(tip);
-                tip.Visibility = Visibility.Collapsed;
+                InAppTipUC tip = element.FindName("tip" + index) as InAppTipUC;
 
+                if (tip != null)
+                {
+                    element.Children.Remove(tip);
+                    tip.Visibility = Visibility.Collapsed;
+
+                    HikeToolTip toolTip = TipList[index];
+                    toolTip.IsCurrentlyShown = false;
+
+                    byte currentShown;
+                    App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
+                    currentShown |= (byte)(1 << index);
+                    App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
+                }
+            }
+            else
+            {
                 HikeToolTip toolTip = TipList[index];
                 toolTip.IsCurrentlyShown = false;
 
@@ -493,6 +509,8 @@ namespace windows_client.ViewModel
                 App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
                 currentShown |= (byte)(1 << tip.TipIndex);
                 App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
+
+                toolTip.TriggerUIUpdateOnDismissed();
             }
         }
 
