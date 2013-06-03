@@ -826,6 +826,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Drag here to delete.
+        /// </summary>
+        public static string Drag_Here_To_Delete {
+            get {
+                return ResourceManager.GetString("Drag_Here_To_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter Correct Email.
         /// </summary>
         public static string EditProfile_emailErrorTxt_TxtBlk {
@@ -1955,6 +1964,24 @@ namespace windows_client.Languages {
         public static string Me_Txt {
             get {
                 return ResourceManager.GetString("Me_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message cancelled.
+        /// </summary>
+        public static string Message_Cancelled {
+            get {
+                return ResourceManager.GetString("Message_Cancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message too short.
+        /// </summary>
+        public static string Message_Too_Short {
+            get {
+                return ResourceManager.GetString("Message_Too_Short", resourceCulture);
             }
         }
         

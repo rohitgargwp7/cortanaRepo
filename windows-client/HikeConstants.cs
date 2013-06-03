@@ -46,6 +46,7 @@ namespace windows_client
         public static readonly string FILE_THUMBNAIL = "tn";
         public static readonly string FILE_CONTENT_TYPE = "ct";
         public static readonly string FILES_DATA = "files";
+        public static readonly string FILE_PLAY_TIME = "pt";
 
         public static readonly string LATITUDE = "lat";
         public static readonly string LONGITUDE = "long";
@@ -224,6 +225,7 @@ namespace windows_client
         public static string SOCIAL_STATE = "socialState";
         public static string SOCIAL = "Social_Request";
         public static string SHOW_GROUP_CHAT_OVERLAY = "sgcol";
+        public static string PLAYER_TIMER = "playerTimer";
 
         /* NAVIGATION CONSTANTS*/
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";

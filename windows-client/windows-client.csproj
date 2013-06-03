@@ -470,6 +470,8 @@
     <Content Include="View\images\change_pic.png" />
     <Content Include="View\images\chat_sms_error.png" />
     <Content Include="View\images\connected_tick.png" />
+    <Content Include="View\images\deleted_grey_icon.png" />
+    <Content Include="View\images\deleted_white_icon.png" />
     <Content Include="View\images\delete_account_white.png" />
     <Content Include="View\images\drop_pin_icon.png" />
     <Content Include="View\images\emptyImage.png" />
@@ -484,7 +486,6 @@
     <Content Include="View\images\fb_icon.png" />
     <Content Include="View\images\fb_status.png" />
     <Content Include="View\images\fb_status_disabled.png" />
-    <Content Include="View\images\delete_bin.png" />
     <Content Include="View\images\group_name_changed.png" />
     <Content Include="View\images\help_icon_dark.png" />
     <Content Include="View\images\help_icon_white.png" />
@@ -559,7 +560,8 @@
     <Content Include="View\images\user_lock_white.png" />
     <Content Include="View\images\new_icon.png" />
     <Content Include="View\images\new_icon_white.png" />
-    <Content Include="View\images\walkie_talkie.png" />
+    <Content Include="View\images\Walkie_Talkie_Black_big.png" />
+    <Content Include="View\images\walkie_talkie_White_Big.png" />
     <Content Include="View\images\Walkie_Talkie_Grey_small.png" />
     <Content Include="View\images\Walkie_Talkie_White_small.png" />
     <Content Include="View\images\welome_screen.jpg" />
