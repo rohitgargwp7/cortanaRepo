@@ -252,7 +252,17 @@ namespace windows_client.View
                 {
                     _lastSeenHelper.UpdateLastSeen -= LastSeenResponseReceived;
 
-                    _lastUpdatedLastSeenTimeStamp = e.TimeStamp == -1 ? 0 : e.TimeStamp == 0 ? TimeUtils.getCurrentTimeStamp() : e.TimeStamp;
+                    if (e.TimeStamp == -1)
+                        _lastUpdatedLastSeenTimeStamp = 0;
+                    else if (e.TimeStamp == 0)
+                        _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
+                    else
+                    {
+                        //long timedifference,actualTimeStamp;
+                        //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                        //    actualTimeStamp = e.TimeStamp - timedifference;
+                        _lastUpdatedLastSeenTimeStamp = e.TimeStamp;
+                    }
 
                     if (_lastUpdatedLastSeenTimeStamp != 0)
                     {
@@ -273,7 +283,13 @@ namespace windows_client.View
                     else if (e.TimeStamp.Equals("0"))
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, TimeUtils.getCurrentTimeStamp());
                     else
+                    {
+                        //long timedifference,actualTimeStamp;
+                        //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                        //    actualTimeStamp = e.TimeStamp - timedifference;
+
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, e.TimeStamp);
+                    }
                 }
             }
             else
@@ -3569,7 +3585,15 @@ namespace windows_client.View
                     {
                         if (lastSeen > _lastUpdatedLastSeenTimeStamp || lastSeen == 0)
                         {
-                            _lastUpdatedLastSeenTimeStamp = lastSeen == 0 ? TimeUtils.getCurrentTimeStamp() : lastSeen;
+                            if (lastSeen == 0)
+                                _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
+                            else
+                            {
+                                //long timedifference,actualTimeStamp;
+                                //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                                //    actualTimeStamp = lastSeen - timedifference;
+                                _lastUpdatedLastSeenTimeStamp = lastSeen;
+                            }
 
                             Deployment.Current.Dispatcher.BeginInvoke(new Action<string, bool>(delegate(string lastSeenStatus, bool isOnline)
                             {
@@ -3584,6 +3608,8 @@ namespace windows_client.View
                         }
                         else
                         {
+                            _lastUpdatedLastSeenTimeStamp = 0;
+
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 userName.FontSize = 50;

@@ -77,10 +77,6 @@ namespace windows_client.utils
             if (timeStamp == -1)
                 return "";
 
-            //long timedifference;
-            //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
-            //    timeStamp = timeStamp - timedifference;
-
             return Languages.AppResources.Last_Seen + " " + TimeUtils.getRelativeTime(timeStamp);
         }
 
