@@ -400,7 +400,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("FriendsTableUtils :: GetFriendTimeStamp :GetFriendTimeStamp, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: GetFriendStatus :GetFriendStatus, Exception : " + ex.StackTrace);
                 }
             }
             return ts;
