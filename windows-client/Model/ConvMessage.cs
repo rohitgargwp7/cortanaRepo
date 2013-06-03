@@ -723,6 +723,13 @@ namespace windows_client.Model
         {
             get
             {
+                if(!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
+                {
+                    if (_stickerObj != null && _stickerObj.StickerImage != null)
+                        return Visibility.Visible;
+                    else
+                        return Visibility.Collapsed;
+                }
                 if (FileAttachment.FileState == Attachment.AttachmentState.COMPLETED)
                     return Visibility.Visible;
                 else
@@ -1396,6 +1403,7 @@ namespace windows_client.Model
             {
                 _stickerObj.StickerImage = stickerImage;
                 NotifyPropertyChanged("MessageImage");
+                NotifyPropertyChanged("ShowForwardMenu");
             }
         }
 

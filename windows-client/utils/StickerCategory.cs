@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.IsolatedStorage;
@@ -22,7 +23,7 @@ namespace windows_client.utils
         private string _category;
         private bool _hasMoreStickers = true;
         private bool _showDownloadMessage = true;
-        private List<Sticker> _listStickers;
+        private ObservableCollection<Sticker> _listStickers;
         private bool _isDownLoading;
         private static object readWriteLock = new object();
 
@@ -66,7 +67,7 @@ namespace windows_client.utils
             }
         }
 
-        public List<Sticker> ListStickers
+        public ObservableCollection<Sticker> ListStickers
         {
             get
             {
@@ -82,7 +83,7 @@ namespace windows_client.utils
         public StickerCategory(string category)
         {
             this._category = category;
-            _listStickers = new List<Sticker>();
+            _listStickers = new ObservableCollection<Sticker>();
         }
 
 
