@@ -34,10 +34,14 @@ namespace windows_client.utils
         private SolidColorBrush receivedChatBubbleProgress;
         private SolidColorBrush phoneThemeColor;
         private SolidColorBrush statusTextForeground;
+        private SolidColorBrush deleteGreyBackground;
+        private SolidColorBrush deleteBlackBackground;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
         private BitmapImage playIcon;
+        private BitmapImage pauseIcon;
+        private BitmapImage audioMicIcon;
         private BitmapImage downloadIcon;
         private BitmapImage audioAttachmentReceive;
         private BitmapImage audioAttachmentSend;
@@ -81,6 +85,24 @@ namespace windows_client.utils
         private Thickness convListEmoticonMargin = new Thickness(0, 5, 0, 0);
         private Thickness chatThreadKeyPadUpMargin = new Thickness(0, 315, 15, 0);
         private Thickness chatThreadKeyPadDownMargin = new Thickness(0, 0, 15, 0);
+        public Thickness RecMessageBubbleTextMarginPortrait = new Thickness(0, 0, 90, 14);
+        public Thickness ReceivedBubbleFileMarginPortrait = new Thickness(0, 0, 185, 14);
+        public Thickness SentBubbleTextMarginPortrait = new Thickness(55, 12, 0, 10);
+        public Thickness SentBubbleFileMarginPortrait = new Thickness(185, 12, 0, 10);
+        public Thickness SentBubbleAudioFileMarginPortrait = new Thickness(155, 12, 0, 10);
+        public Thickness RecievedBubbleTextMarginLS = new Thickness(0, 0, 285, 14);
+        public Thickness ReceivedBubbleFileMarginLS = new Thickness(0, 0, 380, 14);
+        public Thickness SentBubbleTextMarginLS = new Thickness(250, 12, 0, 10);
+        public Thickness SentBubbleFileMarginLS = new Thickness(380, 12, 0, 10);
+        public Thickness SentBubbleAudioFileMarginLS = new Thickness(345, 12, 0, 10);
+        BitmapImage walkieTalkieGreyImage;
+        BitmapImage walkieTalkieWhiteImage;
+        BitmapImage walkieTalkieGreyImageBig;
+        BitmapImage walkieTalkieWhiteImageBig;
+        BitmapImage dustbinGreyImage;
+        BitmapImage dustbinWhiteImage;
+        SolidColorBrush whiteTextForeGround;
+        SolidColorBrush greyTextForeGround;
         private FontFamily groupChatMessageHeader;
         private FontFamily messageText;
 
@@ -94,6 +116,8 @@ namespace windows_client.utils
         public Thickness TimelineStatusTextMargin = new Thickness(20, 0, 5, 0);
         public Thickness UserProfileStatusTextMargin = new Thickness(18, 0, 5, 0);
         public Thickness StatusImageMargin = new Thickness(12, 28, 0, 12);
+        public SolidColorBrush RedBorderBrush = new SolidColorBrush(Colors.Red);
+        public SolidColorBrush BlackBorderBrush = new SolidColorBrush(Colors.Black);
         #endregion
 
         private Dictionary<string, BitmapImage> _bitMapImageCache = null;
@@ -439,7 +463,19 @@ namespace windows_client.utils
             {
                 if (playIcon == null)
                     playIcon = new BitmapImage(new Uri("/View/images/play_icon.png", UriKind.Relative));
+
                 return playIcon;
+            }
+        }
+
+        public BitmapImage PauseIcon
+        {
+            get
+            {
+                if (pauseIcon == null)
+                    pauseIcon = new BitmapImage(new Uri("/View/images/pause_icon.png", UriKind.Relative));
+
+                return pauseIcon;
             }
         }
 
@@ -827,7 +863,27 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush GreyTextForeGround
+        {
+            get
+            {
+                if (greyTextForeGround == null)
+                        greyTextForeGround = new SolidColorBrush(Color.FromArgb(255, 104, 104, 104));
+                
+                return greyTextForeGround;
+            }
+        }
 
+        public SolidColorBrush WhiteTextForeGround
+        {
+            get
+            {
+                if (whiteTextForeGround == null)
+                    whiteTextForeGround = new SolidColorBrush(Colors.White);
+
+                return whiteTextForeGround;
+            }
+        }
 
         public FontFamily SemiBoldFont
         {
@@ -871,6 +927,112 @@ namespace windows_client.utils
             get
             {
                 return chatThreadKeyPadDownMargin;
+            }
+        }
+
+        public SolidColorBrush DeleteBlackBackground
+        {
+            get
+            {
+                if (deleteBlackBackground == null)
+                    deleteBlackBackground = new SolidColorBrush(Colors.Black);
+                return deleteBlackBackground;
+        }
+        }
+
+        public SolidColorBrush DeleteGreyBackground
+        {
+            get
+            {
+                if (deleteGreyBackground == null)
+                    deleteGreyBackground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 105, 105, 105));
+                return deleteGreyBackground;
+            }
+        }
+
+        public BitmapImage DustbinGreyImage
+        {
+            get
+            {
+                if (dustbinGreyImage == null)
+                    dustbinGreyImage = new BitmapImage(new Uri("/View/images/deleted_grey_icon.png", UriKind.Relative));
+
+                return dustbinGreyImage;
+            }
+        }
+
+        public BitmapImage DustbinWhiteImage
+        {
+            get
+            {
+                if (dustbinWhiteImage == null)
+                    dustbinWhiteImage = new BitmapImage(new Uri("/View/images/deleted_white_icon.png", UriKind.Relative));
+
+                return dustbinWhiteImage;
+            }
+        }
+
+        public BitmapImage WalkieTalkieGreyImage
+        {
+            get
+            {
+                if (walkieTalkieGreyImage == null)
+                    walkieTalkieGreyImage = new BitmapImage(new Uri("/View/images/Walkie_Talkie_Grey_small.png", UriKind.Relative));
+
+                return walkieTalkieGreyImage;
+            }
+        }
+        
+        public BitmapImage WalkieTalkieWhiteImage
+        {
+            get
+            {
+                if (walkieTalkieWhiteImage == null)
+                    walkieTalkieWhiteImage = new BitmapImage(new Uri("/View/images/Walkie_Talkie_White_small.png", UriKind.Relative));
+
+                return walkieTalkieWhiteImage;
+            }
+        }
+
+        public BitmapImage WalkieTalkieBigImage
+        {
+            get
+            {
+                if (Utils.isDarkTheme())
+                {
+                    if (walkieTalkieGreyImageBig == null)
+                        walkieTalkieGreyImageBig = new BitmapImage(new Uri("/View/images/Walkie_Talkie_Black_big.png", UriKind.Relative));
+
+                    return walkieTalkieGreyImageBig;
+                }
+                else
+                {
+                    if (walkieTalkieWhiteImageBig == null)
+                        walkieTalkieWhiteImageBig = new BitmapImage(new Uri("/View/images/Walkie_Talkie_White_big.png", UriKind.Relative));
+
+                    return walkieTalkieWhiteImageBig;
+                }
+            }
+        }
+
+        public BitmapImage WalkieTalkieDeleteSucImage
+        {
+            get
+            {
+                if (Utils.isDarkTheme())
+                {
+                    if (walkieTalkieGreyImageBig == null)
+                        walkieTalkieGreyImageBig = new BitmapImage(new Uri("/View/images/deleted_grey_icon.png", UriKind.Relative));
+
+                    return walkieTalkieGreyImageBig;
+                }
+                else
+                {
+                    if (walkieTalkieWhiteImageBig == null)
+                        walkieTalkieWhiteImageBig = new BitmapImage(new Uri("/View/images/deleted_white_icon.png", UriKind.Relative));
+
+                    return walkieTalkieWhiteImageBig;
+                }
             }
         }
 

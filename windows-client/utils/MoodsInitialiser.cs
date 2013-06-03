@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,8 +13,7 @@ namespace windows_client.utils
     {
         private static MoodsInitialiser instance = null;
         private BitmapImage[] moodImages;
-        public static readonly int totalMoodCount = 33;
-        private readonly int cricketMoodCount = 9;
+        public static readonly int totalMoodCount = 24;
 
         public static MoodsInitialiser Instance
         {
@@ -29,12 +29,7 @@ namespace windows_client.utils
 
         private MoodsInitialiser()
         {
-            bool hideCricketMoods;
-            App.appSettings.TryGetValue<bool>(App.HIDE_CRICKET_MOODS, out hideCricketMoods);
-            if (hideCricketMoods)
-                moodImages = new BitmapImage[totalMoodCount - cricketMoodCount];
-            else
-                moodImages = new BitmapImage[totalMoodCount];
+            moodImages = new BitmapImage[totalMoodCount];
         }
 
         private string[,] moodInfo = new string[,]
@@ -62,17 +57,9 @@ namespace windows_client.utils
             {"/View/images/moods/05Shopping.png",      AppResources.Mood_Shopping          ,                   "",	"",	""},
             {"/View/images/moods/06Gaming.png",        AppResources.Mood_Gaming            ,                   "",	"",	""},
             {"/View/images/moods/02Coding.png",        AppResources.Mood_Coding            ,                   "",	"",	""},
-            {"/View/images/moods/10Television.png",    AppResources.Mood_Watching_tv       ,                   "",	"",	""},
-            { "/View/images/moods/bangalore.png",      AppResources.Mood_Bangalore         ,                   "",	"",	""},
-            { "/View/images/moods/chennai.png",        AppResources.Mood_Chennai           ,                   "",	"",	""},
-            { "/View/images/moods/delhi.png",          AppResources.Mood_Delhi             ,                   "",	"",	""},
-            { "/View/images/moods/hyderabad.png",      AppResources.Mood_Hyderabad         ,                   "",	"",	""},
-            { "/View/images/moods/kolkata.png",        AppResources.Mood_Kolkata           ,                   "",	"",	""},
-            { "/View/images/moods/mumbai.png",         AppResources.Mood_Mumbai            ,                   "",	"",	""},
-            { "/View/images/moods/pune.png",           AppResources.Mood_Pune              ,                   "",	"",	""},
-            { "/View/images/moods/punjab.png",         AppResources.Mood_Punjab            ,                   "",	"",	""},
-            { "/View/images/moods/rajasthan.png",      AppResources.Mood_Rajasthan         ,                   "",	"",	""}
-        };
+            {"/View/images/moods/10Television.png",    AppResources.Mood_Watching_tv       ,                   "",	"",	""}
+            };
+
         public BitmapImage GetMoodImageForMoodId(int moodId)
         {
             if (!IsValidMoodId(moodId))
@@ -116,7 +103,6 @@ namespace windows_client.utils
 
         public class Mood
         {
-            private const int nonCricketMoodsCount = 24;
             int _moodId;
             public Mood(int moodId)
             {
@@ -131,16 +117,7 @@ namespace windows_client.utils
                 }
             }
 
-            public int MoodHeight
-            {
-                get
-                {
-                    if (_moodId <= nonCricketMoodsCount)
-                        return 55;
-                    else
-                        return 65;
-                }
-            }
+
             public string MoodText
             {
                 get
@@ -161,6 +138,28 @@ namespace windows_client.utils
                 }
             }
 
+        }
+        public static int GetMoodId(string metadataJson)
+        {
+            int moodId = -1;
+            if (string.IsNullOrWhiteSpace(metadataJson))
+                return -1;
+            try
+            {
+                JObject metaData = JObject.Parse(metadataJson);
+                JObject data = (JObject)metaData[HikeConstants.DATA];
+                if (data[HikeConstants.MOOD] != null)
+                {
+                    string moodId_String = data[HikeConstants.MOOD].ToString();
+                    if (!string.IsNullOrEmpty(moodId_String))
+                    {
+                        int.TryParse(moodId_String, out moodId);
+                    }
+                }
+            }
+            catch (Exception)
+            { }
+            return moodId;
         }
 
     }

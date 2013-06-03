@@ -262,8 +262,6 @@ namespace windows_client
             WELCOME_HIKE_SCREEN,
             SETNAME_SCREEN, // EnterName Screen
             CONVLIST_SCREEN, // ConversationsList Screen
-            NUX_SCREEN_FRIENDS,// Nux Screen for friends
-            NUX_SCREEN_FAMILY,// Nux Screen for family
             UPGRADE_SCREEN//Upgrade page
         }
 

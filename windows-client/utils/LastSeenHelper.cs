@@ -77,7 +77,11 @@ namespace windows_client.utils
             if (timeStamp == -1)
                 return "";
 
-            return Languages.AppResources.Last_Seen + " " + TimeUtils.getRelativeTime(timeStamp / 1000);
+            //long timedifference;
+            //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+            //    timeStamp = timeStamp - timedifference;
+
+            return Languages.AppResources.Last_Seen + " " + TimeUtils.getRelativeTime(timeStamp);
         }
 
         readonly DateTime EPOCH_TIME = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);

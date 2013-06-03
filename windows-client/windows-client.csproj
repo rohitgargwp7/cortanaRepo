@@ -107,7 +107,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Facebook.6.1.4\lib\wp71\Facebook.dll</HintPath>
     </Reference>
-    <Reference Include="finalmqtt">
+    <Reference Include="finalmqtt, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\finalmqtt.dll</HintPath>
     </Reference>
     <Reference Include="Hammock.WindowsPhone.Mango">
@@ -138,26 +139,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ConversationBox.xaml.cs">
-      <DependentUpon>ConversationBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\StatusChatBubble.xaml.cs">
-      <DependentUpon>StatusChatBubble.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\MyChatBubble.cs" />
-    <Compile Include="Controls\NotificationChatBubble.xaml.cs">
-      <DependentUpon>NotificationChatBubble.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\LinkifiedTextBox.xaml.cs">
-      <DependentUpon>LinkifiedTextBox.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Controls\MyRichTextBox.cs" />
     <Compile Include="Controls\ProgressIndicator.cs" />
-    <Compile Include="Controls\ReceivedChatBubble.xaml.cs">
-      <DependentUpon>ReceivedChatBubble.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\SentChatBubble.xaml.cs">
-      <DependentUpon>SentChatBubble.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\StatusUpdate\FriendRequestStatus.xaml.cs">
       <DependentUpon>FriendRequestStatus.xaml</DependentUpon>
     </Compile>
@@ -168,6 +151,7 @@
       <DependentUpon>ImageStatusUpdate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\StatusUpdate\StatusUpdateBox.cs" />
+    <Compile Include="Controls\TemplateSelector.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbCompiledQueries.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
@@ -246,11 +230,11 @@
     <Compile Include="View\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\NewChatThread.xaml.cs">
+      <DependentUpon>NewChatThread.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\PostStatus.xaml.cs">
       <DependentUpon>PostStatus.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\NUX_InviteFriends.xaml.cs">
-      <DependentUpon>NUX_InviteFriends.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\RecordVideo.xaml.cs">
       <DependentUpon>RecordVideo.xaml</DependentUpon>
@@ -275,9 +259,6 @@
     </Compile>
     <Compile Include="View\InviteUsers.xaml.cs">
       <DependentUpon>InviteUsers.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\NewChatThread.xaml.cs">
-      <DependentUpon>NewChatThread.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\NewSelectUserPage.xaml.cs">
       <DependentUpon>NewSelectUserPage.xaml</DependentUpon>
@@ -317,30 +298,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
-    <Page Include="Controls\ConversationBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\StatusChatBubble.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\NotificationChatBubble.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\LinkifiedTextBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\ReceivedChatBubble.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\SentChatBubble.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\StatusUpdate\FriendRequestStatus.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -385,11 +342,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\PostStatus.xaml">
+    <Page Include="View\NewChatThread.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\NUX_InviteFriends.xaml">
+    <Page Include="View\PostStatus.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -422,10 +379,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\InviteUsers.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\NewChatThread.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -520,6 +473,8 @@
     <Content Include="View\images\change_pic.png" />
     <Content Include="View\images\chat_sms_error.png" />
     <Content Include="View\images\connected_tick.png" />
+    <Content Include="View\images\deleted_grey_icon.png" />
+    <Content Include="View\images\deleted_white_icon.png" />
     <Content Include="View\images\delete_account_white.png" />
     <Content Include="View\images\drop_pin_icon.png" />
     <Content Include="View\images\emptyImage.png" />
@@ -534,7 +489,6 @@
     <Content Include="View\images\fb_icon.png" />
     <Content Include="View\images\fb_status.png" />
     <Content Include="View\images\fb_status_disabled.png" />
-    <Content Include="View\images\delete_bin.png" />
     <Content Include="View\images\group_name_changed.png" />
     <Content Include="View\images\help_icon_dark.png" />
     <Content Include="View\images\help_icon_white.png" />
@@ -560,6 +514,8 @@
     <Content Include="View\images\last_seen_clock_black.png" />
     <Content Include="View\images\last_seen_clock_white.png" />
     <Content Include="View\images\menu_contact_icon_black.png" />
+    <Content Include="View\images\Mic_icon_black_small.png" />
+    <Content Include="View\images\Mic_icon_grey_small.png" />
     <Content Include="View\images\moods\00Boozing.png" />
     <Content Include="View\images\moods\01Insomniac.png" />
     <Content Include="View\images\moods\02Coding.png" />
@@ -584,19 +540,11 @@
     <Content Include="View\images\moods\21OMG.png" />
     <Content Include="View\images\moods\22Sleepy.png" />
     <Content Include="View\images\moods\23Hungover.png" />
-    <Content Include="View\images\moods\bangalore.png" />
-    <Content Include="View\images\moods\chennai.png" />
-    <Content Include="View\images\moods\delhi.png" />
-    <Content Include="View\images\moods\hyderabad.png" />
-    <Content Include="View\images\moods\kolkata.png" />
-    <Content Include="View\images\moods\mumbai.png" />
-    <Content Include="View\images\moods\pune.png" />
-    <Content Include="View\images\moods\punjab.png" />
-    <Content Include="View\images\moods\rajasthan.png" />
     <Content Include="View\images\moods_status_icon.png" />
     <Content Include="View\images\moods_status_icon_disabled.png" />
     <Content Include="View\images\notification_read.png" />
     <Content Include="View\images\notification_unread.png" />
+    <Content Include="View\images\pause_icon.png" />
     <Content Include="View\images\profile_header_stock.png" />
     <Content Include="View\images\profile_header_stock_dark.png" />
     <Content Include="View\images\refresh_bar_arrow.png" />
@@ -617,7 +565,10 @@
     <Content Include="View\images\user_lock_white.png" />
     <Content Include="View\images\new_icon.png" />
     <Content Include="View\images\new_icon_white.png" />
-    <Content Include="View\images\walkie_talkie.png" />
+    <Content Include="View\images\Walkie_Talkie_Black_big.png" />
+    <Content Include="View\images\walkie_talkie_White_Big.png" />
+    <Content Include="View\images\Walkie_Talkie_Grey_small.png" />
+    <Content Include="View\images\Walkie_Talkie_White_small.png" />
     <Content Include="View\images\welome_screen.jpg" />
     <Resource Include="View\images\logo_main_white.png" />
     <Resource Include="View\images\logo_main_black.png" />

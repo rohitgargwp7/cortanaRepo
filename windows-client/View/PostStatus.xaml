@@ -80,7 +80,7 @@
                                 <ColumnDefinition Width="70"></ColumnDefinition>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <Image Grid.Column="0" Height="{Binding MoodHeight}" Width="{Binding MoodHeight}" Source="{Binding MoodImage}"/>
+                            <Image Grid.Column="0" Height="55" Width="55" Source="{Binding MoodImage}"/>
                             <TextBlock Grid.Column="1" Text="{Binding MoodName}" FontSize="26" VerticalAlignment="Center" FontFamily="Segoe WP Regular" Foreground="Gray" Margin="12 0 0 0" ></TextBlock>
                         </Grid>
 
