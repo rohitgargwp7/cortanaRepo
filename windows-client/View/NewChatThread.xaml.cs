@@ -489,8 +489,8 @@ namespace windows_client.View
             App.newChatThreadPage = this;
 
             #region AUDIO FT
-            if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
-                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED)))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
+                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED))
             {
                 AudioFileTransfer();
             }
@@ -515,14 +515,24 @@ namespace windows_client.View
 
             if (mediaElement != null)
             {
-                mediaElement.Stop();
+                mediaElement.Pause();
 
                 if (currentAudioMessage != null)
                 {
-                    currentAudioMessage.IsStopped = true;
+                    currentAudioMessage.IsStopped = false;
                     currentAudioMessage.IsPlaying = false;
-                    currentAudioMessage.PlayProgressBarValue = 0;
-                    currentAudioMessage = null;
+                    //currentAudioMessage.PlayProgressBarValue = 0;
+                    //currentAudioMessage = null;
+                }
+            }
+
+            if (_recorderState == RecorderState.RECORDING)
+            {
+                if (_stream != null)
+                {
+                    byte[] audioBytes = _stream.ToArray();
+                    if (audioBytes != null && audioBytes.Length > 0)
+                        PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED] = _stream.ToArray();
                 }
             }
 
