@@ -563,19 +563,6 @@ namespace windows_client.Model
             }
         }
 
-        TimeSpan _durationTimeSpan;
-        public TimeSpan DurationTimeSpan
-        {
-            get
-            {
-                return _durationTimeSpan;
-            }
-            set
-            {
-                _durationTimeSpan = value;
-            }
-        }
-        
         public String DurationText
         {
             get
@@ -784,8 +771,8 @@ namespace windows_client.Model
 
             var timeObj = JObject.Parse(this.MetaDataString);
             var seconds = Convert.ToInt64(timeObj[HikeConstants.FILE_PLAY_TIME].ToString());
-            DurationTimeSpan = TimeSpan.FromSeconds(seconds);
-            return DurationTimeSpan.ToString("mm\\:ss");
+            var durationTimeSpan = TimeSpan.FromSeconds(seconds);
+            return durationTimeSpan.ToString("mm\\:ss");
         }
 
         public double LayoutGridWidth
@@ -986,7 +973,7 @@ namespace windows_client.Model
                         singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                         singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
 
-                        if (FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                        if (FileAttachment.ContentType.Contains(HikeConstants.AUDIO) && !String.IsNullOrEmpty(this.MetaDataString))
                         {
                             var timeObj = JObject.Parse(this.MetaDataString);
                             singleFileInfo[HikeConstants.FILE_PLAY_TIME] = timeObj[HikeConstants.FILE_PLAY_TIME];

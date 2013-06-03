@@ -226,14 +226,9 @@ namespace windows_client.View
                         else
                             currentAudioMessage.PlayProgressBarValue = pos * 100 / dur;
 
-                        if(!String.IsNullOrEmpty(currentAudioMessage.DurationText))
-                        {
-                            currentAudioMessage.PlayTimeText = pos == dur ? currentAudioMessage.DurationText : currentAudioMessage.DurationTimeSpan.Subtract(mediaElement.Position).ToString("mm\\:ss");
-                        }
-                        else
-                        {
-                            currentAudioMessage.PlayTimeText = pos == dur || pos == 0 ? "" : mediaElement.NaturalDuration.TimeSpan.Subtract(mediaElement.Position).ToString("mm\\:ss");
-                        }
+                        string durationText = String.IsNullOrEmpty(currentAudioMessage.DurationText)?String.Empty:currentAudioMessage.DurationText;
+
+                        currentAudioMessage.PlayTimeText = pos == dur || pos == 0 ? durationText : mediaElement.NaturalDuration.TimeSpan.Subtract(mediaElement.Position).ToString("mm\\:ss");
                     }
                 }
             };
