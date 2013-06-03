@@ -225,8 +225,18 @@ namespace windows_client.DbUtils
                             {
                                 using (var reader = new BinaryReader(file))
                                 {
-                                    var st = (FriendStatusEnum)reader.ReadByte();
-                                    var temp = reader.ReadInt64();
+                                    try
+                                    {
+                                        reader.ReadByte();
+                                    }
+                                    catch { }
+                                    
+                                    try
+                                    {
+                                        reader.ReadInt64();
+                                    }
+                                    catch { }
+
                                     lsts = reader.ReadInt64();
                                 }
                             }
@@ -264,7 +274,12 @@ namespace windows_client.DbUtils
                                     using (var reader = new BinaryReader(file))
                                     {
                                         fStatus = (FriendStatusEnum)reader.ReadByte();
-                                        joinTime = reader.ReadInt64();
+
+                                        try
+                                        {
+                                            joinTime = reader.ReadInt64();
+                                        }
+                                        catch { }
                                     }
                                 }
                              
@@ -372,7 +387,12 @@ namespace windows_client.DbUtils
                                 using (var reader = new BinaryReader(file))
                                 {
                                     FriendStatusEnum friendStatus = (FriendStatusEnum)reader.ReadByte();
-                                    ts = reader.ReadInt64();
+
+                                    try
+                                    {
+                                        ts = reader.ReadInt64();
+                                    }
+                                    catch { }
                                 }
                             }
                         }
