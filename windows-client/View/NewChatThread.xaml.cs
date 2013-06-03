@@ -21,6 +21,7 @@ using System.IO;
 using System.IO.IsolatedStorage;
 using windows_client.Controls;
 using System.Text;
+using System.Globalization;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.Media;
 using System.Device.Location;
@@ -489,8 +490,8 @@ namespace windows_client.View
             App.newChatThreadPage = this;
 
             #region AUDIO FT
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
-                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED))
+            if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
+                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED)))
             {
                 AudioFileTransfer();
             }
@@ -515,10 +516,11 @@ namespace windows_client.View
 
             if (mediaElement != null)
             {
-                mediaElement.Pause();
-
                 if (currentAudioMessage != null)
                 {
+                    PhoneApplicationService.Current.State[HikeConstants.PLAYER_TIMER] = mediaElement.Position;
+                    mediaElement.Pause();
+
                     currentAudioMessage.IsStopped = false;
                     currentAudioMessage.IsPlaying = false;
                     //currentAudioMessage.PlayProgressBarValue = 0;
@@ -526,15 +528,15 @@ namespace windows_client.View
                 }
             }
 
-            if (_recorderState == RecorderState.RECORDING)
-            {
-                if (_stream != null)
-                {
-                    byte[] audioBytes = _stream.ToArray();
-                    if (audioBytes != null && audioBytes.Length > 0)
-                        PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED] = _stream.ToArray();
-                }
-            }
+            //if (_recorderState == RecorderState.RECORDING)
+            //{
+            //    if (_stream != null)
+            //    {
+            //        byte[] audioBytes = _stream.ToArray();
+            //        if (audioBytes != null && audioBytes.Length > 0)
+            //            PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED] = _stream.ToArray();
+            //    }
+            //}
 
             if (_dt != null)
                 _dt.Stop();
@@ -563,6 +565,7 @@ namespace windows_client.View
                         currentAudioMessage.IsStopped = true;
                         currentAudioMessage.IsPlaying = false;
                         currentAudioMessage.PlayProgressBarValue = 0;
+                        currentAudioMessage.PlayTimeText = currentAudioMessage.DurationText;
                         currentAudioMessage = null;
                     }
                 }
@@ -1633,7 +1636,10 @@ namespace windows_client.View
                 {
                     if (mediaElement.Source != null)
                     {
-                        if (mediaElement.Source.OriginalString.Contains(fileLocation))
+                        if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PLAYER_TIMER))
+                            PhoneApplicationService.Current.State.Remove(HikeConstants.PLAYER_TIMER);
+                        
+                        if (mediaElement.Source.OriginalString.Contains(fileLocation)) //handle already playing audio
                         {
                             if (currentAudioMessage != null) // case pause/play the alresdy playing/paused file
                             {
@@ -1659,62 +1665,167 @@ namespace windows_client.View
                                     mediaElement.Play();
                                 }
                             }
-
-                            return;
                         }
                         else // start new audio
                         {
-                            mediaElement.Source = null;
+                            try
+                            {
+                                mediaElement.Source = null;
+
+                                using (var store = IsolatedStorageFile.GetUserStoreForApplication())
+                                {
+                                    if (store.FileExists(fileLocation))
+                                    {
+                                        using (var isfs = new IsolatedStorageFileStream(fileLocation, FileMode.Open, store))
+                                        {
+                                            this.mediaElement.SetSource(isfs);
+                                        }
+                                    }
+                                }
+
+                                if (currentAudioMessage != null) //stop prev audio in case its running
+                                {
+                                    currentAudioMessage.IsPlaying = false;
+                                    currentAudioMessage.IsStopped = true;
+                                    currentAudioMessage.PlayTimeText = currentAudioMessage.DurationText;
+                                    currentAudioMessage.PlayProgressBarValue = 0;
+                                    currentAudioMessage = null;
+                                }
+
+                                currentAudioMessage = convMessage;
+
+                                if (currentAudioMessage != null)
+                                {
+                                    currentAudioMessage.IsStopped = false;
+                                    currentAudioMessage.IsPlaying = true;
+                                    currentAudioMessage.PlayProgressBarValue = 0;
+                                }
+                            }
+                            catch (Exception ex) //Code should never reach here
+                            {
+                                Debug.WriteLine("NewChatTHread :: Play Audio Attachment :: Exception while playing audio file" + ex.StackTrace);
+                            }
+                        }
+                    }
+                    else //restart paused audio - from lock or suspended state
+                    {
+                        if (currentAudioMessage != null && currentAudioMessage==convMessage)
+                        {
+                            if (LayoutRoot.FindName("myMediaElement") == null)
+                                LayoutRoot.Children.Add(mediaElement);
+
+                            try
+                            {
+                                using (var store = IsolatedStorageFile.GetUserStoreForApplication())
+                                {
+                                    if (store.FileExists(fileLocation))
+                                    {
+                                        using (var isfs = new IsolatedStorageFileStream(fileLocation, FileMode.Open, store))
+                                        {
+                                            this.mediaElement.SetSource(isfs);
+                                        }
+                                    }
+                                }
+
+                                mediaElement.Play();
+                                currentAudioMessage.IsStopped = false;
+                                currentAudioMessage.IsPlaying = true;
+                            }
+                            catch (Exception ex) //Code should never reach here
+                            {
+                                Debug.WriteLine("NewChatTHread :: Play Audio Attachment :: Exception while playing audio file" + ex.StackTrace);
+                            }
+                        }
+                        else //play new file after resume app
+                        {
+                            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PLAYER_TIMER))
+                                PhoneApplicationService.Current.State.Remove(HikeConstants.PLAYER_TIMER);
 
                             if (currentAudioMessage != null)
                             {
+                                currentAudioMessage.IsStopped = true;
                                 currentAudioMessage.IsPlaying = false;
-                                currentAudioMessage.IsStopped = false;
                                 currentAudioMessage.PlayTimeText = currentAudioMessage.DurationText;
                                 currentAudioMessage.PlayProgressBarValue = 0;
                                 currentAudioMessage = null;
-                            }
-
+                            } 
+                            
                             currentAudioMessage = convMessage;
+                            
+                            if (LayoutRoot.FindName("myMediaElement") == null)
+                                LayoutRoot.Children.Add(mediaElement);
+
+                            try
+                            {
+                                using (var store = IsolatedStorageFile.GetUserStoreForApplication())
+                                {
+                                    if (store.FileExists(fileLocation))
+                                    {
+                                        using (var isfs = new IsolatedStorageFileStream(fileLocation, FileMode.Open, store))
+                                        {
+                                            this.mediaElement.SetSource(isfs);
+                                        }
+                                    }
+                                }
+
+                                mediaElement.Play();
+
+                                if (currentAudioMessage != null)
+                                {
+                                    currentAudioMessage.IsStopped = false;
+                                    currentAudioMessage.IsPlaying = true;
+                                    currentAudioMessage.PlayProgressBarValue = 0;
+                                }
+                            }
+                            catch (Exception ex) //Code should never reach here
+                            {
+                                Debug.WriteLine("NewChatTHread :: Play Audio Attachment :: Exception while playing audio file" + ex.StackTrace);
+                            }
                         }
                     }
                 }
                 else // play first audio
                 {
-                    mediaElement = new MediaElement();
+                    if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PLAYER_TIMER))
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.PLAYER_TIMER);
+                    
+                    mediaElement = new MediaElement() { Name = "myMediaElement" };
+                    mediaElement.MediaEnded -= mediaPlayback_MediaEnded;
+                    mediaElement.MediaEnded += mediaPlayback_MediaEnded;
+                    mediaElement.MediaFailed -= mediaPlayback_MediaFailed;
+                    mediaElement.MediaFailed += mediaPlayback_MediaFailed;
+                    mediaElement.CurrentStateChanged -= mediaElement_CurrentStateChanged;
+                    mediaElement.CurrentStateChanged += mediaElement_CurrentStateChanged;
+                    
                     currentAudioMessage = convMessage;
                     LayoutRoot.Children.Add(mediaElement);
-                }
 
-                try
-                {
-                    using (var store = IsolatedStorageFile.GetUserStoreForApplication())
+                    try
                     {
-                        if (store.FileExists(fileLocation))
+                        using (var store = IsolatedStorageFile.GetUserStoreForApplication())
                         {
-                            using (var isfs = new IsolatedStorageFileStream(fileLocation, FileMode.Open, store))
+                            if (store.FileExists(fileLocation))
                             {
-                                this.mediaElement.SetSource(isfs);
+                                using (var isfs = new IsolatedStorageFileStream(fileLocation, FileMode.Open, store))
+                                {
+                                    this.mediaElement.SetSource(isfs);
+                                }
                             }
                         }
+
+                        if (currentAudioMessage != null)
+                        {
+                            currentAudioMessage.IsStopped = false;
+                            currentAudioMessage.IsPlaying = true;
+                            currentAudioMessage.PlayProgressBarValue = 0;
+                        }
+
+                        mediaElement.Play();
                     }
-
-                    mediaElement.Position = new TimeSpan(0, 0, 0, 0);
-
-                    if (currentAudioMessage != null)
+                    catch (Exception ex) //Code should never reach here
                     {
-                        currentAudioMessage.IsStopped = false;
-                        currentAudioMessage.IsPlaying = true;
-                        currentAudioMessage.PlayProgressBarValue = 0;
+                        Debug.WriteLine("NewChatTHread :: Play Audio Attachment :: Exception while playing audio file" + ex.StackTrace);
                     }
-
-                    mediaElement.Play();
-                    mediaElement.MediaEnded += mediaPlayback_MediaEnded;
-                    mediaElement.MediaFailed += mediaPlayback_MediaFailed;
-                }
-                catch (Exception ex) //Code should never reach here
-                {
-                    Debug.WriteLine("NewChatTHread :: Play Audio Attachment :: Exception while playing audio file" + ex.StackTrace);
                 }
             }
             else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
@@ -1757,12 +1868,28 @@ namespace windows_client.View
             }
         }
 
+        void mediaElement_CurrentStateChanged(object sender, RoutedEventArgs e)
+        {
+            var element = (sender as MediaElement);
+
+            if (element != null && element.CurrentState == MediaElementState.Playing)
+            {
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PLAYER_TIMER))
+                {
+                    mediaElement.Position = (TimeSpan)PhoneApplicationService.Current.State[HikeConstants.PLAYER_TIMER];
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.PLAYER_TIMER);
+                }
+
+            }
+        }
+
         void mediaPlayback_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
             if (currentAudioMessage != null)
             {
                 currentAudioMessage.IsPlaying = false;
                 currentAudioMessage.IsStopped = true;
+                currentAudioMessage.PlayTimeText = currentAudioMessage.DurationText;
                 currentAudioMessage.PlayProgressBarValue = 0;
                 currentAudioMessage = null;
             }
@@ -1774,6 +1901,7 @@ namespace windows_client.View
             {
                 currentAudioMessage.IsPlaying = false;
                 currentAudioMessage.IsStopped = true;
+                currentAudioMessage.PlayTimeText = currentAudioMessage.DurationText;
                 currentAudioMessage.PlayProgressBarValue = 0;
                 currentAudioMessage = null;
             }
