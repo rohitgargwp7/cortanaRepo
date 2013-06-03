@@ -835,6 +835,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Drag here to delete.
+        /// </summary>
+        public static string Drag_Here_To_Delete {
+            get {
+                return ResourceManager.GetString("Drag_Here_To_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter Correct Email.
         /// </summary>
         public static string EditProfile_emailErrorTxt_TxtBlk {
@@ -1500,15 +1509,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fun, free messaging for life.
-        /// </summary>
-        public static string Fun_Free_Messaging_Txt {
-            get {
-                return ResourceManager.GetString("Fun_Free_Messaging_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This group chat has ended..
         /// </summary>
         public static string GROUP_CHAT_END {
@@ -1950,6 +1950,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last seen.
+        /// </summary>
+        public static string Last_Seen {
+            get {
+                return ResourceManager.GetString("Last_Seen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Location.
         /// </summary>
         public static string Location_Txt {
@@ -1977,6 +1986,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Message cancelled.
+        /// </summary>
+        public static string Message_Cancelled {
+            get {
+                return ResourceManager.GetString("Message_Cancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message too short.
+        /// </summary>
+        public static string Message_Too_Short {
+            get {
+                return ResourceManager.GetString("Message_Too_Short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You can also message friends not.
         /// </summary>
         public static string MessageNonHikeFriends_Blk1_Txt {
@@ -1991,6 +2018,15 @@ namespace windows_client.Languages {
         public static string MessageNonHikeFriends_Blk2_Txt {
             get {
                 return ResourceManager.GetString("MessageNonHikeFriends_Blk2_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Messaging made personal again.
+        /// </summary>
+        public static string Messaging_Made_Personal_Txt {
+            get {
+                return ResourceManager.GetString("Messaging_Made_Personal_Txt", resourceCulture);
             }
         }
         
@@ -2022,15 +2058,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bangalore.
-        /// </summary>
-        public static string Mood_Bangalore {
-            get {
-                return ResourceManager.GetString("Mood_Bangalore", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Boozing .
         /// </summary>
         public static string Mood_Boozing {
@@ -2058,15 +2085,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chennai.
-        /// </summary>
-        public static string Mood_Chennai {
-            get {
-                return ResourceManager.GetString("Mood_Chennai", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Chilling .
         /// </summary>
         public static string Mood_Chilling {
@@ -2090,15 +2108,6 @@ namespace windows_client.Languages {
         public static string Mood_Confused {
             get {
                 return ResourceManager.GetString("Mood_Confused", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Delhi.
-        /// </summary>
-        public static string Mood_Delhi {
-            get {
-                return ResourceManager.GetString("Mood_Delhi", resourceCulture);
             }
         }
         
@@ -2139,15 +2148,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hyderabad.
-        /// </summary>
-        public static string Mood_Hyderabad {
-            get {
-                return ResourceManager.GetString("Mood_Hyderabad", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to In a movie .
         /// </summary>
         public static string Mood_In_a_movie {
@@ -2175,15 +2175,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Kolkata.
-        /// </summary>
-        public static string Mood_Kolkata {
-            get {
-                return ResourceManager.GetString("Mood_Kolkata", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Love it .
         /// </summary>
         public static string Mood_Love_it {
@@ -2198,42 +2189,6 @@ namespace windows_client.Languages {
         public static string Mood_Middle_finger {
             get {
                 return ResourceManager.GetString("Mood_Middle_finger", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mumbai.
-        /// </summary>
-        public static string Mood_Mumbai {
-            get {
-                return ResourceManager.GetString("Mood_Mumbai", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pune.
-        /// </summary>
-        public static string Mood_Pune {
-            get {
-                return ResourceManager.GetString("Mood_Pune", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Punjab.
-        /// </summary>
-        public static string Mood_Punjab {
-            get {
-                return ResourceManager.GetString("Mood_Punjab", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rajasthan.
-        /// </summary>
-        public static string Mood_Rajasthan {
-            get {
-                return ResourceManager.GetString("Mood_Rajasthan", resourceCulture);
             }
         }
         
@@ -2454,51 +2409,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Send your friends a Free SMS invite..
-        /// </summary>
-        public static string Nux_CloseFriendsConnect_txt {
-            get {
-                return ResourceManager.GetString("Nux_CloseFriendsConnect_txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Send your family members a Free SMS invite. .
-        /// </summary>
-        public static string Nux_FamilyMembersConnect_txt {
-            get {
-                return ResourceManager.GetString("Nux_FamilyMembersConnect_txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to INVITE FAMILY.
-        /// </summary>
-        public static string Nux_InviteFamily_Txt {
-            get {
-                return ResourceManager.GetString("Nux_InviteFamily_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to INVITE FRIENDS.
-        /// </summary>
-        public static string Nux_InviteFriends_Txt {
-            get {
-                return ResourceManager.GetString("Nux_InviteFriends_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Skip.
-        /// </summary>
-        public static string Nux_Skip_btnTxt {
-            get {
-                return ResourceManager.GetString("Nux_Skip_btnTxt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Off.
         /// </summary>
         public static string Off {
@@ -2531,6 +2441,15 @@ namespace windows_client.Languages {
         public static string OnHIkeSince_Txt {
             get {
                 return ResourceManager.GetString("OnHIkeSince_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to online.
+        /// </summary>
+        public static string Online {
+            get {
+                return ResourceManager.GetString("Online", resourceCulture);
             }
         }
         
@@ -2621,6 +2540,15 @@ namespace windows_client.Languages {
         public static string PostStatus_WhatsUp_Hint_txt {
             get {
                 return ResourceManager.GetString("PostStatus_WhatsUp_Hint_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to preferences.
+        /// </summary>
+        public static string Preferences_Header_Txt {
+            get {
+                return ResourceManager.GetString("Preferences_Header_Txt", resourceCulture);
             }
         }
         
@@ -3300,6 +3228,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your account preferences.
+        /// </summary>
+        public static string Settings_PreferencesSettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_PreferencesSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use push notifications.
         /// </summary>
         public static string Settings_PushToggleSwitchHeader {
@@ -3381,6 +3318,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Preferences.
+        /// </summary>
+        public static string SettingsSubtitle_Preferences_Txt {
+            get {
+                return ResourceManager.GetString("SettingsSubtitle_Preferences_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SHARE.
         /// </summary>
         public static string Share_With_Txt {
@@ -3458,6 +3404,15 @@ namespace windows_client.Languages {
         public static string ShareLocation_Txt {
             get {
                 return ResourceManager.GetString("ShareLocation_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show my last seen.
+        /// </summary>
+        public static string Show_LastSeen_TimeStamp {
+            get {
+                return ResourceManager.GetString("Show_LastSeen_TimeStamp", resourceCulture);
             }
         }
         

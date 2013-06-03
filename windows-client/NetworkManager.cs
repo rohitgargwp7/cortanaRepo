@@ -42,6 +42,8 @@ namespace windows_client
 
         public static readonly string ICON = "ic";
 
+        public static readonly string LAST_SEEN = "ls";
+
         public static bool turnOffNetworkManager = true;
 
         private HikePubSub pubSub;
@@ -78,20 +80,6 @@ namespace windows_client
         int countProTip = 0;
         public void onMessage(string msg)
         {
-            try
-            {
-                object[] newVals = new object[5];
-                newVals[0] = countProTip.ToString();
-                newVals[1] = "New Tip" + countProTip.ToString();
-                newVals[2] = "HelloHelloHelloHelloHelloHelloHello";
-                newVals[3] = "";
-                newVals[4] = (Int64)5;
-                countProTip++;
-
-                pubSub.publish(HikePubSub.PRO_TIPS_REC, newVals);
-                return;
-            }
-            catch { }
             if (string.IsNullOrEmpty(msg))
                 return;
             while (turnOffNetworkManager)
@@ -213,6 +201,38 @@ namespace windows_client
                 vals[1] = sentTo;
                 if (msisdn != null)
                     this.pubSub.publish(HikePubSub.END_TYPING_CONVERSATION, vals);
+                return;
+            }
+            #endregion
+            #region LAST_SEEN
+            else if (LAST_SEEN == type) /* Last Seen received */
+            {
+                long lastSeen = 0;
+
+                try
+                {
+                    var data = jsonObj[HikeConstants.DATA];
+                    lastSeen = (long)data[HikeConstants.LASTSEEN];
+
+                    if (lastSeen > 0)
+                    {
+                        //long timedifference;
+                        //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                        //    lastSeen = lastSeen - timedifference;
+                    }           
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NetworkManager ::  Last Seen :  TimeStamp, Exception : " + ex.StackTrace);
+                }
+
+                object[] vals = new object[2];
+                vals[0] = msisdn;
+                vals[1] = lastSeen;
+
+                if (msisdn != null)
+                    this.pubSub.publish(HikePubSub.LAST_SEEN, vals);
+
                 return;
             }
             #endregion

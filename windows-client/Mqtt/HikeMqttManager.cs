@@ -21,7 +21,7 @@ namespace windows_client.Mqtt
     {
         public volatile MqttConnection mqttConnection;
         private HikePubSub pubSub;
-
+        bool isConnectedLastSeenPacketSent = false;
         //Bug# 3833 - There are some changes in initialization of static objects in .Net 4. So, removing static for now.
         //Later, on we should be using singleton so, static won't be required
         private object lockObj = new object(); //TODO - Madhur Garg make this class singleton
@@ -421,6 +421,12 @@ namespace windows_client.Mqtt
                 return;
             Debug.WriteLine("MQTT MANAGER:: NUmber os unsent messages" + packets.Count);
             sendAllUnsentMessages(packets);
+
+            if (!isConnectedLastSeenPacketSent)
+            {
+                isConnectedLastSeenPacketSent = true;
+                sendAppFGStatusToServer();
+            }
         }
 
         public void onDisconnected()
@@ -488,5 +494,17 @@ namespace windows_client.Mqtt
             send(packet, qos);
         }
 
+        private void sendAppFGStatusToServer()
+        {
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
+            obj.Add(HikeConstants.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
+            obj.Add(HikeConstants.STATUS, "fg");
+            JObject data = new JObject();
+            data.Add(HikeConstants.JUSTOPENED, "true");
+            obj.Add(HikeConstants.DATA, data);
+
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
     }
 }
