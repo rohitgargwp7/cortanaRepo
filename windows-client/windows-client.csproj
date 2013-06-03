@@ -233,9 +233,6 @@
     <Compile Include="View\PostStatus.xaml.cs">
       <DependentUpon>PostStatus.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\NUX_InviteFriends.xaml.cs">
-      <DependentUpon>NUX_InviteFriends.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\RecordVideo.xaml.cs">
       <DependentUpon>RecordVideo.xaml</DependentUpon>
     </Compile>
@@ -347,10 +344,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\PostStatus.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\NUX_InviteFriends.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -542,15 +535,6 @@
     <Content Include="View\images\moods\21OMG.png" />
     <Content Include="View\images\moods\22Sleepy.png" />
     <Content Include="View\images\moods\23Hungover.png" />
-    <Content Include="View\images\moods\bangalore.png" />
-    <Content Include="View\images\moods\chennai.png" />
-    <Content Include="View\images\moods\delhi.png" />
-    <Content Include="View\images\moods\hyderabad.png" />
-    <Content Include="View\images\moods\kolkata.png" />
-    <Content Include="View\images\moods\mumbai.png" />
-    <Content Include="View\images\moods\pune.png" />
-    <Content Include="View\images\moods\punjab.png" />
-    <Content Include="View\images\moods\rajasthan.png" />
     <Content Include="View\images\moods_status_icon.png" />
     <Content Include="View\images\moods_status_icon_disabled.png" />
     <Content Include="View\images\notification_read.png" />

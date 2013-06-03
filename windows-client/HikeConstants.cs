@@ -252,7 +252,6 @@ namespace windows_client
         public static string UNREAD_FRIEND_REQUESTS = "urFr";
         public static string REFRESH_BAR = "refBar";
 
-        public static string CLOSE_FRIENDS_NUX = "closeFriends";
 
         public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
         public static string PROFILE_NAME_CHANGED = "ProfileNameChanged";

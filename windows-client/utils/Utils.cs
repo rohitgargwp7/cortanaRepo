@@ -405,12 +405,6 @@ namespace windows_client.utils
                 case App.PageState.CONVLIST_SCREEN:
                     nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
                     break;
-                case App.PageState.NUX_SCREEN_FRIENDS:
-                    nUri = new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative);
-                    break;
-                case App.PageState.NUX_SCREEN_FAMILY:
-                    nUri = new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative);
-                    break;
                 case App.PageState.UPGRADE_SCREEN:
                     nUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
                     break;
