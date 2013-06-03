@@ -77,7 +77,7 @@ namespace windows_client.utils
             if (timeStamp == -1)
                 return "";
 
-            return "\uE121 " + Languages.AppResources.Last_Seen + " " + TimeUtils.getRelativeTime(timeStamp / 1000);
+            return Languages.AppResources.Last_Seen + " " + TimeUtils.getRelativeTime(timeStamp / 1000);
         }
 
         readonly DateTime EPOCH_TIME = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);

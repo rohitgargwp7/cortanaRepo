@@ -557,6 +557,8 @@
     <Content Include="View\images\icon_stop_appbar.png" />
     <Content Include="View\images\invite.png" />
     <Content Include="View\images\invite_dark.png" />
+    <Content Include="View\images\last_seen_clock_black.png" />
+    <Content Include="View\images\last_seen_clock_white.png" />
     <Content Include="View\images\menu_contact_icon_black.png" />
     <Content Include="View\images\moods\00Boozing.png" />
     <Content Include="View\images\moods\01Insomniac.png" />

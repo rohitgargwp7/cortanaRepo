@@ -71,6 +71,7 @@ namespace windows_client.utils
         private BitmapImage userProfileLockImage;
         private BitmapImage userProfileInviteImage;
         private BitmapImage userProfileStockImage;
+        private BitmapImage lastSeenClockImage;
 
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
@@ -795,6 +796,22 @@ namespace windows_client.utils
                 return userProfileStockImage;
             }
         }
+        
+        public BitmapImage LastSeenClockImage
+        {
+            get
+            {
+                if (lastSeenClockImage == null)
+                {
+                    if (Utils.isDarkTheme())
+                        lastSeenClockImage = new BitmapImage(new Uri("/View/images/last_seen_clock_white.png", UriKind.Relative));
+                    else
+                        lastSeenClockImage = new BitmapImage(new Uri("/View/images/last_seen_clock_black.png", UriKind.Relative));
+                }
+                return lastSeenClockImage;
+            }
+        }
+
         public SolidColorBrush ReceiveMessageForeground
         {
             get

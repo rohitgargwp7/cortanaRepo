@@ -2634,6 +2634,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to preferences.
+        /// </summary>
+        public static string Preferences_Header_Txt {
+            get {
+                return ResourceManager.GetString("Preferences_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to privacy.
         /// </summary>
         public static string Privacy {
@@ -3309,6 +3318,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your account preferences.
+        /// </summary>
+        public static string Settings_PreferencesSettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_PreferencesSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use push notifications.
         /// </summary>
         public static string Settings_PushToggleSwitchHeader {
@@ -3386,6 +3404,15 @@ namespace windows_client.Languages {
         public static string SettingsSubtitle_Notification_Txt {
             get {
                 return ResourceManager.GetString("SettingsSubtitle_Notification_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preferences.
+        /// </summary>
+        public static string SettingsSubtitle_Preferences_Txt {
+            get {
+                return ResourceManager.GetString("SettingsSubtitle_Preferences_Txt", resourceCulture);
             }
         }
         

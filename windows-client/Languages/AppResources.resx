@@ -1722,4 +1722,13 @@ Get hike: http://get.hike.in</value>
   <data name="Online" xml:space="preserve">
     <value>online</value>
   </data>
+  <data name="Preferences_Header_Txt" xml:space="preserve">
+    <value>preferences</value>
+  </data>
+  <data name="SettingsSubtitle_Preferences_Txt" xml:space="preserve">
+    <value>Preferences</value>
+  </data>
+  <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
+    <value>Your account preferences</value>
+  </data>
 </root>

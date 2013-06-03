@@ -215,6 +215,8 @@ namespace windows_client.View
 
             _lastSeenHelper = new LastSeenHelper();
             _lastSeenHelper.UpdateLastSeen += LastSeenResponseReceived;
+
+            onlineStatus.Source = UI_Utils.Instance.LastSeenClockImage;
         }
 
         void LastSeenResponseReceived(object sender, LastSeenEventArgs e)
