@@ -25,6 +25,7 @@ namespace windows_client
         public static readonly string ANALYTICS_EVENT = "ae";
         public static readonly string LOG_EVENT = "le";//for analytics
         public static readonly string FILE_SYSTEM_VERSION = "File_System_Version";
+        public static readonly string STATUS = "st";
 
         public static readonly string CRITICAL = "critical";
         public static readonly string LATEST = "latest";
@@ -277,6 +278,11 @@ namespace windows_client
 
         public static readonly string ENABLE_PUSH_BATCH_SU = "enablepushbatchingforsu";
         public static readonly string PUSH_SU = "pushsu";
+
+        public static readonly string LASTSEEN = "ls";
+        public static readonly string LASTSEENONOFF = "lastseen";
+        public static readonly string JUSTOPENED = "justOpened";
+
         public static class Extras
         {
             public static readonly string ANIMATED_ONCE = "animatedOnce";
@@ -327,7 +333,7 @@ namespace windows_client
             public static readonly string STATUS_UPDATE = "su";
             public static readonly string DELETE_STATUS_UPDATE = "dsu";
             public static readonly string GROUP_DISPLAY_PIC = "dp";
-
+            public static readonly string APP_INFO = "app";
         }
 
         public static class AppSettings

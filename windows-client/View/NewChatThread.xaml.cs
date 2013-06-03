@@ -33,6 +33,7 @@ using windows_client.Languages;
 using System.Net.NetworkInformation;
 using System.Windows.Controls.Primitives;
 using System.Windows.Navigation;
+using Microsoft.Phone.BackgroundAudio;
 using System.Collections.ObjectModel;
 
 namespace windows_client.View
@@ -61,6 +62,7 @@ namespace windows_client.View
         private string lastText = "";
         private string hintText = string.Empty;
         private bool enableSendMsgButton = false;
+        private long _lastUpdatedLastSeenTimeStamp = 0;
 
         bool afterMute = true;
 
@@ -104,6 +106,9 @@ namespace windows_client.View
         private BingMapsTask bingMapsTask = null;
         private bool isShowNudgeTute = true;
         private object statusObject = null;
+
+        private DispatcherTimer _lastSeenTimer;
+        private LastSeenHelper _lastSeenHelper;
 
         //        private ObservableCollection<MyChatBubble> chatThreadPageCollection = new ObservableCollection<MyChatBubble>();
         private Dictionary<long, ConvMessage> msgMap = new Dictionary<long, ConvMessage>(); // this holds msgId -> sent message bubble mapping
@@ -200,6 +205,11 @@ namespace windows_client.View
             _progressTimer.Interval = TimeSpan.FromSeconds(1);
             _progressTimer.Tick += new EventHandler(showWalkieTalkieProgress);
 
+            _lastSeenHelper = new LastSeenHelper();
+            _lastSeenHelper.UpdateLastSeen += LastSeenResponseReceived;
+
+            onlineStatus.Source = UI_Utils.Instance.LastSeenClockImage;
+
             ocMessages = new ObservableCollection<ConvMessage>();
 
             walkieTalkie.Source = UI_Utils.Instance.WalkieTalkieBigImage;
@@ -232,6 +242,75 @@ namespace windows_client.View
                     }
                 }
             };
+        }
+
+        void LastSeenResponseReceived(object sender, LastSeenEventArgs e)
+        {
+            if (e != null)
+            {
+                if (e.ContactNumber == mContactNumber)
+                {
+                    _lastSeenHelper.UpdateLastSeen -= LastSeenResponseReceived;
+
+                    if (e.TimeStamp == -1)
+                        _lastUpdatedLastSeenTimeStamp = 0;
+                    else if (e.TimeStamp == 0)
+                        _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
+                    else
+                    {
+                        //long timedifference,actualTimeStamp;
+                        //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                        //    actualTimeStamp = e.TimeStamp - timedifference;
+                        _lastUpdatedLastSeenTimeStamp = e.TimeStamp;
+                    }
+
+                    if (_lastUpdatedLastSeenTimeStamp != 0)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(new Action<string, bool>(delegate(string lastSeenStatus, bool isOnline)
+                        {
+                            //update ui if prev last seen is greater than current last seen, db updated everytime in backend
+                            lastSeenTxt.Text = lastSeenStatus;
+                            onlineStatus.Visibility = isOnline ? Visibility.Collapsed : Visibility.Visible;
+                            userName.FontSize = 36;
+                            lastSeenPannel.Visibility = Visibility.Visible;
+
+                            _lastSeenTimer.Start();
+                        }), _lastSeenHelper.GetLastSeenTimeStampStatus(e.TimeStamp), e.TimeStamp == 0);
+                    }
+
+                    if (e.TimeStamp.Equals("-1"))
+                        FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, 0);
+                    else if (e.TimeStamp.Equals("0"))
+                        FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, TimeUtils.getCurrentTimeStamp());
+                    else
+                    {
+                        //long timedifference,actualTimeStamp;
+                        //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                        //    actualTimeStamp = e.TimeStamp - timedifference;
+
+                        FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, e.TimeStamp);
+                    }
+                }
+            }
+            else
+            {
+                // update old last seen from file
+                _lastUpdatedLastSeenTimeStamp = FriendsTableUtils.GetFriendLastSeenTSFromFile(mContactNumber);
+
+                if (_lastUpdatedLastSeenTimeStamp != 0)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
+                    {
+                        //update ui if prev last seen is greater than current last seen, db updated everytime in backend
+                        lastSeenTxt.Text = lastSeenStatus;
+                        onlineStatus.Visibility =  Visibility.Collapsed;
+                        userName.FontSize = 36;
+                        lastSeenPannel.Visibility = Visibility.Visible;
+
+                        _lastSeenTimer.Start();
+                    }), _lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
+                }
+            }
         }
 
         private void ManagePageStateObjects()
@@ -608,6 +687,10 @@ namespace windows_client.View
                 Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
                 NavigationService.Navigate(nUri);
             }
+
+            if (mediaElement != null)
+                mediaElement.Stop();
+
             base.OnBackKeyPress(e);
         }
 
@@ -678,6 +761,7 @@ namespace windows_client.View
             }
 
             #endregion
+            
             #region OBJECT FROM SELECT USER PAGE
 
             else if (this.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
@@ -767,6 +851,34 @@ namespace windows_client.View
             }
             userName.Text = mContactName;
 
+            #region LAST SEEN TIMER
+
+            byte lastSeenSettingsValue;
+            App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out lastSeenSettingsValue);
+                    
+            if (lastSeenSettingsValue > 0)
+            { 
+                var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
+                if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat)
+                {
+                    _lastSeenTimer = new DispatcherTimer() { Interval = TimeSpan.FromMinutes(5) };
+                    _lastSeenTimer.Tick += _lastSeenTimer_Tick;
+                    _lastSeenTimer.Start();
+
+                    BackgroundWorker _worker = new BackgroundWorker();
+
+                    _worker.DoWork += (ss, ee) =>
+                    {
+                        _lastSeenHelper.requestLastSeen(mContactNumber);
+                    };
+
+                    _worker.RunWorkerAsync();
+
+                }
+            }
+
+            #endregion
+            
             // if hike bot msg disable appbar, textbox etc
             if (Utils.IsHikeBotMsg(mContactNumber))
             {
@@ -824,6 +936,31 @@ namespace windows_client.View
 
             if (isShowNudgeTute)
                 showNudgeTute();
+        }
+
+        void _lastSeenTimer_Tick(object sender, EventArgs e)
+        {
+            _lastSeenTimer.Stop();
+
+            if (_lastUpdatedLastSeenTimeStamp != 0)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
+                {
+                    //update ui if prev last seen is greater than current last seen, db updated everytime in backend
+                    lastSeenTxt.Text = lastSeenStatus;
+                    onlineStatus.Visibility = lastSeenStatus == AppResources.Online ? Visibility.Collapsed : Visibility.Visible;
+
+                    _lastSeenTimer.Start();
+                }), _lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
+            }
+            else
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    userName.FontSize = 50;
+                    lastSeenPannel.Visibility = Visibility.Collapsed;
+                });
+            }
         }
 
         private void showNudgeTute()
@@ -1345,6 +1482,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.GROUP_ALIVE, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
+            mPubSub.addListener(HikePubSub.LAST_SEEN, this);
         }
 
         private void removeListeners()
@@ -1365,6 +1503,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.GROUP_ALIVE, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
+                mPubSub.removeListener(HikePubSub.LAST_SEEN, this);
             }
             catch (Exception ex)
             {
@@ -1893,6 +2032,8 @@ namespace windows_client.View
                 currentAudioMessage.PlayProgressBarValue = 0;
                 currentAudioMessage = null;
             }
+
+            mediaElement.Stop();
         }
 
         void mediaPlayback_MediaEnded(object sender, RoutedEventArgs e)
@@ -1923,8 +2064,6 @@ namespace windows_client.View
                 isReshowTypingNotification = false;
             }
         }
-
-
 
         /*
       * If readFromDB is true & message state is SENT_UNCONFIRMED, then trying image is set else 
@@ -3384,6 +3523,28 @@ namespace windows_client.View
 
             else if (HikePubSub.TYPING_CONVERSATION == type)
             {
+                byte lastSeenSettingsValue;
+                App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out lastSeenSettingsValue);
+
+                if (lastSeenSettingsValue > 0)
+                {
+                    var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
+                    if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (!String.IsNullOrEmpty(lastSeenTxt.Text))
+                            {
+                                //update ui if prev last seen is greater than current last seen, db updated everytime in backend
+                                lastSeenTxt.Text = AppResources.Online;
+                                onlineStatus.Visibility = Visibility.Visible;
+                                userName.FontSize = 36;
+                                lastSeenPannel.Visibility = Visibility.Visible;
+                            }
+                        });
+                    }
+                }
+                
                 object[] vals = (object[])obj;
                 string typingNotSenderOrSendee = "";
                 if (isGroupChat)
@@ -3422,6 +3583,57 @@ namespace windows_client.View
                 if (mContactNumber == typingNotSenderOrSendee)
                 {
                     HideTypingNotification();
+                }
+            }
+
+            #endregion
+
+            #region LAST SEEN
+
+            else if (HikePubSub.LAST_SEEN == type && !isGroupChat)
+            {
+                byte lastSeenSettingsValue;
+                App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out lastSeenSettingsValue);
+                
+                if (lastSeenSettingsValue > 0)
+                {
+                    object[] vals = (object[])obj;
+                    string fromMsisdn = (string)vals[0];
+                    long lastSeen = (long)vals[1];
+
+                    var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
+
+                    if (fromMsisdn == mContactNumber && fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT)
+                    {
+                        if (lastSeen > _lastUpdatedLastSeenTimeStamp || lastSeen == 0)
+                        {
+                            if (lastSeen == 0)
+                                _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
+                            else
+                                _lastUpdatedLastSeenTimeStamp = lastSeen;
+
+                            Deployment.Current.Dispatcher.BeginInvoke(new Action<string, bool>(delegate(string lastSeenStatus, bool isOnline)
+                            {
+                                //update ui if prev last seen is greater than current last seen, db updated everytime in backend
+                                lastSeenTxt.Text = lastSeenStatus;
+                                onlineStatus.Visibility = isOnline ? Visibility.Collapsed : Visibility.Visible;
+                                userName.FontSize = 36;
+                                lastSeenPannel.Visibility = Visibility.Visible;
+
+                                _lastSeenTimer.Start();
+                            }), _lastSeenHelper.GetLastSeenTimeStampStatus(lastSeen), lastSeen == 0);
+                        }
+                        else if (lastSeen == -1)
+                        {
+                            _lastUpdatedLastSeenTimeStamp = 0;
+
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                userName.FontSize = 50;
+                                lastSeenPannel.Visibility = Visibility.Collapsed;
+                            });
+                        }
+                    }
                 }
             }
 
@@ -4026,7 +4238,7 @@ namespace windows_client.View
 
         #region Walkie Talkie
 
-        private void Record_ActionIconTapped(object sender, EventArgs e)
+        private void Record_ActionIconTapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             this.Focus(); // remove focus from textbox
             recordGrid.Visibility = Visibility.Visible;

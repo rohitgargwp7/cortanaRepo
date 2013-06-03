@@ -47,8 +47,8 @@
                 <TextBlock Text="{Binding Path= LocalizedResources.Settings_AccountSettings_Txt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="1" Margin="20,30,0,0" Tap="Notifications_Tap">
-                <TextBlock Text="{Binding Path= LocalizedResources.SettingsSubtitle_Notification_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                <TextBlock Text="{Binding Path= LocalizedResources.Settings_NotificationSettings_Txt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
+                <TextBlock Text="{Binding Path= LocalizedResources.SettingsSubtitle_Preferences_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                <TextBlock Text="{Binding Path= LocalizedResources.Settings_PreferencesSettings_Txt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
             </StackPanel>
             <StackPanel Grid.Row="2" Grid.Column="1" Margin="20,30,0,0" Tap="BlockList_Tap">
                 <TextBlock Text="{Binding Path= LocalizedResources.SettingsSubtitle_Blocklist_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>

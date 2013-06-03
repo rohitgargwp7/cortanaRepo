@@ -1671,6 +1671,24 @@ Get hike: http://get.hike.in</value>
     <value>Release to Send</value>
     <comment>Release to send recorded data</comment>
   </data>
+  <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
+    <value>Show my last seen</value>
+  </data>
+  <data name="Last_Seen" xml:space="preserve">
+    <value>Last seen</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>online</value>
+  </data>
+  <data name="Preferences_Header_Txt" xml:space="preserve">
+    <value>preferences</value>
+  </data>
+  <data name="SettingsSubtitle_Preferences_Txt" xml:space="preserve">
+    <value>Preferences</value>
+  </data>
+  <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
+    <value>Your account preferences</value>
+  </data>
   <data name="Drag_Here_To_Delete" xml:space="preserve">
     <value>Drag here to delete</value>
     <comment>Drag to a specified area to delete ongoing recording</comment>
