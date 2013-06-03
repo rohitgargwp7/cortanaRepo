@@ -2287,6 +2287,7 @@ namespace windows_client.View
      
         private void dismissProTip_Click(object sender, RoutedEventArgs e)
         {
+            proTipImage.Visibility = Visibility.Collapsed;
             proTipsGrid.Visibility = Visibility.Collapsed;
             ProTipCount = 0;
 

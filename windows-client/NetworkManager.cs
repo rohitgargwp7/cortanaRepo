@@ -77,7 +77,6 @@ namespace windows_client
             }
         }
 
-        int countProTip = 0;
         public void onMessage(string msg)
         {
             if (string.IsNullOrEmpty(msg))
