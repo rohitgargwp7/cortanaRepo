@@ -2507,32 +2507,56 @@ namespace windows_client.View
             {
                 if (!isGroupChat && isOnHike)
                     return;
-                long time = TimeUtils.getCurrentTimeStamp();
-                string inviteToken = "";
-                if (isGroupChat)
+                if (App.MSISDN.Contains("+91"))//for non indian open sms client
                 {
-                    foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
+                    long time = TimeUtils.getCurrentTimeStamp();
+                    string inviteToken = "";
+                    if (isGroupChat)
                     {
-                        if (!gp.IsOnHike)
+                        foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
                         {
-                            ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                            convMessage.IsInvite = true;
-                            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
+                            if (!gp.IsOnHike)
+                            {
+                                ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                                convMessage.IsInvite = true;
+                                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
+                            }
                         }
                     }
+                    else
+                    {
+                        //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+                        ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                        convMessage.IsSms = true;
+                        convMessage.IsInvite = true;
+                        sendMsg(convMessage, false);
+                    }
+                    if (showNoSmsLeftOverlay || isGroupChat)
+                        showOverlay(false);
+                    if (isGroupChat)
+                        App.appSettings.Remove(HikeConstants.SHOW_GROUP_CHAT_OVERLAY);
                 }
                 else
                 {
-                    //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-                    ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                    convMessage.IsSms = true;
-                    convMessage.IsInvite = true;
-                    sendMsg(convMessage, false);
+                    string msisdns = string.Empty;
+                    if (isGroupChat)
+                    {
+                        foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
+                        {
+                            if (!gp.IsOnHike)
+                            {
+                                msisdns += gp.Msisdn + ";";
+                            }
+                        }
+                    }
+                    else
+                        msisdns = mContactNumber;
+                    SmsComposeTask smsComposeTask = new SmsComposeTask();
+
+                    smsComposeTask.To = msisdns;
+                    smsComposeTask.Body = AppResources.sms_invite_message;
+                    smsComposeTask.Show();
                 }
-                if (showNoSmsLeftOverlay || isGroupChat)
-                    showOverlay(false);
-                if (isGroupChat)
-                    App.appSettings.Remove(HikeConstants.SHOW_GROUP_CHAT_OVERLAY);
             }
             catch (Exception ex)
             {

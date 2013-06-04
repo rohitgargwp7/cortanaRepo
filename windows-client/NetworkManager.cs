@@ -42,8 +42,8 @@ namespace windows_client
 
         public static readonly string ICON = "ic";
 
+        public static readonly string SERVER_TIMESTAMP = "sts";
         public static readonly string ADD_STICKER = "addSt";
-
         public static readonly string REMOVE_STICKER = "remSt";
         public static readonly string LAST_SEEN = "ls";
 
@@ -1373,6 +1373,13 @@ namespace windows_client
                 {
                     Debug.WriteLine("NETWORK MANAGER :: Exception in DELETE STATUS : " + e.StackTrace);
                 }
+            }
+            #endregion
+            #region SERVER TIMESTAMP
+            else if (type == SERVER_TIMESTAMP)
+            {
+                long timediff = (long)jsonObj[HikeConstants.TIMESTAMP] - TimeUtils.getCurrentTimeStamp();
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.TIME_DIFF_EPOCH, timediff);
             }
             #endregion
             #region ADD STICKER/CATEGORY
