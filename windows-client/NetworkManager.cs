@@ -218,9 +218,9 @@ namespace windows_client
 
                     if (lastSeen > 0)
                     {
-                        //long timedifference;
-                        //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
-                        //    lastSeen = lastSeen - timedifference;
+                        long timedifference;
+                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                            lastSeen = lastSeen - timedifference;
                     }           
                 }
                 catch (Exception ex)
