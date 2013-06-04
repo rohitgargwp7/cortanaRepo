@@ -42,6 +42,8 @@ namespace windows_client
 
         public static readonly string ICON = "ic";
 
+        public static readonly string LAST_SEEN = "ls";
+
         public static bool turnOffNetworkManager = true;
 
         private HikePubSub pubSub;
@@ -198,6 +200,38 @@ namespace windows_client
                 vals[1] = sentTo;
                 if (msisdn != null)
                     this.pubSub.publish(HikePubSub.END_TYPING_CONVERSATION, vals);
+                return;
+            }
+            #endregion
+            #region LAST_SEEN
+            else if (LAST_SEEN == type) /* Last Seen received */
+            {
+                long lastSeen = 0;
+
+                try
+                {
+                    var data = jsonObj[HikeConstants.DATA];
+                    lastSeen = (long)data[HikeConstants.LASTSEEN];
+
+                    if (lastSeen > 0)
+                    {
+                        //long timedifference;
+                        //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                        //    lastSeen = lastSeen - timedifference;
+                    }           
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NetworkManager ::  Last Seen :  TimeStamp, Exception : " + ex.StackTrace);
+                }
+
+                object[] vals = new object[2];
+                vals[0] = msisdn;
+                vals[1] = lastSeen;
+
+                if (msisdn != null)
+                    this.pubSub.publish(HikePubSub.LAST_SEEN, vals);
+
                 return;
             }
             #endregion
@@ -1337,6 +1371,47 @@ namespace windows_client
                     Debug.WriteLine("NETWORK MANAGER :: Exception in DELETE STATUS : " + e.StackTrace);
                 }
             }
+            #endregion
+            #region Pro Tips
+            
+            else if (HikeConstants.MqttMessageTypes.PRO_TIPS == type)
+            {
+                JObject data = null;
+
+                try
+                {
+                    object[] vals = new object[5];
+                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    vals[0] = (string)data[HikeConstants.PRO_TIP_ID];
+                    vals[1] = (string)data[HikeConstants.PRO_TIP_HEADER];
+                    vals[2] = (string)data[HikeConstants.PRO_TIP_TEXT];
+
+                    try
+                    {
+                        vals[3] = (string)data[HikeConstants.PRO_TIP_IMAGE];
+                    }
+                    catch
+                    {
+                        vals[3] = "";
+                    }
+
+                    try
+                    {
+                        vals[4] = (Int64)data[HikeConstants.PRO_TIP_TIME]; //assumed minutes time
+                    }
+                    catch
+                    {
+                        vals[4] = 0;
+                    }
+
+                    pubSub.publish(HikePubSub.PRO_TIPS_REC, vals);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Network Manager:: Delivery Report, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                }
+            }
+            
             #endregion
             #region OTHER
             else

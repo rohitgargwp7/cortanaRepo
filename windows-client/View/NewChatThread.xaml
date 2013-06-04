@@ -505,8 +505,14 @@
                     <Image Grid.Column="1" Source="images\mute_icon_main.png" Margin="0,0,24,0" VerticalAlignment="Center" HorizontalAlignment="Right" Height="26" Width="25"/>
                 </Grid>
                 <StackPanel Name="userHeader" Orientation="Horizontal" Margin="24,0,20,10">
-                    <Image Name="userImage" Height="50" ></Image>
-                    <TextBlock x:Name="userName" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="50" Margin="18,-4,0,0" Width="Auto" />
+                    <Image Name="userImage" Height="50" />
+                    <StackPanel Margin="18,-4,0,0">
+                        <TextBlock x:Name="userName" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="50"/>
+                        <StackPanel Margin="0,-5,0,0" Orientation="Horizontal" VerticalAlignment="Top" x:Name="lastSeenPannel" Visibility="Collapsed">
+                            <Image x:Name="onlineStatus" MaxHeight="15" MaxWidth="15" Margin="4,0,5,0" Visibility="Collapsed"/>
+                            <TextBlock x:Name="lastSeenTxt" Text="" FontSize="18"/>
+                        </StackPanel>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
         </StackPanel>

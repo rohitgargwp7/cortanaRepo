@@ -383,6 +383,9 @@ namespace windows_client.ViewModel
             TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(0, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
             isShownVal = (marked & 0x02) == 1;
             isCurrentShown = (currentlyShowing & 0x02) == 1;
+            
+            //ToDo:Rohit
+            //Manage tip alignment according to sticker pallet, the tip should be shown pointing over the sticker icon in the emoticon pallet when openned
             TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 60) });
             isShownVal = (marked & 0x04) == 1;
             isCurrentShown = (currentlyShowing & 0x04) == 1;

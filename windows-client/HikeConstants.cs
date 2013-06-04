@@ -25,6 +25,7 @@ namespace windows_client
         public static readonly string ANALYTICS_EVENT = "ae";
         public static readonly string LOG_EVENT = "le";//for analytics
         public static readonly string FILE_SYSTEM_VERSION = "File_System_Version";
+        public static readonly string STATUS = "st";
 
         public static readonly string CRITICAL = "critical";
         public static readonly string LATEST = "latest";
@@ -46,6 +47,7 @@ namespace windows_client
         public static readonly string FILE_THUMBNAIL = "tn";
         public static readonly string FILE_CONTENT_TYPE = "ct";
         public static readonly string FILES_DATA = "files";
+        public static readonly string FILE_PLAY_TIME = "pt";
 
         public static readonly string LATITUDE = "lat";
         public static readonly string LONGITUDE = "long";
@@ -201,6 +203,13 @@ namespace windows_client
         public static readonly string MOOD = "mood";
         public static readonly string TIME_OF_DAY = "timeofday";
 
+        public static readonly string PRO_TIP_ID = "i";
+        public static readonly string PRO_TIP_HEADER = "h";
+        public static readonly string PRO_TIP_TEXT = "t";
+        public static readonly string PRO_TIP_IMAGE = "img";
+        public static readonly string PRO_TIP_TIME = "wt";
+        public static readonly Int64 DEFAULT_PRO_TIP_TIME = 300;
+
         public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
         public static string MSISDN = "msisdn";
@@ -224,6 +233,7 @@ namespace windows_client
         public static string SOCIAL_STATE = "socialState";
         public static string SOCIAL = "Social_Request";
         public static string SHOW_GROUP_CHAT_OVERLAY = "sgcol";
+        public static string PLAYER_TIMER = "playerTimer";
 
         /* NAVIGATION CONSTANTS*/
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
@@ -250,7 +260,6 @@ namespace windows_client
         public static string UNREAD_FRIEND_REQUESTS = "urFr";
         public static string REFRESH_BAR = "refBar";
 
-        public static string CLOSE_FRIENDS_NUX = "closeFriends";
 
         public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
         public static string PROFILE_NAME_CHANGED = "ProfileNameChanged";
@@ -276,6 +285,11 @@ namespace windows_client
 
         public static readonly string ENABLE_PUSH_BATCH_SU = "enablepushbatchingforsu";
         public static readonly string PUSH_SU = "pushsu";
+
+        public static readonly string LASTSEEN = "ls";
+        public static readonly string LASTSEENONOFF = "lastseen";
+        public static readonly string JUSTOPENED = "justOpened";
+
         public static class Extras
         {
             public static readonly string ANIMATED_ONCE = "animatedOnce";
@@ -326,7 +340,8 @@ namespace windows_client
             public static readonly string STATUS_UPDATE = "su";
             public static readonly string DELETE_STATUS_UPDATE = "dsu";
             public static readonly string GROUP_DISPLAY_PIC = "dp";
-
+            public static readonly string PRO_TIPS = "pt";
+            public static readonly string APP_INFO = "app";
         }
 
         public static class AppSettings

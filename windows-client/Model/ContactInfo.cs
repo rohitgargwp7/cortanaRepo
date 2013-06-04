@@ -27,13 +27,13 @@ namespace windows_client.Model
         private string _name;
         private string _msisdn;
         private string _phoneNo;
+        private bool _hasCustomPhoto;
         private bool _onHike;
-        private bool _hasCustomPhoto;//for Nux
         private bool _isInvited;
         private byte[] _avatar;
         private bool _isFav;
         private bool _isCloseFriendNux;//for Nux , this will also be used in equals function , if true we will compare msisdns only in equals function
-        private byte _nuxScore;//for Nux
+
 
         # region Users Table Members
 
@@ -244,18 +244,6 @@ namespace windows_client.Model
                 _isCloseFriendNux = value;
             }
         }
-
-        public byte NuxMatchScore
-        {
-            get
-            {
-                return _nuxScore;
-            }
-            set
-            {
-                _nuxScore = value;
-            }
-        }
         public ContactInfo()
         {
             _name = null;
@@ -294,7 +282,6 @@ namespace windows_client.Model
 
         public ContactInfo(ContactInfo contact)
         {
-            this._hasCustomPhoto = contact._hasCustomPhoto;
             this._msisdn = contact._msisdn;
             this._name = contact._name;
             this._onHike = contact._onHike;
@@ -474,89 +461,5 @@ namespace windows_client.Model
                 }
             }
         }
-
-        public void Write(BinaryWriter writer)
-        {
-            try
-            {
-                if (_name == null)
-                    writer.WriteStringBytes("*@N@*");
-                else
-                    writer.WriteStringBytes(_name);
-
-                writer.WriteStringBytes(_phoneNo);//cannot be null for nux
-                writer.WriteStringBytes(_id);//cannot be null for nux
-
-                writer.Write(_nuxScore);
-                writer.Write(_hasCustomPhoto);
-                if (_avatar != null)
-                {
-                    writer.Write(_avatar.Length);
-                    writer.Write(_avatar);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("ContactInfo :: Write : Unable To write, Exception : " + ex.StackTrace);
-                throw new Exception("Unable to write to a file...");
-            }
-
-        }
-
-        public void Read(BinaryReader reader)
-        {
-            try
-            {
-                int count = reader.ReadInt32();
-                _name = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                if (_name == "*@N@*")
-                    _name = null;
-                count = reader.ReadInt32();
-                _phoneNo = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-
-                count = reader.ReadInt32();
-                _id = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-
-                _nuxScore = reader.ReadByte();
-                _hasCustomPhoto = reader.ReadBoolean();
-                if (_hasCustomPhoto)
-                {
-                    count = reader.ReadInt32();
-                    _avatar = reader.ReadBytes(count);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("ContactInfo :: Read : Read, Exception : " + ex.StackTrace);
-                throw new Exception("Conversation Object corrupt");
-            }
-        }
-    }
-
-    public class ContactCompare : IComparer<ContactInfo>
-    {
-        public int Compare(ContactInfo contactInfo1, ContactInfo contactInfo2)
-        {
-            if (contactInfo1.HasCustomPhoto == contactInfo2.HasCustomPhoto)
-            {
-                if (contactInfo1.NuxMatchScore > contactInfo2.NuxMatchScore)
-                    return -1;
-                else if (contactInfo1.NuxMatchScore < contactInfo2.NuxMatchScore)
-                    return 1;
-                else
-                {
-                    return contactInfo1.Name.ToLower().CompareTo(contactInfo2.Name.ToLower());
-                }
-            }
-            else if (contactInfo1.HasCustomPhoto)
-            {
-                return -1;
-            }
-            else
-            {
-                return 1;
-            }
-        }
-    }
+}
 }

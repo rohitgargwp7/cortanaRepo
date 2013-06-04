@@ -71,6 +71,22 @@ namespace windows_client.View
                 else
                     listSettingsValue.Add(string.Format(AppResources.Settings_StatusUpdate_EveryXHour_txt, firstSetting));
             }
+
+            byte lastSeenSettingsValue;
+            if (App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out lastSeenSettingsValue))
+            {
+                if (lastSeenSettingsValue > 0)
+                {
+                    lastSeenTimeStampToggle.IsChecked = true;
+                    lastSeenTimeStampToggle.Content = AppResources.On;
+                }
+                else
+                {
+                    lastSeenTimeStampToggle.IsChecked = false;
+                    lastSeenTimeStampToggle.Content = AppResources.Off;
+                }
+            }
+
             byte statusSettingsValue;
             if (App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue))
             {
@@ -86,9 +102,9 @@ namespace windows_client.View
                     listBoxStatusSettings.IsEnabled = false;
                 }
             }
+            
             listBoxStatusSettings.ItemsSource = listSettingsValue;
             listBoxStatusSettings.SelectedIndex = statusSettingsValue == 0 ? 0 : statusSettingsValue - 1;
-
         }
 
         private void pushNotifications_Checked(object sender, RoutedEventArgs e)
@@ -181,6 +197,39 @@ namespace windows_client.View
             statusUpdateNotificationToggle.Loaded -= statusUpdateNotificationToggle_Loaded;
             statusUpdateNotificationToggle.Checked += statusUpdateNotification_Checked;
             statusUpdateNotificationToggle.Unchecked += statusUpdateNotification_Unchecked;
+        }
+
+        private void lastSeenTimeStampToggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            lastSeenTimeStampToggle.Loaded -= lastSeenTimeStampToggle_Loaded;
+            lastSeenTimeStampToggle.Checked += lastSeenTimeStampToggle_Checked;
+            lastSeenTimeStampToggle.Unchecked += lastSeenTimeStampToggle_Unchecked;
+        }
+
+        private void lastSeenTimeStampToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.lastSeenTimeStampToggle.Content = AppResources.On;
+            App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, (byte)1);
+
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            JObject data = new JObject();
+            data.Add(HikeConstants.LASTSEENONOFF, "true");
+            obj.Add(HikeConstants.DATA, data);
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
+
+        private void lastSeenTimeStampToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.lastSeenTimeStampToggle.Content = AppResources.Off;
+            App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, (byte)0);
+
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            JObject data = new JObject();
+            data.Add(HikeConstants.LASTSEENONOFF, "false");
+            obj.Add(HikeConstants.DATA, data);
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
     }
 }
