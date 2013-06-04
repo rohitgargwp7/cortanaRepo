@@ -2318,7 +2318,7 @@ namespace windows_client.View
                 }
                 #endregion
                 #region USER_JOINED
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED || convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED)
                 {
                     ConvMessage chatBubble = new ConvMessage(convMessage.Message, this.Orientation, convMessage);
                     chatBubble.NotificationType = ConvMessage.MessageType.USER_JOINED_HIKE;

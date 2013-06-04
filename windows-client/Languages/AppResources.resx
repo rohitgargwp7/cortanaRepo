@@ -1734,4 +1734,8 @@ Get hike: http://get.hike.in</value>
   <data name="Sticker_Downloading_Txt" xml:space="preserve">
     <value>Downloading</value>
   </data>
+  <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
+    <value>{0} is back on hike. Say hi :)</value>
+    <comment>{0} to be replaced by name</comment>
+  </data>
 </root>

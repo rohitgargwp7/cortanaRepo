@@ -67,6 +67,7 @@ namespace windows_client.Model
             GROUP_PIC_CHANGED,
             USER_OPT_IN,
             USER_JOINED,
+            USER_REJOINED,
             HIKE_USER,
             SMS_USER,
             DND_USER,
@@ -139,7 +140,13 @@ namespace windows_client.Model
             }
             else if (HikeConstants.MqttMessageTypes.USER_JOIN == type)
             {
-                return ParticipantInfoState.USER_JOINED;
+                bool isRejoin = false;
+                JToken subtype;
+                if (obj.TryGetValue(HikeConstants.SUB_TYPE, out subtype))
+                {
+                    isRejoin = HikeConstants.SUBTYPE_REJOIN == (string)subtype;
+                }
+                return isRejoin ? ParticipantInfoState.USER_REJOINED : ParticipantInfoState.USER_JOINED;
             }
             else if (HikeConstants.MqttMessageTypes.HIKE_USER == type)
             {
@@ -757,7 +764,7 @@ namespace windows_client.Model
         {
             get
             {
-                if(!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
+                if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
                 {
                     if (_stickerObj != null && _stickerObj.StickerImage != null)
                         return Visibility.Visible;

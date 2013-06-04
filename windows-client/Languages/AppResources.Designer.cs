@@ -3876,6 +3876,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} is back on hike. Say hi :).
+        /// </summary>
+        public static string USER_REJOINED_HIKE_TXT {
+            get {
+                return ResourceManager.GetString("USER_REJOINED_HIKE_TXT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add to Contacts.
         /// </summary>
         public static string UserProfile_AddToContacts_Btn {
