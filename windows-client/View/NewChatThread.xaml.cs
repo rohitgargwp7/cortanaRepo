@@ -33,6 +33,7 @@ using System.Net.NetworkInformation;
 using System.Windows.Controls.Primitives;
 using System.Windows.Navigation;
 using System.Collections.ObjectModel;
+using windows_client.ViewModel;
 
 namespace windows_client.View
 {
@@ -108,6 +109,19 @@ namespace windows_client.View
 
         public bool isMessageLoaded;
         public ObservableCollection<ConvMessage> ocMessages;
+
+        public int ResolutionId
+        {
+            get
+            {
+                if (Utils.CurrentResolution == Utils.Resolutions.WXGA)
+                    return 7;
+                else if (Utils.CurrentResolution == Utils.Resolutions.WVGA)
+                    return 8;
+                else
+                    return 9;
+            }
+        }
 
         #endregion
 
@@ -472,14 +486,18 @@ namespace windows_client.View
 
             #endregion
             App.newChatThreadPage = this;
-            if (App.stickerHelper == null)
+            if (HikeViewModel.stickerHelper == null)
             {
-                App.stickerHelper = new StickerHelper();
+                HikeViewModel.stickerHelper = new StickerHelper();
             }
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, ee) =>
                 {
-                    App.stickerHelper.InitialiseLowResStickers();
+                    HikeViewModel.stickerHelper.InitialiseLowResStickers();
+                };
+            bw.RunWorkerCompleted += (s, ee) =>
+                {
+                    AddPivotItemsToStickerPivot();
                 };
             bw.RunWorkerAsync();
             #region AUDIO FT
@@ -574,6 +592,7 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
+            ShowDownloadOverlay(false);
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
                 emoticonPanel.Visibility = Visibility.Collapsed;
@@ -1836,7 +1855,7 @@ namespace windows_client.View
                                 convMessage.StickerObj.StickerImage = StickerCategory.GetStickerFromDb(convMessage.StickerObj.Id, convMessage.StickerObj.Category);
                                 if (convMessage.StickerObj.StickerImage == null)
                                 {
-                                    AccountUtils.GetSingleSticker(convMessage.StickerObj, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
+                                    AccountUtils.GetSingleSticker(convMessage.StickerObj, ResolutionId, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
                                     dictDownloadingStickers.Add(categoryStickerId, convMessage);
                                 }
                                 else
@@ -3885,6 +3904,7 @@ namespace windows_client.View
 
         private void Stickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            LongListSelector llsStickerCategory = (sender as LongListSelector);
             Sticker sticker = llsStickerCategory.SelectedItem as Sticker;
             llsStickerCategory.SelectedItem = null;
             if (sticker == null)
@@ -3903,6 +3923,28 @@ namespace windows_client.View
 
         }
 
+        private void PivotStickers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (pivotStickers.SelectedIndex)
+            {
+                case 0:
+                    Category1_Tap(null, null);
+                    break;
+                case 1:
+                    Category2_Tap(null, null);
+                    break;
+                case 2:
+                    Category3_Tap(null, null);
+                    break;
+                case 3:
+                    Category4_Tap(null, null);
+                    break;
+                case 4:
+                    Category5_Tap(null, null);
+                    break;
+            }
+        }
+
         private void StickersBack_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             gridEmoticons.Visibility = Visibility.Visible;
@@ -3911,110 +3953,117 @@ namespace windows_client.View
 
         private void Category1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (_selectedCategory == StickerHelper.CATEGORY_1)
+                return;
             _selectedCategory = StickerHelper.CATEGORY_1;
+            pivotStickers.SelectedIndex = 0;
             stCategory1.Background = UI_Utils.Instance.TappedCategoryColor;
             stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
 
-            StickerCategory s2 = App.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_1);
-            if (s2 == null || s2.ListStickers.Count == 0)
-            {
-                stLoading.Visibility = Visibility.Visible;
-                llsStickerCategory.Visibility = Visibility.Collapsed;
-                stNoStickers.Visibility = Visibility.Collapsed;
-                //make http call
-                PostRequestForBatchStickers(s2);
-            }
-            else
-            {
-                stLoading.Visibility = Visibility.Collapsed;
-                llsStickerCategory.Visibility = Visibility.Visible;
-                stNoStickers.Visibility = Visibility.Collapsed;
-                llsStickerCategory.ItemsSource = s2.ListStickers;
-            }
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_1);
+            StickerPivot stickerPivot = listStickerPivot[StickerHelper.CATEGORY_1];
+            stickerPivot.ShowStickers();
         }
 
         private void Category2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (_selectedCategory == StickerHelper.CATEGORY_2)
+                return;
             _selectedCategory = StickerHelper.CATEGORY_2;
+            pivotStickers.SelectedIndex = 1;
             stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory2.Background = UI_Utils.Instance.TappedCategoryColor;
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            StickerPivot stPivot = listStickerPivot[StickerHelper.CATEGORY_2];
+            CategoryTap(StickerHelper.CATEGORY_2, stPivot);
 
-            CategoryTap(StickerHelper.CATEGORY_2);
         }
 
         private void Category3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (_selectedCategory == StickerHelper.CATEGORY_3)
+                return;
             _selectedCategory = StickerHelper.CATEGORY_3;
+            pivotStickers.SelectedIndex = 2;
             stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory3.Background = UI_Utils.Instance.TappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            StickerPivot stPivot = listStickerPivot[StickerHelper.CATEGORY_3];
+            CategoryTap(StickerHelper.CATEGORY_3, stPivot);
 
-            CategoryTap(StickerHelper.CATEGORY_3);
         }
 
         private void Category4_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (_selectedCategory == StickerHelper.CATEGORY_4)
+                return;
             _selectedCategory = StickerHelper.CATEGORY_4;
+            pivotStickers.SelectedIndex = 3;
             stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.TappedCategoryColor;
+            StickerPivot stPivot = listStickerPivot[StickerHelper.CATEGORY_4];
+            CategoryTap(StickerHelper.CATEGORY_4, stPivot);
 
-            CategoryTap(StickerHelper.CATEGORY_4);
         }
 
-        private void CategoryTap(string category)
+        private void Category5_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            StickerCategory s2 = App.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_2);
-            bool downloadStickers = false;
+            if (_selectedCategory == StickerHelper.CATEGORY_5)
+                return;
+            _selectedCategory = StickerHelper.CATEGORY_5;
+            pivotStickers.SelectedIndex = 4;
+            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory5.Background = UI_Utils.Instance.TappedCategoryColor;
+            StickerPivot stPivot = listStickerPivot[StickerHelper.CATEGORY_5];
+            CategoryTap(StickerHelper.CATEGORY_5, stPivot);
+        }
+
+        private void CategoryTap(string category, StickerPivot stickerPivot)
+        {
+            StickerCategory s2 = HikeViewModel.stickerHelper.GetStickersByCategory(category);
             if (s2.ShowDownloadMessage)
             {
-                MessageBoxResult mbr = MessageBox.Show("Do you want to download stickers?", "Alert", MessageBoxButton.OKCancel);
-                if (mbr == MessageBoxResult.OK)
-                {
-                    s2.ShowDownloadMessage = false;
-                    downloadStickers = true;
-                }
+                ShowDownloadOverlay(true);
+                return;
             }
-            if (downloadStickers)
+            if (s2 == null || s2.ListStickers.Count == 0)
             {
-                stLoading.Visibility = Visibility.Visible;
-                llsStickerCategory.Visibility = Visibility.Collapsed;
-                stNoStickers.Visibility = Visibility.Collapsed;
-                PostRequestForBatchStickers(s2);
-            }
-            else if (s2 == null || s2.ListStickers.Count == 0)
-            {
-                stLoading.Visibility = Visibility.Collapsed;
-                llsStickerCategory.Visibility = Visibility.Collapsed;
-                stNoStickers.Visibility = Visibility.Visible;
+                stickerPivot.ShowNoStickers();
             }
             else
             {
-                stLoading.Visibility = Visibility.Collapsed;
-                llsStickerCategory.Visibility = Visibility.Visible;
-                stNoStickers.Visibility = Visibility.Collapsed;
-                llsStickerCategory.ItemsSource = s2.ListStickers;
+                stickerPivot.ShowStickers();
             }
         }
 
         private void llsStickersCategory_OnItemsRealised(object sender, ItemRealizationEventArgs e)
         {
             StickerCategory stickerCategory;
-            if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0 && (stickerCategory = App.stickerHelper.GetStickersByCategory(_selectedCategory)) != null && stickerCategory.HasMoreStickers && !stickerCategory.IsDownLoading)
+            LongListSelector llsStickerCategory = sender as LongListSelector;
+            if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0)
             {
-                if (e.ItemKind == LongListSelectorItemKind.Item)
-                {
-                    if ((e.Container.Content as Sticker).Equals(llsStickerCategory.ItemsSource[llsStickerCategory.ItemsSource.Count - 1]))
+                string category = ((Sticker)llsStickerCategory.ItemsSource[0]).Category;
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category)) != null && stickerCategory.HasMoreStickers && !stickerCategory.ShowDownloadMessage && !stickerCategory.IsDownLoading)
+                    if (e.ItemKind == LongListSelectorItemKind.Item)
                     {
-                        PostRequestForBatchStickers(stickerCategory);
+                        if ((e.Container.Content as Sticker).Equals(llsStickerCategory.ItemsSource[llsStickerCategory.ItemsSource.Count - 1]))
+                        {
+                            PostRequestForBatchStickers(stickerCategory);
+                        }
                     }
-                }
             }
         }
 
@@ -4031,8 +4080,7 @@ namespace windows_client.View
                     existingIds.Add(sticker.Id);
                 }
                 json["stIds"] = existingIds;
-
-                json["resId"] = 1;
+                json["resId"] = ResolutionId;
                 json["nos"] = 10;
                 stickerCategory.IsDownLoading = true;
                 AccountUtils.GetStickers(json, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack), stickerCategory);
@@ -4070,7 +4118,7 @@ namespace windows_client.View
             }
             if (stickerCategory == null)
             {
-                stickerCategory = App.stickerHelper.GetStickersByCategory(category);
+                stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
                 if (stickerCategory == null)
                 {
                     stickerCategory = new StickerCategory(category);
@@ -4110,6 +4158,8 @@ namespace windows_client.View
                             convMessage.SetStickerImage(highResImage);
                             dictDownloadingStickers.Remove(key);
                         }
+                        if (dictStickerCache.ContainsKey(key))
+                            continue;
                         dictStickerCache[key] = highResImage;
                     }
                     Byte[] lowResImageBytes = UI_Utils.Instance.PngImgToJpegByteArray(highResImage);
@@ -4124,13 +4174,93 @@ namespace windows_client.View
                 bw.RunWorkerAsync();
                 if (stickerCategory != null && category == _selectedCategory)
                 {
-                    stLoading.Visibility = Visibility.Collapsed;
-                    llsStickerCategory.Visibility = Visibility.Visible;
-                    llsStickerCategory.ItemsSource = stickerCategory.ListStickers;
+                    //stLoading.Visibility = Visibility.Collapsed;
+                    StickerPivot stickerPivot;
+                    if (listStickerPivot.TryGetValue(category, out stickerPivot))
+                        stickerPivot.ShowStickers();
+                    pivotStickers.Visibility = Visibility.Visible;
                 }
                 stickerCategory.IsDownLoading = false;
             });
         }
+
+        private Dictionary<string, StickerPivot> listStickerPivot = new Dictionary<string, StickerPivot>();
+
+        private void AddPivotItemsToStickerPivot()
+        {
+            StickerCategory stickerCategory;
+            //done thos way to maintain order of insertion
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_1)) != null)
+            {
+                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers);
+            }
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_2)) != null)
+            {
+                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers);
+                rectCategory2.Visibility = Visibility.Visible;
+                stCategory2.Visibility = Visibility.Visible;
+            }
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_3)) != null)
+            {
+                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers);
+                rectCategory3.Visibility = Visibility.Visible;
+                stCategory3.Visibility = Visibility.Visible;
+            }
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_4)) != null)
+            {
+                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers);
+                rectCategory4.Visibility = Visibility.Visible;
+                stCategory4.Visibility = Visibility.Visible;
+            }
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_5)) != null)
+            {
+                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers);
+                rectCategory5.Visibility = Visibility.Visible;
+                stCategory5.Visibility = Visibility.Visible;
+            }
+        }
+
+        Thickness zeroThickness = new Thickness(0, 0, 0, 0);
+        private void CreateStickerPivotItem(string category, ObservableCollection<Sticker> listSticker)
+        {
+            PivotItem pvt = new PivotItem();
+            pvt.Margin = zeroThickness;
+            pvt.BorderThickness = zeroThickness;
+            pvt.Padding = zeroThickness;
+            EventHandler<ItemRealizationEventArgs> itemRealised = null;
+            itemRealised += new EventHandler<ItemRealizationEventArgs>(llsStickersCategory_OnItemsRealised);
+            StickerPivot stickerPivot = new StickerPivot(Stickers_Tap, itemRealised, listSticker);
+            listStickerPivot[category] = stickerPivot;
+            pvt.Content = stickerPivot;
+            pivotStickers.Items.Add(pvt);
+        }
+
+        public void ShowDownloadOverlay(bool show)
+        {
+            if (show)
+            {
+                overlayRectangle.Visibility = Visibility.Visible;
+                DownloadStickers.Visibility = Visibility.Visible;
+                llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = false;
+            }
+            else
+            {
+                overlayRectangle.Visibility = Visibility.Collapsed;
+                DownloadStickers.Visibility = Visibility.Collapsed;
+                llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
+            }
+        }
+
+        private void downloadStickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ShowDownloadOverlay(false);
+            StickerCategory s2 = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
+            s2.SetDownloadMessage(false);
+            if (listStickerPivot.ContainsKey(s2.Category))
+                listStickerPivot[s2.Category].ShowLoadingStickers();
+            PostRequestForBatchStickers(s2);
+        }
+
 
         #endregion
 
@@ -4402,6 +4532,22 @@ namespace windows_client.View
         private RecorderState _recorderState = RecorderState.NOTHING_RECORDED;
 
         #endregion
+
+        private void overlayRectangle_Tap_1(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ShowDownloadOverlay(false);
+            StickerCategory s2 = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
+            if (s2 == null || s2.ListStickers.Count == 0)
+            {
+                if (listStickerPivot.ContainsKey(s2.Category))
+                    listStickerPivot[s2.Category].ShowNoStickers();
+            }
+            else
+            {
+                if (listStickerPivot.ContainsKey(s2.Category))
+                    listStickerPivot[s2.Category].ShowStickers();
+            }
+        }
 
     }
 

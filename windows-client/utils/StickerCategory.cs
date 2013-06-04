@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using windows_client.ViewModel;
 
 namespace windows_client.utils
 {
@@ -188,7 +189,7 @@ namespace windows_client.utils
         {
             lock (readWriteLock)
             {
-                if (dictStcikers != null && dictStcikers.Count > 0)
+                if ((dictStcikers != null && dictStcikers.Count > 0) || hasMoreStickers)
                 {
                     try
                     {
@@ -295,7 +296,14 @@ namespace windows_client.utils
                 return null;
             if (category == StickerHelper.CATEGORY_1)
             {
-                return new BitmapImage(new Uri(string.Format("/View/images/stickers/{0}", stickerId), UriKind.Relative));
+                string url;
+                if (Utils.CurrentResolution == Utils.Resolutions.WXGA)
+                    url = StickerHelper._stickerWXGApath;
+                else if (Utils.CurrentResolution == Utils.Resolutions.WVGA)
+                    url = StickerHelper._stickerWVGAPath;
+                else
+                    url = StickerHelper._sticker720path;
+                return new BitmapImage(new Uri(string.Format(url, stickerId), UriKind.Relative));
             }
             else
             {
@@ -326,6 +334,276 @@ namespace windows_client.utils
             return null;
         }
 
+        public static void CreateCategory(string category)
+        {
+            lock (readWriteLock)
+            {
+                string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
 
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                {
+                    if (!store.DirectoryExists(STICKERS_DIR))
+                    {
+                        store.CreateDirectory(STICKERS_DIR);
+                    }
+                    if (!store.DirectoryExists(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR))
+                    {
+                        store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR);
+                    }
+                    if (!store.DirectoryExists(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category))
+                    {
+                        store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category);
+                    }
+                }
+
+            }
+        }
+
+        public static List<StickerCategory> ReadAllCategoriesFromDb()
+        {
+            List<StickerCategory> listStickerCategory = new List<StickerCategory>();
+            lock (readWriteLock)
+            {
+                try
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR;
+                        string[] folders = store.GetDirectoryNames(folder + "\\*");
+                        if (folders != null)
+                            foreach (string category in folders)
+                            {
+                                Dictionary<string, Byte[]> dictImageBytes = new Dictionary<string, Byte[]>();
+                                StickerCategory stickerCategory = new StickerCategory(category);
+                                string[] files = store.GetFileNames(folder + "\\" + category + "\\*");
+                                if (files != null)
+
+                                    foreach (string stickerId in files)
+                                    {
+                                        string fileName = folder + "\\" + category + "\\" + stickerId;
+                                        using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
+                                        {
+                                            using (var reader = new BinaryReader(file))
+                                            {
+                                                if (stickerId == METADATA)
+                                                {
+                                                    stickerCategory._hasMoreStickers = reader.ReadBoolean();
+                                                    stickerCategory._showDownloadMessage = reader.ReadBoolean();
+                                                }
+                                                else
+                                                {
+                                                    int imageBytesCount = reader.ReadInt32();
+                                                    dictImageBytes.Add(stickerId, reader.ReadBytes(imageBytesCount));
+                                                }
+                                            }
+                                        }
+                                    }
+                                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                                {
+                                    foreach (string stickerId in dictImageBytes.Keys)
+                                    {
+                                        stickerCategory._listStickers.Add(new Sticker(category, stickerId, UI_Utils.Instance.createImageFromBytes(dictImageBytes[stickerId])));
+                                    }
+                                });
+                                listStickerCategory.Add(stickerCategory);
+                            }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("StickerCategory::CreateFromFile, Exception:" + ex.Message);
+                }
+                return listStickerCategory;
+            }
+        }
+
+        public static void DeleteCategory(string category)
+        {
+            if (string.IsNullOrEmpty(category))
+                return;
+            lock (readWriteLock)
+            {
+                try
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
+
+                        if (store.DirectoryExists(folder))
+                        {
+                            string[] files = store.GetFileNames(folder + "\\*");
+                            if (files != null)
+                                foreach (string stickerId in files)
+                                {
+                                    string fileName = folder + "\\" + stickerId;
+                                    if (store.FileExists(fileName))
+                                        store.DeleteFile(fileName);
+                                }
+                            store.DeleteDirectory(folder);
+                        }
+
+                        folder = STICKERS_DIR + "\\" + HIGH_RESOLUTION_DIR + "\\" + category;
+
+                        if (store.DirectoryExists(folder))
+                        {
+                            string[] files = store.GetFileNames(folder + "\\*");
+                            if (files != null)
+                                foreach (string stickerId in files)
+                                {
+                                    string fileName = folder + "\\" + stickerId;
+                                    if (store.FileExists(fileName))
+                                        store.DeleteFile(fileName);
+                                }
+                            store.DeleteDirectory(folder);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("StickerCategory::DeleteCategory, Exception:" + ex.Message);
+                }
+            }
+        }
+
+        public static void DeleteSticker(string category, string stickerId)
+        {
+            if (string.IsNullOrEmpty(category) || string.IsNullOrEmpty(stickerId))
+                return;
+            lock (readWriteLock)
+            {
+                try
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
+
+                        if (store.DirectoryExists(folder))
+                        {
+                            string fileName = folder + "\\" + stickerId;
+                            if (store.FileExists(fileName))
+                                store.DeleteFile(fileName);
+                        }
+
+                        folder = STICKERS_DIR + "\\" + HIGH_RESOLUTION_DIR + "\\" + category;
+
+                        if (store.DirectoryExists(folder))
+                        {
+                            string fileName = folder + "\\" + stickerId;
+                            if (store.FileExists(fileName))
+                                store.DeleteFile(fileName);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("StickerCategory::DeleteCategory, Exception:" + ex.Message);
+                }
+            }
+        }
+
+        public static void DeleteSticker(string category, List<string> listStickerIds)
+        {
+            if (string.IsNullOrEmpty(category) || listStickerIds == null || listStickerIds.Count == 0)
+                return;
+            lock (readWriteLock)
+            {
+                try
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
+
+                        if (store.DirectoryExists(folder))
+                        {
+                            foreach (string stickerId in listStickerIds)
+                            {
+                                string fileName = folder + "\\" + stickerId;
+                                if (store.FileExists(fileName))
+                                    store.DeleteFile(fileName);
+                            }
+                        }
+
+                        folder = STICKERS_DIR + "\\" + HIGH_RESOLUTION_DIR + "\\" + category;
+
+                        if (store.DirectoryExists(folder))
+                        {
+                            foreach (string stickerId in listStickerIds)
+                            {
+                                string fileName = folder + "\\" + stickerId;
+                                if (store.FileExists(fileName))
+                                    store.DeleteFile(fileName);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("StickerCategory::DeleteCategory, Exception:" + ex.Message);
+                }
+            }
+        }
+
+        public static void UpdateHasMoreMessages(string category, bool hasMoreStickers)
+        {
+            if (string.IsNullOrEmpty(category))
+                return;
+
+            if (HikeViewModel.stickerHelper != null && HikeViewModel.stickerHelper.GetStickersByCategory(category) != null)
+            {
+                HikeViewModel.stickerHelper.GetStickersByCategory(category)._hasMoreStickers = hasMoreStickers;
+            }
+            lock (readWriteLock)
+            {
+                try
+                {
+                    string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (!store.DirectoryExists(STICKERS_DIR))
+                        {
+                            store.CreateDirectory(STICKERS_DIR);
+                        }
+                        if (!store.DirectoryExists(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR))
+                        {
+                            store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR);
+                        }
+                        if (!store.DirectoryExists(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category))
+                        {
+                            store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category);
+                        }
+                        string metadataFile = folder + "\\" + METADATA;
+                        using (var file = store.OpenFile(metadataFile, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
+                        {
+                            bool showDownloadMessage = true;
+                            if (file.Length > 0)
+                            {
+                                using (var reader = new BinaryReader(file, Encoding.UTF8, true))
+                                {
+                                    try
+                                    {
+                                        reader.ReadBoolean();
+                                        showDownloadMessage = reader.ReadBoolean();
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+                            }
+                            using (BinaryWriter writer = new BinaryWriter(file))
+                            {
+                                writer.Write(hasMoreStickers);
+                                writer.Write(showDownloadMessage);
+                                writer.Flush();
+                                writer.Close();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("StickerCategory::UpdateHasMoreMessages, Exception:" + ex.Message);
+                }
+            }
+        }
     }
 }

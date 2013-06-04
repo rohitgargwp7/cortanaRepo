@@ -152,6 +152,9 @@
       <DependentUpon>ImageStatusUpdate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\StatusUpdate\StatusUpdateBox.cs" />
+    <Compile Include="Controls\StickerPivot.xaml.cs">
+      <DependentUpon>StickerPivot.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TemplateSelector.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbCompiledQueries.cs" />
@@ -311,6 +314,10 @@
     <Page Include="Controls\StatusUpdate\ImageStatusUpdate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\StickerPivot.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\BlockListPage.xaml">
       <SubType>Designer</SubType>
@@ -477,6 +484,7 @@
     <Content Include="View\images\chat_sms_error.png" />
     <Content Include="View\images\connected_tick.png" />
     <Content Include="View\images\delete_account_white.png" />
+    <Content Include="View\images\download.jpg" />
     <Content Include="View\images\drop_pin_icon.png" />
     <Content Include="View\images\emptyImage.png" />
     <Content Include="View\images\empty_screen_logo_black.png" />
@@ -552,22 +560,30 @@
     <Content Include="View\images\remove_wt_icon.png" />
     <Content Include="View\images\settings_icon_dark.png" />
     <Content Include="View\images\settings_icon_white.png" />
-    <Content Include="View\images\stickers\100.png" />
-    <Content Include="View\images\stickers\200.png" />
-    <Content Include="View\images\stickers\BRB.png" />
-    <Content Include="View\images\stickers\Callme.png" />
-    <Content Include="View\images\stickers\Gift-box.png" />
-    <Content Include="View\images\stickers\GM.png" />
-    <Content Include="View\images\stickers\GTG.png" />
-    <Content Include="View\images\stickers\Kitty.png" />
-    <Content Include="View\images\stickers\Kitty1.png" />
-    <Content Include="View\images\stickers\Kitty2.png" />
-    <Content Include="View\images\stickers\Kitty4.png" />
-    <Content Include="View\images\stickers\LMAO.png" />
-    <Content Include="View\images\stickers\LOL.png" />
-    <Content Include="View\images\stickers\OMG.png" />
-    <Content Include="View\images\stickers\xoxo.png" />
-    <Content Include="View\images\stickers\yum.png" />
+    <Content Include="View\images\stickers\720p\1_awww.png" />
+    <Content Include="View\images\stickers\720p\2_talktohand.png" />
+    <Content Include="View\images\stickers\720p\3_wink.png" />
+    <Content Include="View\images\stickers\720p\4_hugs.png" />
+    <Content Include="View\images\stickers\720p\5_woohoo.png" />
+    <Content Include="View\images\stickers\720p\6_sshh.png" />
+    <Content Include="View\images\stickers\720p\7_pheww.png" />
+    <Content Include="View\images\stickers\720p\8_crying.png" />
+    <Content Include="View\images\stickers\WVGA\1_awww.png" />
+    <Content Include="View\images\stickers\WVGA\2_talktohand.png" />
+    <Content Include="View\images\stickers\WVGA\3_wink.png" />
+    <Content Include="View\images\stickers\WVGA\4_hugs.png" />
+    <Content Include="View\images\stickers\WVGA\5_woohoo.png" />
+    <Content Include="View\images\stickers\WVGA\6_sshh.png" />
+    <Content Include="View\images\stickers\WVGA\7_pheww.png" />
+    <Content Include="View\images\stickers\WVGA\8_crying.png" />
+    <Content Include="View\images\stickers\WXGA\1_awww.png" />
+    <Content Include="View\images\stickers\WXGA\2_talktohand.png" />
+    <Content Include="View\images\stickers\WXGA\3_wink.png" />
+    <Content Include="View\images\stickers\WXGA\4_hugs.png" />
+    <Content Include="View\images\stickers\WXGA\5_woohoo.png" />
+    <Content Include="View\images\stickers\WXGA\6_sshh.png" />
+    <Content Include="View\images\stickers\WXGA\7_pheww.png" />
+    <Content Include="View\images\stickers\WXGA\8_crying.png" />
     <Content Include="View\images\stickrcat1.png" />
     <Content Include="View\images\timeline_photo.png" />
     <Content Include="View\images\timeline_status_icon.png" />

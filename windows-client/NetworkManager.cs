@@ -42,6 +42,10 @@ namespace windows_client
 
         public static readonly string ICON = "ic";
 
+        public static readonly string ADD_STICKER = "addSt";
+
+        public static readonly string REMOVE_STICKER = "remSt";
+
         public static bool turnOffNetworkManager = true;
 
         private HikePubSub pubSub;
@@ -1338,6 +1342,52 @@ namespace windows_client
                 }
             }
             #endregion
+            #region ADD STICKER/CATEGORY
+            else if (type == ADD_STICKER)
+            {
+                try
+                {
+                    //do same for category as well as subcategory
+                    JObject jsonData = (JObject)jsonObj[HikeConstants.DATA];
+                    string category = (string)jsonData[HikeConstants.CATEGORY_ID];
+                    StickerCategory.UpdateHasMoreMessages(category, true);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("NETWORK MANAGER :: Exception in ADD Sticker: " + e.StackTrace);
+                }
+            }
+            #endregion
+            #region REMOVE STICKER/CATEGORY
+            else if (type == REMOVE_STICKER)
+            {
+                try
+                {
+                    JObject jsonData = (JObject)jsonObj[HikeConstants.DATA];
+                    string category = (string)jsonData[HikeConstants.CATEGORY_ID];
+                    if (HikeConstants.SUBTYPE_STICKER == (string)jsonObj[HikeConstants.SUB_TYPE])
+                    {
+                        JArray jarray = (JArray)jsonData["stIds"];
+                        List<string> listStickers = new List<string>();
+                        for (int i = 0; i < jarray.Count; i++)
+                        {
+                            listStickers.Add((string)jarray[i]);
+                        }
+                        StickerCategory.DeleteSticker(category, listStickers);
+                    }
+                    else
+                    {
+                        StickerCategory.DeleteCategory(category);
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("NETWORK MANAGER :: Exception in ADD Sticker: " + e.StackTrace);
+                }
+            }
+            #endregion
+
             #region OTHER
             else
             {
