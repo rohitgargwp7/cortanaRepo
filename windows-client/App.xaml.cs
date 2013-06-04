@@ -41,6 +41,7 @@ namespace windows_client
         public static readonly string STATUS_UPDATE_SETTING = "stUpSet";
         public static readonly string STATUS_UPDATE_FIRST_SETTING = "stUpFirSet";
         public static readonly string STATUS_UPDATE_SECOND_SETTING = "stUpSecSet";
+        public static readonly string LAST_SEEN_SEETING = "lstSeenSet";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
         public static readonly string HIDE_CRICKET_MOODS = "cmoods";
@@ -49,6 +50,12 @@ namespace windows_client
         public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
         public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
         public static readonly string APP_UPDATE_POSTPENDING = "updatePost";
+
+        public static readonly string CHAT_THREAD_COUNT_KEY = "chatThreadCountKey";
+        public static readonly string TIP_MARKED_KEY = "tipMarkedKey";
+        public static readonly string TIP_SHOW_KEY = "tipShowKey";
+        public static readonly string PRO_TIP = "proTip";
+        public static readonly string DISMISS_TIME = "dismissTime";
 
         public static readonly string INVITED = "invited";
         public static readonly string INVITED_JOINED = "invitedJoined";
@@ -80,7 +87,6 @@ namespace windows_client
         public static bool IS_MARKETPLACE = false; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
-        public static StickerHelper stickerHelper;
         private static bool _isTombstoneLaunch = false;
         private static bool _isAppLaunched = false;
         public static string MSISDN;
@@ -371,7 +377,11 @@ namespace windows_client
             {
                 if (ps == PageState.CONVLIST_SCREEN)
                     MqttManagerInstance.connect();
+
+                if (MqttManagerInstance.connectionStatus == HikeMqttManager.MQTTConnectionStatus.CONNECTED)
+                    sendAppStatusToServer(true);
             }
+
             NetworkManager.turnOffNetworkManager = false;
         }
 
@@ -380,6 +390,7 @@ namespace windows_client
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
             NetworkManager.turnOffNetworkManager = true;
+            sendAppStatusToServer(false);
             App.AnalyticsInstance.saveObject();
             PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
             if (IS_VIEWMODEL_LOADED)
@@ -397,6 +408,7 @@ namespace windows_client
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             App.AnalyticsInstance.saveObject();
+            sendAppStatusToServer(false);
             //appDeinitialize();
         }
 
@@ -462,6 +474,19 @@ namespace windows_client
             e.Cancel = true;
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
+
+            if (isNewInstall) //upgrade logic for inapp tips, will change with every build
+            {
+                App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, 0);
+                App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, (byte)0); // to keep a track of shown keys
+                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0); // to keep a track of current showing keys
+            }
+            else if (_latestVersion != _currentVersion)
+            {
+                App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, 0);
+                App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, (byte)0x18);
+                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0x18);
+            }
 
             // if not new install && current version is less than equal to version 1.8.0.0  and upgrade is done for wp8 device
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "1.8.0.0") != 1 && Utils.IsWP8)
@@ -745,6 +770,9 @@ namespace windows_client
                         WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
                         if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                             MqttDBUtils.MqttDbUpdateToLatestVersion();
+
+                        if (Utils.compareVersion(_latestVersion, "2.5.0.0") == 0) // upgrade friend files for last seen time stamp
+                            FriendsTableUtils.UpdateOldFilesWithDefaultLastSeen();
                     }
                 }
                 st.Stop();
@@ -752,6 +780,9 @@ namespace windows_client
                 Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
                 IS_VIEWMODEL_LOADED = true;
 
+
+                if (!appSettings.Contains(App.LAST_SEEN_SEETING))
+                    App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, (byte)1);
             }
             #endregion
             #region POST APP INFO ON UPDATE
@@ -761,6 +792,10 @@ namespace windows_client
             #region Post App Locale
             PostLocaleInfo();
             #endregion
+            if (isNewInstall || Utils.compareVersion("2.5.0.0", _currentVersion) == 1)
+            {
+                StickerHelper.CreateDefaultCategories();
+            }
         }
 
         public static void createDatabaseAsync()
@@ -980,6 +1015,26 @@ namespace windows_client
                 obj.Add(HikeConstants.DATA, data);
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
+        }
+
+        private void sendAppStatusToServer(bool foreGrounded)
+        {
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
+            obj.Add(HikeConstants.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
+
+            if (foreGrounded)
+            {
+                obj.Add(HikeConstants.STATUS, "fg");
+                JObject data = new JObject();
+                data.Add(HikeConstants.JUSTOPENED, "false");
+                obj.Add(HikeConstants.DATA, data);
+            }
+            else
+                obj.Add(HikeConstants.STATUS, "bg");
+
+
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
     }
 }

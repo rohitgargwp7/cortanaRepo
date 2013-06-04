@@ -75,7 +75,8 @@ namespace windows_client.Model
             INTERNATIONAL_USER,
             INTERNATIONAL_GROUP_USER,
             TYPING_NOTIFICATION,
-            STATUS_UPDATE
+            STATUS_UPDATE,
+            IN_APP_TIP
         }
 
         public enum MessageType
@@ -452,6 +453,14 @@ namespace windows_client.Model
             }
         }
 
+        public BitmapImage CloseImage
+        {
+            get
+            {
+                return UI_Utils.Instance.CloseButtonImage;
+            }
+        }
+
         public string DispMessage
         {
             get
@@ -572,12 +581,40 @@ namespace windows_client.Model
             }
         }
 
+        Boolean _isStopped = true;
+        public Boolean IsStopped
+        {
+            get
+            {
+                return _isStopped;
+            }
+            set
+            {
+                if (_isStopped != value)
+                {
+                    _isStopped = value;
+                    NotifyPropertyChanged("PlayTimeText");
+                }
+            }
+        }
+
+        public String DurationText
+        {
+            get
+            {
+                return getTimeTextFromMetaData();
+            }
+        }
+
         string _playTimeText;
         public String PlayTimeText
         {
             get
             {
-                return _playTimeText;
+                if (IsStopped)
+                    return DurationText;
+                else
+                    return _playTimeText;
             }
             set
             {
@@ -600,9 +637,6 @@ namespace windows_client.Model
                     IsPlaying = false;
                     _playProgressBarValue = 0;
                 }
-
-                if (_playProgressBarValue == 0)
-                    PlayTimeText = "";
 
                 Debug.WriteLine(_playProgressBarValue);
 
@@ -770,6 +804,17 @@ namespace windows_client.Model
             {
                 _groupMemeberName = value;
             }
+        }
+
+        string getTimeTextFromMetaData()
+        {
+            if (String.IsNullOrEmpty(this.MetaDataString))
+                return "";
+
+            var timeObj = JObject.Parse(this.MetaDataString);
+            var seconds = Convert.ToInt64(timeObj[HikeConstants.FILE_PLAY_TIME].ToString());
+            var durationTimeSpan = TimeSpan.FromSeconds(seconds);
+            return durationTimeSpan.ToString("mm\\:ss");
         }
 
         public double LayoutGridWidth
@@ -977,6 +1022,13 @@ namespace windows_client.Model
                         singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
                         singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                         singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+
+                        if (FileAttachment.ContentType.Contains(HikeConstants.AUDIO) && !String.IsNullOrEmpty(this.MetaDataString))
+                        {
+                            var timeObj = JObject.Parse(this.MetaDataString);
+                            singleFileInfo[HikeConstants.FILE_PLAY_TIME] = timeObj[HikeConstants.FILE_PLAY_TIME];
+                        }
+
                         if (FileAttachment.Thumbnail != null)
                             singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
                     }
@@ -1194,7 +1246,7 @@ namespace windows_client.Model
                             this.MetaDataString = locationFile.ToString(Newtonsoft.Json.Formatting.None);
                         }
 
-                        if (contentType.ToString().Contains(HikeConstants.CONTACT))
+                        if (contentType.ToString().Contains(HikeConstants.CONTACT) || contentType.ToString().Contains(HikeConstants.AUDIO))
                         {
                             this.MetaDataString = fileObject.ToString(Newtonsoft.Json.Formatting.None);
                         }

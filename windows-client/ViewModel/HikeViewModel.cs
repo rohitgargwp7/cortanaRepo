@@ -11,6 +11,7 @@ using windows_client.View;
 using Microsoft.Phone.Controls;
 using windows_client.Controls.StatusUpdate;
 using System.Diagnostics;
+using System.Windows.Controls;
 using windows_client.Languages;
 using windows_client.utils;
 
@@ -23,6 +24,8 @@ namespace windows_client.ViewModel
         public static string NUMBER_OF_CONVERSATIONS = "NoConvs";
 
         public static string NUMBER_OF_FAVS = "NoFavs";
+
+        public static StickerHelper stickerHelper;
 
         private Dictionary<string, ConversationListObject> _pendingReq = null;
 
@@ -175,6 +178,8 @@ namespace windows_client.ViewModel
                 MiscDBUtil.LoadFavouritesFromIndividualFiles(_favList, _convMap);
             }
             RegisterListeners();
+
+            LoadToolTips();
         }
 
         public HikeViewModel()
@@ -192,6 +197,8 @@ namespace windows_client.ViewModel
                 MiscDBUtil.LoadFavouritesFromIndividualFiles(_favList, _convMap);
             }
             RegisterListeners();
+
+            LoadToolTips();
         }
 
         public bool Isfavourite(string mContactNumber)
@@ -359,6 +366,156 @@ namespace windows_client.ViewModel
             get
             {
                 return _contactsCache;
+            }
+        }
+
+        public List<HikeToolTip> TipList = new List<HikeToolTip>();
+
+        /// <summary>
+        /// Load In App Hardcoded Tooltips
+        /// </summary>
+        void LoadToolTips()
+        {
+            byte marked, currentlyShowing;
+            App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked); //initilaized in upgrade logic
+            App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentlyShowing); //initilaized in upgrade logic
+
+            bool isShownVal = (marked & 0x01) == 1;
+            bool isCurrentShown = (currentlyShowing & 0x01) == 1;
+            TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(0, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
+            isShownVal = (marked & 0x02) == 1;
+            isCurrentShown = (currentlyShowing & 0x02) == 1;
+            
+            //ToDo:Rohit
+            //Manage tip alignment according to sticker pallet, the tip should be shown pointing over the sticker icon in the emoticon pallet when openned
+            TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 60) });
+            isShownVal = (marked & 0x04) == 1;
+            isCurrentShown = (currentlyShowing & 0x04) == 1;
+            TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
+            isShownVal = (marked & 0x08) == 1;
+            isCurrentShown = (currentlyShowing & 0x08) == 1;
+            TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 30, 0), FullTipMargin = new Thickness(10, 0, 10, 55) });
+            isShownVal = (marked & 0x10) == 1;
+            isCurrentShown = (currentlyShowing & 0x10) == 1;
+            TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = true, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 30, 10, 0) });
+        }
+
+        /// <summary>
+        /// Inserts the tooltip in grid element
+        /// </summary>
+        /// <param name="element">The grid element in which you want to insert the tooltip</param>
+        /// <param name="index">index of the tooltip you want to insert</param>
+        public void DisplayTip(Panel element, int index)
+        {
+            HikeToolTip tip = TipList[index];
+            tip.IsShown = true;
+            tip.IsCurrentlyShown = true;
+
+            byte marked;
+            App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
+            marked |= (byte)(1 << index);
+            App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
+
+            if (element != null)
+            {
+                InAppTipUC inAppTipUC = new Controls.InAppTipUC() { Name = "tip" + index };
+                Canvas.SetTop(inAppTipUC, 0);
+                Canvas.SetLeft(inAppTipUC, 0);
+                Canvas.SetZIndex(inAppTipUC, 3);
+                inAppTipUC.Visibility = Visibility.Visible;
+
+                if (index == 0 || index == 1 || index == 2)
+                    inAppTipUC.SetValue(Grid.RowSpanProperty, 3);
+                else if (index == 3)
+                    inAppTipUC.SetValue(Grid.RowSpanProperty, 2);
+
+                if (tip.IsTop)
+                {
+                    inAppTipUC.VerticalAlignment = VerticalAlignment.Top;
+                    inAppTipUC.TopPathMargin = tip.TipMargin;
+                    inAppTipUC.TopPathVisibility = Visibility.Visible;
+                    inAppTipUC.BottomPathVisibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    inAppTipUC.VerticalAlignment = VerticalAlignment.Bottom;
+                    inAppTipUC.BottomPathMargin = tip.TipMargin;
+                    inAppTipUC.TopPathVisibility = Visibility.Collapsed;
+                    inAppTipUC.BottomPathVisibility = Visibility.Visible;
+                }
+
+                inAppTipUC.Tip = tip.Tip;
+                inAppTipUC.Margin = tip.FullTipMargin;
+                inAppTipUC.TipIndex = index;
+
+                inAppTipUC.Dismissed += inAppTipUC_Dismissed;
+
+                element.Children.Add(inAppTipUC);
+            }
+        }
+
+        /// <summary>
+        /// Hide the tool tip
+        /// </summary>
+        /// <param name="element">remove the tooltip from this parent</param>
+        /// <param name="index">tool tip index to be removed</param>
+        public void HideToolTip(Panel element, int index)
+        {
+            if (element != null)
+            {
+                InAppTipUC tip = element.FindName("tip" + index) as InAppTipUC;
+
+                if (tip != null)
+                {
+                    element.Children.Remove(tip);
+                    tip.Visibility = Visibility.Collapsed;
+
+                    HikeToolTip toolTip = TipList[index];
+                    toolTip.IsCurrentlyShown = false;
+
+                    byte currentShown;
+                    App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
+                    currentShown |= (byte)(1 << index);
+                    App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
+                }
+            }
+            else
+            {
+                HikeToolTip toolTip = TipList[index];
+                toolTip.IsCurrentlyShown = false;
+
+                byte currentShown;
+                App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
+                currentShown |= (byte)(1 << index);
+                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
+            }
+        }
+
+        /// <summary>
+        /// Invoked when the user dismisses a tooltip
+        /// </summary>
+        /// <param name="sender">Is of type InAppTipUC</param>
+        /// <param name="e"></param>
+        void inAppTipUC_Dismissed(object sender, EventArgs e)
+        {
+            if (sender == null)
+                return;
+
+            InAppTipUC tip = sender as InAppTipUC;
+
+            if (tip != null)
+            {
+                tip.Visibility = Visibility.Collapsed;
+
+                HikeToolTip toolTip = TipList[tip.TipIndex];
+                toolTip.IsCurrentlyShown = false;
+
+                byte currentShown;
+                App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
+                currentShown |= (byte)(1 << tip.TipIndex);
+                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
+
+                toolTip.TriggerUIUpdateOnDismissed();
             }
         }
 

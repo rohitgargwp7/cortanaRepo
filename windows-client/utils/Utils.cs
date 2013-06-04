@@ -7,6 +7,7 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using System.IO;
+using System.Linq;
 using Microsoft.Phone.Info;
 using Microsoft.Phone.Net.NetworkInformation;
 using System.Security.Cryptography;
@@ -15,7 +16,6 @@ namespace windows_client.utils
 {
     public class Utils
     {
-
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
         public static void savedAccountCredentials(JObject obj)
@@ -38,6 +38,14 @@ namespace windows_client.utils
             if (msisdn == HikeConstants.MY_PROFILE_PIC)
                 return false;
             return !msisdn.StartsWith("+");
+        }
+
+        public static string ConvertUrlToFileName(string url)
+        {
+            var restrictedCharaters = new[] { '/', '\\', '*', '"', '|', '<', '>', ':', '?', '.' };
+            url = restrictedCharaters.Aggregate(url, (current, restrictedCharater) => current.Replace(restrictedCharater, '_'));
+
+            return url;
         }
 
         public static int CompareByName<T>(T a, T b)
@@ -437,6 +445,48 @@ namespace windows_client.utils
                 firstName = completeName.Split(' ')[0];
             }
             return firstName;
+        }
+
+        public enum Resolutions { Default, WVGA, WXGA, HD720p };
+
+        private static Resolutions currentResolution = Resolutions.Default;
+        private static bool IsWvga
+        {
+            get
+            {
+                return App.Current.Host.Content.ScaleFactor == 100;
+            }
+        }
+
+        private static bool IsWxga
+        {
+            get
+            {
+                return App.Current.Host.Content.ScaleFactor == 160;
+            }
+        }
+
+        private static bool Is720p
+        {
+            get
+            {
+                return App.Current.Host.Content.ScaleFactor == 150;
+            }
+        }
+
+        public static Resolutions CurrentResolution
+        {
+            get
+            {
+                if (currentResolution == Resolutions.Default)
+                {
+                    if (IsWvga) currentResolution = Resolutions.WVGA;
+                    else if (IsWxga) currentResolution = Resolutions.WXGA;
+                    else if (Is720p) currentResolution = Resolutions.HD720p;
+                    currentResolution = Resolutions.WVGA;
+                }
+                return currentResolution;
+            }
         }
     }
 }

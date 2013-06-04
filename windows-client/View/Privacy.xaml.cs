@@ -40,6 +40,7 @@ namespace windows_client.View
                 this.unlinkAccount.Source = new BitmapImage(new Uri("images/unlink_account_black.png", UriKind.Relative));
                 this.deleteAccount.Source = new BitmapImage(new Uri("images/delete_account_black.png", UriKind.Relative));
             }
+
             RegisterListeners();
         }
 
