@@ -217,7 +217,7 @@ namespace windows_client.View
 
             // Event handler for getting audio data when the buffer is full
             _microphone.BufferReady += new EventHandler<EventArgs>(microphone_BufferReady);
-            
+
             _progressTimer = new DispatcherTimer();
             _progressTimer.Interval = TimeSpan.FromSeconds(1);
             _progressTimer.Tick += new EventHandler(showWalkieTalkieProgress);
@@ -255,7 +255,7 @@ namespace windows_client.View
                         else
                             currentAudioMessage.PlayProgressBarValue = pos * 100 / dur;
 
-                        string durationText = String.IsNullOrEmpty(currentAudioMessage.DurationText)?String.Empty:currentAudioMessage.DurationText;
+                        string durationText = String.IsNullOrEmpty(currentAudioMessage.DurationText) ? String.Empty : currentAudioMessage.DurationText;
 
                         currentAudioMessage.PlayTimeText = pos == dur || pos == 0 ? durationText : mediaElement.NaturalDuration.TimeSpan.Subtract(mediaElement.Position).ToString("mm\\:ss");
                     }
@@ -277,9 +277,9 @@ namespace windows_client.View
                         _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
                     else
                     {
-                        //long timedifference,actualTimeStamp;
-                        //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
-                        //    actualTimeStamp = e.TimeStamp - timedifference;
+                        long timedifference, actualTimeStamp;
+                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                            actualTimeStamp = e.TimeStamp - timedifference;
                         _lastUpdatedLastSeenTimeStamp = e.TimeStamp;
                     }
 
@@ -303,9 +303,9 @@ namespace windows_client.View
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, TimeUtils.getCurrentTimeStamp());
                     else
                     {
-                        //long timedifference,actualTimeStamp;
-                        //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
-                        //    actualTimeStamp = e.TimeStamp - timedifference;
+                        long timedifference, actualTimeStamp;
+                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                            actualTimeStamp = e.TimeStamp - timedifference;
 
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, e.TimeStamp);
                     }
@@ -322,7 +322,7 @@ namespace windows_client.View
                     {
                         //update ui if prev last seen is greater than current last seen, db updated everytime in backend
                         lastSeenTxt.Text = lastSeenStatus;
-                        onlineStatus.Visibility =  Visibility.Collapsed;
+                        onlineStatus.Visibility = Visibility.Collapsed;
                         userName.FontSize = 36;
                         lastSeenPannel.Visibility = Visibility.Visible;
 
@@ -795,7 +795,7 @@ namespace windows_client.View
             }
 
             #endregion
-            
+
             #region OBJECT FROM SELECT USER PAGE
 
             else if (this.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
@@ -889,9 +889,9 @@ namespace windows_client.View
 
             byte lastSeenSettingsValue;
             App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out lastSeenSettingsValue);
-                    
+
             if (lastSeenSettingsValue > 0)
-            { 
+            {
                 var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
                 if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat)
                 {
@@ -912,7 +912,7 @@ namespace windows_client.View
             }
 
             #endregion
-            
+
             // if hike bot msg disable appbar, textbox etc
             if (Utils.IsHikeBotMsg(mContactNumber))
             {
@@ -1425,7 +1425,7 @@ namespace windows_client.View
                     else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
                     {
                         convMessage.Message = AppResources.Audio_Txt;
-                    convMessage.MetaDataString = forwardedMsg.MetaDataString;
+                        convMessage.MetaDataString = forwardedMsg.MetaDataString;
                     }
                     else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
                         convMessage.Message = AppResources.Video_Txt;
@@ -1851,7 +1851,7 @@ namespace windows_client.View
                     {
                         if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PLAYER_TIMER))
                             PhoneApplicationService.Current.State.Remove(HikeConstants.PLAYER_TIMER);
-                        
+
                         if (mediaElement.Source.OriginalString.Contains(fileLocation)) //handle already playing audio
                         {
                             if (currentAudioMessage != null) // case pause/play the alresdy playing/paused file
@@ -1922,7 +1922,7 @@ namespace windows_client.View
                     }
                     else //restart paused audio - from lock or suspended state
                     {
-                        if (currentAudioMessage != null && currentAudioMessage==convMessage)
+                        if (currentAudioMessage != null && currentAudioMessage == convMessage)
                         {
                             if (LayoutRoot.FindName("myMediaElement") == null)
                                 LayoutRoot.Children.Add(mediaElement);
@@ -1961,10 +1961,10 @@ namespace windows_client.View
                                 currentAudioMessage.PlayTimeText = currentAudioMessage.DurationText;
                                 currentAudioMessage.PlayProgressBarValue = 0;
                                 currentAudioMessage = null;
-                            } 
-                            
+                            }
+
                             currentAudioMessage = convMessage;
-                            
+
                             if (LayoutRoot.FindName("myMediaElement") == null)
                                 LayoutRoot.Children.Add(mediaElement);
 
@@ -2001,7 +2001,7 @@ namespace windows_client.View
                 {
                     if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PLAYER_TIMER))
                         PhoneApplicationService.Current.State.Remove(HikeConstants.PLAYER_TIMER);
-                    
+
                     mediaElement = new MediaElement() { Name = "myMediaElement" };
                     mediaElement.MediaEnded -= mediaPlayback_MediaEnded;
                     mediaElement.MediaEnded += mediaPlayback_MediaEnded;
@@ -2009,7 +2009,7 @@ namespace windows_client.View
                     mediaElement.MediaFailed += mediaPlayback_MediaFailed;
                     mediaElement.CurrentStateChanged -= mediaElement_CurrentStateChanged;
                     mediaElement.CurrentStateChanged += mediaElement_CurrentStateChanged;
-                    
+
                     currentAudioMessage = convMessage;
                     LayoutRoot.Children.Add(mediaElement);
 
@@ -2433,7 +2433,7 @@ namespace windows_client.View
                 #region STATUS UPDATE
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
-                    
+
                     JObject jsonObj = JObject.Parse(convMessage.MetaDataString);
                     JObject data = (JObject)jsonObj[HikeConstants.DATA];
                     JToken val;
@@ -2961,13 +2961,13 @@ namespace windows_client.View
 
         private void emoticonButton_Click(object sender, EventArgs e)
         {
-            App.ViewModel.HideToolTip(LayoutRoot,0);
+            App.ViewModel.HideToolTip(LayoutRoot, 0);
 
             if (emoticonPanel.Visibility == Visibility.Collapsed)
             {
                 if (!App.ViewModel.TipList[1].IsShown || App.ViewModel.TipList[1].IsCurrentlyShown)
                     App.ViewModel.DisplayTip(LayoutRoot, 1);
-             
+
                 emoticonPanel.Visibility = Visibility.Visible;
             }
             else
@@ -3700,7 +3700,7 @@ namespace windows_client.View
                         });
                     }
                 }
-                
+
                 object[] vals = (object[])obj;
                 string typingNotSenderOrSendee = "";
                 if (isGroupChat)
@@ -3750,7 +3750,7 @@ namespace windows_client.View
             {
                 byte lastSeenSettingsValue;
                 App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out lastSeenSettingsValue);
-                
+
                 if (lastSeenSettingsValue > 0)
                 {
                     object[] vals = (object[])obj;
@@ -4335,7 +4335,7 @@ namespace windows_client.View
             }
 
             //handled textbox hight to accomodate other data on screen in diff orientations
-            if (e.Orientation == PageOrientation.Portrait ||e.Orientation == PageOrientation.PortraitUp|| e.Orientation == PageOrientation.PortraitDown)
+            if (e.Orientation == PageOrientation.Portrait || e.Orientation == PageOrientation.PortraitUp || e.Orientation == PageOrientation.PortraitDown)
             {
                 svMessage.MaxHeight = 150;
             }
