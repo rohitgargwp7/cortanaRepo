@@ -1671,4 +1671,7 @@ Get hike: http://get.hike.in</value>
     <value>Release to Send</value>
     <comment>Release to send recorded data</comment>
   </data>
+  <data name="BlockList_Text" xml:space="preserve">
+    <value>BLOCK LIST</value>
+  </data>
 </root>
