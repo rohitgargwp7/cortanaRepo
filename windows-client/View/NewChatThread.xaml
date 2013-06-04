@@ -350,19 +350,26 @@
                     <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}" />
                     <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
                     <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" Margin="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" MinWidth="43"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Border Margin="0" Background="Black" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
-                        <Image Stretch="None" x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <Grid Grid.Column="1">
-                            <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
-                                <Image Margin="10,0,0,0" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="/View/images/Mic_icon_grey_small.png"/>
-                                <TextBlock Margin="10,0,0,0" Text="{Binding PlayTimeText}" Foreground="White" FontSize="24" VerticalAlignment="Center" TextAlignment="Left"/>
-                            </StackPanel>
-                            <ProgressBar Style="{StaticResource PlayProgressBarStyle}" x:Name="playProgress" Value="{Binding PlayProgressBarValue}" Width="180" Height="45" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100"/>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" MinWidth="43"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Margin="0" Background="Black" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
+                            <Image Stretch="None" x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Grid Grid.Column="1">
+                                <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
+                                    <Image Margin="10,0,0,0" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="/View/images/Mic_icon_grey_small.png"/>
+                                    <TextBlock Margin="10,0,0,0" Text="{Binding PlayTimeText}" Foreground="White" FontSize="24" VerticalAlignment="Center" TextAlignment="Left"/>
+                                </StackPanel>
+                                <ProgressBar Style="{StaticResource PlayProgressBarStyle}" x:Name="playProgress" Value="{Binding PlayProgressBarValue}" Width="180" Height="45" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100"/>
+                            </Grid>
                         </Grid>
+                        <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                     </Grid>
                     <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                 </Grid>
@@ -524,8 +531,14 @@
                     <Image Grid.Column="1" Source="images\mute_icon_main.png" Margin="0,0,24,0" VerticalAlignment="Center" HorizontalAlignment="Right" Height="26" Width="25"/>
                 </Grid>
                 <StackPanel Name="userHeader" Orientation="Horizontal" Margin="24,0,20,10">
-                    <Image Name="userImage" Height="50" ></Image>
-                    <TextBlock x:Name="userName" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="50" Margin="18,-4,0,0" Width="Auto" />
+                    <Image Name="userImage" Height="50" />
+                    <StackPanel Margin="18,-4,0,0">
+                        <TextBlock x:Name="userName" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="50"/>
+                        <StackPanel Margin="0,-5,0,0" Orientation="Horizontal" VerticalAlignment="Top" x:Name="lastSeenPannel" Visibility="Collapsed">
+                            <Image x:Name="onlineStatus" MaxHeight="15" MaxWidth="15" Margin="4,0,5,0" Visibility="Collapsed"/>
+                            <TextBlock x:Name="lastSeenTxt" Text="" FontSize="18"/>
+                        </StackPanel>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
         </StackPanel>
@@ -541,7 +554,7 @@
             </StackPanel>
             <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <Grid Background="#eeeeec">
-                <ScrollViewer Name="svMessage" MaxHeight="500" >
+                <ScrollViewer Name="svMessage" MaxHeight="150" >
                     <Grid Background="#eeeeec">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -552,14 +565,14 @@
                         <Image Grid.Column="1" Source="/View/images/Mic_icon_black_small.png" Tap="Record_ActionIconTapped" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="None" Margin="0,0,15,15"/>
                     </Grid>
                 </ScrollViewer>
-                <Grid x:Name="recordGrid" Visibility="Collapsed" HorizontalAlignment="Stretch" Margin="0,-4,0,0">
-                    <Grid x:Name="recordButtonGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ManipulationStarted="Hold_To_Record" ManipulationCompleted="recordButton_ManipulationCompleted">
+                <Grid x:Name="recordGrid" HorizontalAlignment="Stretch" Visibility="Collapsed" Background="#eeeeec" Margin="0,-4,0,0">
+                    <Grid Margin="5" x:Name="recordButtonGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ManipulationStarted="Hold_To_Record" ManipulationCompleted="recordButton_ManipulationCompleted">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" >
                             <Image Stretch="None" Margin="10,0" x:Name="walkieTalkieImage" Source="/View/images/walkie_talkie_Grey_small.png" VerticalAlignment="Center"/>
                             <TextBlock x:Name="recordButton" Foreground="#686868" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24" Text=""/>
                         </StackPanel>
                     </Grid>
-                    <Grid Width="72" Height="72" Canvas.ZIndex="2" x:Name="cancelRecord" Tap="cancelRecord_Tap" Background="#3F3F3F" HorizontalAlignment="Right">
+                    <Grid Width="62" Margin="5" Height="62" Canvas.ZIndex="2" x:Name="cancelRecord" Tap="cancelRecord_Tap" Background="#3F3F3F" HorizontalAlignment="Right">
                         <Image Source="/View/images/remove_wt_icon.png" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Grid>
                 </Grid>
@@ -568,7 +581,6 @@
                 <TextBlock Name="txtMsgCount"></TextBlock>
                 <TextBlock Name="txtMsgCharCount"></TextBlock>
             </StackPanel>
-
 
             <StackPanel Margin="0,0,0,0" Visibility="Collapsed"  x:Name="emoticonPanel" Height="350" LostFocus="emoticonPanel_LostFocus" Background="#323232">
                 <Grid Name="gridEmoticons"  Margin="12">
@@ -855,19 +867,26 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Border Background="Black" Margin="-25" Opacity="0.75" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3" />
-            <Image x:Name="micImage" Source="/View/images/walkie_talkie.png" Stretch="None" HorizontalAlignment="Center"/>
+            <Border  x:Name="WalkieTalkieGridOverlayLayer" Background="{StaticResource PhoneForegroundBrush}" Margin="-25" Opacity="0.75" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3" />
+            <Image x:Name="walkieTalkie" Stretch="None" HorizontalAlignment="Center"/>
             <StackPanel Grid.Row="1" Margin="0,10" x:Name="timeBar" Orientation="Horizontal" Opacity="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Ellipse Height="15" Width="15" Fill="Red" Margin="0,0,5,0"/>
-                <TextBlock x:Name="runningTime" FontFamily="Segoe WP SemiLight" FontSize="24" Text="00:00" Foreground="White" ></TextBlock>
-                <TextBlock x:Name="maxPlayingTime" Text=" / 2:00" FontFamily="Segoe WP SemiLight" Foreground="White" FontSize="24"/>
+                <TextBlock x:Name="runningTime" FontFamily="Segoe WP SemiLight" FontSize="24" Text="00:00" Foreground="{StaticResource PhoneBackgroundBrush}" ></TextBlock>
+                <TextBlock x:Name="maxPlayingTime" Text=" / 2:00" FontFamily="Segoe WP SemiLight" Foreground="{StaticResource PhoneBackgroundBrush}" FontSize="24"/>
             </StackPanel>
-            <Border Grid.Row="2" Margin="-10,5,-10,-10" Background="Black" MouseLeave="deleteRecImage_MouseLeave" x:Name="deleteBorder" MouseEnter="deleteRecImage_MouseEnter" Opacity="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2" >
-                <StackPanel Margin="35" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Image x:Name="deleteRecImage" Margin="0,0,10,0" Source="/View/images/delete_bin.png" Grid.Column="0"  Height="35" Stretch="Uniform" HorizontalAlignment="Center"/>
-                    <TextBlock TextAlignment="Center" Grid.Column="1" FontSize="24" Foreground="#686868" Text="Drag here to delete"/>
+            <Border Grid.Row="2" Margin="-10,5,-10,-10" Background="Black" MouseLeave="deleteRecImage_MouseLeave" x:Name="deleteBorder" BorderThickness="2" BorderBrush="Black" MouseEnter="deleteRecImage_MouseEnter" Opacity="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+                <StackPanel Canvas.ZIndex="3" Margin="35" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image x:Name="deleteRecImage" Margin="0,0,10,0" Source="/View/images/deleted_grey_icon.png" Grid.Column="0"  Height="35" Stretch="Uniform" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="deleteRecText" TextAlignment="Center" Grid.Column="1" FontSize="24" Foreground="#686868" Text="{Binding Path= LocalizedResources.Drag_Here_To_Delete, Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
             </Border>
+        </Grid>
+
+        <Grid Canvas.ZIndex="1" x:Name="WalkieTalkieDeleteGrid" IsHitTestVisible="False" Background="#696969" Visibility="Collapsed" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <StackPanel Canvas.ZIndex="3" Margin="35" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image x:Name="deleteRecImageSuc" Margin="0,0,10,0" Grid.Column="0"  Height="35" Stretch="Uniform" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="deleteRecTextSuc" Foreground="White" TextAlignment="Center" Grid.Column="1" FontSize="24"  Text="{Binding Path= LocalizedResources.Message_Cancelled, Source={StaticResource LocalizedStrings}}"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>
