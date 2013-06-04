@@ -438,5 +438,47 @@ namespace windows_client.utils
             }
             return firstName;
         }
+
+        public enum Resolutions { Default, WVGA, WXGA, HD720p };
+
+        private static Resolutions currentResolution = Resolutions.Default;
+        private static bool IsWvga
+        {
+            get
+            {
+                return App.Current.Host.Content.ScaleFactor == 100;
+            }
+        }
+
+        private static bool IsWxga
+        {
+            get
+            {
+                return App.Current.Host.Content.ScaleFactor == 160;
+            }
+        }
+
+        private static bool Is720p
+        {
+            get
+            {
+                return App.Current.Host.Content.ScaleFactor == 150;
+            }
+        }
+
+        public static Resolutions CurrentResolution
+        {
+            get
+            {
+                if (currentResolution == Resolutions.Default)
+                {
+                    if (IsWvga) currentResolution = Resolutions.WVGA;
+                    else if (IsWxga) currentResolution = Resolutions.WXGA;
+                    else if (Is720p) currentResolution = Resolutions.HD720p;
+                    currentResolution = Resolutions.WVGA;
+                }
+                return currentResolution;
+            }
+        }
     }
 }

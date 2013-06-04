@@ -80,7 +80,6 @@ namespace windows_client
         public static bool IS_MARKETPLACE = false; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
-        public static StickerHelper stickerHelper;
         private static bool _isTombstoneLaunch = false;
         private static bool _isAppLaunched = false;
         public static string MSISDN;
@@ -761,6 +760,10 @@ namespace windows_client
             #region Post App Locale
             PostLocaleInfo();
             #endregion
+            if (isNewInstall || Utils.compareVersion("2.5.0.0", _currentVersion) == 1)
+            {
+                StickerHelper.CreateDefaultCategories();
+            }
         }
 
         public static void createDatabaseAsync()

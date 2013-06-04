@@ -326,9 +326,9 @@ namespace windows_client.utils
             req.ContentType = "application/json";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.GET_STICKERS, stickerJson, finalCallBackFunc, obj });
         }
-        public static void GetSingleSticker(Sticker sticker, parametrisedPostResponseFunction finalCallBackFunc)
+        public static void GetSingleSticker(Sticker sticker,int resId, parametrisedPostResponseFunction finalCallBackFunc)
         {
-            string requestUrl = string.Format("{0}/stickers?catId={1}&stId={2}", BASE, sticker.Category, sticker.Id);
+            string requestUrl = string.Format("{0}/stickers?catId={1}&stId={2}&resId={3}", BASE, sticker.Category, sticker.Id,resId);
             HttpWebRequest req = HttpWebRequest.Create(new Uri(requestUrl)) as HttpWebRequest;
             addToken(req);
             req.Method = "GET";

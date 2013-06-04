@@ -226,7 +226,8 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Name="dtRecievedSticker">
-            <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}"  HorizontalAlignment="Right">
+
+            <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}"  HorizontalAlignment="Left">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
@@ -238,8 +239,13 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Image Grid.Row="0" Grid.Column="1"  Margin="12,0,12,0" MaxHeight="200" MaxWidth="200" HorizontalAlignment="Left" Source="{Binding MessageImage}"/>
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Width="250"></TextBlock>
+                <Image HorizontalAlignment="Right" Source="{Binding MessageImage}" Grid.Row="0" Grid.Column="0" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
             </Grid>
         </DataTemplate>
         <DataTemplate x:Name="dtSentBubbleText" >
@@ -477,9 +483,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Width="250"></TextBlock>
                 <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Width="30" Grid.Column="0" HorizontalAlignment="Right" Grid.RowSpan="2"></Image>
-                <Grid Grid.Row="0" Grid.Column="1" MaxHeight="200" MaxWidth="200" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Image HorizontalAlignment="Right" Source="{Binding MessageImage}" />
-                </Grid>
+                <Image HorizontalAlignment="Right" Source="{Binding MessageImage}" Grid.Row="0" Grid.Column="1" />
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
             </Grid>
         </DataTemplate>
@@ -693,32 +697,13 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
+                    <controls:Pivot Name="pivotStickers" Grid.Row="0" SelectionChanged="PivotStickers_SelectionChanged" Height="230">
+                    </controls:Pivot>
 
-
-                    <phone:LongListSelector  Grid.Row="0" x:Name="llsStickerCategory" Height="230" Margin="0,10,0,0" Tap="Stickers_Tap" LayoutMode="Grid" GridCellSize="145,150" ItemRealized="llsStickersCategory_OnItemsRealised">
-                        <phone:LongListSelector.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" />
-                                        </toolkit:ContextMenu>
-                                    </toolkit:ContextMenuService.ContextMenu>
-                                    <Image Margin="8,6,8,6" MaxHeight="120" MaxWidth="120" Source="{Binding StickerImage}">
-                                    </Image>
-                                </Grid>
-                            </DataTemplate>
-                        </phone:LongListSelector.ItemTemplate>
-                    </phone:LongListSelector>
-                    <StackPanel Visibility="Collapsed" Grid.Row="0" x:Name="stLoading" Height="230" Margin="0 10 0 0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
-                        <TextBlock Text="loading" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 100 0 0"/>
-                        <ProgressBar Height="5"  VerticalContentAlignment="Bottom" IsIndeterminate="True" IsEnabled="True" Foreground="White" HorizontalAlignment="Stretch" VerticalAlignment="Center"></ProgressBar>
-                    </StackPanel>
-                    <StackPanel Visibility="Collapsed" Grid.Row="0" x:Name="stNoStickers" Height="230" Margin="0 10 0 0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
-                        <TextBlock Text="No stickers in this category" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 100 0 0"/>
-                    </StackPanel>
-                    <Grid Height="52" Grid.Row="1" Margin="5 15 5 5">
+                    <Grid Height="52" Grid.Row="1" Margin="5 15 5 5" Name="gridStickerPivot">
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto" ></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -732,20 +717,24 @@
                         <StackPanel Grid.Column="0" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="StickersBack_Tap">
                             <Image Source="images\back.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </StackPanel>
-                        <Rectangle Width="15" Grid.Column="1" />
+                        <Rectangle  Name="rectCategory1" Width="15" Grid.Column="1" />
                         <StackPanel Name="stCategory1" Grid.Column="2" Background="#1ba1e2"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category1_Tap" >
                             <Image Source="images\stickrcat1.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"  VerticalAlignment="Center"/>
                         </StackPanel>
-                        <Rectangle Width="2" Grid.Column="3" />
-                        <StackPanel Name="stCategory2"  Grid.Column="4" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category2_Tap">
+                        <Rectangle Name="rectCategory2" Width="2" Grid.Column="3"  Visibility="Collapsed" />
+                        <StackPanel Name="stCategory2"  Grid.Column="4" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category2_Tap"  Visibility="Collapsed" >
                             <Image Source="images\stickrcat1.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
                         </StackPanel>
-                        <Rectangle Width="2" Grid.Column="5" />
-                        <StackPanel Name="stCategory3"  Grid.Column="6" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="Category3_Tap">
+                        <Rectangle Name="rectCategory3" Width="2" Grid.Column="5"  Visibility="Collapsed"  />
+                        <StackPanel Name="stCategory3"  Grid.Column="6" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="Category3_Tap"  Visibility="Collapsed" >
                             <Image Source="images\stickrcat1.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
                         </StackPanel>
-                        <Rectangle Width="2" Grid.Column="7" />
-                        <StackPanel  Name="stCategory4" Grid.Column="8" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="Category4_Tap">
+                        <Rectangle Name="rectCategory4" Width="2" Grid.Column="7"  Visibility="Collapsed"  />
+                        <StackPanel  Name="stCategory4" Grid.Column="8" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="Category4_Tap"  Visibility="Collapsed" >
+                            <Image Source="images\stickrcat1.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <Rectangle Name="rectCategory5" Width="2" Grid.Column="9"  Visibility="Collapsed"  />
+                        <StackPanel  Name="stCategory5" Grid.Column="10" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category5_Tap"  Visibility="Collapsed" >
                             <Image Source="images\stickrcat1.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Grid>
@@ -814,14 +803,38 @@
                                         HorizontalContentAlignment="Center" 
                                         IsEnabled="False" IsTabStop="True" Opacity="0"/>
 
-        <Rectangle x:Name="overlayRectangle" Grid.Row="0" Grid.RowSpan="3" Fill="#000000" Visibility="Collapsed"></Rectangle>
+        <Rectangle x:Name="overlayRectangle" Grid.Row="0" Grid.RowSpan="3" Fill="#000000" Visibility="Collapsed" Opacity="0.3" Tap="overlayRectangle_Tap_1" ></Rectangle>
         <StackPanel x:Name="OverlayMessagePanel" Visibility="Collapsed" Opacity="1" Grid.Row="1" Height="320" VerticalAlignment="Top" Margin="25,90,25,0" Orientation="Vertical">
             <Image Source="images\ic_block_active.png" Height="79" Width="78"></Image>
             <TextBlock Name="BlockTxtBlk" HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.SelectUser_BlockMsg_Txt, Source={StaticResource LocalizedStrings}}" Foreground="#FFFFFF" FontSize="30"></TextBlock>
             <Button Height="75" Name="btnBlockUnblock" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"></Button>
         </StackPanel>
-
-        <Rectangle x:Name="overlayForNudge" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="3" Fill="#ffffff" ></Rectangle>
+        <Grid x:Name="DownloadStickers" Visibility="Collapsed"  Grid.Row="1" Grid.RowSpan="2" VerticalAlignment="Center" Margin="0 0 0 50">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Height="400" Width="330" Background="#ffe05e">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Image Source="images/download.jpg" Grid.ColumnSpan="2" Height="300" Width="300" Margin="0 20 0 0"></Image>
+                <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                    <TextBlock Text="Expressions" HorizontalAlignment="Center" FontFamily="Segoe WP Semibold" Foreground="#ad6a00" FontSize="24"/>
+                    <TextBlock Text="Set of 16 stickers" HorizontalAlignment="Center" FontFamily="Segoe WP Semilight" Foreground="#ad6a00" FontSize="17" />
+                </StackPanel>
+                <Button Foreground="White" Grid.Row="2" Grid.Column="2" Content="Download" VerticalContentAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe WP Regular" FontSize="18" Height="70" BorderBrush="#3d3d3d" Background="#3d3d3d" Tap="downloadStickers_Tap"></Button>
+            </Grid>
+            <StackPanel Grid.Row="1" Height="30" Width="330" Background="#2c2c2c" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                <TextBlock FontFamily="Segoe WP SemiLight" Foreground="#878787" FontSize="16" Text="*Mobile internet charges may apply" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            </StackPanel>
+        </Grid>
+            <Rectangle x:Name="overlayForNudge" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="3" Fill="#ffffff" ></Rectangle>
         <Grid x:Name="nudgeTuteGrid" Visibility="Collapsed" Grid.Row="1" Width="375" VerticalAlignment="Center"  Background="Black">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
