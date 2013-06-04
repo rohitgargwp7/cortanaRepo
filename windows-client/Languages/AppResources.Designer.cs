@@ -214,6 +214,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to BLOCK LIST.
+        /// </summary>
+        public static string BlockList_Text {
+            get {
+                return ResourceManager.GetString("BlockList_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to user.
         /// </summary>
         public static string Blocklist_user_txt {
