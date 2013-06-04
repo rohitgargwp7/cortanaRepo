@@ -2863,11 +2863,13 @@ namespace windows_client.View
         {
             App.ViewModel.HideToolTip(LayoutRoot,0);
 
-            if (!App.ViewModel.TipList[1].IsShown || App.ViewModel.TipList[1].IsCurrentlyShown)
-                App.ViewModel.DisplayTip(LayoutRoot, 1);
-
             if (emoticonPanel.Visibility == Visibility.Collapsed)
+            {
+                if (!App.ViewModel.TipList[1].IsShown || App.ViewModel.TipList[1].IsCurrentlyShown)
+                    App.ViewModel.DisplayTip(LayoutRoot, 1);
+             
                 emoticonPanel.Visibility = Visibility.Visible;
+            }
             else
             {
                 App.ViewModel.HideToolTip(LayoutRoot, 1);
