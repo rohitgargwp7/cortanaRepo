@@ -1671,6 +1671,10 @@ Get hike: http://get.hike.in</value>
     <value>Release to Send</value>
     <comment>Release to send recorded data</comment>
   </data>
+  <data name="Conversations_Dismiss_Tip" xml:space="preserve">
+    <value>Dismiss</value>
+    <comment>Dismiss/Close the tip which is currently visible</comment>
+  </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
     <value>Show my last seen</value>
   </data>

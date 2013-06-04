@@ -439,6 +439,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dismiss.
+        /// </summary>
+        public static string Conversations_Dismiss_Tip {
+            get {
+                return ResourceManager.GetString("Conversations_Dismiss_Tip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to edit profile.
         /// </summary>
         public static string Conversations_EditProfile_Txt {
