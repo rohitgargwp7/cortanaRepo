@@ -448,6 +448,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dismiss.
+        /// </summary>
+        public static string Conversations_Dismiss_Tip {
+            get {
+                return ResourceManager.GetString("Conversations_Dismiss_Tip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to edit profile.
         /// </summary>
         public static string Conversations_EditProfile_Txt {
@@ -831,6 +840,15 @@ namespace windows_client.Languages {
         public static string DND_USER {
             get {
                 return ResourceManager.GetString("DND_USER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drag here to delete.
+        /// </summary>
+        public static string Drag_Here_To_Delete {
+            get {
+                return ResourceManager.GetString("Drag_Here_To_Delete", resourceCulture);
             }
         }
         
@@ -1869,6 +1887,51 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Now send stickers and emoticons!.
+        /// </summary>
+        public static string In_App_Tip_1 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap here to see stickers.
+        /// </summary>
+        public static string In_App_Tip_2 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can now send Voice messages to your friends with the new Walkie Talkie feature.
+        /// </summary>
+        public static string In_App_Tip_3 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap here to use some cute moods in your Status Update.
+        /// </summary>
+        public static string In_App_Tip_4 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is a status update from {0}.
+        /// </summary>
+        public static string In_App_Tip_5 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invite.
         /// </summary>
         public static string Invite_Small {
@@ -1941,6 +2004,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last seen.
+        /// </summary>
+        public static string Last_Seen {
+            get {
+                return ResourceManager.GetString("Last_Seen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Location.
         /// </summary>
         public static string Location_Txt {
@@ -1964,6 +2036,24 @@ namespace windows_client.Languages {
         public static string Me_Txt {
             get {
                 return ResourceManager.GetString("Me_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message cancelled.
+        /// </summary>
+        public static string Message_Cancelled {
+            get {
+                return ResourceManager.GetString("Message_Cancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message too short.
+        /// </summary>
+        public static string Message_Too_Short {
+            get {
+                return ResourceManager.GetString("Message_Too_Short", resourceCulture);
             }
         }
         
@@ -2409,6 +2499,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to online.
+        /// </summary>
+        public static string Online {
+            get {
+                return ResourceManager.GetString("Online", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to on SMS.
         /// </summary>
         public static string OnSms_Txt {
@@ -2495,6 +2594,15 @@ namespace windows_client.Languages {
         public static string PostStatus_WhatsUp_Hint_txt {
             get {
                 return ResourceManager.GetString("PostStatus_WhatsUp_Hint_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to preferences.
+        /// </summary>
+        public static string Preferences_Header_Txt {
+            get {
+                return ResourceManager.GetString("Preferences_Header_Txt", resourceCulture);
             }
         }
         
@@ -3174,6 +3282,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your account preferences.
+        /// </summary>
+        public static string Settings_PreferencesSettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_PreferencesSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use push notifications.
         /// </summary>
         public static string Settings_PushToggleSwitchHeader {
@@ -3255,6 +3372,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Preferences.
+        /// </summary>
+        public static string SettingsSubtitle_Preferences_Txt {
+            get {
+                return ResourceManager.GetString("SettingsSubtitle_Preferences_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SHARE.
         /// </summary>
         public static string Share_With_Txt {
@@ -3332,6 +3458,15 @@ namespace windows_client.Languages {
         public static string ShareLocation_Txt {
             get {
                 return ResourceManager.GetString("ShareLocation_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show my last seen.
+        /// </summary>
+        public static string Show_LastSeen_TimeStamp {
+            get {
+                return ResourceManager.GetString("Show_LastSeen_TimeStamp", resourceCulture);
             }
         }
         

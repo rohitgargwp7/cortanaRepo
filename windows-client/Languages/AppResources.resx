@@ -1674,4 +1674,53 @@ Get hike: http://get.hike.in</value>
   <data name="BlockList_Text" xml:space="preserve">
     <value>BLOCK LIST</value>
   </data>
+  <data name="Conversations_Dismiss_Tip" xml:space="preserve">
+    <value>Dismiss</value>
+    <comment>Dismiss/Close the tip which is currently visible</comment>
+  </data>
+  <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
+    <value>Show my last seen</value>
+  </data>
+  <data name="Last_Seen" xml:space="preserve">
+    <value>Last seen</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>online</value>
+  </data>
+  <data name="Preferences_Header_Txt" xml:space="preserve">
+    <value>preferences</value>
+  </data>
+  <data name="SettingsSubtitle_Preferences_Txt" xml:space="preserve">
+    <value>Preferences</value>
+  </data>
+  <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
+    <value>Your account preferences</value>
+  </data>
+  <data name="Drag_Here_To_Delete" xml:space="preserve">
+    <value>Drag here to delete</value>
+    <comment>Drag to a specified area to delete ongoing recording</comment>
+  </data>
+  <data name="Message_Cancelled" xml:space="preserve">
+    <value>Message cancelled</value>
+    <comment>Notify user that recording has been deleted</comment>
+  </data>
+  <data name="Message_Too_Short" xml:space="preserve">
+    <value>Message too short</value>
+    <comment>Message is too short to be sent</comment>
+  </data>
+  <data name="In_App_Tip_1" xml:space="preserve">
+    <value>Now send stickers and emoticons!</value>
+  </data>
+  <data name="In_App_Tip_2" xml:space="preserve">
+    <value>Tap here to see stickers</value>
+  </data>
+  <data name="In_App_Tip_3" xml:space="preserve">
+    <value>You can now send Voice messages to your friends with the new Walkie Talkie feature</value>
+  </data>
+  <data name="In_App_Tip_4" xml:space="preserve">
+    <value>Tap here to use some cute moods in your Status Update</value>
+  </data>
+  <data name="In_App_Tip_5" xml:space="preserve">
+    <value>This is a status update from {0}</value>
+  </data>
 </root>

@@ -14,6 +14,7 @@ using Microsoft.Phone.Tasks;
 using System.IO;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Windows.Data;
 using System.Windows.Documents;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.GamerServices;
@@ -60,13 +61,27 @@ namespace windows_client.View
             _totalUnreadStatuses = StatusMsgsTable.GetUnreadCount(HikeConstants.UNREAD_UPDATES);
             _refreshBarCount = StatusMsgsTable.GetUnreadCount(HikeConstants.REFRESH_BAR);
             _unreadFriendRequests = StatusMsgsTable.GetUnreadCount(HikeConstants.UNREAD_FRIEND_REQUESTS);
-            setNotificationCounter(RefreshBarCount + UnreadFriendRequests);
+            setNotificationCounter(RefreshBarCount + UnreadFriendRequests + ProTipCount);
             App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
             {
                 this.Loaded += ConversationsList_Loaded;
             }
+
+            ProTipHelper.Instance.ShowProTip -= Instance_ShowProTip;
+            ProTipHelper.Instance.ShowProTip += Instance_ShowProTip;
+
+            if (ProTipHelper.CurrentProTip != null)
+                showProTip();
+        }
+
+        void Instance_ShowProTip(object sender, EventArgs e)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    showProTip();
+                });
         }
 
         private void ConversationsList_Loaded(object sender, System.Windows.RoutedEventArgs e)
@@ -377,6 +392,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.UNBLOCK_USER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
             mPubSub.addListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
+            mPubSub.addListener(HikePubSub.PRO_TIPS_REC, this);
         }
 
         private void removeListeners()
@@ -400,6 +416,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.UNBLOCK_USER, this);
                 mPubSub.removeListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
                 mPubSub.removeListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
+                mPubSub.removeListener(HikePubSub.PRO_TIPS_REC, this);
             }
             catch (Exception ex)
             {
@@ -1273,6 +1290,42 @@ namespace windows_client.View
 
             }
             #endregion
+            #region PRO_TIPS
+            else if (HikePubSub.PRO_TIPS_REC == type)
+            {
+                var vals = obj as object[];
+
+                var id = (string)vals[0];
+                var header = (string)vals[1];
+                var text = (string)vals[2];
+                var imageUrl = (string)vals[3];
+                Int64 time = 0;
+                try
+                {
+                    time = (Int64)vals[4];
+                }
+                catch
+                {
+                }
+
+                if (time > 0)
+                {
+                    if (App.appSettings.Contains(App.DISMISS_TIME))
+                        App.appSettings[App.DISMISS_TIME] = time;
+                    else
+                        App.WriteToIsoStorageSettings(App.DISMISS_TIME, time);
+
+                    ProTipHelper.Instance.ChangeTimerTime(time);
+                }
+                else
+                {
+                    if (!App.appSettings.Contains(App.DISMISS_TIME))
+                        App.WriteToIsoStorageSettings(App.DISMISS_TIME, HikeConstants.DEFAULT_PRO_TIP_TIME);
+                }
+
+                ProTipHelper.Instance.AddProTip(id, header, text, imageUrl);
+            }
+            #endregion
             #region DELETE CONVERSATION
             else if (HikePubSub.DELETE_STATUS_AND_CONV == type)
             {
@@ -1920,10 +1973,37 @@ namespace windows_client.View
                         }
                         else
                         {
-                            setNotificationCounter(value + _unreadFriendRequests);
+                            setNotificationCounter(value + _unreadFriendRequests + _proTipCount);
                         }
                         _refreshBarCount = value;
                         StatusMsgsTable.SaveUnreadCounts(HikeConstants.REFRESH_BAR, value);
+                    });
+                }
+            }
+        }
+
+        private int _proTipCount = 0;
+        private int ProTipCount
+        {
+            get
+            {
+                return _proTipCount;
+            }
+            set
+            {
+                if (value != _proTipCount)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (launchPagePivot.SelectedIndex == 3)
+                        {
+                            setNotificationCounter(0);
+                        }
+                        else
+                        {
+                            setNotificationCounter(value + _unreadFriendRequests + _refreshBarCount);
+                        }
+                        _proTipCount = value;
                     });
                 }
             }
@@ -1968,7 +2048,7 @@ namespace windows_client.View
                 if (value != _unreadFriendRequests)
                 {
                     _unreadFriendRequests = value;
-                    setNotificationCounter(value + _refreshBarCount);
+                    setNotificationCounter(value + _refreshBarCount + _proTipCount);
                     StatusMsgsTable.SaveUnreadCounts(HikeConstants.UNREAD_FRIEND_REQUESTS, value);
                 }
             }
@@ -2203,8 +2283,60 @@ namespace windows_client.View
 
         #endregion
 
+        #region Pro Tips
+     
+        private void dismissProTip_Click(object sender, RoutedEventArgs e)
+        {
+            proTipImage.Visibility = Visibility.Collapsed;
+            proTipsGrid.Visibility = Visibility.Collapsed;
+            ProTipCount = 0;
 
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.DoWork += (ss, ee) =>
+                {
+                    if (App.appSettings.Contains(App.PRO_TIP))
+                    {
+                        ProTipHelper.Instance.RemoveCurrentProTip();
+                        App.appSettings.Remove(App.PRO_TIP);
+                    }
+                };
+            worker.RunWorkerAsync();
 
+            ProTipHelper.Instance.StartTimer();
+        }
+
+        void showProTip()
+        {
+            ProTip proTip;
+            App.appSettings.TryGetValue(App.PRO_TIP, out proTip);
+
+            if (proTip != null)
+            {
+                proTipTitleText.Text = proTip._header;
+                proTipContentText.Text = proTip._body;
+
+                if (!String.IsNullOrEmpty(proTip.ImageUrl))
+                {
+                    Binding myBinding = new Binding();
+                    myBinding.Source = proTip.TipImage;
+                    proTipImage.SetBinding(Image.SourceProperty, myBinding);
+                    proTipImage.Visibility = Visibility.Visible;
+                }
+
+                proTipsGrid.Visibility = Visibility.Visible;
+
+                ProTipCount = 1;
+            }
+        }
+
+        private void ProTipImage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY] = proTipImage.Source as BitmapImage;
+            Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
+            NavigationService.Navigate(nextPage);
+        }
+
+        #endregion
 
     }
 }

@@ -21,7 +21,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static readonly bool IS_PRODUCTION = true;
+        private static readonly bool IS_PRODUCTION = false;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -141,7 +141,8 @@ namespace windows_client.utils
         private enum RequestType
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
-            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS, GET_ONHIKE_DATE, POST_INFO_ON_APP_UPDATE
+            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS, GET_ONHIKE_DATE, POST_INFO_ON_APP_UPDATE,
+            LAST_SEEN_POST
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -318,7 +319,6 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_STATUS, statusJSON, finalCallbackFunction });
         }
 
-
         public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction, string socialNetowrk, bool isPost)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/connect/" + socialNetowrk)) as HttpWebRequest;
@@ -334,6 +334,19 @@ namespace windows_client.utils
                 req.Method = "DELETE";
                 req.BeginGetResponse(json_Callback, new object[] { req, RequestType.SOCIAL_DELETE, finalCallbackFunction });
             }
+        }
+
+        public static void LastSeenRequest(postResponseFunction finalCallbackFunction, string userNumber)
+        {
+            //HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/lastseen/" + userNumber)) as HttpWebRequest;
+            //addToken(req);
+            //req.Method = "GET";
+            //req.BeginGetRequestStream(GetRequestCallback, new object[] { req, finalCallbackFunction });
+
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/lastseen/" + userNumber)) as HttpWebRequest;
+            addToken(req);
+            req.Method = "GET";
+            req.BeginGetResponse(GetRequestCallback, new object[] { req, finalCallbackFunction });
         }
 
         private static void setParams_Callback(IAsyncResult result)
