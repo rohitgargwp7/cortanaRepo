@@ -102,6 +102,8 @@ namespace windows_client.utils
         BitmapImage walkieTalkieWhiteImage;
         BitmapImage walkieTalkieGreyImageBig;
         BitmapImage walkieTalkieWhiteImageBig;
+        BitmapImage closeButtonWhiteImage;
+        BitmapImage closeButtonBlackImage;
         BitmapImage dustbinGreyImage;
         BitmapImage dustbinWhiteImage;
         SolidColorBrush whiteTextForeGround;
@@ -1063,6 +1065,27 @@ namespace windows_client.utils
                         walkieTalkieWhiteImageBig = new BitmapImage(new Uri("/View/images/deleted_white_icon.png", UriKind.Relative));
 
                     return walkieTalkieWhiteImageBig;
+                }
+            }
+        }
+
+        public BitmapImage CloseButtonImage
+        {
+            get
+            {
+                if (Utils.isDarkTheme())
+                {
+                    if (closeButtonBlackImage == null)
+                        closeButtonBlackImage = new BitmapImage(new Uri("/View/images/close_black.png", UriKind.Relative));
+
+                    return closeButtonBlackImage;
+                }
+                else
+                {
+                    if (closeButtonWhiteImage == null)
+                        closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
+
+                    return closeButtonWhiteImage; 
                 }
             }
         }

@@ -66,7 +66,8 @@ namespace windows_client.View
         private long _lastUpdatedLastSeenTimeStamp = 0;
 
         bool afterMute = true;
-
+        bool isStatusUpdateToolTipShown = false;
+        ConvMessage toolTipMessage;
         private bool _isMute = false;
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
@@ -105,7 +106,6 @@ namespace windows_client.View
         private PhotoChooserTask photoChooserTask;
         private CameraCaptureTask cameraCaptureTask;
         private BingMapsTask bingMapsTask = null;
-        private bool isShowNudgeTute = true;
         private object statusObject = null;
 
         private DispatcherTimer _lastSeenTimer;
@@ -217,7 +217,7 @@ namespace windows_client.View
 
             // Event handler for getting audio data when the buffer is full
             _microphone.BufferReady += new EventHandler<EventArgs>(microphone_BufferReady);
-
+            
             _progressTimer = new DispatcherTimer();
             _progressTimer.Interval = TimeSpan.FromSeconds(1);
             _progressTimer.Tick += new EventHandler(showWalkieTalkieProgress);
@@ -704,6 +704,7 @@ namespace windows_client.View
             ShowDownloadOverlay(false);
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
+                App.ViewModel.HideToolTip(LayoutRoot, 1);
                 emoticonPanel.Visibility = Visibility.Collapsed;
                 e.Cancel = true;
                 return;
@@ -967,8 +968,34 @@ namespace windows_client.View
                 }
             }
 
-            if (isShowNudgeTute)
-                showNudgeTute();
+            int chatThreadCount;
+
+            var keyExist = App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out chatThreadCount); //initilaized in upgrade logic
+            if (keyExist)
+            {
+                if (chatThreadCount == 0)
+                {
+                    if (!App.ViewModel.TipList[0].IsShown || App.ViewModel.TipList[0].IsCurrentlyShown)
+                        App.ViewModel.DisplayTip(LayoutRoot, 0);
+                    else
+                        chatThreadCount++;
+
+                    chatThreadMainPage.ApplicationBar = appBar;
+                }
+                else if (chatThreadCount == 1)
+                {
+                    if (!App.ViewModel.TipList[2].IsShown || App.ViewModel.TipList[2].IsCurrentlyShown)
+                        App.ViewModel.DisplayTip(LayoutRoot, 2);
+                    else
+                        chatThreadCount++;
+
+                    chatThreadMainPage.ApplicationBar = appBar;
+                }
+                else
+                    showNudgeTute();
+
+                App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
+            }
         }
 
         void _lastSeenTimer_Tick(object sender, EventArgs e)
@@ -1697,6 +1724,7 @@ namespace windows_client.View
         private void FileAttachmentMessage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             emoticonPanel.Visibility = Visibility.Collapsed;
+            App.ViewModel.HideToolTip(LayoutRoot, 1);
             attachmentMenu.Visibility = Visibility.Collapsed;
             ConvMessage convMessage = llsMessages.SelectedItem as ConvMessage;
             llsMessages.SelectedItem = null;
@@ -2405,6 +2433,7 @@ namespace windows_client.View
                 #region STATUS UPDATE
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
+                    
                     JObject jsonObj = JObject.Parse(convMessage.MetaDataString);
                     JObject data = (JObject)jsonObj[HikeConstants.DATA];
                     JToken val;
@@ -2440,6 +2469,16 @@ namespace windows_client.View
                         }
                     }
                     #endregion
+
+                    if (!isStatusUpdateToolTipShown && (!App.ViewModel.TipList[4].IsShown || App.ViewModel.TipList[4].IsCurrentlyShown))
+                    {
+                        toolTipMessage = new ConvMessage();
+                        toolTipMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.IN_APP_TIP;
+                        toolTipMessage.Message = String.Format(AppResources.In_App_Tip_5, mContactName);
+                        this.ocMessages.Insert(insertPosition, toolTipMessage);
+                        insertPosition++;
+                        isStatusUpdateToolTipShown = true;
+                    }
                 }
                 #endregion
                 #region GROUP PIC CHANGED
@@ -2580,6 +2619,7 @@ namespace windows_client.View
             if (String.IsNullOrEmpty(message))
                 return;
 
+            App.ViewModel.HideToolTip(LayoutRoot, 1);
             emoticonPanel.Visibility = Visibility.Collapsed;
             attachmentMenu.Visibility = Visibility.Collapsed;
 
@@ -2597,6 +2637,7 @@ namespace windows_client.View
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
+            App.ViewModel.HideToolTip(LayoutRoot, 1);
             emoticonPanel.Visibility = Visibility.Collapsed;
 
             if ((!isOnHike && mCredits <= 0))
@@ -2736,7 +2777,11 @@ namespace windows_client.View
             //this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
             //ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
+            {
+                App.ViewModel.HideToolTip(LayoutRoot, 1);
                 this.emoticonPanel.Visibility = Visibility.Collapsed;
+            }
+
             if (this.attachmentMenu.Visibility == Visibility.Visible)
                 this.attachmentMenu.Visibility = Visibility.Collapsed;
         }
@@ -2892,10 +2937,21 @@ namespace windows_client.View
 
         private void emoticonButton_Click(object sender, EventArgs e)
         {
+            App.ViewModel.HideToolTip(LayoutRoot,0);
+
             if (emoticonPanel.Visibility == Visibility.Collapsed)
+            {
+                if (!App.ViewModel.TipList[1].IsShown || App.ViewModel.TipList[1].IsCurrentlyShown)
+                    App.ViewModel.DisplayTip(LayoutRoot, 1);
+             
                 emoticonPanel.Visibility = Visibility.Visible;
+            }
             else
+            {
+                App.ViewModel.HideToolTip(LayoutRoot, 1);
                 emoticonPanel.Visibility = Visibility.Collapsed;
+            }
+
             attachmentMenu.Visibility = Visibility.Collapsed;
             this.Focus();
         }
@@ -4676,6 +4732,8 @@ namespace windows_client.View
 
         private void Record_ActionIconTapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.ViewModel.HideToolTip(LayoutRoot, 2);
+
             this.Focus(); // remove focus from textbox
             recordGrid.Visibility = Visibility.Visible;
             sendMsgTxtbox.Visibility = Visibility.Collapsed;
@@ -5025,6 +5083,13 @@ namespace windows_client.View
             }
         }
 
+        private void TipDismiss_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (toolTipMessage != null)
+                this.ocMessages.Remove(toolTipMessage);
+
+            App.ViewModel.HideToolTip(null, 4);
+        }
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector
@@ -5066,7 +5131,8 @@ namespace windows_client.View
                         return App.newChatThreadPage.dtRecievedBubbleText;
                 }
             }
-
+            else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.IN_APP_TIP)
+                return App.newChatThreadPage.inAppTip5;
             else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 return App.newChatThreadPage.dtStatusUpdateBubble;
             else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.TYPING_NOTIFICATION)

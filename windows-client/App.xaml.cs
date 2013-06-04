@@ -51,6 +51,9 @@ namespace windows_client
         public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
         public static readonly string APP_UPDATE_POSTPENDING = "updatePost";
 
+        public static readonly string CHAT_THREAD_COUNT_KEY = "chatThreadCountKey";
+        public static readonly string TIP_MARKED_KEY = "tipMarkedKey";
+        public static readonly string TIP_SHOW_KEY = "tipShowKey";
         public static readonly string PRO_TIP = "proTip";
         public static readonly string DISMISS_TIME = "dismissTime";
 
@@ -471,6 +474,19 @@ namespace windows_client
             e.Cancel = true;
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
+
+            if (isNewInstall) //upgrade logic for inapp tips, will change with every build
+            {
+                App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, 0);
+                App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, (byte)0); // to keep a track of shown keys
+                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0); // to keep a track of current showing keys
+            }
+            else if (_latestVersion != _currentVersion)
+            {
+                App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, 0);
+                App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, (byte)0x18);
+                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0x18);
+            }
 
             // if not new install && current version is less than equal to version 1.8.0.0  and upgrade is done for wp8 device
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "1.8.0.0") != 1 && Utils.IsWP8)
