@@ -1720,4 +1720,15 @@ Get hike: http://get.hike.in</value>
   <data name="In_App_Tip_5" xml:space="preserve">
     <value>This is a status update from {0}</value>
   </data>
+  <data name="No_Stickers_Downloaded_Txt" xml:space="preserve">
+    <value>No stickers downloaded in this category</value>
+    <comment>General text</comment>
+  </data>
+  <data name="Stciker_Txt" xml:space="preserve">
+    <value>Sticker</value>
+    <comment>noun</comment>
+  </data>
+  <data name="Sticker_Downloading_Txt" xml:space="preserve">
+    <value>Downloading</value>
+  </data>
 </root>
