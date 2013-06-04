@@ -75,7 +75,8 @@ namespace windows_client.Model
             INTERNATIONAL_USER,
             INTERNATIONAL_GROUP_USER,
             TYPING_NOTIFICATION,
-            STATUS_UPDATE
+            STATUS_UPDATE,
+            IN_APP_TIP
         }
 
         public enum MessageType
@@ -435,6 +436,14 @@ namespace windows_client.Model
                     return TimeUtils.getRelativeTime(_timestamp);
                 else
                     return TimeUtils.getTimeStringForChatThread(_timestamp);
+            }
+        }
+
+        public BitmapImage CloseImage
+        {
+            get
+            {
+                return UI_Utils.Instance.CloseButtonImage;
             }
         }
 

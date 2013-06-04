@@ -1705,4 +1705,19 @@ Get hike: http://get.hike.in</value>
     <value>Message too short</value>
     <comment>Message is too short to be sent</comment>
   </data>
+  <data name="In_App_Tip_1" xml:space="preserve">
+    <value>Now send stickers and emoticons!</value>
+  </data>
+  <data name="In_App_Tip_2" xml:space="preserve">
+    <value>Tap here to see stickers</value>
+  </data>
+  <data name="In_App_Tip_3" xml:space="preserve">
+    <value>You can now send Voice messages to your friends with the new Walkie Talkie feature</value>
+  </data>
+  <data name="In_App_Tip_4" xml:space="preserve">
+    <value>Tap here to use some cute moods in your Status Update</value>
+  </data>
+  <data name="In_App_Tip_5" xml:space="preserve">
+    <value>This is a status update from {0}</value>
+  </data>
 </root>
