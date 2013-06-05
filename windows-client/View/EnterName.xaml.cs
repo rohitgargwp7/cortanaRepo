@@ -177,7 +177,8 @@ namespace windows_client
             else
                 App.appSettings[App.SHOW_FREE_SMS_SETTING] = false;
 
-            nextPage = new Uri("/View/WelcomeScreen.xaml", UriKind.Relative);
+            nextPage = new Uri("/View/TutorialScreen.xaml", UriKind.Relative);
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.TUTORIAL_SCREEN);
 
             nameErrorTxt.Visibility = Visibility.Collapsed;
             msgTxtBlk.Text = AppResources.EnterName_Msg_TxtBlk;

@@ -407,8 +407,10 @@ namespace windows_client.utils
                     App.createDatabaseAsync();
                     nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
                     break;
-                case App.PageState.WELCOME_HIKE_SCREEN:
-                    nUri = new Uri("/View/WelcomeScreen.xaml", UriKind.Relative);
+                case App.PageState.TUTORIAL_SCREEN:
+                case App.PageState.TUTORIAL_SCREEN_STATUS:
+                case App.PageState.TUTORIAL_SCREEN_STICKERS:
+                    nUri = new Uri("/View/TutorialScreen.xaml", UriKind.Relative);
                     break;
                 case App.PageState.CONVLIST_SCREEN:
                     nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);

@@ -3633,6 +3633,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Express yourself better with.
+        /// </summary>
+        public static string StickersTut_TxtBlk1 {
+            get {
+                return ResourceManager.GetString("StickersTut_TxtBlk1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to new hike stickers.
+        /// </summary>
+        public static string StickersTut_TxtBlk2 {
+            get {
+                return ResourceManager.GetString("StickersTut_TxtBlk2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stop!!!.
         /// </summary>
         public static string Stop_Caption_txt {
@@ -4016,6 +4034,24 @@ namespace windows_client.Languages {
         public static string WelcomePage_TnP_HlBtn {
             get {
                 return ResourceManager.GetString("WelcomePage_TnP_HlBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Now share your status updates with.
+        /// </summary>
+        public static string WelcomeTut_TxtBlk1 {
+            get {
+                return ResourceManager.GetString("WelcomeTut_TxtBlk1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to your circle of friends..
+        /// </summary>
+        public static string WelcomeTut_TxtBlk2 {
+            get {
+                return ResourceManager.GetString("WelcomeTut_TxtBlk2", resourceCulture);
             }
         }
         
