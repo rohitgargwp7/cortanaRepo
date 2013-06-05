@@ -312,7 +312,7 @@
         </controls:Pivot>
 
         <Rectangle x:Name="overlay" Visibility="Collapsed" Grid.Row="0" Opacity="0.85" Grid.RowSpan="2" Fill="#000000" ></Rectangle>
-        <Grid x:Name="TutorialStatusUpdate" Grid.Row="1" Visibility="Collapsed" Tap="DismissStatusUpdateTutorial_Tap">
+        <Grid  x:Name="TutorialStatusUpdate" Grid.Row="1" Visibility="Collapsed" Tap="DismissStatusUpdateTutorial_Tap">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
@@ -325,6 +325,16 @@
             <Image Grid.Row="2"  Source="/View/images/tutorial_preview.png" VerticalAlignment="Top"  HorizontalAlignment="Center" Width="350" Height="80" ></Image>
             <TextBlock Grid.Row="3" Text="{Binding Path= LocalizedResources.Conversations_StatusTutorials_TapMsg, Source={StaticResource LocalizedStrings}}" FontSize="18" FontFamily="Segoe WP Semilight" Foreground="White" TextAlignment="Center" ></TextBlock>
             <Image Grid.Row="4"  Source="/View/images/tutorial_arrow.png"   HorizontalAlignment="Right"  VerticalAlignment="Bottom" Width="20" Height="50" Margin="0 10 140 5" ></Image>
+        </Grid>
+        <Grid x:Name="gridBasicTutorial" Visibility="Collapsed" Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Image Source="/View/images/tutorial_overlay_notifications.png" Height="20" HorizontalAlignment="Right" Margin="0 15 90 0"/>
+            <Image Grid.Row="4"  Source="/View/images/tutorial_overlay_appbar.png" MaxWidth="330" MaxHeight="111" VerticalAlignment="Bottom" Margin="0,0,0,10"></Image>
         </Grid>
     </Grid>
 

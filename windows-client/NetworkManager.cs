@@ -358,7 +358,7 @@ namespace windows_client
                     return;
                 }
                 bool joined = USER_JOINED == type;
-                bool isRejoin;
+                bool isRejoin=false;
                 JToken subtype;
                 if (jsonObj.TryGetValue(HikeConstants.SUB_TYPE, out subtype))
                 {
@@ -774,7 +774,7 @@ namespace windows_client
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
             {
                 // {"t":"uo", "d":{"msisdn":"", "credits":10}}
-                ProcessUoUjMsgs(jsonObj, true, true);
+                ProcessUoUjMsgs(jsonObj, true, true,false);
             }
             #endregion
             #region GROUP CHAT RELATED

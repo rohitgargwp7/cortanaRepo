@@ -1738,4 +1738,20 @@ Get hike: http://get.hike.in</value>
     <value>{0} is back on hike. Say hi :)</value>
     <comment>{0} to be replaced by name</comment>
   </data>
+  <data name="StickersTut_TxtBlk1" xml:space="preserve">
+    <value>Express yourself better with</value>
+    <comment>continued string -&gt;StickersTut_TxtBlk2(50)</comment>
+  </data>
+  <data name="StickersTut_TxtBlk2" xml:space="preserve">
+    <value>new hike stickers</value>
+    <comment>StickersTut_TxtBlk1-&gt;StickersTut_TxtBlk2(50)</comment>
+  </data>
+  <data name="WelcomeTut_TxtBlk1" xml:space="preserve">
+    <value>Now share your status updates with</value>
+    <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
+  </data>
+  <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
+    <value>your circle of friends.</value>
+    <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
+  </data>
 </root>
