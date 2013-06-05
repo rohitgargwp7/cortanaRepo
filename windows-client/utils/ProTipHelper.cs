@@ -74,7 +74,6 @@ namespace windows_client.utils
             if (_proTipsQueue.Count == MAX_QUEUE_SIZE)
                 RemoveProTip(GetProTipFromFile(_proTipsQueue.Dequeue()));
 
-            WriteProTipIdsToFile(); // new protip added, persist it before-hand in case of crash
             WriteProTipToFile(id, header, body, imageUrl);
 
             ProTip currentProTip = null;
@@ -98,6 +97,8 @@ namespace windows_client.utils
             }
             else
                 _proTipsQueue.Enqueue(id);
+
+            WriteProTipIdsToFile(); // new protip added, persist it before-hand in case of crash
         }
 
         void getNextProTip()
@@ -120,6 +121,11 @@ namespace windows_client.utils
             else
                 CurrentProTip = null;
             //still currentprotip may be null if queue is empty
+
+            if (CurrentProTip == null && _proTipsQueue.Count > 0)
+                getNextProTip();
+            
+            WriteProTipIdsToFile(); // new protip fetched from file. write changes
         }
 
         public void ChangeTimerTime(Int64 time)
@@ -127,7 +133,7 @@ namespace windows_client.utils
             Deployment.Current.Dispatcher.BeginInvoke(new Action<Int64>(delegate(Int64 newTime)
             {
                 if (proTipTimer != null)
-                    proTipTimer.Interval = new TimeSpan(newTime * 1000); //time might have changed, hence reinitializing timer
+                    proTipTimer.Interval = TimeSpan.FromSeconds(5); //time might have changed, hence reinitializing timer
             }),time);
         }
 
@@ -136,18 +142,23 @@ namespace windows_client.utils
             if (CurrentProTip == null)
                 return;
 
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            if (!String.IsNullOrEmpty(CurrentProTip.ImageUrl))
             {
-                string fileName = PROTIPS_DIRECTORY + "\\" + CurrentProTip._id;
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    string fileName = PROTIPS_DIRECTORY + "\\" + CurrentProTip._id;
 
-                if (store.FileExists(fileName))
-                    store.DeleteFile(fileName);
+                    if (store.FileExists(fileName))
+                        store.DeleteFile(fileName);
 
-                fileName = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
+                    fileName = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
 
-                if (store.FileExists(fileName))
-                    store.DeleteFile(fileName);
+                    if (store.FileExists(fileName))
+                        store.DeleteFile(fileName);
+                }
             }
+
+            CurrentProTip = null;
         }
 
         public void RemoveProTip(ProTip tip)
@@ -342,7 +353,7 @@ namespace windows_client.utils
                 if (proTipTimer == null)
                     proTipTimer = new DispatcherTimer();
 
-                proTipTimer.Interval = TimeSpan.FromSeconds(time); //time might have changed, hence reinitializing timer
+                proTipTimer.Interval = TimeSpan.FromSeconds(5); //time might have changed, hence reinitializing timer
 
                 proTipTimer.Tick += proTipTimer_Tick;
 

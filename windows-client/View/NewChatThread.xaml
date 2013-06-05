@@ -398,7 +398,7 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Name="dtSentBubbleNudge" >
-            <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,12,24,10" Width="{Binding LayoutGridWidth}" HorizontalAlignment="Right">
+            <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}" Width="{Binding LayoutGridWidth}" HorizontalAlignment="Right">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete"/>
@@ -582,7 +582,7 @@
                         </Grid.ColumnDefinitions>
                         <toolkit:PhoneTextBox TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
                                             MinHeight="68" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto"  />
-                        <Image Grid.Column="1" Source="/View/images/Mic_icon_black_small.png" Tap="Record_ActionIconTapped" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="None" Margin="0,0,15,15"/>
+                        <Image Grid.Column="1" Source="/View/images/Mic_icon_black_small.png" Tap="Record_ActionIconTapped" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="Uniform" Margin="0,0,15,15" MaxHeight="30"/>
                     </Grid>
                 </ScrollViewer>
                 <Grid x:Name="recordGrid" HorizontalAlignment="Stretch" Visibility="Collapsed" Background="#eeeeec" Margin="0,-4,0,0">

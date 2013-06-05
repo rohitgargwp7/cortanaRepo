@@ -95,6 +95,8 @@ namespace windows_client.utils
         public Thickness SentBubbleAudioFileMarginPortrait = new Thickness(155, 12, 0, 10);
         public Thickness RecievedBubbleTextMarginLS = new Thickness(0, 0, 285, 14);
         public Thickness ReceivedBubbleFileMarginLS = new Thickness(0, 0, 380, 14);
+        public Thickness SentPokeMarginPotrait = new Thickness(-40, 12, 0, 10);
+        public Thickness SentPokeMarginLS = new Thickness(-135, 12, 0, 10);
         public Thickness SentBubbleTextMarginLS = new Thickness(250, 12, 0, 10);
         public Thickness SentBubbleFileMarginLS = new Thickness(380, 12, 0, 10);
         public Thickness SentBubbleAudioFileMarginLS = new Thickness(345, 12, 0, 10);

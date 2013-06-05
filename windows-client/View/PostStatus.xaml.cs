@@ -51,7 +51,8 @@ namespace windows_client.View
             postStatusPage.ApplicationBar = appBar;
 
             App.ViewModel.TipList[3].TipDismissed += PostStatus_TipDismissed;
-            //if (!App.ViewModel.TipList[3].IsShown || App.ViewModel.TipList[3].IsCurrentlyShown)
+
+            if (!App.ViewModel.TipList[3].IsShown || App.ViewModel.TipList[3].IsCurrentlyShown)
                 App.ViewModel.DisplayTip(MoodPanel, 3);
         }
 
@@ -195,11 +196,12 @@ namespace windows_client.View
 
         private void Mood_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.ViewModel.HideToolTip(LayoutRoot, 3);
+            if (App.ViewModel.TipList[3].IsCurrentlyShown)
+                App.ViewModel.HideToolTip(LayoutRoot, 3);
+
             gridMood.Visibility = Visibility.Visible;
             this.appBar.IsVisible = false;
         }
-
 
         private void moodList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {

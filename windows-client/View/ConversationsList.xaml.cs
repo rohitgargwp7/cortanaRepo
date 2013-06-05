@@ -1276,7 +1276,7 @@ namespace windows_client.View
                 }
 
                 // ignore if not onhike or not in addressbook
-                if (!c.OnHike || string.IsNullOrEmpty(c.Name))
+                if (c == null || !c.OnHike || string.IsNullOrEmpty(c.Name)) // c==null for unknown contacts
                     return;
 
                 Dispatcher.BeginInvoke(() =>
@@ -2306,6 +2306,7 @@ namespace windows_client.View
                     {
                         ProTipHelper.Instance.RemoveCurrentProTip();
                         App.appSettings.Remove(App.PRO_TIP);
+                        App.appSettings.Save();
                     }
                 };
             worker.RunWorkerAsync();
