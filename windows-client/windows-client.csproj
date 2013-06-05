@@ -18,7 +18,7 @@
     </TargetFrameworkProfile>
     <TargetFrameworkIdentifier>WindowsPhone</TargetFrameworkIdentifier>
     <SilverlightApplication>true</SilverlightApplication>
-    <SupportedCultures>de-DE%3bfr%3bpt-BR%3bes</SupportedCultures>
+    <SupportedCultures>de-DE%3bfr%3bpt-BR%3bru%3bes</SupportedCultures>
     <XapOutputs>true</XapOutputs>
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
     <XapFilename>windows-client_$(Configuration)_$(Platform).xap</XapFilename>
