@@ -79,7 +79,10 @@ namespace windows_client.utils
         private BitmapImage userProfileStockImage;
         private BitmapImage loadingImage;
         private BitmapImage lastSeenClockImage;
-
+        private BitmapImage kittyOverlay;
+        private BitmapImage bollywoodOverlay;
+        private BitmapImage trollOverlay;
+        private BitmapImage expressionsOverlay;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
         private string[] defaultAvatarFileNames;
@@ -865,7 +868,7 @@ namespace windows_client.utils
                 return loadingImage;
             }
         }
-        
+
         public BitmapImage LastSeenClockImage
         {
             get
@@ -901,8 +904,8 @@ namespace windows_client.utils
             get
             {
                 if (greyTextForeGround == null)
-                        greyTextForeGround = new SolidColorBrush(Color.FromArgb(255, 104, 104, 104));
-                
+                    greyTextForeGround = new SolidColorBrush(Color.FromArgb(255, 104, 104, 104));
+
                 return greyTextForeGround;
             }
         }
@@ -970,7 +973,7 @@ namespace windows_client.utils
                 if (deleteBlackBackground == null)
                     deleteBlackBackground = new SolidColorBrush(Colors.Black);
                 return deleteBlackBackground;
-        }
+            }
         }
 
         public SolidColorBrush DeleteGreyBackground
@@ -1015,7 +1018,7 @@ namespace windows_client.utils
                 return walkieTalkieGreyImage;
             }
         }
-        
+
         public BitmapImage WalkieTalkieWhiteImage
         {
             get
@@ -1085,11 +1088,56 @@ namespace windows_client.utils
                     if (closeButtonWhiteImage == null)
                         closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
 
-                    return closeButtonWhiteImage; 
+                    return closeButtonWhiteImage;
                 }
             }
         }
 
+        public BitmapImage KittyOverlay
+        {
+            get
+            {
+                if (kittyOverlay == null)
+                {
+                    kittyOverlay = new BitmapImage(new Uri("/View/images/kitty_overlay.png", UriKind.Relative));
+                }
+                return kittyOverlay;
+            }
+        }
+
+        public BitmapImage BollywoodOverlay
+        {
+            get
+            {
+                if (bollywoodOverlay == null)
+                {
+                    bollywoodOverlay = new BitmapImage(new Uri("/View/images/bollywood_overlay.png", UriKind.Relative));
+                }
+                return bollywoodOverlay;
+            }
+        }
+        public BitmapImage TrollOverlay
+        {
+            get
+            {
+                if (trollOverlay == null)
+                {
+                    trollOverlay = new BitmapImage(new Uri("/View/images/troll_overlay.png", UriKind.Relative));
+                }
+                return trollOverlay;
+            }
+        }
+        public BitmapImage ExpressionsOverlay
+        {
+            get
+            {
+                if (expressionsOverlay == null)
+                {
+                    expressionsOverlay = new BitmapImage(new Uri("/View/images/expressions_overlay.png", UriKind.Relative));
+                }
+                return expressionsOverlay;
+            }
+        }
         #endregion
 
         #region DEFAULT AVATARS

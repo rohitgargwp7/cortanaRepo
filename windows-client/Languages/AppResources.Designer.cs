@@ -862,6 +862,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Download.
+        /// </summary>
+        public static string Download_txt {
+            get {
+                return ResourceManager.GetString("Download_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to loading sticker.
         /// </summary>
         public static string DownloadingSticker_txt {
@@ -1316,6 +1325,15 @@ namespace windows_client.Languages {
         public static string Forward_Txt {
             get {
                 return ResourceManager.GetString("Forward_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to free.
+        /// </summary>
+        public static string Free_txt {
+            get {
+                return ResourceManager.GetString("Free_txt", resourceCulture);
             }
         }
         
@@ -1955,6 +1973,15 @@ namespace windows_client.Languages {
         public static string In_App_Tip_5 {
             get {
                 return ResourceManager.GetString("In_App_Tip_5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to *Mobile internet charges may apply.
+        /// </summary>
+        public static string InternetChargesMayApply_txt {
+            get {
+                return ResourceManager.GetString("InternetChargesMayApply_txt", resourceCulture);
             }
         }
         
