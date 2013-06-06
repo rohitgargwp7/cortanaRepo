@@ -142,7 +142,7 @@ namespace windows_client.utils
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
             POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS, GET_ONHIKE_DATE, POST_INFO_ON_APP_UPDATE, GET_STICKERS,
-            LAST_SEEN_POST
+            LAST_SEEN_POST, SOCIAL_INVITE
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -305,6 +305,7 @@ namespace windows_client.utils
                 convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO) ? "" : convMessage.FileAttachment.ContentType;
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
+
             req.Headers["X-Thumbnail-Required"] = "0";
 
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPLOAD_FILE, dataBytes, finalCallbackFunction, convMessage });
@@ -356,13 +357,17 @@ namespace windows_client.utils
             }
         }
 
+        public static void SocialInvite(JObject obj, postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/spread")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.SOCIAL_INVITE, obj, finalCallbackFunction });
+        }
+
         public static void LastSeenRequest(postResponseFunction finalCallbackFunction, string userNumber)
         {
-            //HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/lastseen/" + userNumber)) as HttpWebRequest;
-            //addToken(req);
-            //req.Method = "GET";
-            //req.BeginGetRequestStream(GetRequestCallback, new object[] { req, finalCallbackFunction });
-
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/lastseen/" + userNumber)) as HttpWebRequest;
             addToken(req);
             req.Method = "GET";
@@ -456,6 +461,12 @@ namespace windows_client.utils
                 #endregion
                 #region SOCIAL POST
                 case RequestType.SOCIAL_POST:
+                    data = vars[2] as JObject;
+                    finalCallbackFunction = vars[3] as postResponseFunction;
+                    break;
+                #endregion
+                #region SOCIAL_INVITE
+                case RequestType.SOCIAL_INVITE:
                     data = vars[2] as JObject;
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     break;

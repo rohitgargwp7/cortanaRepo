@@ -98,6 +98,8 @@ namespace windows_client.utils
         public Thickness SentBubbleAudioFileMarginPortrait = new Thickness(155, 12, 0, 10);
         public Thickness RecievedBubbleTextMarginLS = new Thickness(0, 0, 285, 14);
         public Thickness ReceivedBubbleFileMarginLS = new Thickness(0, 0, 380, 14);
+        public Thickness SentPokeMarginPotrait = new Thickness(-40, 12, 0, 10);
+        public Thickness SentPokeMarginLS = new Thickness(-135, 12, 0, 10);
         public Thickness SentBubbleTextMarginLS = new Thickness(250, 12, 0, 10);
         public Thickness SentBubbleFileMarginLS = new Thickness(380, 12, 0, 10);
         public Thickness SentBubbleAudioFileMarginLS = new Thickness(345, 12, 0, 10);
@@ -105,6 +107,8 @@ namespace windows_client.utils
         BitmapImage walkieTalkieWhiteImage;
         BitmapImage walkieTalkieGreyImageBig;
         BitmapImage walkieTalkieWhiteImageBig;
+        BitmapImage walkieTalkieDeleteSucImageGrey;
+        BitmapImage walkieTalkieDeleteSucImageWhite;
         BitmapImage closeButtonWhiteImage;
         BitmapImage closeButtonBlackImage;
         BitmapImage dustbinGreyImage;
@@ -1057,17 +1061,17 @@ namespace windows_client.utils
             {
                 if (Utils.isDarkTheme())
                 {
-                    if (walkieTalkieGreyImageBig == null)
-                        walkieTalkieGreyImageBig = new BitmapImage(new Uri("/View/images/deleted_grey_icon.png", UriKind.Relative));
+                    if (walkieTalkieDeleteSucImageGrey == null)
+                        walkieTalkieDeleteSucImageGrey = new BitmapImage(new Uri("/View/images/deleted_grey_icon.png", UriKind.Relative));
 
-                    return walkieTalkieGreyImageBig;
+                    return walkieTalkieDeleteSucImageGrey;
                 }
                 else
                 {
-                    if (walkieTalkieWhiteImageBig == null)
-                        walkieTalkieWhiteImageBig = new BitmapImage(new Uri("/View/images/deleted_white_icon.png", UriKind.Relative));
+                    if (walkieTalkieDeleteSucImageWhite == null)
+                        walkieTalkieDeleteSucImageWhite = new BitmapImage(new Uri("/View/images/deleted_white_icon.png", UriKind.Relative));
 
-                    return walkieTalkieWhiteImageBig;
+                    return walkieTalkieDeleteSucImageWhite;
                 }
             }
         }
@@ -1136,6 +1140,16 @@ namespace windows_client.utils
                     expressionsOverlay = new BitmapImage(new Uri("/View/images/expressions_overlay.png", UriKind.Relative));
                 }
                 return expressionsOverlay;
+            }
+        }
+        public BitmapImage CloseButtonWhiteImage
+        {
+            get
+            {
+                if (closeButtonWhiteImage == null)
+                    closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
+
+                return closeButtonWhiteImage;
             }
         }
         #endregion

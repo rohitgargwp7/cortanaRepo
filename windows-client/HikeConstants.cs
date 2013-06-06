@@ -213,6 +213,11 @@ namespace windows_client
         public static readonly string TIME_OF_DAY = "timeofday";
         public static readonly string INDIA_COUNTRY_CODE = "+91";
 
+        public static readonly string NO_TOKEN = "notoken";
+        public static readonly string INVALID_TOKEN = "invalidtoken";
+        public static readonly string FAILURE = "failure";
+        public static readonly string SUCCESS = "success";
+
         public static readonly string PRO_TIP_ID = "i";
         public static readonly string PRO_TIP_HEADER = "h";
         public static readonly string PRO_TIP_TEXT = "t";
@@ -250,6 +255,7 @@ namespace windows_client
         public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
         public static string OBJ_FROM_STATUSPAGE = "objFromStatusPage";
         public static string FORWARD_MSG = "forwardedText";
+        public static string AUDIO_RECORDED_DURATION = "audioRecordedDuration";
         public static string AUDIO_RECORDED = "audioRecorded";
         public static string CONTACT_SELECTED = "contactSelected";
         public static string VIDEO_RECORDED = "videoRecorded";

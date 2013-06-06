@@ -74,6 +74,10 @@ namespace windows_client.View
 
             if (ProTipHelper.CurrentProTip != null)
                 showProTip();
+
+            int tipCount;
+            App.appSettings.TryGetValue(App.PRO_TIP_COUNT, out tipCount);
+            ProTipCount = tipCount;
         }
 
         void Instance_ShowProTip(object sender, EventArgs e)
@@ -730,6 +734,8 @@ namespace windows_client.View
             }
             else if (selectedIndex == 3)
             {
+                ProTipCount = 0;
+
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
                 if (!isStatusMessagesLoaded)
@@ -1308,7 +1314,7 @@ namespace windows_client.View
                 }
 
                 // ignore if not onhike or not in addressbook
-                if (!c.OnHike || string.IsNullOrEmpty(c.Name))
+                if (c == null || !c.OnHike || string.IsNullOrEmpty(c.Name)) // c==null for unknown contacts
                     return;
 
                 Dispatcher.BeginInvoke(() =>
@@ -2037,8 +2043,10 @@ namespace windows_client.View
                         {
                             setNotificationCounter(value + _unreadFriendRequests + _refreshBarCount);
                         }
-                        _proTipCount = value;
                     });
+
+                    _proTipCount = value;
+                    App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, value);
                 }
             }
         }
@@ -2336,6 +2344,7 @@ namespace windows_client.View
                     {
                         ProTipHelper.Instance.RemoveCurrentProTip();
                         App.appSettings.Remove(App.PRO_TIP);
+                        App.appSettings.Save();
                     }
                 };
             worker.RunWorkerAsync();

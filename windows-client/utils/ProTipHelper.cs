@@ -16,8 +16,9 @@ namespace windows_client.utils
     class ProTipHelper
     {
         readonly Int32 MAX_QUEUE_SIZE = 1000;
-        private static string PROTIPS_DIRECTORY = "ProTips";
-        private static string proTipsListFileName = "proTipList";
+        private const string PROTIPS_DIRECTORY = "ProTips";
+        private const string proTipsListFileName = "proTipList";
+        private const string deletedProTipsListFileName = "delProTipList";
         
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static object readWriteLock = new object();
@@ -65,16 +66,26 @@ namespace windows_client.utils
 
         public void AddProTip(string id, string header, string body, string imageUrl)
         {
+            if (_deletedTips == null)
+                ReadDeletedTipsFromFile();
+            
+            if (_deletedTips != null && _deletedTips.Count > 0 && _deletedTips.Contains(id))
+                return;
+
             if (_proTipsQueue == null)
                 ReadProTipIdsFromFile();
 
-            if (_proTipsQueue == null)
+            if (_proTipsQueue != null)
+            {
+                if (_proTipsQueue.Contains(id) || (CurrentProTip!=null && CurrentProTip._id == id))
+                    return;
+            }
+            else
                 _proTipsQueue = new Queue<string>();
 
             if (_proTipsQueue.Count == MAX_QUEUE_SIZE)
                 RemoveProTip(GetProTipFromFile(_proTipsQueue.Dequeue()));
 
-            WriteProTipIdsToFile(); // new protip added, persist it before-hand in case of crash
             WriteProTipToFile(id, header, body, imageUrl);
 
             ProTip currentProTip = null;
@@ -98,6 +109,8 @@ namespace windows_client.utils
             }
             else
                 _proTipsQueue.Enqueue(id);
+
+            WriteProTipIdsToFile(); // new protip added, persist it before-hand in case of crash
         }
 
         void getNextProTip()
@@ -116,10 +129,15 @@ namespace windows_client.utils
                     if (ShowProTip != null)
                         ShowProTip(null, null);
                 }
+
+                WriteProTipIdsToFile(); // new protip fetched from file. write changes
             }
             else
                 CurrentProTip = null;
             //still currentprotip may be null if queue is empty
+
+            if (CurrentProTip == null && _proTipsQueue != null && _proTipsQueue.Count > 0)
+                getNextProTip();
         }
 
         public void ChangeTimerTime(Int64 time)
@@ -127,7 +145,7 @@ namespace windows_client.utils
             Deployment.Current.Dispatcher.BeginInvoke(new Action<Int64>(delegate(Int64 newTime)
             {
                 if (proTipTimer != null)
-                    proTipTimer.Interval = new TimeSpan(newTime * 1000); //time might have changed, hence reinitializing timer
+                    proTipTimer.Interval = TimeSpan.FromSeconds(newTime); //time might have changed, hence reinitializing timer
             }),time);
         }
 
@@ -136,24 +154,42 @@ namespace windows_client.utils
             if (CurrentProTip == null)
                 return;
 
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            if (_deletedTips == null)
             {
-                string fileName = PROTIPS_DIRECTORY + "\\" + CurrentProTip._id;
-
-                if (store.FileExists(fileName))
-                    store.DeleteFile(fileName);
-
-                fileName = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
-
-                if (store.FileExists(fileName))
-                    store.DeleteFile(fileName);
+                ReadDeletedTipsFromFile();
+                _deletedTips.Add(CurrentProTip._id);
+                WriteDeletedProTipIdsToFile();
             }
+
+            if (!String.IsNullOrEmpty(CurrentProTip.ImageUrl))
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    string fileName = PROTIPS_DIRECTORY + "\\" + CurrentProTip._id;
+
+                    if (store.FileExists(fileName))
+                        store.DeleteFile(fileName);
+
+                    fileName = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
+
+                    if (store.FileExists(fileName))
+                        store.DeleteFile(fileName);
+                }
+            }
+
+            CurrentProTip = null;
         }
 
         public void RemoveProTip(ProTip tip)
         {
             if (tip == null)
                 return;
+
+            if (_deletedTips == null)
+            {
+                ReadDeletedTipsFromFile();
+                _deletedTips.Add(tip._id);
+            }
 
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
@@ -166,6 +202,82 @@ namespace windows_client.utils
 
                 if (store.FileExists(fileName))
                     store.DeleteFile(fileName);
+            }
+        }
+
+        void ReadDeletedTipsFromFile()
+        {
+            lock (readWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                {
+                    try
+                    {
+                        string fileName = PROTIPS_DIRECTORY + "\\" + deletedProTipsListFileName;
+                        if (store.FileExists(fileName))
+                        {
+                            if (_deletedTips == null)
+                                _deletedTips = new List<string>();
+                            
+                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            {
+                                using (BinaryReader reader = new BinaryReader(file))
+                                {
+                                    int count = reader.ReadInt32();
+
+                                    for (int i = 0; i < count; i++)
+                                        _proTipsQueue.Enqueue(reader.ReadString());
+
+                                    reader.Close();
+                                }
+
+                                file.Close();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("ProTip Helper :: Get ProTip ids From File, Exception : " + ex.StackTrace);
+                    }
+                }
+            }
+        }
+
+        void WriteDeletedProTipIdsToFile()
+        {
+            lock (readWriteLock)
+            {
+                try
+                {
+                    string fileName = PROTIPS_DIRECTORY + "\\" + deletedProTipsListFileName;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (!store.DirectoryExists(PROTIPS_DIRECTORY))
+                            store.CreateDirectory(PROTIPS_DIRECTORY);
+
+                        if (store.FileExists(fileName))
+                            store.DeleteFile(fileName);
+
+                        using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                        {
+                            using (BinaryWriter writer = new BinaryWriter(file))
+                            {
+                                writer.Seek(0, SeekOrigin.Begin);
+                                writer.Write(_deletedTips.Count);
+
+                                foreach (var id in _deletedTips)
+                                    writer.Write(id);
+
+                                writer.Flush();
+                                writer.Close();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("ProTip Helper :: Write ProTip Ids To File, Exception : " + ex.StackTrace);
+                }
             }
         }
 
@@ -218,7 +330,9 @@ namespace windows_client.utils
                         string fileName = PROTIPS_DIRECTORY + "\\" + proTipsListFileName;
                         if (store.FileExists(fileName))
                         {
-                            _proTipsQueue = new Queue<string>();
+                            if (_proTipsQueue == null)
+                                _proTipsQueue = new Queue<string>();
+
                             using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                             {
                                 using (BinaryReader reader = new BinaryReader(file))
@@ -357,6 +471,7 @@ namespace windows_client.utils
         }
 
         Queue<string> _proTipsQueue;
+        List<string> _deletedTips;
     }
 
     public class ProTip

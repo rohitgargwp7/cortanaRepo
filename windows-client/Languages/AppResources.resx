@@ -1671,7 +1671,7 @@ Get hike: http://get.hike.in</value>
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>Show my last seen</value>
+    <value>See/show last online timestamp</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
     <value>Last seen</value>
@@ -1701,19 +1701,19 @@ Get hike: http://get.hike.in</value>
     <comment>Message is too short to be sent</comment>
   </data>
   <data name="In_App_Tip_1" xml:space="preserve">
-    <value>Now send stickers and emoticons!</value>
+    <value>Tap this to express with stickers and smileys</value>
   </data>
   <data name="In_App_Tip_2" xml:space="preserve">
-    <value>Tap here to see stickers</value>
+    <value>Tap here to check out our new stickers!</value>
   </data>
   <data name="In_App_Tip_3" xml:space="preserve">
-    <value>You can now send Voice messages to your friends with the new Walkie Talkie feature</value>
+    <value>Tap here to use Walkie Talkie and send voice messages</value>
   </data>
   <data name="In_App_Tip_4" xml:space="preserve">
-    <value>Tap here to use some cute moods in your Status Update</value>
+    <value>Tap this to express your mood with status updates</value>
   </data>
   <data name="In_App_Tip_5" xml:space="preserve">
-    <value>This is a status update from {0}</value>
+    <value>This status update was just posted by {0}</value>
   </data>
   <data name="No_Stickers_Downloaded_Txt" xml:space="preserve">
     <value>No stickers downloaded in this category</value>
@@ -1725,6 +1725,20 @@ Get hike: http://get.hike.in</value>
   </data>
   <data name="Sticker_Downloading_Txt" xml:space="preserve">
     <value>Downloading</value>
+  </data>
+  <data name="At_Txt" xml:space="preserve">
+    <value>at</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="TimeUtils_Sometime_Ago" xml:space="preserve">
+    <value>a while ago</value>
+  </data>
+  <data name="Today_Txt" xml:space="preserve">
+    <value>today</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Invite_Sent_Successfully" xml:space="preserve">
+    <value>Message sent successfully</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
     <value>{0} is back on hike. Say hi :)</value>

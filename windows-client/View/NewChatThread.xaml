@@ -59,7 +59,7 @@
         </DataTemplate>
         <DataTemplate x:Name="dtTypingNotificationBubble" >
             <Grid Width="{Binding LayoutGridWidth}" >
-                <Image Source="/View/images/typing.png" Height="28" Width="55" HorizontalAlignment="Left" Margin="24, 5, 0, 15"></Image>
+                <Image Source="/View/images/typing.png" Height="20" Width="40" HorizontalAlignment="Left" Margin="24, 5, 0, 15"></Image>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Name="dtRecievedBubbleText" >
@@ -158,7 +158,7 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
-                        <Grid Margin="10">
+                        <Grid Grid.Row="1" Margin="10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" MinWidth="43"/>
                                 <ColumnDefinition Width="*"/>
@@ -420,7 +420,7 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Name="dtSentBubbleNudge" >
-            <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,12,24,10" Width="{Binding LayoutGridWidth}" HorizontalAlignment="Right">
+            <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}" Width="{Binding LayoutGridWidth}" HorizontalAlignment="Right">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete"/>
@@ -615,18 +615,18 @@
                         </Grid.ColumnDefinitions>
                         <toolkit:PhoneTextBox TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
                                             MinHeight="68" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto"  />
-                        <Image Grid.Column="1" Source="/View/images/Mic_icon_black_small.png" Tap="Record_ActionIconTapped" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="None" Margin="0,0,15,15"/>
+                        <Image Grid.Column="1" Source="/View/images/Mic_icon_black_small.png" Tap="Record_ActionIconTapped" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="Uniform" Margin="0,0,15,17" MaxHeight="30"/>
                     </Grid>
                 </ScrollViewer>
                 <Grid x:Name="recordGrid" HorizontalAlignment="Stretch" Visibility="Collapsed" Background="#eeeeec" Margin="0,-4,0,0">
                     <Grid Margin="5" x:Name="recordButtonGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ManipulationStarted="Hold_To_Record" ManipulationCompleted="recordButton_ManipulationCompleted">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" >
-                            <Image Stretch="None" Margin="10,0" x:Name="walkieTalkieImage" Source="/View/images/walkie_talkie_Grey_small.png" VerticalAlignment="Center"/>
+                            <Image Stretch="Uniform" Margin="10,0" MaxHeight="30" x:Name="walkieTalkieImage" Source="/View/images/walkie_talkie_Grey_small.png" VerticalAlignment="Center"/>
                             <TextBlock x:Name="recordButton" Foreground="#686868" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24" Text=""/>
                         </StackPanel>
                     </Grid>
                     <Grid Width="62" Margin="5" Height="62" Canvas.ZIndex="2" x:Name="cancelRecord" Tap="cancelRecord_Tap" Background="#3F3F3F" HorizontalAlignment="Right">
-                        <Image Source="/View/images/remove_wt_icon.png" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Image MaxHeight="14" Source="/View/images/remove_wt_icon.png" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Grid>
                 </Grid>
             </Grid>
@@ -820,44 +820,55 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Vertical" Margin="0,0,0,0" Tap="clickPhoto_Tap"  VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Image Source="images\menu_camera_icon.png" Height="26" HorizontalAlignment="Center"/>
-                    <TextBlock Margin="0,5,0,0" Text="{Binding Path= LocalizedResources.Attachment_Camera_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock >
-                </StackPanel>
-
+                <Grid Grid.Column="0" Grid.Row="0" Tap="clickPhoto_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <StackPanel Margin="0,5,0,0" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Image Source="images\menu_camera_icon.png" Height="35" HorizontalAlignment="Center"/>
+                        <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Camera_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock >
+                    </StackPanel>
+                </Grid>
+                
                 <Rectangle Width="1" Fill="#080808" Grid.Column="1"  Grid.Row="0"/>
-                <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Vertical" Margin="0,0,0,0" Tap="sendImage_Tap"  VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Image Source="images\menu_photo_icon.png" Height="26" HorizontalAlignment="Center"/>
-                    <TextBlock  Margin="0,5,0,0" Text="{Binding Path= LocalizedResources.Attachment_Photo_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock >
-                </StackPanel>
-
+                <Grid Grid.Column="2" Grid.Row="0" Tap="sendImage_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Image Source="images\menu_photo_icon.png" Height="40" HorizontalAlignment="Center"/>
+                        <TextBlock  Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Photo_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock >
+                    </StackPanel>
+                </Grid>
+                
                 <Rectangle Width="1" Fill="#080808" Grid.Column="3" Grid.Row="0"/>
-                <StackPanel Grid.Column="4" Grid.Row="0" Orientation="Vertical" Margin="0,0,0,0" Tap="sendVideo_Tap"  VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Image Source="images\menu_video_icon.png" Height="30" HorizontalAlignment="Center"/>
-                    <TextBlock Margin="0,5,0,0" Text="{Binding Path= LocalizedResources.Attachment_Video_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
-                </StackPanel>
-
+                <Grid Grid.Column="4" Grid.Row="0" Tap="sendVideo_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <StackPanel Margin="0,5,0,0" Orientation="Vertical"  VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Image Source="images\menu_video_icon.png" Height="30" HorizontalAlignment="Center"/>
+                        <TextBlock Margin="0,25,0,0" Text="{Binding Path= LocalizedResources.Attachment_Video_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
+                    </StackPanel>
+                </Grid>
+                
                 <Rectangle  Height="1" Fill="#080808" Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="1"/>
                 <Rectangle  Height="1" Fill="#080808" Grid.ColumnSpan="2" Grid.Column="2" Grid.Row="1"/>
                 <Rectangle  Height="1" Fill="#080808" Grid.ColumnSpan="2" Grid.Column="4" Grid.Row="1"/>
 
-                <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Vertical" Margin="0,0,0,0" Tap="sendAudio_Tap"  VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Image Source="images\menu_audio_icon.png" Height="30" HorizontalAlignment="Center"/>
-                    <TextBlock Margin="0,5,0,0" Text="{Binding Path= LocalizedResources.Attachment_Audio_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
-                </StackPanel>
-
+                <Grid Grid.Column="0" Grid.Row="2" Tap="sendAudio_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Image Source="images\menu_audio_icon.png" Height="40" HorizontalAlignment="Center"/>
+                        <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Audio_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
+                    </StackPanel>
+                </Grid>
 
                 <Rectangle Width="1"  Fill="#080808" Grid.Column="1" Grid.Row="2"/>
-                <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Vertical" Margin="0,0,0,0" Tap="shareLocation_Tap"  VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Image Source="images\drop_pin_icon.png" Height="30" HorizontalAlignment="Center"/>
-                    <TextBlock Margin="0,5,0,0" Text="{Binding Path= LocalizedResources.Attachment_Location_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" ></TextBlock >
-                </StackPanel>
-
+                <Grid Grid.Column="2" Grid.Row="2" Tap="shareLocation_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Image Source="images\menu_location_icon.png" Height="40" HorizontalAlignment="Center"/>
+                        <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Location_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" ></TextBlock >
+                    </StackPanel>
+                </Grid>
+                
                 <Rectangle Width="1"  Fill="#080808" Grid.Column="3" Grid.Row="2"/>
-                <StackPanel Name="spContactTransfer"  Grid.Column="4" Grid.Row="2" Orientation="Vertical" Margin="0,0,0,0" Tap="sendContact_Tap" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Image Source="images\menu_contact_icon.png" Height="30" HorizontalAlignment="Center"/>
-                    <TextBlock Margin="0,5,0,0" Text="{Binding Path= LocalizedResources.Attachement_Contact_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
-                </StackPanel>
+                <Grid Grid.Column="4" Grid.Row="2" Tap="sendContact_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <StackPanel Margin="0,5,0,0" Name="spContactTransfer" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Image Source="images\menu_contact_icon.png" Height="35" HorizontalAlignment="Center"/>
+                        <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachement_Contact_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
+                    </StackPanel>
+                </Grid>
             </Grid>
         </StackPanel>
         <ProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" 
@@ -918,7 +929,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Border  x:Name="WalkieTalkieGridOverlayLayer" Background="{StaticResource PhoneForegroundBrush}" Margin="-25" Opacity="0.75" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3" />
-            <Image x:Name="walkieTalkie" Stretch="None" HorizontalAlignment="Center"/>
+            <Image x:Name="walkieTalkie" MaxHeight="95" Stretch="Uniform" HorizontalAlignment="Center"/>
             <StackPanel Grid.Row="1" Margin="0,10" x:Name="timeBar" Orientation="Horizontal" Opacity="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Ellipse Height="15" Width="15" Fill="Red" Margin="0,0,5,0"/>
                 <TextBlock x:Name="runningTime" FontFamily="Segoe WP SemiLight" FontSize="24" Text="00:00" Foreground="{StaticResource PhoneBackgroundBrush}" ></TextBlock>
@@ -926,7 +937,7 @@
             </StackPanel>
             <Border Grid.Row="2" Margin="-10,5,-10,-10" Background="Black" MouseLeave="deleteRecImage_MouseLeave" x:Name="deleteBorder" BorderThickness="2" BorderBrush="Black" MouseEnter="deleteRecImage_MouseEnter" Opacity="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
                 <StackPanel Canvas.ZIndex="3" Margin="35" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Image x:Name="deleteRecImage" Margin="0,0,10,0" Source="/View/images/deleted_grey_icon.png" Grid.Column="0"  Height="35" Stretch="Uniform" HorizontalAlignment="Center"/>
+                    <Image x:Name="deleteRecImage" MaxHeight="36" Margin="0,0,10,0" Source="/View/images/deleted_grey_icon.png" Grid.Column="0" Stretch="Uniform" HorizontalAlignment="Center"/>
                     <TextBlock x:Name="deleteRecText" TextAlignment="Center" Grid.Column="1" FontSize="24" Foreground="#686868" Text="{Binding Path= LocalizedResources.Drag_Here_To_Delete, Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
             </Border>
@@ -934,7 +945,7 @@
 
         <Grid Canvas.ZIndex="1" x:Name="WalkieTalkieDeleteGrid" IsHitTestVisible="False" Background="#696969" Visibility="Collapsed" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
             <StackPanel Canvas.ZIndex="3" Margin="35" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Image x:Name="deleteRecImageSuc" Margin="0,0,10,0" Grid.Column="0"  Height="35" Stretch="Uniform" HorizontalAlignment="Center"/>
+                <Image x:Name="deleteRecImageSuc" Margin="0,0,10,0" Grid.Column="0" Height="30" Stretch="Uniform" HorizontalAlignment="Center"/>
                 <TextBlock x:Name="deleteRecTextSuc" Foreground="White" TextAlignment="Center" Grid.Column="1" FontSize="24"  Text="{Binding Path= LocalizedResources.Message_Cancelled, Source={StaticResource LocalizedStrings}}"/>
             </StackPanel>
         </Grid>
