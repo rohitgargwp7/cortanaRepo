@@ -1896,7 +1896,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Now send stickers and emoticons!.
+        ///   Looks up a localized string similar to Tap this to express with stickers and smileys.
         /// </summary>
         public static string In_App_Tip_1 {
             get {
@@ -1905,7 +1905,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap here to see stickers.
+        ///   Looks up a localized string similar to Tap here to check out our new stickers!.
         /// </summary>
         public static string In_App_Tip_2 {
             get {
@@ -1914,7 +1914,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can now send Voice messages to your friends with the new Walkie Talkie feature.
+        ///   Looks up a localized string similar to Tap here to use Walkie Talkie and send voice messages.
         /// </summary>
         public static string In_App_Tip_3 {
             get {
@@ -1923,7 +1923,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap here to use some cute moods in your Status Update.
+        ///   Looks up a localized string similar to Tap this to express your mood with status updates.
         /// </summary>
         public static string In_App_Tip_4 {
             get {
@@ -1932,11 +1932,20 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This is a status update from {0}.
+        ///   Looks up a localized string similar to This status update was just posted by {0}.
         /// </summary>
         public static string In_App_Tip_5 {
             get {
                 return ResourceManager.GetString("In_App_Tip_5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message sent successfully.
+        /// </summary>
+        public static string Invite_Sent_Successfully {
+            get {
+                return ResourceManager.GetString("Invite_Sent_Successfully", resourceCulture);
             }
         }
         
@@ -3480,7 +3489,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show my last seen.
+        ///   Looks up a localized string similar to See/show last online timestamp.
         /// </summary>
         public static string Show_LastSeen_TimeStamp {
             get {

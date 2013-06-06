@@ -59,7 +59,7 @@
         </DataTemplate>
         <DataTemplate x:Name="dtTypingNotificationBubble" >
             <Grid Width="{Binding LayoutGridWidth}" >
-                <Image Source="/View/images/typing.png" Height="28" Width="55" HorizontalAlignment="Left" Margin="24, 5, 0, 15"></Image>
+                <Image Source="/View/images/typing.png" Height="20" Width="40" HorizontalAlignment="Left" Margin="24, 5, 0, 15"></Image>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Name="dtRecievedBubbleText" >

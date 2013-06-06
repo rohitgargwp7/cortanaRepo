@@ -207,6 +207,11 @@ namespace windows_client
         public static readonly string MOOD = "mood";
         public static readonly string TIME_OF_DAY = "timeofday";
 
+        public static readonly string NO_TOKEN = "notoken";
+        public static readonly string INVALID_TOKEN = "invalidtoken";
+        public static readonly string FAILURE = "failure";
+        public static readonly string SUCCESS = "success";
+
         public static readonly string PRO_TIP_ID = "i";
         public static readonly string PRO_TIP_HEADER = "h";
         public static readonly string PRO_TIP_TEXT = "t";
