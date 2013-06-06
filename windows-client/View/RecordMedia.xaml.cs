@@ -197,6 +197,8 @@ namespace windows_client.View
             statusImage.Source = playIcon;
             sendIconButton.IsEnabled = true;
             myState = RecorderState.RECORDED;
+           
+            microphone.BufferReady -= microphone_BufferReady;
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)

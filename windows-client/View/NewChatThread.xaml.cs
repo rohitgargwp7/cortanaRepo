@@ -455,6 +455,15 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
+            if (e.NavigationMode == NavigationMode.Back)
+            {
+                if (_microphone != null)
+                {
+                    _microphone.BufferReady -= microphone_BufferReady;
+                    _microphone.BufferReady += microphone_BufferReady;
+                }
+            }
+
             if (_dt != null)
             {
                 _dt.Tick -= dt_Tick;
@@ -616,6 +625,9 @@ namespace windows_client.View
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
+
+            if (_microphone != null)
+                _microphone.BufferReady -= microphone_BufferReady;
 
             if (e.IsNavigationInitiator)
             {
