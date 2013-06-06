@@ -2701,6 +2701,8 @@ namespace windows_client.View
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
             convMessage.IsSms = !isOnHike;
             sendMsg(convMessage, false);
+
+            spSmsCharCounter.Visibility = Visibility.Collapsed;
         }
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
