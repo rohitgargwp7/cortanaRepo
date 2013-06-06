@@ -4708,7 +4708,8 @@ namespace windows_client.View
                 dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_3;
                 pivotIndex++;
             }
-            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_4)) != null)
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_4)) != null
+                && (App.MSISDN.Contains("+91") || App.MSISDN.Contains("+94") || App.MSISDN.Contains("+880") || App.MSISDN.Contains("+977") || App.MSISDN.Contains("+93") || App.MSISDN.Contains("+92") || App.MSISDN.Contains("+975") || App.MSISDN.Contains("+960") || App.MSISDN.Contains("+968") || App.MSISDN.Contains("+966") || App.MSISDN.Contains("+961") || App.MSISDN.Contains("+962") || App.MSISDN.Contains("+965") || App.MSISDN.Contains("+973") || App.MSISDN.Contains("+971") || App.MSISDN.Contains("+974"))
             {
                 CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
                 rectCategory4.Visibility = Visibility.Visible;

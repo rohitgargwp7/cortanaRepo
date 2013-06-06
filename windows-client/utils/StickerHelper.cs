@@ -14,11 +14,11 @@ namespace windows_client.utils
 
     public class StickerHelper
     {
-        public const string CATEGORY_1 = "kitty";
-        public const string CATEGORY_2 = "expressions";
-        public const string CATEGORY_3 = "rageface";
-        public const string CATEGORY_4 = "doggy";
-        public const string CATEGORY_5 = "bollywood";
+        public const string CATEGORY_1 = "doggy";
+        public const string CATEGORY_2 = "kitty";
+        public const string CATEGORY_3 = "expressions";
+        public const string CATEGORY_4 = "bollywood";
+        public const string CATEGORY_5 = "rageface";
 
         public const string _stickerWVGAPath = "/View/images/stickers/WVGA/{0}";
         public const string _sticker720path = "/View/images/stickers/720p/{0}";
