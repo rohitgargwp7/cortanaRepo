@@ -140,9 +140,6 @@ namespace windows_client.utils
 
         public static string getRelativeTimeForLastSeen(long timestamp)
         {
-            long timespanMilliSeconds = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds - timestamp * 1000;
-            TimeSpan ts = TimeSpan.FromMilliseconds(timespanMilliSeconds);
-
             long ticks = timestamp * 10000000;
             ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
             DateTime receivedTime = new DateTime(ticks);
@@ -152,21 +149,21 @@ namespace windows_client.utils
                 if (App.Is24HourTimeFormat)
                     return Languages.AppResources.Last_Seen + " " + Languages.AppResources.Today_Txt + " " + Languages.AppResources.At_Txt + " " + receivedTime.ToString("HH\\:mm", CultureInfo.CurrentUICulture);
                 else
-                    return Languages.AppResources.Last_Seen + " " + Languages.AppResources.Today_Txt + " " + Languages.AppResources.At_Txt + " " + receivedTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture);
+                    return Languages.AppResources.Last_Seen + " " + Languages.AppResources.Today_Txt + " " + Languages.AppResources.At_Txt + " " + receivedTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
             }
             else if ((receivedTime - DateTime.Now.Date).Days  == 1) // yesterday
             {
                 if (App.Is24HourTimeFormat)
                     return Languages.AppResources.Last_Seen + " " + Languages.AppResources.Yesterday_Txt + " " + Languages.AppResources.At_Txt + " " + receivedTime.ToString("HH\\:mm", CultureInfo.CurrentUICulture);
                 else
-                    return Languages.AppResources.Last_Seen + " " + Languages.AppResources.Yesterday_Txt + " " + Languages.AppResources.At_Txt + " " + receivedTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture);
+                    return Languages.AppResources.Last_Seen + " " + Languages.AppResources.Yesterday_Txt + " " + Languages.AppResources.At_Txt + " " + receivedTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
             }
             else if ((receivedTime - DateTime.Now.Date).Days < 7) // less than two weeks ago
             {
                 if(App.Is24HourTimeFormat)
                     return Languages.AppResources.Last_Seen + " " + receivedTime.ToString("HH\\:mm, d/M/yyyy", CultureInfo.CurrentUICulture);
                 else
-                    return Languages.AppResources.Last_Seen + " " + receivedTime.ToString("h\\:mm tt, d/M/yyyy", CultureInfo.CurrentUICulture);
+                    return Languages.AppResources.Last_Seen + " " + receivedTime.ToString("h\\:mm tt, d/M/yyyy", CultureInfo.CurrentUICulture).Replace(" AM","a").Replace(" PM","p");
             }
             else
                 return Languages.AppResources.Last_Seen + " " + AppResources.TimeUtils_Sometime_Ago;

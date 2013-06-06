@@ -16,9 +16,9 @@ namespace windows_client.utils
     class ProTipHelper
     {
         readonly Int32 MAX_QUEUE_SIZE = 1000;
-        private static string PROTIPS_DIRECTORY = "ProTips";
-        private static string proTipsListFileName = "proTipList";
-        private static string deletedProTipsListFileName = "delProTipList";
+        private const string PROTIPS_DIRECTORY = "ProTips";
+        private const string proTipsListFileName = "proTipList";
+        private const string deletedProTipsListFileName = "delProTipList";
         
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static object readWriteLock = new object();
