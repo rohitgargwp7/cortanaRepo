@@ -468,6 +468,7 @@
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
+    <Content Include="View\images\active_bolly.png" />
     <Content Include="View\images\add_favorites.png" />
     <Content Include="View\images\add_friend.png" />
     <Content Include="View\images\add_users_white.png" />
@@ -499,6 +500,8 @@
     <Content Include="View\images\deleted_grey_icon.png" />
     <Content Include="View\images\deleted_white_icon.png" />
     <Content Include="View\images\delete_account_white.png" />
+    <Content Include="View\images\doggy_icon.png" />
+    <Content Include="View\images\doggy_i_icon.png" />
     <Content Include="View\images\download.jpg" />
     <Content Include="View\images\drop_pin_icon.png" />
     <Content Include="View\images\emptyImage.png" />
@@ -506,6 +509,8 @@
     <Content Include="View\images\empty_screen_logo_white.png" />
     <Content Include="View\images\empty_screen_tip_black.png" />
     <Content Include="View\images\empty_screen_tip_white.png" />
+    <Content Include="View\images\expressions.png" />
+    <Content Include="View\images\expressions_i.png" />
     <Content Include="View\images\favorites_heart.png" />
     <Content Include="View\images\favorites_tour_01.jpg" />
     <Content Include="View\images\favorites_tour_02.jpg" />
@@ -533,8 +538,11 @@
     <Content Include="View\images\icon_sending.png" />
     <Content Include="View\images\icon_stop.png" />
     <Content Include="View\images\icon_stop_appbar.png" />
+    <Content Include="View\images\Inactive_bolly.png" />
     <Content Include="View\images\invite.png" />
     <Content Include="View\images\invite_dark.png" />
+    <Content Include="View\images\kitty_icon.png" />
+    <Content Include="View\images\kitty_i_icon.png" />
     <Content Include="View\images\loading.jpg" />
     <Content Include="View\images\last_seen_clock_black.png" />
     <Content Include="View\images\last_seen_clock_white.png" />
@@ -574,6 +582,8 @@
     <Content Include="View\images\profile_header_stock_dark.png" />
     <Content Include="View\images\refresh_bar_arrow.png" />
     <Content Include="View\images\remove_wt_icon.png" />
+    <Content Include="View\images\rf_icon.png" />
+    <Content Include="View\images\rf_i_icon.png" />
     <Content Include="View\images\settings_icon_dark.png" />
     <Content Include="View\images\settings_icon_white.png" />
     <Content Include="View\images\stickers\720p\1_awww.png" />
@@ -600,7 +610,6 @@
     <Content Include="View\images\stickers\WXGA\6_sshh.png" />
     <Content Include="View\images\stickers\WXGA\7_pheww.png" />
     <Content Include="View\images\stickers\WXGA\8_crying.png" />
-    <Content Include="View\images\stickrcat1.png" />
     <Content Include="View\images\close_white.png" />
     <Content Include="View\images\close_black.png" />
     <Content Include="View\images\timeline_photo.png" />

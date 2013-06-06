@@ -4401,7 +4401,6 @@ namespace windows_client.View
             AddNewMessageToUI(conv, false);
 
             mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
-            emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void PivotStickers_SelectionChanged(object sender, SelectionChangedEventArgs e)
