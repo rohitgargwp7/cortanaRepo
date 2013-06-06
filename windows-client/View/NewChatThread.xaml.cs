@@ -699,7 +699,8 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
-            ShowDownloadOverlay(false);
+            if (gridDownloadStickers.Visibility == Visibility.Visible)
+                ShowDownloadOverlay(false);
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
                 App.ViewModel.HideToolTip(LayoutRoot, 1);
@@ -4724,14 +4725,16 @@ namespace windows_client.View
         {
             if (show)
             {
+                overlayRectangle.Tap += overlayRectangle_Tap_1;
                 overlayRectangle.Visibility = Visibility.Visible;
-                DownloadStickers.Visibility = Visibility.Visible;
+                gridDownloadStickers.Visibility = Visibility.Visible;
                 llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = false;
             }
             else
             {
+                overlayRectangle.Tap -= overlayRectangle_Tap_1;
                 overlayRectangle.Visibility = Visibility.Collapsed;
-                DownloadStickers.Visibility = Visibility.Collapsed;
+                gridDownloadStickers.Visibility = Visibility.Collapsed;
                 llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
             }
         }
