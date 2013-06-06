@@ -255,17 +255,39 @@
                     </toolkit:ContextMenu>
                 </toolkit:ContextMenuService.ContextMenu>
                 <!--to maintain width-->
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Width="250"></TextBlock>
-                <Image HorizontalAlignment="Right" Source="{Binding MessageImage}" Grid.Row="0" Grid.Column="0" />
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                <Grid Visibility="{Binding IsStickerVisible}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Width="250"></TextBlock>
+                    <Image HorizontalAlignment="Right" Source="{Binding MessageImage}" Grid.Row="0" Grid.Column="0" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                </Grid>
+                <Grid Visibility="{Binding IsStickerLoading}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Column="0" Grid.RowSpan="2" Width="250"></TextBlock>
+                    <ProgressBar Foreground="#1ba1e2" IsIndeterminate="True" IsEnabled="True" Width="200" HorizontalAlignment="Stretch" Margin="0 20 0 40"/>
+                    <TextBlock Grid.Row="1" Text="{Binding Path=LocalizedResources.DownloadingSticker_txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}" TextAlignment="Left" />
+                </Grid>
+                <Grid Visibility="{Binding IsHttpFailed}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Column="0" Grid.RowSpan="3" Width="250"></TextBlock>
+                    <Image Source="/View/images/download_failed_bubble.png" MaxHeight="30" Margin="0 30 40 0"/>
+                    <TextBlock Grid.Row="1" Text="{Binding Path=LocalizedResources.StickerDownloadFailed, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                    <TextBlock Grid.Row="2" Text="{Binding Path=LocalizedResources.TapHereToRetyTxt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                </Grid>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Name="dtSentBubbleText" >
@@ -500,18 +522,29 @@
                     </toolkit:ContextMenu>
                 </toolkit:ContextMenuService.ContextMenu>
                 <!--to maintain width-->
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Width="250"></TextBlock>
-                <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Width="30" Grid.Column="0" HorizontalAlignment="Right" Grid.RowSpan="2"></Image>
-                <Image HorizontalAlignment="Right" Source="{Binding MessageImage}" Grid.Row="0" Grid.Column="1" />
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                <Grid Visibility="{Binding IsStickerVisible}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Width="250"></TextBlock>
+                    <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Width="30" Grid.Column="0" HorizontalAlignment="Right" Grid.RowSpan="2"></Image>
+                    <Image HorizontalAlignment="Right" Source="{Binding MessageImage}" Grid.Row="0" Grid.Column="1" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                </Grid>
+                <Grid Visibility="{Binding IsStickerLoading}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.RowSpan="2" Width="250"></TextBlock>
+                    <ProgressBar Foreground="#1ba1e2" IsIndeterminate="True" IsEnabled="True" Width="150" HorizontalAlignment="Stretch" Margin="0 20 0 10"/>
+                    <TextBlock Grid.Row="1" Text="{Binding Path=LocalizedResources.DownloadingSticker_txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}" TextAlignment="Center" />
+                </Grid>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="SelectingTemplate">
@@ -747,7 +780,7 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="StickersBack_Tap">
-                            <Image Source="images\back.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Source="images\back_button.png.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </StackPanel>
                         <Rectangle  Name="rectCategory1" Width="15" Grid.Column="1" />
                         <StackPanel Name="stCategory1" Grid.Column="2" Background="#1ba1e2"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category1_Tap" >

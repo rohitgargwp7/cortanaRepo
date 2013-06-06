@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -490,7 +490,7 @@
     <Content Include="View\images\avatars\Sneakers.png" />
     <Content Include="View\images\avatars\Space.png" />
     <Content Include="View\images\avatars\TealPeople.png" />
-    <Content Include="View\images\back.png" />
+    <Content Include="View\images\back_button.png" />
     <Content Include="View\images\blocklist_holder.png" />
     <Content Include="View\images\block_list_icon.png" />
     <Content Include="View\images\block_list_icon_white.png" />
@@ -502,7 +502,7 @@
     <Content Include="View\images\delete_account_white.png" />
     <Content Include="View\images\doggy_icon.png" />
     <Content Include="View\images\doggy_i_icon.png" />
-    <Content Include="View\images\download.jpg" />
+    <Content Include="View\images\download_failed_bubble.png" />
     <Content Include="View\images\drop_pin_icon.png" />
     <Content Include="View\images\emptyImage.png" />
     <Content Include="View\images\empty_screen_logo_black.png" />

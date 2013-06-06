@@ -525,9 +525,7 @@ namespace windows_client.Model
                 if (_stickerObj != null)
                 {
                     if (_stickerObj.StickerImage != null)
-                        return _stickerObj.StickerImage;//todo:if null return loading image
-                    else
-                        return UI_Utils.Instance.StickerLoadingImage;
+                        return _stickerObj.StickerImage;
                 }
 
                 if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
@@ -560,6 +558,9 @@ namespace windows_client.Model
                 imageDownloadFailed = value;
                 NotifyPropertyChanged("MessageImage");
                 NotifyPropertyChanged("ShowForwardMenu");
+                NotifyPropertyChanged("IsStickerVisible");
+                NotifyPropertyChanged("IsStickerLoading");
+                NotifyPropertyChanged("IsHttpFailed");
             }
         }
         Visibility _playIconVisibility = Visibility.Visible;
@@ -803,6 +804,38 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility IsStickerVisible
+        {
+            get
+            {
+                if (StickerObj != null && StickerObj.StickerImage != null)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public Visibility IsStickerLoading
+        {
+            get
+            {
+                if (StickerObj != null && StickerObj.StickerImage == null && !imageDownloadFailed)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public Visibility IsHttpFailed
+        {
+            get
+            {
+                if (StickerObj != null && StickerObj.StickerImage == null && imageDownloadFailed)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
         public Visibility GroupMemberVisibility
         {
             get

@@ -1753,4 +1753,13 @@ Get hike: http://get.hike.in</value>
   <data name="ConfimFriendUserProfile_Txt" xml:space="preserve">
     <value>You will now be able to see updates from each other</value>
   </data>
+  <data name="DownloadingSticker_txt" xml:space="preserve">
+    <value>loading sticker</value>
+  </data>
+  <data name="StickerDownloadFailed" xml:space="preserve">
+    <value>Sticker download failed.</value>
+  </data>
+  <data name="TapHereToRetyTxt" xml:space="preserve">
+    <value>Tap here to retry.</value>
+  </data>
 </root>

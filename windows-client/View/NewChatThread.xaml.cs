@@ -1736,11 +1736,10 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                     NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
                 }
-                if (convMessage.StickerObj != null && (convMessage.StickerObj.StickerImage == null || convMessage.ImageDownloadFailed))
+                if (convMessage.StickerObj != null && convMessage.StickerObj.StickerImage == null && convMessage.ImageDownloadFailed)
                 {
                     AccountUtils.GetSingleSticker(convMessage, ResolutionId, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
-                    convMessage.StickerObj.StickerImage = UI_Utils.Instance.StickerLoadingImage;
-                    convMessage.ImageDownloadFailed = true;
+                    convMessage.ImageDownloadFailed = false;
                 }
                 else if (convMessage.FileAttachment == null || convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
                     return;
@@ -4599,7 +4598,6 @@ namespace windows_client.View
                 }
                 if (convMessage != null)
                 {
-                    convMessage.StickerObj.StickerImage = UI_Utils.Instance.TextStatusImage;//todo:set to http failed image
                     convMessage.ImageDownloadFailed = true;
                 }
                 return;
