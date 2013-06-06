@@ -1077,7 +1077,7 @@ namespace windows_client.Model
             else if (metadataJsonString != null && metadataJsonString.Contains(HikeConstants.STICKER_ID))
             {
                 data[HikeConstants.METADATA] = JObject.Parse(metadataJsonString);
-                obj[HikeConstants.SUB_TYPE] = HikeConstants.SUBTYPE_STICKER;
+                obj[HikeConstants.SUB_TYPE] = NetworkManager.STICKER;
             }
             obj[HikeConstants.TO] = _msisdn;
             obj[HikeConstants.DATA] = data;
@@ -1320,6 +1320,7 @@ namespace windows_client.Model
                 if (obj.TryGetValue(HikeConstants.SUB_TYPE, out isSticker) && data.TryGetValue(HikeConstants.METADATA, out stickerJson))
                 {
                     metadataJsonString = stickerJson.ToString(Newtonsoft.Json.Formatting.None);
+                    _message = AppResources.Sticker_Txt;
                 }
 
                 long serverTimeStamp = (long)data[HikeConstants.TIMESTAMP];

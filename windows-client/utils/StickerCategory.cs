@@ -136,11 +136,11 @@ namespace windows_client.utils
             }
         }
 
-        public void WriteHighResToFile(Dictionary<string, Byte[]> dictStcikers)
+        public void WriteHighResToFile(List<KeyValuePair<string, Byte[]>> listStickersImageBytes)
         {
             lock (readWriteLock)
             {
-                if (dictStcikers != null && dictStcikers.Count > 0)
+                if (listStickersImageBytes != null && listStickersImageBytes.Count > 0)
                 {
                     try
                     {
@@ -159,20 +159,28 @@ namespace windows_client.utils
                             {
                                 store.CreateDirectory(STICKERS_DIR + "\\" + HIGH_RESOLUTION_DIR + "\\" + _category);
                             }
-                            foreach (string stickerId in dictStcikers.Keys)
+                            foreach (KeyValuePair<string, Byte[]> keyValuePair in listStickersImageBytes)
                             {
-                                string fileName = folder + "\\" + stickerId;
-
-                                using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                                string fileName = folder + "\\" + keyValuePair.Key;
+                                try
                                 {
-                                    using (BinaryWriter writer = new BinaryWriter(file))
+                                    Byte[] imageBytes = keyValuePair.Value;
+                                    if (imageBytes == null || imageBytes.Length == 0)
+                                        continue;
+                                    using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                                     {
-                                        Byte[] imageBytes = dictStcikers[stickerId];
-                                        writer.Write(imageBytes.Length);
-                                        writer.Write(imageBytes);
-                                        writer.Flush();
-                                        writer.Close();
+                                        using (BinaryWriter writer = new BinaryWriter(file))
+                                        {
+                                            writer.Write(imageBytes.Length);
+                                            writer.Write(imageBytes);
+                                            writer.Flush();
+                                            writer.Close();
+                                        }
                                     }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine("Writing HIgh res Sticker:{0} failed,Exception:{1}", fileName, ex.Message);
                                 }
                             }
                         }
@@ -185,11 +193,11 @@ namespace windows_client.utils
             }
         }
 
-        public void WriteLowResToFile(Dictionary<string, Byte[]> dictStcikers, bool hasMoreStickers)
+        public void WriteLowResToFile(List<KeyValuePair<string, Byte[]>> listStickersImageBytes, bool hasMoreStickers)
         {
             lock (readWriteLock)
             {
-                if ((dictStcikers != null && dictStcikers.Count > 0) || hasMoreStickers)
+                if ((listStickersImageBytes != null && listStickersImageBytes.Count > 0) || hasMoreStickers)
                 {
                     try
                     {
@@ -210,20 +218,29 @@ namespace windows_client.utils
                                 store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + _category);
                             }
 
-                            foreach (string stickerId in dictStcikers.Keys)
+                            foreach (KeyValuePair<string, byte[]> keyValuePair in listStickersImageBytes)
                             {
-                                string fileName = folder + "\\" + stickerId;
+                                string fileName = folder + "\\" + keyValuePair.Key;
 
-                                using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                                try
                                 {
-                                    using (BinaryWriter writer = new BinaryWriter(file))
+                                    Byte[] imageBytes = keyValuePair.Value;
+                                    if (imageBytes == null || imageBytes.Length == 0)
+                                        continue;
+                                    using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                                     {
-                                        Byte[] imageBytes = dictStcikers[stickerId];
-                                        writer.Write(imageBytes.Length);
-                                        writer.Write(imageBytes);
-                                        writer.Flush();
-                                        writer.Close();
+                                        using (BinaryWriter writer = new BinaryWriter(file))
+                                        {
+                                            writer.Write(imageBytes == null ? 0 : imageBytes.Length);
+                                            writer.Write(imageBytes);
+                                            writer.Flush();
+                                            writer.Close();
+                                        }
                                     }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine("Writing Sticker:{0} failed,Exception:{1}", fileName, ex.Message);
                                 }
                             }
                             string metadataFile = folder + "\\" + METADATA;
@@ -290,7 +307,7 @@ namespace windows_client.utils
             }
         }
 
-        public static BitmapImage GetStickerFromDb(string stickerId, string category)
+        public static BitmapImage GetHighResolutionSticker(string stickerId, string category)
         {
             if (string.IsNullOrEmpty(stickerId) || string.IsNullOrEmpty(category))
                 return null;
@@ -359,7 +376,7 @@ namespace windows_client.utils
             }
         }
 
-        public static List<StickerCategory> ReadAllCategoriesFromDb()
+        public static List<StickerCategory> ReadAllStickerCategories()
         {
             List<StickerCategory> listStickerCategory = new List<StickerCategory>();
             lock (readWriteLock)
@@ -373,9 +390,10 @@ namespace windows_client.utils
                         if (folders != null)
                             foreach (string category in folders)
                             {
-                                Dictionary<string, Byte[]> dictImageBytes = new Dictionary<string, Byte[]>();
+                                List<KeyValuePair<string, Byte[]>> listImageBytes = new List<KeyValuePair<string, Byte[]>>();
                                 StickerCategory stickerCategory = new StickerCategory(category);
-                                string[] files = store.GetFileNames(folder + "\\" + category + "\\*");
+                                string[] files1 = store.GetFileNames(folder + "\\" + category + "\\*");
+                                IEnumerable<string> files= files1.OrderBy(x => x);
                                 if (files != null)
 
                                     foreach (string stickerId in files)
@@ -385,24 +403,32 @@ namespace windows_client.utils
                                         {
                                             using (var reader = new BinaryReader(file))
                                             {
-                                                if (stickerId == METADATA)
+                                                try
                                                 {
-                                                    stickerCategory._hasMoreStickers = reader.ReadBoolean();
-                                                    stickerCategory._showDownloadMessage = reader.ReadBoolean();
+                                                    if (stickerId == METADATA)
+                                                    {
+                                                        stickerCategory._hasMoreStickers = reader.ReadBoolean();
+                                                        stickerCategory._showDownloadMessage = reader.ReadBoolean();
+                                                    }
+                                                    else
+                                                    {
+                                                        int imageBytesCount = reader.ReadInt32();
+                                                        listImageBytes.Add(new KeyValuePair<string, Byte[]>(stickerId, reader.ReadBytes(imageBytesCount)));
+                                                    }
                                                 }
-                                                else
+                                                catch (Exception ex)
                                                 {
-                                                    int imageBytesCount = reader.ReadInt32();
-                                                    dictImageBytes.Add(stickerId, reader.ReadBytes(imageBytesCount));
+                                                    Debug.WriteLine("Exception in reading sticker file,message:" + ex.Message);
                                                 }
                                             }
                                         }
                                     }
                                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                                 {
-                                    foreach (string stickerId in dictImageBytes.Keys)
+                                    foreach (KeyValuePair<string, Byte[]> keyValuePair in listImageBytes)
                                     {
-                                        stickerCategory._listStickers.Add(new Sticker(category, stickerId, UI_Utils.Instance.createImageFromBytes(dictImageBytes[stickerId])));
+
+                                        stickerCategory._listStickers.Add(new Sticker(category, keyValuePair.Key, UI_Utils.Instance.createImageFromBytes(keyValuePair.Value)));
                                     }
                                 });
                                 listStickerCategory.Add(stickerCategory);

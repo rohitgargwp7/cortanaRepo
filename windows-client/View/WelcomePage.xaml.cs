@@ -133,8 +133,8 @@ namespace windows_client
             else
             {
                 utils.Utils.savedAccountCredentials(obj);
-                if (App.MSISDN.StartsWith("+91"))
-                    App.WriteToIsoStorageSettings(App.COUNTRY_CODE_SETTING, "+91");
+                if (App.MSISDN.StartsWith(HikeConstants.INDIA_COUNTRY_CODE))
+                    App.WriteToIsoStorageSettings(App.COUNTRY_CODE_SETTING, HikeConstants.INDIA_COUNTRY_CODE);
                 nextPage = new Uri("/View/EnterName.xaml", UriKind.Relative);
                 /* scan contacts and post addressbook on server*/
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));

@@ -16,10 +16,13 @@ namespace windows_client
         public static readonly string TO = "to";
         public static readonly string FROM = "f";
         public static readonly string SUB_TYPE = "st";
-        public static readonly string SUBTYPE_STICKER = "stk";
-        public static readonly string SUBTYPE_CATEGORY = "cat";
         public static readonly string SUBTYPE_NEW_JOIN = "nu";
         public static readonly string SUBTYPE_REJOIN = "ru";
+
+        public static readonly string ADD_STICKER = "addStk";
+        public static readonly string ADD_CATEGORY = "addCat";
+        public static readonly string REMOVE_STICKER = "remStk";
+        public static readonly string REMOVE_CATEGORY = "remCat";
 
         public static readonly string HIKE_MESSAGE = "hm";
         public static readonly string SMS_MESSAGE = "sm";
@@ -208,6 +211,7 @@ namespace windows_client
         public static readonly string PROFILE_PIC_ID = "ppid";
         public static readonly string MOOD = "mood";
         public static readonly string TIME_OF_DAY = "timeofday";
+        public static readonly string INDIA_COUNTRY_CODE = "+91";
 
         public static readonly string PRO_TIP_ID = "i";
         public static readonly string PRO_TIP_HEADER = "h";

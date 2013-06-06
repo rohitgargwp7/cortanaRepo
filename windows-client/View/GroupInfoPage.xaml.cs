@@ -468,7 +468,7 @@ namespace windows_client.View
         {
             App.AnalyticsInstance.addEvent(Analytics.INVITE_SMS_PARTICIPANTS);
             //TODO start this loop from end, after sorting is done on onHike status
-            if (App.MSISDN.Contains("+91"))//for non indian open sms client
+            if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
             {
                 for (int i = 0; i < GroupManager.Instance.GroupCache[groupId].Count; i++)
                 {

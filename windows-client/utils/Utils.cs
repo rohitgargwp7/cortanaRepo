@@ -300,7 +300,7 @@ namespace windows_client.utils
         {
             if (msisdn == null)
                 return false;
-            if (msisdn.StartsWith("+91"))
+            if (msisdn.StartsWith(HikeConstants.INDIA_COUNTRY_CODE))
                 return true;
             return false;
         }
@@ -353,13 +353,13 @@ namespace windows_client.utils
             {
                 string country_code = null;
                 App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-                return ((country_code == null ? "+91" : country_code) + msisdn.Substring(1));
+                return ((country_code == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code) + msisdn.Substring(1));
             }
             else
             {
                 string country_code2 = null;
                 App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code2);
-                return (country_code2 == null ? "+91" : country_code2) + msisdn;
+                return (country_code2 == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code2) + msisdn;
             }
         }
 
@@ -489,6 +489,13 @@ namespace windows_client.utils
                 }
                 return currentResolution;
             }
+        }
+
+        public static void RequestServerEpochTime()
+        {
+            JObject obj = new JObject();
+            obj[HikeConstants.TYPE] = HikeConstants.REQUEST_SERVER_TIME;
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
     }
 }

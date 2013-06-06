@@ -3,6 +3,10 @@
   <DefaultLanguage xmlns="" code="en-US" />
   <Languages xmlns="">
     <Language code="de-DE" />
+    <Language code="fr" />
+    <Language code="pt-BR" />
+    <Language code="es" />
+    <Language code="ru" />
   </Languages>
   <App xmlns="" ProductID="{d3fe1cb5-8328-4a7b-8932-caabc1d22288}" Title="Hike" IsBeta="true" RuntimeType="Silverlight" Version="2.1.0.4" Genre="apps.normal" Author="windows_client author" Description="Messaging Application" Publisher="windows_client" PublisherID="{d9c2d577-1f1d-4f5c-8082-4fd8cbe41ad6}">
     <IconPath IsRelative="true" IsResource="false">Application_IconImage_62x62.png</IconPath>
@@ -33,17 +37,12 @@
           <Count>0</Count>
           <IconImageURI IsRelative="true" IsResource="false">hike_medium.png</IconImageURI>
           <Title>Hike</Title>
-          <Message>
-          </Message>
-          <BackgroundColor>
-          </BackgroundColor>
+          <Message></Message>
+          <BackgroundColor></BackgroundColor>
           <HasLarge>True</HasLarge>
-          <LargeContent1>
-          </LargeContent1>
-          <LargeContent2>
-          </LargeContent2>
-          <LargeContent3>
-          </LargeContent3>
+          <LargeContent1></LargeContent1>
+          <LargeContent2></LargeContent2>
+          <LargeContent3></LargeContent3>
           <DeviceLockImageURI IsRelative="true" IsResource="false">Assets\LockImage.png</DeviceLockImageURI>
         </TemplateIconic>
       </PrimaryToken>

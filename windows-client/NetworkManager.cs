@@ -43,9 +43,9 @@ namespace windows_client
         public static readonly string ICON = "ic";
 
         public static readonly string SERVER_TIMESTAMP = "sts";
-        public static readonly string ADD_STICKER = "addSt";
-        public static readonly string REMOVE_STICKER = "remSt";
         public static readonly string LAST_SEEN = "ls";
+
+        public static readonly string STICKER = "stk";
 
         public static bool turnOffNetworkManager = true;
 
@@ -1386,33 +1386,26 @@ namespace windows_client
             {
                 long timediff = (long)jsonObj[HikeConstants.TIMESTAMP] - TimeUtils.getCurrentTimeStamp();
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.TIME_DIFF_EPOCH, timediff);
+                //todo:place this setting in some different file as will be written again and agian
             }
             #endregion
-            #region ADD STICKER/CATEGORY
-            else if (type == ADD_STICKER)
+            #region STICKER
+            else if (type == STICKER)
             {
                 try
                 {
+                    string subType = (string)jsonObj[HikeConstants.SUB_TYPE];
+                    JObject jsonData = (JObject)jsonObj[HikeConstants.DATA];
+
                     //do same for category as well as subcategory
-                    JObject jsonData = (JObject)jsonObj[HikeConstants.DATA];
-                    string category = (string)jsonData[HikeConstants.CATEGORY_ID];
-                    StickerCategory.UpdateHasMoreMessages(category, true);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine("NETWORK MANAGER :: Exception in ADD Sticker: " + e.StackTrace);
-                }
-            }
-            #endregion
-            #region REMOVE STICKER/CATEGORY
-            else if (type == REMOVE_STICKER)
-            {
-                try
-                {
-                    JObject jsonData = (JObject)jsonObj[HikeConstants.DATA];
-                    string category = (string)jsonData[HikeConstants.CATEGORY_ID];
-                    if (HikeConstants.SUBTYPE_STICKER == (string)jsonObj[HikeConstants.SUB_TYPE])
+                    if (subType == HikeConstants.ADD_STICKER || subType == HikeConstants.ADD_CATEGORY)
                     {
+                        string category = (string)jsonData[HikeConstants.CATEGORY_ID];
+                        StickerCategory.UpdateHasMoreMessages(category, true);
+                    }
+                    else if (subType == HikeConstants.REMOVE_STICKER)
+                    {
+                        string category = (string)jsonData[HikeConstants.CATEGORY_ID];
                         JArray jarray = (JArray)jsonData["stIds"];
                         List<string> listStickers = new List<string>();
                         for (int i = 0; i < jarray.Count; i++)
@@ -1421,8 +1414,9 @@ namespace windows_client
                         }
                         StickerCategory.DeleteSticker(category, listStickers);
                     }
-                    else
+                    else if (subType == HikeConstants.REMOVE_CATEGORY)
                     {
+                        string category = (string)jsonData[HikeConstants.CATEGORY_ID];
                         StickerCategory.DeleteCategory(category);
                     }
 

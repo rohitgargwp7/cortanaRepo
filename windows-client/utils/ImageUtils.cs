@@ -1206,7 +1206,7 @@ namespace windows_client.utils
                 mergedBItmpapImage.Blit(rec, writeableBitmap, rec);
                 using (var msLargeImage = new MemoryStream())
                 {
-                    mergedBItmpapImage.SaveJpeg(msLargeImage, Convert.ToInt32(140 * aspectratio), 140, 0, 100);
+                    mergedBItmpapImage.SaveJpeg(msLargeImage, Convert.ToInt32(120 * aspectratio), 120, 0, 100);
                     return msLargeImage.ToArray();
                 }
             }

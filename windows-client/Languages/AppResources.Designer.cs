@@ -3615,20 +3615,20 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sticker.
-        /// </summary>
-        public static string Stciker_Txt {
-            get {
-                return ResourceManager.GetString("Stciker_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Downloading.
         /// </summary>
         public static string Sticker_Downloading_Txt {
             get {
                 return ResourceManager.GetString("Sticker_Downloading_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sticker.
+        /// </summary>
+        public static string Sticker_Txt {
+            get {
+                return ResourceManager.GetString("Sticker_Txt", resourceCulture);
             }
         }
         
