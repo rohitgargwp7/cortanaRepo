@@ -831,8 +831,8 @@
                 
                 <Rectangle Width="1"  Fill="#080808" Grid.Column="3" Grid.Row="2"/>
                 <Grid Grid.Column="4" Grid.Row="2" Tap="sendContact_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                    <StackPanel Name="spContactTransfer" Orientation="Vertical" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Image Source="images\menu_contact_icon.png" Height="40" HorizontalAlignment="Center"/>
+                    <StackPanel Margin="0,5,0,0" Name="spContactTransfer" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Image Source="images\menu_contact_icon.png" Height="35" HorizontalAlignment="Center"/>
                         <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachement_Contact_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
                     </StackPanel>
                 </Grid>
