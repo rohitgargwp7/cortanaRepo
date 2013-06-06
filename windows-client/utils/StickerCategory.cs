@@ -392,7 +392,8 @@ namespace windows_client.utils
                             {
                                 List<KeyValuePair<string, Byte[]>> listImageBytes = new List<KeyValuePair<string, Byte[]>>();
                                 StickerCategory stickerCategory = new StickerCategory(category);
-                                string[] files = store.GetFileNames(folder + "\\" + category + "\\*");
+                                string[] files1 = store.GetFileNames(folder + "\\" + category + "\\*");
+                                IEnumerable<string> files= files1.OrderBy(x => x);
                                 if (files != null)
 
                                     foreach (string stickerId in files)

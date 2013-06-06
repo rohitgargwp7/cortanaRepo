@@ -4639,6 +4639,9 @@ namespace windows_client.View
                 {
                     string stickerId = keyValuePair.Key;
                     BitmapImage highResImage = UI_Utils.Instance.createImageFromBytes(keyValuePair.Value);
+                    if (highResImage == null)
+                        continue;
+
                     if (convMessage != null)
                     {
                         string key = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
@@ -4647,6 +4650,7 @@ namespace windows_client.View
                             continue;
                         dictStickerCache[key] = highResImage;
                     }
+
                     Byte[] lowResImageBytes = UI_Utils.Instance.PngImgToJpegByteArray(highResImage);
                     listLowResStickersBytes.Add(new KeyValuePair<string, byte[]>(stickerId, lowResImageBytes));
                     stickerCategory.ListStickers.Add(new Sticker(category, stickerId, UI_Utils.Instance.createImageFromBytes(lowResImageBytes)));
