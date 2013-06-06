@@ -861,7 +861,7 @@ namespace windows_client.utils
             get
             {
                 if (loadingImage == null)
-                    loadingImage = new BitmapImage(new Uri("/View/images/loading.jpg", UriKind.Relative));
+                    loadingImage = new BitmapImage(new Uri("/View/images/loading.png", UriKind.Relative));
                 return loadingImage;
             }
         }

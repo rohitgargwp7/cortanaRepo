@@ -129,7 +129,11 @@ namespace windows_client.DbUtils
                 obj.LastMessage = string.Format(AppResources.USER_JOINED_HIKE, obj.NameToShow);
                 convMessage.Message = obj.LastMessage;
             }
-
+            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED)
+            {
+                obj.LastMessage = string.Format(AppResources.USER_REJOINED_HIKE_TXT, obj.NameToShow);
+                convMessage.Message = obj.LastMessage;
+            }
             Stopwatch st1 = Stopwatch.StartNew();
             bool success = MessagesTableUtils.addMessage(convMessage);
             if (!success)

@@ -162,7 +162,13 @@ namespace windows_client.View
             {
                 freeSMSPanel.Visibility = Visibility.Collapsed;
             }
-
+            if (appSettings.Contains(App.SHOW_BASIC_TUTORIAL))
+            {
+                overlay.Visibility = Visibility.Visible;
+                overlay.Tap += DismissTutorial_Tap;
+                gridBasicTutorial.Visibility = Visibility.Visible;
+                launchPagePivot.IsHitTestVisible = false;
+            }
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -173,6 +179,7 @@ namespace windows_client.View
                 TotalUnreadStatuses = RefreshBarCount;  //and new statuses arrived in refresh bar
         }
 
+        #region STATUS UPDATE TUTORIAL
         private void DismissStatusUpdateTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             RemoveStatusUpdateTutorial();
@@ -186,6 +193,23 @@ namespace windows_client.View
             launchPagePivot.IsHitTestVisible = true;
             App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
         }
+        #endregion
+
+        #region BASIC TUTORIAL
+        private void DismissTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            RemoveTutorial();
+        }
+
+        private void RemoveTutorial()
+        {
+            overlay.Tap -= DismissTutorial_Tap;
+            overlay.Visibility = Visibility.Collapsed;
+            gridBasicTutorial.Visibility = Visibility.Collapsed;
+            launchPagePivot.IsHitTestVisible = true;
+            App.RemoveKeyFromAppSettings(App.SHOW_BASIC_TUTORIAL);
+        }
+        #endregion
 
         private void CircleOfFriends_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -548,6 +572,10 @@ namespace windows_client.View
                 RemoveStatusUpdateTutorial();
                 return;
             }
+            else if (gridBasicTutorial.Visibility == Visibility.Visible)
+            {
+                RemoveTutorial();
+            }
             App.AnalyticsInstance.addEvent(Analytics.GROUP_CHAT);
             PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
@@ -568,6 +596,10 @@ namespace windows_client.View
             {
                 RemoveStatusUpdateTutorial();
                 return;
+            }
+            else if (gridBasicTutorial.Visibility == Visibility.Visible)
+            {
+                RemoveTutorial();
             }
             App.AnalyticsInstance.addEvent(Analytics.COMPOSE);
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
@@ -2100,6 +2132,10 @@ namespace windows_client.View
             if (TutorialStatusUpdate.Visibility == Visibility.Visible)
             {
                 RemoveStatusUpdateTutorial();
+            }
+            else if (gridBasicTutorial.Visibility == Visibility.Visible)
+            {
+                RemoveTutorial();
             }
             Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);

@@ -28,7 +28,6 @@ namespace windows_client.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            string navigateTo = "/View/ConversationsList.xaml";//default page
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
 
@@ -53,8 +52,7 @@ namespace windows_client.View
                     StatusMsgsTable.MessagesDbUpdateToLatestVersion();
                 if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                     MqttDBUtils.MqttDbUpdateToLatestVersion();
-
-                navigateTo = "/View/ConversationsList.xaml";
+                
                 App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
                 Thread.Sleep(2000);//added so that this shows at least for 2 sec
                 App.appSettings[HikeConstants.AppSettings.APP_LAUNCH_COUNT] = 1;

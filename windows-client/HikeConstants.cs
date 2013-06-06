@@ -16,6 +16,8 @@ namespace windows_client
         public static readonly string TO = "to";
         public static readonly string FROM = "f";
         public static readonly string SUB_TYPE = "st";
+        public static readonly string SUBTYPE_NEW_JOIN = "nu";
+        public static readonly string SUBTYPE_REJOIN = "ru";
 
         public static readonly string ADD_STICKER = "addStk";
         public static readonly string ADD_CATEGORY = "addCat";

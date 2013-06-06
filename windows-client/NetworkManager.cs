@@ -358,6 +358,12 @@ namespace windows_client
                     return;
                 }
                 bool joined = USER_JOINED == type;
+                bool isRejoin=false;
+                JToken subtype;
+                if (jsonObj.TryGetValue(HikeConstants.SUB_TYPE, out subtype))
+                {
+                    isRejoin = HikeConstants.SUBTYPE_REJOIN == (string)subtype;
+                }
                 // update contacts cache
                 if (App.ViewModel.ContactsCache.ContainsKey(uMsisdn))
                     App.ViewModel.ContactsCache[uMsisdn].OnHike = joined;
@@ -371,7 +377,7 @@ namespace windows_client
                         return;
 
                     // if user does not exists we dont know about his onhike status , so we need to process
-                    ProcessUoUjMsgs(jsonObj, false, isUserInContactList);
+                    ProcessUoUjMsgs(jsonObj, false, isUserInContactList,isRejoin);
                 }
                 // if user has left, mark him as non hike user in group cache
                 else if (GroupManager.Instance.GroupCache != null)
@@ -768,7 +774,7 @@ namespace windows_client
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
             {
                 // {"t":"uo", "d":{"msisdn":"", "credits":10}}
-                ProcessUoUjMsgs(jsonObj, true, true);
+                ProcessUoUjMsgs(jsonObj, true, true,false);
             }
             #endregion
             #region GROUP CHAT RELATED
@@ -1559,7 +1565,7 @@ namespace windows_client
             return string.Format(AppResources.WAITING_TO_JOIN, msgText.ToString());
         }
 
-        private void ProcessUoUjMsgs(JObject jsonObj, bool isOptInMsg, bool isUserInContactList)
+        private void ProcessUoUjMsgs(JObject jsonObj, bool isOptInMsg, bool isUserInContactList,bool isRejoin)
         {
             int credits = 0;
 
@@ -1595,7 +1601,7 @@ namespace windows_client
                     if (isOptInMsg)
                         cm = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
                     else
-                        cm = new ConvMessage(ConvMessage.ParticipantInfoState.USER_JOINED, jsonObj);
+                        cm = new ConvMessage(isRejoin?ConvMessage.ParticipantInfoState.USER_REJOINED: ConvMessage.ParticipantInfoState.USER_JOINED, jsonObj);
                     cm.Msisdn = ms;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
                     if (obj == null)
