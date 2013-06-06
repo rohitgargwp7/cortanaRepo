@@ -3988,7 +3988,7 @@ namespace windows_client.View
                 string fileName;
                 if (isAudio)
                 {
-                    fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString();
+                    fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString()+".mp3";
                     convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
                     convMessage.FileAttachment.ContentType = "audio/voice";
 
@@ -4007,7 +4007,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    fileName = "vid_" + TimeUtils.getCurrentTimeStamp().ToString();
+                    fileName = "vid_" + TimeUtils.getCurrentTimeStamp().ToString()+".mp4";
                     convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.STARTED);
                     convMessage.FileAttachment.ContentType = "video/mp4";
                     convMessage.Message = AppResources.Video_Txt;
