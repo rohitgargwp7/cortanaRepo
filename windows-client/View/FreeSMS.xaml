@@ -171,7 +171,7 @@
                 </TextBlock>
 
             </StackPanel>
-            <Button Name="inviteNow" Grid.Row="3" Margin="0,15,0,0" Content="{Binding Path= LocalizedResources.FreeSMS_InviteNow_Btn, Source={StaticResource LocalizedStrings}}" Width="150" Height="68" FontSize="18" FontFamily="Segoe WP Semibold" Tap="InviteBtn_Tap"/>
+            <Button Name="inviteNow" Grid.Row="3" Margin="0,15,0,0" Content="{Binding Path= LocalizedResources.FreeSMS_InviteNow_Btn, Source={StaticResource LocalizedStrings}}" Height="68" FontSize="18" FontFamily="Segoe WP Semibold" Tap="InviteBtn_Tap" HorizontalAlignment="Center"/>
             <TextBlock Grid.Row="4" HorizontalAlignment="Center" Margin="0,0,0,5" FontSize="16" VerticalAlignment="Bottom" 
                        Text="{Binding Path= LocalizedResources.FreeSMS_IndiaOnly_TxtBlk, Source={StaticResource LocalizedStrings}}"></TextBlock>
         </Grid>

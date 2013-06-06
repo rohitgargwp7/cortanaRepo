@@ -773,7 +773,7 @@
                 </Grid>
             </StackPanel>
 
-            <Grid x:Name="attachmentMenu" Visibility="Visible" Height="350" Background="#292929">
+            <Grid x:Name="attachmentMenu" Visibility="Collapsed" Height="350" Background="#292929">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>

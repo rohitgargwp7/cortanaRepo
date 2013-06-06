@@ -56,9 +56,8 @@
         <Grid x:Name="ContentPanel" Margin="0,0,0,0" Grid.RowSpan="2" >
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="500" >
                 <Image Source="images\hike_logo_small.png" Height="40" HorizontalAlignment="Left" Margin="24,15,0,0"></Image>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="Auto" Height="35" Margin="24,20,0,0">
-                    <TextBlock TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.EnterName_YourMsisdn_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="24"  TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
-                    <TextBlock x:Name="txtBlckPhoneNumber" FontFamily="Segoe WP Semibold" TextWrapping="Wrap" Text="" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="420" Margin="24,20,0,0">
+                    <TextBlock Name="txtBlckPhoneNumber" TextWrapping="Wrap" Width="420" FontSize="24"  TextAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5"/>
                 </StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>

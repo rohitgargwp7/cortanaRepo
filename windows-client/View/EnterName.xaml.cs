@@ -212,7 +212,7 @@ namespace windows_client
                 userMsisdn.Append(msisdn.Substring(0, 3)).Append("-").Append(msisdn.Substring(3, 3)).Append("-").Append(msisdn.Substring(6)).Append("!");
                 string country_code = null;
                 App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-                txtBlckPhoneNumber.Text = " " + (country_code == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code) + "-" + userMsisdn.ToString();
+                txtBlckPhoneNumber.Text = AppResources.EnterName_YourMsisdn_TxtBlk + " " + (country_code == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code) + "-" + userMsisdn.ToString();
 
                 if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED))
                 {
