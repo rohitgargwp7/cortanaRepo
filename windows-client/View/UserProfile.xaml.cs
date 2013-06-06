@@ -924,7 +924,7 @@ namespace windows_client.View
             gridHikeUser.Visibility = Visibility.Collapsed;
             if (!isInAddressBook)
             {
-                addToFavBtn.Content = "Add to Contacts";
+                addToFavBtn.Content = AppResources.UserProfile_AddToContacts_Btn;
                 addToFavBtn.Visibility = Visibility.Visible;
                 addToFavBtn.Tap += AddUserToContacts_Click;
             }
