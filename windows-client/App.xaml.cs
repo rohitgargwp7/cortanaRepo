@@ -962,7 +962,7 @@ namespace windows_client
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
                 App.appSettings[HikeViewModel.NUMBER_OF_CONVERSATIONS] = (convList != null) ? convList.Count : 0;
                 // there was no country code in first version, and as first version was released in India , we are setting value to +91 
-                App.appSettings[COUNTRY_CODE_SETTING] = "+91";
+                App.appSettings[COUNTRY_CODE_SETTING] = HikeConstants.INDIA_COUNTRY_CODE;
                 App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
                 return convList;
             }
@@ -978,7 +978,7 @@ namespace windows_client
 
                 string country_code = null;
                 App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-                if (string.IsNullOrEmpty(country_code) || country_code == "+91")
+                if (string.IsNullOrEmpty(country_code) || country_code == HikeConstants.INDIA_COUNTRY_CODE)
                     App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
                 else
                     App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);

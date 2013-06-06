@@ -1380,6 +1380,7 @@ namespace windows_client
             {
                 long timediff = (long)jsonObj[HikeConstants.TIMESTAMP] - TimeUtils.getCurrentTimeStamp();
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.TIME_DIFF_EPOCH, timediff);
+                //todo:place this setting in some different file as will be written again and agian
             }
             #endregion
             #region ADD STICKER/CATEGORY

@@ -206,6 +206,7 @@ namespace windows_client
         public static readonly string PROFILE_PIC_ID = "ppid";
         public static readonly string MOOD = "mood";
         public static readonly string TIME_OF_DAY = "timeofday";
+        public static readonly string INDIA_COUNTRY_CODE = "+91";
 
         public static readonly string PRO_TIP_ID = "i";
         public static readonly string PRO_TIP_HEADER = "h";
