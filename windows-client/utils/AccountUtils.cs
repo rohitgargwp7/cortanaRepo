@@ -304,7 +304,14 @@ namespace windows_client.utils
             req.ContentType = convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE) ||
                 convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO) ? "" : convMessage.FileAttachment.ContentType;
             req.Headers["Connection"] = "Keep-Alive";
-            req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
+
+            if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                req.Headers["Content-Name"] = convMessage.FileAttachment.FileName + ".mp3";
+            else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                req.Headers["Content-Name"] = convMessage.FileAttachment.FileName + ".mp4";
+            else
+                req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
+
             req.Headers["X-Thumbnail-Required"] = "0";
 
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPLOAD_FILE, dataBytes, finalCallbackFunction, convMessage });

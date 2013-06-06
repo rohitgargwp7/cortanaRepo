@@ -77,7 +77,7 @@ namespace windows_client.utils
             if (timeStamp == -1)
                 return "";
 
-            return Languages.AppResources.Last_Seen + " " + TimeUtils.getRelativeTime(timeStamp);
+            return TimeUtils.getRelativeTimeForLastSeen(timeStamp);
         }
 
         readonly DateTime EPOCH_TIME = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);

@@ -380,20 +380,20 @@ namespace windows_client.ViewModel
             App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked); //initilaized in upgrade logic
             App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentlyShowing); //initilaized in upgrade logic
 
-            bool isShownVal = (marked & 0x01) == 1;
-            bool isCurrentShown = (currentlyShowing & 0x01) == 1;
+            bool isShownVal = (marked & 0x01) > 0;
+            bool isCurrentShown = (currentlyShowing & 0x01) > 0;
             TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(0, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
-            isShownVal = (marked & 0x02) == 1;
-            isCurrentShown = (currentlyShowing & 0x02) == 1;
+            isShownVal = (marked & 0x02) > 0;
+            isCurrentShown = (currentlyShowing & 0x02) > 0;
             TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 130, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
-            isShownVal = (marked & 0x04) == 1;
-            isCurrentShown = (currentlyShowing & 0x04) == 1;
+            isShownVal = (marked & 0x04) > 0;
+            isCurrentShown = (currentlyShowing & 0x04) > 0;
             TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
-            isShownVal = (marked & 0x08) == 1;
-            isCurrentShown = (currentlyShowing & 0x08) == 1;
+            isShownVal = (marked & 0x08) > 0;
+            isCurrentShown = (currentlyShowing & 0x08) > 0;
             TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 30, 0), FullTipMargin = new Thickness(10, 0, 10, 55) });
-            isShownVal = (marked & 0x10) == 1;
-            isCurrentShown = (currentlyShowing & 0x10) == 1;
+            isShownVal = (marked & 0x10) > 0;
+            isCurrentShown = (currentlyShowing & 0x10) > 0;
             TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = true, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 30, 10, 0) });
         }
 
@@ -412,6 +412,11 @@ namespace windows_client.ViewModel
             App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
             marked |= (byte)(1 << index);
             App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
+
+            byte currentShown;
+            App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
+            currentShown |= (byte)(1 << index);
+            App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
 
             if (element != null)
             {
@@ -472,7 +477,7 @@ namespace windows_client.ViewModel
 
                     byte currentShown;
                     App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                    currentShown |= (byte)(1 << index);
+                    currentShown &= (byte)~(1 << index);
                     App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
                 }
             }
@@ -483,7 +488,7 @@ namespace windows_client.ViewModel
 
                 byte currentShown;
                 App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                currentShown |= (byte)(1 << index);
+                currentShown &= (byte)~(1 << index);
                 App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
             }
         }
@@ -509,7 +514,7 @@ namespace windows_client.ViewModel
 
                 byte currentShown;
                 App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                currentShown |= (byte)(1 << tip.TipIndex);
+                currentShown &= (byte)~(1 << tip.TipIndex);
                 App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
 
                 toolTip.TriggerUIUpdateOnDismissed();

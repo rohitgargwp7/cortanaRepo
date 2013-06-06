@@ -52,6 +52,7 @@ namespace windows_client.Controls
                 tipControl.topBubblePointer.Fill = UI_Utils.Instance.Black;
                 tipControl.bottomBubblePointer.Fill = UI_Utils.Instance.Black;
                 tipControl.tipText.Foreground = UI_Utils.Instance.White;
+                tipControl.closeButtonImage.Source = UI_Utils.Instance.CloseButtonWhiteImage;
             }
         }
         

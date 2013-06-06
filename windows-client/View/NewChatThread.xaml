@@ -158,7 +158,7 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
-                        <Grid Margin="10">
+                        <Grid Grid.Row="1" Margin="10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" MinWidth="43"/>
                                 <ColumnDefinition Width="*"/>
@@ -582,7 +582,7 @@
                         </Grid.ColumnDefinitions>
                         <toolkit:PhoneTextBox TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
                                             MinHeight="68" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto"  />
-                        <Image Grid.Column="1" Source="/View/images/Mic_icon_black_small.png" Tap="Record_ActionIconTapped" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="Uniform" Margin="0,0,15,15" MaxHeight="30"/>
+                        <Image Grid.Column="1" Source="/View/images/Mic_icon_black_small.png" Tap="Record_ActionIconTapped" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="Uniform" Margin="0,0,15,17" MaxHeight="30"/>
                     </Grid>
                 </ScrollViewer>
                 <Grid x:Name="recordGrid" HorizontalAlignment="Stretch" Visibility="Collapsed" Background="#eeeeec" Margin="0,-4,0,0">

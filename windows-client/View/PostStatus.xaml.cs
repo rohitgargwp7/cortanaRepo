@@ -60,6 +60,8 @@ namespace windows_client.View
         {
             App.ViewModel.TipList[3].TipDismissed -= PostStatus_TipDismissed;
 
+            App.ViewModel.HideToolTip(LayoutRoot, 3);
+
             txtStatus.Focus();
         }
 

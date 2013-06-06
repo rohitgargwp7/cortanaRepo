@@ -55,6 +55,7 @@ namespace windows_client
         public static readonly string TIP_MARKED_KEY = "tipMarkedKey";
         public static readonly string TIP_SHOW_KEY = "tipShowKey";
         public static readonly string PRO_TIP = "proTip";
+        public static readonly string PRO_TIP_COUNT = "proTipCount";
         public static readonly string DISMISS_TIME = "dismissTime";
 
         public static readonly string INVITED = "invited";
@@ -84,7 +85,7 @@ namespace windows_client
         private static string _currentVersion = "1.0.0.0";
         private static string _latestVersion;
         public static bool IS_VIEWMODEL_LOADED = false;
-        public static bool IS_MARKETPLACE = true; // change this to toggle debugging
+        public static bool IS_MARKETPLACE = false; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
         private static bool _isTombstoneLaunch = false;
@@ -106,6 +107,8 @@ namespace windows_client
         #endregion
 
         #region PROPERTIES
+
+        public static bool Is24HourTimeFormat { get; private set; }
 
         public static PageState PageStateVal
         {
@@ -330,7 +333,10 @@ namespace windows_client
                 AccountUtils.Token = (string)appSettings[TOKEN_SETTING];
                 appSettings.TryGetValue<string>(App.MSISDN_SETTING, out App.MSISDN);
             }
+
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
+
+            Is24HourTimeFormat = System.Globalization.DateTimeFormatInfo.CurrentInfo.LongTimePattern.Contains("H") ? true : false;
         }
 
         // Code to execute when the application is launching (eg, from Start)

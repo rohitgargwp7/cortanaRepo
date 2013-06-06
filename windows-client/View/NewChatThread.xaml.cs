@@ -617,20 +617,37 @@ namespace windows_client.View
         {
             base.OnNavigatingFrom(e);
 
-            if (mediaElement != null)
+            if (e.IsNavigationInitiator)
             {
-                if (currentAudioMessage != null)
+                if (mediaElement != null)
                 {
-                    PhoneApplicationService.Current.State[HikeConstants.PLAYER_TIMER] = mediaElement.Position;
-                    mediaElement.Pause();
-
-                    currentAudioMessage.IsStopped = false;
-                    currentAudioMessage.IsPlaying = false;
-                    //currentAudioMessage.PlayProgressBarValue = 0;
-                    //currentAudioMessage = null;
-                }
-                else
+                    if (currentAudioMessage != null)
+                    {
+                        currentAudioMessage.IsStopped = true;
+                        currentAudioMessage.IsPlaying = false;
+                        currentAudioMessage.PlayProgressBarValue = 0;
+                        currentAudioMessage = null;
+                    }
+                    
                     mediaElement.Stop();
+                    mediaElement.Source = null;
+                }
+            }
+            else
+            {
+                if (mediaElement != null)
+                {
+                    if (currentAudioMessage != null)
+                    {
+                        PhoneApplicationService.Current.State[HikeConstants.PLAYER_TIMER] = mediaElement.Position;
+                        mediaElement.Pause();
+
+                        currentAudioMessage.IsStopped = false;
+                        currentAudioMessage.IsPlaying = false;
+                        //currentAudioMessage.PlayProgressBarValue = 0;
+                        //currentAudioMessage = null;
+                    }
+                }
             }
 
             //if (_recorderState == RecorderState.RECORDING)
@@ -997,7 +1014,10 @@ namespace windows_client.View
 
                 App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
             }
+            else
+                chatThreadMainPage.ApplicationBar = appBar;
         }
+        
 
         void _lastSeenTimer_Tick(object sender, EventArgs e)
         {
@@ -2482,6 +2502,12 @@ namespace windows_client.View
                         this.ocMessages.Insert(insertPosition, toolTipMessage);
                         insertPosition++;
                         isStatusUpdateToolTipShown = true;
+
+                        App.ViewModel.TipList[4].IsShown = true;
+                        byte marked;
+                        App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
+                        marked |= (byte)(1 << 4);
+                        App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
                     }
                 }
                 #endregion
@@ -4008,6 +4034,13 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
             {
                 fileBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
+
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED_DURATION))
+                {
+                    _recordedDuration = (int)PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED_DURATION];
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED_DURATION);
+                }
+                
                 PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
                 isAudio = true;
             }

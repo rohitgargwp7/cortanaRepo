@@ -244,6 +244,7 @@ namespace windows_client
         public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
         public static string OBJ_FROM_STATUSPAGE = "objFromStatusPage";
         public static string FORWARD_MSG = "forwardedText";
+        public static string AUDIO_RECORDED_DURATION = "audioRecordedDuration";
         public static string AUDIO_RECORDED = "audioRecorded";
         public static string CONTACT_SELECTED = "contactSelected";
         public static string VIDEO_RECORDED = "videoRecorded";
