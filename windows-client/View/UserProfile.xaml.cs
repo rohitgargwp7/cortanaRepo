@@ -938,7 +938,6 @@ namespace windows_client.View
         {
             spAddFriendInvite.Visibility = Visibility.Visible;
             txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, firstName);
-            seeUpdatesTxtBlk1.Text = string.Format(AppResources.Profile_YouCanNowSeeUpdates, firstName);
             gridAddFriendStrip.Visibility = Visibility.Visible;
             spAddFriend.Visibility = Visibility.Collapsed;
         }
@@ -1221,7 +1220,6 @@ namespace windows_client.View
                 txtUserName.Text = nameToShow;
                 firstName = Utils.GetFirstName(nameToShow);
                 txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, firstName);
-                seeUpdatesTxtBlk1.Text = string.Format(AppResources.Profile_YouCanNowSeeUpdates, firstName);
                 isOnHike = contactInfo.OnHike;
 
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))

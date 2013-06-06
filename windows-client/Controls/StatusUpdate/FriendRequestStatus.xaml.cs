@@ -16,8 +16,6 @@ namespace windows_client.Controls.StatusUpdate
             : base(userName, userImage, msisdn, string.Empty)
         {
             InitializeComponent();
-            string firstName = Utils.GetFirstName(userName);
-            this.seeUpdatesTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, firstName);
             if (yesTap != null)
             {
                 var glYes = GestureService.GetGestureListener(this.yesBtn);
@@ -37,8 +35,6 @@ namespace windows_client.Controls.StatusUpdate
         {
             InitializeComponent();
             convObj = c;
-            string firstName = Utils.GetFirstName(c.NameToShow);
-            this.seeUpdatesTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, firstName);
             if (yesTap != null)
             {
                 var glYes = GestureService.GetGestureListener(this.yesBtn);
@@ -54,8 +50,6 @@ namespace windows_client.Controls.StatusUpdate
 
         public void update(ConversationListObject c)
         {
-            string firstName = Utils.GetFirstName(c.NameToShow);
-            this.seeUpdatesTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, firstName);
             this.UserImage = c.AvatarImage;
         }
     }

@@ -304,6 +304,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You will now be able to see updates from {0} here..
+        /// </summary>
+        public static string ConfimFriendTimeline_Txt {
+            get {
+                return ResourceManager.GetString("ConfimFriendTimeline_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You will now be able to see updates from each other.
+        /// </summary>
+        public static string ConfimFriendUserProfile_Txt {
+            get {
+                return ResourceManager.GetString("ConfimFriendUserProfile_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connectivity issue..
         /// </summary>
         public static string Connectivity_Issue {
@@ -358,7 +376,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Added you as a friend!.
+        ///   Looks up a localized string similar to Added you to Circle of Friends.
         /// </summary>
         public static string Conversations_AddedYouToFav_Txt_WP8FrndStatus {
             get {
@@ -2715,7 +2733,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} has added you as a friend..
+        ///   Looks up a localized string similar to {0} added you to Circle of Friends.
         /// </summary>
         public static string Profile_AddedYouToFav_Txt_WP8FrndStatus {
             get {
@@ -2810,15 +2828,6 @@ namespace windows_client.Languages {
         public static string Profile_You_NoStatus_Txt {
             get {
                 return ResourceManager.GetString("Profile_You_NoStatus_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You can now see updates from {0}. .
-        /// </summary>
-        public static string Profile_YouCanNowSeeUpdates {
-            get {
-                return ResourceManager.GetString("Profile_YouCanNowSeeUpdates", resourceCulture);
             }
         }
         
@@ -3593,15 +3602,6 @@ namespace windows_client.Languages {
         public static string StatusUpdate_Photo {
             get {
                 return ResourceManager.GetString("StatusUpdate_Photo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You can now see updates from {0}. Would you like to do the same?.
-        /// </summary>
-        public static string StatusUpdate_YouCanNowSeeUpdates_TxtBlk {
-            get {
-                return ResourceManager.GetString("StatusUpdate_YouCanNowSeeUpdates_TxtBlk", resourceCulture);
             }
         }
         
