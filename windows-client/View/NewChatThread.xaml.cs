@@ -269,43 +269,40 @@ namespace windows_client.View
                 {
                     _lastSeenHelper.UpdateLastSeen -= LastSeenResponseReceived;
 
+                    long actualTimeStamp = e.TimeStamp;
+                    
                     if (e.TimeStamp == -1)
+                    {
+                        FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, 0);
                         _lastUpdatedLastSeenTimeStamp = 0;
+                    }
                     else if (e.TimeStamp == 0)
+                    {
+                        FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, TimeUtils.getCurrentTimeStamp());
                         _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
+                    }
                     else
                     {
-                        long timedifference, actualTimeStamp;
+                        long timedifference;
                         if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
                             actualTimeStamp = e.TimeStamp - timedifference;
-                        _lastUpdatedLastSeenTimeStamp = e.TimeStamp;
+
+                        FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, actualTimeStamp);
+                        _lastUpdatedLastSeenTimeStamp = actualTimeStamp;
                     }
 
                     if (_lastUpdatedLastSeenTimeStamp != 0)
                     {
-                        Deployment.Current.Dispatcher.BeginInvoke(new Action<string, bool>(delegate(string lastSeenStatus, bool isOnline)
+                        Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
                         {
                             //update ui if prev last seen is greater than current last seen, db updated everytime in backend
                             lastSeenTxt.Text = lastSeenStatus;
-                            onlineStatus.Visibility = isOnline ? Visibility.Collapsed : Visibility.Visible;
+                            onlineStatus.Visibility = Visibility.Visible;
                             userName.FontSize = 36;
                             lastSeenPannel.Visibility = Visibility.Visible;
 
                             _lastSeenTimer.Start();
-                        }), _lastSeenHelper.GetLastSeenTimeStampStatus(e.TimeStamp), e.TimeStamp == 0);
-                    }
-
-                    if (e.TimeStamp.Equals("-1"))
-                        FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, 0);
-                    else if (e.TimeStamp.Equals("0"))
-                        FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, TimeUtils.getCurrentTimeStamp());
-                    else
-                    {
-                        long timedifference, actualTimeStamp;
-                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
-                            actualTimeStamp = e.TimeStamp - timedifference;
-
-                        FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, e.TimeStamp);
+                        }), _lastSeenHelper.GetLastSeenTimeStampStatus(actualTimeStamp));
                     }
                 }
             }
@@ -320,7 +317,7 @@ namespace windows_client.View
                     {
                         //update ui if prev last seen is greater than current last seen, db updated everytime in backend
                         lastSeenTxt.Text = lastSeenStatus;
-                        onlineStatus.Visibility = Visibility.Collapsed;
+                        onlineStatus.Visibility = Visibility.Visible;
                         userName.FontSize = 36;
                         lastSeenPannel.Visibility = Visibility.Visible;
 
@@ -455,6 +452,15 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            if (e.NavigationMode == NavigationMode.Back)
+            {
+                if (_microphone != null)
+                {
+                    _microphone.BufferReady -= microphone_BufferReady;
+                    _microphone.BufferReady += microphone_BufferReady;
+                }
+            }
 
             if (_dt != null)
             {
@@ -618,17 +624,39 @@ namespace windows_client.View
         {
             base.OnNavigatingFrom(e);
 
-            if (mediaElement != null)
-            {
-                if (currentAudioMessage != null)
-                {
-                    PhoneApplicationService.Current.State[HikeConstants.PLAYER_TIMER] = mediaElement.Position;
-                    mediaElement.Pause();
+            if (_microphone != null)
+                _microphone.BufferReady -= microphone_BufferReady;
 
-                    currentAudioMessage.IsStopped = false;
-                    currentAudioMessage.IsPlaying = false;
-                    //currentAudioMessage.PlayProgressBarValue = 0;
-                    //currentAudioMessage = null;
+            if (e.IsNavigationInitiator)
+            {
+                if (mediaElement != null)
+                {
+                    if (currentAudioMessage != null)
+                    {
+                        currentAudioMessage.IsStopped = true;
+                        currentAudioMessage.IsPlaying = false;
+                        currentAudioMessage.PlayProgressBarValue = 0;
+                        currentAudioMessage = null;
+                    }
+                    
+                    mediaElement.Stop();
+                    mediaElement.Source = null;
+                }
+            }
+            else
+            {
+                if (mediaElement != null)
+                {
+                    if (currentAudioMessage != null)
+                    {
+                        PhoneApplicationService.Current.State[HikeConstants.PLAYER_TIMER] = mediaElement.Position;
+                        mediaElement.Pause();
+
+                        currentAudioMessage.IsStopped = false;
+                        currentAudioMessage.IsPlaying = false;
+                        //currentAudioMessage.PlayProgressBarValue = 0;
+                        //currentAudioMessage = null;
+                    }
                 }
             }
 
@@ -703,7 +731,9 @@ namespace windows_client.View
                 ShowDownloadOverlay(false);
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
+                if (App.ViewModel.TipList[1].IsCurrentlyShown)
+                    App.ViewModel.HideToolTip(LayoutRoot, 1);
+
                 emoticonPanel.Visibility = Visibility.Collapsed;
                 e.Cancel = true;
                 return;
@@ -995,7 +1025,10 @@ namespace windows_client.View
 
                 App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
             }
+            else
+                chatThreadMainPage.ApplicationBar = appBar;
         }
+        
 
         void _lastSeenTimer_Tick(object sender, EventArgs e)
         {
@@ -1007,8 +1040,8 @@ namespace windows_client.View
                 {
                     //update ui if prev last seen is greater than current last seen, db updated everytime in backend
                     lastSeenTxt.Text = lastSeenStatus;
-                    onlineStatus.Visibility = lastSeenStatus == AppResources.Online ? Visibility.Collapsed : Visibility.Visible;
-
+                    onlineStatus.Visibility = Visibility.Visible;
+                    
                     _lastSeenTimer.Start();
                 }), _lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
             }
@@ -1723,7 +1756,10 @@ namespace windows_client.View
         private void FileAttachmentMessage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             emoticonPanel.Visibility = Visibility.Collapsed;
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
+            
+            if (App.ViewModel.TipList[1].IsCurrentlyShown)
+                App.ViewModel.HideToolTip(LayoutRoot, 1);
+            
             attachmentMenu.Visibility = Visibility.Collapsed;
             ConvMessage convMessage = llsMessages.SelectedItem as ConvMessage;
             llsMessages.SelectedItem = null;
@@ -2479,6 +2515,12 @@ namespace windows_client.View
                         this.ocMessages.Insert(insertPosition, toolTipMessage);
                         insertPosition++;
                         isStatusUpdateToolTipShown = true;
+
+                        App.ViewModel.TipList[4].IsShown = true;
+                        byte marked;
+                        App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
+                        marked |= (byte)(1 << 4);
+                        App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
                     }
                 }
                 #endregion
@@ -2644,10 +2686,11 @@ namespace windows_client.View
             if (String.IsNullOrEmpty(message))
                 return;
 
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
+            if (App.ViewModel.TipList[1].IsCurrentlyShown)
+                App.ViewModel.HideToolTip(LayoutRoot, 1);
+
             emoticonPanel.Visibility = Visibility.Collapsed;
             attachmentMenu.Visibility = Visibility.Collapsed;
-
 
             if (message == "" || (!isOnHike && mCredits <= 0))
                 return;
@@ -2662,7 +2705,9 @@ namespace windows_client.View
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
+            if (App.ViewModel.TipList[1].IsCurrentlyShown)
+                App.ViewModel.HideToolTip(LayoutRoot, 1);
+
             emoticonPanel.Visibility = Visibility.Collapsed;
 
             if ((!isOnHike && mCredits <= 0))
@@ -2803,7 +2848,9 @@ namespace windows_client.View
             //ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
             {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
+                if (App.ViewModel.TipList[1].IsCurrentlyShown)
+                    App.ViewModel.HideToolTip(LayoutRoot, 1);
+
                 this.emoticonPanel.Visibility = Visibility.Collapsed;
             }
 
@@ -2962,7 +3009,17 @@ namespace windows_client.View
 
         private void emoticonButton_Click(object sender, EventArgs e)
         {
-            App.ViewModel.HideToolTip(LayoutRoot, 0);
+            if (recordGrid.Visibility == Visibility.Visible)
+            {
+                recordGrid.Visibility = Visibility.Collapsed;
+                sendMsgTxtbox.Visibility = Visibility.Visible;
+            }
+
+            if (App.ViewModel.TipList[0].IsCurrentlyShown)
+                App.ViewModel.HideToolTip(LayoutRoot, 0);
+
+            if (App.ViewModel.TipList[2].IsCurrentlyShown)
+                App.ViewModel.HideToolTip(LayoutRoot, 2);
 
             if (emoticonPanel.Visibility == Visibility.Collapsed)
             {
@@ -2973,7 +3030,9 @@ namespace windows_client.View
             }
             else
             {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
+                if (App.ViewModel.TipList[1].IsCurrentlyShown)
+                    App.ViewModel.HideToolTip(LayoutRoot, 1);
+                
                 emoticonPanel.Visibility = Visibility.Collapsed;
             }
 
@@ -2983,11 +3042,30 @@ namespace windows_client.View
 
         private void fileTransferButton_Click(object sender, EventArgs e)
         {
+            if (recordGrid.Visibility == Visibility.Visible)
+            {
+                recordGrid.Visibility = Visibility.Collapsed;
+                sendMsgTxtbox.Visibility = Visibility.Visible;
+            } 
+            
+            if (App.ViewModel.TipList[0].IsCurrentlyShown)
+                App.ViewModel.HideToolTip(LayoutRoot, 0);
+            
+            if (App.ViewModel.TipList[2].IsCurrentlyShown)
+                App.ViewModel.HideToolTip(LayoutRoot, 2);
+            
             if (attachmentMenu.Visibility == Visibility.Collapsed)
                 attachmentMenu.Visibility = Visibility.Visible;
             else
                 attachmentMenu.Visibility = Visibility.Collapsed;
-            emoticonPanel.Visibility = Visibility.Collapsed;
+
+            if (emoticonPanel.Visibility == Visibility.Visible)
+            {
+                if (App.ViewModel.TipList[1].IsCurrentlyShown)
+                    App.ViewModel.HideToolTip(LayoutRoot, 1);
+
+                emoticonPanel.Visibility = Visibility.Collapsed;
+            }
             this.Focus();
         }
 
@@ -3690,14 +3768,11 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            if (!String.IsNullOrEmpty(lastSeenTxt.Text))
-                            {
-                                //update ui if prev last seen is greater than current last seen, db updated everytime in backend
-                                lastSeenTxt.Text = AppResources.Online;
-                                onlineStatus.Visibility = Visibility.Visible;
-                                userName.FontSize = 36;
-                                lastSeenPannel.Visibility = Visibility.Visible;
-                            }
+                            //update ui if prev last seen is greater than current last seen, db updated everytime in backend
+                            lastSeenTxt.Text = AppResources.Online;
+                            onlineStatus.Visibility = Visibility.Visible;
+                            userName.FontSize = 36;
+                            lastSeenPannel.Visibility = Visibility.Visible;
                         });
                     }
                 }
@@ -3767,18 +3842,30 @@ namespace windows_client.View
                             if (lastSeen == 0)
                                 _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
                             else
+                            {
                                 _lastUpdatedLastSeenTimeStamp = lastSeen;
 
-                            Deployment.Current.Dispatcher.BeginInvoke(new Action<string, bool>(delegate(string lastSeenStatus, bool isOnline)
+                                long timedifference;
+                                
+                                if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                                    lastSeen = lastSeen - timedifference;
+
+                                FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, lastSeen);
+                                _lastUpdatedLastSeenTimeStamp = lastSeen;
+                            }
+
+                            Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
                             {
                                 //update ui if prev last seen is greater than current last seen, db updated everytime in backend
                                 lastSeenTxt.Text = lastSeenStatus;
-                                onlineStatus.Visibility = isOnline ? Visibility.Collapsed : Visibility.Visible;
+                                onlineStatus.Visibility = Visibility.Visible;
                                 userName.FontSize = 36;
                                 lastSeenPannel.Visibility = Visibility.Visible;
 
                                 _lastSeenTimer.Start();
-                            }), _lastSeenHelper.GetLastSeenTimeStampStatus(lastSeen), lastSeen == 0);
+                            }), _lastSeenHelper.GetLastSeenTimeStampStatus(lastSeen));
+
+                            FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, _lastUpdatedLastSeenTimeStamp);
                         }
                         else if (lastSeen == -1)
                         {
@@ -3960,6 +4047,13 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
             {
                 fileBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
+
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED_DURATION))
+                {
+                    _recordedDuration = (int)PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED_DURATION];
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED_DURATION);
+                }
+                
                 PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
                 isAudio = true;
             }
@@ -4343,6 +4437,11 @@ namespace windows_client.View
             else if (e.Orientation == PageOrientation.Landscape || e.Orientation == PageOrientation.LandscapeLeft || e.Orientation == PageOrientation.LandscapeRight)
             {
                 svMessage.MaxHeight = 70;
+
+                if (App.ViewModel.TipList[0].IsCurrentlyShown)
+                    App.ViewModel.HideToolTip(LayoutRoot, 0);
+                if (App.ViewModel.TipList[1].IsCurrentlyShown)
+                    App.ViewModel.HideToolTip(LayoutRoot, 1);
             }
         }
         #endregion
@@ -4382,6 +4481,9 @@ namespace windows_client.View
 
         private void StickersTab_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (App.ViewModel.TipList[1].IsCurrentlyShown)
+                App.ViewModel.HideToolTip(LayoutRoot, 1);
+
             gridEmoticons.Visibility = Visibility.Collapsed;
             gridStickers.Visibility = Visibility.Visible;
             if (!isStickersLoaded)
@@ -4776,7 +4878,14 @@ namespace windows_client.View
 
         private void Record_ActionIconTapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.ViewModel.HideToolTip(LayoutRoot, 2);
+            if (App.ViewModel.TipList[2].IsCurrentlyShown)
+                App.ViewModel.HideToolTip(LayoutRoot, 2);
+
+            if (App.ViewModel.TipList[1].IsCurrentlyShown)
+                App.ViewModel.HideToolTip(LayoutRoot, 1);
+            
+            attachmentMenu.Visibility = Visibility.Collapsed;
+            emoticonPanel.Visibility = Visibility.Collapsed;
 
             this.Focus(); // remove focus from textbox
             recordGrid.Visibility = Visibility.Visible;
@@ -4802,6 +4911,13 @@ namespace windows_client.View
                 }
             }
 
+            try
+            {
+                //disable lock screen
+                PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
+            }
+            catch { }
+
             WalkieTalkieGrid.Visibility = Visibility.Visible;
             recordButton.Text = RELEASE_TO_SEND;
             cancelRecord.Opacity = 0;
@@ -4811,8 +4927,6 @@ namespace windows_client.View
             recordWalkieTalkieMessage();
         }
 
-
-
         void recordButton_ManipulationCompleted(object sender, System.Windows.Input.ManipulationCompletedEventArgs e)
         {
             if (isRecordingForceStop)
@@ -4820,6 +4934,13 @@ namespace windows_client.View
                 isRecordingForceStop = false;
                 return;
             }
+
+            try
+            {
+                //re-enable lock screen
+                PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Enabled;
+            }
+            catch { }
 
             deleteRecImage.Source = UI_Utils.Instance.DustbinGreyImage;
             deleteRecText.Foreground = UI_Utils.Instance.DeleteGreyBackground;

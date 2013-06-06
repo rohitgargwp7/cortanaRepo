@@ -56,6 +56,7 @@ namespace windows_client
         public static readonly string TIP_MARKED_KEY = "tipMarkedKey";
         public static readonly string TIP_SHOW_KEY = "tipShowKey";
         public static readonly string PRO_TIP = "proTip";
+        public static readonly string PRO_TIP_COUNT = "proTipCount";
         public static readonly string DISMISS_TIME = "dismissTime";
 
         public static readonly string INVITED = "invited";
@@ -107,6 +108,8 @@ namespace windows_client
         #endregion
 
         #region PROPERTIES
+
+        public static bool Is24HourTimeFormat { get; private set; }
 
         public static PageState PageStateVal
         {
@@ -333,7 +336,10 @@ namespace windows_client
                 AccountUtils.Token = (string)appSettings[TOKEN_SETTING];
                 appSettings.TryGetValue<string>(App.MSISDN_SETTING, out App.MSISDN);
             }
+
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
+
+            Is24HourTimeFormat = System.Globalization.DateTimeFormatInfo.CurrentInfo.LongTimePattern.Contains("H") ? true : false;
         }
 
         // Code to execute when the application is launching (eg, from Start)
@@ -359,6 +365,8 @@ namespace windows_client
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+            App.mMqttManager.IsAppStarted = false;
+
             _isAppLaunched = false; // this means app is activated, could be tombstone or dormant state
             _isTombstoneLaunch = !e.IsApplicationInstancePreserved; //e.IsApplicationInstancePreserved  --> if this is true its dormant else tombstoned
             try
@@ -380,9 +388,6 @@ namespace windows_client
             {
                 if (ps == PageState.CONVLIST_SCREEN)
                     MqttManagerInstance.connect();
-
-                if (MqttManagerInstance.connectionStatus == HikeMqttManager.MQTTConnectionStatus.CONNECTED)
-                    sendAppStatusToServer(true);
             }
 
             NetworkManager.turnOffNetworkManager = false;
@@ -393,7 +398,7 @@ namespace windows_client
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
             NetworkManager.turnOffNetworkManager = true;
-            sendAppStatusToServer(false);
+            sendAppBgStatusToServer();
             App.AnalyticsInstance.saveObject();
             PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
             if (IS_VIEWMODEL_LOADED)
@@ -404,6 +409,9 @@ namespace windows_client
                     return;
                 ConversationTableUtils.saveConvObjectList();
             }
+
+            App.mMqttManager.disconnectFromBroker(false);
+            App.mMqttManager.IsLastSeenPacketSent = false;
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
@@ -411,7 +419,7 @@ namespace windows_client
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             App.AnalyticsInstance.saveObject();
-            sendAppStatusToServer(false);
+            sendAppBgStatusToServer();
             //appDeinitialize();
         }
 
@@ -477,19 +485,6 @@ namespace windows_client
             e.Cancel = true;
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
-
-            if (isNewInstall) //upgrade logic for inapp tips, will change with every build
-            {
-                App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, 0);
-                App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, (byte)0); // to keep a track of shown keys
-                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0); // to keep a track of current showing keys
-            }
-            else if (_latestVersion != _currentVersion)
-            {
-                App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, 0);
-                App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, (byte)0x18);
-                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0x18);
-            }
 
             // if not new install && current version is less than equal to version 1.8.0.0  and upgrade is done for wp8 device
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "1.8.0.0") != 1 && Utils.IsWP8)
@@ -658,6 +653,22 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
+            #region IN APP TIPS
+
+            if (isNewInstall) //upgrade logic for inapp tips, will change with every build
+            {
+                App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, 0);
+                App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, (byte)0); // to keep a track of shown keys
+                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0); // to keep a track of current showing keys
+            }
+            else if (_latestVersion != _currentVersion)
+            {
+                App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, 0);
+                App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, (byte)0x18);
+                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0x18);
+            }
+
+            #endregion
             #region STCIKERS
             if (isNewInstall || Utils.compareVersion("2.5.0.0", _currentVersion) == 1)
             {
@@ -788,7 +799,7 @@ namespace windows_client
                         if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                             MqttDBUtils.MqttDbUpdateToLatestVersion();
 
-                        if (Utils.compareVersion(_latestVersion, "2.5.0.0") == 0) // upgrade friend files for last seen time stamp
+                        if (Utils.compareVersion(_latestVersion, "2.5.0.0") !=1) // upgrade friend files for last seen time stamp
                             FriendsTableUtils.UpdateOldFilesWithDefaultLastSeen();
                     }
                 }
@@ -1031,22 +1042,12 @@ namespace windows_client
             }
         }
 
-        private void sendAppStatusToServer(bool foreGrounded)
+        private void sendAppBgStatusToServer()
         {
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
             obj.Add(HikeConstants.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
-
-            if (foreGrounded)
-            {
-                obj.Add(HikeConstants.STATUS, "fg");
-                JObject data = new JObject();
-                data.Add(HikeConstants.JUSTOPENED, "false");
-                obj.Add(HikeConstants.DATA, data);
-            }
-            else
-                obj.Add(HikeConstants.STATUS, "bg");
-
+            obj.Add(HikeConstants.STATUS, "bg");
 
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }

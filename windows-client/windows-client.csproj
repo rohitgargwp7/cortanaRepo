@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -136,7 +136,6 @@
     <Reference Include="WriteableBitmapExWinPhone">
       <HintPath>lib\WriteableBitmapExWinPhone.dll</HintPath>
     </Reference>
-    <Reference Include="System.Windows.Interactivity" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -547,6 +546,7 @@
     <Content Include="View\images\last_seen_clock_white.png" />
     <Content Include="View\images\loading.png" />
     <Content Include="View\images\menu_contact_icon_black.png" />
+    <Content Include="View\images\menu_location_icon.png" />
     <Content Include="View\images\Mic_icon_black_small.png" />
     <Content Include="View\images\Mic_icon_grey_small.png" />
     <Content Include="View\images\moods\00Boozing.png" />

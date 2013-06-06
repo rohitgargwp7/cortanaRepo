@@ -929,6 +929,8 @@ namespace windows_client.Model
                     {
                         if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
                             return UI_Utils.Instance.SentBubbleFileMarginLS;
+                        else if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.POKE))
+                            return UI_Utils.Instance.SentPokeMarginLS;
                         else if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
                             return UI_Utils.Instance.SentBubbleTextMarginLS;
                         else if (FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
@@ -952,6 +954,8 @@ namespace windows_client.Model
                     {
                         if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
                             return UI_Utils.Instance.SentBubbleFileMarginPortrait;
+                        else if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.POKE))
+                            return UI_Utils.Instance.SentPokeMarginPotrait;
                         else if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
                             return UI_Utils.Instance.SentBubbleTextMarginPortrait;
                         else if (FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
