@@ -163,8 +163,10 @@ namespace windows_client.View
         void showProgress(object sender, EventArgs e)
         {
             runningTime.Text = formatTime(runningSeconds + 1);
-            if (runningSeconds >= HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED)
+
+            if ((myState == RecorderState.RECORDING && runningSeconds >= HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED) || (myState == RecorderState.PLAYING && runningSeconds >= recordedDuration))
                 stop();
+            
             runningSeconds++;
         }
 
