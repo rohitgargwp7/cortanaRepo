@@ -133,10 +133,21 @@ namespace windows_client.DbUtils
             #region MESSAGE_SENT
             if (HikePubSub.MESSAGE_SENT == type)
             {
-                object[] vals = (object[])obj;
-                ConvMessage convMessage = (ConvMessage)vals[0];
 
-                bool isNewGroup = (bool)vals[1];
+                ConvMessage convMessage;
+
+                bool isNewGroup;
+                if (obj is object[])
+                {
+                    object[] vals = (object[])obj;
+                    convMessage = (ConvMessage)vals[0];
+                    isNewGroup = (bool)vals[1];
+                }
+                else
+                {
+                    convMessage = (ConvMessage)obj;
+                    isNewGroup = false;
+                }
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup);
                 if (convObj == null)
                     return;
@@ -378,7 +389,7 @@ namespace windows_client.DbUtils
             else if (type == HikePubSub.SAVE_STATUS_IN_DB)
             {
                 StatusMessage sm = obj as StatusMessage;
-                StatusMsgsTable.InsertStatusMsg(sm,false);
+                StatusMsgsTable.InsertStatusMsg(sm, false);
             }
         }
 

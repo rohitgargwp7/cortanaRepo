@@ -35,6 +35,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Navigation;
 using Microsoft.Phone.BackgroundAudio;
 using System.Collections.ObjectModel;
+using windows_client.ViewModel;
 
 namespace windows_client.View
 {
@@ -117,6 +118,19 @@ namespace windows_client.View
         public bool isMessageLoaded;
         public ObservableCollection<ConvMessage> ocMessages;
 
+        public int ResolutionId
+        {
+            get
+            {
+                if (Utils.CurrentResolution == Utils.Resolutions.WVGA)
+                    return 7;
+                else if (Utils.CurrentResolution == Utils.Resolutions.WXGA)
+                    return 8;
+                else
+                    return 9;
+            }
+        }
+
         #endregion
 
         #region UI VALUES
@@ -186,6 +200,8 @@ namespace windows_client.View
             }
         }
 
+        private Dictionary<string, BitmapImage> dictStickerCache;
+
         #region PAGE BASED FUNCTIONS
 
         //        private ObservableCollection<UIElement> messagesCollection;
@@ -200,7 +216,7 @@ namespace windows_client.View
 
             // Event handler for getting audio data when the buffer is full
             _microphone.BufferReady += new EventHandler<EventArgs>(microphone_BufferReady);
-            
+
             _progressTimer = new DispatcherTimer();
             _progressTimer.Interval = TimeSpan.FromSeconds(1);
             _progressTimer.Tick += new EventHandler(showWalkieTalkieProgress);
@@ -211,6 +227,7 @@ namespace windows_client.View
             onlineStatus.Source = UI_Utils.Instance.LastSeenClockImage;
 
             ocMessages = new ObservableCollection<ConvMessage>();
+            dictStickerCache = new Dictionary<string, BitmapImage>();
 
             walkieTalkie.Source = UI_Utils.Instance.WalkieTalkieBigImage;
             deleteRecImageSuc.Source = UI_Utils.Instance.WalkieTalkieDeleteSucImage;
@@ -236,7 +253,7 @@ namespace windows_client.View
                         else
                             currentAudioMessage.PlayProgressBarValue = pos * 100 / dur;
 
-                        string durationText = String.IsNullOrEmpty(currentAudioMessage.DurationText)?String.Empty:currentAudioMessage.DurationText;
+                        string durationText = String.IsNullOrEmpty(currentAudioMessage.DurationText) ? String.Empty : currentAudioMessage.DurationText;
 
                         currentAudioMessage.PlayTimeText = pos == dur || pos == 0 ? durationText : mediaElement.NaturalDuration.TimeSpan.Subtract(mediaElement.Position).ToString("mm\\:ss");
                     }
@@ -258,9 +275,9 @@ namespace windows_client.View
                         _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
                     else
                     {
-                        //long timedifference,actualTimeStamp;
-                        //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
-                        //    actualTimeStamp = e.TimeStamp - timedifference;
+                        long timedifference, actualTimeStamp;
+                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                            actualTimeStamp = e.TimeStamp - timedifference;
                         _lastUpdatedLastSeenTimeStamp = e.TimeStamp;
                     }
 
@@ -284,9 +301,9 @@ namespace windows_client.View
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, TimeUtils.getCurrentTimeStamp());
                     else
                     {
-                        //long timedifference,actualTimeStamp;
-                        //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
-                        //    actualTimeStamp = e.TimeStamp - timedifference;
+                        long timedifference, actualTimeStamp;
+                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                            actualTimeStamp = e.TimeStamp - timedifference;
 
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, e.TimeStamp);
                     }
@@ -303,7 +320,7 @@ namespace windows_client.View
                     {
                         //update ui if prev last seen is greater than current last seen, db updated everytime in backend
                         lastSeenTxt.Text = lastSeenStatus;
-                        onlineStatus.Visibility =  Visibility.Collapsed;
+                        onlineStatus.Visibility = Visibility.Collapsed;
                         userName.FontSize = 36;
                         lastSeenPannel.Visibility = Visibility.Visible;
 
@@ -562,7 +579,20 @@ namespace windows_client.View
 
             #endregion
             App.newChatThreadPage = this;
-
+            if (HikeViewModel.stickerHelper == null)
+            {
+                HikeViewModel.stickerHelper = new StickerHelper();
+            }
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += (s, ee) =>
+                {
+                    HikeViewModel.stickerHelper.InitialiseLowResStickers();
+                };
+            bw.RunWorkerCompleted += (s, ee) =>
+                {
+                    AddPivotItemsToStickerPivot();
+                };
+            bw.RunWorkerAsync();
             #region AUDIO FT
             if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
                 PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED)))
@@ -669,6 +699,7 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
+            ShowDownloadOverlay(false);
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
                 App.ViewModel.HideToolTip(LayoutRoot, 1);
@@ -762,7 +793,7 @@ namespace windows_client.View
             }
 
             #endregion
-            
+
             #region OBJECT FROM SELECT USER PAGE
 
             else if (this.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
@@ -856,9 +887,9 @@ namespace windows_client.View
 
             byte lastSeenSettingsValue;
             App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out lastSeenSettingsValue);
-                    
+
             if (lastSeenSettingsValue > 0)
-            { 
+            {
                 var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
                 if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat)
                 {
@@ -879,7 +910,7 @@ namespace windows_client.View
             }
 
             #endregion
-            
+
             // if hike bot msg disable appbar, textbox etc
             if (Utils.IsHikeBotMsg(mContactNumber))
             {
@@ -1245,7 +1276,7 @@ namespace windows_client.View
             hasMoreMessages = false;
 
             List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber, lastMessageId < 0 ? long.MaxValue : lastMessageId, messageFetchCount);
-            //List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
+
             if (messagesList == null) // represents there are no chat messages for this msisdn
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -1368,50 +1399,63 @@ namespace windows_client.View
 
         private void forwardAttachmentMessage()
         {
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG) &&
-                PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
             {
-                object[] attachmentData = (object[])PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
-                ConvMessage forwardedMsg = (ConvMessage)attachmentData[0];
-                string sourceMsisdn = (string)attachmentData[1];
 
-                string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + forwardedMsg.MessageId;
-
-                ConvMessage convMessage = new ConvMessage("", mContactNumber,
-                    TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                convMessage.IsSms = !isOnHike;
-                convMessage.HasAttachment = true;
-                convMessage.FileAttachment = forwardedMsg.FileAttachment;
-                convMessage.IsSms = !isOnHike;
-                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
-
-                if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                    convMessage.Message = AppResources.Image_Txt;
-                else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
                 {
-                    convMessage.Message = AppResources.Audio_Txt;
-                    convMessage.MetaDataString = forwardedMsg.MetaDataString;
-                }
-                else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
-                    convMessage.Message = AppResources.Video_Txt;
-                else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                {
-                    convMessage.Message = AppResources.Location_Txt;
-                    convMessage.MetaDataString = forwardedMsg.MetaDataString;
-                }
-                else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                {
-                    convMessage.Message = AppResources.ContactTransfer_Text;
-                    convMessage.MetaDataString = forwardedMsg.MetaDataString;
-                }
+                    object[] attachmentData = (object[])PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                    ConvMessage forwardedMsg = (ConvMessage)attachmentData[0];
+                    string sourceMsisdn = (string)attachmentData[1];
 
-                convMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
-                AddMessageToOcMessages(convMessage, false);
-                object[] vals = new object[3];
-                vals[0] = convMessage;
-                vals[1] = sourceFilePath;
-                mPubSub.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
-                PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                    string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + forwardedMsg.MessageId;
+
+                    ConvMessage convMessage = new ConvMessage("", mContactNumber,
+                        TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                    convMessage.IsSms = !isOnHike;
+                    convMessage.HasAttachment = true;
+                    convMessage.FileAttachment = forwardedMsg.FileAttachment;
+                    convMessage.IsSms = !isOnHike;
+                    convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+
+                    if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                        convMessage.Message = AppResources.Image_Txt;
+                    else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                    {
+                        convMessage.Message = AppResources.Audio_Txt;
+                        convMessage.MetaDataString = forwardedMsg.MetaDataString;
+                    }
+                    else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                        convMessage.Message = AppResources.Video_Txt;
+                    else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                    {
+                        convMessage.Message = AppResources.Location_Txt;
+                        convMessage.MetaDataString = forwardedMsg.MetaDataString;
+                    }
+                    else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                    {
+                        convMessage.Message = AppResources.ContactTransfer_Text;
+                        convMessage.MetaDataString = forwardedMsg.MetaDataString;
+                    }
+
+                    convMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
+                    AddMessageToOcMessages(convMessage, false);
+                    object[] vals = new object[3];
+                    vals[0] = convMessage;
+                    vals[1] = sourceFilePath;
+                    mPubSub.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                }
+                else if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is ConvMessage)
+                {
+                    ConvMessage conv = (ConvMessage)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                    conv.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                    conv.IsSms = !isOnHike;
+                    AddNewMessageToUI(conv, false);
+
+                    mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                }
             }
             else if (PhoneApplicationService.Current.State.ContainsKey("SharePicker"))
             {
@@ -1805,7 +1849,7 @@ namespace windows_client.View
                     {
                         if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PLAYER_TIMER))
                             PhoneApplicationService.Current.State.Remove(HikeConstants.PLAYER_TIMER);
-                        
+
                         if (mediaElement.Source.OriginalString.Contains(fileLocation)) //handle already playing audio
                         {
                             if (currentAudioMessage != null) // case pause/play the alresdy playing/paused file
@@ -1876,7 +1920,7 @@ namespace windows_client.View
                     }
                     else //restart paused audio - from lock or suspended state
                     {
-                        if (currentAudioMessage != null && currentAudioMessage==convMessage)
+                        if (currentAudioMessage != null && currentAudioMessage == convMessage)
                         {
                             if (LayoutRoot.FindName("myMediaElement") == null)
                                 LayoutRoot.Children.Add(mediaElement);
@@ -1915,10 +1959,10 @@ namespace windows_client.View
                                 currentAudioMessage.PlayTimeText = currentAudioMessage.DurationText;
                                 currentAudioMessage.PlayProgressBarValue = 0;
                                 currentAudioMessage = null;
-                            } 
-                            
+                            }
+
                             currentAudioMessage = convMessage;
-                            
+
                             if (LayoutRoot.FindName("myMediaElement") == null)
                                 LayoutRoot.Children.Add(mediaElement);
 
@@ -1955,7 +1999,7 @@ namespace windows_client.View
                 {
                     if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PLAYER_TIMER))
                         PhoneApplicationService.Current.State.Remove(HikeConstants.PLAYER_TIMER);
-                    
+
                     mediaElement = new MediaElement() { Name = "myMediaElement" };
                     mediaElement.MediaEnded -= mediaPlayback_MediaEnded;
                     mediaElement.MediaEnded += mediaPlayback_MediaEnded;
@@ -1963,7 +2007,7 @@ namespace windows_client.View
                     mediaElement.MediaFailed += mediaPlayback_MediaFailed;
                     mediaElement.CurrentStateChanged -= mediaElement_CurrentStateChanged;
                     mediaElement.CurrentStateChanged += mediaElement_CurrentStateChanged;
-                    
+
                     currentAudioMessage = convMessage;
                     LayoutRoot.Children.Add(mediaElement);
 
@@ -2111,6 +2155,7 @@ namespace windows_client.View
                     ConvMessage chatBubble = null;
                     if (convMessage.HasAttachment)
                     {
+
                         if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
                         {
                             convMessage.FileAttachment = attachments[convMessage.MessageId];
@@ -2128,7 +2173,28 @@ namespace windows_client.View
 
                     if (chatBubble == null)
                     {
-                        if (convMessage.IsSent)
+                        if (!string.IsNullOrEmpty(convMessage.MetaDataString) && convMessage.MetaDataString.Contains(HikeConstants.STICKER_ID))
+                        {
+                            JObject meataDataJson = JObject.Parse(convMessage.MetaDataString);
+                            convMessage.StickerObj = new Sticker((string)meataDataJson[HikeConstants.CATEGORY_ID], (string)meataDataJson[HikeConstants.STICKER_ID], null);
+
+                            string categoryStickerId = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
+                            if (dictStickerCache.ContainsKey(categoryStickerId))
+                            {
+                                convMessage.StickerObj.StickerImage = dictStickerCache[categoryStickerId];
+                            }
+                            else
+                            {
+                                convMessage.StickerObj.StickerImage = StickerCategory.GetHighResolutionSticker(convMessage.StickerObj.Id, convMessage.StickerObj.Category);
+                                if (convMessage.StickerObj.StickerImage == null)
+                                    AccountUtils.GetSingleSticker(convMessage, ResolutionId, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
+                                else
+                                    dictStickerCache[categoryStickerId] = convMessage.StickerObj.StickerImage;
+                            }
+                            chatBubble = convMessage;
+                        }
+
+                        else if (convMessage.IsSent)
                         {
                             chatBubble = convMessage;//todo:split
                             if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
@@ -2362,7 +2428,7 @@ namespace windows_client.View
                 #region STATUS UPDATE
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
-                    
+
                     JObject jsonObj = JObject.Parse(convMessage.MetaDataString);
                     JObject data = (JObject)jsonObj[HikeConstants.DATA];
                     JToken val;
@@ -2419,6 +2485,7 @@ namespace windows_client.View
                     insertPosition++;
                 }
                 #endregion
+
                 if (!insertAtTop)
                     ScrollToBottom();
 
@@ -2435,32 +2502,56 @@ namespace windows_client.View
             {
                 if (!isGroupChat && isOnHike)
                     return;
-                long time = TimeUtils.getCurrentTimeStamp();
-                string inviteToken = "";
-                if (isGroupChat)
+                if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
                 {
-                    foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
+                    long time = TimeUtils.getCurrentTimeStamp();
+                    string inviteToken = "";
+                    if (isGroupChat)
                     {
-                        if (!gp.IsOnHike)
+                        foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
                         {
-                            ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                            convMessage.IsInvite = true;
-                            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
+                            if (!gp.IsOnHike)
+                            {
+                                ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                                convMessage.IsInvite = true;
+                                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
+                            }
                         }
                     }
+                    else
+                    {
+                        //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+                        ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                        convMessage.IsSms = true;
+                        convMessage.IsInvite = true;
+                        sendMsg(convMessage, false);
+                    }
+                    if (showNoSmsLeftOverlay || isGroupChat)
+                        showOverlay(false);
+                    if (isGroupChat)
+                        App.appSettings.Remove(HikeConstants.SHOW_GROUP_CHAT_OVERLAY);
                 }
                 else
                 {
-                    //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-                    ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                    convMessage.IsSms = true;
-                    convMessage.IsInvite = true;
-                    sendMsg(convMessage, false);
+                    string msisdns = string.Empty;
+                    if (isGroupChat)
+                    {
+                        foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
+                        {
+                            if (!gp.IsOnHike)
+                            {
+                                msisdns += gp.Msisdn + ";";
+                            }
+                        }
+                    }
+                    else
+                        msisdns = mContactNumber;
+                    SmsComposeTask smsComposeTask = new SmsComposeTask();
+
+                    smsComposeTask.To = msisdns;
+                    smsComposeTask.Body = AppResources.sms_invite_message;
+                    smsComposeTask.Show();
                 }
-                if (showNoSmsLeftOverlay || isGroupChat)
-                    showOverlay(false);
-                if (isGroupChat)
-                    App.appSettings.Remove(HikeConstants.SHOW_GROUP_CHAT_OVERLAY);
             }
             catch (Exception ex)
             {
@@ -2728,10 +2819,13 @@ namespace windows_client.View
         {
             isContextMenuTapped = true;
             ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
-            if (convMessage.FileAttachment == null)
+            if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.STICKER_ID))
+            {
+                PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = convMessage;
+            }
+            else if (convMessage.FileAttachment == null)
             {
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = convMessage.Message;
-                NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
             }
             else
             {
@@ -2739,8 +2833,9 @@ namespace windows_client.View
                 attachmentForwardMessage[0] = convMessage;
                 attachmentForwardMessage[1] = mContactNumber;
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
-                NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
             }
+            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
+
         }
 
         private void MenuItem_Click_Copy(object sender, System.Windows.Input.GestureEventArgs e)
@@ -2861,13 +2956,13 @@ namespace windows_client.View
 
         private void emoticonButton_Click(object sender, EventArgs e)
         {
-            App.ViewModel.HideToolTip(LayoutRoot,0);
+            App.ViewModel.HideToolTip(LayoutRoot, 0);
 
             if (emoticonPanel.Visibility == Visibility.Collapsed)
             {
                 if (!App.ViewModel.TipList[1].IsShown || App.ViewModel.TipList[1].IsCurrentlyShown)
                     App.ViewModel.DisplayTip(LayoutRoot, 1);
-             
+
                 emoticonPanel.Visibility = Visibility.Visible;
             }
             else
@@ -3600,7 +3695,7 @@ namespace windows_client.View
                         });
                     }
                 }
-                
+
                 object[] vals = (object[])obj;
                 string typingNotSenderOrSendee = "";
                 if (isGroupChat)
@@ -3650,7 +3745,7 @@ namespace windows_client.View
             {
                 byte lastSeenSettingsValue;
                 App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out lastSeenSettingsValue);
-                
+
                 if (lastSeenSettingsValue > 0)
                 {
                     object[] vals = (object[])obj;
@@ -3967,37 +4062,27 @@ namespace windows_client.View
 
         private void emotHeaderRect0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderBorder0.Opacity = 1;
-            emotHeaderRect0.Opacity = 1;
-            emotHeaderBorder1.Opacity = 0;
-            emotHeaderRect1.Opacity = 0;
-            emotHeaderBorder2.Opacity = 0;
-            emotHeaderRect2.Opacity = 0;
+            emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
+            emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
             emoticonPivot.SelectedIndex = 0;
         }
 
         private void emotHeaderRect1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderBorder0.Opacity = 0;
-            emotHeaderRect0.Opacity = 0;
-            emotHeaderBorder1.Opacity = 1;
-            emotHeaderRect1.Opacity = 1;
-            emotHeaderBorder2.Opacity = 0;
-            emotHeaderRect2.Opacity = 0;
+            emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect1.Background = UI_Utils.Instance.TappedCategoryColor;
+            emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
             emoticonPivot.SelectedIndex = 1;
 
         }
 
         private void emotHeaderRect2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderBorder0.Opacity = 0;
-            emotHeaderRect0.Opacity = 0;
-            emotHeaderBorder1.Opacity = 0;
-            emotHeaderRect1.Opacity = 0;
-            emotHeaderBorder2.Opacity = 1;
-            emotHeaderRect2.Opacity = 1;
+            emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect2.Background = UI_Utils.Instance.TappedCategoryColor;
             emoticonPivot.SelectedIndex = 2;
-            string name = this.Name;
         }
 
         private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -4005,28 +4090,19 @@ namespace windows_client.View
             switch (emoticonPivot.SelectedIndex)
             {
                 case 0:
-                    emotHeaderBorder0.Opacity = 1;
-                    emotHeaderRect0.Opacity = 1;
-                    emotHeaderBorder1.Opacity = 0;
-                    emotHeaderRect1.Opacity = 0;
-                    emotHeaderBorder2.Opacity = 0;
-                    emotHeaderRect2.Opacity = 0;
+                    emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
+                    emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
                     break;
                 case 1:
-                    emotHeaderBorder0.Opacity = 0;
-                    emotHeaderRect0.Opacity = 0;
-                    emotHeaderBorder1.Opacity = 1;
-                    emotHeaderRect1.Opacity = 1;
-                    emotHeaderBorder2.Opacity = 0;
-                    emotHeaderRect2.Opacity = 0;
+                    emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect1.Background = UI_Utils.Instance.TappedCategoryColor;
+                    emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
                     break;
                 case 2:
-                    emotHeaderBorder0.Opacity = 0;
-                    emotHeaderRect0.Opacity = 0;
-                    emotHeaderBorder1.Opacity = 0;
-                    emotHeaderRect1.Opacity = 0;
-                    emotHeaderBorder2.Opacity = 1;
-                    emotHeaderRect2.Opacity = 1;
+                    emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect2.Background = UI_Utils.Instance.TappedCategoryColor;
                     break;
             }
         }
@@ -4254,7 +4330,7 @@ namespace windows_client.View
             }
 
             //handled textbox hight to accomodate other data on screen in diff orientations
-            if (e.Orientation == PageOrientation.Portrait ||e.Orientation == PageOrientation.PortraitUp|| e.Orientation == PageOrientation.PortraitDown)
+            if (e.Orientation == PageOrientation.Portrait || e.Orientation == PageOrientation.PortraitUp || e.Orientation == PageOrientation.PortraitDown)
             {
                 svMessage.MaxHeight = 150;
             }
@@ -4291,6 +4367,387 @@ namespace windows_client.View
                 }
             }
         }
+
+        #region Stickers
+
+
+        bool isStickersLoaded = false;
+        private string _selectedCategory = string.Empty;
+
+        private void StickersTab_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            gridEmoticons.Visibility = Visibility.Collapsed;
+            gridStickers.Visibility = Visibility.Visible;
+            if (!isStickersLoaded)
+            {
+                Category1_Tap(sender, e);
+                isStickersLoaded = true;
+            }
+        }
+
+        private void Stickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            LongListSelector llsStickerCategory = (sender as LongListSelector);
+            Sticker sticker = llsStickerCategory.SelectedItem as Sticker;
+            llsStickerCategory.SelectedItem = null;
+            if (sticker == null)
+                return;
+            ConvMessage conv = new ConvMessage(AppResources.Sticker_Txt, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+            conv.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
+            conv.StickerObj = new Sticker(sticker.Category, sticker.Id, null);
+            conv.MetaDataString = string.Format("{{{0}:'{1}',{2}:'{3}'}}", HikeConstants.STICKER_ID, sticker.Id, HikeConstants.CATEGORY_ID, sticker.Category);
+
+            AddNewMessageToUI(conv, false);
+
+            mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
+            emoticonPanel.Visibility = Visibility.Collapsed;
+        }
+
+        private void PivotStickers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (pivotStickers.SelectedIndex)
+            {
+                case 0:
+                    Category1_Tap(null, null);
+                    break;
+                case 1:
+                    Category2_Tap(null, null);
+                    break;
+                case 2:
+                    Category3_Tap(null, null);
+                    break;
+                case 3:
+                    Category4_Tap(null, null);
+                    break;
+                case 4:
+                    Category5_Tap(null, null);
+                    break;
+            }
+        }
+
+        private void StickersBack_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            gridEmoticons.Visibility = Visibility.Visible;
+            gridStickers.Visibility = Visibility.Collapsed;
+        }
+
+        private void Category1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (_selectedCategory == StickerHelper.CATEGORY_1)
+                return;
+            _selectedCategory = StickerHelper.CATEGORY_1;
+            pivotStickers.SelectedIndex = 0;
+            stCategory1.Background = UI_Utils.Instance.TappedCategoryColor;
+            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_1);
+            StickerPivot stickerPivot = listStickerPivot[StickerHelper.CATEGORY_1];
+            stickerPivot.ShowStickers();
+        }
+
+        private void Category2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (_selectedCategory == StickerHelper.CATEGORY_2)
+                return;
+            _selectedCategory = StickerHelper.CATEGORY_2;
+            pivotStickers.SelectedIndex = 1;
+            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory2.Background = UI_Utils.Instance.TappedCategoryColor;
+            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            StickerPivot stPivot = listStickerPivot[StickerHelper.CATEGORY_2];
+            CategoryTap(StickerHelper.CATEGORY_2, stPivot);
+
+        }
+
+        private void Category3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (_selectedCategory == StickerHelper.CATEGORY_3)
+                return;
+            _selectedCategory = StickerHelper.CATEGORY_3;
+            pivotStickers.SelectedIndex = 2;
+            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory3.Background = UI_Utils.Instance.TappedCategoryColor;
+            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            StickerPivot stPivot = listStickerPivot[StickerHelper.CATEGORY_3];
+            CategoryTap(StickerHelper.CATEGORY_3, stPivot);
+
+        }
+
+        private void Category4_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (_selectedCategory == StickerHelper.CATEGORY_4)
+                return;
+            _selectedCategory = StickerHelper.CATEGORY_4;
+            pivotStickers.SelectedIndex = 3;
+            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory4.Background = UI_Utils.Instance.TappedCategoryColor;
+            StickerPivot stPivot = listStickerPivot[StickerHelper.CATEGORY_4];
+            CategoryTap(StickerHelper.CATEGORY_4, stPivot);
+
+        }
+
+        private void Category5_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (_selectedCategory == StickerHelper.CATEGORY_5)
+                return;
+            _selectedCategory = StickerHelper.CATEGORY_5;
+            pivotStickers.SelectedIndex = 4;
+            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory5.Background = UI_Utils.Instance.TappedCategoryColor;
+            StickerPivot stPivot = listStickerPivot[StickerHelper.CATEGORY_5];
+            CategoryTap(StickerHelper.CATEGORY_5, stPivot);
+        }
+
+        private void CategoryTap(string category, StickerPivot stickerPivot)
+        {
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
+            if (stickerCategory.ShowDownloadMessage)
+            {
+                ShowDownloadOverlay(true);
+                return;
+            }
+            if (stickerCategory == null)
+            {
+                stickerPivot.ShowNoStickers();
+            }
+            else if (stickerCategory.ListStickers.Count == 0 && stickerCategory.HasMoreStickers)
+            {
+                downloadStickers_Tap(null, null);
+            }
+            else if (stickerCategory.ListStickers.Count == 0)
+            {
+                stickerPivot.ShowNoStickers();
+            }
+            else
+            {
+                stickerPivot.ShowStickers();
+            }
+        }
+
+        private void llsStickersCategory_OnItemsRealised(object sender, ItemRealizationEventArgs e)
+        {
+            StickerCategory stickerCategory;
+            LongListSelector llsStickerCategory = sender as LongListSelector;
+            if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0)
+            {
+                string category = ((Sticker)llsStickerCategory.ItemsSource[0]).Category;
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category)) != null && stickerCategory.HasMoreStickers && !stickerCategory.ShowDownloadMessage && !stickerCategory.IsDownLoading)
+                    if (e.ItemKind == LongListSelectorItemKind.Item)
+                    {
+                        if ((e.Container.Content as Sticker).Equals(llsStickerCategory.ItemsSource[llsStickerCategory.ItemsSource.Count - 1]))
+                        {
+                            PostRequestForBatchStickers(stickerCategory);
+                        }
+                    }
+            }
+        }
+
+        private void PostRequestForBatchStickers(StickerCategory stickerCategory)
+        {
+            JObject json = new JObject();
+            json["catId"] = stickerCategory.Category;
+            if (!stickerCategory.IsDownLoading && stickerCategory.HasMoreStickers)
+            {
+                List<string> listStickerIds = new List<string>();
+                JArray existingIds = new JArray();
+                foreach (Sticker sticker in stickerCategory.ListStickers)
+                {
+                    existingIds.Add(sticker.Id);
+                }
+                json["stIds"] = existingIds;
+                json["resId"] = ResolutionId;
+                json["nos"] = 10;
+                stickerCategory.IsDownLoading = true;
+                AccountUtils.GetStickers(json, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack), stickerCategory);
+            }
+        }
+
+        private void StickersRequestCallBack(JObject json, Object obj)
+        {
+            StickerCategory stickerCategory = null;//to show batch sticker request
+            ConvMessage convMessage = null;//to show single sticker request
+            if (obj == null)
+                return;
+            if (obj is StickerCategory)
+                stickerCategory = obj as StickerCategory;
+            else if (obj is ConvMessage)
+                convMessage = obj as ConvMessage;
+            else
+                return;
+            if ((json == null) || HikeConstants.FAIL == (string)json[HikeConstants.STAT])
+            {
+                if (stickerCategory != null)
+                {
+                    stickerCategory.IsDownLoading = false;
+                }
+                return;
+            }
+
+            string category = (string)json["catId"];
+            JObject stickers = (JObject)json["data"];
+            bool hasMoreStickers = true;
+            if (json["st"] != null)
+            {
+                hasMoreStickers = false;
+            }
+            if (stickerCategory == null)
+            {
+                stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
+                if (stickerCategory == null)
+                {
+                    stickerCategory = new StickerCategory(category);
+                }
+            }
+            IEnumerator<KeyValuePair<string, JToken>> keyVals = stickers.GetEnumerator();
+            List<KeyValuePair<string, byte[]>> listHighResStickersBytes = new List<KeyValuePair<string, byte[]>>();
+
+            while (keyVals.MoveNext())
+            {
+                try
+                {
+                    KeyValuePair<string, JToken> kv = keyVals.Current;
+                    string id = (string)kv.Key;
+                    string iconBase64 = stickers[kv.Key].ToString();
+                    byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
+                    listHighResStickersBytes.Add(new KeyValuePair<string, byte[]>(id, imageBytes));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NewChatThread : callBack : Exception : " + ex.Message);
+                }
+            }
+            stickerCategory.WriteHighResToFile(listHighResStickersBytes);
+
+
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                List<KeyValuePair<string, byte[]>> listLowResStickersBytes = new List<KeyValuePair<string, byte[]>>();
+                foreach (KeyValuePair<string, Byte[]> keyValuePair in listHighResStickersBytes)
+                {
+                    string stickerId = keyValuePair.Key;
+                    BitmapImage highResImage = UI_Utils.Instance.createImageFromBytes(keyValuePair.Value);
+                    if (highResImage == null)
+                        continue;
+
+                    if (convMessage != null)
+                    {
+                        string key = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
+                        convMessage.SetStickerImage(highResImage);
+                        if (dictStickerCache.ContainsKey(key))
+                            continue;
+                        dictStickerCache[key] = highResImage;
+                    }
+
+                    Byte[] lowResImageBytes = UI_Utils.Instance.PngImgToJpegByteArray(highResImage);
+                    listLowResStickersBytes.Add(new KeyValuePair<string, byte[]>(stickerId, lowResImageBytes));
+                    stickerCategory.ListStickers.Add(new Sticker(category, stickerId, UI_Utils.Instance.createImageFromBytes(lowResImageBytes)));
+                }
+                stickerCategory.WriteLowResToFile(listLowResStickersBytes, hasMoreStickers);
+
+                if (stickerCategory != null && category == _selectedCategory)
+                {
+                    //stLoading.Visibility = Visibility.Collapsed;
+                    StickerPivot stickerPivot;
+                    if (listStickerPivot.TryGetValue(category, out stickerPivot))
+                        stickerPivot.ShowStickers();
+                    pivotStickers.Visibility = Visibility.Visible;
+                }
+                stickerCategory.IsDownLoading = false;
+            });
+        }
+
+        private Dictionary<string, StickerPivot> listStickerPivot = new Dictionary<string, StickerPivot>();
+
+        private void AddPivotItemsToStickerPivot()
+        {
+            StickerCategory stickerCategory;
+            //done thos way to maintain order of insertion
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_1)) != null)
+            {
+                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers);
+            }
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_2)) != null)
+            {
+                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers);
+                rectCategory2.Visibility = Visibility.Visible;
+                stCategory2.Visibility = Visibility.Visible;
+            }
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_3)) != null)
+            {
+                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers);
+                rectCategory3.Visibility = Visibility.Visible;
+                stCategory3.Visibility = Visibility.Visible;
+            }
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_4)) != null)
+            {
+                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers);
+                rectCategory4.Visibility = Visibility.Visible;
+                stCategory4.Visibility = Visibility.Visible;
+            }
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_5)) != null)
+            {
+                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers);
+                rectCategory5.Visibility = Visibility.Visible;
+                stCategory5.Visibility = Visibility.Visible;
+            }
+        }
+
+        Thickness zeroThickness = new Thickness(0, 0, 0, 0);
+        private void CreateStickerPivotItem(string category, ObservableCollection<Sticker> listSticker)
+        {
+            PivotItem pvt = new PivotItem();
+            pvt.Margin = zeroThickness;
+            pvt.BorderThickness = zeroThickness;
+            pvt.Padding = zeroThickness;
+            EventHandler<ItemRealizationEventArgs> itemRealised = null;
+            itemRealised += new EventHandler<ItemRealizationEventArgs>(llsStickersCategory_OnItemsRealised);
+            StickerPivot stickerPivot = new StickerPivot(Stickers_Tap, itemRealised, listSticker);
+            listStickerPivot[category] = stickerPivot;
+            pvt.Content = stickerPivot;
+            pivotStickers.Items.Add(pvt);
+        }
+
+        public void ShowDownloadOverlay(bool show)
+        {
+            if (show)
+            {
+                overlayRectangle.Visibility = Visibility.Visible;
+                DownloadStickers.Visibility = Visibility.Visible;
+                llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = false;
+            }
+            else
+            {
+                overlayRectangle.Visibility = Visibility.Collapsed;
+                DownloadStickers.Visibility = Visibility.Collapsed;
+                llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
+            }
+        }
+
+        private void downloadStickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ShowDownloadOverlay(false);
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
+            stickerCategory.SetDownloadMessage(false);
+            if (listStickerPivot.ContainsKey(stickerCategory.Category))
+                listStickerPivot[stickerCategory.Category].ShowLoadingStickers();
+            PostRequestForBatchStickers(stickerCategory);
+        }
+
+
+        #endregion
 
         #region Walkie Talkie
 
@@ -4330,6 +4787,8 @@ namespace windows_client.View
             walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieWhiteImage;
             recordWalkieTalkieMessage();
         }
+
+
 
         void recordButton_ManipulationCompleted(object sender, System.Windows.Input.ManipulationCompletedEventArgs e)
         {
@@ -4629,6 +5088,22 @@ namespace windows_client.View
 
         #endregion
 
+        private void overlayRectangle_Tap_1(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ShowDownloadOverlay(false);
+            StickerCategory s2 = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
+            if (s2 == null || s2.ListStickers.Count == 0)
+            {
+                if (listStickerPivot.ContainsKey(s2.Category))
+                    listStickerPivot[s2.Category].ShowNoStickers();
+            }
+            else
+            {
+                if (listStickerPivot.ContainsKey(s2.Category))
+                    listStickerPivot[s2.Category].ShowStickers();
+            }
+        }
+
         private void TipDismiss_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (toolTipMessage != null)
@@ -4650,6 +5125,8 @@ namespace windows_client.View
                 {
                     if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
                         return App.newChatThreadPage.dtSentBubbleNudge;
+                    if (convMesssage.StickerObj != null)
+                        return App.newChatThreadPage.dtSentSticker;
                     else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                         return App.newChatThreadPage.dtSentBubbleContact;
                     else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
@@ -4663,6 +5140,8 @@ namespace windows_client.View
                 {
                     if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
                         return App.newChatThreadPage.dtRecievedBubbleNudge;
+                    if (convMesssage.StickerObj != null)
+                        return App.newChatThreadPage.dtRecievedSticker;
                     else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                         return App.newChatThreadPage.dtRecievedBubbleContact;
                     else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))

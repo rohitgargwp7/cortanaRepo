@@ -14,6 +14,7 @@ using windows_client.Languages;
 using windows_client.ViewModel;
 using System.Threading;
 using System.Diagnostics;
+using Microsoft.Phone.Tasks;
 
 namespace windows_client.View
 {
@@ -211,26 +212,42 @@ namespace windows_client.View
             #region INVITE
             else
             {
-                string inviteToken = "";
-                //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-                int count = 0;
-                foreach (string key in contactsList.Keys)
+                if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
                 {
-                    if (key == App.MSISDN)
-                        continue;
-                    JObject obj = new JObject();
-                    JObject data = new JObject();
-                    data[HikeConstants.SMS_MESSAGE] = string.Format(AppResources.sms_invite_message, inviteToken);
-                    data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
-                    data[HikeConstants.MESSAGE_ID] = -1;
-                    obj[HikeConstants.TO] = key;
-                    obj[HikeConstants.DATA] = data;
-                    obj[HikeConstants.TYPE] = NetworkManager.INVITE;
-                    App.MqttManagerInstance.mqttPublishToServer(obj);
-                    count++;
+                    string inviteToken = "";
+                    //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+                    int count = 0;
+                    foreach (string key in contactsList.Keys)
+                    {
+                        if (key == App.MSISDN)
+                            continue;
+                        JObject obj = new JObject();
+                        JObject data = new JObject();
+                        data[HikeConstants.SMS_MESSAGE] = string.Format(AppResources.sms_invite_message, inviteToken);
+                        data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
+                        data[HikeConstants.MESSAGE_ID] = -1;
+                        obj[HikeConstants.TO] = key;
+                        obj[HikeConstants.DATA] = data;
+                        obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+                        App.MqttManagerInstance.mqttPublishToServer(obj);
+                        count++;
+                    }
+                    if (count > 0)
+                        MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
                 }
-                if (count > 0)
-                    MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
+                else
+                {
+                    SmsComposeTask smsComposeTask = new SmsComposeTask();
+                    string msisdns = string.Empty;
+                    foreach (string key in contactsList.Keys)
+                    {
+                        if (key != App.MSISDN)
+                            msisdns += key + ";";
+                    }
+                    smsComposeTask.To = msisdns;
+                    smsComposeTask.Body = AppResources.sms_invite_message;
+                    smsComposeTask.Show();
+                }
             }
             #endregion
             NavigationService.GoBack();

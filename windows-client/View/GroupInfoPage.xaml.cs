@@ -429,7 +429,7 @@ namespace windows_client.View
                     groupImage.Width = 83;
 
                     string msg = string.Format(AppResources.GroupImgChangedByGrpMember_Txt, AppResources.You_Txt);
-                    ConvMessage cm = new ConvMessage(msg, groupId, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.RECEIVED_READ, -1, -1,this.Orientation);
+                    ConvMessage cm = new ConvMessage(msg, groupId, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.RECEIVED_READ, -1, -1, this.Orientation);
                     cm.GrpParticipantState = ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED;
                     cm.GroupParticipant = App.MSISDN;
                     JObject jo = new JObject();
@@ -468,19 +468,39 @@ namespace windows_client.View
         {
             App.AnalyticsInstance.addEvent(Analytics.INVITE_SMS_PARTICIPANTS);
             //TODO start this loop from end, after sorting is done on onHike status
-            for (int i = 0; i < GroupManager.Instance.GroupCache[groupId].Count; i++)
+            if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
             {
-                GroupParticipant gp = GroupManager.Instance.GroupCache[groupId][i];
-                if (!gp.IsOnHike)
+                for (int i = 0; i < GroupManager.Instance.GroupCache[groupId].Count; i++)
                 {
-                    long time = utils.TimeUtils.getCurrentTimeStamp();
-                    ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
-                    convMessage.IsInvite = true;
-                    App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
+                    GroupParticipant gp = GroupManager.Instance.GroupCache[groupId][i];
+                    if (!gp.IsOnHike)
+                    {
+                        long time = utils.TimeUtils.getCurrentTimeStamp();
+                        ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
+                        convMessage.IsInvite = true;
+                        App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
+                    }
                 }
-            }
-            MessageBoxResult result = MessageBox.Show(AppResources.GroupInfo_InviteSent_MsgBoxText_Txt, AppResources.GroupInfo_InviteSent_MsgBoxHeader_Txt, MessageBoxButton.OK);
 
+                MessageBoxResult result = MessageBox.Show(AppResources.GroupInfo_InviteSent_MsgBoxText_Txt, AppResources.GroupInfo_InviteSent_MsgBoxHeader_Txt, MessageBoxButton.OK);
+            }
+            else
+            {
+                string msisdns = string.Empty;
+                for (int i = 0; i < GroupManager.Instance.GroupCache[groupId].Count; i++)
+                {
+                    GroupParticipant gp = GroupManager.Instance.GroupCache[groupId][i];
+                    if (!gp.IsOnHike)
+                    {
+                        msisdns += gp.Msisdn + ";";
+                    }
+                }
+                SmsComposeTask smsComposeTask = new SmsComposeTask();
+
+                smsComposeTask.To = msisdns;
+                smsComposeTask.Body = AppResources.sms_invite_message;
+                smsComposeTask.Show();
+            }
 
         }
 

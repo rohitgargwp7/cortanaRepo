@@ -33,7 +33,7 @@ namespace windows_client.utils
 
         private static readonly int PRODUCTION_PORT = 80;
 
-        private static readonly int STAGING_PORT = 8080;
+        private static readonly int STAGING_PORT = 80;
 
         public static bool IsProd
         {
@@ -60,7 +60,7 @@ namespace windows_client.utils
             get
             {
                 if (IsProd)
-                    return STAGING_PORT;
+                    return 8080;
                 return 1883;
             }
         }
@@ -141,7 +141,7 @@ namespace windows_client.utils
         private enum RequestType
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
-            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS, GET_ONHIKE_DATE, POST_INFO_ON_APP_UPDATE,
+            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS, GET_ONHIKE_DATE, POST_INFO_ON_APP_UPDATE, GET_STICKERS,
             LAST_SEEN_POST
         }
         private static void addToken(HttpWebRequest req)
@@ -319,6 +319,26 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_STATUS, statusJSON, finalCallbackFunction });
         }
 
+        public static void GetStickers(JObject stickerJson, parametrisedPostResponseFunction finalCallBackFunc, Object obj)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/stickers")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.GET_STICKERS, stickerJson, finalCallBackFunc, obj });
+        }
+        public static void GetSingleSticker(ConvMessage convMessage,int resId, parametrisedPostResponseFunction finalCallBackFunc)
+        {
+            if (convMessage == null || convMessage.StickerObj == null)
+                return;
+            string requestUrl = string.Format("{0}/stickers?catId={1}&stId={2}&resId={3}", BASE, convMessage.StickerObj.Category, convMessage.StickerObj.Id, resId);
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(requestUrl)) as HttpWebRequest;
+            addToken(req);
+            req.Method = "GET";
+            //req.ContentType = "application/json";
+            req.BeginGetResponse(GetRequestCallback, new object[] { req, finalCallBackFunc, convMessage });
+        }
+
         public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction, string socialNetowrk, bool isPost)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/connect/" + socialNetowrk)) as HttpWebRequest;
@@ -355,9 +375,9 @@ namespace windows_client.utils
             JObject data = new JObject();
             HttpWebRequest req = vars[0] as HttpWebRequest;
             Stream postStream = req.EndGetRequestStream(result);
-            postResponseFunction finalCallbackFunction = null;
+            Object finalCallbackFunction = null;
             RequestType type = (RequestType)vars[1];
-
+            Object obj = new object();
             switch (type)
             {
                 #region REGISTER ACCOUNT
@@ -524,6 +544,13 @@ namespace windows_client.utils
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     break;
                 #endregion
+                #region GET STICKERS
+                case RequestType.GET_STICKERS:
+                    data = vars[2] as JObject;
+                    finalCallbackFunction = vars[3] ;
+                    obj = vars[4];
+                    break;
+                #endregion
                 #region DEFAULT
                 default:
                     break;
@@ -536,7 +563,7 @@ namespace windows_client.utils
                 sw.Write(json);
             }
             postStream.Close();
-            req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
+            req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction, obj });
         }
 
         public static void GetOnhikeDate(string msisdn, postResponseFunction finalCallbackFunction)
@@ -590,7 +617,7 @@ namespace windows_client.utils
                     }
                     else
                     {
-                        if (vars[1] is postResponseFunction)
+                        if (vars[1] is postResponseFunction || vars[1] is parametrisedPostResponseFunction)
                         {
                             using (var reader = new StreamReader(responseStream))
                             {
@@ -635,6 +662,11 @@ namespace windows_client.utils
                     {
                         downloadFile downloadFileCallback = vars[1] as downloadFile;
                         downloadFileCallback(fileBytes, vars[2] as object);
+                    }
+                    else if (vars[1] is parametrisedPostResponseFunction)
+                    {
+                        parametrisedPostResponseFunction parametrisedCallBack = vars[1] as parametrisedPostResponseFunction;
+                        parametrisedCallBack(jObject, vars[2]);
                     }
                 }
             }
@@ -852,8 +884,7 @@ namespace windows_client.utils
                 else if (vars[2] is parametrisedPostResponseFunction)
                 {
                     parametrisedPostResponseFunction finalCallbackFunctionForStatus = vars[2] as parametrisedPostResponseFunction;
-                    StatusUpdateBox sb = vars[3] as StatusUpdateBox;
-                    finalCallbackFunctionForStatus(obj, sb);
+                    finalCallbackFunctionForStatus(obj, vars[3]);
                 }
             }
         }
@@ -992,7 +1023,7 @@ namespace windows_client.utils
                                         msgToShow.Add(cn);
                                         hikeCount++;
                                     }
-                                    if (!onhike && smsCount <= 2 && cn.Msisdn.StartsWith("+91") && !msisdns.Contains(cn.Msisdn)) // allow only indian numbers for sms
+                                    if (!onhike && smsCount <= 2 && cn.Msisdn.StartsWith(HikeConstants.INDIA_COUNTRY_CODE) && !msisdns.Contains(cn.Msisdn)) // allow only indian numbers for sms
                                     {
                                         msisdns.Add(cn.Msisdn);
                                         msgToShow.Add(cn);

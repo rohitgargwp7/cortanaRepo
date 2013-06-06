@@ -42,7 +42,10 @@ namespace windows_client
 
         public static readonly string ICON = "ic";
 
+        public static readonly string SERVER_TIMESTAMP = "sts";
         public static readonly string LAST_SEEN = "ls";
+
+        public static readonly string STICKER = "stk";
 
         public static bool turnOffNetworkManager = true;
 
@@ -215,10 +218,10 @@ namespace windows_client
 
                     if (lastSeen > 0)
                     {
-                        //long timedifference;
-                        //if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
-                        //    lastSeen = lastSeen - timedifference;
-                    }           
+                        long timedifference;
+                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                            lastSeen = lastSeen - timedifference;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -1372,8 +1375,54 @@ namespace windows_client
                 }
             }
             #endregion
+            #region SERVER TIMESTAMP
+            else if (type == SERVER_TIMESTAMP)
+            {
+                long timediff = (long)jsonObj[HikeConstants.TIMESTAMP] - TimeUtils.getCurrentTimeStamp();
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.TIME_DIFF_EPOCH, timediff);
+                //todo:place this setting in some different file as will be written again and agian
+            }
+            #endregion
+            #region STICKER
+            else if (type == STICKER)
+            {
+                try
+                {
+                    string subType = (string)jsonObj[HikeConstants.SUB_TYPE];
+                    JObject jsonData = (JObject)jsonObj[HikeConstants.DATA];
+
+                    //do same for category as well as subcategory
+                    if (subType == HikeConstants.ADD_STICKER || subType == HikeConstants.ADD_CATEGORY)
+                    {
+                        string category = (string)jsonData[HikeConstants.CATEGORY_ID];
+                        StickerCategory.UpdateHasMoreMessages(category, true);
+                    }
+                    else if (subType == HikeConstants.REMOVE_STICKER)
+                    {
+                        string category = (string)jsonData[HikeConstants.CATEGORY_ID];
+                        JArray jarray = (JArray)jsonData["stIds"];
+                        List<string> listStickers = new List<string>();
+                        for (int i = 0; i < jarray.Count; i++)
+                        {
+                            listStickers.Add((string)jarray[i]);
+                        }
+                        StickerCategory.DeleteSticker(category, listStickers);
+                    }
+                    else if (subType == HikeConstants.REMOVE_CATEGORY)
+                    {
+                        string category = (string)jsonData[HikeConstants.CATEGORY_ID];
+                        StickerCategory.DeleteCategory(category);
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("NETWORK MANAGER :: Exception in ADD Sticker: " + e.StackTrace);
+                }
+            }
+            #endregion
             #region Pro Tips
-            
+
             else if (HikeConstants.MqttMessageTypes.PRO_TIPS == type)
             {
                 JObject data = null;
@@ -1411,7 +1460,7 @@ namespace windows_client
                     Debug.WriteLine("Network Manager:: Delivery Report, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
                 }
             }
-            
+
             #endregion
             #region OTHER
             else

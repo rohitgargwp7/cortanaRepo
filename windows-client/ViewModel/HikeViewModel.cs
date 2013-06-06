@@ -25,6 +25,8 @@ namespace windows_client.ViewModel
 
         public static string NUMBER_OF_FAVS = "NoFavs";
 
+        public static StickerHelper stickerHelper;
+
         private Dictionary<string, ConversationListObject> _pendingReq = null;
 
         private ObservableCollection<ConversationListObject> _favList = null;

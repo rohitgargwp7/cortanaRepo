@@ -236,6 +236,7 @@ namespace windows_client.View
             if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
             {
                 NetworkManager.turnOffNetworkManager = false;
+                Utils.RequestServerEpochTime();
             }
             App.MqttManagerInstance.connect();
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
@@ -749,6 +750,7 @@ namespace windows_client.View
                         if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                         {
                             NetworkManager.turnOffNetworkManager = false;
+                            Utils.RequestServerEpochTime();
                             PhoneApplicationService.Current.State.Remove("IsStatusPush");
                         }
                         isStatusMessagesLoaded = true;
@@ -2284,7 +2286,7 @@ namespace windows_client.View
         #endregion
 
         #region Pro Tips
-     
+
         private void dismissProTip_Click(object sender, RoutedEventArgs e)
         {
             proTipImage.Visibility = Visibility.Collapsed;

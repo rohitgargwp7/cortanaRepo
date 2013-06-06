@@ -15,6 +15,12 @@ namespace windows_client
         public static readonly string DATA = "d";
         public static readonly string TO = "to";
         public static readonly string FROM = "f";
+        public static readonly string SUB_TYPE = "st";
+
+        public static readonly string ADD_STICKER = "addStk";
+        public static readonly string ADD_CATEGORY = "addCat";
+        public static readonly string REMOVE_STICKER = "remStk";
+        public static readonly string REMOVE_CATEGORY = "remCat";
 
         public static readonly string HIKE_MESSAGE = "hm";
         public static readonly string SMS_MESSAGE = "sm";
@@ -25,8 +31,9 @@ namespace windows_client
         public static readonly string ANALYTICS_EVENT = "ae";
         public static readonly string LOG_EVENT = "le";//for analytics
         public static readonly string FILE_SYSTEM_VERSION = "File_System_Version";
+        public static readonly string REQUEST_SERVER_TIME = "rsts";
         public static readonly string STATUS = "st";
-
+        
         public static readonly string CRITICAL = "critical";
         public static readonly string LATEST = "latest";
         public static readonly string APP_ID = "appID";
@@ -202,6 +209,7 @@ namespace windows_client
         public static readonly string PROFILE_PIC_ID = "ppid";
         public static readonly string MOOD = "mood";
         public static readonly string TIME_OF_DAY = "timeofday";
+        public static readonly string INDIA_COUNTRY_CODE = "+91";
 
         public static readonly string PRO_TIP_ID = "i";
         public static readonly string PRO_TIP_HEADER = "h";
@@ -285,6 +293,9 @@ namespace windows_client
 
         public static readonly string ENABLE_PUSH_BATCH_SU = "enablepushbatchingforsu";
         public static readonly string PUSH_SU = "pushsu";
+        public static readonly string STICKER_ID = "stId";
+        public static readonly string CATEGORY_ID = "catId";
+
 
         public static readonly string LASTSEEN = "ls";
         public static readonly string LASTSEENONOFF = "lastseen";
@@ -354,6 +365,7 @@ namespace windows_client
             public static readonly string CONTACTS_TO_SHOW = "ContactsToShow";
             public static readonly string NEW_UPDATE = "New_Update";
             public static readonly string APP_LAUNCH_COUNT = "App_Launch_Count";
+            public static readonly string TIME_DIFF_EPOCH = "serverEpochTime";
         }
     }
 }

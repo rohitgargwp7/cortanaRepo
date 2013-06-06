@@ -18,7 +18,7 @@
     </TargetFrameworkProfile>
     <TargetFrameworkIdentifier>WindowsPhone</TargetFrameworkIdentifier>
     <SilverlightApplication>true</SilverlightApplication>
-    <SupportedCultures>de-DE</SupportedCultures>
+    <SupportedCultures>de-DE%3bfr%3bpt-BR%3bru%3bes</SupportedCultures>
     <XapOutputs>true</XapOutputs>
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
     <XapFilename>windows-client_$(Configuration)_$(Platform).xap</XapFilename>
@@ -133,6 +133,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\sharpcompress.0.8.2\lib\sl3-wp\SharpCompress.WP7.dll</HintPath>
     </Reference>
+    <Reference Include="WriteableBitmapExWinPhone">
+      <HintPath>lib\WriteableBitmapExWinPhone.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Interactivity" />
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +157,9 @@
       <DependentUpon>ImageStatusUpdate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\StatusUpdate\StatusUpdateBox.cs" />
+    <Compile Include="Controls\StickerPivot.xaml.cs">
+      <DependentUpon>StickerPivot.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TemplateSelector.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbCompiledQueries.cs" />
@@ -209,6 +215,8 @@
     <Compile Include="utils\RelativeAnimatingContentControl.cs" />
     <Compile Include="utils\SmileyParser.cs" />
     <Compile Include="utils\StatusUpdateHelper.cs" />
+    <Compile Include="utils\StickerCategory.cs" />
+    <Compile Include="utils\StickerHelper.cs" />
     <Compile Include="utils\UpdatePostHelper.cs" />
     <Compile Include="utils\Utils.cs" />
     <Compile Include="ViewModel\HikeViewModel.cs" />
@@ -319,6 +327,10 @@
     <Page Include="Controls\StatusUpdate\ImageStatusUpdate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\StickerPivot.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\BlockListPage.xaml">
       <SubType>Designer</SubType>
@@ -477,6 +489,7 @@
     <Content Include="View\images\avatars\Sneakers.png" />
     <Content Include="View\images\avatars\Space.png" />
     <Content Include="View\images\avatars\TealPeople.png" />
+    <Content Include="View\images\back.png" />
     <Content Include="View\images\blocklist_holder.png" />
     <Content Include="View\images\block_list_icon.png" />
     <Content Include="View\images\block_list_icon_white.png" />
@@ -486,6 +499,7 @@
     <Content Include="View\images\deleted_grey_icon.png" />
     <Content Include="View\images\deleted_white_icon.png" />
     <Content Include="View\images\delete_account_white.png" />
+    <Content Include="View\images\download.jpg" />
     <Content Include="View\images\drop_pin_icon.png" />
     <Content Include="View\images\emptyImage.png" />
     <Content Include="View\images\empty_screen_logo_black.png" />
@@ -521,6 +535,7 @@
     <Content Include="View\images\icon_stop_appbar.png" />
     <Content Include="View\images\invite.png" />
     <Content Include="View\images\invite_dark.png" />
+    <Content Include="View\images\loading.jpg" />
     <Content Include="View\images\last_seen_clock_black.png" />
     <Content Include="View\images\last_seen_clock_white.png" />
     <Content Include="View\images\menu_contact_icon_black.png" />
@@ -561,6 +576,31 @@
     <Content Include="View\images\remove_wt_icon.png" />
     <Content Include="View\images\settings_icon_dark.png" />
     <Content Include="View\images\settings_icon_white.png" />
+    <Content Include="View\images\stickers\720p\1_awww.png" />
+    <Content Include="View\images\stickers\720p\2_talktohand.png" />
+    <Content Include="View\images\stickers\720p\3_wink.png" />
+    <Content Include="View\images\stickers\720p\4_hugs.png" />
+    <Content Include="View\images\stickers\720p\5_woohoo.png" />
+    <Content Include="View\images\stickers\720p\6_sshh.png" />
+    <Content Include="View\images\stickers\720p\7_pheww.png" />
+    <Content Include="View\images\stickers\720p\8_crying.png" />
+    <Content Include="View\images\stickers\WVGA\1_awww.png" />
+    <Content Include="View\images\stickers\WVGA\2_talktohand.png" />
+    <Content Include="View\images\stickers\WVGA\3_wink.png" />
+    <Content Include="View\images\stickers\WVGA\4_hugs.png" />
+    <Content Include="View\images\stickers\WVGA\5_woohoo.png" />
+    <Content Include="View\images\stickers\WVGA\6_sshh.png" />
+    <Content Include="View\images\stickers\WVGA\7_pheww.png" />
+    <Content Include="View\images\stickers\WVGA\8_crying.png" />
+    <Content Include="View\images\stickers\WXGA\1_awww.png" />
+    <Content Include="View\images\stickers\WXGA\2_talktohand.png" />
+    <Content Include="View\images\stickers\WXGA\3_wink.png" />
+    <Content Include="View\images\stickers\WXGA\4_hugs.png" />
+    <Content Include="View\images\stickers\WXGA\5_woohoo.png" />
+    <Content Include="View\images\stickers\WXGA\6_sshh.png" />
+    <Content Include="View\images\stickers\WXGA\7_pheww.png" />
+    <Content Include="View\images\stickers\WXGA\8_crying.png" />
+    <Content Include="View\images\stickrcat1.png" />
     <Content Include="View\images\close_white.png" />
     <Content Include="View\images\close_black.png" />
     <Content Include="View\images\timeline_photo.png" />
@@ -815,10 +855,22 @@
     <EmbeddedResource Include="Languages\AppResources.de-DE.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Languages\AppResources.es.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\AppResources.fr.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\AppResources.pt-BR.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Languages\AppResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\AppResources.ru.resx">
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />

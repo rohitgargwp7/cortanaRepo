@@ -245,6 +245,29 @@
                 </Grid>
             </Grid>
         </DataTemplate>
+        <DataTemplate x:Name="dtRecievedSticker">
+
+            <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}"  HorizontalAlignment="Left">
+                <toolkit:ContextMenuService.ContextMenu>
+                    <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete"/>
+                    </toolkit:ContextMenu>
+                </toolkit:ContextMenuService.ContextMenu>
+                <!--to maintain width-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Width="250"></TextBlock>
+                <Image HorizontalAlignment="Right" Source="{Binding MessageImage}" Grid.Row="0" Grid.Column="0" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+            </Grid>
+        </DataTemplate>
         <DataTemplate x:Name="dtSentBubbleText" >
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}" HorizontalAlignment="Right">
                 <toolkit:ContextMenuService.ContextMenu>
@@ -468,6 +491,29 @@
                 </Grid>
             </Grid>
         </DataTemplate>
+        <DataTemplate x:Name="dtSentSticker">
+            <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}"  HorizontalAlignment="Right">
+                <toolkit:ContextMenuService.ContextMenu>
+                    <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete"/>
+                    </toolkit:ContextMenu>
+                </toolkit:ContextMenuService.ContextMenu>
+                <!--to maintain width-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Width="250"></TextBlock>
+                <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Width="30" Grid.Column="0" HorizontalAlignment="Right" Grid.RowSpan="2"></Image>
+                <Image HorizontalAlignment="Right" Source="{Binding MessageImage}" Grid.Row="0" Grid.Column="1" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+            </Grid>
+        </DataTemplate>
         <DataTemplate x:Key="SelectingTemplate">
             <view:ChatThreadTemplateSelector Content="{Binding}"/>
         </DataTemplate>
@@ -517,8 +563,6 @@
             </StackPanel>
         </StackPanel>
 
-        <!--ContentPanel - place additional content here-->
-
         <!--(-15) margin to hide vertical scroll bar  -->
         <phone:LongListSelector Name="llsMessages" Margin="0 0 -15 0" ItemTemplate="{StaticResource SelectingTemplate}" ItemRealized="llsMessages_ItemRealized" Grid.Row="1" Tap="FileAttachmentMessage_Tap" DoubleTap="MessageList_DoubleTap" HorizontalContentAlignment="Stretch">
 
@@ -528,120 +572,208 @@
             <StackPanel x:Name="smscounter" Margin="0,5,0,0" Visibility="Collapsed" >
                 <TextBlock x:Name="smsCounterTxtBlk"  Margin="20,0,0,0"></TextBlock>
             </StackPanel>
-            <StackPanel Visibility="Collapsed" Margin="0,0,0,-10" x:Name="emoticonPanel" LostFocus="emoticonPanel_LostFocus" Background="#323232">
+            <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
+            <Grid Background="#eeeeec">
+                <ScrollViewer Name="svMessage" MaxHeight="150" >
+                    <Grid Background="#eeeeec">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <toolkit:PhoneTextBox TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
+                                            MinHeight="68" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto"  />
+                        <Image Grid.Column="1" Source="/View/images/Mic_icon_black_small.png" Tap="Record_ActionIconTapped" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="None" Margin="0,0,15,15"/>
+                    </Grid>
+                </ScrollViewer>
+                <Grid x:Name="recordGrid" HorizontalAlignment="Stretch" Visibility="Collapsed" Background="#eeeeec" Margin="0,-4,0,0">
+                    <Grid Margin="5" x:Name="recordButtonGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ManipulationStarted="Hold_To_Record" ManipulationCompleted="recordButton_ManipulationCompleted">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                            <Image Stretch="None" Margin="10,0" x:Name="walkieTalkieImage" Source="/View/images/walkie_talkie_Grey_small.png" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="recordButton" Foreground="#686868" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24" Text=""/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Width="62" Margin="5" Height="62" Canvas.ZIndex="2" x:Name="cancelRecord" Tap="cancelRecord_Tap" Background="#3F3F3F" HorizontalAlignment="Right">
+                        <Image Source="/View/images/remove_wt_icon.png" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 10 5" Visibility="Collapsed" Name="spSmsCharCounter">
+                <TextBlock Name="txtMsgCount"></TextBlock>
+                <TextBlock Name="txtMsgCharCount"></TextBlock>
+            </StackPanel>
 
-                <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" SelectionChanged="emoticonPivot_SelectionChanged" Foreground="Black" Height="240">
-                    <controls:PivotItem Margin="12,8,12,0">
-                        <Grid x:Name="emotGrid0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-
-                            <ListBox Height="200" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList0_Tap">
-                                <ListBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
-                                    </ItemsPanelTemplate>
-                                </ListBox.ItemsPanel>
-
-                                <ListBox.ItemTemplate>
-
-                                    <DataTemplate>
-                                        <Image Margin="8,6,8,6" Height="40" Width="40" Source="{Binding}">
-                                        </Image>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </Grid>
-                    </controls:PivotItem>
-
-
-                    <controls:PivotItem Margin="12,8,12,0">
-                        <Grid x:Name="emotGrid1">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-
-                            <ListBox Height="200" Name="emotList1" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList1_Tap">
-                                <ListBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
-                                    </ItemsPanelTemplate>
-                                </ListBox.ItemsPanel>
-
-                                <ListBox.ItemTemplate>
-
-                                    <DataTemplate>
-                                        <Image Margin="8,6,8,6" Height="40" Width="40" Source="{Binding}">
-                                        </Image>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </Grid>
-                    </controls:PivotItem>
-
-                    <controls:PivotItem Margin="12,8,12,0">
-                        <Grid x:Name="emotGrid2">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-
-                            <ListBox Height="200" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList2_Tap">
-                                <ListBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
-                                    </ItemsPanelTemplate>
-                                </ListBox.ItemsPanel>
-
-                                <ListBox.ItemTemplate>
-
-                                    <DataTemplate>
-                                        <Image Margin="8,6,8,6" Height="40" Width="40" Source="{Binding}">
-                                        </Image>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </Grid>
-                    </controls:PivotItem>
-                </controls:Pivot>
-                <Grid HorizontalAlignment="Center" Margin="0,0,15,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
+            <StackPanel Margin="0,0,0,0" Visibility="Collapsed"  x:Name="emoticonPanel" Height="350" LostFocus="emoticonPanel_LostFocus" Background="#323232">
+                <Grid Name="gridEmoticons"  Margin="12">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="75"></RowDefinition>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Border x:Name="emotHeaderBorder0" Grid.Row="0" Grid.Column="0" Height="60" Margin="15,0,15,0" BorderThickness="1" BorderBrush="#404040">
-                        <Rectangle x:Name="emotHeaderRect0" Margin="0,0,0,0" Grid.Row="0" Grid.Column="0" Fill="#1f1f1f" Width="60" Height="60"/>
-                    </Border>
-                    <Image Grid.Row="0" Grid.Column="0" Margin="3" Height="40" Width="40" Tap="emotHeaderRect0_Tap" Source="images\emoticons\emo_im_01_bigsmile.png"/>
+                    <controls:Pivot Name="emoticonPivot" Grid.Row="0" SelectionChanged="emoticonPivot_SelectionChanged" Foreground="Black" Height="240">
+                        <controls:PivotItem Margin="0,8,0,0">
+                            <Grid x:Name="emotGrid0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
 
-                    <Border x:Name="emotHeaderBorder1" Opacity="0" Grid.Row="0" Grid.Column="1" Height="60" Margin="15,0,15,0" BorderThickness="1" BorderBrush="#404040">
-                        <Rectangle x:Name="emotHeaderRect1" Margin="0" Opacity="0" Grid.Row="0" Grid.Column="1" Fill="#1f1f1f" Width="60" Height="60"/>
-                    </Border>
-                    <Image Grid.Row="0" Grid.Column="1" Margin="3" Height="40" Width="40" Tap="emotHeaderRect1_Tap" Source="images\emoticons\emo_im_102_scorn.png"/>
+                                <ListBox Height="230" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList0_Tap">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <toolkit:WrapPanel ItemHeight="65" ItemWidth="65"/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
 
-                    <Border x:Name="emotHeaderBorder2" Opacity="0" Grid.Row="0" Grid.Column="2" Height="60" Margin="15,0,15,0" BorderThickness="1" BorderBrush="#404040">
-                        <Rectangle x:Name="emotHeaderRect2" Margin="0" Opacity="0" Grid.Row="0" Grid.Column="2" Fill="#1f1f1f" Width="60" Height="60"/>
-                    </Border>
-                    <Image Grid.Row="0" Grid.Column="2" Margin="7,3,3,0" Height="40" Width="40" Tap="emotHeaderRect2_Tap" Source="images\emoticons\emo_im_111_grin.png"/>
+                                    <ListBox.ItemTemplate>
 
+                                        <DataTemplate>
+                                            <Image Margin="5,5,5,5" Height="40" Width="40" Source="{Binding}">
+                                            </Image>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </controls:PivotItem>
+
+                        <controls:PivotItem Margin="0,8,0,0">
+                            <Grid x:Name="emotGrid1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <ListBox Height="230" Name="emotList1" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList1_Tap">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <toolkit:WrapPanel ItemHeight="65" ItemWidth="65"/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+
+                                    <ListBox.ItemTemplate>
+
+                                        <DataTemplate>
+                                            <Image Margin="5,5,5,5" Height="40" Width="40" Source="{Binding}">
+                                            </Image>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </controls:PivotItem>
+
+                        <controls:PivotItem Margin="0,8,0,0">
+                            <Grid x:Name="emotGrid2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <ListBox Height="230" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList2_Tap">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <toolkit:WrapPanel ItemHeight="65" ItemWidth="65"/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+
+                                    <ListBox.ItemTemplate>
+
+                                        <DataTemplate>
+                                            <Image Margin="5,5,5,5" Height="45" Width="45" Source="{Binding}">
+                                            </Image>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </controls:PivotItem>
+                    </controls:Pivot>
+                    <Grid Height="52" Grid.Row="1" VerticalAlignment="Bottom" Margin="5 15 5 5" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Name="emotHeaderRect0" Grid.Column="0" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect0_Tap">
+                            <Image Source="images\emoticons\emo_im_01_bigsmile.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <Rectangle Width="2" Grid.Column="1" />
+                        <StackPanel Name="emotHeaderRect1" Grid.Column="2" Background="#1ba1e2"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect1_Tap" >
+                            <Image Source="images\emoticons\emo_im_102_scorn.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"  VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <Rectangle Width="2" Grid.Column="3" />
+                        <StackPanel Name="emotHeaderRect2"  Grid.Column="4" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect2_Tap">
+                            <Image Source="images\emoticons\emo_im_111_grin.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <Rectangle Width="2" Grid.Column="5" />
+                        <StackPanel Name="stickerTab"  Grid.Column="6" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="StickersTab_Tap">
+                            <Image Source="images\stickrcat1.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <Rectangle Width="2" Grid.Column="7" />
+                        <StackPanel   Grid.Column="8" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  >
+                            <Image  Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+                <Grid Name="gridStickers" Visibility="Collapsed"  Background="#313334" Margin="12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <controls:Pivot Name="pivotStickers" Grid.Row="0" SelectionChanged="PivotStickers_SelectionChanged" Height="230">
+                    </controls:Pivot>
+
+                    <Grid Height="52" Grid.Row="1" Margin="5 15 5 5" Name="gridStickerPivot">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto" ></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="StickersBack_Tap">
+                            <Image Source="images\back.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <Rectangle  Name="rectCategory1" Width="15" Grid.Column="1" />
+                        <StackPanel Name="stCategory1" Grid.Column="2" Background="#1ba1e2"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category1_Tap" >
+                            <Image Source="images\stickrcat1.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"  VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <Rectangle Name="rectCategory2" Width="2" Grid.Column="3"  Visibility="Collapsed" />
+                        <StackPanel Name="stCategory2"  Grid.Column="4" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category2_Tap"  Visibility="Collapsed" >
+                            <Image Source="images\stickrcat1.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <Rectangle Name="rectCategory3" Width="2" Grid.Column="5"  Visibility="Collapsed"  />
+                        <StackPanel Name="stCategory3"  Grid.Column="6" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="Category3_Tap"  Visibility="Collapsed" >
+                            <Image Source="images\stickrcat1.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <Rectangle Name="rectCategory4" Width="2" Grid.Column="7"  Visibility="Collapsed"  />
+                        <StackPanel  Name="stCategory4" Grid.Column="8" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="Category4_Tap"  Visibility="Collapsed" >
+                            <Image Source="images\stickrcat1.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <Rectangle Name="rectCategory5" Width="2" Grid.Column="9"  Visibility="Collapsed"  />
+                        <StackPanel  Name="stCategory5" Grid.Column="10" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category5_Tap"  Visibility="Collapsed" >
+                            <Image Source="images\stickrcat1.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
                 </Grid>
             </StackPanel>
 
-            <Grid x:Name="attachmentMenu" Visibility="Collapsed" Height="201" Background="#292929">
+            <Grid x:Name="attachmentMenu" Visibility="Collapsed" Height="350" Background="#292929">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -694,36 +826,6 @@
                     <TextBlock Margin="0,5,0,0" Text="{Binding Path= LocalizedResources.Attachement_Contact_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18" HorizontalAlignment="Center" Foreground="#f6f6f6" ></TextBlock >
                 </StackPanel>
             </Grid>
-
-            <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
-            <Grid Background="#eeeeec">
-                <ScrollViewer Name="svMessage" MaxHeight="150" >
-                    <Grid Background="#eeeeec">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <toolkit:PhoneTextBox TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
-                                            MinHeight="68" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto"  />
-                        <Image Grid.Column="1" Source="/View/images/Mic_icon_black_small.png" Tap="Record_ActionIconTapped" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="None" Margin="0,0,15,15"/>
-                    </Grid>
-                </ScrollViewer>
-                <Grid x:Name="recordGrid" HorizontalAlignment="Stretch" Visibility="Collapsed" Background="#eeeeec" Margin="0,-4,0,0">
-                    <Grid Margin="5" x:Name="recordButtonGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ManipulationStarted="Hold_To_Record" ManipulationCompleted="recordButton_ManipulationCompleted">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" >
-                            <Image Stretch="None" Margin="10,0" x:Name="walkieTalkieImage" Source="/View/images/walkie_talkie_Grey_small.png" VerticalAlignment="Center"/>
-                            <TextBlock x:Name="recordButton" Foreground="#686868" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24" Text=""/>
-                        </StackPanel>
-                    </Grid>
-                    <Grid Width="62" Margin="5" Height="62" Canvas.ZIndex="2" x:Name="cancelRecord" Tap="cancelRecord_Tap" Background="#3F3F3F" HorizontalAlignment="Right">
-                        <Image Source="/View/images/remove_wt_icon.png" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Grid>
-                </Grid>
-            </Grid>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 10 5" Visibility="Collapsed" Name="spSmsCharCounter">
-                <TextBlock Name="txtMsgCount"></TextBlock>
-                <TextBlock Name="txtMsgCharCount"></TextBlock>
-            </StackPanel>
         </StackPanel>
         <ProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" 
                                         Background="Transparent" IsIndeterminate="True" 
@@ -733,14 +835,38 @@
                                         HorizontalContentAlignment="Center" 
                                         IsEnabled="False" IsTabStop="True" Opacity="0"/>
 
-        <Rectangle x:Name="overlayRectangle" Grid.Row="0" Grid.RowSpan="3" Fill="#000000" Visibility="Collapsed"></Rectangle>
+        <Rectangle x:Name="overlayRectangle" Grid.Row="0" Grid.RowSpan="3" Fill="#000000" Visibility="Collapsed" Opacity="0.3" Tap="overlayRectangle_Tap_1" ></Rectangle>
         <StackPanel x:Name="OverlayMessagePanel" Visibility="Collapsed" Opacity="1" Grid.Row="1" Height="320" VerticalAlignment="Top" Margin="25,90,25,0" Orientation="Vertical">
             <Image Source="images\ic_block_active.png" Height="79" Width="78"></Image>
             <TextBlock Name="BlockTxtBlk" HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.SelectUser_BlockMsg_Txt, Source={StaticResource LocalizedStrings}}" Foreground="#FFFFFF" FontSize="30"></TextBlock>
             <Button Height="75" Name="btnBlockUnblock" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"></Button>
         </StackPanel>
-
-        <Rectangle x:Name="overlayForNudge" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="3" Fill="#ffffff" ></Rectangle>
+        <Grid x:Name="DownloadStickers" Visibility="Collapsed"  Grid.Row="1" Grid.RowSpan="2" VerticalAlignment="Center" Margin="0 0 0 50">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Height="400" Width="330" Background="#ffe05e">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Image Source="images/download.jpg" Grid.ColumnSpan="2" Height="300" Width="300" Margin="0 20 0 0"></Image>
+                <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                    <TextBlock Text="Expressions" HorizontalAlignment="Center" FontFamily="Segoe WP Semibold" Foreground="#ad6a00" FontSize="24"/>
+                    <TextBlock Text="Set of 16 stickers" HorizontalAlignment="Center" FontFamily="Segoe WP Semilight" Foreground="#ad6a00" FontSize="17" />
+                </StackPanel>
+                <Button Foreground="White" Grid.Row="2" Grid.Column="2" Content="Download" VerticalContentAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe WP Regular" FontSize="18" Height="70" BorderBrush="#3d3d3d" Background="#3d3d3d" Tap="downloadStickers_Tap"></Button>
+            </Grid>
+            <StackPanel Grid.Row="1" Height="30" Width="330" Background="#2c2c2c" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                <TextBlock FontFamily="Segoe WP SemiLight" Foreground="#878787" FontSize="16" Text="*Mobile internet charges may apply" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            </StackPanel>
+        </Grid>
+            <Rectangle x:Name="overlayForNudge" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="3" Fill="#ffffff" ></Rectangle>
         <Grid x:Name="nudgeTuteGrid" Visibility="Collapsed" Grid.Row="1" Width="375" VerticalAlignment="Center"  Background="Black">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

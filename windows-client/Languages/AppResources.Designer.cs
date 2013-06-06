@@ -2382,6 +2382,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No stickers downloaded in this category.
+        /// </summary>
+        public static string No_Stickers_Downloaded_Txt {
+            get {
+                return ResourceManager.GetString("No_Stickers_Downloaded_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invite {0} to continue hiking..
         /// </summary>
         public static string NoFreeSmsLeft_Txt {
@@ -3602,6 +3611,24 @@ namespace windows_client.Languages {
         public static string StatuUpdate_Location {
             get {
                 return ResourceManager.GetString("StatuUpdate_Location", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading.
+        /// </summary>
+        public static string Sticker_Downloading_Txt {
+            get {
+                return ResourceManager.GetString("Sticker_Downloading_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sticker.
+        /// </summary>
+        public static string Sticker_Txt {
+            get {
+                return ResourceManager.GetString("Sticker_Txt", resourceCulture);
             }
         }
         
