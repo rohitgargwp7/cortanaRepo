@@ -333,7 +333,9 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
-            <Image Source="/View/images/tutorial_overlay_notifications.png" Height="20" HorizontalAlignment="Right" Margin="0 15 90 0"/>
+            <Image Source="/View/images/notification_unread.png" MaxHeight="36" HorizontalAlignment="Right" Margin="0 10 15 0"></Image>
+            <TextBlock Text="2" Foreground="White" HorizontalAlignment="Right" Margin="0 15 32 0" FontSize="18" FontFamily="Segoe WP Semibold" />
+            <Image Source="/View/images/tutorial_overlay_notifications.png" Height="20" HorizontalAlignment="Right" Margin="0 10 90 0"/>
             <Image Grid.Row="4"  Source="/View/images/tutorial_overlay_appbar.png" MaxWidth="330" MaxHeight="111" VerticalAlignment="Bottom" Margin="0,0,0,10"></Image>
         </Grid>
     </Grid>

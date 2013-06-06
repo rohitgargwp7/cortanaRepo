@@ -658,6 +658,19 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
+            #region STCIKERS
+            if (isNewInstall || Utils.compareVersion("2.5.0.0", _currentVersion) == 1)
+            {
+                StickerHelper.CreateDefaultCategories();
+            }
+            #endregion
+            #region TUTORIAL
+            if (!isNewInstall && Utils.compareVersion("2.5.0.0", _currentVersion) == 1)
+            {
+                ps = PageState.TUTORIAL_SCREEN_STATUS;
+                App.WriteToIsoStorageSettings(PAGE_STATE, ps);
+            }
+            #endregion
             #region GROUP CACHE
 
             if (App.appSettings.Contains(App.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
@@ -796,19 +809,7 @@ namespace windows_client
             #region Post App Locale
             PostLocaleInfo();
             #endregion
-            #region STCIKERS
-            if (isNewInstall || Utils.compareVersion("2.5.0.0", _currentVersion) == 1)
-            {
-                StickerHelper.CreateDefaultCategories();
-            }
-            #endregion
-            #region TUTORIAL
-            //if (!isNewInstall && Utils.compareVersion("2.5.0.0", _currentVersion) == 1)
-            //{
-            //    ps = PageState.TUTORIAL_SCREEN_STATUS;
-            //    App.WriteToIsoStorageSettings(PAGE_STATE, ps);
-            //}
-            #endregion
+          
         }
 
         public static void createDatabaseAsync()

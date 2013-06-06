@@ -535,9 +535,9 @@
     <Content Include="View\images\icon_stop_appbar.png" />
     <Content Include="View\images\invite.png" />
     <Content Include="View\images\invite_dark.png" />
-    <Content Include="View\images\loading.jpg" />
     <Content Include="View\images\last_seen_clock_black.png" />
     <Content Include="View\images\last_seen_clock_white.png" />
+    <Content Include="View\images\loading.png" />
     <Content Include="View\images\menu_contact_icon_black.png" />
     <Content Include="View\images\Mic_icon_black_small.png" />
     <Content Include="View\images\Mic_icon_grey_small.png" />
