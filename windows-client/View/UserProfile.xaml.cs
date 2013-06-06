@@ -675,7 +675,8 @@ namespace windows_client.View
                 else
                 {
                     contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                    App.ViewModel.ContactsCache[msisdn] = contactInfo;
+                    if (contactInfo != null)
+                        App.ViewModel.ContactsCache[msisdn] = contactInfo;
                 }
                 if (contactInfo == null)
                 {
