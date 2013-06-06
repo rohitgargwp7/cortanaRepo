@@ -14,8 +14,10 @@ namespace windows_client.Controls
 {
     public partial class StickerPivot : UserControl
     {
+        private int _pivotIndex;
+
         public StickerPivot(EventHandler<System.Windows.Input.GestureEventArgs> stickerTap, EventHandler<ItemRealizationEventArgs> stickerItemsRealized,
-            ObservableCollection<Sticker> listStickers)
+            ObservableCollection<Sticker> listStickers,int pivotIndex)
         {
             InitializeComponent();
             if (stickerTap != null)
@@ -27,6 +29,7 @@ namespace windows_client.Controls
                 llsStickerCategory.ItemRealized += stickerItemsRealized;
             }
             llsStickerCategory.ItemsSource = listStickers;
+            _pivotIndex = pivotIndex;
         }
 
         //call from ui thread
@@ -49,6 +52,14 @@ namespace windows_client.Controls
             llsStickerCategory.Visibility = Visibility.Collapsed;
             stLoading.Visibility = Visibility.Collapsed;
             stNoStickers.Visibility = Visibility.Visible;
+        }
+
+        public int PivotItemIndex
+        {
+            get
+            {
+                return _pivotIndex;
+            }
         }
     }
 }

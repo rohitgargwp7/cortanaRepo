@@ -510,6 +510,7 @@ namespace windows_client.Model
                 NotifyPropertyChanged("DataTemplateMargin");
             }
         }
+        private bool imageDownloadFailed = false;
         public BitmapImage MessageImage
         {
             get
@@ -541,6 +542,19 @@ namespace windows_client.Model
             }
         }
 
+        public bool ImageDownloadFailed
+        {
+            get
+            {
+                return imageDownloadFailed;
+            }
+            set
+            {
+                imageDownloadFailed = value;
+                NotifyPropertyChanged("MessageImage");
+                NotifyPropertyChanged("ShowForwardMenu");
+            }
+        }
         Visibility _playIconVisibility = Visibility.Visible;
         public Visibility PlayIconVisibility
         {
@@ -757,9 +771,9 @@ namespace windows_client.Model
         {
             get
             {
-                if(!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
+                if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
                 {
-                    if (_stickerObj != null && _stickerObj.StickerImage != null)
+                    if (_stickerObj != null && (_stickerObj.StickerImage != null && !imageDownloadFailed))
                         return Visibility.Visible;
                     else
                         return Visibility.Collapsed;
@@ -1457,16 +1471,6 @@ namespace windows_client.Model
             NotifyPropertyChanged("ShowForwardMenu");
             NotifyPropertyChanged("ShowDeleteMenu");
             NotifyPropertyChanged("SdrImage");
-        }
-
-        public void SetStickerImage(BitmapImage stickerImage)
-        {
-            if (_stickerObj != null)
-            {
-                _stickerObj.StickerImage = stickerImage;
-                NotifyPropertyChanged("MessageImage");
-                NotifyPropertyChanged("ShowForwardMenu");
-            }
         }
 
         public ConvMessage(ParticipantInfoState participantInfoState, JObject jsonObj)
