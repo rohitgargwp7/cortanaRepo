@@ -107,6 +107,7 @@ namespace windows_client
         void EnterPinPage_Loaded(object sender, RoutedEventArgs e)
         {
             txtBxEnterPin.Focus();
+            txtBxEnterPin.Select(txtBxEnterPin.Text.Length, 0);
             this.Loaded -= EnterPinPage_Loaded;
         }
 
@@ -154,7 +155,7 @@ namespace windows_client
 
         private void txtBxEnterPin_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(txtBxEnterPin.Text) && txtBxEnterPin.Text.Length > 3)
+            if (!string.IsNullOrWhiteSpace(txtBxEnterPin.Text) && txtBxEnterPin.Text.Length > 2)
             {
                 nextIconButton.IsEnabled = true;
                 txtBxEnterPin.Foreground = UI_Utils.Instance.SignUpForeground;
