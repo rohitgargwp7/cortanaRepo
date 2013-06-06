@@ -25,7 +25,7 @@
         <Image Source="{Binding UserImage}" Margin="0,0,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" VerticalAlignment="Top" MaxHeight="69" ></Image>
         <TextBlock Text="{Binding UserName}" FontSize="30" Margin="21,-10,0,0" Grid.Column="1" Grid.Row="0" FontFamily="Segoe WP Semibold"/>
         <TextBlock TextWrapping="Wrap" FontSize="20" Grid.Column="1" Grid.Row="1" Margin="21,0,0,0" Text="{Binding Path= LocalizedResources.Conversations_AddedYouToFav_Txt_WP8FrndStatus, Source={StaticResource LocalizedStrings}}"/>
-        <TextBlock x:Name="seeUpdatesTxtBlk" TextWrapping="Wrap" FontSize="18" Foreground="#797979" Grid.Column="1" Grid.Row="2" MaxWidth="320" Margin="21,0,5,0"/>
+        <TextBlock x:Name="seeUpdatesTxtBlk" TextWrapping="Wrap" FontSize="18" Foreground="#797979" Text="{Binding Path= LocalizedResources.Profile_DoTheSame, Source={StaticResource LocalizedStrings}}"  Grid.Column="1" Grid.Row="2" MaxWidth="320" Margin="21,0,5,0"/>
         <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="3" Margin="8,0,0,0">
             <Button x:Name="yesBtn" Background="#2e91d3" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Foreground="White"></Button>
             <Button x:Name="noBtn" Background="#e9ecee" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Foreground="#595959"></Button>

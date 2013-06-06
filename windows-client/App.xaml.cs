@@ -44,6 +44,7 @@ namespace windows_client
         public static readonly string LAST_SEEN_SEETING = "lstSeenSet";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
+        public static readonly string SHOW_BASIC_TUTORIAL = "basicTut";
         public static readonly string HIDE_CRICKET_MOODS = "cmoods";
         public static readonly string LATEST_PUSH_TOKEN = "pushToken";
         public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
@@ -268,7 +269,9 @@ namespace windows_client
             WELCOME_SCREEN, // WelcomePage Screen
             PHONE_SCREEN,   // EnterNumber Screen
             PIN_SCREEN,     // EnterPin Screen
-            WELCOME_HIKE_SCREEN,
+            TUTORIAL_SCREEN,
+            TUTORIAL_SCREEN_STATUS,
+            TUTORIAL_SCREEN_STICKERS,
             SETNAME_SCREEN, // EnterName Screen
             CONVLIST_SCREEN, // ConversationsList Screen
             UPGRADE_SCREEN//Upgrade page
@@ -666,6 +669,19 @@ namespace windows_client
             }
 
             #endregion
+            #region STCIKERS
+            if (isNewInstall || Utils.compareVersion("2.5.0.0", _currentVersion) == 1)
+            {
+                StickerHelper.CreateDefaultCategories();
+            }
+            #endregion
+            #region TUTORIAL
+            if (!isNewInstall && Utils.compareVersion("2.5.0.0", _currentVersion) == 1)
+            {
+                ps = PageState.TUTORIAL_SCREEN_STATUS;
+                App.WriteToIsoStorageSettings(PAGE_STATE, ps);
+            }
+            #endregion
             #region GROUP CACHE
 
             if (App.appSettings.Contains(App.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
@@ -749,6 +765,7 @@ namespace windows_client
             {
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, 1);
                 App.WriteToIsoStorageSettings(App.SHOW_STATUS_UPDATES_TUTORIAL, true);
+                App.WriteToIsoStorageSettings(App.SHOW_BASIC_TUTORIAL, true);
             }
             #endregion
             #region VIEW MODEL
@@ -803,10 +820,7 @@ namespace windows_client
             #region Post App Locale
             PostLocaleInfo();
             #endregion
-            if (isNewInstall || Utils.compareVersion("2.5.0.0", _currentVersion) == 1)
-            {
-                StickerHelper.CreateDefaultCategories();
-            }
+          
         }
 
         public static void createDatabaseAsync()
@@ -973,7 +987,7 @@ namespace windows_client
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
                 App.appSettings[HikeViewModel.NUMBER_OF_CONVERSATIONS] = (convList != null) ? convList.Count : 0;
                 // there was no country code in first version, and as first version was released in India , we are setting value to +91 
-                App.appSettings[COUNTRY_CODE_SETTING] = "+91";
+                App.appSettings[COUNTRY_CODE_SETTING] = HikeConstants.INDIA_COUNTRY_CODE;
                 App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
                 return convList;
             }
@@ -989,7 +1003,7 @@ namespace windows_client
 
                 string country_code = null;
                 App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-                if (string.IsNullOrEmpty(country_code) || country_code == "+91")
+                if (string.IsNullOrEmpty(country_code) || country_code == HikeConstants.INDIA_COUNTRY_CODE)
                     App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
                 else
                     App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);

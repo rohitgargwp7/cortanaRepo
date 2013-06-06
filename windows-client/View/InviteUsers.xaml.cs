@@ -212,7 +212,7 @@ namespace windows_client.View
             #region INVITE
             else
             {
-                if (App.MSISDN.Contains("+91"))//for non indian open sms client
+                if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
                 {
                     string inviteToken = "";
                     //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);

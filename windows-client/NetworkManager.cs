@@ -43,9 +43,9 @@ namespace windows_client
         public static readonly string ICON = "ic";
 
         public static readonly string SERVER_TIMESTAMP = "sts";
-        public static readonly string ADD_STICKER = "addSt";
-        public static readonly string REMOVE_STICKER = "remSt";
         public static readonly string LAST_SEEN = "ls";
+
+        public static readonly string STICKER = "stk";
 
         public static bool turnOffNetworkManager = true;
 
@@ -221,7 +221,7 @@ namespace windows_client
                         long timedifference;
                         if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
                             lastSeen = lastSeen - timedifference;
-                    }           
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -358,6 +358,12 @@ namespace windows_client
                     return;
                 }
                 bool joined = USER_JOINED == type;
+                bool isRejoin=false;
+                JToken subtype;
+                if (jsonObj.TryGetValue(HikeConstants.SUB_TYPE, out subtype))
+                {
+                    isRejoin = HikeConstants.SUBTYPE_REJOIN == (string)subtype;
+                }
                 // update contacts cache
                 if (App.ViewModel.ContactsCache.ContainsKey(uMsisdn))
                     App.ViewModel.ContactsCache[uMsisdn].OnHike = joined;
@@ -371,7 +377,7 @@ namespace windows_client
                         return;
 
                     // if user does not exists we dont know about his onhike status , so we need to process
-                    ProcessUoUjMsgs(jsonObj, false, isUserInContactList);
+                    ProcessUoUjMsgs(jsonObj, false, isUserInContactList,isRejoin);
                 }
                 // if user has left, mark him as non hike user in group cache
                 else if (GroupManager.Instance.GroupCache != null)
@@ -768,7 +774,7 @@ namespace windows_client
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
             {
                 // {"t":"uo", "d":{"msisdn":"", "credits":10}}
-                ProcessUoUjMsgs(jsonObj, true, true);
+                ProcessUoUjMsgs(jsonObj, true, true,false);
             }
             #endregion
             #region GROUP CHAT RELATED
@@ -1380,33 +1386,26 @@ namespace windows_client
             {
                 long timediff = (long)jsonObj[HikeConstants.TIMESTAMP] - TimeUtils.getCurrentTimeStamp();
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.TIME_DIFF_EPOCH, timediff);
+                //todo:place this setting in some different file as will be written again and agian
             }
             #endregion
-            #region ADD STICKER/CATEGORY
-            else if (type == ADD_STICKER)
+            #region STICKER
+            else if (type == STICKER)
             {
                 try
                 {
+                    string subType = (string)jsonObj[HikeConstants.SUB_TYPE];
+                    JObject jsonData = (JObject)jsonObj[HikeConstants.DATA];
+
                     //do same for category as well as subcategory
-                    JObject jsonData = (JObject)jsonObj[HikeConstants.DATA];
-                    string category = (string)jsonData[HikeConstants.CATEGORY_ID];
-                    StickerCategory.UpdateHasMoreMessages(category, true);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine("NETWORK MANAGER :: Exception in ADD Sticker: " + e.StackTrace);
-                }
-            }
-            #endregion
-            #region REMOVE STICKER/CATEGORY
-            else if (type == REMOVE_STICKER)
-            {
-                try
-                {
-                    JObject jsonData = (JObject)jsonObj[HikeConstants.DATA];
-                    string category = (string)jsonData[HikeConstants.CATEGORY_ID];
-                    if (HikeConstants.SUBTYPE_STICKER == (string)jsonObj[HikeConstants.SUB_TYPE])
+                    if (subType == HikeConstants.ADD_STICKER || subType == HikeConstants.ADD_CATEGORY)
                     {
+                        string category = (string)jsonData[HikeConstants.CATEGORY_ID];
+                        StickerCategory.UpdateHasMoreMessages(category, true);
+                    }
+                    else if (subType == HikeConstants.REMOVE_STICKER)
+                    {
+                        string category = (string)jsonData[HikeConstants.CATEGORY_ID];
                         JArray jarray = (JArray)jsonData["stIds"];
                         List<string> listStickers = new List<string>();
                         for (int i = 0; i < jarray.Count; i++)
@@ -1415,8 +1414,9 @@ namespace windows_client
                         }
                         StickerCategory.DeleteSticker(category, listStickers);
                     }
-                    else
+                    else if (subType == HikeConstants.REMOVE_CATEGORY)
                     {
+                        string category = (string)jsonData[HikeConstants.CATEGORY_ID];
                         StickerCategory.DeleteCategory(category);
                     }
 
@@ -1428,7 +1428,7 @@ namespace windows_client
             }
             #endregion
             #region Pro Tips
-            
+
             else if (HikeConstants.MqttMessageTypes.PRO_TIPS == type)
             {
                 JObject data = null;
@@ -1466,7 +1466,7 @@ namespace windows_client
                     Debug.WriteLine("Network Manager:: Delivery Report, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
                 }
             }
-            
+
             #endregion
             #region OTHER
             else
@@ -1565,7 +1565,7 @@ namespace windows_client
             return string.Format(AppResources.WAITING_TO_JOIN, msgText.ToString());
         }
 
-        private void ProcessUoUjMsgs(JObject jsonObj, bool isOptInMsg, bool isUserInContactList)
+        private void ProcessUoUjMsgs(JObject jsonObj, bool isOptInMsg, bool isUserInContactList,bool isRejoin)
         {
             int credits = 0;
 
@@ -1601,7 +1601,7 @@ namespace windows_client
                     if (isOptInMsg)
                         cm = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
                     else
-                        cm = new ConvMessage(ConvMessage.ParticipantInfoState.USER_JOINED, jsonObj);
+                        cm = new ConvMessage(isRejoin?ConvMessage.ParticipantInfoState.USER_REJOINED: ConvMessage.ParticipantInfoState.USER_JOINED, jsonObj);
                     cm.Msisdn = ms;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
                     if (obj == null)

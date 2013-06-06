@@ -296,16 +296,17 @@ namespace windows_client.DbUtils
                 }
                 #endregion
                 #region USER_JOINED
-                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED)
                 {
+                    string msgtext = convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED ? AppResources.USER_JOINED_HIKE : AppResources.USER_REJOINED_HIKE_TXT;
                     if (Utils.isGroupConversation(obj.Msisdn))
                     {
                         GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
-                        obj.LastMessage = string.Format(AppResources.USER_JOINED_HIKE, gp.FirstName);
+                        obj.LastMessage = string.Format(msgtext, gp.FirstName);
                     }
                     else // 1-1 chat
                     {
-                        obj.LastMessage = string.Format(AppResources.USER_JOINED_HIKE, obj.NameToShow);
+                        obj.LastMessage = string.Format(msgtext, obj.NameToShow);
                     }
                     convMsg.Message = obj.LastMessage;
                 }

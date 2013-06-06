@@ -118,737 +118,738 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppBar_Next_Btn" xml:space="preserve">
-    <value>Next</value>
+    <value>Далее</value>
     <comment>AppBar Next Button</comment>
   </data>
   <data name="Cannot_Change_Img_Error_Txt" xml:space="preserve">
-    <value>Cannot change Profile Image. Try Later!!</value>
+    <value>Не удается установить аватар. Попробуйте позже!</value>
     <comment>General text used in different files</comment>
   </data>
   <data name="Cannot_Select_Pic_Phone_Connected_to_PC" xml:space="preserve">
-    <value>You cannot select photo while phone is connected to computer.</value>
+    <value>Нельзя выбрать фото, пока телефон подключен к компьютеру.</value>
     <comment>General text used in different files</comment>
   </data>
   <data name="Connectivity_Issue" xml:space="preserve">
-    <value>Connectivity issue.</value>
+    <value>Ошибка подключения к сети.</value>
     <comment>Network issue msg (used in all pages)</comment>
   </data>
   <data name="Conversations_AddedYouToFav_Txt" xml:space="preserve">
-    <value>added you as friend. Would you like to do the same?</value>
+    <value>добавил(а) вас в в качестве друга. Сделать тоже самое?</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_DelAllChats_Txt" xml:space="preserve">
-    <value>Delete All Chats</value>
+    <value>Удалить все чаты</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_DelChat_Txt" xml:space="preserve">
-    <value>Delete Chat</value>
+    <value>Удалить чат</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_Delete_Chats_Confirmation" xml:space="preserve">
-    <value>Are you sure about deleting all chats?</value>
+    <value>Действительно хотите удалить все чаты?</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_Delete_Chat_Confirmation" xml:space="preserve">
-    <value>Are you sure about deleting this chat?</value>
+    <value>Действительно хотите удалить этот чат?</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_EditProfile_Txt" xml:space="preserve">
-    <value>edit profile</value>
+    <value>изм. профиль</value>
     <comment>Edit profile text (xaml)</comment>
   </data>
   <data name="Conversations_FreeSms_Txt" xml:space="preserve">
-    <value>free SMS</value>
+    <value>бесплатные SMS</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Conversations_HikeContacts_Btn" xml:space="preserve">
-    <value>Hike Contacts</value>
+    <value>Контакты hike</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_NewChat_AppBar_Btn" xml:space="preserve">
-    <value>new chat</value>
+    <value>новый чат</value>
     <comment>AppBar Btn (cs)</comment>
   </data>
   <data name="Conversations_SayHI_Txt" xml:space="preserve">
-    <value>Say Hi to {0}!</value>
+    <value>Поприветствуйте {0}!</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Conversations_OnSMS_Txt" xml:space="preserve">
-    <value>Send {0} free sms.</value>
+    <value>Бесплатное SMS для {0}.</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Conversations_Pending_NotNow_Btn" xml:space="preserve">
-    <value>Not Now</value>
+    <value>Не сейчас</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_Pending_Yes_Btn" xml:space="preserve">
-    <value>Confirm</value>
+    <value>Подтв.</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_Pivot_Chats_Header_Txt" xml:space="preserve">
-    <value>chats</value>
+    <value>чаты</value>
     <comment>xaml</comment>
   </data>
   <data name="Conversations_Pivot_Favourites_Header_Txt" xml:space="preserve">
-    <value>friends</value>
+    <value>друзья</value>
     <comment>xaml</comment>
   </data>
   <data name="Conversations_Pivot_Profile_Header_Txt" xml:space="preserve">
-    <value>profile</value>
+    <value>профиль</value>
     <comment>xaml</comment>
   </data>
   <data name="Conversations_ProfileName_Default_Txt" xml:space="preserve">
-    <value>Default Name</value>
+    <value>Имя по умолчанию</value>
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Are you sure about removing this contact from friends?</value>
+    <value>Действительно удалить этот контакт из друзей?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>remove from circle of friends</value>
+    <value>удалить из круга друзей</value>
     <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>You don't have anyone in your circle of friends.</value>
+    <value>У вас нет никого в кругу друзей</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
-    <value>invite friends</value>
+    <value>пригласить друзей</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Conversations_YourFav_Txt" xml:space="preserve">
-    <value>Your friends</value>
+    <value>Ваши друзья</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Delete_Txt" xml:space="preserve">
-    <value>delete</value>
+    <value>удалить</value>
     <comment>Chats ContextMenu (xaml)</comment>
   </data>
   <data name="AppBar_Done_Btn" xml:space="preserve">
-    <value>done</value>
+    <value>готово</value>
     <comment>CS</comment>
   </data>
   <data name="EnterName_Msg_TxtBlk" xml:space="preserve">
-    <value>Getting you in</value>
+    <value>Вход в систему</value>
     <comment>General msg shown (CS)</comment>
   </data>
   <data name="EnterName_NameErrorTxt" xml:space="preserve">
-    <value>Error!! Name not set. Try Again!!</value>
+    <value>Ошибка! Имя не задано. Повторите!</value>
     <comment>error text (CS)</comment>
   </data>
   <data name="EnterName_Name_Hint" xml:space="preserve">
-    <value>Name</value>
+    <value>Имя</value>
     <comment>Name Text in hint (CS)</comment>
   </data>
   <data name="EnterName_Name_TxtBlk" xml:space="preserve">
-    <value>Enter your name below :</value>
+    <value>Введите свое имя ниже:</value>
     <comment>xaml</comment>
   </data>
   <data name="EnterName_ScanningContacts_Txt" xml:space="preserve">
-    <value>Scanning Contacts ...</value>
+    <value>Сканирование контактов...</value>
     <comment>CS</comment>
   </data>
   <data name="EnterName_YourMsisdn_TxtBlk" xml:space="preserve">
-    <value>You're all set on </value>
+    <value>  - все готово</value>
     <comment>This is the text shown at top (xaml)</comment>
   </data>
   <data name="EnterNumber_EnterNum_TxtBlk" xml:space="preserve">
-    <value>Enter your phone number below to get started :</value>
+    <value>Для начала введите свой номер телефона ниже:</value>
     <comment>Enter phone msg.</comment>
   </data>
   <data name="EnterNumber_IncorrectPh_TxtBlk" xml:space="preserve">
-    <value>Incorrect phone number.</value>
+    <value>Недопустимый номер телефона.</value>
     <comment>CS file</comment>
   </data>
   <data name="EnterNumber_MsgBoxText_Msg" xml:space="preserve">
-    <value>Enter valid phone number.</value>
+    <value>Введите правильный номер телефона.</value>
     <comment>MsgBox msg</comment>
   </data>
   <data name="EnterNumber_Ph_Hint_TxtBox" xml:space="preserve">
-    <value>Phone Number</value>
+    <value>Номер телефона</value>
     <comment>CS file</comment>
   </data>
   <data name="EnterNumber_SelectCountry_TxtBlk" xml:space="preserve">
-    <value>SELECT COUNTRY</value>
+    <value>ВЫБЕРИТЕ СТРАНУ</value>
     <comment>In longlist selector select country</comment>
   </data>
   <data name="EnterNumber_VerifyNumberMsg_TxtBlk" xml:space="preserve">
-    <value>Verifying your number.</value>
+    <value>Идет проверка вашего номера.</value>
     <comment>CS file</comment>
   </data>
   <data name="EnterPin_CallErrorMsg_MsgBox" xml:space="preserve">
-    <value>Couldn't call you. Try again later.</value>
+    <value>Звонок не прошел. Повторите попытку позже.</value>
     <comment>Call Error MsgBox (CS)</comment>
   </data>
   <data name="EnterPin_CallingMsg_MsgBox" xml:space="preserve">
-    <value>Calling you for PIN.</value>
+    <value>Звонок для получения PIN.</value>
     <comment>Calling MsgBox (CS) </comment>
   </data>
   <data name="EnterPin_CallMe_Btn" xml:space="preserve">
-    <value>Call me for PIN</value>
+    <value>Позвони мне для PIN</value>
     <comment>Call me button (xaml)</comment>
   </data>
   <data name="EnterPin_PinError_TxtBlk" xml:space="preserve">
-    <value>PIN not valid. Please try again.</value>
+    <value>Неправильный PIN. Повторите попытку.</value>
     <comment>Pin Error Msg (xaml) </comment>
   </data>
   <data name="EnterPin_PinHint" xml:space="preserve">
-    <value>Pin</value>
+    <value>PIN</value>
     <comment>Pin Text in hint (CS)</comment>
   </data>
   <data name="EnterPin_PinMsg_TxtBlk" xml:space="preserve">
-    <value>Thanks! Did you get an SMS pin? Enter it below :</value>
+    <value>Спасибо! Получили PIN по SMS? Введите его ниже:</value>
     <comment>Page title msg (xaml file)</comment>
   </data>
   <data name="EnterPin_SMSError_TxtBlk" xml:space="preserve">
-    <value>Didn't receive an SMS?</value>
+    <value>Не получили SMS?</value>
     <comment>Did not receive sms (xaml)</comment>
   </data>
   <data name="EnterPin_Taphere_TxtBlk" xml:space="preserve">
-    <value>Tap Here</value>
+    <value>Нажмите здесь</value>
     <comment>xaml</comment>
   </data>
   <data name="EnterPin_WrongNumMsg_TxtBlk" xml:space="preserve">
-    <value>Entered a wrong number?</value>
+    <value>Введен неправильный номер?</value>
     <comment>xaml</comment>
   </data>
   <data name="GrpChat_Txt" xml:space="preserve">
-    <value>Group Chat</value>
+    <value>Групповой чат</value>
     <comment>Text Group Chat </comment>
   </data>
   <data name="Help" xml:space="preserve">
-    <value>help</value>
+    <value>справка</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Ignore_Txt" xml:space="preserve">
-    <value>Ignore</value>
+    <value>Игнорировать</value>
     <comment>General text used in different files</comment>
   </data>
   <data name="NetworkError_TryAgain" xml:space="preserve">
-    <value>Network Error. Try Again!!</value>
+    <value>Сетевая ошибка. Попробуйте еще раз!</value>
     <comment>Network error msg</comment>
   </data>
   <data name="No_Network_Txt" xml:space="preserve">
-    <value>No network connectivity.</value>
+    <value>Нет сетевого соединения.</value>
     <comment>General text used in different files</comment>
   </data>
   <data name="Please_Try_Again_Txt" xml:space="preserve">
-    <value>Please try again.</value>
+    <value>Попробуйте еще раз.</value>
     <comment>General text used in different files</comment>
   </data>
   <data name="Privacy" xml:space="preserve">
-    <value>privacy</value>
+    <value>конфиденциальность</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Settings" xml:space="preserve">
-    <value>settings</value>
+    <value>настройки</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="SMS_Left_Txt" xml:space="preserve">
-    <value>{0} SMS Left</value>
+    <value>Осталось SMS: {0}</value>
     <comment>This text is used to show how many SMS left</comment>
   </data>
   <data name="Something_Wrong_Txt" xml:space="preserve">
-    <value>Oops, something went wrong!</value>
+    <value>Ой! Что-то не так!</value>
     <comment>General text used in different files</comment>
   </data>
   <data name="Update_Txt" xml:space="preserve">
-    <value>Update</value>
+    <value>Обновить</value>
     <comment>General text used in different files</comment>
   </data>
   <data name="Walkthrough_FreeMsgToIndia_Txt" xml:space="preserve">
-    <value>*Free SMS can only be sent to India</value>
+    <value>* Бесплатные SMS только в Индии</value>
     <comment>Pivot 2 (xaml)</comment>
   </data>
   <data name="Walkthrough_FreeSmsReward_Txt" xml:space="preserve">
-    <value>For every friend who joins, you get 50 Free hike SMS every month</value>
+    <value>Вы будете получать по 50 бесплатных SMS в месяц за каждого приглашенного друга.</value>
     <comment>Pivot 3 (xaml)</comment>
   </data>
   <data name="Walkthrough_InviteFriends_Txt" xml:space="preserve">
-    <value>Invite Friends Earn Rewards.</value>
+    <value>Пригласите друзей и получите награду</value>
     <comment>Pivot 3 (xaml)</comment>
   </data>
   <data name="Walkthrough_LetsHike_Txt" xml:space="preserve">
-    <value>let's hike</value>
+    <value>Приступим...</value>
     <comment>cs</comment>
   </data>
   <data name="Walkthrough_TitleMsg_1" xml:space="preserve">
-    <value>Free, always, worldwide</value>
+    <value>Бесплатно, всегда и везде</value>
     <comment>Pivot 1 (xaml)</comment>
   </data>
   <data name="Walkthrough_TitleMsg_2" xml:space="preserve">
-    <value>Also message friends not on hike for free with Free hike SMS</value>
+    <value>Также можно общаться с друзьями без hike с помощью бесплатных SMS</value>
     <comment>Pivot 2 (xaml)</comment>
   </data>
   <data name="WelcomePage_13YrsMsg_TxtBlk" xml:space="preserve">
-    <value>Tap next to confirm that you are 13+ years of age</value>
+    <value>Подтвердите, что вам исполнилось 13 лет</value>
     <comment>13 yrs confirm</comment>
   </data>
   <data name="WelcomePage_Accept_AppBar" xml:space="preserve">
-    <value>accept</value>
+    <value>принять</value>
     <comment>accept button in appbar</comment>
   </data>
-  <data name="Messaging_Made_Personal_Txt" xml:space="preserve">
-    <value>Messaging made personal again</value>
+  <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
+    <value>Удобный бесплатный чат для повседневного общения</value>
     <comment>This is text below hike logo on welcome screen.</comment>
   </data>
   <data name="WelcomePage_PushMsg_TxtBlk" xml:space="preserve">
-    <value>Push Notifications are turned on by default</value>
+    <value>Push-уведомления включены по умолчанию</value>
     <comment>Push Notification msg</comment>
   </data>
   <data name="WelcomePage_TnP_HlBtn" xml:space="preserve">
-    <value>Terms and Privacy</value>
+    <value>Условия</value>
     <comment>Terms and Privacy, hyperlink button</comment>
   </data>
   <data name="Email_Txt" xml:space="preserve">
-    <value>Email</value>
+    <value>Эл. почта</value>
     <comment>xaml</comment>
   </data>
   <data name="EditProfile_FullName_TxtBlk" xml:space="preserve">
-    <value>Full Name</value>
+    <value>Полное имя</value>
     <comment>xaml</comment>
   </data>
   <data name="EditProfile_GenderFemale_lstPckr" xml:space="preserve">
-    <value>female</value>
+    <value>женский</value>
     <comment>gender dropdown (cs)</comment>
   </data>
   <data name="EditProfile_GenderMale_LstPckr" xml:space="preserve">
-    <value>male</value>
+    <value>мужской</value>
     <comment>gender dropdown (cs)</comment>
   </data>
   <data name="EditProfile_GenderSelect_LstPckr" xml:space="preserve">
-    <value>select</value>
+    <value>выберите</value>
     <comment>gender dropdown (cs)</comment>
   </data>
   <data name="EditProfile_Gender_TxtBlk" xml:space="preserve">
-    <value>Gender</value>
+    <value>Пол</value>
     <comment>xaml</comment>
   </data>
   <data name="EditProfile_Phone_TxtBlk" xml:space="preserve">
-    <value>Phone</value>
+    <value>Телефон</value>
     <comment>xaml</comment>
   </data>
   <data name="Save_AppBar_Btn" xml:space="preserve">
-    <value>save</value>
+    <value>сохранить</value>
     <comment>cs</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk1" xml:space="preserve">
-    <value>Earn an extra</value>
+    <value>Получите дополнительно</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk2" xml:space="preserve">
-    <value>{0} free SMS</value>
+    <value>{0} бесплатных SMS в месяц</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk3" xml:space="preserve">
-    <value>per month for every friend that joins through you.</value>
+    <value>за каждого приглашенного друга.</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_fbConnStatus_TxtBlk" xml:space="preserve">
     <value>Facebook</value>
   </data>
   <data name="FreeSMS_fbOrTwitter_Connected" xml:space="preserve">
-    <value>Connected</value>
+    <value>Подключено</value>
   </data>
   <data name="FreeSMS_FbPostSuccess_MsgBx" xml:space="preserve">
-    <value>Successfully posted to facebook.</value>
+    <value>Опубликовано на Facebook.</value>
   </data>
   <data name="FreeSMS_FbPost_MsgBxCaption" xml:space="preserve">
-    <value>Facebook Post</value>
+    <value>Публикация на Facebook</value>
   </data>
   <data name="FreeSMS_H2HHeader_TxtBlk" xml:space="preserve">
-    <value>hike to hike</value>
+    <value>hike - hike</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2HText_TxtBlk" xml:space="preserve">
-    <value>Free Worldwide</value>
+    <value>Бесплатно по всему миру</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2SHeader_TxtBlk" xml:space="preserve">
-    <value>hike to SMS</value>
+    <value>hike - SMS</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2SText_TxtBlk" xml:space="preserve">
-    <value>Your free SMS refill on the 1st of every month</value>
+    <value>Счетчик бесплатных SMS обнуляется 1-го числа каждого месяца.</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_IndiaOnly_TxtBlk" xml:space="preserve">
-    <value>*Free SMS can only be sent to India at the moment</value>
+    <value>* Бесплатные SMS пока доступны только в Индии</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_InviteNow_Btn" xml:space="preserve">
-    <value>Invite Now</value>
+    <value>Пригласить</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_InviteSMS_TxtBlk" xml:space="preserve">
-    <value>Invite via SMS</value>
+    <value>Пригласить по SMS</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_twConnStatus_TxtBlk" xml:space="preserve">
-    <value>Twitter</value>
+    <value>Твиттер</value>
     <comment>Connect to twitter button (unconnected state) </comment>
   </data>
   <data name="FreeSMS_TwPostSuccess_MsgBx" xml:space="preserve">
-    <value>Successfully posted to twitter.</value>
+    <value>Опубликовано в Твиттере.</value>
     <comment>Caption of Msg Bx after successfully posting to fb</comment>
   </data>
   <data name="FreeSMS_TwPost_MsgBxCaption" xml:space="preserve">
-    <value>Twitter Post</value>
+    <value>Публикация в Твиттере</value>
     <comment>Caption of Msg Bx while posting to fb</comment>
   </data>
   <data name="FreeSMS_UnlinkFacebook_MsgBxCaptn" xml:space="preserve">
-    <value>Unlink Facebook</value>
+    <value>Отвзяка от Facebook</value>
     <comment>Caption of Msg Bx while unlinking fb account</comment>
   </data>
   <data name="FreeSMS_UnlinkFbOrTwConfirm_MsgBx" xml:space="preserve">
-    <value>Are you sure you want to unlink your account?</value>
+    <value>Действительно хотите отвязать свой аккаунт?</value>
     <comment>Text of Msg Bx while confirming to unlink</comment>
   </data>
   <data name="FreeSMS_UnlinkFbOrTwSuccess_MsgBx" xml:space="preserve">
-    <value>Successfully Unlinked Account.</value>
+    <value>Аккаунт отвязан.</value>
     <comment>Text of Msg Bx after successfull unlinking</comment>
   </data>
   <data name="FreeSMS_UnlinkTwitter_MsgBxCaptn" xml:space="preserve">
-    <value>Unlink Twitter</value>
+    <value>Отвязка от Twitter</value>
     <comment>Caption of Msg Bx while unlinking twitter account</comment>
   </data>
   <data name="FreeSMS_UnlinkTwSuccess_MsgBxCaptn" xml:space="preserve">
-    <value>Twitter Logout</value>
+    <value>Выход из Twitter</value>
     <comment>Caption of Msg Bx after successfully unlinkig from fb</comment>
   </data>
   <data name="FreeSMS_unlimitedTxtBlck_TxtBlk" xml:space="preserve">
-    <value>Unlimited</value>
+    <value>Без ограничений</value>
     <comment>Unlimited text in hike to hike bar (xaml)</comment>
   </data>
   <data name="And_txt" xml:space="preserve">
-    <value> and </value>
+    <value>  и  </value>
     <comment>General Text</comment>
   </data>
   <data name="Attach_Txt" xml:space="preserve">
-    <value>attach</value>
+    <value>прикрепить</value>
     <comment>General Text</comment>
   </data>
   <data name="Audio_Txt" xml:space="preserve">
-    <value>Audio</value>
+    <value>Аудио</value>
     <comment>NewSelectUserPage (xaml)</comment>
   </data>
   <data name="Block_Txt" xml:space="preserve">
-    <value>Block</value>
+    <value>Блокир.</value>
     <comment>this will be used as text</comment>
   </data>
   <data name="Call_Txt" xml:space="preserve">
-    <value>call</value>
+    <value>звонок</value>
     <comment>General Text</comment>
   </data>
   <data name="Cancel_Txt" xml:space="preserve">
-    <value>cancel</value>
+    <value>отмена</value>
     <comment>General Text</comment>
   </data>
   <data name="CONTACT_NOT_SAVED_ON_SERVER" xml:space="preserve">
-    <value>Contact not saved on server, kindly refresh.</value>
+    <value>Контакт не сохранен на сервере, повторите попытку.</value>
     <comment>This is called when a new contact is added and server error occured</comment>
   </data>
   <data name="CONTACT_SAVED_SUCCESSFULLY" xml:space="preserve">
-    <value>Contact saved successfully</value>
+    <value>Контакт сохранен.</value>
     <comment>General Text</comment>
   </data>
   <data name="Copy_txt" xml:space="preserve">
-    <value>copy</value>
+    <value>копировать</value>
     <comment>General Text</comment>
   </data>
   <data name="CREDITS_EARNED" xml:space="preserve">
-    <value>You've just earned {0} free SMS</value>
+    <value>Вы заработали {0} бесплатных SMS</value>
     <comment>General Text</comment>
   </data>
   <data name="DND_USER" xml:space="preserve">
-    <value>{0} is on DND. Waiting for {0} to reply.</value>
+    <value>{0} в списке DND. Ожидание ответа {0}.</value>
     <comment>General Text</comment>
   </data>
   <data name="FILES_MESSAGE_PREFIX" xml:space="preserve">
-    <value>Sent you a {0}. To view go to </value>
+    <value>Отправил(а) вам {0}. Чтобы посмотреть, перейдите на  </value>
     <comment>General Text</comment>
   </data>
   <data name="Forward_Txt" xml:space="preserve">
-    <value>forward</value>
+    <value>переслать</value>
     <comment>General Text</comment>
   </data>
   <data name="GROUP_CHAT_END" xml:space="preserve">
-    <value>This group chat has ended.</value>
+    <value>Групповой чат прекращен.</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="Image_Txt" xml:space="preserve">
-    <value>Image</value>
+    <value>Изображение</value>
     <comment>NewSelectUserPage (xaml)</comment>
   </data>
   <data name="Location_Txt" xml:space="preserve">
-    <value>Location</value>
+    <value>Место</value>
     <comment>NewSelectUserPage (xaml)</comment>
   </data>
   <data name="MORE_THAN_1_CONTACT_FOUND" xml:space="preserve">
-    <value>More than 1 contacts found for number : {0}</value>
+    <value>Более 1 контакта найдено для номера {0}</value>
     <comment>This is called when an unknown number is added and same num already exists in phone</comment>
   </data>
   <data name="NoInfoForTask_Txt" xml:space="preserve">
-    <value>No information regarding the task result is available.</value>
+    <value>Нет данных о результатах выполнения задачи.</value>
     <comment>cs</comment>
   </data>
   <data name="NO_CONTACT_SAVED" xml:space="preserve">
-    <value>No Contact is saved.</value>
+    <value>Контакт не сохранен.</value>
     <comment>General Text</comment>
   </data>
   <data name="Photo_Txt" xml:space="preserve">
-    <value>photo</value>
+    <value>фото</value>
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>add to circle of friends</value>
+    <value>и в круг друзей</value>
     <comment>fix length(24)</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
-    <value>add user</value>
+    <value>добавить пользователя</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_AlreadyAdded_Txt" xml:space="preserve">
-    <value>User already added !!</value>
+    <value>Пользователь уже добавлен!</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_BlockedGroupMsg_Txt" xml:space="preserve">
-    <value>You have blocked this group. Unblock to continue hiking.</value>
+    <value>Вы заблокировали эту группу. Разблокируйте, чтобы общаться дальше.</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_BlockMsg_Txt" xml:space="preserve">
-    <value>You have blocked this user. Unblock to continue hiking.</value>
+    <value>Вы заблокировали этого пользователя. Разблокируйте, чтобы общаться дальше.</value>
     <comment>xaml</comment>
   </data>
   <data name="SelectUser_CantAddUser_Txt" xml:space="preserve">
-    <value>Cannot add user !!</value>
+    <value>Не удается добавить пользователя!</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_ContactRemoved_Txt" xml:space="preserve">
-    <value>{0}[{1}] will be removed from group.</value>
+    <value>{0}[{1}] будет удален(а) из группы.</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_EnterValidNo_Txt" xml:space="preserve">
-    <value>Enter Valid Number</value>
+    <value>Введите действительный номер</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_FreeMsg_Txt" xml:space="preserve">
-    <value>Hike Message</value>
+    <value>Сообщение hike</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_Txt" xml:space="preserve">
-    <value>group info</value>
+    <value>данные о группе</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_GrpOwner_Txt" xml:space="preserve">
-    <value>group owner</value>
+    <value>владелец группы</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_Header_Txt" xml:space="preserve">
-    <value>CHAT</value>
+    <value>ЧАТ</value>
     <comment>xaml</comment>
   </data>
   <data name="SelectUser_InviteUsr_Txt" xml:space="preserve">
-    <value>invite user</value>
+    <value>пригласить пользователя</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_LeaveGrp_Txt" xml:space="preserve">
-    <value>leave group</value>
+    <value>покинуть группу</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_MaxUsersSelected_Txt" xml:space="preserve">
-    <value>{0} users already selected</value>
+    <value>уже выбрано пользователей: {0}</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_MuteGrp_Txt" xml:space="preserve">
-    <value>mute group</value>
+    <value>группа без звука</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_NewGroup_Text" xml:space="preserve">
-    <value>New Group</value>
+    <value>Новая группа</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshContacts_Txt" xml:space="preserve">
-    <value>Refresh Contacts</value>
+    <value>Обновить контакты</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshWaitMsg_Txt" xml:space="preserve">
-    <value>This may take a minute or two...</value>
+    <value>На это может уйти пара минут...</value>
     <comment>This text is shown when user clicks refresh (cs)</comment>
   </data>
   <data name="SelectUser_RemoveContact_Txt" xml:space="preserve">
-    <value>Remove Contact?</value>
+    <value>Удалить контакт?</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
-    <value>Text Message</value>
+    <value>Текстовое сообщение</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_TapMsg_Txt" xml:space="preserve">
-    <value>Tap here to message this person</value>
+    <value>Нажмите, чтобы отправить сообщение</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_Title_Txt" xml:space="preserve">
-    <value>with</value>
+    <value>c</value>
     <comment>xaml</comment>
   </data>
   <data name="SelectUser_TxtBoxHint_Txt" xml:space="preserve">
-    <value> Search or Enter Phone #...</value>
+    <value>Найдите или введите номер телефона...</value>
     <comment>textbox hint (xaml)</comment>
   </data>
   <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
-    <value>unmute</value>
+    <value>включить звук</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_UserAlreadyAdded_Txt" xml:space="preserve">
-    <value>{0} is already added to group.</value>
+    <value>Пользователь {0} уже добавлен в группу.</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_ZeroCredits_Txt" xml:space="preserve">
-    <value>0 Free SMS left...</value>
+    <value>Не осталось бесплатных SMS...</value>
     <comment>cs</comment>
   </data>
   <data name="Send_Txt" xml:space="preserve">
-    <value>send</value>
+    <value>отправить</value>
     <comment>General Text</comment>
   </data>
   <data name="Smiley_Txt" xml:space="preserve">
-    <value>smiley</value>
+    <value>смайл</value>
     <comment>General Text</comment>
   </data>
   <data name="SMS_INDIA" xml:space="preserve">
-    <value>SMS can only be sent to India.</value>
+    <value>SMS доступны только в Индии.</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="sms_invite_message" xml:space="preserve">
-    <value>Hi! Get hike 2.0. Free messaging worldwide. Now with Status Updates and Moods :) - http://get.hike.in/</value>
+    <value>Привет! Загрузи hike 2.0. Бесплатный чат во всем мире. Теперь с обновлениями статуса и настроениями :) - http://get.hike.in/</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="UnBlock_Txt" xml:space="preserve">
-    <value>Unblock</value>
+    <value>Разблокир.</value>
     <comment>xaml</comment>
   </data>
   <data name="USER_INVITED" xml:space="preserve">
-    <value> has been invited</value>
+    <value>  приглашен(а)</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_JOINED_GROUP_CHAT" xml:space="preserve">
-    <value> joined the group chat!</value>
+    <value>  присоединился(ась) к групповому чату!</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_JOINED_HIKE" xml:space="preserve">
-    <value>{0} just joined hike, say 'Hi' :)</value>
+    <value>Пользователь {0} только что присоединился к hike, поприветствуйте его :)</value>
     <comment>General Text</comment>
   </data>
   <data name="USER_LEFT" xml:space="preserve">
-    <value> left the group chat</value>
+    <value>  покинул(а) групповой чат</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_OPTED_IN_MSG" xml:space="preserve">
-    <value> just opted in to hike!</value>
+    <value>Пользователь   только что присоединился к hike!</value>
     <comment>General Text</comment>
   </data>
   <data name="Video_Txt" xml:space="preserve">
-    <value>Video</value>
+    <value>Видео</value>
     <comment>General Text</comment>
   </data>
   <data name="Voice_msg_Txt" xml:space="preserve">
-    <value>voice message</value>
+    <value>голосовое сообщение</value>
     <comment>General Text</comment>
   </data>
   <data name="WAITING_TO_JOIN" xml:space="preserve">
-    <value>Waiting for {0} to join in</value>
+    <value>Ожидание присоединения {0}</value>
     <comment>General Text</comment>
   </data>
   <data name="Added_X_To_GC" xml:space="preserve">
-    <value>Added {0} to the group</value>
+    <value>Добавлено в группу: {0}</value>
     <comment>ConvMessage (cs)</comment>
   </data>
   <data name="CannotChangeGrpImg_Txt" xml:space="preserve">
-    <value>Cannot change Group Image. Try Later!!</value>
+    <value>Не удается изменить аватар группы. Повторите попытку позже!</value>
     <comment>General text</comment>
   </data>
   <data name="CannotChangeGrpName_Txt" xml:space="preserve">
-    <value>Cannot change GroupName. Try Later!!</value>
+    <value>Не удается изменить имя группы. Повторите попытку позже!</value>
     <comment>cs</comment>
   </data>
   <data name="Contact_Scanning_Failed_Txt" xml:space="preserve">
-    <value>Contact Scanning failed. Try Later!!</value>
+    <value>Не удалось отсканировать контакты. Повторите попытку позже!</value>
     <comment>Contact Utils</comment>
   </data>
   <data name="CRITICAL_UPDATE_HEADING" xml:space="preserve">
-    <value>Important update</value>
+    <value>Важное обновление</value>
   </data>
   <data name="CRITICAL_UPDATE_TEXT" xml:space="preserve">
-    <value>To continue using hike, an update is required.</value>
+    <value>Это обновление hike обязательно.</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Hi!
+    <value>
+ Привет!
 
-I started using hike, a simple beautiful messaging app that's absolutely free.
+Я начинаю использовать hike, простое и удобное бесплатное приложение для чата.		
 
-hike comes with some hilarious emoticons. You can also post Status Updates to your close circle of friends! Think of it like BBM but much, much better!
+hike включает уморительные смайлы и позволяет публиковать обновления статуса для друзей! Это что-то вроде BBM, но гораздо лучше!
 
-Get it now and say good bye to plain boring SMS.
+Загрузи его сейчас и попрощайся со старыми скучными SMS.
 
-Get hike: http://get.hike.in</value>
+Загрузить hike: http://get.hike.in</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
-    <value>Failed. Close App and try again !!</value>
+    <value>Ошибка. Закройте приложение и повторите попытку!</value>
     <comment>EnterName in ContactUtils (cs)</comment>
   </data>
   <data name="Error_Txt" xml:space="preserve">
-    <value>Error !!</value>
+    <value>Ошибка!</value>
     <comment>General text</comment>
   </data>
   <data name="Friends_Txt" xml:space="preserve">
-    <value>friends</value>
+    <value>друзья</value>
     <comment>General text</comment>
   </data>
   <data name="GroupChatWith_Txt" xml:space="preserve">
-    <value>Group Chat with {0}</value>
+    <value>Групповой чат с {0}</value>
     <comment>ConvMessage (cs)</comment>
   </data>
   <data name="GroupInfo_ChangeGrpName_Txt" xml:space="preserve">
-    <value>Change Group Name</value>
+    <value>Изменить имя группы</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_GrpNameCannotBeEmpty_Txt" xml:space="preserve">
-    <value>Group name cannot be empty"</value>
+    <value>Имя группы не может быть пустым</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_GrpNameChangedTo_Txt" xml:space="preserve">
-    <value>Group name will be changed to '{0}'</value>
+    <value>Имя группы изменено на '{0}'</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSent_MsgBoxHeader_Txt" xml:space="preserve">
-    <value>Invite Sent</value>
+    <value>Приглашение отправлено</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSent_MsgBoxText_Txt" xml:space="preserve">
-    <value>Your friends have been invited</value>
+    <value>Ваши друзья приглашены</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSMSUsers_Btn_Txt" xml:space="preserve">
-    <value>Invite SMS participants to hike</value>
+    <value>Пригласите получателей SMS в hike</value>
     <comment>xaml</comment>
   </data>
   <data name="GroupNameChangedByGrpMember_Txt" xml:space="preserve">
-    <value>{0} changed the group name to {1}</value>
+    <value>{0} изменил(а) имя группы на {1}</value>
     <comment>MessagesTableUtils</comment>
   </data>
   <data name="GROUP_NAME_TXT" xml:space="preserve">
-    <value>GROUP NAME</value>
+    <value>ИМЯ ГРУППЫ</value>
     <comment>General Text</comment>
   </data>
   <data name="GrpName_Txt" xml:space="preserve">
-    <value>Group Name</value>
+    <value>Имя группы</value>
     <comment>General Text</comment>
   </data>
   <data name="Hike_Friends_Text" xml:space="preserve">
-    <value>hike friends</value>
+    <value>общаться с друзями по hike</value>
     <comment>General text</comment>
   </data>
   <data name="Hike_txt" xml:space="preserve">
@@ -856,915 +857,853 @@ Get hike: http://get.hike.in</value>
     <comment>General text</comment>
   </data>
   <data name="InviteUsers_FriendsInvited_Txt" xml:space="preserve">
-    <value>Friends Invited</value>
+    <value>Друзья приглашены</value>
     <comment>cs</comment>
   </data>
   <data name="InviteUsers_TotalInvitesSent_Txt" xml:space="preserve">
-    <value>Total invites sent : {0}</value>
+    <value>Всего отправлено приглашений: {0}</value>
     <comment>cs</comment>
   </data>
   <data name="Invite_Txt" xml:space="preserve">
-    <value>INVITE</value>
+    <value>ПРИГЛАСИТЬ</value>
     <comment>General Text</comment>
   </data>
   <data name="Messaging_Txt" xml:space="preserve">
-    <value>Messaging</value>
+    <value>Обмен сообщениями</value>
     <comment>General Text</comment>
   </data>
   <data name="NamingConvention_Txt" xml:space="preserve">
-    <value>{0} and {1} others</value>
+    <value>{0} и {1} других</value>
     <comment>Used at many places like GroupManager</comment>
   </data>
   <data name="NORMAL_UPDATE_HEADING" xml:space="preserve">
-    <value>Update available</value>
+    <value>Доступно обновление</value>
   </data>
   <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
-    <value>A new version of hike is out. Would you like to update the app?</value>
+    <value>Доступна новая версия hike. Обновить?</value>
   </data>
   <data name="Owner_Txt" xml:space="preserve">
-    <value>owner</value>
+    <value>владелец</value>
   </data>
   <data name="Participants_Txt" xml:space="preserve">
-    <value>Participants</value>
+    <value>Участники</value>
     <comment>General Text</comment>
   </data>
   <data name="ShareLocation_LocationServiceNotEnabled_Txt" xml:space="preserve">
-    <value>Location Service is not enabled on the device.</value>
+    <value>Служба поиска местоположения недоступна на этом устройстве.</value>
     <comment>cs</comment>
   </data>
   <data name="ShareLocation_LocationServiceWorking_Txt" xml:space="preserve">
-    <value>The Location Service is working, but it cannot get location data.</value>
+    <value>Служба поиска работает, но не может получить данные о местоположении.</value>
     <comment>cs</comment>
   </data>
   <data name="ShareLocation_PlsWaitForPosition_Txt" xml:space="preserve">
-    <value>Please wait while your position is determined....</value>
+    <value>Подождите, пока определяется ваше местоположение.</value>
     <comment>cs</comment>
   </data>
   <data name="ShareLocation_Txt" xml:space="preserve">
-    <value>share location</value>
+    <value>опубликовать местоположение</value>
     <comment>cs</comment>
   </data>
   <data name="SMS_Works_Only_In_India_Txt" xml:space="preserve">
-    <value>SMS works only to India at the moment.</value>
+    <value>В настоящее время SMS доступны только в Индии.</value>
     <comment>ConvMessage (cs)</comment>
   </data>
   <data name="SocialPages_UnableToRetrieveToken_Txt" xml:space="preserve">
-    <value>Unable to retrieve request token.</value>
+    <value>Не удается получить токен.</value>
     <comment>cs</comment>
   </data>
   <data name="Social_Invite_Txt" xml:space="preserve">
-    <value>I'm using @hikeapp 2.0 with status updates &amp; moods. Its like BBM but much, much better! Get hike at http://get.hike.in #gethike</value>
+    <value>Я использую @hikeapp 2.0 с обновлениями статуса и настроениями. Это что-то вроде BBM, но гораздо лучше! Загрузи hike с http://get.hike.in #gethike </value>
     <comment>This is used in case of Facebook and Twitter</comment>
   </data>
   <data name="Social_Txt" xml:space="preserve">
-    <value>Social</value>
+    <value>Социальные сети</value>
     <comment>General Text</comment>
   </data>
   <data name="TimeUtils_An_hour_Ago_Txt" xml:space="preserve">
-    <value>an hour ago</value>
+    <value>час назад</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_A_Min_Ago_Txt" xml:space="preserve">
-    <value>a minute ago</value>
+    <value>минуту назад</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_One_Month_Ago_Txt" xml:space="preserve">
-    <value>1 month ago</value>
+    <value>1 месяц назад</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_One_Sec_Ago_Txt" xml:space="preserve">
-    <value>1 second ago</value>
+    <value>1 секунду назад</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_One_Year_Ago_Txt" xml:space="preserve">
-    <value>1 year ago</value>
+    <value>1 год назад</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_X_Days_Ago_Txt" xml:space="preserve">
-    <value>{0} days ago</value>
+    <value>{0} дн. назад</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_X_hours_Ago_Txt" xml:space="preserve">
-    <value>{0} hours ago</value>
+    <value>{0} ч назад</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_X_Mins_Ago_Txt" xml:space="preserve">
-    <value>{0} minutes ago</value>
+    <value>{0} мин назад</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_X_Month_Ago_Txt" xml:space="preserve">
-    <value>{0} months ago</value>
+    <value>{0} мес. назад</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_X_Secs_Ago_Txt" xml:space="preserve">
-    <value>{0} seconds ago</value>
+    <value>{0} сек назад</value>
     <comment>TimeUtils , {0} will be replaced by actual value</comment>
   </data>
   <data name="TimeUtils_X_Years_Ago_Txt" xml:space="preserve">
-    <value>{0} years ago</value>
+    <value>{0} г. назад</value>
   </data>
   <data name="User_Cancelled_Task_Txt" xml:space="preserve">
-    <value>User cancelled the task.</value>
+    <value>Пользователь отменил задачу.</value>
     <comment>General text</comment>
   </data>
   <data name="EditProfile_emailErrorTxt_TxtBlk" xml:space="preserve">
-    <value>Enter Correct Email</value>
+    <value>Введите действительный адрес эл. почты</value>
     <comment>xaml</comment>
   </data>
   <data name="EditProfile_EmailUpdateErr_MsgBxTxt" xml:space="preserve">
-    <value>Unable to change email or gender. Try again.</value>
+    <value>Не удалось изменить адрес эл. почты или пол. Повторите попытку позже.</value>
   </data>
   <data name="EditProfile_nameErrorTxt_TxtBlk" xml:space="preserve">
-    <value>Please enter your name</value>
+    <value>Введите имя</value>
   </data>
   <data name="EditProfile_NameUpdateErr_MsgBxCaptn" xml:space="preserve">
-    <value>Something went wrong</value>
+    <value>Что-то не так</value>
   </data>
   <data name="EditProfile_NameUpdateErr_MsgBxTxt" xml:space="preserve">
-    <value>Unable to change name. Try again.</value>
+    <value>Не удалось изменить имя. Повторите попытку позже.</value>
   </data>
   <data name="EditProfile_UpdatErrMsgBx_Captn" xml:space="preserve">
-    <value>Profile Not Updated!</value>
+    <value>Профиль не обновлен!</value>
   </data>
   <data name="EditProfile_UpdatErrMsgBx_Text" xml:space="preserve">
-    <value>Nothing has changed!!</value>
+    <value>Ничего не было изменено!</value>
   </data>
   <data name="EditProfile_UpdatMsgBx_Captn" xml:space="preserve">
-    <value>Profile Updated</value>
+    <value>Профиль обновлен</value>
   </data>
   <data name="EditProfile_UpdatMsgBx_Txt" xml:space="preserve">
-    <value>Your profile has been updated.</value>
+    <value>Ваш профиль обновлен.</value>
   </data>
   <data name="Help_AppVersionTitle" xml:space="preserve">
-    <value>Version</value>
+    <value>Версия</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_ContactUsText" xml:space="preserve">
-    <value>Contact our support team for help</value>
+    <value>Обратитесь в службу поддержки</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_ContactUsTitle" xml:space="preserve">
-    <value>Contact Us</value>
+    <value>Написать нам</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_EmailCarrier" xml:space="preserve">
-    <value>Carrier:</value>
+    <value>Оператор:</value>
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailDeviceModel" xml:space="preserve">
-    <value>Device Model:</value>
+    <value>Модель устройства:</value>
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailHikeVersion" xml:space="preserve">
-    <value>Hike Version:</value>
+    <value>Версия hike:</value>
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailOSVersion" xml:space="preserve">
-    <value>Win OS Version:</value>
+    <value>Версия Windows:</value>
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailPhoneNo" xml:space="preserve">
-    <value>Phone Number:</value>
+    <value>Номер телефона:</value>
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailSubject" xml:space="preserve">
-    <value>Feedback on WP7</value>
+    <value>Отзыв на WP7</value>
     <comment>email compose task subject (cs)</comment>
   </data>
   <data name="Help_FAQsTitle" xml:space="preserve">
-    <value>FAQs</value>
+    <value>ЧаВо</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_FAQsTxt" xml:space="preserve">
-    <value>Frequently asked questions</value>
+    <value>Часто задаваемые вопросы</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_LegalText" xml:space="preserve">
-    <value>Read Terms of service and privacy policy</value>
+    <value>Прочтите условия использования и политику конфиденциальности</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_LegalTitle" xml:space="preserve">
-    <value>Legal</value>
+    <value>Юридическая информация</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_WalkthroughText" xml:space="preserve">
-    <value>View the meet hike walkthrough</value>
+    <value>Посмотреть ознакомительный ролик о hike</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_WalkthroughTitle" xml:space="preserve">
-    <value>Walkthrough</value>
+    <value>Ознакомление</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_RateAppText" xml:space="preserve">
-    <value>Rate and review hike on the marketplace</value>
+    <value>Оценить hike и написать отзыв в Marketplace</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_RateAppTitle" xml:space="preserve">
-    <value>Rate the App</value>
+    <value>Оценить приложение</value>
     <comment>xaml</comment>
   </data>
   <data name="Off" xml:space="preserve">
-    <value>Off</value>
+    <value>Выкл.</value>
     <comment>used on settings page</comment>
   </data>
   <data name="On" xml:space="preserve">
-    <value>On</value>
+    <value>Вкл.</value>
     <comment>used on settings page</comment>
   </data>
   <data name="Privacy_DeleteAccounConfirmMsgBxText" xml:space="preserve">
-    <value>Are you sure you want to delete your Hike account permanently?</value>
+    <value>Действительно навсегда удалить ваш аккаунт hike?</value>
     <comment>cs. Message box while deleting account</comment>
   </data>
   <data name="Privacy_DeleteAccountHeader" xml:space="preserve">
-    <value>Delete Account</value>
+    <value>Удалить аккаунт</value>
     <comment>xaml + cs (mesg box caption)</comment>
   </data>
   <data name="Privacy_DeleteAccountProgress" xml:space="preserve">
-    <value>Deleting Account...</value>
+    <value>Удаление аккаунта...</value>
     <comment>cs. delete account progress</comment>
   </data>
   <data name="Privacy_DeleteAccountText" xml:space="preserve">
-    <value>Permanently delete your hike account</value>
+    <value>Навсегда удалить аккаунт hike</value>
     <comment>xaml</comment>
   </data>
   <data name="Privacy_UnlinkAccountHeader" xml:space="preserve">
-    <value>Unlink Account</value>
+    <value>Отвязать аккаунт</value>
     <comment>xaml + cs (mesg box caption)</comment>
   </data>
   <data name="Privacy_UnlinkAccountProgress" xml:space="preserve">
-    <value>Unlinking Account...</value>
+    <value>Отвязка аккаунта...</value>
     <comment>cs. unlink account progress</comment>
   </data>
   <data name="Privacy_UnlinkAccountText" xml:space="preserve">
-    <value>Logout your account from this device</value>
+    <value>Отвязать аккаунт от этого устройства</value>
     <comment>xaml</comment>
   </data>
   <data name="Privacy_UnlinkConfirmMsgBxText" xml:space="preserve">
-    <value>Are you sure you want to unlink your Hike account from this device?</value>
+    <value>Действительно отвязать ваш аккаунт hike от этого устройства?</value>
     <comment>cs. Message box while unlinking account</comment>
   </data>
   <data name="Privacy_UnlinkErrMsgBxCaptn" xml:space="preserve">
-    <value>Account not unlinked</value>
+    <value>Аккаунт не отвязан</value>
     <comment>cs. Message box Caption error while unlinking</comment>
   </data>
   <data name="Privacy_UnlinkErrMsgBxText" xml:space="preserve">
-    <value>hike couldn't unlink your account. Please try again.</value>
+    <value>Не удалось отвязать ваш аккаунт hike. Повторите попытку.</value>
     <comment>cs. Message box error while unlinking</comment>
   </data>
   <data name="Settings_FreeSMSToggleSwitchHeader" xml:space="preserve">
-    <value>Send free SMS to India</value>
+    <value>Отправить бесплатное SMS в Индии</value>
     <comment>xaml. </comment>
   </data>
   <data name="Settings_PushToggleSwitchHeader" xml:space="preserve">
-    <value>Use push notifications</value>
+    <value>Включить уведомления</value>
     <comment>xaml. push toggle</comment>
   </data>
   <data name="Settings_VibrateToggleSwitchHeader" xml:space="preserve">
-    <value>Vibrate</value>
+    <value>Вибрация</value>
     <comment>xaml</comment>
   </data>
   <data name="Walkthrough_H2H_SwipeLeft" xml:space="preserve">
-    <value>swipe left to continue</value>
+    <value>проведите пальцем влево</value>
   </data>
   <data name="RecordAudio_AppBarCancelBtnTxt" xml:space="preserve">
-    <value>re-record</value>
+    <value>перезаписать</value>
     <comment>app bar button</comment>
   </data>
   <data name="RecordAudio_Play" xml:space="preserve">
-    <value>TAP TO PLAY</value>
+    <value>НАЖМИТЕ ДЛЯ ВОСПРОИЗВ.</value>
     <comment>cs</comment>
   </data>
   <data name="RecordAudio_Playing" xml:space="preserve">
-    <value>PLAYING</value>
+    <value>ВОСПРОИЗВЕДЕНИЕ</value>
     <comment>cs</comment>
   </data>
   <data name="RecordAudio_Record" xml:space="preserve">
-    <value>TAP ICON TO RECORD</value>
+    <value>НАЖМИТЕ ЗНАЧОК ДЛЯ ЗАПИСИ</value>
     <comment>cs + xaml</comment>
   </data>
   <data name="RecordAudio_Recording" xml:space="preserve">
-    <value>RECORDING</value>
+    <value>ЗАПИСЬ</value>
     <comment>cs</comment>
   </data>
   <data name="RecordMedia_Title" xml:space="preserve">
-    <value>record audio</value>
+    <value>записать звук</value>
     <comment>xaml</comment>
   </data>
   <data name="Yesterday_Txt" xml:space="preserve">
-    <value>yesterday</value>
+    <value>вчера</value>
     <comment>General Text</comment>
   </data>
   <data name="FileTransfer_ErrorMsgBoxText" xml:space="preserve">
-    <value>Unable to download file. </value>
+    <value>Не удалось загрузить файл. </value>
     <comment>cs. Text in message box followed by exception message</comment>
   </data>
   <data name="SelectUser_HideSmsContacts_Txt" xml:space="preserve">
-    <value>hide sms contacts</value>
+    <value>скрыть контакты sms</value>
     <comment>Text used in app menu bar</comment>
   </data>
   <data name="SelectUser_ShowSmsContacts_Txt" xml:space="preserve">
-    <value>show sms contacts</value>
+    <value>показать контакты sms</value>
     <comment>Text used in app menu bar</comment>
   </data>
   <data name="Favorites_TapToAdd" xml:space="preserve">
-    <value>Add contacts to your circle of friends.</value>
+    <value>Добавить контакты в круг друзей</value>
     <comment>xaml (below heart image)</comment>
   </data>
   <data name="Invited" xml:space="preserve">
-    <value>Invited</value>
+    <value>Приглашен(а)</value>
   </data>
   <data name="Invite_Small" xml:space="preserve">
-    <value>Invite</value>
+    <value>Пригласить</value>
   </data>
   <data name="Nudge" xml:space="preserve">
-    <value>Nudge</value>
+    <value>Подтолкнуть</value>
   </data>
   <data name="Nudge_Exclamation" xml:space="preserve">
-    <value>Nudge!</value>
+    <value>Подтолкнуть!</value>
   </data>
   <data name="Nudge_Tute" xml:space="preserve">
-    <value>Double tap anywhere on the chat to nudge your friend.</value>
+    <value>Дважды нажмите любую область чата, чтобы подтолкнуть друга</value>
     <comment>xaml</comment>
   </data>
   <data name="OK" xml:space="preserve">
-    <value>OK</value>
+    <value>ОК</value>
   </data>
   <data name="RemoveFromGrpConfirmation_Txt" xml:space="preserve">
-    <value>Are you sure you want to remove this person from group ?</value>
+    <value>Действительно хотите удалить этого пользователя из группы?</value>
     <comment>Remove member from group text</comment>
   </data>
   <data name="Remove_From_grp_txt" xml:space="preserve">
-    <value>remove from group</value>
+    <value>удалить из группы</value>
     <comment>General text</comment>
   </data>
   <data name="ConversationsList_New_Txt" xml:space="preserve">
-    <value>new</value>
+    <value>новое</value>
     <comment>Rewards Text</comment>
   </data>
   <data name="Tap_To_Invite_Txt" xml:space="preserve">
-    <value>Tap here to invite</value>
+    <value>Нажмите здесь, чтобы пригласить</value>
     <comment>Tap to invite text</comment>
   </data>
   <data name="SelectUser_TapMsg_Grp_Txt" xml:space="preserve">
-    <value>Tap here to add this person</value>
+    <value>Нажмите, чтобы добавить польз.</value>
     <comment>Add to Group Msg</comment>
   </data>
   <data name="ChatThread_GCMute" xml:space="preserve">
-    <value>This group chat is muted</value>
+    <value>Групповой чат без звука</value>
     <comment>xaml</comment>
   </data>
   <data name="Favorites_AddMore" xml:space="preserve">
-    <value>Add More</value>
+    <value>Добавить еще</value>
     <comment>xaml</comment>
   </data>
   <data name="ContactTransfer_Text" xml:space="preserve">
-    <value>Contact</value>
+    <value>Контакт</value>
   </data>
   <data name="ShareContact_Txt" xml:space="preserve">
-    <value>Share Contact</value>
+    <value>Отправить контакт</value>
   </data>
   <data name="ShareContact_ConfirmationText" xml:space="preserve">
-    <value>Are you sure you want to share contact information of {0}</value>
+    <value>Действительно отправить контактные данные {0}?</value>
   </data>
   <data name="SharedContactNotFoundText" xml:space="preserve">
-    <value>Please refresh contact list as contact selected does not exists.</value>
+    <value>Обновите список контактов, так как выбранный контакт не существует.</value>
   </data>
   <data name="Pause_Txt" xml:space="preserve">
-    <value>pause</value>
+    <value>пауза</value>
     <comment>record video page app bar</comment>
   </data>
   <data name="Play_Txt" xml:space="preserve">
-    <value>play</value>
+    <value>воспроизвести</value>
     <comment>record video page app bar</comment>
   </data>
   <data name="Record_Txt" xml:space="preserve">
-    <value>record</value>
+    <value>записать</value>
     <comment>record video page app bar</comment>
   </data>
   <data name="Stop_Txt" xml:space="preserve">
-    <value>stop</value>
+    <value>остановить</value>
     <comment>record video page app bar</comment>
   </data>
   <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
-    <value>Confirm your number</value>
+    <value>Подтвердите номер</value>
   </data>
   <data name="SharedContactNotFoundCaptionText" xml:space="preserve">
-    <value>Refresh Contact List</value>
+    <value>Обновить список контактов</value>
   </data>
   <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>Added you to Circle of Friends</value>
+    <value>Добавил(а) вас в качестве друга!</value>
     <comment>for friend requests in wp8</comment>
   </data>
+  <data name="StatusUpdate_YouCanNowSeeUpdates_TxtBlk" xml:space="preserve">
+    <value>Теперь вы можете видеть обновления {0}. Хотите сделать то же самое?</value>
+    <comment>for friend requests status update in wp8</comment>
+  </data>
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
-    <value>Changed profile picture</value>
+    <value>Аватар изменен</value>
     <comment>Text used in profile picture update</comment>
   </data>
   <data name="StatusUpdate_Photo" xml:space="preserve">
-    <value>Changed profile picture</value>
+    <value>Аватар изменен</value>
   </data>
   <data name="StatuUpdate_Location" xml:space="preserve">
-    <value>at {0}</value>
+    <value>в {0}</value>
   </data>
   <data name="Conversations_Pivot_Timeline_Header_Txt" xml:space="preserve">
-    <value>timeline</value>
+    <value>временная шкала</value>
   </data>
   <data name="Conversations_PostStatus_AppBar" xml:space="preserve">
-    <value>Post Status</value>
+    <value>Опубликовать статус</value>
   </data>
   <data name="OthersProfile_Txt" xml:space="preserve">
-    <value>profile</value>
+    <value>профиль</value>
   </data>
   <data name="OnHIkeSince_Txt" xml:space="preserve">
-    <value>on hike since {0}</value>
+    <value>на hike с {0}</value>
   </data>
   <data name="InviteOnHikeBtn_Txt" xml:space="preserve">
-    <value>Invite to hike</value>
+    <value>Пригласить в hike </value>
   </data>
   <data name="InviteOnHikeUpgrade_Txt" xml:space="preserve">
-    <value>Help him upgrade to hike!</value>
+    <value>Помогите ему перейти на hike!</value>
   </data>
   <data name="InviteOnHike_Txt" xml:space="preserve">
-    <value> is missing all the fun.</value>
+    <value>  пропускает все интересное.</value>
   </data>
   <data name="OnSms_Txt" xml:space="preserve">
-    <value>on SMS</value>
+    <value>по SMS</value>
   </data>
   <data name="MyProfileheader_Txt" xml:space="preserve">
-    <value>my profile</value>
+    <value>мой профиль</value>
   </data>
   <data name="ProfileToBeFriendBlk1" xml:space="preserve">
-    <value>You need to be friends with</value>
+    <value>Вы должны быть друзьями с</value>
   </data>
   <data name="ProfileToBeFriendBlk3" xml:space="preserve">
-    <value>to be able to get status updates.</value>
+    <value>для получения обновлений статусов друг друга.</value>
   </data>
   <data name="btnAddAsFriend_Txt" xml:space="preserve">
-    <value>Add as a friend</value>
+    <value>Добавить в качестве друга</value>
   </data>
   <data name="NewStatus_Txt" xml:space="preserve">
-    <value>NEW STATUS</value>
+    <value>НОВЫЙ СТАТУС</value>
   </data>
   <data name="Conversations_Timeline_Refresh_Status" xml:space="preserve">
-    <value>{0} new updates</value>
+    <value>новых обновлений: {0}</value>
     <comment>text on top on timeline to show # of fresh status updates</comment>
   </data>
   <data name="Conversations_Timeline_Refresh_SingleStatus" xml:space="preserve">
-    <value>{0} new update</value>
+    <value>{0} новое обновление</value>
   </data>
   <data name="TimeUtils_Moments_Ago" xml:space="preserve">
-    <value>moments ago</value>
+    <value>только что был(а)</value>
   </data>
   <data name="You_Txt" xml:space="preserve">
-    <value>You</value>
+    <value>Вы</value>
   </data>
   <data name="Help_System_Health_Text" xml:space="preserve">
-    <value>Check hike status on Twitter</value>
+    <value>Проверить статус hike в Twitter</value>
   </data>
   <data name="Help_System_Health_Title" xml:space="preserve">
-    <value>System Health</value>
+    <value>Состояние системы</value>
+  </data>
+  <data name="Nux_CloseFriendsConnect_txt" xml:space="preserve">
+    <value>Отправить друзьям бесплатные SMS с приглашением.</value>
+  </data>
+  <data name="Nux_FamilyMembersConnect_txt" xml:space="preserve">
+    <value>Отправить членам семьи бесплатные SMS с приглашением. </value>
+  </data>
+  <data name="Nux_InviteFamily_Txt" xml:space="preserve">
+    <value>ПРИГЛАСИТЬ СЕМЬЮ</value>
+  </data>
+  <data name="Nux_InviteFriends_Txt" xml:space="preserve">
+    <value>ПРИГЛАСИТЬ ДРУЗЕЙ</value>
   </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
-    <value>Contact Info</value>
+    <value>Контактные данные</value>
   </data>
   <data name="Attachment_Audio_Txt" xml:space="preserve">
-    <value>Send Audio</value>
+    <value>Отправить аудиофайл</value>
   </data>
   <data name="Attachment_Camera_Txt" xml:space="preserve">
-    <value>Camera</value>
+    <value>Камера</value>
   </data>
   <data name="Attachment_Location_Txt" xml:space="preserve">
-    <value>Share Location</value>
+    <value>Расположение</value>
   </data>
   <data name="Attachment_Photo_Txt" xml:space="preserve">
-    <value>Send Photo</value>
+    <value>Отправить фото</value>
   </data>
   <data name="Attachment_Video_Txt" xml:space="preserve">
-    <value>Send Video</value>
+    <value>Отправить видео</value>
   </data>
   <data name="NoFreeSmsLeft_Txt" xml:space="preserve">
-    <value>Invite {0} to continue hiking.</value>
+    <value>Пригласить {0}, чтобы продолжить общение.</value>
   </data>
   <data name="SelectUser_GroupMsg_Txt" xml:space="preserve">
-    <value>Group Message</value>
+    <value>Групповое сообщение</value>
   </data>
   <data name="HappyMessaging_Txt" xml:space="preserve">
-    <value>Happy Messaging!</value>
+    <value>Приятного общения!</value>
   </data>
   <data name="MessageNonHikeFriends_Blk1_Txt" xml:space="preserve">
-    <value>You can also message friends not</value>
+    <value>Можно также общаться с друзьями</value>
   </data>
   <data name="MessageNonHikeFriends_Blk2_Txt" xml:space="preserve">
-    <value>on hike with free hike SMS</value>
+    <value>без hike с помощью бесплатных SMS</value>
   </data>
   <data name="MessagingHikeFriendsFree_Txt" xml:space="preserve">
-    <value>Messaging hike friends is free &amp; unlimited.</value>
+    <value>Бесплатный и неограниченный чат с друзьями по hike.</value>
   </data>
   <data name="ReadyToHike_Txt" xml:space="preserve">
-    <value>Ready to hike...</value>
+    <value>Готов(а) общаться по hike...</value>
   </data>
   <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
-    <value>Share on Facebook &amp; Twitter</value>
+    <value>Поделиться в Facebook и Твиттере </value>
   </data>
   <data name="FB_Connect_Txt" xml:space="preserve">
-    <value>Connect with Facebook</value>
+    <value>Подключиться с Facebook</value>
   </data>
   <data name="FeelingLazy_Txt" xml:space="preserve">
-    <value>Feeling lazy? We'll do it for you.</value>
+    <value>Одолевает лень? Мы сделаем это за вас.</value>
     <comment>Used in Entername screen above FB Notification</comment>
   </data>
   <data name="Account_Txt" xml:space="preserve">
-    <value>account</value>
+    <value>аккаунт</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Delete_Txt_Caps" xml:space="preserve">
-    <value>Delete</value>
+    <value>Удалить</value>
     <comment>Privacy page (xaml)</comment>
   </data>
   <data name="Unlink_Txt" xml:space="preserve">
-    <value>Unlink</value>
+    <value>Отвязать</value>
     <comment>Privacy page (xaml)</comment>
   </data>
   <data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
-    <value>{0} changed the group image.</value>
+    <value>{0} сменил аватара группы.</value>
   </data>
   <data name="Ask_Me_Later_Txt" xml:space="preserve">
-    <value>Ask Me Later</value>
+    <value>Задать вопрос позже</value>
   </data>
   <data name="Love_Using_Hike_Txt" xml:space="preserve">
-    <value>Love using Hike?</value>
+    <value>Нравится hike?</value>
   </data>
   <data name="Rate_Now_Txt" xml:space="preserve">
-    <value>Rate Now</value>
+    <value>Оценить сейчас</value>
   </data>
   <data name="Rate_Us_Txt" xml:space="preserve">
-    <value>Please rate us on the Marketplace.</value>
+    <value>Оцените нас в Marketplace.</value>
   </data>
   <data name="UpgradingApp_Text" xml:space="preserve">
-    <value>Please wait while your app is upgrading...</value>
+    <value>Подождите, пока обновляется ваше приложение...</value>
   </data>
   <data name="Stop_Caption_txt" xml:space="preserve">
-    <value>Stop!!!</value>
+    <value>Стоп!</value>
   </data>
   <data name="Stop_Contact_Scanning" xml:space="preserve">
-    <value>Do you want to stop contact scanning?</value>
+    <value>Вы хотите остановить сканирование контактов?</value>
   </data>
   <data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
-    <value>Message {0} on Hike</value>
+    <value>Сообщение от {0} на Hike</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
+  <data name="Nux_Skip_btnTxt" xml:space="preserve">
+    <value>Далее</value>
+  </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>{0} added you to Circle of Friends</value>
+    <value>{0} добавил(а) вас в качестве друга.</value>
     <comment>{0} will be replaced by username</comment>
   </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
-    <value>Would you like to do the same?</value>
+    <value>Хотите сделать то же самое?</value>
+  </data>
+  <data name="Profile_YouCanNowSeeUpdates" xml:space="preserve">
+    <value>Теперь вы можете видеть обновления {0}. </value>
+    <comment>for friend request in user profile,{0} username</comment>
   </data>
   <data name="Profile_CancelRequest_BtnTxt" xml:space="preserve">
-    <value>Cancel Request</value>
+    <value>Отменить запрос</value>
   </data>
   <data name="Profile_RequestSent_Blk1" xml:space="preserve">
-    <value>Waiting For</value>
+    <value>Ожидание ответа</value>
   </data>
   <data name="Profile_RequestSent_Blk3" xml:space="preserve">
-    <value>to accept your friend request.</value>
+    <value>на ваш запрос на дружбу.</value>
   </data>
   <data name="Profile_AddNow_Btn_Txt" xml:space="preserve">
-    <value>Add now</value>
+    <value>Добавить сейчас</value>
   </data>
   <data name="Profile_NoStatus_Txt" xml:space="preserve">
-    <value>hasn't posted anything :(</value>
+    <value>не опубликовал(а) ничего :(</value>
   </data>
   <data name="Profile_NotInAddressbook_Txt" xml:space="preserve">
-    <value>is not in your address book.</value>
+    <value>отсутствует в адресной книге.</value>
   </data>
   <data name="Conversations_Circle_Of_friends_txt" xml:space="preserve">
-    <value>CIRCLE OF FRIENDS</value>
+    <value>КРУГ ДРУЗЕЙ</value>
   </data>
   <data name="Conversations_Contacts_on_hike" xml:space="preserve">
-    <value>CONTACTS ON HIKE</value>
+    <value>КОНТАКТЫ В HIKE</value>
   </data>
   <data name="Profile_BlockedUser_Blk1" xml:space="preserve">
-    <value>You have blocked</value>
+    <value>Вы заблокировали</value>
   </data>
   <data name="Profile_BlockedUser_Blk3" xml:space="preserve">
-    <value>Unblock to send a message.</value>
+    <value>Разблокируйте, чтобы отправить сообщение.</value>
   </data>
   <data name="Share_With_Txt" xml:space="preserve">
-    <value>SHARE</value>
+    <value>ПОДЕЛИТЬСЯ</value>
     <comment>Used in share photo</comment>
   </data>
   <data name="Block_Tap_Txt" xml:space="preserve">
-    <value>Tap to {0} this person</value>
+    <value>Коснитесь, чтобы {0} этого пользователя</value>
     <comment>Used in add to block functionality, {0} will be replaced by block/unblock</comment>
   </data>
   <data name="Conversations_BtnUpdateStatus_Txt" xml:space="preserve">
-    <value>Update status</value>
+    <value>Обновить статус</value>
   </data>
   <data name="Conversations_EmptyStatus_AskPostStatus_Txt" xml:space="preserve">
-    <value>Looks like you haven't posted any status update yet.</value>
+    <value>Вы еще не публиковали обновление статуса.</value>
   </data>
   <data name="Conversations_EmptyStatus_Hey_Txt" xml:space="preserve">
-    <value>Hey {0}!</value>
+    <value>Привет, {0}!</value>
     <comment>{0} replaced by user name</comment>
   </data>
   <data name="Conversations_EmptyStatus_TeamHike_Txt" xml:space="preserve">
-    <value>Team Hike</value>
+    <value>Команда hike</value>
   </data>
   <data name="Update_Profile_Pic_txt" xml:space="preserve">
-    <value>Updated profile picture</value>
+    <value>Обновленный аватар</value>
     <comment>Used to show for pp update in last msg of convlist</comment>
   </data>
   <data name="Conversations_DefaultStatus_Txt" xml:space="preserve">
-    <value>Post a status update</value>
+    <value>Опубликовать обновление статуса</value>
   </data>
   <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
-    <value>Status Updates Notification</value>
+    <value>Уведомление об обновлении статуса</value>
   </data>
   <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
-    <value>Every Hour</value>
+    <value>Каждый час</value>
   </data>
   <data name="Settings_StatusUpdate_EveryXHour_txt" xml:space="preserve">
-    <value>Every {0} Hour</value>
+    <value>Каждый(е) {0} час(а/ов)</value>
     <comment>{0} replaced by number of hours</comment>
   </data>
   <data name="Settings_StatusUpdate_Immediate_Txt" xml:space="preserve">
-    <value>Immediate</value>
+    <value>Немедленно</value>
   </data>
   <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
-    <value>Only your 'Circle of friends' can see your status updates</value>
+    <value>Только ваш круг друзей может видеть обновления вашего статуса</value>
   </data>
   <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
-    <value>Tap on this icon to post a new status</value>
+    <value>Нажмите этот значок, чтобы опубликовать новый статус</value>
   </data>
   <data name="Conversations_Status_Tutorials_Header" xml:space="preserve">
-    <value>Status Updates</value>
+    <value>Обновления статуса</value>
   </data>
   <data name="Notifications_Header_Txt" xml:space="preserve">
-    <value>notifications</value>
+    <value>уведомления</value>
   </data>
   <data name="Now_Friends_Txt" xml:space="preserve">
-    <value>Is now your friend</value>
+    <value>Теперь ваш друг</value>
     <comment>This is used in timeline and profile , when user becomed friend.</comment>
   </data>
   <data name="Friend_Confirm_Txt" xml:space="preserve">
-    <value>Confirmed you as a friend</value>
+    <value>Подтвердил(а) вас в качестве друга</value>
     <comment>This is shown when a user confirms you as friend.</comment>
   </data>
   <data name="Me_Txt" xml:space="preserve">
-    <value>Me</value>
+    <value>Я</value>
   </data>
   <data name="Conversations_BtnCircleOfFriends_Txt" xml:space="preserve">
-    <value>View friends</value>
+    <value>Посмот. друзей</value>
   </data>
   <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
-    <value>You can see updates from your circle of friends here.</value>
+    <value>Здесь можно видеть обновления из круга друзей.</value>
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
-    <value>Invite your friends to hike</value>
+    <value>Пригласить друзей в hike</value>
   </data>
   <data name="Mood_Angry" xml:space="preserve">
-    <value>Angry </value>
+    <value>Сердитый </value>
+  </data>
+  <data name="Mood_Bangalore" xml:space="preserve">
+    <value>Бангалор</value>
   </data>
   <data name="Mood_Boozing" xml:space="preserve">
-    <value>Boozing </value>
+    <value>Выпивка </value>
   </data>
   <data name="Mood_Busy" xml:space="preserve">
-    <value>Busy </value>
+    <value>Занят </value>
   </data>
   <data name="Mood_Caffeinated" xml:space="preserve">
-    <value>Caffeinated </value>
+    <value>Пью кофе </value>
+  </data>
+  <data name="Mood_Chennai" xml:space="preserve">
+    <value>Ченнаи</value>
   </data>
   <data name="Mood_Chilling" xml:space="preserve">
-    <value>Chilling </value>
+    <value>Крутой </value>
   </data>
   <data name="Mood_Coding" xml:space="preserve">
-    <value>Coding </value>
+    <value>Программирую </value>
   </data>
   <data name="Mood_Confused" xml:space="preserve">
-    <value>Confused </value>
+    <value>Озадачен </value>
+  </data>
+  <data name="Mood_Delhi" xml:space="preserve">
+    <value>Дели</value>
   </data>
   <data name="Mood_Driving" xml:space="preserve">
-    <value>Driving </value>
+    <value>За рулем </value>
   </data>
   <data name="Mood_Gaming" xml:space="preserve">
-    <value>Gaming </value>
+    <value>Играю </value>
   </data>
   <data name="Mood_Happy" xml:space="preserve">
-    <value>Happy </value>
+    <value>Веселый </value>
   </data>
   <data name="Mood_Hungover" xml:space="preserve">
-    <value>Hungover </value>
+    <value>Похмелье </value>
+  </data>
+  <data name="Mood_Hyderabad" xml:space="preserve">
+    <value>Хайдарабад</value>
   </data>
   <data name="Mood_Insomniac" xml:space="preserve">
-    <value>Insomniac </value>
+    <value>Не спится </value>
   </data>
   <data name="Mood_In_a_movie" xml:space="preserve">
-    <value>In a movie </value>
+    <value>В кино </value>
   </data>
   <data name="Mood_In_love" xml:space="preserve">
-    <value>In love </value>
+    <value>Влюблен </value>
+  </data>
+  <data name="Mood_Kolkata" xml:space="preserve">
+    <value>Калькутта</value>
   </data>
   <data name="Mood_Love_it" xml:space="preserve">
-    <value>Love it </value>
+    <value>Мне нравится </value>
   </data>
   <data name="Mood_Middle_finger" xml:space="preserve">
-    <value>Middle finger </value>
+    <value>Средний палец </value>
+  </data>
+  <data name="Mood_Mumbai" xml:space="preserve">
+    <value>Мумбай</value>
+  </data>
+  <data name="Mood_Pune" xml:space="preserve">
+    <value>Пуна</value>
+  </data>
+  <data name="Mood_Punjab" xml:space="preserve">
+    <value>Пенджаб</value>
+  </data>
+  <data name="Mood_Rajasthan" xml:space="preserve">
+    <value>Раджастхан</value>
   </data>
   <data name="Mood_Running_late" xml:space="preserve">
-    <value>Running late </value>
+    <value>Опаздываю </value>
   </data>
   <data name="Mood_Sad" xml:space="preserve">
-    <value>Sad </value>
+    <value>Грустный </value>
   </data>
   <data name="Mood_Shopping" xml:space="preserve">
-    <value>Shopping </value>
+    <value>Шоппинг </value>
   </data>
   <data name="Mood_Sleepy" xml:space="preserve">
-    <value>Sleepy </value>
+    <value>Сонный </value>
   </data>
   <data name="Mood_Stuck_in_traffic" xml:space="preserve">
-    <value>Stuck in traffic </value>
+    <value>В пробке </value>
   </data>
   <data name="Mood_Studying" xml:space="preserve">
-    <value>Studying </value>
+    <value>Учусь </value>
   </data>
   <data name="Mood_Surprised" xml:space="preserve">
-    <value>Surprised</value>
+    <value>Удивлен</value>
   </data>
   <data name="Mood_Watching_tv" xml:space="preserve">
-    <value>Watching TV</value>
+    <value>Смотрю ТВ</value>
   </data>
   <data name="StatusDelete_NoNtwrk_Txt" xml:space="preserve">
-    <value>Could not delete your status update. Please check your network connection and try again later.</value>
+    <value>Не удалось удалить обновление статуса. Проверьте подключение к сети и повторите попытку.</value>
   </data>
   <data name="StatusDetionFail_Txt" xml:space="preserve">
-    <value>Unable to delete your status.</value>
+    <value>Не удается удалить ваш статус.</value>
   </data>
   <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
-    <value>Add to Contacts</value>
+    <value>Доб. в контакты</value>
   </data>
   <data name="SettingsSubtitle_Account_Txt" xml:space="preserve">
-    <value>Account</value>
+    <value>Аккаунт</value>
   </data>
   <data name="SettingsSubtitle_Blocklist_Txt" xml:space="preserve">
-    <value>Blocklist</value>
+    <value>Черный список</value>
   </data>
   <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
-    <value>Notifications</value>
+    <value>Уведомления</value>
   </data>
   <data name="Settings_AccountSettings_Txt" xml:space="preserve">
-    <value>Manage your hike account</value>
+    <value>Управлять аккаунтом hike</value>
   </data>
   <data name="Settings_BlocklistSettings_Txt" xml:space="preserve">
-    <value>A list of people you've blocked</value>
+    <value>Список заблокированных вами людей</value>
   </data>
   <data name="Settings_NotificationSettings_Txt" xml:space="preserve">
-    <value>Your notifications preferences</value>
+    <value>Настройка уведомлений</value>
   </data>
   <data name="Blocklist_user_txt" xml:space="preserve">
-    <value>user</value>
+    <value>пользователь</value>
   </data>
   <data name="Conversations_InviteFriend_Btn" xml:space="preserve">
-    <value>Invite Friends</value>
+    <value>Пригласить друзей</value>
   </data>
   <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
-    <value>Tap on + to add a contact to your circle of friends.</value>
+    <value>Нажмите +, чтобы добавить контакт в круг друзей.</value>
   </data>
   <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
-    <value>What's up, {0}?</value>
+    <value>В чем дело, {0}?</value>
     <comment>{0} replaced by user name </comment>
   </data>
   <data name="Profile_You_NoStatus_Txt" xml:space="preserve">
-    <value>You haven't posted anything :(</value>
+    <value>Вы ничего не опубликовали :(</value>
   </data>
   <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
-    <value>Group Name can have maximum 30 chars.</value>
+    <value>Имя группы может включать не более 30 символов.</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
-    <value>Could not send file</value>
+    <value>Нельзя отправ. файл</value>
   </data>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
-    <value>Max file size can be 15 MB.</value>
+    <value>Размер файла не может превышать 15 МБ.</value>
   </data>
   <data name="CT_CharCount_Sms_User" xml:space="preserve">
     <value>{0}/{1}</value>
     <comment>{0}-number , {1} number</comment>
   </data>
   <data name="CT_MessageCount_Sms_User" xml:space="preserve">
-    <value>{0} messages,</value>
+    <value>{0} сообщения,</value>
     <comment>{0} replaced by number</comment>
-  </data>
-  <data name="Hold_And_Talk" xml:space="preserve">
-    <value>Hold and talk</value>
-    <comment>Long press to start audio recording</comment>
-  </data>
-  <data name="Release_To_Send" xml:space="preserve">
-    <value>Release to Send</value>
-    <comment>Release to send recorded data</comment>
-  </data>
-  <data name="BlockList_Text" xml:space="preserve">
-    <value>BLOCK LIST</value>
-  </data>
-  <data name="Conversations_Dismiss_Tip" xml:space="preserve">
-    <value>Dismiss</value>
-    <comment>Dismiss/Close the tip which is currently visible</comment>
-  </data>
-  <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>See/show last online timestamp</value>
-  </data>
-  <data name="Last_Seen" xml:space="preserve">
-    <value>Last seen</value>
-  </data>
-  <data name="Online" xml:space="preserve">
-    <value>online</value>
-  </data>
-  <data name="Preferences_Header_Txt" xml:space="preserve">
-    <value>preferences</value>
-  </data>
-  <data name="SettingsSubtitle_Preferences_Txt" xml:space="preserve">
-    <value>Preferences</value>
-  </data>
-  <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
-    <value>Your account preferences</value>
-  </data>
-  <data name="Drag_Here_To_Delete" xml:space="preserve">
-    <value>Drag here to delete</value>
-    <comment>Drag to a specified area to delete ongoing recording</comment>
-  </data>
-  <data name="Message_Cancelled" xml:space="preserve">
-    <value>Message cancelled</value>
-    <comment>Notify user that recording has been deleted</comment>
-  </data>
-  <data name="Message_Too_Short" xml:space="preserve">
-    <value>Message too short</value>
-    <comment>Message is too short to be sent</comment>
-  </data>
-  <data name="In_App_Tip_1" xml:space="preserve">
-    <value>Tap this to express with stickers and smileys</value>
-  </data>
-  <data name="In_App_Tip_2" xml:space="preserve">
-    <value>Tap here to check out our new stickers!</value>
-  </data>
-  <data name="In_App_Tip_3" xml:space="preserve">
-    <value>Tap here to use Walkie Talkie and send voice messages</value>
-  </data>
-  <data name="In_App_Tip_4" xml:space="preserve">
-    <value>Tap this to express your mood with status updates</value>
-  </data>
-  <data name="In_App_Tip_5" xml:space="preserve">
-    <value>This status update was just posted by {0}</value>
-  </data>
-  <data name="No_Stickers_Downloaded_Txt" xml:space="preserve">
-    <value>No stickers downloaded in this category</value>
-    <comment>General text</comment>
-  </data>
-  <data name="Sticker_Txt" xml:space="preserve">
-    <value>Sticker</value>
-    <comment>noun</comment>
-  </data>
-  <data name="Sticker_Downloading_Txt" xml:space="preserve">
-    <value>Downloading</value>
-  </data>
-  <data name="At_Txt" xml:space="preserve">
-    <value>at</value>
-    <comment>General Text</comment>
-  </data>
-  <data name="TimeUtils_Sometime_Ago" xml:space="preserve">
-    <value>a while ago</value>
-  </data>
-  <data name="Today_Txt" xml:space="preserve">
-    <value>today</value>
-    <comment>General Text</comment>
-  </data>
-  <data name="Invite_Sent_Successfully" xml:space="preserve">
-    <value>Message sent successfully</value>
-  </data>
-  <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
-    <value>{0} is back on hike. Say hi :)</value>
-    <comment>{0} to be replaced by name</comment>
-  </data>
-  <data name="StickersTut_TxtBlk1" xml:space="preserve">
-    <value>Express yourself better with</value>
-    <comment>continued string -&gt;StickersTut_TxtBlk2(50)</comment>
-  </data>
-  <data name="StickersTut_TxtBlk2" xml:space="preserve">
-    <value>new hike stickers</value>
-    <comment>StickersTut_TxtBlk1-&gt;StickersTut_TxtBlk2(50)</comment>
-  </data>
-  <data name="WelcomeTut_TxtBlk1" xml:space="preserve">
-    <value>Now share your status updates with</value>
-    <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
-  </data>
-  <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
-    <value>your circle of friends.</value>
-    <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
-  </data>
-  <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
-    <value>You will now be able to see updates from {0} here.</value>
-    <comment>{0} to be replaced by name</comment>
-  </data>
-  <data name="ConfimFriendUserProfile_Txt" xml:space="preserve">
-    <value>You will now be able to see updates from each other</value>
   </data>
 </root>

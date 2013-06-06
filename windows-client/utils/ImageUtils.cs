@@ -104,6 +104,8 @@ namespace windows_client.utils
         BitmapImage walkieTalkieWhiteImage;
         BitmapImage walkieTalkieGreyImageBig;
         BitmapImage walkieTalkieWhiteImageBig;
+        BitmapImage walkieTalkieDeleteSucImageGrey;
+        BitmapImage walkieTalkieDeleteSucImageWhite;
         BitmapImage closeButtonWhiteImage;
         BitmapImage closeButtonBlackImage;
         BitmapImage dustbinGreyImage;
@@ -863,7 +865,7 @@ namespace windows_client.utils
             get
             {
                 if (loadingImage == null)
-                    loadingImage = new BitmapImage(new Uri("/View/images/loading.jpg", UriKind.Relative));
+                    loadingImage = new BitmapImage(new Uri("/View/images/loading.png", UriKind.Relative));
                 return loadingImage;
             }
         }
@@ -1056,17 +1058,17 @@ namespace windows_client.utils
             {
                 if (Utils.isDarkTheme())
                 {
-                    if (walkieTalkieGreyImageBig == null)
-                        walkieTalkieGreyImageBig = new BitmapImage(new Uri("/View/images/deleted_grey_icon.png", UriKind.Relative));
+                    if (walkieTalkieDeleteSucImageGrey == null)
+                        walkieTalkieDeleteSucImageGrey = new BitmapImage(new Uri("/View/images/deleted_grey_icon.png", UriKind.Relative));
 
-                    return walkieTalkieGreyImageBig;
+                    return walkieTalkieDeleteSucImageGrey;
                 }
                 else
                 {
-                    if (walkieTalkieWhiteImageBig == null)
-                        walkieTalkieWhiteImageBig = new BitmapImage(new Uri("/View/images/deleted_white_icon.png", UriKind.Relative));
+                    if (walkieTalkieDeleteSucImageWhite == null)
+                        walkieTalkieDeleteSucImageWhite = new BitmapImage(new Uri("/View/images/deleted_white_icon.png", UriKind.Relative));
 
-                    return walkieTalkieWhiteImageBig;
+                    return walkieTalkieDeleteSucImageWhite;
                 }
             }
         }
@@ -1219,7 +1221,7 @@ namespace windows_client.utils
                 mergedBItmpapImage.Blit(rec, writeableBitmap, rec);
                 using (var msLargeImage = new MemoryStream())
                 {
-                    mergedBItmpapImage.SaveJpeg(msLargeImage, Convert.ToInt32(140 * aspectratio), 140, 0, 100);
+                    mergedBItmpapImage.SaveJpeg(msLargeImage, Convert.ToInt32(120 * aspectratio), 120, 0, 100);
                     return msLargeImage.ToArray();
                 }
             }

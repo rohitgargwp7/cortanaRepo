@@ -46,7 +46,19 @@ namespace windows_client.Controls.StatusUpdate
             : base(userName, userImage, sm.Msisdn, sm.ServerId, isShowOnTimeline)
         {
             InitializeComponent();
-            this.statusTextTxtBlk.Text = sm.Message;
+            if (sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
+            {
+                if (isShowOnTimeline)
+                {
+                    string firstName = Utils.GetFirstName(userName);
+                    this.statusTextTxtBlk.Text = string.Format(AppResources.ConfimFriendTimeline_Txt,firstName);
+                }
+                else
+                    this.statusTextTxtBlk.Text = AppResources.ConfimFriendUserProfile_Txt;
+            }
+            else
+                this.statusTextTxtBlk.Text = sm.Message;
+
             this.timestamp = sm.Timestamp;
             this.IsUnread = sm.IsUnread;
             statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;

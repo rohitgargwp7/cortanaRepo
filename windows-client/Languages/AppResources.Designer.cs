@@ -313,6 +313,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You will now be able to see updates from {0} here..
+        /// </summary>
+        public static string ConfimFriendTimeline_Txt {
+            get {
+                return ResourceManager.GetString("ConfimFriendTimeline_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You will now be able to see updates from each other.
+        /// </summary>
+        public static string ConfimFriendUserProfile_Txt {
+            get {
+                return ResourceManager.GetString("ConfimFriendUserProfile_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connectivity issue..
         /// </summary>
         public static string Connectivity_Issue {
@@ -367,7 +385,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Added you as a friend!.
+        ///   Looks up a localized string similar to Added you to Circle of Friends.
         /// </summary>
         public static string Conversations_AddedYouToFav_Txt_WP8FrndStatus {
             get {
@@ -2733,7 +2751,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} has added you as a friend..
+        ///   Looks up a localized string similar to {0} added you to Circle of Friends.
         /// </summary>
         public static string Profile_AddedYouToFav_Txt_WP8FrndStatus {
             get {
@@ -2828,15 +2846,6 @@ namespace windows_client.Languages {
         public static string Profile_You_NoStatus_Txt {
             get {
                 return ResourceManager.GetString("Profile_You_NoStatus_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You can now see updates from {0}. .
-        /// </summary>
-        public static string Profile_YouCanNowSeeUpdates {
-            get {
-                return ResourceManager.GetString("Profile_YouCanNowSeeUpdates", resourceCulture);
             }
         }
         
@@ -3615,15 +3624,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can now see updates from {0}. Would you like to do the same?.
-        /// </summary>
-        public static string StatusUpdate_YouCanNowSeeUpdates_TxtBlk {
-            get {
-                return ResourceManager.GetString("StatusUpdate_YouCanNowSeeUpdates_TxtBlk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to at {0}.
         /// </summary>
         public static string StatuUpdate_Location {
@@ -3633,20 +3633,38 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sticker.
-        /// </summary>
-        public static string Stciker_Txt {
-            get {
-                return ResourceManager.GetString("Stciker_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Downloading.
         /// </summary>
         public static string Sticker_Downloading_Txt {
             get {
                 return ResourceManager.GetString("Sticker_Downloading_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sticker.
+        /// </summary>
+        public static string Sticker_Txt {
+            get {
+                return ResourceManager.GetString("Sticker_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Express yourself better with.
+        /// </summary>
+        public static string StickersTut_TxtBlk1 {
+            get {
+                return ResourceManager.GetString("StickersTut_TxtBlk1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to new hike stickers.
+        /// </summary>
+        public static string StickersTut_TxtBlk2 {
+            get {
+                return ResourceManager.GetString("StickersTut_TxtBlk2", resourceCulture);
             }
         }
         
@@ -3912,6 +3930,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} is back on hike. Say hi :).
+        /// </summary>
+        public static string USER_REJOINED_HIKE_TXT {
+            get {
+                return ResourceManager.GetString("USER_REJOINED_HIKE_TXT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add to Contacts.
         /// </summary>
         public static string UserProfile_AddToContacts_Btn {
@@ -4043,6 +4070,24 @@ namespace windows_client.Languages {
         public static string WelcomePage_TnP_HlBtn {
             get {
                 return ResourceManager.GetString("WelcomePage_TnP_HlBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Now share your status updates with.
+        /// </summary>
+        public static string WelcomeTut_TxtBlk1 {
+            get {
+                return ResourceManager.GetString("WelcomeTut_TxtBlk1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to your circle of friends..
+        /// </summary>
+        public static string WelcomeTut_TxtBlk2 {
+            get {
+                return ResourceManager.GetString("WelcomeTut_TxtBlk2", resourceCulture);
             }
         }
         

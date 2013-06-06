@@ -36,7 +36,7 @@ namespace windows_client.View
 
             string country_code = null;
             App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-            if (!string.IsNullOrEmpty(country_code) && country_code != "+91")
+            if (!string.IsNullOrEmpty(country_code) && country_code != HikeConstants.INDIA_COUNTRY_CODE)
             {
                 txtBlkInfo1.Text = AppResources.ReadyToHike_Txt;
                 txtBlkInfo2.Visibility = Visibility.Collapsed;

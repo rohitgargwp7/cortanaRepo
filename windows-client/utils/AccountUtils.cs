@@ -304,13 +304,7 @@ namespace windows_client.utils
             req.ContentType = convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE) ||
                 convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO) ? "" : convMessage.FileAttachment.ContentType;
             req.Headers["Connection"] = "Keep-Alive";
-
-            if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                req.Headers["Content-Name"] = convMessage.FileAttachment.FileName + ".mp3";
-            else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
-                req.Headers["Content-Name"] = convMessage.FileAttachment.FileName + ".mp4";
-            else
-                req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
+            req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
 
             req.Headers["X-Thumbnail-Required"] = "0";
 
@@ -334,14 +328,16 @@ namespace windows_client.utils
             req.ContentType = "application/json";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.GET_STICKERS, stickerJson, finalCallBackFunc, obj });
         }
-        public static void GetSingleSticker(Sticker sticker,int resId, parametrisedPostResponseFunction finalCallBackFunc)
+        public static void GetSingleSticker(ConvMessage convMessage,int resId, parametrisedPostResponseFunction finalCallBackFunc)
         {
-            string requestUrl = string.Format("{0}/stickers?catId={1}&stId={2}&resId={3}", BASE, sticker.Category, sticker.Id,resId);
+            if (convMessage == null || convMessage.StickerObj == null)
+                return;
+            string requestUrl = string.Format("{0}/stickers?catId={1}&stId={2}&resId={3}", BASE, convMessage.StickerObj.Category, convMessage.StickerObj.Id, resId);
             HttpWebRequest req = HttpWebRequest.Create(new Uri(requestUrl)) as HttpWebRequest;
             addToken(req);
             req.Method = "GET";
             //req.ContentType = "application/json";
-            req.BeginGetResponse(GetRequestCallback, new object[] { req, finalCallBackFunc, sticker });
+            req.BeginGetResponse(GetRequestCallback, new object[] { req, finalCallBackFunc, convMessage });
         }
 
         public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction, string socialNetowrk, bool isPost)
@@ -1038,7 +1034,7 @@ namespace windows_client.utils
                                         msgToShow.Add(cn);
                                         hikeCount++;
                                     }
-                                    if (!onhike && smsCount <= 2 && cn.Msisdn.StartsWith("+91") && !msisdns.Contains(cn.Msisdn)) // allow only indian numbers for sms
+                                    if (!onhike && smsCount <= 2 && cn.Msisdn.StartsWith(HikeConstants.INDIA_COUNTRY_CODE) && !msisdns.Contains(cn.Msisdn)) // allow only indian numbers for sms
                                     {
                                         msisdns.Add(cn.Msisdn);
                                         msgToShow.Add(cn);

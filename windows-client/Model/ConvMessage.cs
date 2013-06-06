@@ -67,6 +67,7 @@ namespace windows_client.Model
             GROUP_PIC_CHANGED,
             USER_OPT_IN,
             USER_JOINED,
+            USER_REJOINED,
             HIKE_USER,
             SMS_USER,
             DND_USER,
@@ -139,7 +140,13 @@ namespace windows_client.Model
             }
             else if (HikeConstants.MqttMessageTypes.USER_JOIN == type)
             {
-                return ParticipantInfoState.USER_JOINED;
+                bool isRejoin = false;
+                JToken subtype;
+                if (obj.TryGetValue(HikeConstants.SUB_TYPE, out subtype))
+                {
+                    isRejoin = HikeConstants.SUBTYPE_REJOIN == (string)subtype;
+                }
+                return isRejoin ? ParticipantInfoState.USER_REJOINED : ParticipantInfoState.USER_JOINED;
             }
             else if (HikeConstants.MqttMessageTypes.HIKE_USER == type)
             {
@@ -510,6 +517,7 @@ namespace windows_client.Model
                 NotifyPropertyChanged("DataTemplateMargin");
             }
         }
+        private bool imageDownloadFailed = false;
         public BitmapImage MessageImage
         {
             get
@@ -541,6 +549,19 @@ namespace windows_client.Model
             }
         }
 
+        public bool ImageDownloadFailed
+        {
+            get
+            {
+                return imageDownloadFailed;
+            }
+            set
+            {
+                imageDownloadFailed = value;
+                NotifyPropertyChanged("MessageImage");
+                NotifyPropertyChanged("ShowForwardMenu");
+            }
+        }
         Visibility _playIconVisibility = Visibility.Visible;
         public Visibility PlayIconVisibility
         {
@@ -757,9 +778,9 @@ namespace windows_client.Model
         {
             get
             {
-                if(!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
+                if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
                 {
-                    if (_stickerObj != null && _stickerObj.StickerImage != null)
+                    if (_stickerObj != null && (_stickerObj.StickerImage != null && !imageDownloadFailed))
                         return Visibility.Visible;
                     else
                         return Visibility.Collapsed;
@@ -1074,7 +1095,7 @@ namespace windows_client.Model
             else if (metadataJsonString != null && metadataJsonString.Contains(HikeConstants.STICKER_ID))
             {
                 data[HikeConstants.METADATA] = JObject.Parse(metadataJsonString);
-                obj[HikeConstants.SUB_TYPE] = HikeConstants.SUBTYPE_STICKER;
+                obj[HikeConstants.SUB_TYPE] = NetworkManager.STICKER;
             }
             obj[HikeConstants.TO] = _msisdn;
             obj[HikeConstants.DATA] = data;
@@ -1317,6 +1338,7 @@ namespace windows_client.Model
                 if (obj.TryGetValue(HikeConstants.SUB_TYPE, out isSticker) && data.TryGetValue(HikeConstants.METADATA, out stickerJson))
                 {
                     metadataJsonString = stickerJson.ToString(Newtonsoft.Json.Formatting.None);
+                    _message = AppResources.Sticker_Txt;
                 }
 
                 long serverTimeStamp = (long)data[HikeConstants.TIMESTAMP];
@@ -1460,16 +1482,6 @@ namespace windows_client.Model
             NotifyPropertyChanged("ShowForwardMenu");
             NotifyPropertyChanged("ShowDeleteMenu");
             NotifyPropertyChanged("SdrImage");
-        }
-
-        public void SetStickerImage(BitmapImage stickerImage)
-        {
-            if (_stickerObj != null)
-            {
-                _stickerObj.StickerImage = stickerImage;
-                NotifyPropertyChanged("MessageImage");
-                NotifyPropertyChanged("ShowForwardMenu");
-            }
         }
 
         public ConvMessage(ParticipantInfoState participantInfoState, JObject jsonObj)

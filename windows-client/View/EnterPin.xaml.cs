@@ -154,7 +154,7 @@ namespace windows_client
 
         private void txtBxEnterPin_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(txtBxEnterPin.Text))
+            if (!string.IsNullOrWhiteSpace(txtBxEnterPin.Text) && txtBxEnterPin.Text.Length > 3)
             {
                 nextIconButton.IsEnabled = true;
                 txtBxEnterPin.Foreground = UI_Utils.Instance.SignUpForeground;

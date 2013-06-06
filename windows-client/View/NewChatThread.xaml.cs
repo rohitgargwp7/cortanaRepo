@@ -122,9 +122,9 @@ namespace windows_client.View
         {
             get
             {
-                if (Utils.CurrentResolution == Utils.Resolutions.WXGA)
+                if (Utils.CurrentResolution == Utils.Resolutions.WVGA)
                     return 7;
-                else if (Utils.CurrentResolution == Utils.Resolutions.WVGA)
+                else if (Utils.CurrentResolution == Utils.Resolutions.WXGA)
                     return 8;
                 else
                     return 9;
@@ -202,7 +202,6 @@ namespace windows_client.View
 
         private Dictionary<string, BitmapImage> dictStickerCache;
 
-        private Dictionary<string, ConvMessage> dictDownloadingStickers;
         #region PAGE BASED FUNCTIONS
 
         //        private ObservableCollection<UIElement> messagesCollection;
@@ -229,7 +228,6 @@ namespace windows_client.View
 
             ocMessages = new ObservableCollection<ConvMessage>();
             dictStickerCache = new Dictionary<string, BitmapImage>();
-            dictDownloadingStickers = new Dictionary<string, ConvMessage>();
 
             walkieTalkie.Source = UI_Utils.Instance.WalkieTalkieBigImage;
             deleteRecImageSuc.Source = UI_Utils.Instance.WalkieTalkieDeleteSucImage;
@@ -729,7 +727,8 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
-            ShowDownloadOverlay(false);
+            if (gridDownloadStickers.Visibility == Visibility.Visible)
+                ShowDownloadOverlay(false);
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
                 if (App.ViewModel.TipList[1].IsCurrentlyShown)
@@ -1773,10 +1772,15 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                     NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
                 }
-
-                if (convMessage.FileAttachment == null || convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
+                if (convMessage.StickerObj != null && (convMessage.StickerObj.StickerImage == null || convMessage.ImageDownloadFailed))
+                {
+                    AccountUtils.GetSingleSticker(convMessage, ResolutionId, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
+                    convMessage.StickerObj.StickerImage = UI_Utils.Instance.StickerLoadingImage;
+                    convMessage.ImageDownloadFailed = true;
+                }
+                else if (convMessage.FileAttachment == null || convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
                     return;
-                if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.STARTED)
+                else if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.STARTED)
                 {
                     if (!convMessage.IsSent)
                     {
@@ -2216,19 +2220,16 @@ namespace windows_client.View
                             JObject meataDataJson = JObject.Parse(convMessage.MetaDataString);
                             convMessage.StickerObj = new Sticker((string)meataDataJson[HikeConstants.CATEGORY_ID], (string)meataDataJson[HikeConstants.STICKER_ID], null);
 
-                            string categoryStickerId = convMessage.StickerObj.Category + convMessage.StickerObj.Id;
+                            string categoryStickerId = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
                             if (dictStickerCache.ContainsKey(categoryStickerId))
                             {
                                 convMessage.StickerObj.StickerImage = dictStickerCache[categoryStickerId];
                             }
                             else
                             {
-                                convMessage.StickerObj.StickerImage = StickerCategory.GetStickerFromDb(convMessage.StickerObj.Id, convMessage.StickerObj.Category);
+                                convMessage.StickerObj.StickerImage = StickerCategory.GetHighResolutionSticker(convMessage.StickerObj.Id, convMessage.StickerObj.Category);
                                 if (convMessage.StickerObj.StickerImage == null)
-                                {
-                                    AccountUtils.GetSingleSticker(convMessage.StickerObj, ResolutionId, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
-                                    dictDownloadingStickers.Add(categoryStickerId, convMessage);
-                                }
+                                    AccountUtils.GetSingleSticker(convMessage, ResolutionId, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
                                 else
                                     dictStickerCache[categoryStickerId] = convMessage.StickerObj.StickerImage;
                             }
@@ -2354,7 +2355,7 @@ namespace windows_client.View
                 }
                 #endregion
                 #region USER_JOINED
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED || convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED)
                 {
                     ConvMessage chatBubble = new ConvMessage(convMessage.Message, this.Orientation, convMessage);
                     chatBubble.NotificationType = ConvMessage.MessageType.USER_JOINED_HIKE;
@@ -2549,7 +2550,7 @@ namespace windows_client.View
             {
                 if (!isGroupChat && isOnHike)
                     return;
-                if (App.MSISDN.Contains("+91"))//for non indian open sms client
+                if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
                 {
                     long time = TimeUtils.getCurrentTimeStamp();
                     string inviteToken = "";
@@ -4499,7 +4500,7 @@ namespace windows_client.View
             llsStickerCategory.SelectedItem = null;
             if (sticker == null)
                 return;
-            ConvMessage conv = new ConvMessage(AppResources.Stciker_Txt, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+            ConvMessage conv = new ConvMessage(AppResources.Sticker_Txt, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
             conv.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
             conv.StickerObj = new Sticker(sticker.Category, sticker.Id, null);
             conv.MetaDataString = string.Format("{{{0}:'{1}',{2}:'{3}'}}", HikeConstants.STICKER_ID, sticker.Id, HikeConstants.CATEGORY_ID, sticker.Category);
@@ -4507,28 +4508,31 @@ namespace windows_client.View
             AddNewMessageToUI(conv, false);
 
             mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
-            emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void PivotStickers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            switch (pivotStickers.SelectedIndex)
+            string category;
+            if (dictPivotCategory.TryGetValue(pivotStickers.SelectedIndex, out category))
             {
-                case 0:
-                    Category1_Tap(null, null);
-                    break;
-                case 1:
-                    Category2_Tap(null, null);
-                    break;
-                case 2:
-                    Category3_Tap(null, null);
-                    break;
-                case 3:
-                    Category4_Tap(null, null);
-                    break;
-                case 4:
-                    Category5_Tap(null, null);
-                    break;
+                switch (category)
+                {
+                    case StickerHelper.CATEGORY_1:
+                        Category1_Tap(null, null);
+                        break;
+                    case StickerHelper.CATEGORY_2:
+                        Category2_Tap(null, null);
+                        break;
+                    case StickerHelper.CATEGORY_3:
+                        Category3_Tap(null, null);
+                        break;
+                    case StickerHelper.CATEGORY_4:
+                        Category4_Tap(null, null);
+                        break;
+                    case StickerHelper.CATEGORY_5:
+                        Category5_Tap(null, null);
+                        break;
+                }
             }
         }
 
@@ -4543,15 +4547,16 @@ namespace windows_client.View
             if (_selectedCategory == StickerHelper.CATEGORY_1)
                 return;
             _selectedCategory = StickerHelper.CATEGORY_1;
-            pivotStickers.SelectedIndex = 0;
+            
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_1);
+            StickerPivot stickerPivot = listStickerPivot[StickerHelper.CATEGORY_1];
+            pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
+
             stCategory1.Background = UI_Utils.Instance.TappedCategoryColor;
             stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
-
-            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_1);
-            StickerPivot stickerPivot = listStickerPivot[StickerHelper.CATEGORY_1];
             stickerPivot.ShowStickers();
         }
 
@@ -4560,15 +4565,13 @@ namespace windows_client.View
             if (_selectedCategory == StickerHelper.CATEGORY_2)
                 return;
             _selectedCategory = StickerHelper.CATEGORY_2;
-            pivotStickers.SelectedIndex = 1;
+           
             stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory2.Background = UI_Utils.Instance.TappedCategoryColor;
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
-            StickerPivot stPivot = listStickerPivot[StickerHelper.CATEGORY_2];
-            CategoryTap(StickerHelper.CATEGORY_2, stPivot);
-
+            CategoryTap(StickerHelper.CATEGORY_2);
         }
 
         private void Category3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -4576,15 +4579,12 @@ namespace windows_client.View
             if (_selectedCategory == StickerHelper.CATEGORY_3)
                 return;
             _selectedCategory = StickerHelper.CATEGORY_3;
-            pivotStickers.SelectedIndex = 2;
             stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory3.Background = UI_Utils.Instance.TappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
-            StickerPivot stPivot = listStickerPivot[StickerHelper.CATEGORY_3];
-            CategoryTap(StickerHelper.CATEGORY_3, stPivot);
-
+            CategoryTap(StickerHelper.CATEGORY_3);
         }
 
         private void Category4_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -4592,14 +4592,12 @@ namespace windows_client.View
             if (_selectedCategory == StickerHelper.CATEGORY_4)
                 return;
             _selectedCategory = StickerHelper.CATEGORY_4;
-            pivotStickers.SelectedIndex = 3;
             stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.TappedCategoryColor;
-            StickerPivot stPivot = listStickerPivot[StickerHelper.CATEGORY_4];
-            CategoryTap(StickerHelper.CATEGORY_4, stPivot);
+            CategoryTap(StickerHelper.CATEGORY_4);
 
         }
 
@@ -4608,25 +4606,34 @@ namespace windows_client.View
             if (_selectedCategory == StickerHelper.CATEGORY_5)
                 return;
             _selectedCategory = StickerHelper.CATEGORY_5;
-            pivotStickers.SelectedIndex = 4;
             stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.TappedCategoryColor;
-            StickerPivot stPivot = listStickerPivot[StickerHelper.CATEGORY_5];
-            CategoryTap(StickerHelper.CATEGORY_5, stPivot);
+            CategoryTap(StickerHelper.CATEGORY_5);
         }
 
-        private void CategoryTap(string category, StickerPivot stickerPivot)
+        private void CategoryTap(string category)
         {
-            StickerCategory s2 = HikeViewModel.stickerHelper.GetStickersByCategory(category);
-            if (s2.ShowDownloadMessage)
+            StickerPivot stickerPivot = listStickerPivot[category];
+            pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
+
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
+            if (stickerCategory.ShowDownloadMessage)
             {
                 ShowDownloadOverlay(true);
                 return;
             }
-            if (s2 == null || s2.ListStickers.Count == 0)
+            if (stickerCategory == null)
+            {
+                stickerPivot.ShowNoStickers();
+            }
+            else if (stickerCategory.ListStickers.Count == 0 && stickerCategory.HasMoreStickers)
+            {
+                downloadStickers_Tap(null, null);
+            }
+            else if (stickerCategory.ListStickers.Count == 0)
             {
                 stickerPivot.ShowNoStickers();
             }
@@ -4677,13 +4684,13 @@ namespace windows_client.View
         private void StickersRequestCallBack(JObject json, Object obj)
         {
             StickerCategory stickerCategory = null;//to show batch sticker request
-            Sticker sticker = null;//to show single sticker request
+            ConvMessage convMessage = null;//to show single sticker request
             if (obj == null)
                 return;
             if (obj is StickerCategory)
                 stickerCategory = obj as StickerCategory;
-            else if (obj is Sticker)
-                sticker = obj as Sticker;
+            else if (obj is ConvMessage)
+                convMessage = obj as ConvMessage;
             else
                 return;
             if ((json == null) || HikeConstants.FAIL == (string)json[HikeConstants.STAT])
@@ -4692,12 +4699,16 @@ namespace windows_client.View
                 {
                     stickerCategory.IsDownLoading = false;
                 }
+                if (convMessage != null)
+                {
+                    convMessage.StickerObj.StickerImage = UI_Utils.Instance.TextStatusImage;//todo:set to http failed image
+                    convMessage.ImageDownloadFailed = true;
+                }
                 return;
             }
 
             string category = (string)json["catId"];
             JObject stickers = (JObject)json["data"];
-            Dictionary<string, byte[]> dictHighResStickersBytes = new Dictionary<string, byte[]>();
             bool hasMoreStickers = true;
             if (json["st"] != null)
             {
@@ -4712,6 +4723,8 @@ namespace windows_client.View
                 }
             }
             IEnumerator<KeyValuePair<string, JToken>> keyVals = stickers.GetEnumerator();
+            List<KeyValuePair<string, byte[]>> listHighResStickersBytes = new List<KeyValuePair<string, byte[]>>();
+
             while (keyVals.MoveNext())
             {
                 try
@@ -4720,45 +4733,42 @@ namespace windows_client.View
                     string id = (string)kv.Key;
                     string iconBase64 = stickers[kv.Key].ToString();
                     byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                    dictHighResStickersBytes[id] = imageBytes;
+                    listHighResStickersBytes.Add(new KeyValuePair<string, byte[]>(id, imageBytes));
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine("NewChatThread : callBack : Exception : " + ex.Message);
                 }
             }
-            stickerCategory.WriteHighResToFile(dictHighResStickersBytes);
+            stickerCategory.WriteHighResToFile(listHighResStickersBytes);
 
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                Dictionary<string, byte[]> dictLowResStickersBytes = new Dictionary<string, byte[]>();
-                foreach (string stickerid in dictHighResStickersBytes.Keys)
+                List<KeyValuePair<string, byte[]>> listLowResStickersBytes = new List<KeyValuePair<string, byte[]>>();
+                foreach (KeyValuePair<string, Byte[]> keyValuePair in listHighResStickersBytes)
                 {
-                    BitmapImage highResImage = UI_Utils.Instance.createImageFromBytes(dictHighResStickersBytes[stickerid]);
-                    if (sticker != null)
+                    string stickerId = keyValuePair.Key;
+                    BitmapImage highResImage = UI_Utils.Instance.createImageFromBytes(keyValuePair.Value);
+                    if (highResImage == null)
+                        continue;
+
+                    if (convMessage != null)
                     {
-                        string key = sticker.Category + sticker.Id;
-                        ConvMessage convMessage;
-                        if (dictDownloadingStickers.TryGetValue(key, out convMessage))
-                        {
-                            convMessage.SetStickerImage(highResImage);
-                            dictDownloadingStickers.Remove(key);
-                        }
+                        string key = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
+                        convMessage.StickerObj.StickerImage = highResImage;
+                        convMessage.ImageDownloadFailed = false;
                         if (dictStickerCache.ContainsKey(key))
                             continue;
                         dictStickerCache[key] = highResImage;
                     }
+
                     Byte[] lowResImageBytes = UI_Utils.Instance.PngImgToJpegByteArray(highResImage);
-                    dictLowResStickersBytes[stickerid] = lowResImageBytes;
-                    stickerCategory.ListStickers.Add(new Sticker(category, stickerid, UI_Utils.Instance.createImageFromBytes(lowResImageBytes)));
+                    listLowResStickersBytes.Add(new KeyValuePair<string, byte[]>(stickerId, lowResImageBytes));
+                    stickerCategory.ListStickers.Add(new Sticker(category, stickerId, UI_Utils.Instance.createImageFromBytes(lowResImageBytes)));
                 }
-                BackgroundWorker bw = new BackgroundWorker();
-                bw.DoWork += (s, e) =>
-                {
-                    stickerCategory.WriteLowResToFile(dictLowResStickersBytes, hasMoreStickers);
-                };
-                bw.RunWorkerAsync();
+                stickerCategory.WriteLowResToFile(listLowResStickersBytes, hasMoreStickers);
+
                 if (stickerCategory != null && category == _selectedCategory)
                 {
                     //stLoading.Visibility = Visibility.Collapsed;
@@ -4772,43 +4782,54 @@ namespace windows_client.View
         }
 
         private Dictionary<string, StickerPivot> listStickerPivot = new Dictionary<string, StickerPivot>();
-
+        private Dictionary<int, string> dictPivotCategory = new Dictionary<int, string>();
         private void AddPivotItemsToStickerPivot()
         {
             StickerCategory stickerCategory;
+            int pivotIndex = 0;
             //done thos way to maintain order of insertion
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_1)) != null)
             {
-                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers);
+                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
+                dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_1;
+                pivotIndex++;
             }
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_2)) != null)
             {
-                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers);
+                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
                 rectCategory2.Visibility = Visibility.Visible;
                 stCategory2.Visibility = Visibility.Visible;
+                dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_2;
+                pivotIndex++;
             }
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_3)) != null)
             {
-                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers);
+                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
                 rectCategory3.Visibility = Visibility.Visible;
                 stCategory3.Visibility = Visibility.Visible;
+                dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_3;
+                pivotIndex++;
             }
-            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_4)) != null)
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_4)) != null
+                && (App.MSISDN.Contains("+91") || App.MSISDN.Contains("+94") || App.MSISDN.Contains("+880") || App.MSISDN.Contains("+977") || App.MSISDN.Contains("+93") || App.MSISDN.Contains("+92") || App.MSISDN.Contains("+975") || App.MSISDN.Contains("+960") || App.MSISDN.Contains("+968") || App.MSISDN.Contains("+966") || App.MSISDN.Contains("+961") || App.MSISDN.Contains("+962") || App.MSISDN.Contains("+965") || App.MSISDN.Contains("+973") || App.MSISDN.Contains("+971") || App.MSISDN.Contains("+974")))
             {
-                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers);
+                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
                 rectCategory4.Visibility = Visibility.Visible;
                 stCategory4.Visibility = Visibility.Visible;
+                dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_4;
+                pivotIndex++;
             }
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_5)) != null)
             {
-                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers);
+                CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
                 rectCategory5.Visibility = Visibility.Visible;
                 stCategory5.Visibility = Visibility.Visible;
+                dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_5;
             }
         }
 
         Thickness zeroThickness = new Thickness(0, 0, 0, 0);
-        private void CreateStickerPivotItem(string category, ObservableCollection<Sticker> listSticker)
+        private void CreateStickerPivotItem(string category, ObservableCollection<Sticker> listSticker, int pivotIndex)
         {
             PivotItem pvt = new PivotItem();
             pvt.Margin = zeroThickness;
@@ -4816,7 +4837,7 @@ namespace windows_client.View
             pvt.Padding = zeroThickness;
             EventHandler<ItemRealizationEventArgs> itemRealised = null;
             itemRealised += new EventHandler<ItemRealizationEventArgs>(llsStickersCategory_OnItemsRealised);
-            StickerPivot stickerPivot = new StickerPivot(Stickers_Tap, itemRealised, listSticker);
+            StickerPivot stickerPivot = new StickerPivot(Stickers_Tap, itemRealised, listSticker, pivotIndex);
             listStickerPivot[category] = stickerPivot;
             pvt.Content = stickerPivot;
             pivotStickers.Items.Add(pvt);
@@ -4826,14 +4847,16 @@ namespace windows_client.View
         {
             if (show)
             {
+                overlayRectangle.Tap += overlayRectangle_Tap_1;
                 overlayRectangle.Visibility = Visibility.Visible;
-                DownloadStickers.Visibility = Visibility.Visible;
+                gridDownloadStickers.Visibility = Visibility.Visible;
                 llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = false;
             }
             else
             {
+                overlayRectangle.Tap -= overlayRectangle_Tap_1;
                 overlayRectangle.Visibility = Visibility.Collapsed;
-                DownloadStickers.Visibility = Visibility.Collapsed;
+                gridDownloadStickers.Visibility = Visibility.Collapsed;
                 llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
             }
         }
@@ -4841,11 +4864,11 @@ namespace windows_client.View
         private void downloadStickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ShowDownloadOverlay(false);
-            StickerCategory s2 = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
-            s2.SetDownloadMessage(false);
-            if (listStickerPivot.ContainsKey(s2.Category))
-                listStickerPivot[s2.Category].ShowLoadingStickers();
-            PostRequestForBatchStickers(s2);
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
+            stickerCategory.SetDownloadMessage(false);
+            if (listStickerPivot.ContainsKey(stickerCategory.Category))
+                listStickerPivot[stickerCategory.Category].ShowLoadingStickers();
+            PostRequestForBatchStickers(stickerCategory);
         }
 
 

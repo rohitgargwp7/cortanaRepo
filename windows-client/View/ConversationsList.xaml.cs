@@ -166,7 +166,13 @@ namespace windows_client.View
             {
                 freeSMSPanel.Visibility = Visibility.Collapsed;
             }
-
+            if (appSettings.Contains(App.SHOW_BASIC_TUTORIAL))
+            {
+                overlay.Visibility = Visibility.Visible;
+                overlay.Tap += DismissTutorial_Tap;
+                gridBasicTutorial.Visibility = Visibility.Visible;
+                launchPagePivot.IsHitTestVisible = false;
+            }
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -177,6 +183,7 @@ namespace windows_client.View
                 TotalUnreadStatuses = RefreshBarCount;  //and new statuses arrived in refresh bar
         }
 
+        #region STATUS UPDATE TUTORIAL
         private void DismissStatusUpdateTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             RemoveStatusUpdateTutorial();
@@ -190,6 +197,23 @@ namespace windows_client.View
             launchPagePivot.IsHitTestVisible = true;
             App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
         }
+        #endregion
+
+        #region BASIC TUTORIAL
+        private void DismissTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            RemoveTutorial();
+        }
+
+        private void RemoveTutorial()
+        {
+            overlay.Tap -= DismissTutorial_Tap;
+            overlay.Visibility = Visibility.Collapsed;
+            gridBasicTutorial.Visibility = Visibility.Collapsed;
+            launchPagePivot.IsHitTestVisible = true;
+            App.RemoveKeyFromAppSettings(App.SHOW_BASIC_TUTORIAL);
+        }
+        #endregion
 
         private void CircleOfFriends_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -240,7 +264,7 @@ namespace windows_client.View
             if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
             {
                 NetworkManager.turnOffNetworkManager = false;
-                RequestServerEpochTime();
+                Utils.RequestServerEpochTime();
             }
             App.MqttManagerInstance.connect();
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
@@ -552,6 +576,10 @@ namespace windows_client.View
                 RemoveStatusUpdateTutorial();
                 return;
             }
+            else if (gridBasicTutorial.Visibility == Visibility.Visible)
+            {
+                RemoveTutorial();
+            }
             App.AnalyticsInstance.addEvent(Analytics.GROUP_CHAT);
             PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
@@ -572,6 +600,10 @@ namespace windows_client.View
             {
                 RemoveStatusUpdateTutorial();
                 return;
+            }
+            else if (gridBasicTutorial.Visibility == Visibility.Visible)
+            {
+                RemoveTutorial();
             }
             App.AnalyticsInstance.addEvent(Analytics.COMPOSE);
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
@@ -756,7 +788,7 @@ namespace windows_client.View
                         if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                         {
                             NetworkManager.turnOffNetworkManager = false;
-                            RequestServerEpochTime();
+                            Utils.RequestServerEpochTime();
                             PhoneApplicationService.Current.State.Remove("IsStatusPush");
                         }
                         isStatusMessagesLoaded = true;
@@ -2109,6 +2141,10 @@ namespace windows_client.View
             {
                 RemoveStatusUpdateTutorial();
             }
+            else if (gridBasicTutorial.Visibility == Visibility.Visible)
+            {
+                RemoveTutorial();
+            }
             Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
         }
@@ -2293,14 +2329,8 @@ namespace windows_client.View
 
         #endregion
 
-        private void RequestServerEpochTime()
-        {
-            JObject obj=new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.REQUEST_SERVER_TIME;
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-        }
         #region Pro Tips
-     
+
         private void dismissProTip_Click(object sender, RoutedEventArgs e)
         {
             proTipImage.Visibility = Visibility.Collapsed;

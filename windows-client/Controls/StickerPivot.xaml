@@ -15,15 +15,8 @@
         <phone:LongListSelector  x:Name="llsStickerCategory" Height="230" LayoutMode="Grid" GridCellSize="145,125" >
             <phone:LongListSelector.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
-                        <toolkit:ContextMenuService.ContextMenu>
-                            <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" />
-                            </toolkit:ContextMenu>
-                        </toolkit:ContextMenuService.ContextMenu>
-                        <Image MaxHeight="120" MaxWidth="120" Source="{Binding StickerImage}">
-                        </Image>
-                    </Grid>
+                    <Image MaxHeight="120" MaxWidth="120" Source="{Binding StickerImage}">
+                    </Image>
                 </DataTemplate>
             </phone:LongListSelector.ItemTemplate>
         </phone:LongListSelector>

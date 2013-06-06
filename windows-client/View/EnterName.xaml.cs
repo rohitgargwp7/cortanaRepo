@@ -172,12 +172,13 @@ namespace windows_client
             string country_code = null;
             App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
 
-            if (string.IsNullOrEmpty(country_code) || country_code == "+91")
+            if (string.IsNullOrEmpty(country_code) || country_code == HikeConstants.INDIA_COUNTRY_CODE)
                 App.appSettings[App.SHOW_FREE_SMS_SETTING] = true;
             else
                 App.appSettings[App.SHOW_FREE_SMS_SETTING] = false;
 
-            nextPage = new Uri("/View/WelcomeScreen.xaml", UriKind.Relative);
+            nextPage = new Uri("/View/TutorialScreen.xaml", UriKind.Relative);
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.TUTORIAL_SCREEN);
 
             nameErrorTxt.Visibility = Visibility.Collapsed;
             msgTxtBlk.Text = AppResources.EnterName_Msg_TxtBlk;
@@ -212,7 +213,7 @@ namespace windows_client
                 userMsisdn.Append(msisdn.Substring(0, 3)).Append("-").Append(msisdn.Substring(3, 3)).Append("-").Append(msisdn.Substring(6)).Append("!");
                 string country_code = null;
                 App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-                txtBlckPhoneNumber.Text = " " + (country_code == null ? "+91" : country_code) + "-" + userMsisdn.ToString();
+                txtBlckPhoneNumber.Text = AppResources.EnterName_YourMsisdn_TxtBlk + " " + (country_code == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code) + "-" + userMsisdn.ToString();
 
                 if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED))
                 {
