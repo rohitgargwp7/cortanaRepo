@@ -1727,7 +1727,7 @@ Get hike: http://get.hike.in</value>
     <value>No stickers downloaded in this category</value>
     <comment>General text</comment>
   </data>
-  <data name="Stciker_Txt" xml:space="preserve">
+  <data name="Sticker_Txt" xml:space="preserve">
     <value>Sticker</value>
     <comment>noun</comment>
   </data>

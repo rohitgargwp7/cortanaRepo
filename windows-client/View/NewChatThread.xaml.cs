@@ -4392,7 +4392,7 @@ namespace windows_client.View
             llsStickerCategory.SelectedItem = null;
             if (sticker == null)
                 return;
-            ConvMessage conv = new ConvMessage(AppResources.Stciker_Txt, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+            ConvMessage conv = new ConvMessage(AppResources.Sticker_Txt, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
             conv.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
             conv.StickerObj = new Sticker(sticker.Category, sticker.Id, null);
             conv.MetaDataString = string.Format("{{{0}:'{1}',{2}:'{3}'}}", HikeConstants.STICKER_ID, sticker.Id, HikeConstants.CATEGORY_ID, sticker.Category);

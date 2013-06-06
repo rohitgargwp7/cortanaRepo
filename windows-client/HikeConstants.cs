@@ -16,8 +16,11 @@ namespace windows_client
         public static readonly string TO = "to";
         public static readonly string FROM = "f";
         public static readonly string SUB_TYPE = "st";
-        public static readonly string SUBTYPE_STICKER = "stk";
-        public static readonly string SUBTYPE_CATEGORY = "cat";
+
+        public static readonly string ADD_STICKER = "addStk";
+        public static readonly string ADD_CATEGORY = "addCat";
+        public static readonly string REMOVE_STICKER = "remStk";
+        public static readonly string REMOVE_CATEGORY = "remCat";
 
         public static readonly string HIKE_MESSAGE = "hm";
         public static readonly string SMS_MESSAGE = "sm";

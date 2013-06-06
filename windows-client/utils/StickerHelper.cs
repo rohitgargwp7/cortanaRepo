@@ -16,7 +16,7 @@ namespace windows_client.utils
     {
         public const string CATEGORY_1 = "kitty";
         public const string CATEGORY_2 = "expressions";
-        public const string CATEGORY_3 = "rageFaces";
+        public const string CATEGORY_3 = "rageface";
         public const string CATEGORY_4 = "doggy";
         public const string CATEGORY_5 = "bollywood";
 
