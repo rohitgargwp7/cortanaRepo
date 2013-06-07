@@ -57,7 +57,7 @@ namespace windows_client
         public static readonly string TIP_SHOW_KEY = "tipShowKey";
         public static readonly string PRO_TIP = "proTip";
         public static readonly string PRO_TIP_COUNT = "proTipCount";
-        public static readonly string PRO_TIP_DISMISS_TIME = "dismissTime";
+        public static readonly string PRO_TIP_DISMISS_TIME = "proTipDismissTime";
 
         public static readonly string INVITED = "invited";
         public static readonly string INVITED_JOINED = "invitedJoined";
