@@ -919,7 +919,7 @@
             <Image Source="/View/images/nudge_tutorial.png" Margin="0,30,0,15" Grid.Row="0" Height="70"/>
             <TextBlock Text="{Binding Path= LocalizedResources.Nudge, Source={StaticResource LocalizedStrings}}" FontSize="24" FontFamily="Segoe WP Semibold" Foreground="White" HorizontalAlignment="Center" Grid.Row="1"/>
             <TextBlock Margin="0,5,0,0" Text="{Binding Path= LocalizedResources.Nudge_Tute, Source={StaticResource LocalizedStrings}}" Foreground="White" TextAlignment="Center" Width="250" FontSize="18" HorizontalAlignment="Center" TextWrapping="Wrap" Grid.Row="2"/>
-            <Button Content="{Binding Path= LocalizedResources.InternetChargesMayApply_txt, Source={StaticResource LocalizedStrings}}" BorderThickness="0" Margin="-12,25,-12,-12" Foreground="#c6c6c6" FontSize="20" Height="90" Background="#212121" Tap="dismissNudgeTutorial_Tap" Grid.Row="3"/>
+            <Button Content="{Binding Path= LocalizedResources.OK, Source={StaticResource LocalizedStrings}}" BorderThickness="0" Margin="-12,25,-12,-12" Foreground="#c6c6c6" FontSize="20" Height="90" Background="#212121" Tap="dismissNudgeTutorial_Tap" Grid.Row="3"/>
         </Grid>
 
         <Grid Canvas.ZIndex="1" x:Name="WalkieTalkieGrid" Visibility="Collapsed" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
