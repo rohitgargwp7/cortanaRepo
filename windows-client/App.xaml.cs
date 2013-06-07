@@ -670,13 +670,15 @@ namespace windows_client
 
             #endregion
             #region STCIKERS
-            if (isNewInstall || Utils.compareVersion("2.5.0.0", _currentVersion) == 1)
+            //todo:make it 2.5.0.0
+            if (isNewInstall || Utils.compareVersion("2.1.0.5", _currentVersion) == 1)
             {
                 StickerHelper.CreateDefaultCategories();
             }
             #endregion
             #region TUTORIAL
-            if (!isNewInstall && Utils.compareVersion("2.5.0.0", _currentVersion) == 1)
+            //todo:make it 2.5.0.0
+            if (!isNewInstall && Utils.compareVersion("2.1.0.5", _currentVersion) == 1)
             {
                 ps = PageState.TUTORIAL_SCREEN_STATUS;
                 App.WriteToIsoStorageSettings(PAGE_STATE, ps);

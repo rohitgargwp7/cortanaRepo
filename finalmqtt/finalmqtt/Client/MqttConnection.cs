@@ -313,6 +313,18 @@ namespace finalmqtt.Client
             try
             {
                 msg.write();
+
+                if (msg is RetryableMessage && cb != null)
+                {
+                    short messageId = ((RetryableMessage)msg).getMessageId();
+                    if (messageId != 0)
+                    {
+                        msgCallbacksMap[messageId] = cb;
+                        Action callbackMessageAction = (new CallBackTimerTask(new onAckFailedDelegate(onReceivingAck), messageId, cb)).HandleTimerTask;
+                        IDisposable scheduledAction = scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(10));
+                        scheduledActionsMap[messageId] = scheduledAction;
+                    }
+                }
             }
             catch (ObjectDisposedException ode)
             {
@@ -325,17 +337,6 @@ namespace finalmqtt.Client
                     cb.onFailure(se);
             }
 
-            if (msg is RetryableMessage && cb != null)
-            {
-                short messageId = ((RetryableMessage)msg).getMessageId();
-                if (messageId != 0)
-                {
-                    msgCallbacksMap.Add(messageId, cb);
-                    Action callbackMessageAction = (new CallBackTimerTask(new onAckFailedDelegate(onReceivingAck), messageId, cb)).HandleTimerTask;
-                    IDisposable scheduledAction = scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(10));
-                    scheduledActionsMap.Add(messageId, scheduledAction);
-                }
-            }
         }
 
         public Callback onReceivingAck(short messageId)

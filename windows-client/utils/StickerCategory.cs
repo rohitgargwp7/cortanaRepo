@@ -311,7 +311,7 @@ namespace windows_client.utils
         {
             if (string.IsNullOrEmpty(stickerId) || string.IsNullOrEmpty(category))
                 return null;
-            if (category == StickerHelper.CATEGORY_1)
+            if (category == StickerHelper.CATEGORY_DOGGY)
             {
                 string url;
                 if (Utils.CurrentResolution == Utils.Resolutions.WXGA)

@@ -871,6 +871,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Download.
+        /// </summary>
+        public static string Download_txt {
+            get {
+                return ResourceManager.GetString("Download_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to loading sticker.
+        /// </summary>
+        public static string DownloadingSticker_txt {
+            get {
+                return ResourceManager.GetString("DownloadingSticker_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Drag here to delete.
         /// </summary>
         public static string Drag_Here_To_Delete {
@@ -1316,6 +1334,15 @@ namespace windows_client.Languages {
         public static string Forward_Txt {
             get {
                 return ResourceManager.GetString("Forward_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to free.
+        /// </summary>
+        public static string Free_txt {
+            get {
+                return ResourceManager.GetString("Free_txt", resourceCulture);
             }
         }
         
@@ -1964,6 +1991,15 @@ namespace windows_client.Languages {
         public static string In_App_Tip_6 {
             get {
                 return ResourceManager.GetString("In_App_Tip_6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to *Mobile internet charges may apply.
+        /// </summary>
+        public static string InternetChargesMayApply_txt {
+            get {
+                return ResourceManager.GetString("InternetChargesMayApply_txt", resourceCulture);
             }
         }
         
@@ -3660,6 +3696,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sticker download failed..
+        /// </summary>
+        public static string StickerDownloadFailed {
+            get {
+                return ResourceManager.GetString("StickerDownloadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Express yourself better with.
         /// </summary>
         public static string StickersTut_TxtBlk1 {
@@ -3710,6 +3755,15 @@ namespace windows_client.Languages {
         public static string Tap_To_Invite_Txt {
             get {
                 return ResourceManager.GetString("Tap_To_Invite_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap here to retry..
+        /// </summary>
+        public static string TapHereToRetyTxt {
+            get {
+                return ResourceManager.GetString("TapHereToRetyTxt", resourceCulture);
             }
         }
         

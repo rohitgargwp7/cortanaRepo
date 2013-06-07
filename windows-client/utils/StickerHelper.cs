@@ -14,26 +14,28 @@ namespace windows_client.utils
 
     public class StickerHelper
     {
-        public const string CATEGORY_1 = "doggy";
-        public const string CATEGORY_2 = "kitty";
-        public const string CATEGORY_3 = "expressions";
-        public const string CATEGORY_4 = "bollywood";
-        public const string CATEGORY_5 = "rageface";
+        public const string CATEGORY_DOGGY = "doggy";
+        public const string CATEGORY_KITTY = "kitty";
+        public const string CATEGORY_EXPRESSIONS = "expressions";
+        public const string CATEGORY_BOLLYWOOD = "bollywood";
+        public const string CATEGORY_TROLL = "rageface";
 
         public const string _stickerWVGAPath = "/View/images/stickers/WVGA/{0}";
         public const string _sticker720path = "/View/images/stickers/720p/{0}";
         public const string _stickerWXGApath = "/View/images/stickers/WXGA/{0}";
         private string[] stickers = new string[]
         {
-        "1_awww.png",
-        "2_talktohand.png",
-        "3_wink.png",
-        "4_hugs.png",
-        "5_woohoo.png",
-        "6_sshh.png",
-        "7_pheww.png",
-        "8_crying.png"
+            "1_hi.png",
+            "2_thumbsup.png",
+            "3_drooling.png",
+            "4_devilsmile.png",
+            "5_sorry.png",
+            "6_urgh.png",
+            "7_confused.png",
+            "8_dreaming.png"
         };
+
+
 
         private bool _isInitialised;
         private Dictionary<string, StickerCategory> _dictStickersCategories;
@@ -46,7 +48,7 @@ namespace windows_client.utils
                 if (!_isInitialised)
                 {
                     _dictStickersCategories = new Dictionary<string, StickerCategory>();
-                    StickerCategory category1Stickers = new StickerCategory(CATEGORY_1, false);
+                    StickerCategory category1Stickers = new StickerCategory(CATEGORY_DOGGY, false);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
                             for (int i = 0; i < stickers.Length; i++)
@@ -70,6 +72,14 @@ namespace windows_client.utils
                     List<StickerCategory> listStickerCategories = StickerCategory.ReadAllStickerCategories();
                     foreach (StickerCategory sc in listStickerCategories)
                     {
+                        if (_dictStickersCategories.ContainsKey(sc.Category))
+                        {
+                            StickerCategory stickerCategory = _dictStickersCategories[sc.Category];
+                            foreach (Sticker sticker in stickerCategory.ListStickers)
+                            {
+                                sc.ListStickers.Add(sticker);
+                            }
+                        }
                         _dictStickersCategories[sc.Category] = sc;
                     }
 
@@ -105,10 +115,11 @@ namespace windows_client.utils
 
         public static void CreateDefaultCategories()
         {
-            StickerCategory.CreateCategory(CATEGORY_2);
-            StickerCategory.CreateCategory(CATEGORY_3);
-            StickerCategory.CreateCategory(CATEGORY_4);
-            StickerCategory.CreateCategory(CATEGORY_5);
+            StickerCategory.CreateCategory(CATEGORY_DOGGY);
+            StickerCategory.CreateCategory(CATEGORY_KITTY);
+            StickerCategory.CreateCategory(CATEGORY_EXPRESSIONS);
+            StickerCategory.CreateCategory(CATEGORY_BOLLYWOOD);
+            StickerCategory.CreateCategory(CATEGORY_TROLL);
         }
     }
 

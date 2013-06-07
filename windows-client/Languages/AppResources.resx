@@ -1770,4 +1770,24 @@ Get hike: http://get.hike.in</value>
   <data name="In_App_Tip_6" xml:space="preserve">
     <value>Last seen timestamp only shared between Circle of Friends</value>
   </data>
+  <data name="DownloadingSticker_txt" xml:space="preserve">
+    <value>loading sticker</value>
+  </data>
+  <data name="Download_txt" xml:space="preserve">
+    <value>Download</value>
+    <comment>length-8 fixed</comment>
+  </data>
+  <data name="Free_txt" xml:space="preserve">
+    <value>free</value>
+    <comment>length-4 fixed</comment>
+  </data>
+  <data name="InternetChargesMayApply_txt" xml:space="preserve">
+    <value>*Mobile internet charges may apply</value>
+  </data>
+  <data name="StickerDownloadFailed" xml:space="preserve">
+    <value>Sticker download failed.</value>
+  </data>
+  <data name="TapHereToRetyTxt" xml:space="preserve">
+    <value>Tap here to retry.</value>
+  </data>
 </root>
