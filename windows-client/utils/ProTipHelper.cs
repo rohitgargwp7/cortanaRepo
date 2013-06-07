@@ -165,8 +165,8 @@ namespace windows_client.utils
             if (CurrentProTip != null)
             {
                 CurrentProTip = null;
-                App.WriteToIsoStorageSettings(App.PRO_TIP, null);
-                App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, 0);
+                App.appSettings[App.PRO_TIP] = null;
+                App.appSettings[App.PRO_TIP_COUNT] = 0;
                 App.WriteToIsoStorageSettings(App.PRO_TIP_DISMISS_TIME, HikeConstants.DEFAULT_PRO_TIP_TIME);
             }
         }
