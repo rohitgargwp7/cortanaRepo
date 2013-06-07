@@ -364,6 +364,7 @@ namespace windows_client
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     txtEnterPhone.IsReadOnly = false;
+                    txtEnterPhone.Select(txtEnterPhone.Text.Length, 0);
                 });
                 return;
             }

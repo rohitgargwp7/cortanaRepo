@@ -295,16 +295,20 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
                         {
-                            //update ui if prev last seen is greater than current last seen, db updated everytime in backend
-                            lastSeenTxt.Text = lastSeenStatus;
-                            onlineStatus.Visibility = Visibility.Visible;
-                            userName.FontSize = 36;
-                            lastSeenPannel.Visibility = Visibility.Visible;
+                            if (App.newChatThreadPage != null)
+                            {
+                                //update ui if prev last seen is greater than current last seen, db updated everytime in backend
+                                lastSeenTxt.Text = lastSeenStatus;
+                                onlineStatus.Visibility = Visibility.Visible;
+                                userName.FontSize = 36;
+                                lastSeenPannel.Visibility = Visibility.Visible;
 
-                            if (!App.ViewModel.TipList[5].IsShown || App.ViewModel.TipList[5].IsCurrentlyShown)
-                                App.ViewModel.DisplayTip(LayoutRoot, 5);
+                                if (!App.ViewModel.TipList[5].IsShown || App.ViewModel.TipList[5].IsCurrentlyShown)
+                                    App.ViewModel.DisplayTip(LayoutRoot, 5);
 
-                            _lastSeenTimer.Start();
+                                _lastSeenTimer.Start();
+                            }
+
                         }), _lastSeenHelper.GetLastSeenTimeStampStatus(actualTimeStamp));
                     }
                 }
@@ -318,13 +322,17 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
                     {
-                        //update ui if prev last seen is greater than current last seen, db updated everytime in backend
-                        lastSeenTxt.Text = lastSeenStatus;
-                        onlineStatus.Visibility = Visibility.Visible;
-                        userName.FontSize = 36;
-                        lastSeenPannel.Visibility = Visibility.Visible;
+                        if (App.newChatThreadPage != null)
+                        {
+                            //update ui if prev last seen is greater than current last seen, db updated everytime in backend
+                            lastSeenTxt.Text = lastSeenStatus;
+                            onlineStatus.Visibility = Visibility.Visible;
+                            userName.FontSize = 36;
+                            lastSeenPannel.Visibility = Visibility.Visible;
 
-                        _lastSeenTimer.Start();
+                            _lastSeenTimer.Start();
+                        }
+
                     }), _lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
                 }
             }
@@ -925,7 +933,7 @@ namespace windows_client.View
             if (lastSeenSettingsValue > 0)
             {
                 var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
-                if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat)
+                if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
                 {
                     _lastSeenTimer = new DispatcherTimer() { Interval = TimeSpan.FromMinutes(5) };
                     _lastSeenTimer.Tick += _lastSeenTimer_Tick;
@@ -1041,11 +1049,14 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
                 {
-                    //update ui if prev last seen is greater than current last seen, db updated everytime in backend
-                    lastSeenTxt.Text = lastSeenStatus;
-                    onlineStatus.Visibility = Visibility.Visible;
-                    
-                    _lastSeenTimer.Start();
+                    if (App.newChatThreadPage != null)
+                    {//update ui if prev last seen is greater than current last seen, db updated everytime in backend
+                        lastSeenTxt.Text = lastSeenStatus;
+                        onlineStatus.Visibility = Visibility.Visible;
+
+                        _lastSeenTimer.Start();
+                    }
+
                 }), _lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
             }
             else
@@ -3840,7 +3851,7 @@ namespace windows_client.View
 
                     var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
 
-                    if (fromMsisdn == mContactNumber && fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT)
+                    if (fromMsisdn == mContactNumber && fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && isOnHike)
                     {
                         if (lastSeen > _lastUpdatedLastSeenTimeStamp || lastSeen == 0)
                         {
@@ -3861,13 +3872,17 @@ namespace windows_client.View
 
                             Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
                             {
-                                //update ui if prev last seen is greater than current last seen, db updated everytime in backend
-                                lastSeenTxt.Text = lastSeenStatus;
-                                onlineStatus.Visibility = Visibility.Visible;
-                                userName.FontSize = 36;
-                                lastSeenPannel.Visibility = Visibility.Visible;
+                                if (App.newChatThreadPage != null)
+                                {
+                                    //update ui if prev last seen is greater than current last seen, db updated everytime in backend
+                                    lastSeenTxt.Text = lastSeenStatus;
+                                    onlineStatus.Visibility = Visibility.Visible;
+                                    userName.FontSize = 36;
+                                    lastSeenPannel.Visibility = Visibility.Visible;
 
-                                _lastSeenTimer.Start();
+                                    _lastSeenTimer.Start();
+                                }
+
                             }), _lastSeenHelper.GetLastSeenTimeStampStatus(lastSeen));
 
                             FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, _lastUpdatedLastSeenTimeStamp);

@@ -75,11 +75,8 @@ namespace windows_client.utils
             if (_proTipsQueue == null)
                 ReadProTipIdsFromFile();
 
-            if (_proTipsQueue != null)
-            {
-                if (_proTipsQueue.Contains(id) || (CurrentProTip!=null && CurrentProTip._id == id))
+            if (_proTipsQueue != null && (_proTipsQueue.Contains(id) || (CurrentProTip!=null && CurrentProTip._id == id)))
                     return;
-            }
             else
                 _proTipsQueue = new Queue<string>();
 
@@ -149,14 +146,41 @@ namespace windows_client.utils
             }),time);
         }
 
+        public void ClearProTips()
+        {
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                var fileNames = store.GetFileNames(PROTIPS_DIRECTORY + "\\*");
+                foreach (var name in fileNames)
+                    if (store.FileExists(name))
+                        store.DeleteFile(name);
+            }
+
+            if (_proTipsQueue != null)
+                _proTipsQueue.Clear();
+
+            if (_deletedTips != null)
+                _deletedTips.Clear();
+
+            if (CurrentProTip != null)
+            {
+                CurrentProTip = null;
+                App.WriteToIsoStorageSettings(App.PRO_TIP, null);
+                App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, 0);
+                App.WriteToIsoStorageSettings(App.PRO_TIP_DISMISS_TIME, HikeConstants.DEFAULT_PRO_TIP_TIME);
+            }
+        }
+
         public void RemoveCurrentProTip()
         {
             if (CurrentProTip == null)
                 return;
 
             if (_deletedTips == null)
-            {
                 ReadDeletedTipsFromFile();
+
+            if (_deletedTips != null)
+            {
                 _deletedTips.Add(CurrentProTip._id);
                 WriteDeletedProTipIdsToFile();
             }
@@ -214,11 +238,12 @@ namespace windows_client.utils
                     try
                     {
                         string fileName = PROTIPS_DIRECTORY + "\\" + deletedProTipsListFileName;
+                       
+                        if (_deletedTips == null)
+                            _deletedTips = new List<string>();
+
                         if (store.FileExists(fileName))
                         {
-                            if (_deletedTips == null)
-                                _deletedTips = new List<string>();
-                            
                             using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                             {
                                 using (BinaryReader reader = new BinaryReader(file))
@@ -226,7 +251,7 @@ namespace windows_client.utils
                                     int count = reader.ReadInt32();
 
                                     for (int i = 0; i < count; i++)
-                                        _proTipsQueue.Enqueue(reader.ReadString());
+                                        _deletedTips.Add(reader.ReadString());
 
                                     reader.Close();
                                 }
@@ -449,7 +474,7 @@ namespace windows_client.utils
         public void StartTimer()
         {
             Int64 time = 0;
-            App.appSettings.TryGetValue(App.DISMISS_TIME, out time);
+            App.appSettings.TryGetValue(App.PRO_TIP_DISMISS_TIME, out time);
 
             if (time > 0)
             {
