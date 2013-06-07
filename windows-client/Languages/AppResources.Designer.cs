@@ -1941,7 +1941,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap this to express with stickers and smileys.
+        ///   Looks up a localized string similar to Tap here to share stickers and emoticons :).
         /// </summary>
         public static string In_App_Tip_1 {
             get {
@@ -1950,7 +1950,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap here to check out our new stickers!.
+        ///   Looks up a localized string similar to New stickers!.
         /// </summary>
         public static string In_App_Tip_2 {
             get {
@@ -1959,7 +1959,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap here to use Walkie Talkie and send voice messages.
+        ///   Looks up a localized string similar to Tap here to use hike&apos;s new Walkie Talkie!.
         /// </summary>
         public static string In_App_Tip_3 {
             get {
@@ -1968,7 +1968,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap this to express your mood with status updates.
+        ///   Looks up a localized string similar to Tap here to attach a wonderful mood :).
         /// </summary>
         public static string In_App_Tip_4 {
             get {
@@ -1977,7 +1977,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This status update was just posted by {0}.
+        ///   Looks up a localized string similar to This is a status update posted by {0}.
         /// </summary>
         public static string In_App_Tip_5 {
             get {
@@ -1986,7 +1986,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Last seen timestamp only shared between Circle of Friends.
+        ///   Looks up a localized string similar to Only your Circle of Friends can see when you were last seen.
         /// </summary>
         public static string In_App_Tip_6 {
             get {

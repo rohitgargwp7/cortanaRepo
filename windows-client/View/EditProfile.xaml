@@ -54,7 +54,7 @@
                                Margin="178,0,0,0" Foreground="Red" 
                                FontSize="15" />
                     </StackPanel>
-                    <TextBox x:Name="name" KeyDown="name_KeyDown" />
+                    <TextBox x:Name="name" KeyDown="name_KeyDown" MaxLength="20"/>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Grid.Row="1">
                     <TextBlock Text="{Binding Path= LocalizedResources.EditProfile_Phone_TxtBlk, Source={StaticResource LocalizedStrings}}"
