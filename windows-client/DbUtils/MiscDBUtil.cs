@@ -128,6 +128,9 @@ namespace windows_client.DbUtils
             DeletePendingRequests();
             ProTipHelper.Instance.ClearProTips();
             #endregion
+            #region DELETE CATEGORIES
+            StickerCategory.DeleteAllCategories();
+            #endregion
         }
 
         #region STATUS UPDATES

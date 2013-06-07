@@ -17,7 +17,7 @@ namespace windows_client.Controls
         private int _pivotIndex;
 
         public StickerPivot(EventHandler<System.Windows.Input.GestureEventArgs> stickerTap, EventHandler<ItemRealizationEventArgs> stickerItemsRealized,
-            ObservableCollection<Sticker> listStickers,int pivotIndex)
+            ObservableCollection<Sticker> listStickers, int pivotIndex)
         {
             InitializeComponent();
             if (stickerTap != null)
@@ -52,6 +52,14 @@ namespace windows_client.Controls
             llsStickerCategory.Visibility = Visibility.Collapsed;
             stLoading.Visibility = Visibility.Collapsed;
             stNoStickers.Visibility = Visibility.Visible;
+        }
+
+        public void ShowHidMoreProgreesBar(bool show)
+        {
+            if (show)
+                moreProgressBar.Visibility = Visibility.Visible;
+            else
+                moreProgressBar.Visibility = Visibility.Collapsed;
         }
 
         public int PivotItemIndex

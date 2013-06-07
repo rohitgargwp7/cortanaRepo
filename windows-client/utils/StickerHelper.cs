@@ -67,7 +67,17 @@ namespace windows_client.utils
                                 Sticker sticker = new Sticker(category1Stickers.Category, stickers[i], bitmap);
                                 category1Stickers.ListStickers.Add(sticker);
                             }
+                            category1Stickers.HasMoreStickers = false;
+                            if (_dictStickersCategories.ContainsKey(category1Stickers.Category))
+                            {
+                                StickerCategory stickerCategory = _dictStickersCategories[category1Stickers.Category];
+                                foreach (Sticker sticker in stickerCategory.ListStickers)
+                                {
+                                    category1Stickers.ListStickers.Add(sticker);
+                                }
+                            }
                             _dictStickersCategories[category1Stickers.Category] = category1Stickers;
+
                         });
                     List<StickerCategory> listStickerCategories = StickerCategory.ReadAllStickerCategories();
                     foreach (StickerCategory sc in listStickerCategories)
