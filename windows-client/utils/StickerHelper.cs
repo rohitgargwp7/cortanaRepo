@@ -25,17 +25,15 @@ namespace windows_client.utils
         public const string _stickerWXGApath = "/View/images/stickers/WXGA/{0}";
         private string[] stickers = new string[]
         {
-            "1_hi.png",
-            "2_thumbsup.png",
-            "3_drooling.png",
-            "4_devilsmile.png",
-            "5_sorry.png",
-            "6_urgh.png",
-            "7_confused.png",
-            "8_dreaming.png"
+            "001_hi.png",
+            "002_thumbsup.png",
+            "003_drooling.png",
+            "004_devilsmile.png",
+            "005_sorry.png",
+            "006_urgh.png",
+            "007_confused.png",
+            "008_dreaming.png"
         };
-
-
 
         private bool _isInitialised;
         private Dictionary<string, StickerCategory> _dictStickersCategories;
