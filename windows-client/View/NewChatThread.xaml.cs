@@ -270,7 +270,7 @@ namespace windows_client.View
                     _lastSeenHelper.UpdateLastSeen -= LastSeenResponseReceived;
 
                     long actualTimeStamp = e.TimeStamp;
-                    
+
                     if (e.TimeStamp == -1)
                     {
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, 0);
@@ -638,7 +638,7 @@ namespace windows_client.View
                         currentAudioMessage.PlayProgressBarValue = 0;
                         currentAudioMessage = null;
                     }
-                    
+
                     mediaElement.Stop();
                     mediaElement.Source = null;
                 }
@@ -1028,7 +1028,7 @@ namespace windows_client.View
             else
                 chatThreadMainPage.ApplicationBar = appBar;
         }
-        
+
 
         void _lastSeenTimer_Tick(object sender, EventArgs e)
         {
@@ -1041,7 +1041,7 @@ namespace windows_client.View
                     //update ui if prev last seen is greater than current last seen, db updated everytime in backend
                     lastSeenTxt.Text = lastSeenStatus;
                     onlineStatus.Visibility = Visibility.Visible;
-                    
+
                     _lastSeenTimer.Start();
                 }), _lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
             }
@@ -1756,10 +1756,10 @@ namespace windows_client.View
         private void FileAttachmentMessage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             emoticonPanel.Visibility = Visibility.Collapsed;
-            
+
             if (App.ViewModel.TipList[1].IsCurrentlyShown)
                 App.ViewModel.HideToolTip(LayoutRoot, 1);
-            
+
             attachmentMenu.Visibility = Visibility.Collapsed;
             ConvMessage convMessage = llsMessages.SelectedItem as ConvMessage;
             llsMessages.SelectedItem = null;
@@ -3033,7 +3033,7 @@ namespace windows_client.View
             {
                 if (App.ViewModel.TipList[1].IsCurrentlyShown)
                     App.ViewModel.HideToolTip(LayoutRoot, 1);
-                
+
                 emoticonPanel.Visibility = Visibility.Collapsed;
             }
 
@@ -3047,14 +3047,14 @@ namespace windows_client.View
             {
                 recordGrid.Visibility = Visibility.Collapsed;
                 sendMsgTxtbox.Visibility = Visibility.Visible;
-            } 
-            
+            }
+
             if (App.ViewModel.TipList[0].IsCurrentlyShown)
                 App.ViewModel.HideToolTip(LayoutRoot, 0);
-            
+
             if (App.ViewModel.TipList[2].IsCurrentlyShown)
                 App.ViewModel.HideToolTip(LayoutRoot, 2);
-            
+
             if (attachmentMenu.Visibility == Visibility.Collapsed)
                 attachmentMenu.Visibility = Visibility.Visible;
             else
@@ -3847,7 +3847,7 @@ namespace windows_client.View
                                 _lastUpdatedLastSeenTimeStamp = lastSeen;
 
                                 long timedifference;
-                                
+
                                 if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
                                     lastSeen = lastSeen - timedifference;
 
@@ -4054,7 +4054,7 @@ namespace windows_client.View
                     _recordedDuration = (int)PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED_DURATION];
                     PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED_DURATION);
                 }
-                
+
                 PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
                 isAudio = true;
             }
@@ -4083,7 +4083,7 @@ namespace windows_client.View
                 string fileName;
                 if (isAudio)
                 {
-                    fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString()+".mp3";
+                    fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp3";
                     convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
                     convMessage.FileAttachment.ContentType = "audio/voice";
 
@@ -4102,7 +4102,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    fileName = "vid_" + TimeUtils.getCurrentTimeStamp().ToString()+".mp4";
+                    fileName = "vid_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp4";
                     convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.STARTED);
                     convMessage.FileAttachment.ContentType = "video/mp4";
                     convMessage.Message = AppResources.Video_Txt;
@@ -4548,9 +4548,9 @@ namespace windows_client.View
             if (_selectedCategory == StickerHelper.CATEGORY_DOGGY)
                 return;
             _selectedCategory = StickerHelper.CATEGORY_DOGGY;
-            
+
             StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY);
-            StickerPivot stickerPivot = listStickerPivot[StickerHelper.CATEGORY_DOGGY];
+            StickerPivot stickerPivot = dictStickersPivot[StickerHelper.CATEGORY_DOGGY];
             pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
 
             stCategory1.Background = UI_Utils.Instance.TappedCategoryColor;
@@ -4559,6 +4559,10 @@ namespace windows_client.View
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
             stickerPivot.ShowStickers();
+            if (stickerCategory.HasMoreStickers)
+            {
+                downloadStickers_Tap(null, null);
+            }
         }
 
         private void Category2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -4566,7 +4570,7 @@ namespace windows_client.View
             if (_selectedCategory == StickerHelper.CATEGORY_KITTY)
                 return;
             _selectedCategory = StickerHelper.CATEGORY_KITTY;
-           
+
             stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory2.Background = UI_Utils.Instance.TappedCategoryColor;
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
@@ -4617,7 +4621,7 @@ namespace windows_client.View
 
         private void CategoryTap(string category)
         {
-            StickerPivot stickerPivot = listStickerPivot[category];
+            StickerPivot stickerPivot = dictStickersPivot[category];
             pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
 
             StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
@@ -4656,6 +4660,11 @@ namespace windows_client.View
                     {
                         if ((e.Container.Content as Sticker).Equals(llsStickerCategory.ItemsSource[llsStickerCategory.ItemsSource.Count - 1]))
                         {
+                            StickerPivot stickerPivot;
+                            if (dictStickersPivot.TryGetValue(category, out stickerPivot))
+                            {
+                                stickerPivot.ShowHidMoreProgreesBar(true);
+                            }
                             PostRequestForBatchStickers(stickerCategory);
                         }
                     }
@@ -4699,11 +4708,20 @@ namespace windows_client.View
                 if (stickerCategory != null)
                 {
                     stickerCategory.IsDownLoading = false;
+                    StickerPivot stickerPivot;
+                    if (dictStickersPivot.TryGetValue(stickerCategory.Category, out stickerPivot))
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                           {
+                               stickerPivot.ShowHidMoreProgreesBar(false);
+                           });
+                    }
                 }
                 if (convMessage != null)
                 {
                     convMessage.ImageDownloadFailed = true;
                 }
+
                 return;
             }
 
@@ -4769,19 +4787,23 @@ namespace windows_client.View
                 }
                 stickerCategory.WriteLowResToFile(listLowResStickersBytes, hasMoreStickers);
 
-                if (stickerCategory != null && category == _selectedCategory)
+                if (stickerCategory != null)
                 {
                     //stLoading.Visibility = Visibility.Collapsed;
                     StickerPivot stickerPivot;
-                    if (listStickerPivot.TryGetValue(category, out stickerPivot))
-                        stickerPivot.ShowStickers();
+                    if (dictStickersPivot.TryGetValue(category, out stickerPivot))
+                    {
+                        if (category == _selectedCategory)
+                            stickerPivot.ShowStickers();
+                        stickerPivot.ShowHidMoreProgreesBar(false);
+                    }
                     pivotStickers.Visibility = Visibility.Visible;
                 }
                 stickerCategory.IsDownLoading = false;
             });
         }
 
-        private Dictionary<string, StickerPivot> listStickerPivot = new Dictionary<string, StickerPivot>();
+        private Dictionary<string, StickerPivot> dictStickersPivot = new Dictionary<string, StickerPivot>();
         private Dictionary<int, string> dictPivotCategory = new Dictionary<int, string>();
         private void AddPivotItemsToStickerPivot()
         {
@@ -4838,7 +4860,7 @@ namespace windows_client.View
             EventHandler<ItemRealizationEventArgs> itemRealised = null;
             itemRealised += new EventHandler<ItemRealizationEventArgs>(llsStickersCategory_OnItemsRealised);
             StickerPivot stickerPivot = new StickerPivot(Stickers_Tap, itemRealised, listSticker, pivotIndex);
-            listStickerPivot[category] = stickerPivot;
+            dictStickersPivot[category] = stickerPivot;
             pvt.Content = stickerPivot;
             pivotStickers.Items.Add(pvt);
         }
@@ -4848,7 +4870,7 @@ namespace windows_client.View
 
             if (show)
             {
-                switch(_selectedCategory)
+                switch (_selectedCategory)
                 {
                     case StickerHelper.CATEGORY_KITTY:
                         downloadDialogueImage.Source = UI_Utils.Instance.KittyOverlay;
@@ -4882,8 +4904,16 @@ namespace windows_client.View
             ShowDownloadOverlay(false);
             StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
             stickerCategory.SetDownloadMessage(false);
-            if (listStickerPivot.ContainsKey(stickerCategory.Category))
-                listStickerPivot[stickerCategory.Category].ShowLoadingStickers();
+            if (dictStickersPivot.ContainsKey(stickerCategory.Category))
+            {
+                if (stickerCategory.ListStickers.Count > 0)
+                {
+                    dictStickersPivot[stickerCategory.Category].ShowHidMoreProgreesBar(true);
+                    dictStickersPivot[stickerCategory.Category].ShowStickers();
+                }
+                else
+                    dictStickersPivot[stickerCategory.Category].ShowLoadingStickers();
+            }
             PostRequestForBatchStickers(stickerCategory);
         }
 
@@ -4899,7 +4929,7 @@ namespace windows_client.View
 
             if (App.ViewModel.TipList[1].IsCurrentlyShown)
                 App.ViewModel.HideToolTip(LayoutRoot, 1);
-            
+
             attachmentMenu.Visibility = Visibility.Collapsed;
             emoticonPanel.Visibility = Visibility.Collapsed;
 
@@ -5254,13 +5284,13 @@ namespace windows_client.View
             StickerCategory s2 = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
             if (s2 == null || s2.ListStickers.Count == 0)
             {
-                if (listStickerPivot.ContainsKey(s2.Category))
-                    listStickerPivot[s2.Category].ShowNoStickers();
+                if (dictStickersPivot.ContainsKey(s2.Category))
+                    dictStickersPivot[s2.Category].ShowNoStickers();
             }
             else
             {
-                if (listStickerPivot.ContainsKey(s2.Category))
-                    listStickerPivot[s2.Category].ShowStickers();
+                if (dictStickersPivot.ContainsKey(s2.Category))
+                    dictStickersPivot[s2.Category].ShowStickers();
             }
         }
 

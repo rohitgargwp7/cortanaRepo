@@ -54,6 +54,10 @@ namespace windows_client.utils
             {
                 return _hasMoreStickers;
             }
+            set
+            {
+                _hasMoreStickers = value;
+            }
         }
 
         public bool ShowDownloadMessage
@@ -197,7 +201,7 @@ namespace windows_client.utils
         {
             lock (readWriteLock)
             {
-                if ((listStickersImageBytes != null && listStickersImageBytes.Count > 0) || hasMoreStickers)
+                if (listStickersImageBytes != null)
                 {
                     try
                     {
@@ -393,7 +397,7 @@ namespace windows_client.utils
                                 List<KeyValuePair<string, Byte[]>> listImageBytes = new List<KeyValuePair<string, Byte[]>>();
                                 StickerCategory stickerCategory = new StickerCategory(category);
                                 string[] files1 = store.GetFileNames(folder + "\\" + category + "\\*");
-                                IEnumerable<string> files= files1.OrderBy(x => x);
+                                IEnumerable<string> files = files1.OrderBy(x => x);
                                 if (files != null)
 
                                     foreach (string stickerId in files)
@@ -628,6 +632,62 @@ namespace windows_client.utils
                 catch (Exception ex)
                 {
                     Debug.WriteLine("StickerCategory::UpdateHasMoreMessages, Exception:" + ex.Message);
+                }
+            }
+        }
+
+        public static void DeleteAllCategories()
+        {
+            lock (readWriteLock)
+            {
+                try
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        string categoryFolder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR;
+                        string[] folders = store.GetDirectoryNames(categoryFolder + "\\*");
+                        if (folders != null)
+                            foreach (string category in folders)
+                            {
+                                string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
+
+                                if (store.DirectoryExists(folder))
+                                {
+                                    string[] files = store.GetFileNames(folder + "\\*");
+                                    if (files != null)
+                                        foreach (string stickerId in files)
+                                        {
+                                            string fileName = folder + "\\" + stickerId;
+                                            if (store.FileExists(fileName))
+                                                store.DeleteFile(fileName);
+                                        }
+                                }
+                            }
+                        folders = store.GetDirectoryNames(categoryFolder + "\\*");
+                        if (folders != null)
+                        {
+                            foreach (string category in folders)
+                            {
+                                string folder = STICKERS_DIR + "\\" + HIGH_RESOLUTION_DIR + "\\" + category;
+
+                                if (store.DirectoryExists(folder))
+                                {
+                                    string[] files = store.GetFileNames(folder + "\\*");
+                                    if (files != null)
+                                        foreach (string stickerId in files)
+                                        {
+                                            string fileName = folder + "\\" + stickerId;
+                                            if (store.FileExists(fileName))
+                                                store.DeleteFile(fileName);
+                                        }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("StickerCategory::DeleteCategory, Exception:" + ex.Message);
                 }
             }
         }

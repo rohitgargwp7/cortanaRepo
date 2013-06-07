@@ -127,6 +127,9 @@ namespace windows_client.DbUtils
             DeleteFavourites();
             DeletePendingRequests();
             #endregion
+            #region DELETE CATEGORIES
+            StickerCategory.DeleteAllCategories();
+            #endregion
         }
 
         #region STATUS UPDATES
