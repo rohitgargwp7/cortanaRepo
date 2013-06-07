@@ -72,6 +72,14 @@ namespace windows_client.utils
                     List<StickerCategory> listStickerCategories = StickerCategory.ReadAllStickerCategories();
                     foreach (StickerCategory sc in listStickerCategories)
                     {
+                        if (_dictStickersCategories.ContainsKey(sc.Category))
+                        {
+                            StickerCategory stickerCategory = _dictStickersCategories[sc.Category];
+                            foreach (Sticker sticker in stickerCategory.ListStickers)
+                            {
+                                sc.ListStickers.Add(sticker);
+                            }
+                        }
                         _dictStickersCategories[sc.Category] = sc;
                     }
 
@@ -107,6 +115,7 @@ namespace windows_client.utils
 
         public static void CreateDefaultCategories()
         {
+            StickerCategory.CreateCategory(CATEGORY_DOGGY);
             StickerCategory.CreateCategory(CATEGORY_KITTY);
             StickerCategory.CreateCategory(CATEGORY_EXPRESSIONS);
             StickerCategory.CreateCategory(CATEGORY_BOLLYWOOD);
