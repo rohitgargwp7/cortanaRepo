@@ -143,6 +143,7 @@ namespace windows_client.utils
             long ticks = timestamp * 10000000;
             ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
             DateTime receivedTime = new DateTime(ticks);
+            receivedTime = receivedTime.ToLocalTime();
 
             if (receivedTime.Date == DateTime.Now.Date) //today
             {
