@@ -301,6 +301,9 @@ namespace windows_client.View
                             userName.FontSize = 36;
                             lastSeenPannel.Visibility = Visibility.Visible;
 
+                            if (!App.ViewModel.TipList[5].IsShown || App.ViewModel.TipList[5].IsCurrentlyShown)
+                                App.ViewModel.DisplayTip(LayoutRoot, 5);
+
                             _lastSeenTimer.Start();
                         }), _lastSeenHelper.GetLastSeenTimeStampStatus(actualTimeStamp));
                     }
@@ -4444,6 +4447,8 @@ namespace windows_client.View
                     App.ViewModel.HideToolTip(LayoutRoot, 0);
                 if (App.ViewModel.TipList[1].IsCurrentlyShown)
                     App.ViewModel.HideToolTip(LayoutRoot, 1);
+                if (App.ViewModel.TipList[5].IsCurrentlyShown)
+                    App.ViewModel.HideToolTip(LayoutRoot, 5);
             }
         }
         #endregion

@@ -395,6 +395,9 @@ namespace windows_client.ViewModel
             isShownVal = (marked & 0x10) > 0;
             isCurrentShown = (currentlyShowing & 0x10) > 0;
             TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = true, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 30, 10, 0) });
+            isShownVal = (marked & 0x20) > 0;
+            isCurrentShown = (currentlyShowing & 0x20) > 0;
+            TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = true, TipMargin = new Thickness(200, 0, 10, 0), FullTipMargin = new Thickness(10, 60, 10, 0) });
         }
 
         /// <summary>
@@ -426,7 +429,7 @@ namespace windows_client.ViewModel
                 Canvas.SetZIndex(inAppTipUC, 3);
                 inAppTipUC.Visibility = Visibility.Visible;
 
-                if (index == 0 || index == 1 || index == 2)
+                if (index == 0 || index == 1 || index == 2 || index==5)
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 3);
                 else if (index == 3)
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 2);

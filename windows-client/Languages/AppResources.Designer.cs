@@ -1959,6 +1959,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last seen timestamp only shared between Circle of Friends.
+        /// </summary>
+        public static string In_App_Tip_6 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Message sent successfully.
         /// </summary>
         public static string Invite_Sent_Successfully {

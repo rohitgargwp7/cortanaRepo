@@ -1767,4 +1767,7 @@ Get hike: http://get.hike.in</value>
   <data name="ConfimFriendUserProfile_Txt" xml:space="preserve">
     <value>You will now be able to see updates from each other</value>
   </data>
+  <data name="In_App_Tip_6" xml:space="preserve">
+    <value>Last seen timestamp only shared between Circle of Friends</value>
+  </data>
 </root>

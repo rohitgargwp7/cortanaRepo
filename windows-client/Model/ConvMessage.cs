@@ -832,10 +832,18 @@ namespace windows_client.Model
             if (String.IsNullOrEmpty(this.MetaDataString))
                 return "";
 
-            var timeObj = JObject.Parse(this.MetaDataString);
-            var seconds = Convert.ToInt64(timeObj[HikeConstants.FILE_PLAY_TIME].ToString());
-            var durationTimeSpan = TimeSpan.FromSeconds(seconds);
-            return durationTimeSpan.ToString("mm\\:ss");
+            JObject timeObj = JObject.Parse(this.MetaDataString);
+
+            try
+            {
+                var seconds = Convert.ToInt64(timeObj[HikeConstants.FILE_PLAY_TIME].ToString());
+                var durationTimeSpan = TimeSpan.FromSeconds(seconds);
+                return durationTimeSpan.ToString("mm\\:ss");
+            }
+            catch
+            {
+                return "";
+            }
         }
 
         public double LayoutGridWidth
