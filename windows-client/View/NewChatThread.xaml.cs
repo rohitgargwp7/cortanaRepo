@@ -5419,47 +5419,52 @@ namespace windows_client.View
         {
             // Determine which template to return;
             ConvMessage convMesssage = (ConvMessage)item;
-            if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+            if (App.newChatThreadPage != null)
             {
-                if (convMesssage.IsSent)
+                if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
-                    if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
-                        return App.newChatThreadPage.dtSentBubbleNudge;
-                    if (convMesssage.StickerObj != null)
-                        return App.newChatThreadPage.dtSentSticker;
-                    else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                        return App.newChatThreadPage.dtSentBubbleContact;
-                    else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                        return App.newChatThreadPage.dtSentBubbleAudioFile;
-                    else if (convMesssage.FileAttachment != null)
-                        return App.newChatThreadPage.dtSentBubbleFile;
+                    if (convMesssage.IsSent)
+                    {
+                        if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
+                            return App.newChatThreadPage.dtSentBubbleNudge;
+                        if (convMesssage.StickerObj != null)
+                            return App.newChatThreadPage.dtSentSticker;
+                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                            return App.newChatThreadPage.dtSentBubbleContact;
+                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                            return App.newChatThreadPage.dtSentBubbleAudioFile;
+                        else if (convMesssage.FileAttachment != null)
+                            return App.newChatThreadPage.dtSentBubbleFile;
+                        else
+                            return App.newChatThreadPage.dtSentBubbleText;
+                    }
                     else
-                        return App.newChatThreadPage.dtSentBubbleText;
+                    {
+                        if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
+                            return App.newChatThreadPage.dtRecievedBubbleNudge;
+                        if (convMesssage.StickerObj != null)
+                            return App.newChatThreadPage.dtRecievedSticker;
+                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                            return App.newChatThreadPage.dtRecievedBubbleContact;
+                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                            return App.newChatThreadPage.dtRecievedBubbleAudioFile;
+                        else if (convMesssage.FileAttachment != null)
+                            return App.newChatThreadPage.dtRecievedBubbleFile;
+                        else
+                            return App.newChatThreadPage.dtRecievedBubbleText;
+                    }
                 }
+                else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.IN_APP_TIP)
+                    return App.newChatThreadPage.inAppTip5;
+                else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                    return App.newChatThreadPage.dtStatusUpdateBubble;
+                else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.TYPING_NOTIFICATION)
+                    return App.newChatThreadPage.dtTypingNotificationBubble;
                 else
-                {
-                    if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
-                        return App.newChatThreadPage.dtRecievedBubbleNudge;
-                    if (convMesssage.StickerObj != null)
-                        return App.newChatThreadPage.dtRecievedSticker;
-                    else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                        return App.newChatThreadPage.dtRecievedBubbleContact;
-                    else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                        return App.newChatThreadPage.dtRecievedBubbleAudioFile;
-                    else if (convMesssage.FileAttachment != null)
-                        return App.newChatThreadPage.dtRecievedBubbleFile;
-                    else
-                        return App.newChatThreadPage.dtRecievedBubbleText;
-                }
+                    return App.newChatThreadPage.dtNotificationBubble;
             }
-            else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.IN_APP_TIP)
-                return App.newChatThreadPage.inAppTip5;
-            else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
-                return App.newChatThreadPage.dtStatusUpdateBubble;
-            else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.TYPING_NOTIFICATION)
-                return App.newChatThreadPage.dtTypingNotificationBubble;
             else
-                return App.newChatThreadPage.dtNotificationBubble;
+                return (new DataTemplate());
         }
     }
 }

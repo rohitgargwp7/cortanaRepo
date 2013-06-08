@@ -326,26 +326,15 @@ namespace windows_client.utils
         {
             if (string.IsNullOrEmpty(stickerId) || string.IsNullOrEmpty(category))
                 return null;
-            if (category == StickerHelper.CATEGORY_DOGGY)
+            try
             {
-                string url;
-                if (Utils.CurrentResolution == Utils.Resolutions.WXGA)
-                    url = StickerHelper._stickerWXGApath;
-                else if (Utils.CurrentResolution == Utils.Resolutions.WVGA)
-                    url = StickerHelper._stickerWVGAPath;
-                else
-                    url = StickerHelper._sticker720path;
-                return new BitmapImage(new Uri(string.Format(url, stickerId), UriKind.Relative));
-            }
-            else
-            {
-                try
+                lock (readWriteLock)
                 {
-                    lock (readWriteLock)
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
-                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                        string fileName = StickerCategory.STICKERS_DIR + "\\" + StickerCategory.HIGH_RESOLUTION_DIR + "\\" + category + "\\" + stickerId;
+                        if (store.FileExists(fileName))
                         {
-                            string fileName = StickerCategory.STICKERS_DIR + "\\" + StickerCategory.HIGH_RESOLUTION_DIR + "\\" + category + "\\" + stickerId;
                             using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
                             {
                                 using (var reader = new BinaryReader(file))
@@ -356,12 +345,23 @@ namespace windows_client.utils
                                 }
                             }
                         }
+                        else if (category == StickerHelper.CATEGORY_DOGGY)
+                        {
+                            string url;
+                            if (Utils.CurrentResolution == Utils.Resolutions.WXGA)
+                                url = StickerHelper._stickerWXGApath;
+                            else if (Utils.CurrentResolution == Utils.Resolutions.WVGA)
+                                url = StickerHelper._stickerWVGAPath;
+                            else
+                                url = StickerHelper._sticker720path;
+                            return new BitmapImage(new Uri(string.Format(url, stickerId), UriKind.Relative));
+                        }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("StickerCategory::CreateFromFile, Exception:" + ex.Message);
-                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("StickerCategory::CreateFromFile, Exception:" + ex.Message);
             }
             return null;
         }
