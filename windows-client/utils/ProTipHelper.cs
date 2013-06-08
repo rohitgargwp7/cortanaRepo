@@ -152,8 +152,12 @@ namespace windows_client.utils
             {
                 var fileNames = store.GetFileNames(PROTIPS_DIRECTORY + "\\*");
                 foreach (var name in fileNames)
-                    if (store.FileExists(name))
-                        store.DeleteFile(name);
+                {
+                    string fName = PROTIPS_DIRECTORY + "\\" + name;
+
+                    if (store.FileExists(fName))
+                        store.DeleteFile(fName);
+                }
             }
 
             if (_proTipsQueue != null)
