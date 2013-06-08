@@ -229,7 +229,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBoxResult result = MessageBox.Show(AppResources.Invite_Not_Sent +" "+ AppResources.Please_Try_Again_Txt, title,MessageBoxButton.OK);
+                    MessageBoxResult result = MessageBox.Show(AppResources.Invite_Not_Sent +". "+ AppResources.Please_Try_Again_Txt, title,MessageBoxButton.OK);
                 });
             }
             else
