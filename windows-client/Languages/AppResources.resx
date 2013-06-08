@@ -1791,6 +1791,9 @@ Get hike: http://get.hike.in</value>
     <value>Tap here to retry.</value>
   </data>
   <data name="Invite_Not_Sent" xml:space="preserve">
-    <value>Invite not sent</value>
+    <value>Unable to send invite.</value>
+  </data>
+  <data name="Please_Retry_Later" xml:space="preserve">
+    <value>Please retry later</value>
   </data>
 </root>

@@ -2004,7 +2004,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invite not sent.
+        ///   Looks up a localized string similar to Unable to send invite..
         /// </summary>
         public static string Invite_Not_Sent {
             get {
@@ -2675,6 +2675,15 @@ namespace windows_client.Languages {
         public static string Play_Txt {
             get {
                 return ResourceManager.GetString("Play_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please retry later.
+        /// </summary>
+        public static string Please_Retry_Later {
+            get {
+                return ResourceManager.GetString("Please_Retry_Later", resourceCulture);
             }
         }
         
