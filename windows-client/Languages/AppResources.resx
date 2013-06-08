@@ -721,10 +721,6 @@
     <value>SMS can only be sent to India.</value>
     <comment>Constants General Text</comment>
   </data>
-  <data name="sms_invite_message" xml:space="preserve">
-    <value>Hi! Get hike 2.0. Free messaging worldwide. Now with Status Updates and Moods :) - http://get.hike.in/</value>
-    <comment>Constants General Text</comment>
-  </data>
   <data name="UnBlock_Txt" xml:space="preserve">
     <value>Unblock</value>
     <comment>xaml</comment>
@@ -1795,5 +1791,18 @@ Get hike: http://get.hike.in</value>
   </data>
   <data name="Please_Retry_Later" xml:space="preserve">
     <value>Please retry later</value>
+  </data>
+  <data name="Installed_Txt" xml:space="preserve">
+    <value>Installed</value>
+  </data>
+  <data name="sms_invite_message_1" xml:space="preserve">
+    <value>Hey, I'm using hike, and it has all these awesome stickers and emoticons which I want to share with you. Get it now http://hike.in/</value>
+  </data>
+  <data name="sms_invite_message_2" xml:space="preserve">
+    <value>Hey, I'm using hike, which lets us show our "last seen" status only to the friends we choose, and not everyone. Get it now http://hike.in/</value>
+    <comment>Constants General Text</comment>
+  </data>
+  <data name="sms_invite_message_3" xml:space="preserve">
+    <value>Hey, I'm using hike; it comes with a cool Walkie-Talkie which lets me send you free voice messages. Get it now http://hike.in/</value>
   </data>
 </root>

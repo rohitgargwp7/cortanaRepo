@@ -885,7 +885,7 @@
             <TextBlock Name="BlockTxtBlk" HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.SelectUser_BlockMsg_Txt, Source={StaticResource LocalizedStrings}}" Foreground="#FFFFFF" FontSize="30"></TextBlock>
             <Button Height="75" Name="btnBlockUnblock" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"></Button>
         </StackPanel>
-        <Grid Canvas.ZIndex="1"   x:Name="gridDownloadStickers" Visibility="Collapsed"  Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Center" Margin="0 0 0 0">
+        <Grid Canvas.ZIndex="1"   x:Name="gridDownloadStickers" Visibility="Collapsed"  Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Center" Margin="0 0 0 0" Tap="overlayRectangle_Tap_1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -899,8 +899,8 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Image Name="downloadDialogueImage" Source="images/expressions_overlay.png" Grid.ColumnSpan="2" Grid.RowSpan="2" Height="509" Width="368" ></Image>
-                <Button Width="150" Foreground="White" Grid.Row="2" Grid.Column="2" Content="{Binding Path= LocalizedResources.Download_txt, Source={StaticResource LocalizedStrings}}" VerticalContentAlignment="Center" VerticalAlignment="Bottom" FontFamily="Segoe WP Regular" FontSize="18" Height="70" BorderBrush="#3d3d3d" Background="#3d3d3d" Tap="downloadStickers_Tap" Margin="10 0 0 10"></Button>
+                <Image Name="downloadDialogueImage" Grid.ColumnSpan="2" Grid.RowSpan="2" Height="509" Width="368" ></Image>
+                <Button Name="btnDownload" Width="150" Foreground="White" Grid.Row="2" Grid.Column="2" Content="{Binding Path= LocalizedResources.Download_txt, Source={StaticResource LocalizedStrings}}" VerticalContentAlignment="Center" VerticalAlignment="Bottom" FontFamily="Segoe WP Regular" FontSize="18" Height="70" BorderBrush="#3d3d3d" Background="#3d3d3d" Tap="downloadStickers_Tap" Margin="10 0 0 10"></Button>
                 <Button Background="#7aa700" Grid.Row="2" Foreground="White" Grid.Column="2" Width="70" Height="50" Content="{Binding Path= LocalizedResources.Free_txt, Source={StaticResource LocalizedStrings}}" Padding="0" VerticalAlignment="Bottom" FontFamily="Segoe WP Regular" FontSize="12" BorderThickness="0" Margin="105 0 0 45"  />
             </Grid>
             <StackPanel Grid.Row="1" Height="30" Width="340" Background="#2c2c2c" VerticalAlignment="Center" HorizontalAlignment="Center" >

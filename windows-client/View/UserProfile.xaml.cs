@@ -582,9 +582,7 @@ namespace windows_client.View
             btn.Content = AppResources.Invited;
 
             long time = TimeUtils.getCurrentTimeStamp();
-            string inviteToken = "";
-            //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-            ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
+            ConvMessage convMessage = new ConvMessage(Utils.GetRandomInviteString(), msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = true;
             convMessage.IsInvite = true;
 

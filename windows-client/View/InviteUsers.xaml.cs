@@ -223,7 +223,7 @@ namespace windows_client.View
                             continue;
                         JObject obj = new JObject();
                         JObject data = new JObject();
-                        data[HikeConstants.SMS_MESSAGE] = string.Format(AppResources.sms_invite_message, inviteToken);
+                        data[HikeConstants.SMS_MESSAGE] = Utils.GetRandomInviteString();
                         data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
                         data[HikeConstants.MESSAGE_ID] = -1;
                         obj[HikeConstants.TO] = key;
@@ -245,7 +245,7 @@ namespace windows_client.View
                             msisdns += key + ";";
                     }
                     smsComposeTask.To = msisdns;
-                    smsComposeTask.Body = AppResources.sms_invite_message;
+                    smsComposeTask.Body = Utils.GetRandomInviteString();
                     smsComposeTask.Show();
                 }
             }

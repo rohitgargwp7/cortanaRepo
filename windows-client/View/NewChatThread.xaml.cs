@@ -2569,14 +2569,13 @@ namespace windows_client.View
                 if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
                 {
                     long time = TimeUtils.getCurrentTimeStamp();
-                    string inviteToken = "";
                     if (isGroupChat)
                     {
                         foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
                         {
                             if (!gp.IsOnHike)
                             {
-                                ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                                ConvMessage convMessage = new ConvMessage(Utils.GetRandomInviteString(), gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                                 convMessage.IsInvite = true;
                                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
                             }
@@ -2585,7 +2584,7 @@ namespace windows_client.View
                     else
                     {
                         //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-                        ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                        ConvMessage convMessage = new ConvMessage(Utils.GetRandomInviteString(), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                         convMessage.IsSms = true;
                         convMessage.IsInvite = true;
                         sendMsg(convMessage, false);
@@ -2613,7 +2612,7 @@ namespace windows_client.View
                     SmsComposeTask smsComposeTask = new SmsComposeTask();
 
                     smsComposeTask.To = msisdns;
-                    smsComposeTask.Body = AppResources.sms_invite_message;
+                    smsComposeTask.Body = Utils.GetRandomInviteString();
                     smsComposeTask.Show();
                 }
             }
@@ -3045,6 +3044,19 @@ namespace windows_client.View
                     App.ViewModel.DisplayTip(LayoutRoot, 1);
 
                 emoticonPanel.Visibility = Visibility.Visible;
+
+                if (gridStickers.Visibility == Visibility.Visible)
+                {
+                    if (pivotStickers.SelectedIndex > 0)
+                    {
+                        string category;
+                        if (dictPivotCategory.TryGetValue(pivotStickers.SelectedIndex, out category))
+                        {
+                            CategoryTap(category);
+                        }
+                    }
+
+                }
             }
             else
             {
@@ -4586,6 +4598,10 @@ namespace windows_client.View
             {
                 downloadStickers_Tap(null, null);
             }
+            if(App.appSettings.Contains(HikeConstants.AppSettings.SHOW_DOGGY_OVERLAY))
+            {
+                ShowDownloadOverlay(true);
+            }
         }
 
         private void Category2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -4890,11 +4906,18 @@ namespace windows_client.View
 
         public void ShowDownloadOverlay(bool show)
         {
-
+            sendIconButton.IsEnabled = !show;
+            emoticonsIconButton.IsEnabled = !show;
+            fileTransferIconButton.IsEnabled = !show;
             if (show)
             {
                 switch (_selectedCategory)
                 {
+                    case StickerHelper.CATEGORY_DOGGY:
+                        downloadDialogueImage.Source = UI_Utils.Instance.DoggyOverlay;
+                        btnDownload.Content = AppResources.Installed_Txt;
+                        btnDownload.IsHitTestVisible = false;
+                        break;
                     case StickerHelper.CATEGORY_KITTY:
                         downloadDialogueImage.Source = UI_Utils.Instance.KittyOverlay;
                         break;
@@ -4916,6 +4939,12 @@ namespace windows_client.View
             else
             {
                 overlayRectangle.Tap -= overlayRectangle_Tap_1;
+                if (btnDownload.IsHitTestVisible == false)
+                {
+                    btnDownload.IsHitTestVisible = true;
+                    btnDownload.Content = AppResources.Download_txt;
+                    App.appSettings.Remove(HikeConstants.AppSettings.SHOW_DOGGY_OVERLAY);
+                }
                 overlayRectangle.Visibility = Visibility.Collapsed;
                 gridDownloadStickers.Visibility = Visibility.Collapsed;
                 llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;

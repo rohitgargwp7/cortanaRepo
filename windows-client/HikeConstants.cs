@@ -374,6 +374,7 @@ namespace windows_client
             public static readonly string NEW_UPDATE = "New_Update";
             public static readonly string APP_LAUNCH_COUNT = "App_Launch_Count";
             public static readonly string TIME_DIFF_EPOCH = "serverEpochTime";
+            public static readonly string SHOW_DOGGY_OVERLAY = "doggyOverlay";
         }
     }
 }
