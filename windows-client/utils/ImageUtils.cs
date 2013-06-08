@@ -1274,13 +1274,13 @@ namespace windows_client.utils
             {
                 WriteableBitmap writeableBitmap = new WriteableBitmap(image);
                 WriteableBitmap mergedBItmpapImage = new WriteableBitmap(writeableBitmap.PixelWidth, writeableBitmap.PixelHeight); //size of mergedBItmpapImage canvas
-                double aspectratio = writeableBitmap.PixelHeight / writeableBitmap.PixelWidth;
+                double aspectratio = writeableBitmap.PixelHeight * 1.0 / writeableBitmap.PixelWidth;
                 mergedBItmpapImage.Clear(Color.FromArgb(255, 0x31, 0x33, 0x34));
                 Rect rec = new Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight);
                 mergedBItmpapImage.Blit(rec, writeableBitmap, rec);
                 using (var msLargeImage = new MemoryStream())
                 {
-                    mergedBItmpapImage.SaveJpeg(msLargeImage, Convert.ToInt32(120 * aspectratio), 120, 0, 100);
+                    mergedBItmpapImage.SaveJpeg(msLargeImage, Convert.ToInt32(120 / aspectratio), 120, 0, 100);
                     return msLargeImage.ToArray();
                 }
             }
