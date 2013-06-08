@@ -1995,6 +1995,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Installed.
+        /// </summary>
+        public static string Installed_Txt {
+            get {
+                return ResourceManager.GetString("Installed_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to *Mobile internet charges may apply.
         /// </summary>
         public static string InternetChargesMayApply_txt {

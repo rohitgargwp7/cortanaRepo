@@ -18,7 +18,7 @@ namespace windows_client.View
     {
         ApplicationBarIconButton nextIconButton;
         App.PageState currentPagestate;
-      
+
         public TutorialScreen()
         {
             InitializeComponent();
@@ -32,7 +32,7 @@ namespace windows_client.View
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
-            nextIconButton.Text = AppResources.AppBar_Done_Btn;
+            nextIconButton.Text = AppResources.AppBar_Next_Btn;
             nextIconButton.Click += OnNextClick;
             appBar.Buttons.Add(nextIconButton);
 
@@ -52,7 +52,7 @@ namespace windows_client.View
                     break;
             }
         }
-        
+
         private void InitialiseWelcomeScreen()
         {
             string country_code = null;
@@ -62,8 +62,6 @@ namespace windows_client.View
                 txtBlkInfo1.Text = AppResources.ReadyToHike_Txt;
                 txtBlkInfo2.Visibility = Visibility.Collapsed;
             }
-
-            nextIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
         }
 
         private void InitialiseTutStatusUpdateScreen()
@@ -71,8 +69,7 @@ namespace windows_client.View
             gridWelcome.Visibility = Visibility.Collapsed;
             gridStatusUpdates.Visibility = Visibility.Visible;
             gridStickers.Visibility = Visibility.Collapsed;
-
-            nextIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
+            nextIconButton.Text = AppResources.AppBar_Done_Btn;
         }
 
         private void InitialiseTutStickersScreen()

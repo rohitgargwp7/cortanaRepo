@@ -1792,6 +1792,9 @@ Get hike: http://get.hike.in</value>
   <data name="Please_Retry_Later" xml:space="preserve">
     <value>Please retry later</value>
   </data>
+  <data name="Installed_Txt" xml:space="preserve">
+    <value>Installed</value>
+  </data>
   <data name="sms_invite_message_1" xml:space="preserve">
     <value>Hey, I'm using hike, and it has all these awesome stickers and emoticons which I want to share with you. Get it now http://hike.in/</value>
   </data>

@@ -79,6 +79,7 @@ namespace windows_client.utils
         private BitmapImage userProfileStockImage;
         private BitmapImage loadingImage;
         private BitmapImage lastSeenClockImage;
+        private BitmapImage doggyOverlay;
         private BitmapImage kittyOverlay;
         private BitmapImage bollywoodOverlay;
         private BitmapImage trollOverlay;
@@ -1097,6 +1098,17 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage DoggyOverlay
+        {
+            get
+            {
+                if (doggyOverlay == null)
+                {
+                    doggyOverlay = new BitmapImage(new Uri("/View/images/doggy_overlay.png", UriKind.Relative));
+                }
+                return doggyOverlay;
+            }
+        }
         public BitmapImage KittyOverlay
         {
             get

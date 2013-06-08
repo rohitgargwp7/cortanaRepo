@@ -673,6 +673,7 @@ namespace windows_client
             //todo:make it 2.5.0.0
             if (isNewInstall || Utils.compareVersion("2.1.0.5", _currentVersion) == 1)
             {
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.SHOW_DOGGY_OVERLAY, true);
                 StickerHelper.CreateDefaultCategories();
             }
             #endregion

@@ -3044,6 +3044,19 @@ namespace windows_client.View
                     App.ViewModel.DisplayTip(LayoutRoot, 1);
 
                 emoticonPanel.Visibility = Visibility.Visible;
+
+                if (gridStickers.Visibility == Visibility.Visible)
+                {
+                    if (pivotStickers.SelectedIndex > 0)
+                    {
+                        string category;
+                        if (dictPivotCategory.TryGetValue(pivotStickers.SelectedIndex, out category))
+                        {
+                            CategoryTap(category);
+                        }
+                    }
+
+                }
             }
             else
             {
@@ -4585,6 +4598,10 @@ namespace windows_client.View
             {
                 downloadStickers_Tap(null, null);
             }
+            if(App.appSettings.Contains(HikeConstants.AppSettings.SHOW_DOGGY_OVERLAY))
+            {
+                ShowDownloadOverlay(true);
+            }
         }
 
         private void Category2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -4889,11 +4906,18 @@ namespace windows_client.View
 
         public void ShowDownloadOverlay(bool show)
         {
-
+            sendIconButton.IsEnabled = !show;
+            emoticonsIconButton.IsEnabled = !show;
+            fileTransferIconButton.IsEnabled = !show;
             if (show)
             {
                 switch (_selectedCategory)
                 {
+                    case StickerHelper.CATEGORY_DOGGY:
+                        downloadDialogueImage.Source = UI_Utils.Instance.DoggyOverlay;
+                        btnDownload.Content = AppResources.Installed_Txt;
+                        btnDownload.IsHitTestVisible = false;
+                        break;
                     case StickerHelper.CATEGORY_KITTY:
                         downloadDialogueImage.Source = UI_Utils.Instance.KittyOverlay;
                         break;
@@ -4915,6 +4939,12 @@ namespace windows_client.View
             else
             {
                 overlayRectangle.Tap -= overlayRectangle_Tap_1;
+                if (btnDownload.IsHitTestVisible == false)
+                {
+                    btnDownload.IsHitTestVisible = true;
+                    btnDownload.Content = AppResources.Download_txt;
+                    App.appSettings.Remove(HikeConstants.AppSettings.SHOW_DOGGY_OVERLAY);
+                }
                 overlayRectangle.Visibility = Visibility.Collapsed;
                 gridDownloadStickers.Visibility = Visibility.Collapsed;
                 llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
