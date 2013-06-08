@@ -69,12 +69,14 @@ namespace windows_client.utils
                             if (_dictStickersCategories.ContainsKey(category1Stickers.Category))
                             {
                                 StickerCategory stickerCategory = _dictStickersCategories[category1Stickers.Category];
-                                foreach (Sticker sticker in stickerCategory.ListStickers)
+                                foreach (Sticker sticker in category1Stickers.ListStickers)
                                 {
-                                    category1Stickers.ListStickers.Add(sticker);
+                                    stickerCategory.ListStickers.Add(sticker);
                                 }
+                                _dictStickersCategories[category1Stickers.Category] = stickerCategory;
                             }
-                            _dictStickersCategories[category1Stickers.Category] = category1Stickers;
+                            else
+                                _dictStickersCategories[category1Stickers.Category] = category1Stickers;
 
                         });
                     List<StickerCategory> listStickerCategories = StickerCategory.ReadAllStickerCategories();

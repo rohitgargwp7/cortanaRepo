@@ -3054,7 +3054,7 @@ namespace windows_client.View
                         string category;
                         if (dictPivotCategory.TryGetValue(pivotStickers.SelectedIndex, out category))
                         {
-                            CategoryTap(category);
+                            //CategoryTap(category);
                         }
                     }
 
@@ -4600,7 +4600,12 @@ namespace windows_client.View
             {
                 downloadStickers_Tap(null, null);
             }
-            if(App.appSettings.Contains(HikeConstants.AppSettings.SHOW_DOGGY_OVERLAY))
+            if (stickerCategory.HasNewMessages)
+            {
+                stCategory1.BorderThickness = zeroThickness;
+                StickerCategory.UpdateHasMoreMessages(_selectedCategory, stickerCategory.HasNewMessages, false);
+            }
+            if (App.appSettings.Contains(HikeConstants.AppSettings.SHOW_DOGGY_OVERLAY))
             {
                 ShowDownloadOverlay(true);
             }
@@ -4617,6 +4622,12 @@ namespace windows_client.View
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
+            if (stickerCategory.HasNewMessages)
+            {
+                stCategory2.BorderThickness = zeroThickness;
+                StickerCategory.UpdateHasMoreMessages(_selectedCategory, stickerCategory.HasNewMessages, false);
+            }
             CategoryTap(StickerHelper.CATEGORY_KITTY);
         }
 
@@ -4630,6 +4641,12 @@ namespace windows_client.View
             stCategory3.Background = UI_Utils.Instance.TappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
+            if (stickerCategory.HasNewMessages)
+            {
+                stCategory3.BorderThickness = zeroThickness;
+                StickerCategory.UpdateHasMoreMessages(_selectedCategory, stickerCategory.HasNewMessages, false);
+            }
             CategoryTap(StickerHelper.CATEGORY_EXPRESSIONS);
         }
 
@@ -4643,6 +4660,12 @@ namespace windows_client.View
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.TappedCategoryColor;
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
+            if (stickerCategory.HasNewMessages)
+            {
+                stCategory4.BorderThickness = zeroThickness;
+                StickerCategory.UpdateHasMoreMessages(_selectedCategory, stickerCategory.HasNewMessages, false);
+            }
             CategoryTap(StickerHelper.CATEGORY_BOLLYWOOD);
 
         }
@@ -4657,6 +4680,12 @@ namespace windows_client.View
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.TappedCategoryColor;
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
+            if (stickerCategory.HasNewMessages)
+            {
+                stCategory5.BorderThickness = zeroThickness;
+                StickerCategory.UpdateHasMoreMessages(_selectedCategory, stickerCategory.HasNewMessages, false);
+            }
             CategoryTap(StickerHelper.CATEGORY_TROLL);
         }
 
@@ -4666,6 +4695,7 @@ namespace windows_client.View
             pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
 
             StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
+            
             if (stickerCategory.ShowDownloadMessage)
             {
                 ShowDownloadOverlay(true);
@@ -4846,6 +4876,7 @@ namespace windows_client.View
 
         private Dictionary<string, StickerPivot> dictStickersPivot = new Dictionary<string, StickerPivot>();
         private Dictionary<int, string> dictPivotCategory = new Dictionary<int, string>();
+
         private void AddPivotItemsToStickerPivot()
         {
             StickerCategory stickerCategory;
@@ -4855,22 +4886,28 @@ namespace windows_client.View
             {
                 CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
                 dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_DOGGY;
+                if (stickerCategory.HasNewMessages)
+                    stCategory1.BorderThickness = newCategoryThickness;
                 pivotIndex++;
             }
-            
+
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
             {
                 CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
                 stCategory2.Visibility = Visibility.Visible;
                 dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_KITTY;
+                if (stickerCategory.HasNewMessages)
+                    stCategory2.BorderThickness = newCategoryThickness;
                 pivotIndex++;
             }
-            
+
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
             {
                 CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
                 stCategory3.Visibility = Visibility.Visible;
                 dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_EXPRESSIONS;
+                if (stickerCategory.HasNewMessages)
+                    stCategory3.BorderThickness = newCategoryThickness;
                 pivotIndex++;
             }
 
@@ -4880,6 +4917,8 @@ namespace windows_client.View
                 CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
                 stCategory4.Visibility = Visibility.Visible;
                 dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_BOLLYWOOD;
+                if (stickerCategory.HasNewMessages)
+                    stCategory4.BorderThickness = newCategoryThickness;
                 pivotIndex++;
                 ColumnDefinition colDef = new ColumnDefinition();
                 gridStickerPivot.ColumnDefinitions.Add(colDef);
@@ -4887,16 +4926,20 @@ namespace windows_client.View
             }
             else
                 stCategory5.SetValue(Grid.ColumnProperty, 4);
-            
+
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
             {
                 CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
                 stCategory5.Visibility = Visibility.Visible;
+                if (stickerCategory.HasNewMessages)
+                    stCategory5.BorderThickness = newCategoryThickness;
                 dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_TROLL;
             }
         }
 
         Thickness zeroThickness = new Thickness(0, 0, 0, 0);
+        Thickness newCategoryThickness = new Thickness(0, 1, 0, 0);
+
         private void CreateStickerPivotItem(string category, ObservableCollection<Sticker> listSticker, int pivotIndex)
         {
             PivotItem pvt = new PivotItem();
