@@ -148,15 +148,25 @@ namespace windows_client.utils
 
         public void ClearProTips()
         {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            lock (readWriteLock)
             {
-                var fileNames = store.GetFileNames(PROTIPS_DIRECTORY + "\\*");
-                foreach (var name in fileNames)
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    string fName = PROTIPS_DIRECTORY + "\\" + name;
+                    try
+                    {
+                        var fileNames = store.GetFileNames(PROTIPS_DIRECTORY + "\\*");
+                        foreach (var name in fileNames)
+                        {
+                            string fName = PROTIPS_DIRECTORY + "\\" + name;
 
-                    if (store.FileExists(fName))
-                        store.DeleteFile(fName);
+                            if (store.FileExists(fName))
+                                store.DeleteFile(fName);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("ProTip Helper :: Delete ProTip ids, Exception : " + ex.StackTrace);
+                    }
                 }
             }
 
@@ -191,17 +201,27 @@ namespace windows_client.utils
 
             if (!String.IsNullOrEmpty(CurrentProTip.ImageUrl))
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                lock (readWriteLock)
                 {
-                    string fileName = PROTIPS_DIRECTORY + "\\" + CurrentProTip._id;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        try
+                        {
+                            string fileName = PROTIPS_DIRECTORY + "\\" + CurrentProTip._id;
 
-                    if (store.FileExists(fileName))
-                        store.DeleteFile(fileName);
+                            if (store.FileExists(fileName))
+                                store.DeleteFile(fileName);
 
-                    fileName = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
+                            fileName = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
 
-                    if (store.FileExists(fileName))
-                        store.DeleteFile(fileName);
+                            if (store.FileExists(fileName))
+                                store.DeleteFile(fileName);
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine("ProTip Helper :: delete current ProTip File, Exception : " + ex.StackTrace);
+                        }
+                    }
                 }
             }
 
@@ -219,17 +239,27 @@ namespace windows_client.utils
                 _deletedTips.Add(tip._id);
             }
 
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            lock (readWriteLock)
             {
-                string fileName = PROTIPS_DIRECTORY + "\\" + tip._id;
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    try
+                    {
+                        string fileName = PROTIPS_DIRECTORY + "\\" + tip._id;
 
-                if (store.FileExists(fileName))
-                    store.DeleteFile(fileName);
+                        if (store.FileExists(fileName))
+                            store.DeleteFile(fileName);
 
-                fileName = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(tip.ImageUrl);
+                        fileName = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(tip.ImageUrl);
 
-                if (store.FileExists(fileName))
-                    store.DeleteFile(fileName);
+                        if (store.FileExists(fileName))
+                            store.DeleteFile(fileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("ProTip Helper :: delete ProTip id, Exception : " + ex.StackTrace);
+                    }
+                }
             }
         }
 
