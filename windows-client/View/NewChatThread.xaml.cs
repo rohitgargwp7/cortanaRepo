@@ -1452,7 +1452,6 @@ namespace windows_client.View
         {
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
             {
-
                 if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
                 {
                     object[] attachmentData = (object[])PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
@@ -1499,12 +1498,16 @@ namespace windows_client.View
                 }
                 else if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is ConvMessage)
                 {
-                    ConvMessage conv = (ConvMessage)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
-                    conv.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
-                    conv.IsSms = !isOnHike;
-                    AddNewMessageToUI(conv, false);
+                    ConvMessage forwardedMessage = (ConvMessage)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                    ConvMessage convMessage = new ConvMessage(forwardedMessage.Message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                    convMessage.IsSms = !isOnHike;
+                    convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
+                    convMessage.StickerObj = new Sticker(forwardedMessage.StickerObj.Category, forwardedMessage.StickerObj.Id, null);
+                    convMessage.MetaDataString = forwardedMessage.MetaDataString;
 
-                    mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
+                    AddNewMessageToUI(convMessage, false);
+
+                    mPubSub.publish(HikePubSub.MESSAGE_SENT, convMessage);
                     PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
                 }
             }
@@ -3553,7 +3556,7 @@ namespace windows_client.View
                 else // this is to show toast notification
                 {
                     ConversationListObject val;
-                    if (App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out val) && val.IsMute) // of msg is for muted conv, ignore msg
+                    if (App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out val) && val.IsMute) // of msg is for muted forwardedMessage, ignore msg
                         return;
                     ConversationListObject cObj = vals[1] as ConversationListObject;
                     if (cObj == null) // this will happen in status update msg
@@ -4695,7 +4698,7 @@ namespace windows_client.View
             pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
 
             StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
-            
+
             if (stickerCategory.ShowDownloadMessage)
             {
                 ShowDownloadOverlay(true);
