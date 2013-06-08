@@ -2638,9 +2638,7 @@ namespace windows_client.View
 
                     App.MqttManagerInstance.mqttPublishToServer(obj); 
                     
-                    
                     SmsComposeTask smsComposeTask = new SmsComposeTask();
-
                     smsComposeTask.To = msisdns;
                     smsComposeTask.Body = Utils.GetRandomInviteString();
                     smsComposeTask.Show();
