@@ -1730,7 +1730,7 @@ Get hike: http://get.hike.in</value>
     <value>at</value>
     <comment>General Text</comment>
   </data>
-  <data name="TimeUtils_Sometime_Ago" xml:space="preserve">
+  <data name="TimeUtils_A_While_Ago" xml:space="preserve">
     <value>a while ago</value>
   </data>
   <data name="Today_Txt" xml:space="preserve">

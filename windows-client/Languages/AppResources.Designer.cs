@@ -3786,6 +3786,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to a while ago.
+        /// </summary>
+        public static string TimeUtils_A_While_Ago {
+            get {
+                return ResourceManager.GetString("TimeUtils_A_While_Ago", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to an hour ago.
         /// </summary>
         public static string TimeUtils_An_hour_Ago_Txt {
@@ -3827,15 +3836,6 @@ namespace windows_client.Languages {
         public static string TimeUtils_One_Year_Ago_Txt {
             get {
                 return ResourceManager.GetString("TimeUtils_One_Year_Ago_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to a while ago.
-        /// </summary>
-        public static string TimeUtils_Sometime_Ago {
-            get {
-                return ResourceManager.GetString("TimeUtils_Sometime_Ago", resourceCulture);
             }
         }
         
