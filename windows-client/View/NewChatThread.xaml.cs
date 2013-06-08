@@ -1508,6 +1508,7 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
                 }
             }
+
             else if (PhoneApplicationService.Current.State.ContainsKey("SharePicker"))
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -2266,6 +2267,7 @@ namespace windows_client.View
                                 GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                         }
                     }
+                    chatBubble.IsSms = !isOnHike;
                     this.ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
