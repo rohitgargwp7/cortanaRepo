@@ -2004,7 +2004,16 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Message sent successfully.
+        ///   Looks up a localized string similar to Unable to send invite..
+        /// </summary>
+        public static string Invite_Not_Sent {
+            get {
+                return ResourceManager.GetString("Invite_Not_Sent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invite sent successfully.
         /// </summary>
         public static string Invite_Sent_Successfully {
             get {
@@ -2666,6 +2675,15 @@ namespace windows_client.Languages {
         public static string Play_Txt {
             get {
                 return ResourceManager.GetString("Play_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please retry later.
+        /// </summary>
+        public static string Please_Retry_Later {
+            get {
+                return ResourceManager.GetString("Please_Retry_Later", resourceCulture);
             }
         }
         
@@ -3777,6 +3795,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to a while ago.
+        /// </summary>
+        public static string TimeUtils_A_While_Ago {
+            get {
+                return ResourceManager.GetString("TimeUtils_A_While_Ago", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to an hour ago.
         /// </summary>
         public static string TimeUtils_An_hour_Ago_Txt {
@@ -3818,15 +3845,6 @@ namespace windows_client.Languages {
         public static string TimeUtils_One_Year_Ago_Txt {
             get {
                 return ResourceManager.GetString("TimeUtils_One_Year_Ago_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to a while ago.
-        /// </summary>
-        public static string TimeUtils_Sometime_Ago {
-            get {
-                return ResourceManager.GetString("TimeUtils_Sometime_Ago", resourceCulture);
             }
         }
         
