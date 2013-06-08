@@ -1455,61 +1455,63 @@ namespace windows_client.View
                 if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
                 {
                     object[] attachmentData = (object[])PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
-                    ConvMessage forwardedMsg = (ConvMessage)attachmentData[0];
-                    string sourceMsisdn = (string)attachmentData[1];
-
-                    string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + forwardedMsg.MessageId;
-
-                    ConvMessage convMessage = new ConvMessage("", mContactNumber,
-                        TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                    convMessage.IsSms = !isOnHike;
-                    convMessage.HasAttachment = true;
-                    convMessage.FileAttachment = forwardedMsg.FileAttachment;
-                    convMessage.IsSms = !isOnHike;
-                    convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
-
-                    if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                        convMessage.Message = AppResources.Image_Txt;
-                    else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                    if (attachmentData.Length == 1)
                     {
-                        convMessage.Message = AppResources.Audio_Txt;
-                        convMessage.MetaDataString = forwardedMsg.MetaDataString;
-                    }
-                    else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
-                        convMessage.Message = AppResources.Video_Txt;
-                    else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                    {
-                        convMessage.Message = AppResources.Location_Txt;
-                        convMessage.MetaDataString = forwardedMsg.MetaDataString;
-                    }
-                    else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                    {
-                        convMessage.Message = AppResources.ContactTransfer_Text;
-                        convMessage.MetaDataString = forwardedMsg.MetaDataString;
-                    }
+                        ConvMessage convMessage = new ConvMessage(AppResources.Sticker_Txt, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                        convMessage.IsSms = !isOnHike;
+                        convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
+                        convMessage.MetaDataString = attachmentData[0] as string;
 
-                    convMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
-                    AddMessageToOcMessages(convMessage, false);
-                    object[] vals = new object[3];
-                    vals[0] = convMessage;
-                    vals[1] = sourceFilePath;
-                    mPubSub.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                        AddNewMessageToUI(convMessage, false);
+
+                        mPubSub.publish(HikePubSub.MESSAGE_SENT, convMessage);
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                    }
+                    else
+                    {
+                        ConvMessage forwardedMsg = (ConvMessage)attachmentData[0];
+                        string sourceMsisdn = (string)attachmentData[1];
+
+                        string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + forwardedMsg.MessageId;
+
+                        ConvMessage convMessage = new ConvMessage("", mContactNumber,
+                            TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                        convMessage.IsSms = !isOnHike;
+                        convMessage.HasAttachment = true;
+                        convMessage.FileAttachment = forwardedMsg.FileAttachment;
+                        convMessage.IsSms = !isOnHike;
+                        convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+
+                        if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                            convMessage.Message = AppResources.Image_Txt;
+                        else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                        {
+                            convMessage.Message = AppResources.Audio_Txt;
+                            convMessage.MetaDataString = forwardedMsg.MetaDataString;
+                        }
+                        else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                            convMessage.Message = AppResources.Video_Txt;
+                        else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                        {
+                            convMessage.Message = AppResources.Location_Txt;
+                            convMessage.MetaDataString = forwardedMsg.MetaDataString;
+                        }
+                        else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                        {
+                            convMessage.Message = AppResources.ContactTransfer_Text;
+                            convMessage.MetaDataString = forwardedMsg.MetaDataString;
+                        }
+
+                        convMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
+                        AddMessageToOcMessages(convMessage, false);
+                        object[] vals = new object[3];
+                        vals[0] = convMessage;
+                        vals[1] = sourceFilePath;
+                        mPubSub.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                    }
                 }
-                else if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is ConvMessage)
-                {
-                    ConvMessage forwardedMessage = (ConvMessage)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
-                    ConvMessage convMessage = new ConvMessage(forwardedMessage.Message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                    convMessage.IsSms = !isOnHike;
-                    convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
-                    convMessage.StickerObj = new Sticker(forwardedMessage.StickerObj.Category, forwardedMessage.StickerObj.Id, null);
-                    convMessage.MetaDataString = forwardedMessage.MetaDataString;
-
-                    AddNewMessageToUI(convMessage, false);
-
-                    mPubSub.publish(HikePubSub.MESSAGE_SENT, convMessage);
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
-                }
+               
             }
 
             else if (PhoneApplicationService.Current.State.ContainsKey("SharePicker"))
@@ -2896,7 +2898,9 @@ namespace windows_client.View
             ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
             if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.STICKER_ID))
             {
-                PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = convMessage;
+                Object[] obj = new Object[1];
+                obj[0] = convMessage.MetaDataString;
+                PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = obj;//done this way to distinguish it from message
             }
             else if (convMessage.FileAttachment == null)
             {
