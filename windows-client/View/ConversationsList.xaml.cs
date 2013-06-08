@@ -1350,17 +1350,17 @@ namespace windows_client.View
 
                 if (time > 0)
                 {
-                    if (App.appSettings.Contains(App.DISMISS_TIME))
-                        App.appSettings[App.DISMISS_TIME] = time;
+                    if (App.appSettings.Contains(App.PRO_TIP_DISMISS_TIME))
+                        App.appSettings[App.PRO_TIP_DISMISS_TIME] = time;
                     else
-                        App.WriteToIsoStorageSettings(App.DISMISS_TIME, time);
+                        App.WriteToIsoStorageSettings(App.PRO_TIP_DISMISS_TIME, time);
 
                     ProTipHelper.Instance.ChangeTimerTime(time);
                 }
                 else
                 {
-                    if (!App.appSettings.Contains(App.DISMISS_TIME))
-                        App.WriteToIsoStorageSettings(App.DISMISS_TIME, HikeConstants.DEFAULT_PRO_TIP_TIME);
+                    if (!App.appSettings.Contains(App.PRO_TIP_DISMISS_TIME))
+                        App.WriteToIsoStorageSettings(App.PRO_TIP_DISMISS_TIME, HikeConstants.DEFAULT_PRO_TIP_TIME);
                 }
 
                 ProTipHelper.Instance.AddProTip(id, header, text, imageUrl);

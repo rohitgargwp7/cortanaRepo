@@ -205,13 +205,13 @@ namespace windows_client.View
         {
             string status = "";
 
-            if (isTwitterPost && obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+            if (isFacebookPost && obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
             {
                 status = (string)obj[HikeConstants.FACEBOOK];
                 isFacebookPost = false;
             }
 
-            if (isFacebookPost && obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+            if (isTwitterPost && obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
             {
                 status = (string)obj[HikeConstants.TWITTER];
                 isTwitterPost = false;

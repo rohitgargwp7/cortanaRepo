@@ -1701,19 +1701,19 @@ Get hike: http://get.hike.in</value>
     <comment>Message is too short to be sent</comment>
   </data>
   <data name="In_App_Tip_1" xml:space="preserve">
-    <value>Tap this to express with stickers and smileys</value>
+    <value>Tap here to share stickers and emoticons :)</value>
   </data>
   <data name="In_App_Tip_2" xml:space="preserve">
-    <value>Tap here to check out our new stickers!</value>
+    <value>New stickers!</value>
   </data>
   <data name="In_App_Tip_3" xml:space="preserve">
-    <value>Tap here to use Walkie Talkie and send voice messages</value>
+    <value>Tap here to use hike's new Walkie Talkie!</value>
   </data>
   <data name="In_App_Tip_4" xml:space="preserve">
-    <value>Tap this to express your mood with status updates</value>
+    <value>Tap here to attach a wonderful mood :)</value>
   </data>
   <data name="In_App_Tip_5" xml:space="preserve">
-    <value>This status update was just posted by {0}</value>
+    <value>This is a status update posted by {0}</value>
   </data>
   <data name="No_Stickers_Downloaded_Txt" xml:space="preserve">
     <value>No stickers downloaded in this category</value>
@@ -1766,6 +1766,9 @@ Get hike: http://get.hike.in</value>
   </data>
   <data name="ConfimFriendUserProfile_Txt" xml:space="preserve">
     <value>You will now be able to see updates from each other</value>
+  </data>
+  <data name="In_App_Tip_6" xml:space="preserve">
+    <value>Only your Circle of Friends can see when you were last seen</value>
   </data>
   <data name="DownloadingSticker_txt" xml:space="preserve">
     <value>loading sticker</value>
