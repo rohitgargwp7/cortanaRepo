@@ -72,7 +72,7 @@
                     <phone:LongListSelector Grid.Row="0" Grid.Column="0" x:Name="llsConversations" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Tap" Margin="15,0,5,5" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
-                                    
+
                                 <Grid Width="460" Margin="0,0,0,10">
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -96,14 +96,15 @@
 
                                     <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
                                         <Image x:Name="sdrImage" Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="15" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,-15,0"/>
+                                        <Ellipse x:Name="unreadCircle" Fill="{StaticResource PhoneAccentBrush}"  Visibility="{Binding UnreadCircleVisibility}" Height="15" Width="15" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,-15,0"/>
                                         <local:MyRichTextBox Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" Margin="10,0,0,0" FontSize="21" HorizontalAlignment="Left" Height="30" TextWrapping="Wrap" MaxWidth="325" VerticalAlignment="Bottom"/>
                                     </StackPanel>
-                                 
+
                                 </Grid>
-                               
+
 
                             </DataTemplate>
-                            </phone:LongListSelector.ItemTemplate>
+                        </phone:LongListSelector.ItemTemplate>
                     </phone:LongListSelector>
                 </Grid>
             </controls:PivotItem>

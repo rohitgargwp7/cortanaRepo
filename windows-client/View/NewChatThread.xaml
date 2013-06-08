@@ -773,24 +773,24 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" Height="50" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="StickersBack_Tap">
-                                <Image Source="images\back_button.png" Height="30" Stretch="Uniform" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                        <Border Grid.Column="1" Height="50" Name="stCategory1" Background="#1ba1e2" Margin="2,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category1_Tap" >
-                                <Image Source="images\doggy_icon.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                        <Border Grid.Column="2" Height="50" Name="stCategory2" Background="#4d4d4d" Margin="2,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category2_Tap"  Visibility="Collapsed" >
-                                <Image Source="images\kitty_icon.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                        <Border Grid.Column="3" Height="50" Name="stCategory3" Background="#4d4d4d" Margin="2,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="Category3_Tap"  Visibility="Collapsed" >
-                                <Image Source="images\expressions.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                        <Border  Grid.Column="4" Height="50" Name="stCategory4" Background="#4d4d4d"  Margin="2,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="Category4_Tap"  Visibility="Collapsed" >
-                                <Image Source="images\active_bolly.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                        <Border Height="50" Name="stCategory5" Background="#4d4d4d" Margin="2,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category5_Tap"  Visibility="Collapsed" >
-                                <Image Source="images\rf_i_icon.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
+                        <Border Grid.Column="0" Height="50" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="StickersBack_Tap">
+                            <Image Source="images\back_button.png" Height="30" Stretch="Uniform" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="Red"  Grid.Column="1" Height="50" Name="stCategory1" Background="#1ba1e2" Margin="2,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category1_Tap" >
+                            <Image Source="images\doggy_icon.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="Red"  Grid.Column="2" Height="50" Name="stCategory2" Background="#4d4d4d" Margin="2,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category2_Tap"  Visibility="Collapsed" >
+                            <Image Source="images\kitty_icon.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="Red"  Grid.Column="3" Height="50" Name="stCategory3" Background="#4d4d4d" Margin="2,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="Category3_Tap"  Visibility="Collapsed" >
+                            <Image Source="images\expressions.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="Red"  Grid.Column="4" Height="50" Name="stCategory4" Background="#4d4d4d"  Margin="2,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="Category4_Tap"  Visibility="Collapsed" >
+                            <Image Source="images\active_bolly.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="Red"  Height="50" Name="stCategory5" Background="#4d4d4d" Margin="2,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category5_Tap"  Visibility="Collapsed" >
+                            <Image Source="images\rf_i_icon.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
                     </Grid>
                 </Grid>
             </StackPanel>
@@ -815,7 +815,7 @@
                         <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Camera_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock >
                     </StackPanel>
                 </Grid>
-                
+
                 <Rectangle Width="1" Fill="#080808" Grid.Column="1"  Grid.Row="0"/>
                 <Grid Grid.Column="2" Grid.Row="0" Tap="sendImage_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -823,7 +823,7 @@
                         <TextBlock  Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Photo_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock >
                     </StackPanel>
                 </Grid>
-                
+
                 <Rectangle Width="1" Fill="#080808" Grid.Column="3" Grid.Row="0"/>
                 <Grid Grid.Column="4" Grid.Row="0" Tap="sendVideo_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Margin="0,5,0,0" Orientation="Vertical"  VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -831,7 +831,7 @@
                         <TextBlock Margin="0,25,0,0" Text="{Binding Path= LocalizedResources.Attachment_Video_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
                     </StackPanel>
                 </Grid>
-                
+
                 <Rectangle  Height="1" Fill="#080808" Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="1"/>
                 <Rectangle  Height="1" Fill="#080808" Grid.ColumnSpan="2" Grid.Column="2" Grid.Row="1"/>
                 <Rectangle  Height="1" Fill="#080808" Grid.ColumnSpan="2" Grid.Column="4" Grid.Row="1"/>
@@ -850,7 +850,7 @@
                         <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Location_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" ></TextBlock >
                     </StackPanel>
                 </Grid>
-                
+
                 <Rectangle Width="1"  Fill="#080808" Grid.Column="3" Grid.Row="2"/>
                 <Grid Grid.Column="4" Grid.Row="2" Tap="sendContact_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Margin="0,5,0,0" Name="spContactTransfer" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">

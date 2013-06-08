@@ -563,14 +563,16 @@ namespace windows_client.Model
                 NotifyPropertyChanged("IsHttpFailed");
             }
         }
-        Visibility _playIconVisibility = Visibility.Visible;
         public Visibility PlayIconVisibility
         {
             get
             {
-                if (_fileAttachment != null && ((_fileAttachment.FileState == Attachment.AttachmentState.CANCELED || _fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
-                    || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO) || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
+                if (_fileAttachment != null && (_fileAttachment.FileState != Attachment.AttachmentState.COMPLETED || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO) || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
+                {
+                    if (IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                        return Visibility.Collapsed;
                     return Visibility.Visible;
+                }
                 else
                     return Visibility.Collapsed;
             }
@@ -580,12 +582,16 @@ namespace windows_client.Model
         {
             get
             {
-                if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                    return UI_Utils.Instance.DownloadIcon;
-                else if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.AUDIO) && IsPlaying)
-                    return UI_Utils.Instance.PauseIcon;
-                else
-                    return UI_Utils.Instance.PlayIcon;
+                if (_fileAttachment != null)
+                {
+                    if ((_fileAttachment.FileState != Attachment.AttachmentState.COMPLETED))
+                        return UI_Utils.Instance.DownloadIcon;
+                    else if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.AUDIO) && IsPlaying)
+                        return UI_Utils.Instance.PauseIcon;
+                    else
+                        return UI_Utils.Instance.PlayIcon;
+                }
+                return null;
             }
         }
 
@@ -677,7 +683,10 @@ namespace windows_client.Model
             {
                 _progressBarValue = value;
                 if (_progressBarValue >= 100)
+                {
                     NotifyPropertyChanging("PlayIconVisibility");
+                    NotifyPropertyChanging("PlayIconImage");
+                }
                 NotifyPropertyChanged("ProgressBarVisibility");
                 NotifyPropertyChanged("ProgressBarValue");
             }
@@ -918,7 +927,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (participantInfoState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                if (participantInfoState == ConvMessage.ParticipantInfoState.STATUS_UPDATE || (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID)))
                 {
                     return UI_Utils.Instance.ReceivedChatBubbleTimestamp;
                 }
@@ -1522,6 +1531,8 @@ namespace windows_client.Model
             NotifyPropertyChanged("ShowForwardMenu");
             NotifyPropertyChanged("ShowDeleteMenu");
             NotifyPropertyChanged("SdrImage");
+            NotifyPropertyChanged("PlayIconVisibility");
+            NotifyPropertyChanged("PlayIconImage");
         }
 
         public ConvMessage(ParticipantInfoState participantInfoState, JObject jsonObj)

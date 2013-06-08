@@ -244,6 +244,16 @@ namespace windows_client.Model
                 }
             }
         }
+        public Visibility UnreadCircleVisibility
+        {
+            get
+            {
+                if (_messageStatus == ConvMessage.State.RECEIVED_UNREAD)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
         public bool IsLastMsgStatusUpdate
         {
             get
