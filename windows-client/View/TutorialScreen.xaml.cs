@@ -69,7 +69,6 @@ namespace windows_client.View
             gridWelcome.Visibility = Visibility.Collapsed;
             gridStatusUpdates.Visibility = Visibility.Visible;
             gridStickers.Visibility = Visibility.Collapsed;
-            nextIconButton.Text = AppResources.AppBar_Done_Btn;
         }
 
         private void InitialiseTutStickersScreen()
@@ -77,8 +76,8 @@ namespace windows_client.View
             gridWelcome.Visibility = Visibility.Collapsed;
             gridStatusUpdates.Visibility = Visibility.Collapsed;
             gridStickers.Visibility = Visibility.Visible;
-
             nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
+            nextIconButton.Text = AppResources.AppBar_Done_Btn;
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
