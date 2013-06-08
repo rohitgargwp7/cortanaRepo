@@ -167,7 +167,7 @@ namespace windows_client.utils
                     return Languages.AppResources.Last_Seen + " " + receivedTime.ToString("h\\:mm tt, d/M/yyyy", CultureInfo.CurrentUICulture).Replace(" AM","a").Replace(" PM","p");
             }
             else
-                return Languages.AppResources.Last_Seen + " " + AppResources.TimeUtils_Sometime_Ago;
+                return Languages.AppResources.Last_Seen + " " + AppResources.TimeUtils_A_While_Ago;
         }
 
         public static string getRelativeTime(long timestamp)
