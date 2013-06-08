@@ -1738,7 +1738,7 @@ Get hike: http://get.hike.in</value>
     <comment>General Text</comment>
   </data>
   <data name="Invite_Sent_Successfully" xml:space="preserve">
-    <value>Invitee sent successfully</value>
+    <value>Invite sent successfully</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
     <value>{0} is back on hike. Say hi :)</value>
