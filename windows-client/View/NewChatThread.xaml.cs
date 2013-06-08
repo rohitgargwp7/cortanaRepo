@@ -2569,14 +2569,13 @@ namespace windows_client.View
                 if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
                 {
                     long time = TimeUtils.getCurrentTimeStamp();
-                    string inviteToken = "";
                     if (isGroupChat)
                     {
                         foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
                         {
                             if (!gp.IsOnHike)
                             {
-                                ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                                ConvMessage convMessage = new ConvMessage(Utils.GetRandomInviteString(), gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                                 convMessage.IsInvite = true;
                                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
                             }
@@ -2585,7 +2584,7 @@ namespace windows_client.View
                     else
                     {
                         //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-                        ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                        ConvMessage convMessage = new ConvMessage(Utils.GetRandomInviteString(), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                         convMessage.IsSms = true;
                         convMessage.IsInvite = true;
                         sendMsg(convMessage, false);
@@ -2613,7 +2612,7 @@ namespace windows_client.View
                     SmsComposeTask smsComposeTask = new SmsComposeTask();
 
                     smsComposeTask.To = msisdns;
-                    smsComposeTask.Body = AppResources.sms_invite_message;
+                    smsComposeTask.Body = Utils.GetRandomInviteString();
                     smsComposeTask.Show();
                 }
             }
