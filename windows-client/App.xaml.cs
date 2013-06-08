@@ -57,7 +57,7 @@ namespace windows_client
         public static readonly string TIP_SHOW_KEY = "tipShowKey";
         public static readonly string PRO_TIP = "proTip";
         public static readonly string PRO_TIP_COUNT = "proTipCount";
-        public static readonly string DISMISS_TIME = "dismissTime";
+        public static readonly string PRO_TIP_DISMISS_TIME = "proTipDismissTime";
 
         public static readonly string INVITED = "invited";
         public static readonly string INVITED_JOINED = "invitedJoined";
@@ -487,7 +487,7 @@ namespace windows_client
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
             // if not new install && current version is less than equal to version 1.8.0.0  and upgrade is done for wp8 device
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "1.8.0.0") != 1 && Utils.IsWP8)
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.5.0.0") != 1 && Utils.IsWP8)
             {
                 instantiateClasses(true);
                 RootFrame.Dispatcher.BeginInvoke(delegate
@@ -657,14 +657,14 @@ namespace windows_client
 
             if (isNewInstall) //upgrade logic for inapp tips, will change with every build
             {
-                App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, 0);
-                App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, (byte)0); // to keep a track of shown keys
+                App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
+                App.appSettings[App.TIP_MARKED_KEY] = (byte)0; // to keep a track of shown keys
                 App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0); // to keep a track of current showing keys
             }
             else if (_latestVersion != _currentVersion)
             {
-                App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, 0);
-                App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, (byte)0x18);
+                App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
+                App.appSettings[App.TIP_MARKED_KEY] = (byte)0x18;
                 App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0x18);
             }
 
@@ -800,9 +800,6 @@ namespace windows_client
                         WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
                         if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                             MqttDBUtils.MqttDbUpdateToLatestVersion();
-
-                        if (Utils.compareVersion(_latestVersion, "2.5.0.0") !=1) // upgrade friend files for last seen time stamp
-                            FriendsTableUtils.UpdateOldFilesWithDefaultLastSeen();
                     }
                 }
                 st.Stop();
@@ -822,7 +819,7 @@ namespace windows_client
             #region Post App Locale
             PostLocaleInfo();
             #endregion
-          
+
         }
 
         public static void createDatabaseAsync()

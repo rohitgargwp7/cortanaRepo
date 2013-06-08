@@ -123,9 +123,10 @@ namespace windows_client.DbUtils
                 context.SubmitChanges(ConflictMode.FailOnFirstConflict);
             }
             #endregion
-            #region DELETE FAVOURITES AND PENDING REQUESTS
+            #region DELETE FAVOURITES AND PENDING REQUESTS AND PROTIPS 
             DeleteFavourites();
             DeletePendingRequests();
+            ProTipHelper.Instance.ClearProTips();
             #endregion
             #region DELETE CATEGORIES
             StickerCategory.DeleteAllCategories();
