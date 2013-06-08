@@ -2013,7 +2013,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invitee sent successfully.
+        ///   Looks up a localized string similar to Invite sent successfully.
         /// </summary>
         public static string Invite_Sent_Successfully {
             get {
