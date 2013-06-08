@@ -237,13 +237,46 @@ namespace windows_client.View
                 }
                 else
                 {
-                    SmsComposeTask smsComposeTask = new SmsComposeTask();
-                    string msisdns = string.Empty;
+                    string msisdns = string.Empty, toNum=String.Empty;
+                    int count = 0;
+                    JObject obj = new JObject();
+                    JArray numlist = new JArray();
+                    JObject data = new JObject();
+
                     foreach (string key in contactsList.Keys)
                     {
                         if (key != App.MSISDN)
+                        {
                             msisdns += key + ";";
+                            toNum = key;
+                            numlist.Add(key);
+                        }
+
+                        count++;
                     }
+
+                    if (count == 1)
+                    {
+                        obj[HikeConstants.TO] = toNum;
+                        data[HikeConstants.MESSAGE_ID] = TimeUtils.getCurrentTimeStamp().ToString();
+                        data[HikeConstants.HIKE_MESSAGE] = "I am using Hike, you should use it too";// no need to localize, as this is sent to server
+                        data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
+                        obj[HikeConstants.DATA] = data;
+                        obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+                    }
+                    else
+                    {
+                        data[HikeConstants.MESSAGE_ID] = TimeUtils.getCurrentTimeStamp().ToString();
+                        data[HikeConstants.INVITE_LIST] = numlist;
+                        obj[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
+                        obj[HikeConstants.DATA] = data;
+                        obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
+                    }
+
+                    obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+
+                    App.MqttManagerInstance.mqttPublishToServer(obj);
+                    SmsComposeTask smsComposeTask = new SmsComposeTask();
                     smsComposeTask.To = msisdns;
                     smsComposeTask.Body = Utils.GetRandomInviteString();
                     smsComposeTask.Show();

@@ -28,6 +28,7 @@ namespace windows_client
         public static readonly string SMS_MESSAGE = "sm";
         public static readonly string TIMESTAMP = "ts";
         public static readonly string MESSAGE_ID = "i";
+        public static readonly string INVITE_LIST = "list";
         public static readonly string METADATA = "md";
         public static readonly string METADATA_DND = "dnd";
         public static readonly string ANALYTICS_EVENT = "ae";
@@ -145,6 +146,7 @@ namespace windows_client
         public static readonly string OS_VERSION = "_os_version";
         public static readonly string DEVICE_TYPE_KEY = "dev_type";
 
+        public static readonly string NO_SMS = "nosms";
 
         public static string FAQS_LINK
         {

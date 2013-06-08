@@ -486,17 +486,46 @@ namespace windows_client.View
             }
             else
             {
-                string msisdns = string.Empty;
-                for (int i = 0; i < GroupManager.Instance.GroupCache[groupId].Count; i++)
+                string msisdns = string.Empty, toNum = String.Empty;
+                JObject obj = new JObject();
+                JArray numlist = new JArray();
+                JObject data = new JObject();
+                int i;
+
+                for (i = 0; i < GroupManager.Instance.GroupCache[groupId].Count; i++)
                 {
                     GroupParticipant gp = GroupManager.Instance.GroupCache[groupId][i];
                     if (!gp.IsOnHike)
                     {
                         msisdns += gp.Msisdn + ";";
+                        numlist.Add(gp.Msisdn);
+                        toNum = gp.Msisdn;
                     }
+                } 
+                
+                if (i == 1)
+                {
+                    obj[HikeConstants.TO] = toNum;
+                    data[HikeConstants.MESSAGE_ID] = TimeUtils.getCurrentTimeStamp().ToString();
+                    data[HikeConstants.HIKE_MESSAGE] = "I am using Hike, you should use it too";// no need to localize, as this is sent to server
+                    data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
+                    obj[HikeConstants.DATA] = data;
+                    obj[HikeConstants.TYPE] = NetworkManager.INVITE;
                 }
-                SmsComposeTask smsComposeTask = new SmsComposeTask();
+                else
+                {
+                    data[HikeConstants.MESSAGE_ID] = TimeUtils.getCurrentTimeStamp().ToString();
+                    data[HikeConstants.INVITE_LIST] = numlist;
+                    obj[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
+                    obj[HikeConstants.DATA] = data;
+                    obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
+                }
 
+                obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+
+                App.MqttManagerInstance.mqttPublishToServer(obj);
+                
+                SmsComposeTask smsComposeTask = new SmsComposeTask();
                 smsComposeTask.To = msisdns;
                 smsComposeTask.Body = Utils.GetRandomInviteString();
                 smsComposeTask.Show();
