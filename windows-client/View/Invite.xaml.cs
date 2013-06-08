@@ -204,6 +204,7 @@ namespace windows_client.View
         public void SocialInviteResponse(JObject obj)
         {
             string status = "";
+            string title = isFacebookPost?AppResources.FreeSMS_fbConnStatus_TxtBlk : AppResources.FreeSMS_twConnStatus_TxtBlk;
 
             if (isFacebookPost && obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
             {
@@ -228,14 +229,14 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt);
+                    MessageBoxResult result = MessageBox.Show(AppResources.Invite_Not_Sent +" "+ AppResources.Please_Try_Again_Txt, title,MessageBoxButton.OK);
                 });
             }
             else
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBoxResult result = MessageBox.Show(AppResources.Invite_Sent_Successfully);
+                    MessageBoxResult result = MessageBox.Show(AppResources.Invite_Sent_Successfully, title,MessageBoxButton.OK);
                 });
             }
         }

@@ -2004,7 +2004,16 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Message sent successfully.
+        ///   Looks up a localized string similar to Invite not sent.
+        /// </summary>
+        public static string Invite_Not_Sent {
+            get {
+                return ResourceManager.GetString("Invite_Not_Sent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invitee sent successfully.
         /// </summary>
         public static string Invite_Sent_Successfully {
             get {

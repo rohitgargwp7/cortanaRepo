@@ -1738,7 +1738,7 @@ Get hike: http://get.hike.in</value>
     <comment>General Text</comment>
   </data>
   <data name="Invite_Sent_Successfully" xml:space="preserve">
-    <value>Message sent successfully</value>
+    <value>Invitee sent successfully</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
     <value>{0} is back on hike. Say hi :)</value>
@@ -1789,5 +1789,8 @@ Get hike: http://get.hike.in</value>
   </data>
   <data name="TapHereToRetyTxt" xml:space="preserve">
     <value>Tap here to retry.</value>
+  </data>
+  <data name="Invite_Not_Sent" xml:space="preserve">
+    <value>Invite not sent</value>
   </data>
 </root>
