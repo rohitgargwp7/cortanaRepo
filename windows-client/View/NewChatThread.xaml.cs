@@ -4857,35 +4857,40 @@ namespace windows_client.View
                 dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_DOGGY;
                 pivotIndex++;
             }
+            
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
             {
                 CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
-                rectCategory2.Visibility = Visibility.Visible;
                 stCategory2.Visibility = Visibility.Visible;
                 dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_KITTY;
                 pivotIndex++;
             }
+            
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
             {
                 CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
-                rectCategory3.Visibility = Visibility.Visible;
                 stCategory3.Visibility = Visibility.Visible;
                 dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_EXPRESSIONS;
                 pivotIndex++;
             }
+
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null
                 && (App.MSISDN.Contains("+91") || App.MSISDN.Contains("+94") || App.MSISDN.Contains("+880") || App.MSISDN.Contains("+977") || App.MSISDN.Contains("+93") || App.MSISDN.Contains("+92") || App.MSISDN.Contains("+975") || App.MSISDN.Contains("+960") || App.MSISDN.Contains("+968") || App.MSISDN.Contains("+966") || App.MSISDN.Contains("+961") || App.MSISDN.Contains("+962") || App.MSISDN.Contains("+965") || App.MSISDN.Contains("+973") || App.MSISDN.Contains("+971") || App.MSISDN.Contains("+974")))
             {
                 CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
-                rectCategory4.Visibility = Visibility.Visible;
                 stCategory4.Visibility = Visibility.Visible;
                 dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_BOLLYWOOD;
                 pivotIndex++;
+                ColumnDefinition colDef = new ColumnDefinition();
+                gridStickerPivot.ColumnDefinitions.Add(colDef);
+                stCategory5.SetValue(Grid.ColumnProperty, 5);
             }
+            else
+                stCategory5.SetValue(Grid.ColumnProperty, 4);
+            
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
             {
                 CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
-                rectCategory5.Visibility = Visibility.Visible;
                 stCategory5.Visibility = Visibility.Visible;
                 dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_TROLL;
             }
