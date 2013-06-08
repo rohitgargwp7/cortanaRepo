@@ -918,7 +918,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (participantInfoState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                if (participantInfoState == ConvMessage.ParticipantInfoState.STATUS_UPDATE || (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID)))
                 {
                     return UI_Utils.Instance.ReceivedChatBubbleTimestamp;
                 }
