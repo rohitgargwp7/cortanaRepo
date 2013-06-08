@@ -147,23 +147,23 @@ namespace windows_client.utils
 
             if (receivedTime.Date == DateTime.Now.Date) //today
             {
-                if (App.Is24HourTimeFormat)
-                    return Languages.AppResources.Last_Seen + " " + Languages.AppResources.Today_Txt + " " + Languages.AppResources.At_Txt + " " + receivedTime.ToString("HH\\:mm", CultureInfo.CurrentUICulture);
-                else
+                //if (App.Is24HourTimeFormat)
+                //    return Languages.AppResources.Last_Seen + " " + Languages.AppResources.Today_Txt + " " + Languages.AppResources.At_Txt + " " + receivedTime.ToString("HH\\:mm", CultureInfo.CurrentUICulture);
+                //else
                     return Languages.AppResources.Last_Seen + " " + Languages.AppResources.Today_Txt + " " + Languages.AppResources.At_Txt + " " + receivedTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
             }
             else if ((receivedTime - DateTime.Now.Date).Days  == 1) // yesterday
             {
-                if (App.Is24HourTimeFormat)
-                    return Languages.AppResources.Last_Seen + " " + Languages.AppResources.Yesterday_Txt + " " + Languages.AppResources.At_Txt + " " + receivedTime.ToString("HH\\:mm", CultureInfo.CurrentUICulture);
-                else
+                //if (App.Is24HourTimeFormat)
+                //    return Languages.AppResources.Last_Seen + " " + Languages.AppResources.Yesterday_Txt + " " + Languages.AppResources.At_Txt + " " + receivedTime.ToString("HH\\:mm", CultureInfo.CurrentUICulture);
+                //else
                     return Languages.AppResources.Last_Seen + " " + Languages.AppResources.Yesterday_Txt + " " + Languages.AppResources.At_Txt + " " + receivedTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
             }
             else if ((receivedTime - DateTime.Now.Date).Days < 7) // less than two weeks ago
             {
-                if(App.Is24HourTimeFormat)
-                    return Languages.AppResources.Last_Seen + " " + receivedTime.ToString("HH\\:mm, d/M/yyyy", CultureInfo.CurrentUICulture);
-                else
+                //if(App.Is24HourTimeFormat)
+                //    return Languages.AppResources.Last_Seen + " " + receivedTime.ToString("HH\\:mm, d/M/yyyy", CultureInfo.CurrentUICulture);
+                //else
                     return Languages.AppResources.Last_Seen + " " + receivedTime.ToString("h\\:mm tt, d/M/yyyy", CultureInfo.CurrentUICulture).Replace(" AM","a").Replace(" PM","p");
             }
             else
