@@ -607,7 +607,8 @@ namespace windows_client.View
                 };
             bw.RunWorkerCompleted += (s, ee) =>
                 {
-                    AddPivotItemsToStickerPivot();
+                    if (dictPivotCategory.Count == 0)
+                        AddPivotItemsToStickerPivot();
                 };
             bw.RunWorkerAsync();
             #region AUDIO FT
@@ -1511,7 +1512,7 @@ namespace windows_client.View
                         PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
                     }
                 }
-               
+
             }
 
             else if (PhoneApplicationService.Current.State.ContainsKey("SharePicker"))
@@ -3061,7 +3062,7 @@ namespace windows_client.View
                         string category;
                         if (dictPivotCategory.TryGetValue(pivotStickers.SelectedIndex, out category))
                         {
-                            //CategoryTap(category);
+                            CategoryTap(category);
                         }
                     }
 

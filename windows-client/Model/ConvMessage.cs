@@ -567,10 +567,9 @@ namespace windows_client.Model
         {
             get
             {
-                if (_fileAttachment != null && ((_fileAttachment.FileState == Attachment.AttachmentState.CANCELED || _fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
-                    || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO) || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
+                if (_fileAttachment != null && (_fileAttachment.FileState != Attachment.AttachmentState.COMPLETED || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO) || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
                 {
-                    if (IsSent && FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                    if (IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
                         return Visibility.Collapsed;
                     return Visibility.Visible;
                 }
@@ -1532,6 +1531,8 @@ namespace windows_client.Model
             NotifyPropertyChanged("ShowForwardMenu");
             NotifyPropertyChanged("ShowDeleteMenu");
             NotifyPropertyChanged("SdrImage");
+            NotifyPropertyChanged("PlayIconVisibility");
+            NotifyPropertyChanged("PlayIconImage");
         }
 
         public ConvMessage(ParticipantInfoState participantInfoState, JObject jsonObj)
