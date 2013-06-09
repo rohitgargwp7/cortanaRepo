@@ -2650,8 +2650,8 @@ namespace windows_client.View
 
                     obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
 
-                    App.MqttManagerInstance.mqttPublishToServer(obj); 
-                    
+                    App.MqttManagerInstance.mqttPublishToServer(obj);
+
                     SmsComposeTask smsComposeTask = new SmsComposeTask();
                     smsComposeTask.To = msisdns;
                     smsComposeTask.Body = randomString;
@@ -4838,82 +4838,105 @@ namespace windows_client.View
                 return;
             }
 
-            string category = (string)json["catId"];
-            JObject stickers = (JObject)json["data"];
-            bool hasMoreStickers = true;
-            if (json["st"] != null)
+            try
             {
-                hasMoreStickers = false;
-            }
-            if (stickerCategory == null)
-            {
-                stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
+                string category = (string)json["catId"];
+                JObject stickers = (JObject)json["data"];
+                bool hasMoreStickers = true;
+                if (json["st"] != null)
+                {
+                    hasMoreStickers = false;
+                }
                 if (stickerCategory == null)
                 {
-                    stickerCategory = new StickerCategory(category);
-                }
-            }
-            IEnumerator<KeyValuePair<string, JToken>> keyVals = stickers.GetEnumerator();
-            List<KeyValuePair<string, byte[]>> listHighResStickersBytes = new List<KeyValuePair<string, byte[]>>();
-
-            while (keyVals.MoveNext())
-            {
-                try
-                {
-                    KeyValuePair<string, JToken> kv = keyVals.Current;
-                    string id = (string)kv.Key;
-                    string iconBase64 = stickers[kv.Key].ToString();
-                    byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                    listHighResStickersBytes.Add(new KeyValuePair<string, byte[]>(id, imageBytes));
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("NewChatThread : callBack : Exception : " + ex.Message);
-                }
-            }
-            stickerCategory.WriteHighResToFile(listHighResStickersBytes);
-
-
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                List<KeyValuePair<string, byte[]>> listLowResStickersBytes = new List<KeyValuePair<string, byte[]>>();
-                foreach (KeyValuePair<string, Byte[]> keyValuePair in listHighResStickersBytes)
-                {
-                    string stickerId = keyValuePair.Key;
-                    BitmapImage highResImage = UI_Utils.Instance.createImageFromBytes(keyValuePair.Value);
-                    if (highResImage == null)
-                        continue;
-
-                    if (convMessage != null)
+                    stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
+                    if (stickerCategory == null)
                     {
-                        string key = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
-                        convMessage.StickerObj.StickerImage = highResImage;
-                        convMessage.ImageDownloadFailed = false;
-                        if (dictStickerCache.ContainsKey(key))
-                            continue;
-                        dictStickerCache[key] = highResImage;
+                        stickerCategory = new StickerCategory(category);
                     }
-
-                    Byte[] lowResImageBytes = UI_Utils.Instance.PngImgToJpegByteArray(highResImage);
-                    listLowResStickersBytes.Add(new KeyValuePair<string, byte[]>(stickerId, lowResImageBytes));
-                    stickerCategory.ListStickers.Add(new Sticker(category, stickerId, UI_Utils.Instance.createImageFromBytes(lowResImageBytes)));
                 }
-                stickerCategory.WriteLowResToFile(listLowResStickersBytes, hasMoreStickers);
+                IEnumerator<KeyValuePair<string, JToken>> keyVals = stickers.GetEnumerator();
+                List<KeyValuePair<string, byte[]>> listHighResStickersBytes = new List<KeyValuePair<string, byte[]>>();
 
+                while (keyVals.MoveNext())
+                {
+                    try
+                    {
+                        KeyValuePair<string, JToken> kv = keyVals.Current;
+                        string id = (string)kv.Key;
+                        string iconBase64 = stickers[kv.Key].ToString();
+                        byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
+                        listHighResStickersBytes.Add(new KeyValuePair<string, byte[]>(id, imageBytes));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NewChatThread : callBack : Exception : " + ex.Message);
+                    }
+                }
+                stickerCategory.WriteHighResToFile(listHighResStickersBytes);
+
+
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    List<KeyValuePair<string, byte[]>> listLowResStickersBytes = new List<KeyValuePair<string, byte[]>>();
+                    foreach (KeyValuePair<string, Byte[]> keyValuePair in listHighResStickersBytes)
+                    {
+                        string stickerId = keyValuePair.Key;
+                        BitmapImage highResImage = UI_Utils.Instance.createImageFromBytes(keyValuePair.Value);
+                        if (highResImage == null)
+                            continue;
+
+                        if (convMessage != null)
+                        {
+                            string key = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
+                            convMessage.StickerObj.StickerImage = highResImage;
+                            convMessage.ImageDownloadFailed = false;
+                            if (dictStickerCache.ContainsKey(key))
+                                continue;
+                            dictStickerCache[key] = highResImage;
+                        }
+
+                        Byte[] lowResImageBytes = UI_Utils.Instance.PngImgToJpegByteArray(highResImage);
+                        listLowResStickersBytes.Add(new KeyValuePair<string, byte[]>(stickerId, lowResImageBytes));
+                        stickerCategory.ListStickers.Add(new Sticker(category, stickerId, UI_Utils.Instance.createImageFromBytes(lowResImageBytes)));
+                    }
+                    stickerCategory.WriteLowResToFile(listLowResStickersBytes, hasMoreStickers);
+
+                    if (stickerCategory != null)
+                    {
+                        //stLoading.Visibility = Visibility.Collapsed;
+                        StickerPivot stickerPivot;
+                        if (dictStickersPivot.TryGetValue(category, out stickerPivot))
+                        {
+                            if (category == _selectedCategory)
+                                stickerPivot.ShowStickers();
+                            stickerPivot.ShowHidMoreProgreesBar(false);
+                        }
+                        pivotStickers.Visibility = Visibility.Visible;
+                    }
+                    stickerCategory.IsDownLoading = false;
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("NewChatThread::StickersRequestCallBack , Exception:" + ex.Message);
                 if (stickerCategory != null)
                 {
-                    //stLoading.Visibility = Visibility.Collapsed;
+                    stickerCategory.IsDownLoading = false;
                     StickerPivot stickerPivot;
-                    if (dictStickersPivot.TryGetValue(category, out stickerPivot))
+                    if (dictStickersPivot.TryGetValue(stickerCategory.Category, out stickerPivot))
                     {
-                        if (category == _selectedCategory)
-                            stickerPivot.ShowStickers();
-                        stickerPivot.ShowHidMoreProgreesBar(false);
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            stickerPivot.ShowHidMoreProgreesBar(false);
+                        });
                     }
-                    pivotStickers.Visibility = Visibility.Visible;
                 }
-                stickerCategory.IsDownLoading = false;
-            });
+                if (convMessage != null)
+                {
+                    convMessage.ImageDownloadFailed = true;
+                }
+            }
         }
 
         private Dictionary<string, StickerPivot> dictStickersPivot = new Dictionary<string, StickerPivot>();

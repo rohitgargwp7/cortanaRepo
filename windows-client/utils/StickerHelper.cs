@@ -23,7 +23,7 @@ namespace windows_client.utils
         public const string _stickerWVGAPath = "/View/images/stickers/WVGA/{0}";
         public const string _sticker720path = "/View/images/stickers/720p/{0}";
         public const string _stickerWXGApath = "/View/images/stickers/WXGA/{0}";
-        private string[] stickers = new string[]
+        public static string[] arrayDefaultStickers = new string[]
         {
             "001_hi.png",
             "002_thumbsup.png",
@@ -49,7 +49,7 @@ namespace windows_client.utils
                     StickerCategory category1Stickers = new StickerCategory(CATEGORY_DOGGY, false);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            for (int i = 0; i < stickers.Length; i++)
+                            for (int i = 0; i < arrayDefaultStickers.Length; i++)
                             {
                                 BitmapImage bitmap = new BitmapImage();
                                 bitmap.CreateOptions = BitmapCreateOptions.BackgroundCreation;
@@ -61,8 +61,8 @@ namespace windows_client.utils
                                 else
                                     url = _sticker720path;
 
-                                bitmap.UriSource = new Uri(string.Format(url, stickers[i]), UriKind.Relative);
-                                Sticker sticker = new Sticker(category1Stickers.Category, stickers[i], bitmap);
+                                bitmap.UriSource = new Uri(string.Format(url, arrayDefaultStickers[i]), UriKind.Relative);
+                                Sticker sticker = new Sticker(category1Stickers.Category, arrayDefaultStickers[i], bitmap);
                                 category1Stickers.ListStickers.Add(sticker);
                             }
                             category1Stickers.HasMoreStickers = false;
