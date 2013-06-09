@@ -2624,20 +2624,23 @@ namespace windows_client.View
                     else
                         msisdns = mContactNumber;
 
+                    var ts = TimeUtils.getCurrentTimeStamp();
+                    var randomString = Utils.GetRandomInviteString();
+
                     if (!isGroupChat)
                     {
                         obj[HikeConstants.TO] = msisdns;
-                        data[HikeConstants.MESSAGE_ID] = TimeUtils.getCurrentTimeStamp().ToString();
-                        data[HikeConstants.HIKE_MESSAGE] = "I am using Hike, you should use it too"; // no need to localize, as this is sent to server
-                        data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
+                        data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                        data[HikeConstants.HIKE_MESSAGE] = randomString;
+                        data[HikeConstants.TIMESTAMP] = ts;
                         obj[HikeConstants.DATA] = data;
                         obj[HikeConstants.TYPE] = NetworkManager.INVITE;
                     }
                     else
                     {
-                        data[HikeConstants.MESSAGE_ID] = TimeUtils.getCurrentTimeStamp().ToString();
+                        data[HikeConstants.MESSAGE_ID] = ts.ToString();
                         data[HikeConstants.INVITE_LIST] = numlist;
-                        obj[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
+                        obj[HikeConstants.TIMESTAMP] = ts;
                         obj[HikeConstants.DATA] = data;
                         obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
                     }
@@ -2648,7 +2651,7 @@ namespace windows_client.View
                     
                     SmsComposeTask smsComposeTask = new SmsComposeTask();
                     smsComposeTask.To = msisdns;
-                    smsComposeTask.Body = Utils.GetRandomInviteString();
+                    smsComposeTask.Body = randomString;
                     smsComposeTask.Show();
                 }
             }
