@@ -447,6 +447,19 @@
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
     </None>
+    <None Include="windows-client_2013_06_09_11_16_23.sap" />
+    <None Include="windows-client_2013_06_09_11_32_11.sap" />
+    <None Include="windows-client_2013_06_09_11_36_27.sap" />
+    <None Include="windows-client_2013_06_09_11_38_11.sap" />
+    <None Include="windows-client_2013_06_09_11_40_18.sap" />
+    <None Include="windows-client_2013_06_09_11_41_44.sap" />
+    <None Include="windows-client_2013_06_09_11_41_49.sap" />
+    <None Include="windows-client_2013_06_09_11_46_12.sap" />
+    <None Include="windows-client_2013_06_09_11_49_30.sap" />
+    <None Include="windows-client_2013_06_09_11_51_51.sap" />
+    <None Include="windows-client_2013_06_09_11_55_03.sap" />
+    <None Include="windows-client_2013_06_09_11_56_34.sap" />
+    <None Include="windows-client_2013_06_09_11_57_36.sap" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ApplicationIcon.png">
@@ -589,16 +602,16 @@
     <Content Include="View\images\rf_i_icon.png" />
     <Content Include="View\images\settings_icon_dark.png" />
     <Content Include="View\images\settings_icon_white.png" />
-    <Content Include="View\images\stickers\720p\1_hi.png" />
-    <Content Include="View\images\stickers\720p\2_thumbsup.png" />
-    <Content Include="View\images\stickers\720p\3_drooling.png" />
-    <Content Include="View\images\stickers\720p\4_devilsmile.png" />
-    <Content Include="View\images\stickers\720p\5_sorry.png" />
-    <Content Include="View\images\stickers\720p\6_urgh.png" />
-    <Content Include="View\images\stickers\720p\7_confused.png" />
-    <Content Include="View\images\stickers\720p\8_dreaming.png" />
     <Content Include="View\images\close_white.png" />
     <Content Include="View\images\close_black.png" />
+    <Content Include="View\images\stickers\720p\001_hi.png" />
+    <Content Include="View\images\stickers\720p\002_thumbsup.png" />
+    <Content Include="View\images\stickers\720p\003_drooling.png" />
+    <Content Include="View\images\stickers\720p\004_devilsmile.png" />
+    <Content Include="View\images\stickers\720p\005_sorry.png" />
+    <Content Include="View\images\stickers\720p\006_urgh.png" />
+    <Content Include="View\images\stickers\720p\007_confused.png" />
+    <Content Include="View\images\stickers\720p\008_dreaming.png" />
     <Content Include="View\images\stickers\WVGA\001_hi.png" />
     <Content Include="View\images\stickers\WVGA\002_thumbsup.png" />
     <Content Include="View\images\stickers\WVGA\003_drooling.png" />

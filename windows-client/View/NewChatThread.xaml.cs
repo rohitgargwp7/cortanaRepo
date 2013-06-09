@@ -2257,6 +2257,9 @@ namespace windows_client.View
                                     dictStickerCache[categoryStickerId] = convMessage.StickerObj.StickerImage;
                             }
                             chatBubble = convMessage;
+                            if (!convMessage.IsSent)
+                                chatBubble.GroupMemberName = isGroupChat ?
+                                   GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                         }
 
                         else if (convMessage.IsSent)

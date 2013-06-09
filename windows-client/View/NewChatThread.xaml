@@ -259,34 +259,38 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Width="250"></TextBlock>
-                    <Image HorizontalAlignment="Right" Source="{Binding MessageImage}" Grid.Row="0" Grid.Column="0" />
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                    <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding TimeStampForeGround}" />
+                    <Image Grid.Row="1" HorizontalAlignment="Left" Source="{Binding MessageImage}" Grid.Column="0" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                 </Grid>
                 <Grid Visibility="{Binding IsStickerLoading}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Column="0" Grid.RowSpan="2" Width="250"></TextBlock>
-                    <ProgressBar Foreground="#1ba1e2" IsIndeterminate="True" IsEnabled="True" Width="200" HorizontalAlignment="Stretch" Margin="0 20 0 40"/>
-                    <TextBlock Grid.Row="1" Text="{Binding Path=LocalizedResources.DownloadingSticker_txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}" TextAlignment="Left" />
+                    <TextBlock  Grid.Row="0" Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding TimeStampForeGround}" />
+                    <ProgressBar Grid.Row="1" Foreground="#1ba1e2" IsIndeterminate="True" IsEnabled="True" Width="200" HorizontalAlignment="Stretch" Margin="0 20 0 50"/>
+                    <TextBlock Grid.Row="2" Text="{Binding Path=LocalizedResources.DownloadingSticker_txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}" TextAlignment="Left" />
                 </Grid>
                 <Grid Visibility="{Binding IsHttpFailed}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Column="0" Grid.RowSpan="3" Width="250"></TextBlock>
-                    <Image Source="/View/images/download_failed_bubble.png" MaxHeight="30" Margin="0 30 40 0"/>
-                    <TextBlock Grid.Row="1" Text="{Binding Path=LocalizedResources.StickerDownloadFailed, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
-                    <TextBlock Grid.Row="2" Text="{Binding Path=LocalizedResources.TapHereToRetyTxt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                    <TextBlock  Grid.Row="0" Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding TimeStampForeGround}" />
+                    <Image Grid.Row="1" Source="/View/images/download_failed_bubble.png" MaxHeight="30" Margin="0 30 40 0"/>
+                    <TextBlock Grid.Row="2" Text="{Binding Path=LocalizedResources.StickerDownloadFailed, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                    <TextBlock Grid.Row="3" Text="{Binding Path=LocalizedResources.TapHereToRetyTxt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                 </Grid>
             </Grid>
         </DataTemplate>
