@@ -2605,6 +2605,11 @@ namespace windows_client.View
                 else
                 {
                     string msisdns = string.Empty;
+                    JObject obj = new JObject();
+                    JArray numlist = new JArray();
+                    JObject data = new JObject();
+                    int i;
+
                     if (isGroupChat)
                     {
                         foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
@@ -2612,15 +2617,41 @@ namespace windows_client.View
                             if (!gp.IsOnHike)
                             {
                                 msisdns += gp.Msisdn + ";";
+                                numlist.Add(gp.Msisdn);
                             }
                         }
                     }
                     else
                         msisdns = mContactNumber;
-                    SmsComposeTask smsComposeTask = new SmsComposeTask();
 
+                    var ts = TimeUtils.getCurrentTimeStamp();
+                    var randomString = Utils.GetRandomInviteString();
+
+                    if (!isGroupChat)
+                    {
+                        obj[HikeConstants.TO] = msisdns;
+                        data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                        data[HikeConstants.HIKE_MESSAGE] = randomString;
+                        data[HikeConstants.TIMESTAMP] = ts;
+                        obj[HikeConstants.DATA] = data;
+                        obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+                    }
+                    else
+                    {
+                        data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                        data[HikeConstants.INVITE_LIST] = numlist;
+                        obj[HikeConstants.TIMESTAMP] = ts;
+                        obj[HikeConstants.DATA] = data;
+                        obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
+                    }
+
+                    obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+
+                    App.MqttManagerInstance.mqttPublishToServer(obj); 
+                    
+                    SmsComposeTask smsComposeTask = new SmsComposeTask();
                     smsComposeTask.To = msisdns;
-                    smsComposeTask.Body = Utils.GetRandomInviteString();
+                    smsComposeTask.Body = randomString;
                     smsComposeTask.Show();
                 }
             }
