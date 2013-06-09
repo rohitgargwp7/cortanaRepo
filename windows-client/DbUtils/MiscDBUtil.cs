@@ -127,6 +127,7 @@ namespace windows_client.DbUtils
             DeleteFavourites();
             DeletePendingRequests();
             ProTipHelper.Instance.ClearProTips();
+            App.RemoveKeyFromAppSettings(App.LAST_SEEN_SEETING);
             #endregion
             #region DELETE CATEGORIES
             StickerCategory.DeleteAllCategories();

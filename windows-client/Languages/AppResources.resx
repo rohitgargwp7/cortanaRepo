@@ -908,10 +908,6 @@ Get hike: http://get.hike.in</value>
     <value>Unable to retrieve request token.</value>
     <comment>cs</comment>
   </data>
-  <data name="Social_Invite_Txt" xml:space="preserve">
-    <value>I'm using @hikeapp 2.0 with status updates &amp; moods. Its like BBM but much, much better! Get hike at http://get.hike.in #gethike</value>
-    <comment>This is used in case of Facebook and Twitter</comment>
-  </data>
   <data name="Social_Txt" xml:space="preserve">
     <value>Social</value>
     <comment>General Text</comment>

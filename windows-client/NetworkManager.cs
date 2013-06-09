@@ -39,6 +39,7 @@ namespace windows_client
         public static readonly string INVITE_INFO = "ii";
 
         public static readonly string INVITE = "i";
+        public static readonly string MULTIPLE_INVITE = "mi";
 
         public static readonly string ICON = "ic";
 

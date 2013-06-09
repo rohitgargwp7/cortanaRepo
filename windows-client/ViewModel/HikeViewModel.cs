@@ -397,7 +397,7 @@ namespace windows_client.ViewModel
             TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = true, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 30, 10, 0) });
             isShownVal = (marked & 0x20) > 0;
             isCurrentShown = (currentlyShowing & 0x20) > 0;
-            TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = true, TipMargin = new Thickness(200, 0, 10, 0), FullTipMargin = new Thickness(10, 60, 10, 0) });
+            TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 60, 10, 0) });
         }
 
         /// <summary>

@@ -410,7 +410,6 @@ namespace windows_client
                 ConversationTableUtils.saveConvObjectList();
             }
 
-            App.mMqttManager.disconnectFromBroker(false);
             App.mMqttManager.IsLastSeenPacketSent = false;
         }
 
