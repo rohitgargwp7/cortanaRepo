@@ -52,8 +52,79 @@ namespace finalmqtt.Client
         private volatile bool connackReceived;
         private volatile bool disconnectSent = false;
 
+        private Object msgMapLockObj = new object();
+        private Object scheduleActionMapLockObj = new object();
+
         private Dictionary<short, Callback> msgCallbacksMap = new Dictionary<short, Callback>();
         private Dictionary<short, IDisposable> scheduledActionsMap = new Dictionary<short, IDisposable>();
+
+        private void MsgCallbacksMapRemove(short messageId)
+        {
+            lock (msgMapLockObj)
+            {
+                msgCallbacksMap.Remove(messageId);
+            }
+        }
+
+        private void MsgCallbacksMapAdd(short messagId, Callback cb)
+        {
+            lock (msgMapLockObj)
+            {
+                msgCallbacksMap[messagId] = cb;
+            }
+        }
+
+        private Callback MsgCallBacksMapGetValue(short messageId)
+        {
+            lock (msgMapLockObj)
+            {
+                Callback cb;
+                msgCallbacksMap.TryGetValue(messageId, out cb);
+                return cb;
+            }
+        }
+
+        private void MsgCallbacksMapClear()
+        {
+            lock (msgMapLockObj)
+            {
+                msgCallbacksMap.Clear();
+            }
+        }
+
+        private void ScheduledActionsMapRemove(short messageId)
+        {
+            lock (scheduleActionMapLockObj)
+            {
+                scheduledActionsMap.Remove(messageId);
+            }
+        }
+
+        private void ScheduledActionsMapAdd(short messagId, IDisposable scheduledAction)
+        {
+            lock (scheduleActionMapLockObj)
+            {
+                scheduledActionsMap[messagId] = scheduledAction;
+            }
+        }
+
+        private IDisposable ScheduledActionsMapGetValue(short messageId)
+        {
+            lock (scheduleActionMapLockObj)
+            {
+                IDisposable scheduledAction;
+                scheduledActionsMap.TryGetValue(messageId, out scheduledAction);
+                return scheduledAction;
+            }
+        }
+
+        private void ScheduledActionsMapClear()
+        {
+            lock (scheduleActionMapLockObj)
+            {
+                scheduledActionsMap.Clear();
+            }
+        }
 
         private IScheduler scheduler = Scheduler.NewThread;
 
@@ -301,7 +372,7 @@ namespace finalmqtt.Client
         /// If ack is not received in 5 seconds, then callback's onFailure is called
         /// </summary>
         /// <param name="msg">Message to be written (or sent)</param>
-        /// <param name="cb">Callback to be called in case of error</param>
+        /// <param name="scheduledAction">Callback to be called in case of error</param>
         public void sendCallbackMessage(Message msg, Callback cb)
         {
             if (_socket == null || !_socket.Connected || !connackReceived || msg == null)
@@ -319,10 +390,10 @@ namespace finalmqtt.Client
                     short messageId = ((RetryableMessage)msg).getMessageId();
                     if (messageId != 0)
                     {
-                        msgCallbacksMap[messageId] = cb;
+                        MsgCallbacksMapAdd(messageId, cb);
                         Action callbackMessageAction = (new CallBackTimerTask(new onAckFailedDelegate(onReceivingAck), messageId, cb)).HandleTimerTask;
                         IDisposable scheduledAction = scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(10));
-                        scheduledActionsMap[messageId] = scheduledAction;
+                        ScheduledActionsMapAdd(messageId, scheduledAction);
                     }
                 }
             }
@@ -341,16 +412,12 @@ namespace finalmqtt.Client
 
         public Callback onReceivingAck(short messageId)
         {
-            Callback cb = null;
-            if (msgCallbacksMap.ContainsKey(messageId))
+            Callback cb = MsgCallBacksMapGetValue(messageId);
+            if (cb != null)
             {
-                msgCallbacksMap.TryGetValue(messageId, out cb);
-                msgCallbacksMap.Remove(messageId);
+                MsgCallbacksMapRemove(messageId);
             }
-            if (scheduledActionsMap.ContainsKey(messageId))
-            {
-                scheduledActionsMap.Remove(messageId);
-            }
+            ScheduledActionsMapRemove(messageId);
             return cb;
         }
 
@@ -401,7 +468,7 @@ namespace finalmqtt.Client
                     short messageId = ((RetryableMessage)msg[i]).getMessageId();
                     if (messageId != 0)
                     {
-                        msgCallbacksMap.Add(messageId, cb[i]);
+                        MsgCallbacksMapAdd(messageId, cb[i]);
                     }
                 }
             }
@@ -455,11 +522,14 @@ namespace finalmqtt.Client
             if (_socket.Connected)
             {
                 DisconnectMessage msg = new DisconnectMessage(this);
-                foreach (KeyValuePair<short, Callback> kvp in msgCallbacksMap)
+                lock (msgMapLockObj)
                 {
-                    kvp.Value.onFailure(new TimeoutException("Couldn't get Ack for retryable Message id=" + kvp.Key));
+                    foreach (KeyValuePair<short, Callback> kvp in msgCallbacksMap)
+                    {
+                        kvp.Value.onFailure(new TimeoutException("Couldn't get Ack for retryable Message id=" + kvp.Key));
+                    }
+                    msgCallbacksMap.Clear();
                 }
-                msgCallbacksMap.Clear();
                 disconnectSent = true;
                 sendCallbackMessage(msg, cb);
             }
@@ -485,19 +555,18 @@ namespace finalmqtt.Client
                 {
                     Callback cb;
                     IDisposable scheduledAction;
-                    if (msgCallbacksMap.ContainsKey(messageId))
+                    cb = MsgCallBacksMapGetValue(messageId);
+                    if (cb != null)
                     {
-                        scheduledActionsMap.TryGetValue(messageId, out scheduledAction);
-                        scheduledActionsMap.Remove(messageId);
+                        scheduledAction = ScheduledActionsMapGetValue(messageId);
                         if (scheduledAction != null)
-                            scheduledAction.Dispose();
-                        Debug.WriteLine("MQTTCONNECTION:: Disposing action for message ID - " + messageId);
-                        msgCallbacksMap.TryGetValue(messageId, out cb);
-                        msgCallbacksMap.Remove(messageId);
-                        if (cb != null)
                         {
-                            cb.onSuccess();
+                            ScheduledActionsMapRemove(messageId);
+                            scheduledAction.Dispose();
                         }
+                        Debug.WriteLine("MQTTCONNECTION:: Disposing action for message ID - " + messageId);
+                        MsgCallbacksMapRemove(messageId);
+                        cb.onSuccess();
                     }
                 }
             }
