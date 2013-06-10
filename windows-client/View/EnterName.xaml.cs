@@ -302,7 +302,7 @@ namespace windows_client
                     {
                         string myMsisdn = (string)App.appSettings[App.MSISDN_SETTING];
                         avatarImage.Source = UI_Utils.Instance.getDefaultAvatar(myMsisdn);
-                        AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + myMsisdn, GetProfilePic_Callback, true, "");
+                        //AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + myMsisdn, GetProfilePic_Callback, true, "");
                     }
                 }
             }

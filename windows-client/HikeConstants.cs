@@ -306,7 +306,7 @@ namespace windows_client
         public static readonly string STICKER_ID = "stId";
         public static readonly string CATEGORY_ID = "catId";
 
-
+        public static readonly string ICON = "icon";
         public static readonly string LASTSEEN = "ls";
         public static readonly string LASTSEENONOFF = "lastseen";
         public static readonly string JUSTOPENED = "justOpened";
