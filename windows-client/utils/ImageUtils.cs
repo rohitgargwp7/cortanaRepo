@@ -1275,7 +1275,7 @@ namespace windows_client.utils
                 return expressionsActive;
             }
         }
-       
+
         public BitmapImage CloseButtonWhiteImage
         {
             get
@@ -1397,12 +1397,28 @@ namespace windows_client.utils
                 WriteableBitmap writeableBitmap = new WriteableBitmap(image);
                 WriteableBitmap mergedBItmpapImage = new WriteableBitmap(writeableBitmap.PixelWidth, writeableBitmap.PixelHeight); //size of mergedBItmpapImage canvas
                 double aspectratio = writeableBitmap.PixelHeight * 1.0 / writeableBitmap.PixelWidth;
-                mergedBItmpapImage.Clear(Color.FromArgb(255, 0x31, 0x33, 0x34));
+                mergedBItmpapImage.Clear(Color.FromArgb(255, 0x32, 0x32, 0x32));
                 Rect rec = new Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight);
                 mergedBItmpapImage.Blit(rec, writeableBitmap, rec);
+
+                int toHeight = 0;
+                if (Utils.PalleteResolution == Utils.Resolutions.WVGA)
+                {
+                    toHeight = 120;
+                }
+                else if (Utils.PalleteResolution == Utils.Resolutions.WXGA)
+                {
+                    toHeight = 195;
+                }
+                else
+                {
+                    toHeight = 180;
+                }
+                int toWidth = Convert.ToInt32(toHeight / aspectratio);
+
                 using (var msLargeImage = new MemoryStream())
                 {
-                    mergedBItmpapImage.SaveJpeg(msLargeImage, Convert.ToInt32(120 / aspectratio), 120, 0, 100);
+                    mergedBItmpapImage.SaveJpeg(msLargeImage, toWidth, toHeight, 0, 100);
                     return msLargeImage.ToArray();
                 }
             }

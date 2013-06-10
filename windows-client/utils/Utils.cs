@@ -453,12 +453,14 @@ namespace windows_client.utils
         public enum Resolutions { Default, WVGA, WXGA, HD720p };
 
         private static Resolutions currentResolution = Resolutions.Default;
+        private static Resolutions palleteResolution = Resolutions.Default;
         private static bool IsWvga
         {
             get
             {
                 return App.Current.Host.Content.ScaleFactor == 100;
             }
+
         }
 
         private static bool IsWxga
@@ -492,6 +494,21 @@ namespace windows_client.utils
             }
         }
 
+        public static Resolutions PalleteResolution
+        {
+            get
+            {
+                if (currentResolution == Resolutions.Default)
+                {
+                    if (IsWvga) palleteResolution = Resolutions.WVGA;
+                    else if (IsWxga) palleteResolution = Resolutions.WXGA;
+                    else if (Is720p) palleteResolution = Resolutions.HD720p;
+                    else
+                        palleteResolution = Resolutions.WVGA;
+                }
+                return palleteResolution;
+            }
+        }
         public static void RequestServerEpochTime()
         {
             JObject obj = new JObject();
