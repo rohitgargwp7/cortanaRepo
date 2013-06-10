@@ -4637,6 +4637,13 @@ namespace windows_client.View
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+
+            imgDoggy.Source = UI_Utils.Instance.DoggyActive;
+            imgKitty.Source = UI_Utils.Instance.KittyInactive;
+            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
+            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
+            imgTroll.Source = UI_Utils.Instance.TrollInactive;
+
             stickerPivot.ShowStickers();
             if (stickerCategory.HasMoreStickers)
             {
@@ -4664,6 +4671,13 @@ namespace windows_client.View
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+
+            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
+            imgKitty.Source = UI_Utils.Instance.KittyActive;
+            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
+            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
+            imgTroll.Source = UI_Utils.Instance.TrollInactive;
+
             StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
             if (stickerCategory.HasNewMessages)
             {
@@ -4683,6 +4697,13 @@ namespace windows_client.View
             stCategory3.Background = UI_Utils.Instance.TappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+
+            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
+            imgKitty.Source = UI_Utils.Instance.KittyInactive;
+            imgExpressions.Source = UI_Utils.Instance.ExpressionsActive;
+            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
+            imgTroll.Source = UI_Utils.Instance.TrollInactive;
+
             StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
             if (stickerCategory.HasNewMessages)
             {
@@ -4702,6 +4723,13 @@ namespace windows_client.View
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.TappedCategoryColor;
+
+            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
+            imgKitty.Source = UI_Utils.Instance.KittyInactive;
+            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
+            imgBolly.Source = UI_Utils.Instance.BollywoodActive;
+            imgTroll.Source = UI_Utils.Instance.TrollInactive;
+
             StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
             if (stickerCategory.HasNewMessages)
             {
@@ -4722,6 +4750,13 @@ namespace windows_client.View
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.TappedCategoryColor;
+
+            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
+            imgKitty.Source = UI_Utils.Instance.KittyInactive;
+            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
+            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
+            imgTroll.Source = UI_Utils.Instance.TrollActive;
+
             StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
             if (stickerCategory.HasNewMessages)
             {

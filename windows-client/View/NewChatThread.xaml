@@ -781,19 +781,19 @@
                             <Image Source="images\back_button.png" Height="30" Stretch="Uniform" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <Border BorderBrush="Red"  Grid.Column="1" Height="50" Name="stCategory1" Background="#1ba1e2" Margin="2,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category1_Tap" >
-                            <Image Source="images\doggy_icon.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Name="imgDoggy" Source="images\doggy_icon.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <Border BorderBrush="Red"  Grid.Column="2" Height="50" Name="stCategory2" Background="#4d4d4d" Margin="2,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category2_Tap"  Visibility="Collapsed" >
-                            <Image Source="images\kitty_icon.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Name="imgKitty" Source="images\kitty_icon.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <Border BorderBrush="Red"  Grid.Column="3" Height="50" Name="stCategory3" Background="#4d4d4d" Margin="2,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="Category3_Tap"  Visibility="Collapsed" >
-                            <Image Source="images\expressions.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Name="imgExpressions" Source="images\expressions.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <Border BorderBrush="Red"  Grid.Column="4" Height="50" Name="stCategory4" Background="#4d4d4d"  Margin="2,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="Category4_Tap"  Visibility="Collapsed" >
-                            <Image Source="images\active_bolly.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Name="imgBolly" Source="images\active_bolly.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <Border BorderBrush="Red"  Height="50" Name="stCategory5" Background="#4d4d4d" Margin="2,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="Category5_Tap"  Visibility="Collapsed" >
-                            <Image Source="images\rf_i_icon.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Name="imgTroll" Source="images\rf_i_icon.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </Grid>
                 </Grid>

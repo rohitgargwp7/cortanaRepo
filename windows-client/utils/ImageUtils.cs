@@ -84,6 +84,16 @@ namespace windows_client.utils
         private BitmapImage bollywoodOverlay;
         private BitmapImage trollOverlay;
         private BitmapImage expressionsOverlay;
+        private BitmapImage doggyInactive;
+        private BitmapImage kittyInactive;
+        private BitmapImage bollywoodInactive;
+        private BitmapImage trollInactive;
+        private BitmapImage expressionsInactive;
+        private BitmapImage doggyActive;
+        private BitmapImage kittyActive;
+        private BitmapImage bollywoodActive;
+        private BitmapImage trollActive;
+        private BitmapImage expressionsActive;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
         private string[] defaultAvatarFileNames;
@@ -1120,7 +1130,6 @@ namespace windows_client.utils
                 return kittyOverlay;
             }
         }
-
         public BitmapImage BollywoodOverlay
         {
             get
@@ -1154,6 +1163,119 @@ namespace windows_client.utils
                 return expressionsOverlay;
             }
         }
+
+        public BitmapImage DoggyInactive
+        {
+            get
+            {
+                if (doggyInactive == null)
+                {
+                    doggyInactive = new BitmapImage(new Uri("/View/images/doggy_i_icon.png", UriKind.Relative));
+                }
+                return doggyInactive;
+            }
+        }
+        public BitmapImage KittyInactive
+        {
+            get
+            {
+                if (kittyInactive == null)
+                {
+                    kittyInactive = new BitmapImage(new Uri("/View/images/kitty_i_icon.png", UriKind.Relative));
+                }
+                return kittyInactive;
+            }
+        }
+        public BitmapImage BollywoodInactive
+        {
+            get
+            {
+                if (bollywoodInactive == null)
+                {
+                    bollywoodInactive = new BitmapImage(new Uri("/View/images/Inactive_bolly.png", UriKind.Relative));
+                }
+                return bollywoodInactive;
+            }
+        }
+        public BitmapImage TrollInactive
+        {
+            get
+            {
+                if (trollInactive == null)
+                {
+                    trollInactive = new BitmapImage(new Uri("/View/images/rf_icon.png", UriKind.Relative));
+                }
+                return trollInactive;
+            }
+        }
+        public BitmapImage ExpressionsInactive
+        {
+            get
+            {
+                if (expressionsInactive == null)
+                {
+                    expressionsInactive = new BitmapImage(new Uri("/View/images/expressions_i.png", UriKind.Relative));
+                }
+                return expressionsInactive;
+            }
+        }
+
+        public BitmapImage DoggyActive
+        {
+            get
+            {
+                if (doggyActive == null)
+                {
+                    doggyActive = new BitmapImage(new Uri("/View/images/doggy_icon.png", UriKind.Relative));
+                }
+                return doggyActive;
+            }
+        }
+        public BitmapImage KittyActive
+        {
+            get
+            {
+                if (kittyActive == null)
+                {
+                    kittyActive = new BitmapImage(new Uri("/View/images/kitty_icon.png", UriKind.Relative));
+                }
+                return kittyActive;
+            }
+        }
+        public BitmapImage BollywoodActive
+        {
+            get
+            {
+                if (bollywoodActive == null)
+                {
+                    bollywoodActive = new BitmapImage(new Uri("/View/images/active_bolly.png", UriKind.Relative));
+                }
+                return bollywoodActive;
+            }
+        }
+        public BitmapImage TrollActive
+        {
+            get
+            {
+                if (trollActive == null)
+                {
+                    trollActive = new BitmapImage(new Uri("/View/images/rf_i_icon.png", UriKind.Relative));
+                }
+                return trollActive;
+            }
+        }
+        public BitmapImage ExpressionsActive
+        {
+            get
+            {
+                if (expressionsActive == null)
+                {
+                    expressionsActive = new BitmapImage(new Uri("/View/images/expressions.png", UriKind.Relative));
+                }
+                return expressionsActive;
+            }
+        }
+       
         public BitmapImage CloseButtonWhiteImage
         {
             get
