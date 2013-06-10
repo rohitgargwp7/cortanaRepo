@@ -652,6 +652,7 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
+
             #region IN APP TIPS
 
             if (isNewInstall) //upgrade logic for inapp tips, will change with every build
@@ -807,6 +808,9 @@ namespace windows_client
                 Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
                 IS_VIEWMODEL_LOADED = true;
 
+                // setting it a default counter of 2 to show notification counter for new user on conversation page
+                if (isNewInstall && !appSettings.Contains(App.PRO_TIP_COUNT)) 
+                    App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, 2);
 
                 if (!appSettings.Contains(App.LAST_SEEN_SEETING))
                     App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, (byte)1);
