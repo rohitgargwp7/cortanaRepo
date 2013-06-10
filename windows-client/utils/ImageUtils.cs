@@ -1404,7 +1404,7 @@ namespace windows_client.utils
                 int toHeight = 0;
                 if (Utils.PalleteResolution == Utils.Resolutions.WVGA)
                 {
-                    toHeight = 120;
+                    toHeight = 130;
                 }
                 else if (Utils.PalleteResolution == Utils.Resolutions.WXGA)
                 {

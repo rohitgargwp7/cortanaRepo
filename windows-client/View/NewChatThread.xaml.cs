@@ -1337,6 +1337,7 @@ namespace windows_client.View
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     forwardAttachmentMessage();
+                    this.UpdateLayout();
                 });
                 NetworkManager.turnOffNetworkManager = false;
                 return;
