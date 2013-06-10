@@ -2739,7 +2739,9 @@ namespace windows_client.View
             sendMsgTxtbox.Text = string.Empty;
             lastText = string.Empty;
             sendIconButton.IsEnabled = false;
-            sendMsgTxtbox.Focus();
+
+            if(emoticonPanel.Visibility == Visibility.Collapsed)
+                sendMsgTxtbox.Focus();
 
             if (String.IsNullOrEmpty(message))
                 return;
@@ -2747,7 +2749,6 @@ namespace windows_client.View
             if (App.ViewModel.TipList[1].IsCurrentlyShown)
                 App.ViewModel.HideToolTip(LayoutRoot, 1);
 
-            emoticonPanel.Visibility = Visibility.Collapsed;
             attachmentMenu.Visibility = Visibility.Collapsed;
 
             if (message == "" || (!isOnHike && mCredits <= 0))
