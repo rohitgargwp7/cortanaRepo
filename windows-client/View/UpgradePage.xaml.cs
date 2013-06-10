@@ -53,12 +53,19 @@ namespace windows_client.View
                 if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                     MqttDBUtils.MqttDbUpdateToLatestVersion();
                 if (Utils.compareVersion("2.1.0.6", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
+                {
                     FriendsTableUtils.UpdateOldFilesWithDefaultLastSeen();
+                    App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.TUTORIAL_SCREEN_STICKERS);
+                    if (Utils.compareVersion("2.1.0.0", App.CURRENT_VERSION) == 1)
+                    {
+                        App.WriteToIsoStorageSettings(App.SHOW_STATUS_UPDATES_TUTORIAL, true);
+                        App.appSettings[HikeConstants.AppSettings.APP_LAUNCH_COUNT] = 1;
+                    }
+                }
+                else
+                    App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
 
-                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
                 Thread.Sleep(2000);//added so that this shows at least for 2 sec
-                App.appSettings[HikeConstants.AppSettings.APP_LAUNCH_COUNT] = 1;
-                App.WriteToIsoStorageSettings(App.SHOW_STATUS_UPDATES_TUTORIAL, true);
             };
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (a, b) =>
