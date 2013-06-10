@@ -333,8 +333,8 @@ namespace windows_client.View
         private void initAppBar()
         {
             appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Minimized;
-            appBar.Opacity = 0;
+            //appBar.Mode = ApplicationBarMode.Minimized;
+            //appBar.Opacity = 0;
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = false;
 

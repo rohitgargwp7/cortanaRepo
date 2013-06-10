@@ -320,10 +320,10 @@ namespace windows_client.DbUtils
             {
                 object[] vals = (object[])obj;
                 string msisdn = (string)vals[0];
-                byte[] fullViewBytes = (byte[])vals[1];
                 byte[] thumbnailBytes = (byte[])vals[2];
                 if (Utils.isGroupConversation(msisdn))
                 {
+                    byte[] fullViewBytes = (byte[])vals[1];
                     string grpId = msisdn.Replace(":", "_");
                     MiscDBUtil.saveAvatarImage(grpId + HikeConstants.FULL_VIEW_IMAGE_PREFIX, fullViewBytes, false);
                     MiscDBUtil.saveAvatarImage(grpId, thumbnailBytes, false);

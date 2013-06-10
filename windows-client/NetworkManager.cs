@@ -668,6 +668,41 @@ namespace windows_client
                                         }
 
                                         #endregion
+                                        #region Profile Pic
+
+                                        if (kkvv.Key == HikeConstants.ICON)
+                                        {
+                                            JToken iconToken = kkvv.Value.ToObject<JToken>();
+                                            if (iconToken != null)
+                                            {
+                                                byte[] imageBytes = System.Convert.FromBase64String(iconToken.ToString());
+                                                MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, imageBytes, true);
+                                                object[] vals = new object[3];
+                                                vals[0] = App.MSISDN;
+                                                vals[1] = null;
+                                                vals[2] = imageBytes;
+                                                App.HikePubSubInstance.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
+                                            }
+                                        }
+
+                                        #endregion
+                                        #region LAST SEEN SEETING
+
+                                        if (kkvv.Key == HikeConstants.LASTSEENONOFF)
+                                        {
+                                            try
+                                            {
+                                                var val = kkvv.Value.ToString();
+
+                                                if (String.IsNullOrEmpty(val) || Convert.ToBoolean(val))
+                                                    App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, (byte)1);
+                                                else
+                                                    App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, (byte)0);
+                                            }
+                                            catch { }
+                                        }
+
+                                        #endregion
                                     }
                                     catch (Exception ex)
                                     {

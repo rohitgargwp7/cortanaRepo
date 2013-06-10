@@ -29,37 +29,20 @@ namespace windows_client.utils
             StringBuilder messageTimeString = new StringBuilder();
             if (span.Days < 1)
             {
-                //if (App.Is24HourTimeFormat)
-                //    return messageTime.ToString("HH\\:mm", CultureInfo.CurrentUICulture);
-                //else
-                //    return messageTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture);
-
                 messageTimeString.Append(String.Format("{0:00}", (messageTime.Hour % 12))).Append(":").Append(String.Format("{0:00}", (messageTime.Minute))).Append((messageTime.Hour / 12) == 0 ? "a" : "p");
                 return messageTimeString.ToString();
             }
             else if (span.Days < 7)
             {
-                //if (App.Is24HourTimeFormat)
-                //    return messageTime.ToString("ddd HH\\:mm", CultureInfo.CurrentUICulture);
-                //else
-                //    return messageTime.ToString("ddd h\\:mm tt", CultureInfo.CurrentUICulture);
                 return messageTime.DayOfWeek.ToString().Substring(0, 3);
             }//TODO count no of days in that year
             else if (span.Days < 365)
             {
-                //if (App.Is24HourTimeFormat)
-                //    return messageTime.ToString("d/MMM HH\\:mm", CultureInfo.CurrentUICulture);
-                //else
-                //    return messageTime.ToString("d/MMM h\\:mm tt", CultureInfo.CurrentUICulture);
                 messageTimeString.Append(messageTime.Day).Append("/").Append(messageTime.Month);
                 return messageTimeString.ToString();
             }
             else
             {
-                //if (App.Is24HourTimeFormat)
-                //    return messageTime.ToString("d/MMM/yy HH\\:mm", CultureInfo.CurrentUICulture);
-                //else
-                //    return messageTime.ToString("d/MMM/yy h\\:mm tt", CultureInfo.CurrentUICulture);
                 messageTimeString.Append(messageTime.Day).Append("/").Append(messageTime.Month).Append("/").Append(messageTime.Year % 100);
                 return messageTimeString.ToString();
             }
@@ -76,35 +59,19 @@ namespace windows_client.utils
             StringBuilder messageTimeString = new StringBuilder();
             if (span.Days < 1)
             {
-                //if (App.Is24HourTimeFormat)
-                //    return messageTime.ToString("HH\\:mm", CultureInfo.CurrentUICulture);
-                //else
-                //    return messageTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture);
                 messageTimeString.Append(String.Format("{0:00}", (messageTime.Hour % 12))).Append(":").Append(String.Format("{0:00}", (messageTime.Minute))).Append((messageTime.Hour / 12) == 0 ? "a" : "p");
                 return messageTimeString.ToString();
             }
             else if (span.Days < 7)
             {
-                //if (App.Is24HourTimeFormat)
-                //    return messageTime.ToString("ddd HH\\:mm", CultureInfo.CurrentUICulture);
-                //else
-                //    return messageTime.ToString("ddd h\\:mm tt", CultureInfo.CurrentUICulture);
                 messageTimeString.Append(messageTime.DayOfWeek.ToString().Substring(0, 3));
             }//TODO count no of days in that year
             else if (span.Days < 365)
             {
-                //if (App.Is24HourTimeFormat)
-                //    return messageTime.ToString("d/M HH\\:mm", CultureInfo.CurrentUICulture);
-                //else
-                //    return messageTime.ToString("d/M h\\:mm tt", CultureInfo.CurrentUICulture);
                 messageTimeString.Append(messageTime.Day).Append("/").Append(messageTime.Month);
             }
             else
             {
-                //if (App.Is24HourTimeFormat)
-                //    return messageTime.ToString("d/M/yyyy HH\\:mm", CultureInfo.CurrentUICulture);
-                //else
-                //    return messageTime.ToString("d/M/yyyy h\\:mm tt", CultureInfo.CurrentUICulture);
                 messageTimeString.Append(messageTime.Day).Append("/").Append(messageTime.Month).Append("/").Append(messageTime.Year % 100);
             }
             messageTimeString.Append(", ").Append(String.Format("{0:00}", (messageTime.Hour % 12))).Append(":").Append(String.Format("{0:00}", (messageTime.Minute))).Append((messageTime.Hour / 12) == 0 ? "a" : "p");
@@ -147,27 +114,50 @@ namespace windows_client.utils
 
             if (receivedTime.Date == DateTime.Now.Date) //today
             {
-                //if (App.Is24HourTimeFormat)
-                //    return Languages.AppResources.Last_Seen + " " + Languages.AppResources.Today_Txt + " " + Languages.AppResources.At_Txt + " " + receivedTime.ToString("HH\\:mm", CultureInfo.CurrentUICulture);
-                //else
-                    return Languages.AppResources.Last_Seen + " " + Languages.AppResources.Today_Txt + " " + Languages.AppResources.At_Txt + " " + receivedTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                return Languages.AppResources.Last_Seen_Today_At + " " + receivedTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
             }
             else if ((receivedTime - DateTime.Now.Date).Days  == 1) // yesterday
             {
-                //if (App.Is24HourTimeFormat)
-                //    return Languages.AppResources.Last_Seen + " " + Languages.AppResources.Yesterday_Txt + " " + Languages.AppResources.At_Txt + " " + receivedTime.ToString("HH\\:mm", CultureInfo.CurrentUICulture);
-                //else
-                    return Languages.AppResources.Last_Seen + " " + Languages.AppResources.Yesterday_Txt + " " + Languages.AppResources.At_Txt + " " + receivedTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                return Languages.AppResources.Last_Seen_Yesterday_At + " " + receivedTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
             }
             else if ((receivedTime - DateTime.Now.Date).Days < 7) // less than two weeks ago
             {
-                //if(App.Is24HourTimeFormat)
-                //    return Languages.AppResources.Last_Seen + " " + receivedTime.ToString("HH\\:mm, d/M/yyyy", CultureInfo.CurrentUICulture);
-                //else
-                    return Languages.AppResources.Last_Seen + " " + receivedTime.ToString("h\\:mm tt, d/M/yyyy", CultureInfo.CurrentUICulture).Replace(" AM","a").Replace(" PM","p");
+                return Languages.AppResources.Last_Seen + " " + GetMonthDateTime(receivedTime);
             }
             else
                 return Languages.AppResources.Last_Seen + " " + AppResources.TimeUtils_A_While_Ago;
+        }
+
+        static string GetMonthDateTime(DateTime time)
+        {
+            var number = time.Day;
+
+            switch (number % 100)
+            {
+                case 21:
+                case 31:
+                    return time.ToString("d\\s\\t MMM, h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                case 22:
+                    return time.ToString("d\\n\\d MMM, h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                case 23:
+                    return time.ToString("d\\r\\d MMM, h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                case 11:
+                case 12:
+                case 13:
+                    return time.ToString("d\\t\\h MMM, h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+            }
+
+            switch (number % 10)
+            {
+                case 1:
+                    return time.ToString("d\\s\\t MMM, h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                case 2:
+                    return time.ToString("d\\n\\d MMM, h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                case 3:
+                    return time.ToString("d\\r\\d MMM, h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                default:
+                    return time.ToString("d\\t\\h MMM, h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+            }
         }
 
         public static string getRelativeTime(long timestamp)
