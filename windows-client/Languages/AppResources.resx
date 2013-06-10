@@ -389,10 +389,6 @@
     <value>accept</value>
     <comment>accept button in appbar</comment>
   </data>
-  <data name="Messaging_Made_Personal_Txt" xml:space="preserve">
-    <value>Messaging made personal again</value>
-    <comment>This is text below hike logo on welcome screen.</comment>
-  </data>
   <data name="WelcomePage_PushMsg_TxtBlk" xml:space="preserve">
     <value>Push Notifications are turned on by default</value>
     <comment>Push Notification msg</comment>
@@ -1800,5 +1796,8 @@ Get hike: http://get.hike.in</value>
   </data>
   <data name="sms_invite_message_3" xml:space="preserve">
     <value>Hey, I'm using hike; it comes with a cool Walkie-Talkie which lets me send you free voice messages. Get it now http://hike.in/</value>
+  </data>
+  <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
+    <value>Fun, free messaging for life</value>
   </data>
 </root>
