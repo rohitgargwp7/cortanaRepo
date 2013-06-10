@@ -2112,6 +2112,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last seen today at.
+        /// </summary>
+        public static string Last_Seen_Today_At {
+            get {
+                return ResourceManager.GetString("Last_Seen_Today_At", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last seen yesterday at.
+        /// </summary>
+        public static string Last_Seen_Yesterday_At {
+            get {
+                return ResourceManager.GetString("Last_Seen_Yesterday_At", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Location.
         /// </summary>
         public static string Location_Txt {

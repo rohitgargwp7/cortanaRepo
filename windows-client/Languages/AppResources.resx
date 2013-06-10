@@ -1801,4 +1801,10 @@ Get hike: http://get.hike.in</value>
   <data name="sms_invite_message_3" xml:space="preserve">
     <value>Hey, I'm using hike; it comes with a cool Walkie-Talkie which lets me send you free voice messages. Get it now http://hike.in/</value>
   </data>
+  <data name="Last_Seen_Today_At" xml:space="preserve">
+    <value>Last seen today at</value>
+  </data>
+  <data name="Last_Seen_Yesterday_At" xml:space="preserve">
+    <value>Last seen yesterday at</value>
+  </data>
 </root>
