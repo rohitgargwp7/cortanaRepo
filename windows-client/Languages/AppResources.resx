@@ -389,10 +389,6 @@
     <value>accept</value>
     <comment>accept button in appbar</comment>
   </data>
-  <data name="Messaging_Made_Personal_Txt" xml:space="preserve">
-    <value>Messaging made personal again</value>
-    <comment>This is text below hike logo on welcome screen.</comment>
-  </data>
   <data name="WelcomePage_PushMsg_TxtBlk" xml:space="preserve">
     <value>Push Notifications are turned on by default</value>
     <comment>Push Notification msg</comment>
@@ -1806,5 +1802,8 @@ Get hike: http://get.hike.in</value>
   </data>
   <data name="Last_Seen_Yesterday_At" xml:space="preserve">
     <value>Last seen yesterday at</value>
+  </data>
+  <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
+    <value>Fun, free messaging for life</value>
   </data>
 </root>
