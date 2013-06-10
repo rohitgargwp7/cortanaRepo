@@ -1663,7 +1663,7 @@ Get hike: http://get.hike.in</value>
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>See/show last online timestamp</value>
+    <value>Show last online timestamp</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
     <value>Last seen</value>

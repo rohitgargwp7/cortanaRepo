@@ -3588,7 +3588,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to See/show last online timestamp.
+        ///   Looks up a localized string similar to Show last online timestamp.
         /// </summary>
         public static string Show_LastSeen_TimeStamp {
             get {
