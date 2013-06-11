@@ -3772,16 +3772,7 @@ namespace windows_client.View
                 {
                     var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
                     if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat)
-                    {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            //update ui if prev last seen is greater than current last seen, db updated everytime in backend
-                            lastSeenTxt.Text = AppResources.Online;
-                            onlineStatus.Visibility = Visibility.Visible;
-                            userName.FontSize = 36;
-                            lastSeenPannel.Visibility = Visibility.Visible;
-                        });
-                    }
+                        UpdateLastSeenOnUI(AppResources.Online);
                 }
 
                 object[] vals = (object[])obj;
