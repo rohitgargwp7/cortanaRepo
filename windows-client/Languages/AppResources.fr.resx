@@ -1670,7 +1670,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>Voir dern. apparition en ligne</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
-    <value>Dern. app.</value>
+    <value>Dernière connexion</value>
   </data>
   <data name="Online" xml:space="preserve">
     <value>en ligne</value>
@@ -1804,5 +1804,11 @@ Télécharge hike : http://get.hike.in</value>
   </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
     <value>Une messagerie fun et gratuite</value>
+  </data>
+  <data name="Last_Seen_Today_At" xml:space="preserve">
+    <value>Dernière connexion aujour’dhui à</value>
+  </data>
+  <data name="Last_Seen_Yesterday_At" xml:space="preserve">
+    <value>Dernière connexion hier à</value>
   </data>
 </root>
