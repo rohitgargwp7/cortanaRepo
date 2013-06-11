@@ -293,23 +293,7 @@ namespace windows_client.View
 
                     if (_lastUpdatedLastSeenTimeStamp != 0)
                     {
-                        Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
-                        {
-                            if (App.newChatThreadPage != null)
-                            {
-                                //update ui if prev last seen is greater than current last seen, db updated everytime in backend
-                                lastSeenTxt.Text = lastSeenStatus;
-                                onlineStatus.Visibility = Visibility.Visible;
-                                userName.FontSize = 36;
-                                lastSeenPannel.Visibility = Visibility.Visible;
-
-                                if (!App.ViewModel.TipList[5].IsShown || App.ViewModel.TipList[5].IsCurrentlyShown)
-                                    App.ViewModel.DisplayTip(LayoutRoot, 5);
-
-                                _lastSeenTimer.Start();
-                            }
-
-                        }), _lastSeenHelper.GetLastSeenTimeStampStatus(actualTimeStamp));
+                        UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(actualTimeStamp));
                     }
                 }
             }
@@ -320,20 +304,7 @@ namespace windows_client.View
 
                 if (_lastUpdatedLastSeenTimeStamp != 0)
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
-                    {
-                        if (App.newChatThreadPage != null)
-                        {
-                            //update ui if prev last seen is greater than current last seen, db updated everytime in backend
-                            lastSeenTxt.Text = lastSeenStatus;
-                            onlineStatus.Visibility = Visibility.Visible;
-                            userName.FontSize = 36;
-                            lastSeenPannel.Visibility = Visibility.Visible;
-
-                            _lastSeenTimer.Start();
-                        }
-
-                    }), _lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
+                    UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
                 }
             }
         }
@@ -936,8 +907,12 @@ namespace windows_client.View
                 var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
                 if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
                 {
-                    _lastSeenTimer = new DispatcherTimer() { Interval = TimeSpan.FromMinutes(5) };
-                    _lastSeenTimer.Tick += _lastSeenTimer_Tick;
+                    if (_lastSeenTimer == null)
+                    {
+                        _lastSeenTimer = new DispatcherTimer() { Interval = TimeSpan.FromMinutes(5) };
+                        _lastSeenTimer.Tick += _lastSeenTimer_Tick;
+                    }
+                    
                     _lastSeenTimer.Start();
 
                     BackgroundWorker _worker = new BackgroundWorker();
@@ -1048,20 +1023,7 @@ namespace windows_client.View
 
             if (_lastUpdatedLastSeenTimeStamp != 0)
             {
-                Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
-                {
-                    if (App.newChatThreadPage != null)
-                    {
-                        //update ui if prev last seen is greater than current last seen, db updated everytime in backend
-                        lastSeenTxt.Text = lastSeenStatus;
-                        onlineStatus.Visibility = Visibility.Visible;
-                        userName.FontSize = 36;
-                        lastSeenPannel.Visibility = Visibility.Visible;
-
-                        _lastSeenTimer.Start();
-                    }
-
-                }), _lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
+                UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
             }
             else
             {
@@ -3930,20 +3892,7 @@ namespace windows_client.View
                                 _lastUpdatedLastSeenTimeStamp = lastSeen;
                             }
 
-                            Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
-                            {
-                                if (App.newChatThreadPage != null)
-                                {
-                                    //update ui if prev last seen is greater than current last seen, db updated everytime in backend
-                                    lastSeenTxt.Text = lastSeenStatus;
-                                    onlineStatus.Visibility = Visibility.Visible;
-                                    userName.FontSize = 36;
-                                    lastSeenPannel.Visibility = Visibility.Visible;
-
-                                    _lastSeenTimer.Start();
-                                }
-
-                            }), _lastSeenHelper.GetLastSeenTimeStampStatus(lastSeen));
+                            UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(lastSeen));
 
                             FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, _lastUpdatedLastSeenTimeStamp);
                         }
@@ -5504,6 +5453,32 @@ namespace windows_client.View
                 this.ocMessages.Remove(toolTipMessage);
 
             App.ViewModel.HideToolTip(null, 4);
+        }
+
+        void UpdateLastSeenOnUI(string status)
+        {
+            //Update UI
+            Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
+            {
+                if (App.newChatThreadPage != null)
+                {
+                    lastSeenTxt.Text = status;
+                    onlineStatus.Visibility = Visibility.Visible;
+                    userName.FontSize = 36;
+                    lastSeenPannel.Visibility = Visibility.Visible;
+
+                    if (!App.ViewModel.TipList[5].IsShown || App.ViewModel.TipList[5].IsCurrentlyShown)
+                        App.ViewModel.DisplayTip(LayoutRoot, 5);
+
+                    if (_lastSeenTimer == null)
+                    {
+                        _lastSeenTimer = new DispatcherTimer() { Interval = TimeSpan.FromMinutes(5) };
+                        _lastSeenTimer.Tick += _lastSeenTimer_Tick;
+                    }
+
+                    _lastSeenTimer.Start();
+                }
+            }), status);
         }
     }
 

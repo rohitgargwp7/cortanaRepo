@@ -3426,7 +3426,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Status Updates Notification.
+        ///   Looks up a localized string similar to Status updates notification.
         /// </summary>
         public static string Settings_StatusNotification_SwitchHeader {
             get {
@@ -3588,7 +3588,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show last online timestamp.
+        ///   Looks up a localized string similar to Show last seen.
         /// </summary>
         public static string Show_LastSeen_TimeStamp {
             get {

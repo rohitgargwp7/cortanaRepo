@@ -1466,7 +1466,7 @@ Get hike: http://get.hike.in</value>
     <value>Post a status update</value>
   </data>
   <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
-    <value>Status Updates Notification</value>
+    <value>Status updates notification</value>
   </data>
   <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
     <value>Every Hour</value>
@@ -1659,7 +1659,7 @@ Get hike: http://get.hike.in</value>
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>Show last online timestamp</value>
+    <value>Show last seen</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
     <value>Last seen</value>
