@@ -1667,7 +1667,7 @@ hike включает уморительные смайлы и позволяе�
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>Показать время последнего раза</value>
+    <value>Показать последнего раза в сети</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
     <value>В последний раз в сети:</value>
