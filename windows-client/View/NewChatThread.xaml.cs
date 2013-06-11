@@ -268,8 +268,6 @@ namespace windows_client.View
                 {
                     _lastSeenHelper.UpdateLastSeen -= LastSeenResponseReceived;
 
-                    System.Diagnostics.Debug.WriteLine(mContactNumber + "TimeStamp" + e.TimeStamp);
-
                     long actualTimeStamp = e.TimeStamp;
 
                     if (e.TimeStamp == -1)
@@ -5423,7 +5421,7 @@ namespace windows_client.View
             {
                 if (App.newChatThreadPage != null)
                 {
-                    lastSeenTxt.Text = status;
+                    lastSeenTxt.Text = lastSeenStatus;
                     onlineStatus.Visibility = Visibility.Visible;
                     userName.FontSize = 36;
                     lastSeenPannel.Visibility = Visibility.Visible;
