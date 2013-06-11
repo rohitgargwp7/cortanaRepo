@@ -1794,6 +1794,12 @@
   <data name="sms_invite_message_3" xml:space="preserve">
     <value>Hey, ich verwende hike mit einem coolen Walkie-Talkie, mit dem du Freunden gratis Sprachnachrichten senden kannst. Besuche http://hike.in/</value>
   </data>
+  <data name="Button_Retry_Txt" xml:space="preserve">
+    <value>Erneut versuchen</value>
+  </data>
+  <data name="DownloadFailed_Txt" xml:space="preserve">
+    <value>Ups! Download fehlgeschlagen</value>
+  </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
     <value>Gratis Messaging mit Spaß, ein Leben lang</value>
   </data>

@@ -1806,4 +1806,10 @@ Get hike: http://get.hike.in</value>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
     <value>Fun, free messaging for life</value>
   </data>
+  <data name="Button_Retry_Txt" xml:space="preserve">
+    <value>Retry</value>
+  </data>
+  <data name="DownloadFailed_Txt" xml:space="preserve">
+    <value>Oops! Download Failed</value>
+  </data>
 </root>
