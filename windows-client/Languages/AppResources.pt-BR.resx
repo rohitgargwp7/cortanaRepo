@@ -1669,7 +1669,7 @@ Obtenha o hike: http://get.hike.in</value>
     <value>Mostrar Visto pela última vez</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
-    <value>Visto pela última vez:</value>
+    <value>visto pela última vez:</value>
   </data>
   <data name="Online" xml:space="preserve">
     <value>on-line</value>
@@ -1811,9 +1811,9 @@ Obtenha o hike: http://get.hike.in</value>
     <value>Mensagens grátis e divertidas a vida inteira</value>
   </data>
   <data name="Last_Seen_Today_At" xml:space="preserve">
-    <value>Visto pela última vez hoje às</value>
+    <value>visto pela última vez hoje às</value>
   </data>
   <data name="Last_Seen_Yesterday_At" xml:space="preserve">
-    <value>Visto pela última vez ontem às</value>
+    <value>visto pela última vez ontem às</value>
   </data>
 </root>

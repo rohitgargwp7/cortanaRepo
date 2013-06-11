@@ -1662,7 +1662,7 @@
     <value>"Zuletzt online" anzeigen</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
-    <value>Zuletzt online</value>
+    <value>zuletzt online</value>
   </data>
   <data name="Online" xml:space="preserve">
     <value>online</value>
@@ -1804,9 +1804,9 @@
     <value>Gratis Messaging mit Spaß, ein Leben lang</value>
   </data>
   <data name="Last_Seen_Today_At" xml:space="preserve">
-    <value>Zuletzt online heute um</value>
+    <value>zuletzt online heute um</value>
   </data>
   <data name="Last_Seen_Yesterday_At" xml:space="preserve">
-    <value>Zuletzt online gestern um</value>
+    <value>zuletzt online gestern um</value>
   </data>
 </root>
