@@ -108,7 +108,6 @@ namespace windows_client.View
         private BingMapsTask bingMapsTask = null;
         private object statusObject = null;
 
-        private DispatcherTimer _lastSeenTimer;
         private LastSeenHelper _lastSeenHelper;
 
         //        private ObservableCollection<MyChatBubble> chatThreadPageCollection = new ObservableCollection<MyChatBubble>();
@@ -268,6 +267,8 @@ namespace windows_client.View
                 if (e.ContactNumber == mContactNumber)
                 {
                     _lastSeenHelper.UpdateLastSeen -= LastSeenResponseReceived;
+
+                    System.Diagnostics.Debug.WriteLine(mContactNumber + "TimeStamp" + e.TimeStamp);
 
                     long actualTimeStamp = e.TimeStamp;
 
@@ -903,14 +904,6 @@ namespace windows_client.View
                 var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
                 if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
                 {
-                    if (_lastSeenTimer == null)
-                    {
-                        _lastSeenTimer = new DispatcherTimer() { Interval = TimeSpan.FromMinutes(5) };
-                        _lastSeenTimer.Tick += _lastSeenTimer_Tick;
-                    }
-                    
-                    _lastSeenTimer.Start();
-
                     BackgroundWorker _worker = new BackgroundWorker();
 
                     _worker.DoWork += (ss, ee) =>
@@ -919,7 +912,6 @@ namespace windows_client.View
                     };
 
                     _worker.RunWorkerAsync();
-
                 }
             }
 
@@ -1010,23 +1002,6 @@ namespace windows_client.View
             }
             else
                 chatThreadMainPage.ApplicationBar = appBar;
-        }
-
-
-        void _lastSeenTimer_Tick(object sender, EventArgs e)
-        {
-            _lastSeenTimer.Stop();
-
-            if (_lastUpdatedLastSeenTimeStamp != 0)
-                UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
-            else
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    userName.FontSize = 50;
-                    lastSeenPannel.Visibility = Visibility.Collapsed;
-                });
-            }
         }
 
         private void showNudgeTute()
@@ -5463,14 +5438,6 @@ namespace windows_client.View
 
                     if (isShowTip && (!App.ViewModel.TipList[5].IsShown || App.ViewModel.TipList[5].IsCurrentlyShown))
                         App.ViewModel.DisplayTip(LayoutRoot, 5);
-
-                    if (_lastSeenTimer == null)
-                    {
-                        _lastSeenTimer = new DispatcherTimer() { Interval = TimeSpan.FromMinutes(5) };
-                        _lastSeenTimer.Tick += _lastSeenTimer_Tick;
-                    }
-
-                    _lastSeenTimer.Start();
                 }
             }), status, showTip);
         }
