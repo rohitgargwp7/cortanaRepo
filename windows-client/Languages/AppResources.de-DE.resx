@@ -867,7 +867,7 @@
     <value>Update erhältlich</value>
   </data>
   <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
-    <value>Es gibt eine neue Version von hike. Möchtest du updaten?</value>
+    <value>Update auf die neue Version von hike, um tolle neue Arten des Messaging zu entdecken.</value>
   </data>
   <data name="Owner_Txt" xml:space="preserve">
     <value>Besitzer</value>
@@ -1659,10 +1659,10 @@
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>Onl. Zeitstempel sehen/zeigen</value>
+    <value>"Zuletzt online" anzeigen</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
-    <value>Zul.online</value>
+    <value>zuletzt online</value>
   </data>
   <data name="Online" xml:space="preserve">
     <value>online</value>
@@ -1802,5 +1802,11 @@
   </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
     <value>Gratis Messaging mit Spaß, ein Leben lang</value>
+  </data>
+  <data name="Last_Seen_Today_At" xml:space="preserve">
+    <value>zuletzt online heute um</value>
+  </data>
+  <data name="Last_Seen_Yesterday_At" xml:space="preserve">
+    <value>zuletzt online gestern um</value>
   </data>
 </root>

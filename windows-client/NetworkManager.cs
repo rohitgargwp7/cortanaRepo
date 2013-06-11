@@ -223,6 +223,13 @@ namespace windows_client
                         if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
                             lastSeen = lastSeen - timedifference;
                     }
+
+                    if (lastSeen == -1)
+                        FriendsTableUtils.SetFriendLastSeenTSToFile(msisdn, 0);
+                    else if (lastSeen == 0)
+                        FriendsTableUtils.SetFriendLastSeenTSToFile(msisdn, TimeUtils.getCurrentTimeStamp());
+                    else
+                        FriendsTableUtils.SetFriendLastSeenTSToFile(msisdn, lastSeen);
                 }
                 catch (Exception ex)
                 {

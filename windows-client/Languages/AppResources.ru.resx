@@ -875,7 +875,7 @@ hike включает уморительные смайлы и позволяе�
     <value>Доступно обновление</value>
   </data>
   <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
-    <value>Доступна новая версия hike. Обновить?</value>
+    <value>Обновите hike, чтобы обогатить возможности своего общения</value>
   </data>
   <data name="Owner_Txt" xml:space="preserve">
     <value>владелец</value>
@@ -1667,10 +1667,10 @@ hike включает уморительные смайлы и позволяе�
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>Показать время последнего раза</value>
+    <value>Показать последнего раза в сети</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
-    <value>Посл. раз</value>
+    <value>В последний раз в сети:</value>
   </data>
   <data name="Online" xml:space="preserve">
     <value>в сети</value>
@@ -1810,5 +1810,11 @@ hike включает уморительные смайлы и позволяе�
   </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
     <value>Удобный бесплатный чат для повседневного общения</value>
+  </data>
+  <data name="Last_Seen_Today_At" xml:space="preserve">
+    <value>В последний раз в сети: сегодня в</value>
+  </data>
+  <data name="Last_Seen_Yesterday_At" xml:space="preserve">
+    <value>В последний раз в сети: вчера в</value>
   </data>
 </root>

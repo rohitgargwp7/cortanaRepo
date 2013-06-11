@@ -875,7 +875,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>Mise à j. disponible</value>
   </data>
   <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
-    <value>Nouvelle version de hike disponible. Mettre l'appli à jour ?</value>
+    <value>Mettez hike à jour pour découvrir des façons inédites d’envoyer des messages</value>
   </data>
   <data name="Owner_Txt" xml:space="preserve">
     <value>Propriétaire</value>
@@ -1667,10 +1667,10 @@ Télécharge hike : http://get.hike.in</value>
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>Voir dern. apparition en ligne</value>
+    <value>Afficher dernière connexion</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
-    <value>Dern. app.</value>
+    <value>dernière connexion</value>
   </data>
   <data name="Online" xml:space="preserve">
     <value>en ligne</value>
@@ -1810,5 +1810,11 @@ Télécharge hike : http://get.hike.in</value>
   </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
     <value>Une messagerie fun et gratuite</value>
+  </data>
+  <data name="Last_Seen_Today_At" xml:space="preserve">
+    <value>dernière connexion aujour’dhui à</value>
+  </data>
+  <data name="Last_Seen_Yesterday_At" xml:space="preserve">
+    <value>dernière connexion hier à</value>
   </data>
 </root>

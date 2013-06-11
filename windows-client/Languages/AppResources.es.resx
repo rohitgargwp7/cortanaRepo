@@ -867,7 +867,7 @@
     <value>Actualización disponible</value>
   </data>
   <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
-    <value>Nueva versión de hike disponible. ¿Quieres actualizar la app?</value>
+    <value>Actualiza a la nueva versión de hike para descubrir nuevas formas increíbles de enviar mensajes</value>
   </data>
   <data name="Owner_Txt" xml:space="preserve">
     <value>dueño</value>
@@ -1659,10 +1659,10 @@
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>Ver/mostrar última conexión</value>
+    <value>Mostrar última conexión</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
-    <value>Última vez</value>
+    <value>Última conexión:</value>
   </data>
   <data name="Online" xml:space="preserve">
     <value>online</value>
@@ -1802,5 +1802,11 @@
   </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
     <value>Mensajes divertidos y gratuitos para el día a día</value>
+  </data>
+  <data name="Last_Seen_Today_At" xml:space="preserve">
+    <value>Última conexión hoy. Hora:</value>
+  </data>
+  <data name="Last_Seen_Yesterday_At" xml:space="preserve">
+    <value>Última conexión ayer. Hora:</value>
   </data>
 </root>

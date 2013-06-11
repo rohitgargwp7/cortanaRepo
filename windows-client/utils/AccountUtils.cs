@@ -371,6 +371,7 @@ namespace windows_client.utils
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/lastseen/" + userNumber)) as HttpWebRequest;
             addToken(req);
             req.Method = "GET";
+            req.Headers[HttpRequestHeader.IfModifiedSince] = Environment.TickCount.ToString();
             req.BeginGetResponse(GetRequestCallback, new object[] { req, finalCallbackFunction });
         }
 
