@@ -32,6 +32,13 @@
             <StackPanel Visibility="Collapsed" x:Name="stNoStickers" Height="230" Margin="0 10 0 0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
                 <TextBlock Text="{Binding Path=LocalizedResources.No_Stickers_Downloaded_Txt,Source={StaticResource LocalizedStrings}}" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 100 0 0"/>
             </StackPanel>
+            <StackPanel Visibility="Visible" x:Name="stRetry"  Height="230" Margin="0 10 0 0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+                <TextBlock Text="{Binding Path=LocalizedResources.DownloadFailed_Txt,Source={StaticResource LocalizedStrings}}"  FontSize="20" Foreground="#e9ecee" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 80 0 0"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                    <Button MinWidth="120" Content="{Binding Path=LocalizedResources.Button_Retry_Txt,Source={StaticResource LocalizedStrings}}" x:Name="btnRetry" Background="#e9ecee" BorderThickness="0" Margin="0" Foreground="Gray" FontSize="20" Height="70" Tap="RetryStickersTap"></Button>
+                    <Button MinWidth="120" x:Name="btnClose" Background="#e9ecee" BorderThickness="0" Margin="0" Foreground="Gray" FontSize="20" Content="{Binding Path=LocalizedResources.Conversations_Dismiss_Tip,Source={StaticResource LocalizedStrings}}" Height="70" Tap="btnClose_Tap"></Button>
+                </StackPanel>
+            </StackPanel>
             <ProgressBar Name="moreProgressBar" Visibility="Collapsed" Grid.Row="1" Height="5" Margin="0 0 0 5"  VerticalContentAlignment="Bottom" IsIndeterminate="True" IsEnabled="True" Foreground="White" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
          </Grid>
         </Grid>

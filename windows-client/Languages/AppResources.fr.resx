@@ -1802,6 +1802,12 @@ Télécharge hike : http://get.hike.in</value>
   <data name="sms_invite_message_3" xml:space="preserve">
     <value>Salut ! J'utilise hike, qui propose un walkie-talkie grâce auquel je t'envoie des messages vocaux gratuits. Pour l'obtenir : http://hike.in/</value>
   </data>
+  <data name="Button_Retry_Txt" xml:space="preserve">
+    <value>Réessayer</value>
+  </data>
+  <data name="DownloadFailed_Txt" xml:space="preserve">
+    <value>Oups ! Le téléchargement a échoué</value>
+  </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
     <value>Une messagerie fun et gratuite</value>
   </data>

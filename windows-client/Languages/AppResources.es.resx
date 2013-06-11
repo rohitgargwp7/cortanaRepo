@@ -1794,6 +1794,12 @@
   <data name="sms_invite_message_3" xml:space="preserve">
     <value>¡Hola! Estoy usando hike; incluye un walkie-talkie para poder enviarte mensajes de voz gratis. Descárgalo ya en http://hike.in/</value>
   </data>
+  <data name="Button_Retry_Txt" xml:space="preserve">
+    <value>Reintentar</value>
+  </data>
+  <data name="DownloadFailed_Txt" xml:space="preserve">
+    <value>¡Vaya! Error al descargar</value>
+  </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
     <value>Mensajes divertidos y gratuitos para el día a día</value>
   </data>

@@ -2740,7 +2740,7 @@ namespace windows_client.View
             lastText = string.Empty;
             sendIconButton.IsEnabled = false;
 
-            if(emoticonPanel.Visibility == Visibility.Collapsed)
+            if (emoticonPanel.Visibility == Visibility.Collapsed)
                 sendMsgTxtbox.Focus();
 
             if (String.IsNullOrEmpty(message))
@@ -4784,7 +4784,7 @@ namespace windows_client.View
             {
                 stickerPivot.ShowNoStickers();
             }
-            else if (stickerCategory.ListStickers.Count == 0 && stickerCategory.HasMoreStickers)
+            else if (stickerCategory.HasMoreStickers)
             {
                 downloadStickers_Tap(null, null);
             }
@@ -4821,7 +4821,7 @@ namespace windows_client.View
             }
         }
 
-        private void PostRequestForBatchStickers(StickerCategory stickerCategory)
+        public void PostRequestForBatchStickers(StickerCategory stickerCategory)
         {
             JObject json = new JObject();
             json["catId"] = stickerCategory.Category;
@@ -4863,6 +4863,7 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                            {
+                               stickerPivot.ShowDownloadFailed();
                                stickerPivot.ShowHidMoreProgreesBar(false);
                            });
                     }
@@ -5050,7 +5051,7 @@ namespace windows_client.View
             pvt.Padding = zeroThickness;
             EventHandler<ItemRealizationEventArgs> itemRealised = null;
             itemRealised += new EventHandler<ItemRealizationEventArgs>(llsStickersCategory_OnItemsRealised);
-            StickerPivot stickerPivot = new StickerPivot(Stickers_Tap, itemRealised, listSticker, pivotIndex);
+            StickerPivot stickerPivot = new StickerPivot(Stickers_Tap, itemRealised, listSticker, pivotIndex, category);
             dictStickersPivot[category] = stickerPivot;
             pvt.Content = stickerPivot;
             pivotStickers.Items.Add(pvt);
@@ -5107,7 +5108,8 @@ namespace windows_client.View
         {
             ShowDownloadOverlay(false);
             StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
-            stickerCategory.SetDownloadMessage(false);
+            if (stickerCategory.ShowDownloadMessage)
+                stickerCategory.SetDownloadMessage(false);
             if (dictStickersPivot.ContainsKey(stickerCategory.Category))
             {
                 if (stickerCategory.ListStickers.Count > 0)
@@ -5120,7 +5122,6 @@ namespace windows_client.View
             }
             PostRequestForBatchStickers(stickerCategory);
         }
-
 
         #endregion
 

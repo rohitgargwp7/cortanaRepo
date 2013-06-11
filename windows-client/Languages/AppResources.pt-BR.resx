@@ -1801,6 +1801,12 @@ Obtenha o hike: http://get.hike.in</value>
   <data name="sms_invite_message_3" xml:space="preserve">
     <value>Olá, estou usando o hike, que vem com um Walkie-Talkie que permite enviar mensagens de voz gratuitas. Obtenha agora em http://hike.in/</value>
   </data>
+  <data name="Button_Retry_Txt" xml:space="preserve">
+    <value>Tentar novamente</value>
+  </data>
+  <data name="DownloadFailed_Txt" xml:space="preserve">
+    <value>Ops! Falha no download</value>
+  </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
     <value>Mensagens grátis e divertidas a vida inteira</value>
   </data>
