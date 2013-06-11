@@ -871,7 +871,7 @@ Get hike: http://get.hike.in</value>
     <value>Update available</value>
   </data>
   <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
-    <value>A new version of hike is out. Would you like to update the app?</value>
+    <value>Update to the new version of hike to discover amazing new ways to message</value>
   </data>
   <data name="Owner_Txt" xml:space="preserve">
     <value>owner</value>

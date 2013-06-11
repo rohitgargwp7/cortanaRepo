@@ -2535,7 +2535,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A new version of hike is out. Would you like to update the app?.
+        ///   Looks up a localized string similar to Update to the new version of hike to discover amazing new ways to message.
         /// </summary>
         public static string NORMAL_UPDATE_TEXT {
             get {
