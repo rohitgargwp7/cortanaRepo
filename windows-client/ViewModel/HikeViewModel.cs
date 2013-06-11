@@ -455,7 +455,11 @@ namespace windows_client.ViewModel
 
                 inAppTipUC.Dismissed += inAppTipUC_Dismissed;
 
-                element.Children.Add(inAppTipUC);
+                try
+                {
+                    element.Children.Add(inAppTipUC);
+                }
+                catch { }
             }
         }
 

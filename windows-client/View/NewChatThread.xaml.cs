@@ -292,9 +292,7 @@ namespace windows_client.View
                     }
 
                     if (_lastUpdatedLastSeenTimeStamp != 0)
-                    {
-                        UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(actualTimeStamp));
-                    }
+                        UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(actualTimeStamp), true); //show last seen tip if not shown
                 }
             }
             else
@@ -303,9 +301,7 @@ namespace windows_client.View
                 _lastUpdatedLastSeenTimeStamp = FriendsTableUtils.GetFriendLastSeenTSFromFile(mContactNumber);
 
                 if (_lastUpdatedLastSeenTimeStamp != 0)
-                {
                     UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
-                }
             }
         }
 
@@ -1022,9 +1018,7 @@ namespace windows_client.View
             _lastSeenTimer.Stop();
 
             if (_lastUpdatedLastSeenTimeStamp != 0)
-            {
                 UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
-            }
             else
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -5455,10 +5449,10 @@ namespace windows_client.View
             App.ViewModel.HideToolTip(null, 4);
         }
 
-        void UpdateLastSeenOnUI(string status)
+        void UpdateLastSeenOnUI(string status, bool showTip = false)
         {
             //Update UI
-            Deployment.Current.Dispatcher.BeginInvoke(new Action<string>(delegate(string lastSeenStatus)
+            Deployment.Current.Dispatcher.BeginInvoke(new Action<string, bool>(delegate(string lastSeenStatus, bool isShowTip)
             {
                 if (App.newChatThreadPage != null)
                 {
@@ -5467,7 +5461,7 @@ namespace windows_client.View
                     userName.FontSize = 36;
                     lastSeenPannel.Visibility = Visibility.Visible;
 
-                    if (!App.ViewModel.TipList[5].IsShown || App.ViewModel.TipList[5].IsCurrentlyShown)
+                    if (isShowTip && (!App.ViewModel.TipList[5].IsShown || App.ViewModel.TipList[5].IsCurrentlyShown))
                         App.ViewModel.DisplayTip(LayoutRoot, 5);
 
                     if (_lastSeenTimer == null)
@@ -5478,7 +5472,7 @@ namespace windows_client.View
 
                     _lastSeenTimer.Start();
                 }
-            }), status);
+            }), status, showTip);
         }
     }
 
