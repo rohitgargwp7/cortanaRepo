@@ -3835,24 +3835,8 @@ namespace windows_client.View
                     {
                         if (lastSeen > _lastUpdatedLastSeenTimeStamp || lastSeen == 0)
                         {
-                            if (lastSeen == 0)
-                                _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
-                            else
-                            {
-                                _lastUpdatedLastSeenTimeStamp = lastSeen;
-
-                                long timedifference;
-
-                                if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
-                                    lastSeen = lastSeen - timedifference;
-
-                                FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, lastSeen);
-                                _lastUpdatedLastSeenTimeStamp = lastSeen;
-                            }
-
+                            _lastUpdatedLastSeenTimeStamp = lastSeen == 0 ? TimeUtils.getCurrentTimeStamp() : lastSeen;
                             UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(lastSeen));
-
-                            FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, _lastUpdatedLastSeenTimeStamp);
                         }
                         else if (lastSeen == -1)
                         {
