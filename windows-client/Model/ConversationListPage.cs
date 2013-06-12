@@ -151,6 +151,7 @@ namespace windows_client.Model
                     NotifyPropertyChanged("LastMessageColor");
                     NotifyPropertyChanged("SDRStatusImage");
                     NotifyPropertyChanged("SDRStatusImageVisible");
+                    NotifyPropertyChanged("UnreadCircleVisibility");
                 }
             }
         }

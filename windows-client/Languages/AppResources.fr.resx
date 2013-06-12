@@ -1817,4 +1817,7 @@ Télécharge hike : http://get.hike.in</value>
   <data name="Last_Seen_Yesterday_At" xml:space="preserve">
     <value>dernière connexion hier à</value>
   </data>
+  <data name="Installed_Txt" xml:space="preserve">
+    <value>installé</value>
+  </data>
 </root>
