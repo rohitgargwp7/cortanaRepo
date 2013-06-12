@@ -44,36 +44,20 @@ namespace windows_client.View
                 case App.PageState.TUTORIAL_SCREEN_STATUS:
                     InitialiseTutStatusUpdateScreen();
                     break;
-                case App.PageState.TUTORIAL_SCREEN_STICKERS:
+                default:
                     InitialiseTutStickersScreen();
                     break;
-                default:
-                    InitialiseWelcomeScreen();
-                    break;
-            }
-        }
-
-        private void InitialiseWelcomeScreen()
-        {
-            string country_code = null;
-            App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-            if (!string.IsNullOrEmpty(country_code) && country_code != "+91")
-            {
-                txtBlkInfo1.Text = AppResources.ReadyToHike_Txt;
-                txtBlkInfo2.Visibility = Visibility.Collapsed;
             }
         }
 
         private void InitialiseTutStatusUpdateScreen()
         {
-            gridWelcome.Visibility = Visibility.Collapsed;
             gridStatusUpdates.Visibility = Visibility.Visible;
             gridStickers.Visibility = Visibility.Collapsed;
         }
 
         private void InitialiseTutStickersScreen()
         {
-            gridWelcome.Visibility = Visibility.Collapsed;
             gridStatusUpdates.Visibility = Visibility.Collapsed;
             gridStickers.Visibility = Visibility.Visible;
             nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
@@ -87,13 +71,7 @@ namespace windows_client.View
         }
         public void OnNextClick(object sender, EventArgs e)
         {
-            if (currentPagestate == App.PageState.TUTORIAL_SCREEN)
-            {
-                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.TUTORIAL_SCREEN_STATUS);
-                InitialiseTutStatusUpdateScreen();
-                currentPagestate = App.PageState.TUTORIAL_SCREEN_STATUS;
-            }
-            else if (currentPagestate == App.PageState.TUTORIAL_SCREEN_STATUS)
+            if (currentPagestate == App.PageState.TUTORIAL_SCREEN_STATUS)
             {
                 App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.TUTORIAL_SCREEN_STICKERS);
                 InitialiseTutStickersScreen();

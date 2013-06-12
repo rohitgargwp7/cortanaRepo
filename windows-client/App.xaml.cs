@@ -269,7 +269,6 @@ namespace windows_client
             WELCOME_SCREEN, // WelcomePage Screen
             PHONE_SCREEN,   // EnterNumber Screen
             PIN_SCREEN,     // EnterPin Screen
-            TUTORIAL_SCREEN,
             TUTORIAL_SCREEN_STATUS,
             TUTORIAL_SCREEN_STICKERS,
             SETNAME_SCREEN, // EnterName Screen
