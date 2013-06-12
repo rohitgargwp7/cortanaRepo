@@ -1817,4 +1817,7 @@ hike включает уморительные смайлы и позволяе�
   <data name="Last_Seen_Yesterday_At" xml:space="preserve">
     <value>В последний раз в сети: вчера в</value>
   </data>
+  <data name="Installed_Txt" xml:space="preserve">
+    <value>установлены</value>
+  </data>
 </root>

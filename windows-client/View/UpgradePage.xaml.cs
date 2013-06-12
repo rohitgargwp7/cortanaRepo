@@ -52,7 +52,7 @@ namespace windows_client.View
                     StatusMsgsTable.MessagesDbUpdateToLatestVersion();
                 if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                     MqttDBUtils.MqttDbUpdateToLatestVersion();
-                if (Utils.compareVersion("2.2.0.0", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
+                if (Utils.compareVersion("2.1.0.8", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
                 {
                     FriendsTableUtils.UpdateOldFilesWithDefaultLastSeen();
                     App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.TUTORIAL_SCREEN_STICKERS);
