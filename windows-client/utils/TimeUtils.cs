@@ -116,11 +116,11 @@ namespace windows_client.utils
             {
                 return Languages.AppResources.Last_Seen_Today_At + " " + receivedTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
             }
-            else if ((receivedTime - DateTime.Now.Date).Days  == 1) // yesterday
+            else if ((DateTime.Now.Date- receivedTime).Days  == 1) // yesterday
             {
                 return Languages.AppResources.Last_Seen_Yesterday_At + " " + receivedTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
             }
-            else if ((receivedTime - DateTime.Now.Date).Days < 7) // less than two weeks ago
+            else if ((DateTime.Now.Date - receivedTime).Days < 7) // less than two weeks ago
             {
                 return Languages.AppResources.Last_Seen + " " + GetMonthDateTime(receivedTime);
             }
