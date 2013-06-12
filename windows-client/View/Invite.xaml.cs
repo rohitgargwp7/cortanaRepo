@@ -140,6 +140,13 @@ namespace windows_client.View
                 return;
             }
 
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    SystemTray.ProgressIndicator = new ProgressIndicator();
+                    SystemTray.ProgressIndicator.IsVisible = true;
+                    SystemTray.ProgressIndicator.IsIndeterminate = true;
+                });
+
             JObject statusJSON = new JObject();
             statusJSON["fb"] = isFacebookPost;
             statusJSON["twitter"] = isTwitterPost;
@@ -205,6 +212,12 @@ namespace windows_client.View
         {
             string status = "";
             string title = isFacebookPost?AppResources.FreeSMS_fbConnStatus_TxtBlk : AppResources.FreeSMS_twConnStatus_TxtBlk;
+
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    if (SystemTray.ProgressIndicator != null)
+                        SystemTray.ProgressIndicator.IsIndeterminate = false;
+                });
 
             if (isFacebookPost && obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
             {
