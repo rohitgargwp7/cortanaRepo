@@ -116,7 +116,7 @@ namespace windows_client.utils
             {
                 return Languages.AppResources.Last_Seen_Today_At + " " + receivedTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
             }
-            else if ((DateTime.Now.Date- receivedTime).Days  == 1) // yesterday
+            else if ((DateTime.Now.Date - receivedTime).Days  == 1) // yesterday
             {
                 return Languages.AppResources.Last_Seen_Yesterday_At + " " + receivedTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
             }
