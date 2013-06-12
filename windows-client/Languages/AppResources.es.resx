@@ -1809,4 +1809,7 @@
   <data name="Last_Seen_Yesterday_At" xml:space="preserve">
     <value>Última conexión ayer. Hora:</value>
   </data>
+  <data name="Installed_Txt" xml:space="preserve">
+    <value>instalado</value>
+  </data>
 </root>

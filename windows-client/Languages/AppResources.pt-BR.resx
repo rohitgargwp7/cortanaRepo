@@ -1816,4 +1816,7 @@ Obtenha o hike: http://get.hike.in</value>
   <data name="Last_Seen_Yesterday_At" xml:space="preserve">
     <value>visto pela última vez ontem às</value>
   </data>
+  <data name="Installed_Txt" xml:space="preserve">
+    <value>instalado</value>
+  </data>
 </root>
