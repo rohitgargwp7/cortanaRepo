@@ -585,7 +585,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Margin="12,0,0,0" Text="{Binding Path= LocalizedResources.ChatThread_GCMute, Source={StaticResource LocalizedStrings}}" FontSize="18" VerticalAlignment="Center" Foreground="White"/>
+                        <TextBlock Grid.Column="0" Margin="12,0,0,0" Text="{Binding Path= LocalizedResources.ChatThread_GCMute, Source={StaticResource LocalizedStrings}}" FontSize="18" VerticalAlignment="Center" Foreground="{StaticResource PhoneForegroundBrush}"/>
                         <Image Grid.Column="1" Source="images\mute_icon_main.png" VerticalAlignment="Center" HorizontalAlignment="Right" Height="20" Width="20" Margin="0,5,12,5"/>
                     </Grid>
                 </Border>
