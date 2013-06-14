@@ -59,50 +59,51 @@
         <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,-20,0,0" SelectionChanged="Pivot_SelectionChanged">
             <controls:PivotItem Header="{Binding Path= LocalizedResources.Conversations_Pivot_Chats_Header_Txt, Source={StaticResource LocalizedStrings}}">
                 <Grid x:Name="ConversationList">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenImage" Width="135" Height="152" Opacity="0" VerticalAlignment="Center" Margin="0,0,0,100">
-                    </Image>
-                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenTip" MaxWidth="265" MaxHeight="111" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,4,10"/>
-                    <phone:LongListSelector Grid.Row="0" Grid.Column="0" x:Name="llsConversations" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Tap" Margin="15,0,5,5" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
+                    <Image x:Name="emptyScreenImage" Width="135" Height="152" Opacity="0" VerticalAlignment="Center" Margin="0,0,0,100"/>
+                    <Image x:Name="emptyScreenTip" MaxWidth="265" MaxHeight="111" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,4,10"/>
+                    <phone:LongListSelector x:Name="llsConversations" Tap="btnGetSelected_Tap" Margin="12,0,0,0" VirtualizingStackPanel.VirtualizationMode="Recycling" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
-
-                                <Grid Width="460" Margin="0,0,0,10">
+                                <Grid Margin="0,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                     <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" IsZoomEnabled="False" VerticalAlignment="Center">
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Tap_Delete"/>
                                             <toolkit:MenuItem  Header="{Binding FavMsg}" Tap="MenuItem_Tap_AddRemoveFav"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Image x:Name="profileImage" Source="{Binding AvatarImage}" Height="69" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"/>
-                                    <TextBlock x:Name="userNameTxtBlck" Text="{Binding NameToShow}" FontSize="39" FontFamily="Segoe WP SemiLight" Margin="20,0,10,0" FontStyle="Normal" FontWeight="ExtraLight" Height="53" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2"></TextBlock>
-                                    <TextBlock x:Name="timestampTxtBlck" Text="{Binding FormattedTimeStamp}" Grid.Column="3" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Margin="0,0,40,0"  FontSize="20" Height="30" Foreground="Gray" ></TextBlock>
 
-                                    <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
-                                        <Image x:Name="sdrImage" Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="15" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,-15,0"/>
-                                        <Ellipse x:Name="unreadCircle" Fill="{StaticResource PhoneAccentBrush}"  Visibility="{Binding UnreadCircleVisibility}" Height="15" Width="15" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,-15,0"/>
-                                        <local:MyRichTextBox Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" Margin="10,0,0,0" FontSize="21" HorizontalAlignment="Left" Height="30" TextWrapping="Wrap" MaxWidth="325" VerticalAlignment="Bottom"/>
-                                    </StackPanel>
+                                    <Grid x:Name="profileImage" Height="69" Width="69" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Image Source="{Binding AvatarImage}" MaxHeight="69" MaxWidth="69" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Grid>
 
+                                    <Grid Grid.Column="1" Margin="20,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock HorizontalAlignment="Left" x:Name="userNameTxtBlck" Margin="0,-10,0,0" Text="{Binding NameToShow}" VerticalAlignment="Top" TextTrimming="WordEllipsis" FontSize="39" FontFamily="Segoe WP SemiLight" FontStyle="Normal" MaxWidth="280" FontWeight="ExtraLight"/>
+                                            <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="5,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                                <Image Source="images\mute_icon_main.png" Visibility="{Binding MuteIconVisibility}" VerticalAlignment="Top" HorizontalAlignment="Right" Height="20" Width="20" Margin="0,5,5,0"/>
+                                                <TextBlock x:Name="timestampTxtBlck" Text="{Binding FormattedTimeStamp}" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="20" Foreground="{StaticResource PhoneSubtleBrush}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
+                                            <Image x:Name="sdrImage" Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="15" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,10,5"/>
+                                            <Ellipse x:Name="unreadCircle" Fill="{StaticResource PhoneAccentBrush}"  Visibility="{Binding UnreadCircleVisibility}" Height="15" Width="15" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,10,5"/>
+                                            <local:MyRichTextBox Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" FontSize="21" HorizontalAlignment="Left" TextWrapping="Wrap" MaxWidth="325" VerticalAlignment="Bottom" TextAlignment="Left" MaxHeight="30" Margin="-10,0,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    
                                 </Grid>
-
-
                             </DataTemplate>
                         </phone:LongListSelector.ItemTemplate>
                     </phone:LongListSelector>
@@ -135,7 +136,7 @@
                                         <Image Source="{Binding AvatarImage}" Height="69" Margin="0,10,0,0"></Image>
                                         <TextBlock Text="{Binding NameToShow}" FontSize="37" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,2,0,0"></TextBlock>
                                         <toolkit:ContextMenuService.ContextMenu>
-                                            <toolkit:ContextMenu Name="favCtxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <toolkit:ContextMenu Name="favCtxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                 <toolkit:MenuItem Header="{Binding Path= LocalizedResources.RemFromFav_Txt, Source={StaticResource LocalizedStrings}}" Tap="RemoveFavourite_Tap"/>
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
@@ -152,14 +153,26 @@
                             <Button Content="{Binding Path= LocalizedResources.Conversations_InviteFriend_Btn, Source={StaticResource LocalizedStrings}}"  FontSize="18" Height="70" Width="160"  Background="#e9ecee" BorderThickness="0" Foreground="#595959" HorizontalAlignment="Center" Tap="InviteBtn_Tap"/>
                         </StackPanel>
 
-                        <ListBox x:Name="hikeContactListBox" ItemsSource="{Binding Source={StaticResource contactsCollectionViewKey}}" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="3" >
+                        <ListBox x:Name="hikeContactListBox" HorizontalAlignment="Stretch" ItemsSource="{Binding Source={StaticResource contactsCollectionViewKey}}" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="3" >
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10" >
-                                        <Image Source="{Binding AvatarImage}" Height="69" Margin="0,5,0,5" Tap="hikeContacts_Tap"></Image>
-                                        <TextBlock Text="{Binding Name}" FontSize="37" Width="300" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,2,0,0" Tap="hikeContacts_Tap"></TextBlock>
-                                        <Image Name="addUserImage" Source="images\add_friend.png" Tap="addToFriends_Tap" Width="40" Height="40" HorizontalAlignment="Right" Margin="10,0,0,0"></Image>
-                                    </StackPanel>
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid HorizontalAlignment="Center" MinWidth="69">
+                                            <Image Source="{Binding AvatarImage}" MaxHeight="69" MaxWidth="69" Tap="hikeContacts_Tap" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="37" Margin="10,0" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Tap="hikeContacts_Tap" HorizontalAlignment="Left"/>
+                                        <Image Grid.Column="2" Name="addUserImage" Source="images\add_friend.png" Tap="addToFriends_Tap" Width="40" Height="40" HorizontalAlignment="Right"></Image>
+                                    </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
