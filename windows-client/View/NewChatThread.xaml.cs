@@ -2606,7 +2606,7 @@ namespace windows_client.View
 
             //done as scrollviewer applied to textbox doesn't update its position on char enter
             svMessage.UpdateLayout();
-            svMessage.ScrollToVerticalOffset(sendMsgTxtbox.GetRectFromCharacterIndex(sendMsgTxtbox.SelectionStart).Top - 50.0);
+            svMessage.ScrollToVerticalOffset(sendMsgTxtbox.GetRectFromCharacterIndex(sendMsgTxtbox.SelectionStart).Top - 30.0);
 
             string msgText = sendMsgTxtbox.Text.Trim();
             if (String.IsNullOrEmpty(msgText))
