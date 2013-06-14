@@ -143,7 +143,10 @@ namespace windows_client.View
             NetworkManager.turnOffNetworkManager = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
             App.ClearAppSettings();
-            App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
+            App.appSettings[App.IS_DB_CREATED] = true;
+            //so that on signing up again user can see these tutorials 
+            App.appSettings[App.SHOW_STATUS_UPDATES_TUTORIAL] = true;
+            App.WriteToIsoStorageSettings(App.SHOW_BASIC_TUTORIAL, true);
             MiscDBUtil.clearDatabase();
 
             HttpNotificationChannel pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
