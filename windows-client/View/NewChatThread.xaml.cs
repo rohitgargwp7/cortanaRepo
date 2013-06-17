@@ -2858,7 +2858,7 @@ namespace windows_client.View
 
         #region CONTEXT MENU
 
-        private void MenuItem_Click_Forward(object sender, System.Windows.Input.GestureEventArgs e)
+        private void MenuItem_Click_Forward(object sender, RoutedEventArgs e)
         {
             isContextMenuTapped = true;
             ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
@@ -2883,7 +2883,7 @@ namespace windows_client.View
 
         }
 
-        private void MenuItem_Click_Copy(object sender, System.Windows.Input.GestureEventArgs e)
+        private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
         {
             isContextMenuTapped = true;
             ConvMessage chatBubble = ((sender as MenuItem).DataContext as ConvMessage);
@@ -2893,7 +2893,7 @@ namespace windows_client.View
                 Clipboard.SetText(HikeConstants.FILE_TRANSFER_COPY_BASE_URL + "/" + chatBubble.FileAttachment.FileKey);
         }
 
-        private void MenuItem_Click_Delete(object sender, System.Windows.Input.GestureEventArgs e)
+        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
         {
             isContextMenuTapped = true;
             ConvMessage msg = ((sender as MenuItem).DataContext as ConvMessage);
@@ -2981,7 +2981,7 @@ namespace windows_client.View
             mPubSub.publish(HikePubSub.MESSAGE_DELETED, o);
         }
 
-        private void MenuItem_Click_Cancel(object sender, System.Windows.Input.GestureEventArgs e)
+        private void MenuItem_Click_Cancel(object sender, RoutedEventArgs e)
         {
             ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
             if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)

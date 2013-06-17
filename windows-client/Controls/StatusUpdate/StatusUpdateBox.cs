@@ -101,16 +101,16 @@ namespace windows_client.Controls.StatusUpdate
             if (!isShowOnTimeline && App.MSISDN == msisdn)
             {
                 ContextMenu menu = new ContextMenu();
-                menu.IsZoomEnabled = true;
+                menu.IsZoomEnabled = false;
                 MenuItem menuItemDelete = new MenuItem();
                 menuItemDelete.Header = AppResources.Delete_Txt;
-                menuItemDelete.Tap += delete_Tap;
+                menuItemDelete.Click += delete_Click;
                 menu.Items.Add(menuItemDelete);
                 ContextMenuService.SetContextMenu(this, menu);
             }
         }
 
-        private void delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void delete_Click(object sender, RoutedEventArgs e)
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {

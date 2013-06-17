@@ -66,9 +66,9 @@
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}"  HorizontalAlignment="Left">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Copy"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Forward"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Copy"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
                     </toolkit:ContextMenu>
                 </toolkit:ContextMenuService.ContextMenu>
                 <Grid.RowDefinitions>
@@ -96,9 +96,9 @@
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}" HorizontalAlignment="Left">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
                     </toolkit:ContextMenu>
                 </toolkit:ContextMenuService.ContextMenu>
                 <Grid.RowDefinitions>
@@ -133,9 +133,9 @@
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}" HorizontalAlignment="Left">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
                     </toolkit:ContextMenu>
                 </toolkit:ContextMenuService.ContextMenu>
                 <Grid.RowDefinitions>
@@ -183,7 +183,7 @@
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24,0,0,14" Width="{Binding LayoutGridWidth}" HorizontalAlignment="Left">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
                     </toolkit:ContextMenu>
                 </toolkit:ContextMenuService.ContextMenu>
                 <Grid.RowDefinitions>
@@ -209,9 +209,9 @@
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}" HorizontalAlignment="Left">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
                     </toolkit:ContextMenu>
                 </toolkit:ContextMenuService.ContextMenu>
                 <Grid.RowDefinitions>
@@ -250,8 +250,8 @@
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}"  HorizontalAlignment="Left">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
                     </toolkit:ContextMenu>
                 </toolkit:ContextMenuService.ContextMenu>
                 <!--to maintain width-->
@@ -298,9 +298,9 @@
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}" HorizontalAlignment="Right">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Copy"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Forward"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Copy"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
                     </toolkit:ContextMenu>
                 </toolkit:ContextMenuService.ContextMenu>
                 <Grid.RowDefinitions>
@@ -331,9 +331,9 @@
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}" HorizontalAlignment="Right"   >
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
                     </toolkit:ContextMenu>
                 </toolkit:ContextMenuService.ContextMenu>
                 <Grid.RowDefinitions>
@@ -373,9 +373,9 @@
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}" HorizontalAlignment="Right"   >
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
                     </toolkit:ContextMenu>
                 </toolkit:ContextMenuService.ContextMenu>
                 <Grid.RowDefinitions>
@@ -427,7 +427,7 @@
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}" Width="{Binding LayoutGridWidth}" HorizontalAlignment="Right">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
                     </toolkit:ContextMenu>
                 </toolkit:ContextMenuService.ContextMenu>
                 <Grid.RowDefinitions>
@@ -456,9 +456,9 @@
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}" HorizontalAlignment="Right"   >
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
                     </toolkit:ContextMenu>
                 </toolkit:ContextMenuService.ContextMenu>
                 <Grid.RowDefinitions>
@@ -521,8 +521,8 @@
             <Grid x:Name="LayoutRoot" Background="Transparent" Margin="{Binding DataTemplateMargin}"  HorizontalAlignment="Right">
                 <toolkit:ContextMenuService.ContextMenu>
                     <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center" IsZoomEnabled="False">
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                        <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
                     </toolkit:ContextMenu>
                 </toolkit:ContextMenuService.ContextMenu>
                 <!--to maintain width-->
@@ -589,16 +589,20 @@
                         <Image Grid.Column="1" Source="images\mute_icon_main.png" VerticalAlignment="Center" HorizontalAlignment="Right" Height="20" Width="20" Margin="0,5,12,5"/>
                     </Grid>
                 </Border>
-                <StackPanel Name="userHeader" Orientation="Horizontal" Margin="24,0,12,10" HorizontalAlignment="Left">
-                    <Image Name="userImage" Height="50" />
-                    <StackPanel Margin="18,-4,0,0">
-                        <TextBlock x:Name="userName" TextTrimming="WordEllipsis" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="50"/>
+                <Grid Name="userHeader" HorizontalAlignment="Stretch" Margin="24,0,12,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Name="userImage" Height="50" HorizontalAlignment="Left"/>
+                    <StackPanel Margin="18,0,0,0" Grid.Column="1" HorizontalAlignment="Stretch">
+                        <TextBlock x:Name="userName" TextTrimming="WordEllipsis" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="50" VerticalAlignment="Top" Margin="0,-10,0,0"/>
                         <StackPanel Margin="0,-5,0,0" Orientation="Horizontal" VerticalAlignment="Top" x:Name="lastSeenPannel" Visibility="Collapsed">
-                            <Image x:Name="onlineStatus" MaxHeight="15" MaxWidth="15" Margin="4,0,5,0" Visibility="Collapsed"/>
+                            <Image x:Name="onlineStatus" MaxHeight="15" MaxWidth="15" Margin="0,0,5,0" Visibility="Collapsed"/>
                             <TextBlock x:Name="lastSeenTxt" Text="" FontSize="18"/>
                         </StackPanel>
                     </StackPanel>
-                </StackPanel>
+                 </Grid>
             </StackPanel>
         </StackPanel>
 

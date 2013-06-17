@@ -43,17 +43,20 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" HorizontalAlignment="Left" Margin="20,-20,0, 0">
+        <Grid Grid.Row="0" Margin="20,-20,0, 0" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Image x:Name="icon" Grid.Column="0" Source="images\hike_header.png" Height="40" Margin="4,25,0,0"/>
-            <StackPanel Grid.Column="1" Margin="295,25,0,0" Height="50" Tap="notification_Tap">
-                <Image x:Name="notificationIndicator" Source="images\notification_read.png" Margin="0,6,0,0" MaxHeight="35"/>
-            </StackPanel>
-            <TextBlock x:Name="notificationCountTxtBlk" Foreground="White" Grid.Column="1" HorizontalAlignment="Center" Margin="299,37,0,0" FontSize="18" FontFamily="Segoe WP Semibold" />
-
+            <Grid HorizontalAlignment="Stretch">
+                <Image x:Name="icon" Grid.Column="0" Source="images\hike_header.png" Height="40" Margin="4,25,0,0" HorizontalAlignment="Left"/>
+            </Grid>
+            <Grid Grid.Column="1" Margin="0,25,0,0" Height="50" Tap="notification_Tap" HorizontalAlignment="Right" VerticalAlignment="Stretch">
+                <Grid Margin="0,0,20,0">
+                    <Image x:Name="notificationIndicator" Source="images\notification_read.png" MaxHeight="35"/>
+                    <TextBlock x:Name="notificationCountTxtBlk" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" FontSize="18" FontFamily="Segoe WP Semibold" />
+                </Grid>
+            </Grid>
         </Grid>
 
         <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,-20,0,0" SelectionChanged="Pivot_SelectionChanged">
@@ -67,8 +70,8 @@
                                 <Grid Margin="0,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" IsZoomEnabled="False" VerticalAlignment="Center">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Tap_Delete"/>
-                                            <toolkit:MenuItem  Header="{Binding FavMsg}" Tap="MenuItem_Tap_AddRemoveFav"/>
+                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                            <toolkit:MenuItem  Header="{Binding FavMsg}" Click="MenuItem_Click_AddRemoveFav"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
                                     <Grid.ColumnDefinitions>
@@ -137,7 +140,7 @@
                                         <TextBlock Text="{Binding NameToShow}" FontSize="37" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,2,0,0"></TextBlock>
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Name="favCtxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.RemFromFav_Txt, Source={StaticResource LocalizedStrings}}" Tap="RemoveFavourite_Tap"/>
+                                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.RemFromFav_Txt, Source={StaticResource LocalizedStrings}}" Click="RemoveFavourite_Click"/>
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
                                     </StackPanel>
