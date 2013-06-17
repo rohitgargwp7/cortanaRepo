@@ -2491,8 +2491,8 @@ namespace windows_client.View
                 }
                 #endregion
 
-                if (!insertAtTop)
-                    ScrollToBottom();
+                //if (!insertAtTop)
+                //    ScrollToBottom();
 
             }
             catch (Exception e)
@@ -5419,6 +5419,91 @@ namespace windows_client.View
 
     public class ChatThreadTemplateSelector : TemplateSelector
     {
+        #region Properties
+
+        public DataTemplate DtInAppTip
+        {
+            get;
+            set;
+        }
+        public DataTemplate DtNotificationBubble
+        {
+            get;
+            set;
+        }
+        public DataTemplate DtTypingNotificationBubble
+        {
+            get;
+            set;
+        }
+        public DataTemplate DtRecievedBubbleText
+        {
+            get;
+            set;
+        }
+        public DataTemplate DtRecievedBubbleFile
+        {
+            get;
+            set;
+        }
+        public DataTemplate DtRecievedBubbleAudioFile
+        {
+            get;
+            set;
+        }
+        public DataTemplate DtRecievedBubbleNudge
+        {
+            get;
+            set;
+        }
+        public DataTemplate DtRecievedBubbleContact
+        {
+            get;
+            set;
+        }
+        public DataTemplate DtRecievedSticker
+        {
+            get;
+            set;
+        }
+        public DataTemplate DtSentBubbleText
+        {
+            get;
+            set;
+        }
+        public DataTemplate DtSentBubbleFile
+        {
+            get;
+            set;
+        }
+        public DataTemplate DtSentBubbleAudioFile
+        {
+            get;
+            set;
+        }
+        public DataTemplate DtSentBubbleNudge
+        {
+            get;
+            set;
+        }
+        public DataTemplate DtSentBubbleContact
+        {
+            get;
+            set;
+        }
+        public DataTemplate DtStatusUpdateBubble
+        {
+            get;
+            set;
+        }
+        public DataTemplate DtSentSticker
+        {
+            get;
+            set;
+        }
+       
+        #endregion
+
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             // Determine which template to return;
@@ -5430,42 +5515,42 @@ namespace windows_client.View
                     if (convMesssage.IsSent)
                     {
                         if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
-                            return App.newChatThreadPage.dtSentBubbleNudge;
+                            return DtSentBubbleNudge;
                         if (convMesssage.StickerObj != null)
-                            return App.newChatThreadPage.dtSentSticker;
+                            return DtSentSticker;
                         else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                            return App.newChatThreadPage.dtSentBubbleContact;
+                            return DtSentBubbleContact;
                         else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                            return App.newChatThreadPage.dtSentBubbleAudioFile;
+                            return DtSentBubbleAudioFile;
                         else if (convMesssage.FileAttachment != null)
-                            return App.newChatThreadPage.dtSentBubbleFile;
+                            return DtSentBubbleFile;
                         else
-                            return App.newChatThreadPage.dtSentBubbleText;
+                            return DtSentBubbleText;
                     }
                     else
                     {
                         if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
-                            return App.newChatThreadPage.dtRecievedBubbleNudge;
+                            return DtRecievedBubbleNudge;
                         if (convMesssage.StickerObj != null)
-                            return App.newChatThreadPage.dtRecievedSticker;
+                            return DtRecievedSticker;
                         else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                            return App.newChatThreadPage.dtRecievedBubbleContact;
+                            return DtRecievedBubbleContact;
                         else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                            return App.newChatThreadPage.dtRecievedBubbleAudioFile;
+                            return DtRecievedBubbleAudioFile;
                         else if (convMesssage.FileAttachment != null)
-                            return App.newChatThreadPage.dtRecievedBubbleFile;
+                            return DtRecievedBubbleFile;
                         else
-                            return App.newChatThreadPage.dtRecievedBubbleText;
+                            return DtRecievedBubbleText;
                     }
                 }
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.IN_APP_TIP)
-                    return App.newChatThreadPage.inAppTip5;
+                    return DtInAppTip;
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
-                    return App.newChatThreadPage.dtStatusUpdateBubble;
+                    return DtStatusUpdateBubble;
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.TYPING_NOTIFICATION)
-                    return App.newChatThreadPage.dtTypingNotificationBubble;
+                    return DtTypingNotificationBubble;
                 else
-                    return App.newChatThreadPage.dtNotificationBubble;
+                    return DtNotificationBubble;
             }
             else
                 return (new DataTemplate());

@@ -120,7 +120,7 @@ namespace windows_client.DbUtils
                     Debug.WriteLine("MessagesTableUtils :: addMessage : submit changes, Exception : " + ex.StackTrace);
                     return false;
                 }
-   
+
             }
             return true;
         }
@@ -321,7 +321,7 @@ namespace windows_client.DbUtils
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
                     obj.IsLastMsgStatusUpdate = true;
-                    obj.LastMessage = "\""+convMsg.Message+"\"";
+                    obj.LastMessage = "\"" + convMsg.Message + "\"";
                 }
                 #endregion
                 #region NO_INFO
@@ -357,9 +357,9 @@ namespace windows_client.DbUtils
                 }
                 else if (obj.MessageStatus != ConvMessage.State.RECEIVED_UNREAD)// its for status msg
                 {
-                        obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
+                    obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
                 }
-                
+
                 obj.LastMsgId = convMsg.MessageId;
                 Stopwatch st = Stopwatch.StartNew();
                 ConversationTableUtils.updateConversation(obj);
@@ -487,7 +487,7 @@ namespace windows_client.DbUtils
                     occ.Resolve(RefreshMode.KeepChanges); // second client changes will be submitted.
                 }
             }
-          
+
             // Submit succeeds on second try.           
             context.SubmitChanges(ConflictMode.FailOnFirstConflict);
         }
