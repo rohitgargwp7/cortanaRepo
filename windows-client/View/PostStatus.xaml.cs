@@ -32,6 +32,8 @@ namespace windows_client.View
         private const int TWITTER_WITH_MOOD_LIMIT = 130;
         private int twitterPostLimit = TWITTER_CHAR_LIMIT;
 
+        HikeToolTip tooltip;
+
         public PostStatus()
         {
             InitializeComponent();
@@ -50,19 +52,28 @@ namespace windows_client.View
             appBar.Buttons.Add(postStatusIcon);
             postStatusPage.ApplicationBar = appBar;
 
-            App.ViewModel.TipList[3].TipDismissed += PostStatus_TipDismissed;
+            if (App.ViewModel.TipDictionary != null)
+            {
+                App.ViewModel.TipDictionary.TryGetValue("tip3", out tooltip);
 
-            if (!App.ViewModel.TipList[3].IsShown || App.ViewModel.TipList[3].IsCurrentlyShown)
-                App.ViewModel.DisplayTip(MoodPanel, 3);
+                if (tooltip != null)
+                {
+                    tooltip.TipDismissed += PostStatus_TipDismissed;
+                    App.ViewModel.DisplayTip(MoodPanel, 3);
+                }
+            }
         }
 
         void PostStatus_TipDismissed(object sender, EventArgs e)
         {
-            App.ViewModel.TipList[3].TipDismissed -= PostStatus_TipDismissed;
+            if (tooltip != null)
+            {
+                tooltip.TipDismissed -= PostStatus_TipDismissed;
 
-            App.ViewModel.HideToolTip(LayoutRoot, 3);
+                App.ViewModel.HideToolTip(LayoutRoot, 3);
 
-            txtStatus.Focus();
+                txtStatus.Focus();
+            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -198,9 +209,7 @@ namespace windows_client.View
 
         private void Mood_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (App.ViewModel.TipList[3].IsCurrentlyShown)
-                App.ViewModel.HideToolTip(LayoutRoot, 3);
-
+            App.ViewModel.HideToolTip(LayoutRoot, 3);
             gridMood.Visibility = Visibility.Visible;
             this.appBar.IsVisible = false;
         }

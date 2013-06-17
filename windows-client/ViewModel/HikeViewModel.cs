@@ -369,7 +369,7 @@ namespace windows_client.ViewModel
             }
         }
 
-        public List<HikeToolTip> TipList = new List<HikeToolTip>();
+        public Dictionary<string, HikeToolTip> TipDictionary;
 
         /// <summary>
         /// Load In App Hardcoded Tooltips
@@ -380,24 +380,41 @@ namespace windows_client.ViewModel
             App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked); //initilaized in upgrade logic
             App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentlyShowing); //initilaized in upgrade logic
 
+
+            if (marked == 63)//0x3f
+                return;
+
+            TipDictionary = new Dictionary<string, HikeToolTip>();
+
             bool isShownVal = (marked & 0x01) > 0;
             bool isCurrentShown = (currentlyShowing & 0x01) > 0;
-            TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(0, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
+            if (!isShownVal || isCurrentShown)
+                TipDictionary.Add("tip0", new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(0, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
+            
             isShownVal = (marked & 0x02) > 0;
             isCurrentShown = (currentlyShowing & 0x02) > 0;
-            TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 130, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
+            if (!isShownVal || isCurrentShown)
+                TipDictionary.Add("tip1", new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 130, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
+            
             isShownVal = (marked & 0x04) > 0;
             isCurrentShown = (currentlyShowing & 0x04) > 0;
-            TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
+            if (!isShownVal || isCurrentShown)
+                TipDictionary.Add("tip2", new HikeToolTip() { Tip = AppResources.In_App_Tip_3, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
+            
             isShownVal = (marked & 0x08) > 0;
             isCurrentShown = (currentlyShowing & 0x08) > 0;
-            TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 30, 0), FullTipMargin = new Thickness(10, 0, 10, 55) });
+            if (!isShownVal || isCurrentShown)
+                TipDictionary.Add("tip3", new HikeToolTip() { Tip = AppResources.In_App_Tip_4, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 30, 0), FullTipMargin = new Thickness(10, 0, 10, 55) });
+            
             isShownVal = (marked & 0x10) > 0;
             isCurrentShown = (currentlyShowing & 0x10) > 0;
-            TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = true, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 30, 10, 0) });
+            if (!isShownVal || isCurrentShown)
+                TipDictionary.Add("tip4", new HikeToolTip() { Tip = AppResources.In_App_Tip_5, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = true, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 30, 10, 0) });
+            
             isShownVal = (marked & 0x20) > 0;
             isCurrentShown = (currentlyShowing & 0x20) > 0;
-            TipList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 60, 10, 0) });
+            if (!isShownVal || isCurrentShown)
+                TipDictionary.Add("tip5", new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 60, 10, 0) });
         }
 
         /// <summary>
@@ -407,7 +424,15 @@ namespace windows_client.ViewModel
         /// <param name="index">index of the tooltip you want to insert</param>
         public void DisplayTip(Panel element, int index)
         {
-            HikeToolTip tip = TipList[index];
+            if (TipDictionary == null)
+                return;
+
+            HikeToolTip tip;
+            TipDictionary.TryGetValue("tip" + index, out tip);
+
+            if (tip == null || !(!tip.IsShown || tip.IsCurrentlyShown))
+                return;
+
             tip.IsShown = true;
             tip.IsCurrentlyShown = true;
 
@@ -470,6 +495,15 @@ namespace windows_client.ViewModel
         /// <param name="index">tool tip index to be removed</param>
         public void HideToolTip(Panel element, int index)
         {
+            if (TipDictionary == null)
+                return;
+
+            HikeToolTip toolTip;
+            TipDictionary.TryGetValue("tip" + index, out toolTip);
+
+            if (toolTip == null || !toolTip.IsCurrentlyShown)
+                return;
+
             if (element != null)
             {
                 InAppTipUC tip = element.FindName("tip" + index) as InAppTipUC;
@@ -479,7 +513,6 @@ namespace windows_client.ViewModel
                     element.Children.Remove(tip);
                     tip.Visibility = Visibility.Collapsed;
 
-                    HikeToolTip toolTip = TipList[index];
                     toolTip.IsCurrentlyShown = false;
 
                     byte currentShown;
@@ -490,7 +523,6 @@ namespace windows_client.ViewModel
             }
             else
             {
-                HikeToolTip toolTip = TipList[index];
                 toolTip.IsCurrentlyShown = false;
 
                 byte currentShown;
@@ -516,7 +548,7 @@ namespace windows_client.ViewModel
             {
                 tip.Visibility = Visibility.Collapsed;
 
-                HikeToolTip toolTip = TipList[tip.TipIndex];
+                HikeToolTip toolTip = TipDictionary["tip" + tip.TipIndex];
                 toolTip.IsCurrentlyShown = false;
 
                 byte currentShown;

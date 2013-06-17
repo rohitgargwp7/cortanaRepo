@@ -66,8 +66,8 @@ namespace windows_client.View
         private long _lastUpdatedLastSeenTimeStamp = 0;
 
         bool afterMute = true;
-        bool isStatusUpdateToolTipShown = false;
-        ConvMessage toolTipMessage;
+        bool _isStatusUpdateToolTipShown = false;
+        ConvMessage _toolTipMessage;
         private bool _isMute = false;
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
@@ -387,9 +387,9 @@ namespace windows_client.View
                 attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
                 loadMessages(INITIAL_FETCH_COUNT);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
-                   {
-                       ScrollToBottom();
-                   });
+                {
+                    ScrollToBottom();
+                });
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
@@ -568,14 +568,14 @@ namespace windows_client.View
             }
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, ee) =>
-                {
-                    HikeViewModel.stickerHelper.InitialiseLowResStickers();
-                };
+            {
+                HikeViewModel.stickerHelper.InitialiseLowResStickers();
+            };
             bw.RunWorkerCompleted += (s, ee) =>
-                {
-                    if (dictPivotCategory.Count == 0)
-                        AddPivotItemsToStickerPivot();
-                };
+            {
+                if (dictPivotCategory.Count == 0)
+                    AddPivotItemsToStickerPivot();
+            };
             bw.RunWorkerAsync();
             #region AUDIO FT
             if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
@@ -709,9 +709,7 @@ namespace windows_client.View
                 ShowDownloadOverlay(false);
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
-                if (App.ViewModel.TipList[1].IsCurrentlyShown)
-                    App.ViewModel.HideToolTip(LayoutRoot, 1);
-
+                App.ViewModel.HideToolTip(LayoutRoot, 1);
                 emoticonPanel.Visibility = Visibility.Collapsed;
                 e.Cancel = true;
                 return;
@@ -975,28 +973,40 @@ namespace windows_client.View
             var keyExist = App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out chatThreadCount); //initilaized in upgrade logic
             if (keyExist)
             {
-                if (chatThreadCount == 0)
+                if (App.ViewModel.TipDictionary != null)
                 {
-                    if (!App.ViewModel.TipList[0].IsShown || App.ViewModel.TipList[0].IsCurrentlyShown)
-                        App.ViewModel.DisplayTip(LayoutRoot, 0);
-                    else
-                        chatThreadCount++;
 
-                    chatThreadMainPage.ApplicationBar = appBar;
-                }
-                else if (chatThreadCount == 1)
-                {
-                    if (!App.ViewModel.TipList[2].IsShown || App.ViewModel.TipList[2].IsCurrentlyShown)
-                        App.ViewModel.DisplayTip(LayoutRoot, 2);
-                    else
-                        chatThreadCount++;
+                    HikeToolTip tip;
 
-                    chatThreadMainPage.ApplicationBar = appBar;
+                    if (chatThreadCount == 0)
+                    {
+                        App.ViewModel.TipDictionary.TryGetValue("tip0", out tip);
+
+                        if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                            App.ViewModel.DisplayTip(LayoutRoot, 0);
+                        else
+                            chatThreadCount++;
+
+                        chatThreadMainPage.ApplicationBar = appBar;
+                    }
+                    else if (chatThreadCount == 1)
+                    {
+                        App.ViewModel.TipDictionary.TryGetValue("tip2", out tip);
+
+                        if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                            App.ViewModel.DisplayTip(LayoutRoot, 2);
+                        else
+                            chatThreadCount++;
+
+                        chatThreadMainPage.ApplicationBar = appBar;
+                    }
+                    else
+                        showNudgeTute();
+
+                    App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
                 }
                 else
                     showNudgeTute();
-
-                App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
             }
             else
                 chatThreadMainPage.ApplicationBar = appBar;
@@ -1711,8 +1721,7 @@ namespace windows_client.View
         {
             emoticonPanel.Visibility = Visibility.Collapsed;
 
-            if (App.ViewModel.TipList[1].IsCurrentlyShown)
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
+            App.ViewModel.HideToolTip(LayoutRoot, 1);
 
             attachmentMenu.Visibility = Visibility.Collapsed;
             ConvMessage convMessage = llsMessages.SelectedItem as ConvMessage;
@@ -2464,20 +2473,26 @@ namespace windows_client.View
                     }
                     #endregion
 
-                    if (!isStatusUpdateToolTipShown && (!App.ViewModel.TipList[4].IsShown || App.ViewModel.TipList[4].IsCurrentlyShown))
+                    if (App.ViewModel.TipDictionary != null)
                     {
-                        toolTipMessage = new ConvMessage();
-                        toolTipMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.IN_APP_TIP;
-                        toolTipMessage.Message = String.Format(AppResources.In_App_Tip_5, mContactName);
-                        this.ocMessages.Insert(insertPosition, toolTipMessage);
-                        insertPosition++;
-                        isStatusUpdateToolTipShown = true;
+                        HikeToolTip tip;
+                        App.ViewModel.TipDictionary.TryGetValue("tip4", out tip);
 
-                        App.ViewModel.TipList[4].IsShown = true;
-                        byte marked;
-                        App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
-                        marked |= (byte)(1 << 4);
-                        App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
+                        if (!_isStatusUpdateToolTipShown && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                        {
+                            _toolTipMessage = new ConvMessage();
+                            _toolTipMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.IN_APP_TIP;
+                            _toolTipMessage.Message = String.Format(AppResources.In_App_Tip_5, mContactName);
+                            this.ocMessages.Insert(insertPosition, _toolTipMessage);
+                            insertPosition++;
+                            _isStatusUpdateToolTipShown = true;
+
+                            tip.IsShown = true;
+                            byte marked;
+                            App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
+                            marked |= (byte)(1 << 4);
+                            App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
+                        }
                     }
                 }
                 #endregion
@@ -2675,8 +2690,7 @@ namespace windows_client.View
             if (String.IsNullOrEmpty(message))
                 return;
 
-            if (App.ViewModel.TipList[1].IsCurrentlyShown)
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
+            App.ViewModel.HideToolTip(LayoutRoot, 1);
 
             attachmentMenu.Visibility = Visibility.Collapsed;
 
@@ -2695,8 +2709,7 @@ namespace windows_client.View
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
-            if (App.ViewModel.TipList[1].IsCurrentlyShown)
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
+            App.ViewModel.HideToolTip(LayoutRoot, 1);
 
             emoticonPanel.Visibility = Visibility.Collapsed;
 
@@ -2838,8 +2851,7 @@ namespace windows_client.View
             //ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
             {
-                if (App.ViewModel.TipList[1].IsCurrentlyShown)
-                    App.ViewModel.HideToolTip(LayoutRoot, 1);
+                App.ViewModel.HideToolTip(LayoutRoot, 1);
 
                 this.emoticonPanel.Visibility = Visibility.Collapsed;
             }
@@ -3007,17 +3019,12 @@ namespace windows_client.View
                 sendMsgTxtbox.Visibility = Visibility.Visible;
             }
 
-            if (App.ViewModel.TipList[0].IsCurrentlyShown)
-                App.ViewModel.HideToolTip(LayoutRoot, 0);
-
-            if (App.ViewModel.TipList[2].IsCurrentlyShown)
-                App.ViewModel.HideToolTip(LayoutRoot, 2);
+            App.ViewModel.HideToolTip(LayoutRoot, 0);
+            App.ViewModel.HideToolTip(LayoutRoot, 2);
 
             if (emoticonPanel.Visibility == Visibility.Collapsed)
             {
-                if (!App.ViewModel.TipList[1].IsShown || App.ViewModel.TipList[1].IsCurrentlyShown)
-                    App.ViewModel.DisplayTip(LayoutRoot, 1);
-
+                App.ViewModel.DisplayTip(LayoutRoot, 1);
                 emoticonPanel.Visibility = Visibility.Visible;
 
                 if (gridStickers.Visibility == Visibility.Visible)
@@ -3035,9 +3042,7 @@ namespace windows_client.View
             }
             else
             {
-                if (App.ViewModel.TipList[1].IsCurrentlyShown)
-                    App.ViewModel.HideToolTip(LayoutRoot, 1);
-
+                App.ViewModel.HideToolTip(LayoutRoot, 1);
                 emoticonPanel.Visibility = Visibility.Collapsed;
             }
 
@@ -3053,11 +3058,8 @@ namespace windows_client.View
                 sendMsgTxtbox.Visibility = Visibility.Visible;
             }
 
-            if (App.ViewModel.TipList[0].IsCurrentlyShown)
-                App.ViewModel.HideToolTip(LayoutRoot, 0);
-
-            if (App.ViewModel.TipList[2].IsCurrentlyShown)
-                App.ViewModel.HideToolTip(LayoutRoot, 2);
+            App.ViewModel.HideToolTip(LayoutRoot, 0);
+            App.ViewModel.HideToolTip(LayoutRoot, 2);
 
             if (attachmentMenu.Visibility == Visibility.Collapsed)
                 attachmentMenu.Visibility = Visibility.Visible;
@@ -3066,8 +3068,7 @@ namespace windows_client.View
 
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
-                if (App.ViewModel.TipList[1].IsCurrentlyShown)
-                    App.ViewModel.HideToolTip(LayoutRoot, 1);
+                App.ViewModel.HideToolTip(LayoutRoot, 1);
 
                 emoticonPanel.Visibility = Visibility.Collapsed;
             }
@@ -3475,7 +3476,7 @@ namespace windows_client.View
                 {
                     bool isVibrateEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
-                    
+
                     if (isVibrateEnabled)
                     {
                         VibrateController vibrate = VibrateController.Default;
@@ -4404,12 +4405,9 @@ namespace windows_client.View
             {
                 svMessage.MaxHeight = 70;
 
-                if (App.ViewModel.TipList[0].IsCurrentlyShown)
-                    App.ViewModel.HideToolTip(LayoutRoot, 0);
-                if (App.ViewModel.TipList[1].IsCurrentlyShown)
-                    App.ViewModel.HideToolTip(LayoutRoot, 1);
-                if (App.ViewModel.TipList[5].IsCurrentlyShown)
-                    App.ViewModel.HideToolTip(LayoutRoot, 5);
+                App.ViewModel.HideToolTip(LayoutRoot, 0);
+                App.ViewModel.HideToolTip(LayoutRoot, 1);
+                App.ViewModel.HideToolTip(LayoutRoot, 5);
             }
         }
         #endregion
@@ -4449,8 +4447,7 @@ namespace windows_client.View
 
         private void StickersTab_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (App.ViewModel.TipList[1].IsCurrentlyShown)
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
+            App.ViewModel.HideToolTip(LayoutRoot, 1);
 
             gridEmoticons.Visibility = Visibility.Collapsed;
             gridStickers.Visibility = Visibility.Visible;
@@ -4748,10 +4745,10 @@ namespace windows_client.View
                     if (dictStickersPivot.TryGetValue(stickerCategory.Category, out stickerPivot))
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
-                           {
-                               stickerPivot.ShowDownloadFailed();
-                               stickerPivot.ShowHidMoreProgreesBar(false);
-                           });
+                        {
+                            stickerPivot.ShowDownloadFailed();
+                            stickerPivot.ShowHidMoreProgreesBar(false);
+                        });
                     }
                 }
                 if (convMessage != null)
@@ -5015,11 +5012,9 @@ namespace windows_client.View
 
         private void Record_ActionIconTapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (App.ViewModel.TipList[2].IsCurrentlyShown)
-                App.ViewModel.HideToolTip(LayoutRoot, 2);
+            App.ViewModel.HideToolTip(LayoutRoot, 2);
 
-            if (App.ViewModel.TipList[1].IsCurrentlyShown)
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
+            App.ViewModel.HideToolTip(LayoutRoot, 1);
 
             attachmentMenu.Visibility = Visibility.Collapsed;
             emoticonPanel.Visibility = Visibility.Collapsed;
@@ -5385,10 +5380,10 @@ namespace windows_client.View
             }
         }
 
-        private void TipDismiss_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void TipDismiss_Tap(object sender, System.Windows.Input.GestureEventArgs e) // invoked for status update tooltip #4
         {
-            if (toolTipMessage != null)
-                this.ocMessages.Remove(toolTipMessage);
+            if (_toolTipMessage != null)
+                this.ocMessages.Remove(_toolTipMessage);
 
             App.ViewModel.HideToolTip(null, 4);
         }
@@ -5405,7 +5400,7 @@ namespace windows_client.View
                     userName.FontSize = 36;
                     lastSeenPannel.Visibility = Visibility.Visible;
 
-                    if (isShowTip && (!App.ViewModel.TipList[5].IsShown || App.ViewModel.TipList[5].IsCurrentlyShown))
+                    if (isShowTip)
                         App.ViewModel.DisplayTip(LayoutRoot, 5);
                 }
             }), status, showTip);
