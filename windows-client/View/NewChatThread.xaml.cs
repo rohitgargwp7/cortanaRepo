@@ -3765,7 +3765,8 @@ namespace windows_client.View
                 if (lastSeenSettingsValue > 0)
                 {
                     var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
-                    if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat)
+                    
+                    if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && _lastUpdatedLastSeenTimeStamp != 0) //dont show online if his last seen setting is off
                         UpdateLastSeenOnUI(AppResources.Online);
                 }
 
