@@ -2488,10 +2488,17 @@ namespace windows_client.View
                             _isStatusUpdateToolTipShown = true;
 
                             tip.IsShown = true;
+                            tip.IsCurrentlyShown = true;
+
                             byte marked;
                             App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
                             marked |= (byte)(1 << 4);
                             App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
+
+                            byte currentShown;
+                            App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
+                            currentShown |= (byte)(1 << 4);
+                            App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
                         }
                     }
                 }
