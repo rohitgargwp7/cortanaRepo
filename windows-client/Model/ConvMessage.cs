@@ -513,8 +513,7 @@ namespace windows_client.Model
             set
             {
                 _currentOrientation = value;
-                NotifyPropertyChanged("LayoutGridWidth");
-                NotifyPropertyChanged("DataTemplateMargin");
+                NotifyPropertyChanged("MessageBubbleWidth");
             }
         }
         private bool imageDownloadFailed = false;
@@ -887,16 +886,21 @@ namespace windows_client.Model
             }
         }
 
-        public double LayoutGridWidth
+        public int MessageBubbleWidth
         {
             get
             {
-                if (_currentOrientation == PageOrientation.LandscapeLeft || _currentOrientation == PageOrientation.LandscapeRight)
-                    return 768;
-                return 480;
+                if ((_currentOrientation & PageOrientation.Landscape) == PageOrientation.Landscape)
+                {
+                    return HikeConstants.CHATBUBBLE_LANDSCAPE_WIDTH;
+                }
+                else if ((_currentOrientation & PageOrientation.Portrait) == PageOrientation.Portrait)
+                {
+                    return HikeConstants.CHATBUBBLE_PORTRAIT_WIDTH;
+                }
+                return HikeConstants.CHATBUBBLE_PORTRAIT_WIDTH;
             }
         }
-
         public SolidColorBrush BubbleBackGroundColor
         {
             get
@@ -968,62 +972,6 @@ namespace windows_client.Model
             }
         }
 
-        public Thickness DataTemplateMargin
-        {
-            get
-            {
-                if (_currentOrientation == PageOrientation.LandscapeLeft || _currentOrientation == PageOrientation.LandscapeRight)
-                {
-                    if (IsSent)
-                    {
-                        if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
-                            return UI_Utils.Instance.SentBubbleFileMarginLS;
-                        else if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.POKE))
-                            return UI_Utils.Instance.SentPokeMarginLS;
-                        else if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                            return UI_Utils.Instance.SentBubbleTextMarginLS;
-                        else if (FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                            return UI_Utils.Instance.SentBubbleAudioFileMarginLS;
-                        else
-                            return UI_Utils.Instance.SentBubbleFileMarginLS;
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
-                            return UI_Utils.Instance.ReceivedBubbleFileMarginLS;
-                        else if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                            return UI_Utils.Instance.RecievedBubbleTextMarginLS;
-                        else
-                            return UI_Utils.Instance.ReceivedBubbleFileMarginLS;
-                    }
-                }
-                else
-                {
-                    if (IsSent)
-                    {
-                        if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
-                            return UI_Utils.Instance.SentBubbleFileMarginPortrait;
-                        else if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.POKE))
-                            return UI_Utils.Instance.SentPokeMarginPotrait;
-                        else if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                            return UI_Utils.Instance.SentBubbleTextMarginPortrait;
-                        else if (FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                            return UI_Utils.Instance.SentBubbleAudioFileMarginPortrait;
-                        else
-                            return UI_Utils.Instance.SentBubbleFileMarginPortrait;
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
-                            return UI_Utils.Instance.ReceivedBubbleFileMarginPortrait;
-                        if (FileAttachment == null || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                            return UI_Utils.Instance.RecMessageBubbleTextMarginPortrait;
-                        else
-                            return UI_Utils.Instance.ReceivedBubbleFileMarginPortrait;
-                    }
-                }
-            }
-        }
         public ConvMessage(string message, string msisdn, long timestamp, State msgState, PageOrientation currentOrientation)
             : this(message, msisdn, timestamp, msgState, -1, -1, currentOrientation)
         {
