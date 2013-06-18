@@ -973,14 +973,14 @@ namespace windows_client.View
             var keyExist = App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out chatThreadCount); //initilaized in upgrade logic
             if (keyExist)
             {
-                if (App.ViewModel.TipDictionary != null)
+                if (App.ViewModel.DictInAppTip != null)
                 {
 
                     HikeToolTip tip;
 
                     if (chatThreadCount == 0)
                     {
-                        App.ViewModel.TipDictionary.TryGetValue("tip0", out tip);
+                        App.ViewModel.DictInAppTip.TryGetValue(0, out tip);
 
                         if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
                             App.ViewModel.DisplayTip(LayoutRoot, 0);
@@ -991,7 +991,7 @@ namespace windows_client.View
                     }
                     else if (chatThreadCount == 1)
                     {
-                        App.ViewModel.TipDictionary.TryGetValue("tip2", out tip);
+                        App.ViewModel.DictInAppTip.TryGetValue(2, out tip);
 
                         if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
                             App.ViewModel.DisplayTip(LayoutRoot, 2);
@@ -2472,10 +2472,10 @@ namespace windows_client.View
                     }
                     #endregion
 
-                    if (App.ViewModel.TipDictionary != null)
+                    if (App.ViewModel.DictInAppTip != null)
                     {
                         HikeToolTip tip;
-                        App.ViewModel.TipDictionary.TryGetValue("tip4", out tip);
+                        App.ViewModel.DictInAppTip.TryGetValue(4, out tip);
 
                         if (!_isStatusUpdateToolTipShown && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
                         {

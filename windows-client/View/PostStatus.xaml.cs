@@ -52,9 +52,9 @@ namespace windows_client.View
             appBar.Buttons.Add(postStatusIcon);
             postStatusPage.ApplicationBar = appBar;
 
-            if (App.ViewModel.TipDictionary != null)
+            if (App.ViewModel.DictInAppTip != null)
             {
-                App.ViewModel.TipDictionary.TryGetValue("tip3", out tooltip);
+                App.ViewModel.DictInAppTip.TryGetValue(3, out tooltip);
 
                 if (tooltip != null)
                 {
