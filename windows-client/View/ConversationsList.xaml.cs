@@ -1387,7 +1387,7 @@ namespace windows_client.View
 
         #region CONTEXT MENUS
 
-        private void MenuItem_Tap_Delete(object sender, System.Windows.Input.GestureEventArgs e)
+        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chat_Confirmation, AppResources.Conversations_DelChat_Txt, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
@@ -1397,7 +1397,7 @@ namespace windows_client.View
                 deleteConversation(convObj);
         }
 
-        private void MenuItem_Tap_AddRemoveFav(object sender, System.Windows.Input.GestureEventArgs e)
+        private void MenuItem_Click_AddRemoveFav(object sender, RoutedEventArgs e)
         {
             ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
             if (convObj == null)
@@ -1821,7 +1821,7 @@ namespace windows_client.View
             favourites.SelectedIndex = -1;
         }
 
-        private void RemoveFavourite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void RemoveFavourite_Click(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)

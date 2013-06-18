@@ -193,6 +193,19 @@ namespace windows_client.Model
             {
                 if (value != _muteVal)
                     _muteVal = value;
+
+                NotifyPropertyChanged("MuteIconVisibility");
+            }
+        }
+
+        public Visibility MuteIconVisibility
+        {
+            get
+            {
+                if (_muteVal > -1)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
             }
         }
 
@@ -206,6 +219,18 @@ namespace windows_client.Model
                     return false;
             }
         }
+
+        public Visibility AddToFriendVisibility
+        {
+            get
+            {
+                if (Utils.isGroupConversation(Msisdn))
+                    return Visibility.Collapsed;
+                else
+                    return Visibility.Visible;
+            }
+        }
+
         public BitmapImage SDRStatusImage
         {
             get
