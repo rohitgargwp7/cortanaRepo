@@ -513,6 +513,7 @@ namespace windows_client.Model
             set
             {
                 _currentOrientation = value;
+                NotifyPropertyChanged("MessageBubbleWidth");
             }
         }
         private bool imageDownloadFailed = false;
@@ -885,6 +886,21 @@ namespace windows_client.Model
             }
         }
 
+        public int MessageBubbleWidth
+        {
+            get
+            {
+                if ((_currentOrientation & PageOrientation.Landscape) == PageOrientation.Landscape)
+                {
+                    return HikeConstants.CHATBUBBLE_LANDSCAPE_WIDTH;
+                }
+                else if ((_currentOrientation & PageOrientation.Portrait) == PageOrientation.Portrait)
+                {
+                    return HikeConstants.CHATBUBBLE_PORTRAIT_WIDTH;
+                }
+                return HikeConstants.CHATBUBBLE_PORTRAIT_WIDTH;
+            }
+        }
         public SolidColorBrush BubbleBackGroundColor
         {
             get

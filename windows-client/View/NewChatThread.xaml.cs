@@ -2191,7 +2191,6 @@ namespace windows_client.View
                                 chatBubble.GroupMemberName = isGroupChat ?
                                    GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                         }
-
                         else if (convMessage.IsSent)
                         {
                             chatBubble = convMessage;//todo:split
@@ -2491,8 +2490,8 @@ namespace windows_client.View
                 }
                 #endregion
 
-                //if (!insertAtTop)
-                //    ScrollToBottom();
+                if (!insertAtTop)
+                    ScrollToBottom();
 
             }
             catch (Exception e)
@@ -4397,7 +4396,9 @@ namespace windows_client.View
         {
             for (int i = 0; i < ocMessages.Count; i++)
             {
-                ocMessages[i].CurrentOrientation = e.Orientation;
+                ConvMessage convMessage = ocMessages[i];
+                if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                    convMessage.CurrentOrientation = e.Orientation;
             }
 
             //handled textbox hight to accomodate other data on screen in diff orientations
@@ -5501,7 +5502,7 @@ namespace windows_client.View
             get;
             set;
         }
-       
+
         #endregion
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)

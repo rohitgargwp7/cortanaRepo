@@ -20,6 +20,23 @@
     shell:SystemTray.IsVisible="True" Visibility="Visible" Name="chatThreadMainPage">
 
 
+    <phone:PhoneApplicationPage.Resources>
+        <Style TargetType="phone:LongListSelector">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="phone:LongListSelector">
+                        <Grid Background="{TemplateBinding Background}" d:DesignWidth="480" d:DesignHeight="800">
+                            <Grid Margin="0">
+                                <ViewportControl x:Name="ViewportControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom"/>
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </phone:PhoneApplicationPage.Resources>
     <shell:SystemTray.ProgressIndicator>
         <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
     </shell:SystemTray.ProgressIndicator>
@@ -71,7 +88,7 @@
                     <view:ChatThreadTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
                         <view:ChatThreadTemplateSelector.DtInAppTip>
                             <DataTemplate>
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="34,5,24,5" HorizontalAlignment="Stretch" Tap="TipDismiss_Tap">
+                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24,5,24,5" HorizontalAlignment="Stretch" Tap="TipDismiss_Tap">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="14"/>
                                         <RowDefinition Height="Auto"/>
@@ -84,8 +101,8 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock x:Name="tipText" Margin="0,3,5,0" Text="{Binding DispMessage}" TextWrapping="Wrap" Foreground="{StaticResource PhoneBackgroundBrush}"/>
-                                            <Image Grid.Column="1" MaxHeight="35" Margin="5,0,15,0" x:Name="closeButtonImage" Source="{Binding CloseImage}" Stretch="Uniform" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="tipText" Margin="0,3,5,0" Text="{Binding DispMessage}" TextWrapping="Wrap"  Foreground="{StaticResource PhoneBackgroundBrush}"/>
+                                            <Image Grid.Column="1" MaxHeight="35" Margin="0,0,10,0" x:Name="closeButtonImage" Source="{Binding CloseImage}" Stretch="Uniform" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -93,27 +110,23 @@
                         </view:ChatThreadTemplateSelector.DtInAppTip>
                         <view:ChatThreadTemplateSelector.DtNotificationBubble>
                             <DataTemplate x:Name="dtNotificationBubble">
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24,5,14,5" HorizontalAlignment="Stretch" >
-                                    <Border x:Name="border" BorderThickness="1" BorderBrush="#cdcdcd"/>
-                                    <Grid Margin="36,3,36,3">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
+                                <Border x:Name="border" BorderThickness="1" Background="Transparent" Margin="24,5,24,5" BorderBrush="#cdcdcd" HorizontalAlignment="Stretch" >
+                                    <Grid HorizontalAlignment="Center" Margin="12 3">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <Image x:Name="NotificationImage" Height="20" Width="20" Grid.Column="0" VerticalAlignment="Center" Margin="10,0,10,0" HorizontalAlignment="Left" Source="{Binding NotificationImage}"></Image>
-                                        <TextBlock x:Name="UserName" Height="Auto" Grid.Column="1" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
-                          Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" Margin="3,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <Image x:Name="NotificationImage" MaxHeight="20" VerticalAlignment="Center" HorizontalAlignment="Right" Source="{Binding NotificationImage}"></Image>
+                                        <TextBlock x:Name="UserName" Height="Auto"  Margin="10 0 0 0" Grid.Column="1" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
+                        Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                     </Grid>
-                                </Grid>
+                                </Border>
                             </DataTemplate>
                         </view:ChatThreadTemplateSelector.DtNotificationBubble>
                         <view:ChatThreadTemplateSelector.DtTypingNotificationBubble>
                             <DataTemplate x:Name="dtTypingNotificationBubble" >
                                 <Grid HorizontalAlignment="Left" Margin="24 10 0 10">
-                                    <Image Source="/View/images/typing.png" Height="20" Width="40" HorizontalAlignment="Left" Margin="24, 5, 0, 15"></Image>
+                                    <Image Source="/View/images/typing.png" Height="20" Width="40" HorizontalAlignment="Left"></Image>
                                 </Grid>
                             </DataTemplate>
                         </view:ChatThreadTemplateSelector.DtTypingNotificationBubble>
@@ -143,7 +156,7 @@
                                         </Grid.ColumnDefinitions>
                                         <Rectangle Grid.RowSpan="3" Fill="{Binding BubbleBackGroundColor}" />
                                         <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
-                                        <local:MyRichTextBox Width="330" Grid.Row="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" />
+                                        <local:MyRichTextBox Width="{Binding MessageBubbleWidth}" Grid.Row="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" />
                                         <TextBlock Grid.Row="2" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="0,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                     </Grid>
                                 </Grid>
@@ -356,7 +369,7 @@
                         </view:ChatThreadTemplateSelector.DtRecievedSticker>
                         <view:ChatThreadTemplateSelector.DtSentBubbleText>
                             <DataTemplate x:Name="dtSentBubbleText" >
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 14 10" HorizontalAlignment="Right">
+                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right">
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Copy"/>
@@ -381,7 +394,7 @@
                                         <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}" />
                                         <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
 
-                                        <local:MyRichTextBox Width="330" Grid.Row="0" Grid.Column="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" />
+                                        <local:MyRichTextBox Width="{Binding MessageBubbleWidth}" Grid.Row="0" Grid.Column="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" />
                                         <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,24,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                     </Grid>
                                     <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
@@ -391,7 +404,7 @@
                         </view:ChatThreadTemplateSelector.DtSentBubbleText>
                         <view:ChatThreadTemplateSelector.DtSentBubbleFile>
                             <DataTemplate x:Name="dtSentBubbleFile" >
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 14 10" HorizontalAlignment="Right"   >
+                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right"   >
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -433,7 +446,7 @@
                         </view:ChatThreadTemplateSelector.DtSentBubbleFile>
                         <view:ChatThreadTemplateSelector.DtSentBubbleAudioFile>
                             <DataTemplate x:Name="dtSentBubbleAudioFile" >
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 14 10" HorizontalAlignment="Right"   >
+                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right"   >
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -486,7 +499,7 @@
                         </view:ChatThreadTemplateSelector.DtSentBubbleAudioFile>
                         <view:ChatThreadTemplateSelector.DtSentBubbleNudge>
                             <DataTemplate x:Name="dtSentBubbleNudge" >
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 14 10" HorizontalAlignment="Right">
+                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right">
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Delete"/>
@@ -515,7 +528,7 @@
                         </view:ChatThreadTemplateSelector.DtSentBubbleNudge>
                         <view:ChatThreadTemplateSelector.DtSentBubbleContact>
                             <DataTemplate x:Name="dtSentBubbleContact" >
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 14 10" HorizontalAlignment="Right"   >
+                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right"   >
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -560,7 +573,7 @@
                         </view:ChatThreadTemplateSelector.DtSentBubbleContact>
                         <view:ChatThreadTemplateSelector.DtSentSticker>
                             <DataTemplate x:Name="dtSentSticker">
-                                <Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Right" Margin="0 5 14 5">
+                                <Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Right" Margin="0 5 24 5">
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
