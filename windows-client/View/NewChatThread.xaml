@@ -60,7 +60,7 @@
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" HorizontalAlignment="Stretch" DoubleTap="MessageList_DoubleTap">
             <StackPanel Orientation="Vertical" Margin="0,0,0,0">
                 <Border HorizontalAlignment="Stretch" Height="45" BorderThickness="1" BorderBrush="#414141" Background="#414141" x:Name="gcMuteGrid" Visibility="Collapsed" Margin="0,0,0,10">
-                    <Grid HorizontalAlignment="Stretch" Margin="24,0,12,0">
+                    <Grid HorizontalAlignment="Stretch" Margin="12,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
@@ -69,7 +69,7 @@
                         <Image Grid.Column="1" Source="images\mute_icon_main.png" VerticalAlignment="Center" HorizontalAlignment="Right" Height="20" Width="20" Margin="0,5,12,5"/>
                     </Grid>
                 </Border>
-                <Grid Name="userHeader" HorizontalAlignment="Stretch" Margin="24,0,12,10">
+                <Grid Name="userHeader" HorizontalAlignment="Stretch" Margin="24,0,24,10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
