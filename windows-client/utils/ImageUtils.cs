@@ -102,18 +102,6 @@ namespace windows_client.utils
         private Thickness convListEmoticonMargin = new Thickness(0, 5, 0, 0);
         private Thickness chatThreadKeyPadUpMargin = new Thickness(0, 315, 15, 0);
         private Thickness chatThreadKeyPadDownMargin = new Thickness(0, 0, 15, 0);
-        public Thickness RecMessageBubbleTextMarginPortrait = new Thickness(0, 0, 90, 14);
-        public Thickness ReceivedBubbleFileMarginPortrait = new Thickness(0, 0, 185, 14);
-        public Thickness SentBubbleTextMarginPortrait = new Thickness(55, 12, 0, 10);
-        public Thickness SentBubbleFileMarginPortrait = new Thickness(185, 12, 0, 10);
-        public Thickness SentBubbleAudioFileMarginPortrait = new Thickness(155, 12, 0, 10);
-        public Thickness RecievedBubbleTextMarginLS = new Thickness(0, 0, 285, 14);
-        public Thickness ReceivedBubbleFileMarginLS = new Thickness(0, 0, 380, 14);
-        public Thickness SentPokeMarginPotrait = new Thickness(-40, 12, 0, 10);
-        public Thickness SentPokeMarginLS = new Thickness(-135, 12, 0, 10);
-        public Thickness SentBubbleTextMarginLS = new Thickness(250, 12, 0, 10);
-        public Thickness SentBubbleFileMarginLS = new Thickness(380, 12, 0, 10);
-        public Thickness SentBubbleAudioFileMarginLS = new Thickness(345, 12, 0, 10);
         BitmapImage walkieTalkieGreyImage;
         BitmapImage walkieTalkieWhiteImage;
         BitmapImage walkieTalkieGreyImageBig;

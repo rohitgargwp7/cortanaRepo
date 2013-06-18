@@ -781,7 +781,7 @@ namespace windows_client.View
         private void contactSelectedForGroup_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
-
+            contactsListBox.SelectedItem = null;//so that if user taps anywhere else on the list it doesn't get selected by default
             if (contact == null || contact.Msisdn == AppResources.SelectUser_EnterValidNo_Txt || contact.Msisdn == App.MSISDN)
                 return;
 
