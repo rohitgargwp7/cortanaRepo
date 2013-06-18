@@ -93,7 +93,7 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock HorizontalAlignment="Left" x:Name="userNameTxtBlck" Margin="0,-10,0,0" Text="{Binding NameToShow}" VerticalAlignment="Top" TextTrimming="WordEllipsis" FontSize="39" FontFamily="Segoe WP SemiLight" FontStyle="Normal" MaxWidth="280" FontWeight="ExtraLight"/>
+                                            <TextBlock HorizontalAlignment="Left" x:Name="userNameTxtBlck" Margin="0,-10,0,0" Text="{Binding NameToShow}" VerticalAlignment="Top" FontSize="39" FontFamily="Segoe WP SemiLight" FontStyle="Normal" MaxWidth="280" FontWeight="ExtraLight"/>
                                             <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="5,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                                                 <Image Source="images\mute_icon_main.png" Visibility="{Binding MuteIconVisibility}" VerticalAlignment="Top" HorizontalAlignment="Right" Height="20" Width="20" Margin="0,5,5,0"/>
                                                 <TextBlock x:Name="timestampTxtBlck" Text="{Binding FormattedTimeStamp}" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="20" Foreground="{StaticResource PhoneSubtleBrush}"/>
