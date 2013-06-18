@@ -220,6 +220,17 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility AddToFriendVisibility
+        {
+            get
+            {
+                if (Utils.isGroupConversation(Msisdn))
+                    return Visibility.Collapsed;
+                else
+                    return Visibility.Visible;
+            }
+        }
+
         public BitmapImage SDRStatusImage
         {
             get
