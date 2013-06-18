@@ -381,7 +381,7 @@ namespace windows_client.ViewModel
             App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentlyShowing); //initilaized in upgrade logic
 
 
-            if (marked == 63)//0x3f
+            if (marked == 63 && currentlyShowing == 0)//0x3f
                 return;
 
             TipDictionary = new Dictionary<string, HikeToolTip>();
