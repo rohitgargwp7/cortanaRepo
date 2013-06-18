@@ -4397,7 +4397,7 @@ namespace windows_client.View
             for (int i = 0; i < ocMessages.Count; i++)
             {
                 ConvMessage convMessage = ocMessages[i];
-                if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO && !convMessage.HasAttachment)
                     convMessage.CurrentOrientation = e.Orientation;
             }
 
