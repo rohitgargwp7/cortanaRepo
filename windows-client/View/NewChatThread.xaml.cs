@@ -2911,12 +2911,19 @@ namespace windows_client.View
         {
             isContextMenuTapped = true;
             ConvMessage msg = ((sender as MenuItem).DataContext as ConvMessage);
+            
             if (msg == null)
-            {
                 return;
+
+            if (currentAudioMessage != null && msg == currentAudioMessage && msg.IsPlaying)
+            {
+                currentAudioMessage = null;
+                mediaElement.Stop();
             }
+
             if (msg.FileAttachment != null && msg.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
                 msg.SetAttachmentState(Attachment.AttachmentState.CANCELED);
+            
             bool delConv = false;
             this.ocMessages.Remove(msg);
             ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
