@@ -2921,12 +2921,7 @@ namespace windows_client.View
 
             if (currentAudioMessage != null && msg == currentAudioMessage && msg.IsPlaying)
             {
-                currentAudioMessage.IsPlaying = false;
-                currentAudioMessage.IsStopped = true;
-                currentAudioMessage.PlayTimeText = currentAudioMessage.DurationText;
-                currentAudioMessage.PlayProgressBarValue = 0;
                 currentAudioMessage = null;
-
                 mediaElement.Stop();
             }
 
