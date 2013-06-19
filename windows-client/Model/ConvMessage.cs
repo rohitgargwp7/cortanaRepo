@@ -538,11 +538,7 @@ namespace windows_client.Model
                 {
                     return UI_Utils.Instance.createImageFromBytes(_fileAttachment.Thumbnail);
                 }
-                else
-                {
-                    return UI_Utils.Instance.AudioAttachmentSend;
-                }
-
+                return null;
             }
         }
 

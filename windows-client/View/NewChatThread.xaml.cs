@@ -135,7 +135,6 @@ namespace windows_client.View
         #region UI VALUES
 
         private Thickness imgMargin = new Thickness(24, 5, 0, 15);
-        private Image emptyImage;
         MediaElement mediaElement;
         ConvMessage currentAudioMessage;
 
@@ -413,9 +412,6 @@ namespace windows_client.View
             emotList0.ItemsSource = imagePathsForList0;
             emotList1.ItemsSource = imagePathsForList1;
             emotList2.ItemsSource = imagePathsForList2;
-            emptyImage = new Image();
-            emptyImage.Source = UI_Utils.Instance.EmptyImage;
-            emptyImage.Height = 1;
 
             bw.RunWorkerAsync();
             photoChooserTask = new PhotoChooserTask();

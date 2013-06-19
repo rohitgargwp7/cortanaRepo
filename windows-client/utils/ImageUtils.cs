@@ -45,8 +45,6 @@ namespace windows_client.utils
         private BitmapImage pauseIcon;
         private BitmapImage audioMicIcon;
         private BitmapImage downloadIcon;
-        private BitmapImage audioAttachmentReceive;
-        private BitmapImage audioAttachmentSend;
         private BitmapImage httpFailed;
         private BitmapImage typingNotificationBitmap;
         private BitmapImage emptyImage;
@@ -518,27 +516,6 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage AudioAttachmentReceive
-        {
-            get
-            {
-                if (audioAttachmentReceive == null)
-                    audioAttachmentReceive = new BitmapImage(new Uri("/View/images/audio_file_icon.png", UriKind.Relative));
-                return audioAttachmentReceive;
-            }
-        }
-
-
-        public BitmapImage AudioAttachmentSend
-        {
-            get
-            {
-                if (audioAttachmentSend == null)
-                    audioAttachmentSend = new BitmapImage(new Uri("/View/images/audio_file_icon_white.png", UriKind.Relative));
-                return audioAttachmentSend;
-            }
-        }
-
         public BitmapImage HttpFailed
         {
             get
@@ -556,16 +533,6 @@ namespace windows_client.utils
                 if (typingNotificationBitmap == null)
                     typingNotificationBitmap = new BitmapImage(new Uri("/View/images/typing.png", UriKind.Relative));
                 return typingNotificationBitmap;
-            }
-        }
-
-        public BitmapImage EmptyImage
-        {
-            get
-            {
-                if (emptyImage == null)
-                    emptyImage = new BitmapImage(new Uri("/View/images/emptyImage.png", UriKind.Relative));
-                return emptyImage;
             }
         }
 
