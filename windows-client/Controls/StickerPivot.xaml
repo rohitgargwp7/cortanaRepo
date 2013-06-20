@@ -17,7 +17,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <ScrollViewer Name="myScrollViewer" Loaded="scrollViewer_Loaded" >
+            <ScrollViewer Name="myScrollViewer">
                 <ScrollViewer.Style>
                     <Style TargetType="ScrollViewer">
                         <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
@@ -44,7 +44,7 @@
                                                 <VisualState x:Name="NotScrolling">
                                                 </VisualState>
                                             </VisualStateGroup>
-                                            <VisualStateGroup x:Name="VerticalCompression">
+                                            <VisualStateGroup x:Name="VerticalCompression" CurrentStateChanged="vgroup_CurrentStateChanging">
                                                 <VisualState x:Name="NoVerticalCompression"/>
                                                 <VisualState x:Name="CompressionTop"/>
                                                 <VisualState x:Name="CompressionBottom"/>

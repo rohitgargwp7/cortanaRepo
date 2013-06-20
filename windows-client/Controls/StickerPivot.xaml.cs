@@ -108,26 +108,6 @@ namespace windows_client.Controls
             llsStickerCategory.Visibility = Visibility.Visible;
         }
 
-        private void scrollViewer_Loaded(object sender, RoutedEventArgs e)
-        {
-            // Visual States are always on the first child of the control template 
-            FrameworkElement element = VisualTreeHelper.GetChild(myScrollViewer, 0) as FrameworkElement;
-            if (element != null)
-            {
-                VisualStateGroup vgroup = null;
-
-                IList groups = VisualStateManager.GetVisualStateGroups(element);
-                foreach (VisualStateGroup group in groups)
-                    if (group.Name == "VerticalCompression")
-                        vgroup = group;
-
-                if (vgroup != null)
-                {
-                    vgroup.CurrentStateChanging += new EventHandler<VisualStateChangedEventArgs>(vgroup_CurrentStateChanging);
-                }
-            }
-        }
-
         private void vgroup_CurrentStateChanging(object sender, VisualStateChangedEventArgs e)
         {
             if (e.NewState.Name == "CompressionBottom")
@@ -146,16 +126,5 @@ namespace windows_client.Controls
                 }
             }
         }
-
-        private VisualStateGroup FindVisualState(FrameworkElement element, string name)
-        {
-            if (element == null)
-                return null;
-
-
-
-            return null;
-        }
-
     }
 }
