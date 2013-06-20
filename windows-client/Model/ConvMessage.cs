@@ -583,13 +583,14 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null)
                 {
-                    if ((_fileAttachment.FileState != Attachment.AttachmentState.COMPLETED))
-                        return !IsSent ? UI_Utils.Instance.DownloadIcon : null;
-                    else if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.AUDIO) && IsPlaying)
+                    if (_fileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                        return !IsSent ? UI_Utils.Instance.DownloadIcon : new BitmapImage();
+                    else if (_fileAttachment.ContentType.Contains(HikeConstants.AUDIO) && IsPlaying)
                         return UI_Utils.Instance.PauseIcon;
                     else
                         return UI_Utils.Instance.PlayIcon;
                 }
+                
                 return null;
             }
         }
