@@ -187,9 +187,8 @@ namespace windows_client.utils
 
         public static string getRelativeTime(long timestamp)
         {
-            long timespanMilliSeconds = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds - timestamp * 1000;
-            TimeSpan ts = TimeSpan.FromMilliseconds(timespanMilliSeconds);
-            double delta = Math.Abs(ts.TotalSeconds);
+            TimeSpan ts = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).Subtract(TimeSpan.FromSeconds(timestamp));
+            double delta = ts.TotalSeconds;
             if (delta < 300) // 60 * 5 
             {
                 return AppResources.TimeUtils_Moments_Ago;
