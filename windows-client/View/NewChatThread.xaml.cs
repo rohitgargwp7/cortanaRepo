@@ -4472,7 +4472,7 @@ namespace windows_client.View
 
         private void Stickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            LongListSelector llsStickerCategory = (sender as LongListSelector);
+            ListBox llsStickerCategory = (sender as ListBox);
             Sticker sticker = llsStickerCategory.SelectedItem as Sticker;
             llsStickerCategory.SelectedItem = null;
             if (sticker == null)
@@ -4679,7 +4679,7 @@ namespace windows_client.View
             {
                 stickerPivot.ShowNoStickers();
             }
-            else if (stickerCategory.HasMoreStickers)
+            else if (stickerCategory.ListStickers.Count == 0 && stickerCategory.HasMoreStickers)
             {
                 downloadStickers_Tap(null, null);
             }
@@ -4690,29 +4690,6 @@ namespace windows_client.View
             else
             {
                 stickerPivot.ShowStickers();
-            }
-        }
-
-        private void llsStickersCategory_OnItemsRealised(object sender, ItemRealizationEventArgs e)
-        {
-            StickerCategory stickerCategory;
-            LongListSelector llsStickerCategory = sender as LongListSelector;
-            if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0)
-            {
-                string category = ((Sticker)llsStickerCategory.ItemsSource[0]).Category;
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category)) != null && stickerCategory.HasMoreStickers && !stickerCategory.ShowDownloadMessage && !stickerCategory.IsDownLoading)
-                    if (e.ItemKind == LongListSelectorItemKind.Item)
-                    {
-                        if ((e.Container.Content as Sticker).Equals(llsStickerCategory.ItemsSource[llsStickerCategory.ItemsSource.Count - 1]))
-                        {
-                            StickerPivot stickerPivot;
-                            if (dictStickersPivot.TryGetValue(category, out stickerPivot))
-                            {
-                                stickerPivot.ShowHidMoreProgreesBar(true);
-                            }
-                            PostRequestForBatchStickers(stickerCategory);
-                        }
-                    }
             }
         }
 
@@ -4944,9 +4921,7 @@ namespace windows_client.View
             pvt.Margin = zeroThickness;
             pvt.BorderThickness = zeroThickness;
             pvt.Padding = zeroThickness;
-            EventHandler<ItemRealizationEventArgs> itemRealised = null;
-            itemRealised += new EventHandler<ItemRealizationEventArgs>(llsStickersCategory_OnItemsRealised);
-            StickerPivot stickerPivot = new StickerPivot(Stickers_Tap, itemRealised, listSticker, pivotIndex, category);
+            StickerPivot stickerPivot = new StickerPivot(Stickers_Tap, listSticker, pivotIndex, category);
             dictStickersPivot[category] = stickerPivot;
             pvt.Content = stickerPivot;
             pivotStickers.Items.Add(pvt);
