@@ -563,19 +563,6 @@ namespace windows_client.Model
             }
         }
 
-        public Visibility SendAsSMSVisibility
-        {
-            get
-            {
-                if(!IsSms)
-                {
-                    return Visibility.Visible;
-                }
-                else
-                    return Visibility.Collapsed;
-            }
-        }
-
         public Visibility PlayIconVisibility
         {
             get
