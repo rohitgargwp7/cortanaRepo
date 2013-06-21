@@ -3015,6 +3015,10 @@ namespace windows_client.View
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
             }
         }
+
+        private void MenuItem_Click_SendAsSMS(object sender, RoutedEventArgs e)
+        {
+        }
         #endregion
 
         #region EMOTICONS RELATED STUFF

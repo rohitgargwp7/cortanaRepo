@@ -3372,6 +3372,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to send as sms.
+        /// </summary>
+        public static string Send_As_Sms {
+            get {
+                return ResourceManager.GetString("Send_As_Sms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to send.
         /// </summary>
         public static string Send_Txt {

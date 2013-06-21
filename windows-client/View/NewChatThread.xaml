@@ -380,6 +380,7 @@
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Copy"/>
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward"/>
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_SendAsSMS"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
                                     <Grid.RowDefinitions>

@@ -1812,4 +1812,7 @@ Get hike: http://get.hike.in</value>
   <data name="DownloadFailed_Txt" xml:space="preserve">
     <value>Oops! Download Failed</value>
   </data>
+  <data name="Send_As_Sms" xml:space="preserve">
+    <value>send as sms</value>
+  </data>
 </root>
