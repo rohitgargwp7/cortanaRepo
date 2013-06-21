@@ -471,10 +471,8 @@
     <Content Include="View\images\add_favorites.png" />
     <Content Include="View\images\add_friend.png" />
     <Content Include="View\images\add_users_white.png" />
-    <Content Include="View\images\add_user_icon.png" />
     <Content Include="View\images\appbar_addfriend.png" />
     <Content Include="View\images\appbar_icon_play.png" />
-    <Content Include="View\images\audio_file_icon_white.png" />
     <Content Include="View\images\avatars\Beach.png" />
     <Content Include="View\images\avatars\BluePeople.png" />
     <Content Include="View\images\avatars\Candy.png" />
@@ -504,8 +502,6 @@
     <Content Include="View\images\doggy_i_icon.png" />
     <Content Include="View\images\doggy_overlay.png" />
     <Content Include="View\images\download_failed_bubble.png" />
-    <Content Include="View\images\drop_pin_icon.png" />
-    <Content Include="View\images\emptyImage.png" />
     <Content Include="View\images\empty_screen_logo_black.png" />
     <Content Include="View\images\empty_screen_logo_white.png" />
     <Content Include="View\images\empty_screen_tip_black.png" />
@@ -514,16 +510,12 @@
     <Content Include="View\images\expressions_i.png" />
     <Content Include="View\images\expressions_overlay.png" />
     <Content Include="View\images\favorites_heart.png" />
-    <Content Include="View\images\favorites_tour_01.jpg" />
-    <Content Include="View\images\favorites_tour_02.jpg" />
-    <Content Include="View\images\fbSignUp.png" />
     <Content Include="View\images\fb_icon.png" />
     <Content Include="View\images\fb_status.png" />
     <Content Include="View\images\fb_status_disabled.png" />
     <Content Include="View\images\group_name_changed.png" />
     <Content Include="View\images\help_icon_dark.png" />
     <Content Include="View\images\help_icon_white.png" />
-    <Content Include="View\images\hike_favorite.png" />
     <Content Include="View\images\hike_users.png" />
     <Content Include="View\images\icon_cross.png" />
     <Content Include="View\images\icon_editprofile.png" />
@@ -548,6 +540,7 @@
     <Content Include="View\images\kitty_overlay.png" />
     <Content Include="View\images\last_seen_clock_black.png" />
     <Content Include="View\images\last_seen_clock_white.png" />
+    <Content Include="View\images\made_with_love.png" />
     <Content Include="View\images\menu_contact_icon_black.png" />
     <Content Include="View\images\menu_location_icon.png" />
     <Content Include="View\images\Mic_icon_black_small.png" />
@@ -637,10 +630,6 @@
     <Content Include="View\images\Walkie_Talkie_Black_big.png" />
     <Content Include="View\images\walkie_talkie_White_Big.png" />
     <Content Include="View\images\Walkie_Talkie_Grey_small.png" />
-    <Content Include="View\images\Walkie_Talkie_White_small.png" />
-    <Content Include="View\images\welome_screen.jpg" />
-    <Resource Include="View\images\logo_main_white.png" />
-    <Resource Include="View\images\logo_main_black.png" />
     <Content Include="View\images\made_with_love_dark.png" />
     <Content Include="View\images\map-pin.png" />
     <Content Include="View\images\menu_audio_icon.png" />
@@ -652,28 +641,19 @@
     <Content Include="View\images\nudge_received.png" />
     <Content Include="View\images\nudge_sent.png" />
     <Content Include="View\images\nudge_tutorial.png" />
-    <Content Include="View\images\plus_tap_on.png" />
-    <Content Include="View\images\profile_stock1.jpg" />
-    <Content Include="View\images\remove_icon.png" />
     <Content Include="View\images\signupfb.png" />
-    <Content Include="View\images\tick.png" />
     <Content Include="View\images\timeline_friend.png" />
     <Content Include="View\images\timeline_status.png" />
     <Content Include="View\images\tw_icon.png" />
     <Content Include="View\images\unlink_account_black.png" />
     <Content Include="View\images\unlink_account_white.png" />
     <Resource Include="hi.png" />
-    <Content Include="View\images\3rewards.jpg" />
     <Content Include="View\images\add_users.png" />
     <Content Include="View\images\appbar.add.rest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="View\images\Application_TileImage_173x173.png" />
-    <Resource Include="View\images\appbar.favs.addto.rest.png" />
-    <Content Include="View\images\audio_file_icon.png" />
-    <Content Include="View\images\background.png" />
     <Resource Include="View\images\hike_header.png" />
-    <Content Include="View\images\chat_accepted.png" />
     <Content Include="View\images\chat_joined_blue.png" />
     <Content Include="View\images\chat_invited_green.png" />
     <Content Include="View\images\chat_left.png" />
@@ -834,10 +814,7 @@
     <Content Include="View\images\emoticons\emo_im_99_nothing.png" />
     <Content Include="View\images\enter_name.png" />
     <Content Include="View\images\error_icon.png" />
-    <Content Include="View\images\freesms.png" />
     <Content Include="View\images\free_sms.png" />
-    <Content Include="View\images\hiketohike.jpg" />
-    <Content Include="View\images\hiketosms.jpg" />
     <Content Include="View\images\hike_logo_small.png" />
     <Content Include="View\images\icon_attachment.png" />
     <Content Include="View\images\icon_emoticon.png" />
@@ -850,23 +827,15 @@
     <Content Include="View\images\ic_delivered.png" />
     <Content Include="View\images\ic_read.png" />
     <Content Include="View\images\ic_sent.png" />
-    <Content Include="View\images\made_with_love.png" />
-    <Resource Include="View\images\notifications.png" />
-    <Content Include="View\images\logo_main.png" />
     <Resource Include="View\images\privacy.png" />
     <Content Include="View\images\play_icon.png" />
     <Resource Include="View\images\privacy_dark.png" />
-    <Content Include="View\images\send_button.png" />
     <Content Include="View\images\signup_logo.png" />
     <Resource Include="View\images\free_sms_dark.png" />
-    <Content Include="View\images\sms_pin.png" />
     <Resource Include="View\images\splash_logo.png" />
-    <Content Include="View\images\splash_text.png" />
     <Content Include="View\images\ic_block_active.png" />
-    <Resource Include="View\images\Splash.png" />
     <Content Include="View\images\terms_link.png" />
     <Content Include="View\images\typing.png" />
-    <Content Include="View\images\key.jpg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Languages\AppResources.de-DE.resx">
