@@ -127,6 +127,7 @@ namespace windows_client.utils
         public Thickness StatusImageMargin = new Thickness(12, 28, 0, 12);
         public SolidColorBrush RedBorderBrush = new SolidColorBrush(Colors.Red);
         public SolidColorBrush BlackBorderBrush = new SolidColorBrush(Colors.Black);
+        public BitmapImage BlankBitmapImage = new BitmapImage();
         #endregion
 
         private Dictionary<string, BitmapImage> _bitMapImageCache = null;

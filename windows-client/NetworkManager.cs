@@ -1253,16 +1253,26 @@ namespace windows_client
                     StatusMessage sm = null;
                     JToken val;
                     string iconBase64 = null;
+                    
                     if (data.TryGetValue(HikeConstants.THUMBNAIL, out val) && val != null)
                         iconBase64 = val.ToString();
+                    
                     val = null;
                     long ts = 0;
+
                     if (jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out val) && val != null)
+                    {
                         ts = val.ToObject<long>();
+                        long tsCorrection;
+
+                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out tsCorrection))
+                            ts -= tsCorrection;
+                    }
 
                     val = null;
                     string id = null;
                     JToken idToken;
+                    
                     if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
                         id = idToken.ToString();
 

@@ -420,6 +420,7 @@ namespace windows_client.Model
                 return _stickerObj;
             }
         }
+
         public ParticipantInfoState GrpParticipantState
         {
             get
@@ -449,6 +450,7 @@ namespace windows_client.Model
                 _notificationType = value;
             }
         }
+
         public string TimeStampStr
         {
             get
@@ -503,6 +505,7 @@ namespace windows_client.Model
                 }
             }
         }
+
         private PageOrientation _currentOrientation;
         public PageOrientation CurrentOrientation
         {
@@ -516,6 +519,7 @@ namespace windows_client.Model
                 NotifyPropertyChanged("MessageBubbleWidth");
             }
         }
+        
         private bool imageDownloadFailed = false;
         public BitmapImage MessageImage
         {
@@ -558,6 +562,7 @@ namespace windows_client.Model
                 NotifyPropertyChanged("IsHttpFailed");
             }
         }
+
         public Visibility PlayIconVisibility
         {
             get
@@ -579,13 +584,14 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null)
                 {
-                    if ((_fileAttachment.FileState != Attachment.AttachmentState.COMPLETED))
-                        return !IsSent ? UI_Utils.Instance.DownloadIcon : null;
-                    else if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.AUDIO) && IsPlaying)
+                    if (_fileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                        return !IsSent ? UI_Utils.Instance.DownloadIcon : UI_Utils.Instance.BlankBitmapImage;
+                    else if (_fileAttachment.ContentType.Contains(HikeConstants.AUDIO) && IsPlaying)
                         return UI_Utils.Instance.PauseIcon;
                     else
                         return UI_Utils.Instance.PlayIcon;
                 }
+                
                 return null;
             }
         }
@@ -840,6 +846,7 @@ namespace windows_client.Model
                     return Visibility.Collapsed;
             }
         }
+
         public Visibility GroupMemberVisibility
         {
             get
@@ -851,6 +858,7 @@ namespace windows_client.Model
                 return Visibility.Visible;
             }
         }
+
         private string _groupMemeberName;
         public string GroupMemberName
         {
@@ -897,6 +905,7 @@ namespace windows_client.Model
                 return HikeConstants.CHATBUBBLE_PORTRAIT_WIDTH;
             }
         }
+
         public SolidColorBrush BubbleBackGroundColor
         {
             get
@@ -972,10 +981,12 @@ namespace windows_client.Model
             : this(message, msisdn, timestamp, msgState, -1, -1, currentOrientation)
         {
         }
+        
         public ConvMessage(string message, string msisdn, long timestamp, State msgState)
             : this(message, msisdn, timestamp, msgState, -1, -1, PageOrientation.Portrait)
         {
         }
+
         public ConvMessage(string message, string msisdn, long timestamp, State msgState, long msgid, long mappedMsgId, PageOrientation currentOrientation)
         {
             this._msisdn = msisdn;
