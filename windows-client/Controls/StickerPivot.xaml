@@ -73,7 +73,7 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Image Margin="5,5,5,5" Height="120" Width="120" Source="{Binding StickerImage}">
+                        <Image Margin="5,5,5,5" MaxHeight="120" MaxWidth="120" Source="{Binding StickerImage}">
                         </Image>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
