@@ -791,7 +791,7 @@
                         </StackPanel>
                         <Rectangle Width="2" Grid.Column="7" />
                         <Button Style="{StaticResource ButtonStyleNoSpacing}" Margin="0" BorderThickness="0"  Grid.Column="8" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="OnEmoticonBackKeyPress" >
-                            <Image Source="images\back_button.png"   Height="40" HorizontalAlignment="Center"/>
+                            <Image Source="images\emoticon_back_key.png"   Height="20" HorizontalAlignment="Center"/>
                         </Button>
                     </Grid>
                 </Grid>
