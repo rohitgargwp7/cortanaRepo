@@ -1440,7 +1440,6 @@ namespace windows_client.View
                             convMessage.MetaDataString = forwardedMsg.MetaDataString;
                         }
 
-                        convMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
                         AddMessageToOcMessages(convMessage, false);
                         object[] vals = new object[3];
                         vals[0] = convMessage;
