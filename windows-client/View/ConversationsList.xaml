@@ -101,11 +101,12 @@
                                         </Grid>
                                         <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
                                             <Image x:Name="sdrImage" Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="15" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,10,5"/>
-                                            <Ellipse x:Name="unreadCircle" Fill="{StaticResource PhoneAccentBrush}"  Visibility="{Binding UnreadCircleVisibility}" Height="15" Width="15" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,10,5"/>
+                                            <Border x:Name="unreadCircle" MinWidth="{Binding UnreadCounterWidth}" Margin="0,5,`0,0" Visibility="{Binding UnreadCircleVisibility}" Background="{StaticResource PhoneAccentBrush}" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding UnreadCounter}" Foreground="White" Margin="10,0" TextAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
                                             <local:MyRichTextBox Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" FontSize="21" HorizontalAlignment="Left" TextWrapping="Wrap" MaxWidth="325" VerticalAlignment="Bottom" TextAlignment="Left" MaxHeight="30" Margin="-10,0,0,0"/>
                                         </StackPanel>
                                     </Grid>
-                                    
                                 </Grid>
                             </DataTemplate>
                         </phone:LongListSelector.ItemTemplate>
