@@ -790,9 +790,9 @@
                             <Image Source="images\expressions.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
                         </StackPanel>
                         <Rectangle Width="2" Grid.Column="7" />
-                        <StackPanel   Grid.Column="8" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  >
-                            <Image  Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
-                        </StackPanel>
+                        <Button Style="{StaticResource ButtonStyleNoSpacing}" Margin="0" BorderThickness="0"  Grid.Column="8" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="OnEmoticonBackKeyPress" >
+                            <Image Source="images\back_button.png"   Height="40" HorizontalAlignment="Center"/>
+                        </Button>
                     </Grid>
                 </Grid>
                 <Grid Name="gridStickers" Visibility="Collapsed"  Background="#313334" Margin="12">
