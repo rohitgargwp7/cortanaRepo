@@ -99,12 +99,12 @@
                                                 <TextBlock x:Name="timestampTxtBlck" Text="{Binding FormattedTimeStamp}" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="20" Foreground="{StaticResource PhoneSubtleBrush}"/>
                                             </StackPanel>
                                         </Grid>
-                                        <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-                                            <Image x:Name="sdrImage" Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="15" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,8,5,0"/>
-                                            <Border x:Name="unreadCircle" MinWidth="{Binding UnreadCounterWidth}" Margin="0,3,5,0" Visibility="{Binding UnreadCircleVisibility}" Background="{StaticResource PhoneAccentBrush}" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="3,0,0,0">
+                                            <Image x:Name="sdrImage" Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="15" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,8,9,0"/>
+                                            <Border x:Name="unreadCircle" MinWidth="{Binding UnreadCounterWidth}" Margin="0,3,9,0" Visibility="{Binding UnreadCircleVisibility}" Background="{StaticResource PhoneAccentBrush}" HorizontalAlignment="Left" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding UnreadCounter}" Margin="0,0,0,1" Foreground="White" FontSize="18" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
-                                            <local:MyRichTextBox Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" FontSize="21" HorizontalAlignment="Left" TextWrapping="Wrap" MaxWidth="325" VerticalAlignment="Top" TextAlignment="Left" MaxHeight="30" Margin="-10,0,0,0"/>
+                                            <local:MyRichTextBox Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" FontSize="21" HorizontalAlignment="Left" TextWrapping="Wrap" MaxWidth="325" VerticalAlignment="Top" TextAlignment="Left" MaxHeight="30" Margin="-14,0,0,0"/>
                                         </StackPanel>
                                     </Grid>
                                 </Grid>
