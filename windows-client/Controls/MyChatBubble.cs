@@ -24,6 +24,7 @@ namespace windows_client.Controls
         private long _timeStampLong;
         private long _messageId;
         private ConvMessage.State _messageState;
+        private string _metaDataString;
         public Attachment FileAttachment;
 
         public string Text;
@@ -68,6 +69,12 @@ namespace windows_client.Controls
             }
         }
 
+        public string MetaDataString
+        {
+            get { return _metaDataString; }
+            set { _metaDataString = value; }
+        }
+
         public MyChatBubble()
         {
         }
@@ -79,6 +86,7 @@ namespace windows_client.Controls
             this._messageId = cm.MessageId;
             this._timeStampLong = cm.Timestamp;
             this._messageState = cm.MessageStatus;
+            this._metaDataString = cm.MetaDataString;
             if (cm.FileAttachment != null)
             {
                 this.FileAttachment = cm.FileAttachment;
@@ -90,19 +98,23 @@ namespace windows_client.Controls
                 if (currentPage != null)
                 {
                     ContextMenu contextMenu = null;
-                    if (String.IsNullOrEmpty(cm.MetaDataString) || !cm.MetaDataString.Contains("poke"))   
+                    if (String.IsNullOrEmpty(cm.MetaDataString) || !cm.MetaDataString.Contains(HikeConstants.POKE))
                     {
                         contextMenu = currentPage.createAttachmentContextMenu(Attachment.AttachmentState.COMPLETED,
-                            false); //since it is not an attachment message this bool won't make difference
+                            false, true); //since it is not an attachment message this bool won't make difference
                     }
                     else
                     {
                         contextMenu = currentPage.createAttachmentContextMenu(Attachment.AttachmentState.CANCELED,
-                            true); //set to tru to have only delete option for nudge bubbles
+                            true, true); //set to tru to have only delete option for nudge bubbles
                     }
                     ContextMenuService.SetContextMenu(this, contextMenu);
                 }
             }
+        }
+
+        public virtual void OrientationChanged(PageOrientation orientation)
+        { 
         }
 
         public void setTapEvent(EventHandler<Microsoft.Phone.Controls.GestureEventArgs> tapEventHandler)

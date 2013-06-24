@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using windows_client.utils;
 using windows_client.Languages;
+using System.Diagnostics;
 
 
 namespace windows_client.View
@@ -43,7 +44,7 @@ namespace windows_client.View
         private DispatcherTimer dt;
 
         private enum RecorderState
-        { 
+        {
             NOTHING_RECORDED = 0,
             RECORDED,
             RECORDING,
@@ -77,7 +78,7 @@ namespace windows_client.View
 
             // Event handler for getting audio data when the buffer is full
             microphone.BufferReady += new EventHandler<EventArgs>(microphone_BufferReady);
-            
+
             blankImage = new BitmapImage(new Uri("Images/blank.png", UriKind.RelativeOrAbsolute));
             microphoneImage = new BitmapImage(new Uri("images/microphone.png", UriKind.RelativeOrAbsolute));
             speakerImage = new BitmapImage(new Uri("images/speaker.png", UriKind.RelativeOrAbsolute));
@@ -161,9 +162,11 @@ namespace windows_client.View
 
         void showProgress(object sender, EventArgs e)
         {
-            runningTime.Text = formatTime(runningSeconds+1);
-            if (runningSeconds >= HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED)
+            runningTime.Text = formatTime(runningSeconds + 1);
+
+            if ((myState == RecorderState.RECORDING && runningSeconds >= HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED) || (myState == RecorderState.PLAYING && runningSeconds >= recordedDuration))
                 stop();
+            
             runningSeconds++;
         }
 
@@ -181,7 +184,7 @@ namespace windows_client.View
                 microphone.Stop();
                 UpdateWavHeader(stream);
             }
-            else if (soundInstance!=null && soundInstance.State == SoundState.Playing)
+            else if (soundInstance != null && soundInstance.State == SoundState.Playing)
             {
                 soundInstance.Stop();
             }
@@ -196,6 +199,8 @@ namespace windows_client.View
             statusImage.Source = playIcon;
             sendIconButton.IsEnabled = true;
             myState = RecorderState.RECORDED;
+           
+            microphone.BufferReady -= microphone_BufferReady;
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -283,6 +288,7 @@ namespace windows_client.View
                 byte[] audioBytes = stream.ToArray();
                 if (audioBytes != null && audioBytes.Length > 0)
                 {
+                    PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED_DURATION] = recordedDuration;
                     PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED] = stream.ToArray();
                     NavigationService.GoBack();
                 }

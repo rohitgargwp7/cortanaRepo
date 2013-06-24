@@ -14,6 +14,10 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
 using windows_client.Misc;
+using System.Net.NetworkInformation;
+using Microsoft.Phone.Net.NetworkInformation;
+using System.Globalization;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client
 {
@@ -29,16 +33,31 @@ namespace windows_client
         public static readonly string MSISDN_SETTING = "msisdn";
         public static readonly string COUNTRY_CODE_SETTING = "countryCode";
         public static readonly string REQUEST_ACCOUNT_INFO_SETTING = "raiSettings";
-        public static readonly string IS_ADDRESS_BOOK_SCANNED = "isabscanned";
+
         public static readonly string TOKEN_SETTING = "token";
         public static readonly string UID_SETTING = "uid";
         public static readonly string SMS_SETTING = "smscredits";
         public static readonly string SHOW_FREE_SMS_SETTING = "freeSMS";
-        public static readonly string SHOW_FAVORITES_TUTORIAL = "favoritesTute";
+        public static readonly string STATUS_UPDATE_SETTING = "stUpSet";
+        public static readonly string STATUS_UPDATE_FIRST_SETTING = "stUpFirSet";
+        public static readonly string STATUS_UPDATE_SECOND_SETTING = "stUpSecSet";
+        public static readonly string LAST_SEEN_SEETING = "lstSeenSet";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
+        public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
+        public static readonly string SHOW_BASIC_TUTORIAL = "basicTut";
+        public static readonly string HIDE_CRICKET_MOODS = "cmoods";
+        public static readonly string LATEST_PUSH_TOKEN = "pushToken";
         public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
         public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
         public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
+        public static readonly string APP_UPDATE_POSTPENDING = "updatePost";
+
+        public static readonly string CHAT_THREAD_COUNT_KEY = "chatThreadCountKey";
+        public static readonly string TIP_MARKED_KEY = "tipMarkedKey";
+        public static readonly string TIP_SHOW_KEY = "tipShowKey";
+        public static readonly string PRO_TIP = "proTip";
+        public static readonly string PRO_TIP_COUNT = "proTipCount";
+        public static readonly string PRO_TIP_DISMISS_TIME = "proTipDismissTime";
 
         public static readonly string INVITED = "invited";
         public static readonly string INVITED_JOINED = "invitedJoined";
@@ -46,8 +65,7 @@ namespace windows_client
         public static readonly string GROUPS_CACHE = "GroupsCache";
         public static readonly string IS_DB_CREATED = "is_db_created";
         public static readonly string IS_PUSH_ENABLED = "is_push_enabled";
-        public static string CONTACT_SCANNING_FAILED = "contactScanningFailed";
-        public static string SET_NAME_FAILED = "setNameFailed";
+
         public static string EMAIL = "email";
         public static string GENDER = "gender";
         public static readonly string VIBRATE_PREF = "vibratePref";
@@ -56,6 +74,8 @@ namespace windows_client
         public static readonly string LAST_CRITICAL_VERSION = "lastCriticalVersion";
         public static readonly string APP_ID_FOR_LAST_UPDATE = "appID";
         public static readonly string LAST_ANALYTICS_POST_TIME = "analyticsTime";
+
+        public static readonly string CURRENT_LOCALE = "curLocale";
 
 
         #endregion
@@ -72,8 +92,6 @@ namespace windows_client
         private static bool _isTombstoneLaunch = false;
         private static bool _isAppLaunched = false;
         public static string MSISDN;
-        public static bool ab_scanned = false;
-        public static bool isABScanning = false;
         private static HikePubSub mPubSubInstance;
         private static HikeViewModel _viewModel;
         private static DbConversationListener dbListener;
@@ -81,7 +99,6 @@ namespace windows_client
         private static NetworkManager networkManager;
         private static UI_Utils ui_utils;
         private static Analytics _analytics;
-        private static PushHelper _pushHelper;        
         private static LaunchState _appLaunchState = LaunchState.NORMAL_LAUNCH;
         private static PageState ps = PageState.WELCOME_SCREEN;
 
@@ -92,6 +109,16 @@ namespace windows_client
 
         #region PROPERTIES
 
+        public static bool Is24HourTimeFormat { get; private set; }
+
+        public static PageState PageStateVal
+        {
+            get
+            {
+                return ps;
+            }
+
+        }
         public static bool IsAppLaunched
         {
             get
@@ -112,21 +139,6 @@ namespace windows_client
             }
 
 
-        }
-
-        public static bool Ab_scanned
-        {
-            get
-            {
-                return ab_scanned;
-            }
-            set
-            {
-                if (ab_scanned != value)
-                {
-                    ab_scanned = value;
-                }
-            }
         }
 
         public static HikePubSub HikePubSubInstance
@@ -230,21 +242,6 @@ namespace windows_client
             }
         }
 
-        public static PushHelper PushHelperInstance
-        {
-            get
-            {
-                return _pushHelper;
-            }
-            set
-            {
-                if (value != _pushHelper)
-                {
-                    _pushHelper = value;
-                }
-            }
-        }
-
         public static string CURRENT_VERSION
         {
             get
@@ -272,9 +269,11 @@ namespace windows_client
             WELCOME_SCREEN, // WelcomePage Screen
             PHONE_SCREEN,   // EnterNumber Screen
             PIN_SCREEN,     // EnterPin Screen
+            TUTORIAL_SCREEN_STATUS,
+            TUTORIAL_SCREEN_STICKERS,
             SETNAME_SCREEN, // EnterName Screen
             CONVLIST_SCREEN, // ConversationsList Screen
-            WALKTHROUGH_SCREEN // Walkthrough Screen
+            UPGRADE_SCREEN//Upgrade page
         }
 
         #endregion
@@ -336,49 +335,60 @@ namespace windows_client
                 AccountUtils.Token = (string)appSettings[TOKEN_SETTING];
                 appSettings.TryGetValue<string>(App.MSISDN_SETTING, out App.MSISDN);
             }
+
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
+
+            Is24HourTimeFormat = System.Globalization.DateTimeFormatInfo.CurrentInfo.LongTimePattern.Contains("H") ? true : false;
         }
 
         // Code to execute when the application is launching (eg, from Start)
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
-            #region SERVER INFO
-            string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
-            Debug.WriteLine("SERVER SETTING : " + env);
-            Debug.WriteLine("HOST : " + AccountUtils.HOST);
-            Debug.WriteLine("PORT : " + AccountUtils.PORT);
-            Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
-            Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
-            #endregion
+            if (ps != PageState.WELCOME_SCREEN)
+            {
+                #region SERVER INFO
+                string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
+                Debug.WriteLine("SERVER SETTING : " + env);
+                Debug.WriteLine("HOST : " + AccountUtils.HOST);
+                Debug.WriteLine("PORT : " + AccountUtils.PORT);
+                Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
+                Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
+                #endregion
+            }
             _isAppLaunched = true;
+            //appInitialize();
         }
 
         // Code to execute when the application is activated (brought to foreground)
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+            App.mMqttManager.IsAppStarted = false;
+
             _isAppLaunched = false; // this means app is activated, could be tombstone or dormant state
             _isTombstoneLaunch = !e.IsApplicationInstancePreserved; //e.IsApplicationInstancePreserved  --> if this is true its dormant else tombstoned
             try
             {
                 _appLaunchState = (LaunchState)PhoneApplicationService.Current.State[LAUNCH_STATE];
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("App :: Application_Activated : Setting launch state , Exception : " + ex.StackTrace);
             }
 
             if (_isTombstoneLaunch)
             {
                 if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
                     isNewInstall = false;
-                instantiateClasses();
+                instantiateClasses(false);
             }
             else
             {
                 if (ps == PageState.CONVLIST_SCREEN)
                     MqttManagerInstance.connect();
             }
+
             NetworkManager.turnOffNetworkManager = false;
         }
 
@@ -387,6 +397,7 @@ namespace windows_client
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
             NetworkManager.turnOffNetworkManager = true;
+            sendAppBgStatusToServer();
             App.AnalyticsInstance.saveObject();
             PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
             if (IS_VIEWMODEL_LOADED)
@@ -397,13 +408,60 @@ namespace windows_client
                     return;
                 ConversationTableUtils.saveConvObjectList();
             }
+
+            App.mMqttManager.IsLastSeenPacketSent = false;
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
-            App.AnalyticsInstance.saveObject();
+            App.AnalyticsInstance.saveObject(); //check for null
+            sendAppBgStatusToServer();
+            //appDeinitialize();
+        }
+
+        public static void appInitialize()
+        {
+            DeviceNetworkInformation.NetworkAvailabilityChanged += OnNetworkChange;
+            #region PUSH NOTIFICATIONS STUFF
+
+            bool isPushEnabled = true;
+            appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
+            if (isPushEnabled)
+            {
+                PushHelper.Instance.registerPushnotifications();
+            }
+            #endregion
+        }
+
+        private void appDeinitialize()
+        {
+            DeviceNetworkInformation.NetworkAvailabilityChanged -= OnNetworkChange;
+        }
+
+        private static void OnNetworkChange(object sender, NetworkNotificationEventArgs e)
+        {
+            //reconnect mqtt whenever phone is reconnected without relaunch 
+            if (e.NotificationType == NetworkNotificationType.InterfaceConnected ||
+                e.NotificationType == NetworkNotificationType.InterfaceDisconnected) //TODO in wp7 branch - Madur Garg
+            {
+                if (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+                {
+                    App.MqttManagerInstance.connect();
+                    bool isPushEnabled = true;
+                    App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
+                    if (isPushEnabled)
+                    {
+                        PushHelper.Instance.registerPushnotifications();
+                    }
+                }
+                else
+                {
+                    if (App.MqttManagerInstance != null)
+                        App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
+                }
+            }
         }
 
         void RootFrame_Navigating(object sender, NavigatingCancelEventArgs e)
@@ -412,27 +470,73 @@ namespace windows_client
 
             if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
                 isNewInstall = false;
-            instantiateClasses();
+
+            /*
+            * These changes are done from version 2.0.0.0 , in WP8 devices after status upgrade
+            */
+
+            // this will get the current version installed already in "_currentVersion"
+            appSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out _currentVersion);
+            _latestVersion = Utils.getAppVersion(); // this will get the new version we are upgrading to
 
             string targetPage = e.Uri.ToString();
-            
-            if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
+            e.Cancel = true;
+
+            PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
+
+            // if not new install && current version is less than equal to version 1.8.0.0  and upgrade is done for wp8 device
+            if (!isNewInstall && Utils.compareVersion("2.2.0.0", _currentVersion) == 1 && Utils.IsWP8)
             {
+                instantiateClasses(true);
+                RootFrame.Dispatcher.BeginInvoke(delegate
+                {
+                    RootFrame.Navigate(new Uri("/View/UpgradePage.xaml", UriKind.Relative));
+                });
+            }
+            else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
                 _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-                string param = GetParamFromUri(targetPage);
-                e.Cancel = true;
+
+                instantiateClasses(false);
+                appInitialize();
+                string param = Utils.GetParamFromUri(targetPage);
                 RootFrame.Dispatcher.BeginInvoke(delegate
                 {
                     RootFrame.Navigate(new Uri("/View/NewChatThread.xaml?" + param, UriKind.Relative));
                 });
             }
-
-            else if (targetPage != null && targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
+            else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
             {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
+                _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
+                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
+                PhoneApplicationService.Current.State["IsStatusPush"] = true;
+                instantiateClasses(false);
+                appInitialize();
+                RootFrame.Dispatcher.BeginInvoke(delegate
+                {
+                    RootFrame.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+                });
+            }
+            else if (targetPage != null && targetPage.Contains("NewSelectUserPage.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
                 _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-                e.Cancel = true;
+
+                instantiateClasses(false);
+                appInitialize();
+                if (ps != PageState.CONVLIST_SCREEN)
+                {
+                    RootFrame.Dispatcher.BeginInvoke(delegate
+                    {
+                        Uri nUri = Utils.LoadPageUri(ps);
+                        ((App)Application.Current).RootFrame.Navigate(nUri);
+                        return;
+                    });
+                }
                 int idx = targetPage.IndexOf("?") + 1;
                 string param = targetPage.Substring(idx);
                 RootFrame.Dispatcher.BeginInvoke(delegate
@@ -442,27 +546,17 @@ namespace windows_client
             }
             else
             {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
                 _appLaunchState = LaunchState.NORMAL_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-                e.Cancel = true;
+
+                instantiateClasses(false);
+                appInitialize();
                 RootFrame.Dispatcher.BeginInvoke(delegate
                 {
-                    loadPage();
+                    Uri nUri = Utils.LoadPageUri(ps);
+                    ((App)Application.Current).RootFrame.Navigate(nUri);
                 });
-            }
-
-        }
-
-        private string GetParamFromUri(string targetPage)
-        {
-            try
-            {
-                int idx = targetPage.IndexOf("msisdn");
-                return targetPage.Substring(idx);
-            }
-            catch
-            {
-                return "";
             }
         }
 
@@ -555,43 +649,42 @@ namespace windows_client
 
         #endregion
 
-        private void loadPage()
+        private static void instantiateClasses(bool initInUpgradePage)
         {
-            Uri nUri = null;
 
-            switch (ps)
+            #region IN APP TIPS
+
+            if (isNewInstall) //upgrade logic for inapp tips, will change with every build
             {
-                case PageState.WELCOME_SCREEN:
-                    nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
-                    break;
-                case PageState.PHONE_SCREEN:
-                    createDatabaseAsync();
-                    nUri = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
-                    break;
-                case PageState.PIN_SCREEN:
-                    createDatabaseAsync();
-                    nUri = new Uri("/View/EnterPin.xaml", UriKind.Relative);
-                    break;
-                case PageState.SETNAME_SCREEN:
-                    createDatabaseAsync();
-                    nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
-                    break;
-                case PageState.WALKTHROUGH_SCREEN:
-                    nUri = new Uri("/View/Walkthrough.xaml", UriKind.Relative);
-                    break;
-                case PageState.CONVLIST_SCREEN:
-                    nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
-                    break;
-                default:
-                    nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
-                    break;
+                App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
+                App.appSettings[App.TIP_MARKED_KEY] = (byte)0; // to keep a track of shown keys
+                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0); // to keep a track of current showing keys
             }
-            ((App)Application.Current).RootFrame.Navigate(nUri);
-        }
+            else if (_latestVersion != _currentVersion)
+            {
+                App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
+                App.appSettings[App.TIP_MARKED_KEY] = (byte)0x18;
+                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0x18);
+            }
 
-        private static void instantiateClasses()
-        {
-
+            #endregion
+            #region STCIKERS
+            //todo:make it 2.2.0.0
+            if (isNewInstall || Utils.compareVersion("2.2.0.0", _currentVersion) == 1)
+            {
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.SHOW_DOGGY_OVERLAY, true);
+                StickerHelper.CreateDefaultCategories();
+            }
+            #endregion
+            #region TUTORIAL
+            //todo:make it 2.2.0.0
+            if (!isNewInstall && Utils.compareVersion("2.2.0.0", _currentVersion) == 1)
+            {
+                ps = PageState.TUTORIAL_SCREEN_STICKERS;
+                App.appSettings[SHOW_BASIC_TUTORIAL] = true;
+                App.WriteToIsoStorageSettings(PAGE_STATE, ps);
+            }
+            #endregion
             #region GROUP CACHE
 
             if (App.appSettings.Contains(App.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
@@ -660,7 +753,6 @@ namespace windows_client
             #region PUSH HELPER
             st.Reset();
             st.Start();
-            App.PushHelperInstance = PushHelper.Instance;
             st.Stop();
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate Push helper : {0}", msec);
@@ -671,12 +763,20 @@ namespace windows_client
                 SmileyParser.Instance.initializeSmileyParser();
             }
             #endregion
+            #region RATE MY APP
+            if (isNewInstall)
+            {
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, 1);
+                App.WriteToIsoStorageSettings(App.SHOW_STATUS_UPDATES_TUTORIAL, true);
+                App.WriteToIsoStorageSettings(App.SHOW_BASIC_TUTORIAL, true);
+            }
+            #endregion
             #region VIEW MODEL
 
             IS_VIEWMODEL_LOADED = false;
             if (_viewModel == null)
             {
-                _latestVersion = Utils.getAppVersion();
+                _latestVersion = Utils.getAppVersion(); // this will get the new version we have installed
                 List<ConversationListObject> convList = null;
 
                 if (!isNewInstall)// this has to be called for no new install case
@@ -692,20 +792,37 @@ namespace windows_client
                 else
                     _viewModel = new HikeViewModel(convList);
 
-                if (!isNewInstall && Utils.compareVersion(_latestVersion, _currentVersion) == 1) // shows this is update
+                if (!initInUpgradePage)
                 {
-                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE, true);
-                    App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
-                    if (Utils.compareVersion(_currentVersion,"1.5.0.0") !=1) // if current version is less than equal to 1.5.0.0 then upgrade DB
-                        MqttDBUtils.UpdateToVersionOne();
+                    if (!isNewInstall && Utils.compareVersion(_latestVersion, _currentVersion) == 1) // shows this is update
+                    {
+                        appSettings[App.APP_UPDATE_POSTPENDING] = true;
+                        appSettings[HikeConstants.AppSettings.NEW_UPDATE] = true;
+                        WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
+                        if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
+                            MqttDBUtils.MqttDbUpdateToLatestVersion();
+                    }
                 }
+                st.Stop();
+                msec = st.ElapsedMilliseconds;
+                Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
+                IS_VIEWMODEL_LOADED = true;
+
+                // setting it a default counter of 2 to show notification counter for new user on conversation page
+                if (isNewInstall && !appSettings.Contains(App.PRO_TIP_COUNT)) 
+                    App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, 2);
+
+                if (!appSettings.Contains(App.LAST_SEEN_SEETING))
+                    App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, (byte)1);
             }
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
-            IS_VIEWMODEL_LOADED = true;
             #endregion
-            
+            #region POST APP INFO ON UPDATE
+            // if app info is already sent to server , this function will automatically handle
+            UpdatePostHelper.Instance.postAppInfo();
+            #endregion
+            #region Post App Locale
+            PostLocaleInfo();
+            #endregion
 
         }
 
@@ -765,10 +882,12 @@ namespace windows_client
                     long msec = st.ElapsedMilliseconds;
                     Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("App :: createDatabaseAsync : createDatabaseAsync , Exception : " + ex.StackTrace);
                     RemoveKeyFromAppSettings(App.IS_DB_CREATED);
                 }
+
             };
             bw.RunWorkerAsync();
         }
@@ -804,9 +923,9 @@ namespace windows_client
                     appSettings[key] = value;
                     appSettings.Save();
                 }
-                catch
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem while saving to isolated storage.");
+                    Debug.WriteLine("App :: WriteToIsoStorageSettings, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -820,9 +939,9 @@ namespace windows_client
                     appSettings.Clear();
                     appSettings.Save();
                 }
-                catch
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem while clearing isolated storage.");
+                    Debug.WriteLine("App :: ClearAppSettings, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -833,18 +952,19 @@ namespace windows_client
             {
                 try
                 {
-                    appSettings.Remove(key);
-                    appSettings.Save();
+                    // if key exists then only remove and save it
+                    if (appSettings.Remove(key))
+                        appSettings.Save();
                 }
-                catch
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem while removing key from isolated storage.");
+                    Debug.WriteLine("App :: RemoveKeyFromAppSettings, Exception : " + ex.StackTrace);
                 }
             }
         }
 
         /// <summary>
-        /// this function is used as an upgrade function too.
+        /// This function handles any upgrade process in Conversations and AppSettings only
         /// </summary>
         /// <returns></returns>
         private static List<ConversationListObject> GetConversations()
@@ -857,7 +977,6 @@ namespace windows_client
             // this will ensure that we will show tutorials in case of app upgrade from any version to version later that 1.5.0.8
             if (Utils.compareVersion(_currentVersion, "1.5.0.8") != 1) // current version is less than equal to 1.5.0.8
             {
-                WriteToIsoStorageSettings(App.SHOW_FAVORITES_TUTORIAL, true);
                 WriteToIsoStorageSettings(App.SHOW_NUDGE_TUTORIAL, true);
             }
 
@@ -867,11 +986,11 @@ namespace windows_client
                  * 1. Read from individual files.
                  * 2. Overite old files as they are written in a wrong format
                  */
-                convList =  ConversationTableUtils.getAllConversations(); // this function will read according to the old logic of Version 1.0.0.0
+                convList = ConversationTableUtils.getAllConversations(); // this function will read according to the old logic of Version 1.0.0.0
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
-                WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convList != null ? convList.Count : 0);
+                App.appSettings[HikeViewModel.NUMBER_OF_CONVERSATIONS] = (convList != null) ? convList.Count : 0;
                 // there was no country code in first version, and as first version was released in India , we are setting value to +91 
-                WriteToIsoStorageSettings(COUNTRY_CODE_SETTING, "+91");
+                App.appSettings[COUNTRY_CODE_SETTING] = HikeConstants.INDIA_COUNTRY_CODE;
                 App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
                 return convList;
             }
@@ -883,17 +1002,17 @@ namespace windows_client
                  */
                 convList = ConversationTableUtils.getAllConvs();
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
-                WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS,convList != null?convList.Count:0);
+                App.appSettings[HikeViewModel.NUMBER_OF_CONVERSATIONS] = convList != null ? convList.Count : 0;
 
                 string country_code = null;
                 App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-                if (string.IsNullOrEmpty(country_code) || country_code == "+91")
+                if (string.IsNullOrEmpty(country_code) || country_code == HikeConstants.INDIA_COUNTRY_CODE)
                     App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
                 else
                     App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
                 return convList;
             }
-      
+
             else // this corresponds to the latest version and is called everytime except update launch
             {
                 int convs = 0;
@@ -907,6 +1026,33 @@ namespace windows_client
 
                 return convList;
             }
+        }
+
+        public static void PostLocaleInfo()
+        {
+            string savedLocale;
+            if (!App.appSettings.TryGetValue(App.CURRENT_LOCALE, out savedLocale) ||
+                savedLocale != CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
+            {
+                string currentLocale = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+                App.WriteToIsoStorageSettings(App.CURRENT_LOCALE, currentLocale);
+                JObject obj = new JObject();
+                obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+                JObject data = new JObject();
+                data.Add(HikeConstants.LOCALE, currentLocale);
+                obj.Add(HikeConstants.DATA, data);
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            }
+        }
+
+        private void sendAppBgStatusToServer()
+        {
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
+            obj.Add(HikeConstants.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
+            obj.Add(HikeConstants.STATUS, "bg");
+
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
     }
 }

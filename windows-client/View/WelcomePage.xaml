@@ -37,15 +37,6 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <!--<Grid.Background>
-            <ImageBrush ImageSource="images\background.png"  />
-        </Grid.Background>-->
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="0" Height="710">
 
@@ -53,9 +44,9 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Vertical" Grid.Row="0">
+            <StackPanel Orientation="Vertical" Grid.Row="0" Name="signupPanel">
+                <TextBlock Name="serverTxtBlk" TextAlignment="Center" Text="Staging" Visibility="Collapsed" Foreground="Red"></TextBlock>
                 <Image Source="images\signup_logo.png" Margin="0,150,0,20" Height="104"></Image>
-                <!--<Image Source="images\splash_text.png" Height="30"></Image>-->
                 <TextBlock Width="430" TextWrapping="Wrap" TextAlignment="Center" Text="{Binding Path= LocalizedResources.Fun_Free_Messaging_Txt, Source={StaticResource LocalizedStrings}}" FontSize="25" HorizontalAlignment="Center"></TextBlock>
                 <TextBlock Height="30" Name="NetworkErrorTxtBlk" Text="{Binding Path= LocalizedResources.Connectivity_Issue, Source={StaticResource LocalizedStrings}}" 
                            FontSize="18" HorizontalAlignment="Center" 

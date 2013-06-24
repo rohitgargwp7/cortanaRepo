@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Threading;
 
 namespace windows_client.utils
@@ -98,8 +99,10 @@ namespace windows_client.utils
                         if (!Monitor.Wait(syncRoot, millisecondsTimeout))
                             throw new QueueTimeoutException();
                     }
-                    catch
+
+                    catch (Exception e)
                     {
+                        Debug.WriteLine("BlockingQueue ::  Enqueue :  Enqueue , Exception : " + e.StackTrace);
                         // Monitor exited with exception.  Could be owner thread of monitor
                         // object was terminated or timeout on wait.  Pulse any/all waiting
                         // threads to ensure we don't get any "live locked" producers.
@@ -167,8 +170,9 @@ namespace windows_client.utils
                         if (!Monitor.Wait(syncRoot, millisecondsTimeout))
                             throw new QueueTimeoutException();
                     }
-                    catch
+                    catch (Exception e)
                     {
+                        Debug.WriteLine("BlockingQueue ::  Dequeue :  Enqueue , Exception : " + e.StackTrace);
                         Monitor.PulseAll(syncRoot);
                         throw;
                     }

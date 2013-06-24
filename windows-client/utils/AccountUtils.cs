@@ -15,16 +15,16 @@ using windows_client.Controls;
 using System.Threading;
 using windows_client.DbUtils;
 using windows_client.Misc;
+using windows_client.Controls.StatusUpdate;
 
 namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static bool IS_PRODUCTION = false;     // change this for PRODUCTION or STAGING
+        private static readonly bool IS_PRODUCTION = false;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
-        //private static readonly string STAGING_HOST = "migration.im.hike.in";
         private static readonly string STAGING_HOST = "staging.im.hike.in";
 
         private static readonly string MQTT_HOST_SERVER = "mqtt.im.hike.in";
@@ -33,13 +33,13 @@ namespace windows_client.utils
 
         private static readonly int PRODUCTION_PORT = 80;
 
-        private static readonly int STAGING_PORT = 8080;
+        private static readonly int STAGING_PORT = 80;
 
         public static bool IsProd
         {
             get
             {
-                return IS_PRODUCTION;
+                return App.IS_MARKETPLACE ? true : IS_PRODUCTION;
             }
         }
 
@@ -49,7 +49,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (IS_PRODUCTION)
+                if (IsProd)
                     return MQTT_HOST_SERVER;
                 return STAGING_HOST;
             }
@@ -59,8 +59,8 @@ namespace windows_client.utils
         {
             get
             {
-                if (IS_PRODUCTION)
-                    return STAGING_PORT;
+                if (IsProd)
+                    return 8080;
                 return 1883;
             }
         }
@@ -69,7 +69,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (IS_PRODUCTION)
+                if (IsProd)
                     return "http://" + FILE_TRANSFER_HOST + ":" + Convert.ToString(PORT) + "/v1";
                 return "http://" + STAGING_HOST + ":" + Convert.ToString(STAGING_PORT) + "/v1";
             }
@@ -77,9 +77,9 @@ namespace windows_client.utils
 
         #endregion
 
-        public static string HOST = IS_PRODUCTION ? PRODUCTION_HOST : STAGING_HOST;
+        public static string HOST = IsProd ? PRODUCTION_HOST : STAGING_HOST;
 
-        public static int PORT = IS_PRODUCTION ? PRODUCTION_PORT : STAGING_PORT;
+        public static int PORT = IsProd ? PRODUCTION_PORT : STAGING_PORT;
 
         public static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
         public static readonly string AVATAR_BASE = "http://" + HOST + ":" + Convert.ToString(PORT);
@@ -113,7 +113,7 @@ namespace windows_client.utils
             get { return uid; }
             set
             {
-                if (value != mToken)
+                if (value != uid)
                 {
                     uid = value;
                 }
@@ -134,27 +134,28 @@ namespace windows_client.utils
 
 
         public delegate void postResponseFunction(JObject obj);
-        public delegate void getProfilePicFunction(byte[] data);
-        public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble);
-
+        public delegate void parametrisedPostResponseFunction(JObject jObj, Object obj);
+        public delegate void downloadFile(byte[] downloadedData, object metadata);
+        public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage);
 
         private enum RequestType
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
-            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE
+            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS, GET_ONHIKE_DATE, POST_INFO_ON_APP_UPDATE, GET_STICKERS,
+            LAST_SEEN_POST, SOCIAL_INVITE
         }
         private static void addToken(HttpWebRequest req)
         {
-            req.Headers["Cookie"] = "user=" + mToken;
+            req.Headers["Cookie"] = "user=" + mToken + ";uid=" + (string)App.appSettings[App.UID_SETTING];
         }
 
         public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction finalCallbackFunction)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
-            //req.Headers["X-MSISDN"] = "918826670657";
             req.Method = "POST";
             req.ContentType = "application/json";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
+            req.Headers[HttpRequestHeader.ContentEncoding] = "gzip";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.REGISTER_ACCOUNT, pin, unAuthMSISDN, finalCallbackFunction });
         }
 
@@ -164,7 +165,8 @@ namespace windows_client.utils
             addToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
-            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
+            req.Headers["Accept-Encoding"] = "gzip";
+            req.Headers["Content-Encoding"] = "gzip";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_ADDRESSBOOK, contactListMap, finalCallbackFunction });
         }
 
@@ -190,7 +192,7 @@ namespace windows_client.utils
 
         public static void validateNumber(string phoneNo, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/validate")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/validate?digits=4")) as HttpWebRequest;
             req.Method = "POST";
             req.ContentType = "application/json";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
@@ -236,13 +238,21 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.SET_PROFILE, obj, finalCallbackFunction });
         }
 
-        public static void deleteAccount(postResponseFunction finalCallbackFunction)
+        public static void deleteRequest(postResponseFunction finalCallbackFunction, string requestUrl)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
             addToken(req);
             req.Method = "DELETE";
             addToken(req);
             req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
+        }
+        public static void deleteStatus(parametrisedPostResponseFunction finalCallbackFunction, string requestUrl, Object obj)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(requestUrl)) as HttpWebRequest;
+            addToken(req);
+            req.Method = "DELETE";
+            addToken(req);
+            req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction, obj });
         }
         public static void unlinkAccount(postResponseFunction finalCallbackFunction)
         {
@@ -277,8 +287,16 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_PUSHNOTIFICATION_DATA, uri, finalCallbackFunction });
         }
 
-        public static void uploadFile(byte[] dataBytes, postUploadPhotoFunction finalCallbackFunction, ConvMessage convMessage,
-            SentChatBubble chatbubble)
+        public static void postUpdateInfo(postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/update")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_INFO_ON_APP_UPDATE, finalCallbackFunction });
+        }
+
+        public static void uploadFile(byte[] dataBytes, postUploadPhotoFunction finalCallbackFunction, ConvMessage convMessage)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
             addToken(req);
@@ -287,10 +305,39 @@ namespace windows_client.utils
                 convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO) ? "" : convMessage.FileAttachment.ContentType;
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
+
             req.Headers["X-Thumbnail-Required"] = "0";
 
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPLOAD_FILE, dataBytes, finalCallbackFunction, convMessage, 
-                chatbubble });
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPLOAD_FILE, dataBytes, finalCallbackFunction, convMessage });
+        }
+
+        public static void postStatus(JObject statusJSON, postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/status")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_STATUS, statusJSON, finalCallbackFunction });
+        }
+
+        public static void GetStickers(JObject stickerJson, parametrisedPostResponseFunction finalCallBackFunc, Object obj)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/stickers")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.GET_STICKERS, stickerJson, finalCallBackFunc, obj });
+        }
+        public static void GetSingleSticker(ConvMessage convMessage,int resId, parametrisedPostResponseFunction finalCallBackFunc)
+        {
+            if (convMessage == null || convMessage.StickerObj == null)
+                return;
+            string requestUrl = string.Format("{0}/stickers?catId={1}&stId={2}&resId={3}", BASE, convMessage.StickerObj.Category, convMessage.StickerObj.Id, resId);
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(requestUrl)) as HttpWebRequest;
+            addToken(req);
+            req.Method = "GET";
+            //req.ContentType = "application/json";
+            req.BeginGetResponse(GetRequestCallback, new object[] { req, finalCallBackFunc, convMessage });
         }
 
         public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction, string socialNetowrk, bool isPost)
@@ -310,15 +357,33 @@ namespace windows_client.utils
             }
         }
 
+        public static void SocialInvite(JObject obj, postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/spread")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.SOCIAL_INVITE, obj, finalCallbackFunction });
+        }
+
+        public static void LastSeenRequest(postResponseFunction finalCallbackFunction, string userNumber)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/lastseen/" + userNumber)) as HttpWebRequest;
+            addToken(req);
+            req.Method = "GET";
+            req.Headers[HttpRequestHeader.IfModifiedSince] = Environment.TickCount.ToString();
+            req.BeginGetResponse(GetRequestCallback, new object[] { req, finalCallbackFunction });
+        }
+
         private static void setParams_Callback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
             JObject data = new JObject();
             HttpWebRequest req = vars[0] as HttpWebRequest;
             Stream postStream = req.EndGetRequestStream(result);
-            postResponseFunction finalCallbackFunction = null;
+            Object finalCallbackFunction = null;
             RequestType type = (RequestType)vars[1];
-
+            Object obj = new object();
             switch (type)
             {
                 #region REGISTER ACCOUNT
@@ -329,9 +394,13 @@ namespace windows_client.utils
                     data.Add("set_cookie", "0");
                     data.Add("devicetype", "windows");
                     data[HikeConstants.DEVICE_ID] = Utils.getHashedDeviceId();
-                    //data[HikeConstants.DEVICE_TOKEN] = Utils.getDeviceId();//for push notifications
-                    data[HikeConstants.DEVICE_VERSION] = Utils.getOSVersion();
-                    data[HikeConstants.APP_VERSION] = Utils.getAppVersion();
+                    data[HikeConstants.DEVICE_VERSION] = Utils.getDeviceModel();
+                    data[HikeConstants.APPVERSION] = Utils.getAppVersion();
+                    if (Utils.IsWP8)
+                        data[HikeConstants.OS_NAME] = "win8";
+                    else
+                        data[HikeConstants.OS_NAME] = "win7";
+                    data[HikeConstants.OS_VERSION] = Utils.getOSVersion();
                     string inviteToken = "";
                     if (!string.IsNullOrEmpty(inviteToken))
                         data[HikeConstants.INVITE_TOKEN_KEY] = inviteToken;
@@ -340,7 +409,10 @@ namespace windows_client.utils
                         data.Add("msisdn", unAuthMSISDN);
                         data.Add("pin", pin);
                     }
-                    break;
+                    Compress4(data.ToString(Formatting.None), postStream);
+                    postStream.Close();
+                    req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
+                    return;
                 #endregion
                 #region INVITE
                 case RequestType.INVITE:
@@ -381,10 +453,21 @@ namespace windows_client.utils
                     Dictionary<string, List<ContactInfo>> contactListMap = vars[2] as Dictionary<string, List<ContactInfo>>;
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     data = getJsonContactList(contactListMap);
-                    break;
+                    string x = data.ToString(Newtonsoft.Json.Formatting.None);
+                    Compress4(x, postStream);
+                    postStream.Close();
+                    req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
+                    ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_POSTED;
+                    return;
                 #endregion
                 #region SOCIAL POST
                 case RequestType.SOCIAL_POST:
+                    data = vars[2] as JObject;
+                    finalCallbackFunction = vars[3] as postResponseFunction;
+                    break;
+                #endregion
+                #region SOCIAL_INVITE
+                case RequestType.SOCIAL_INVITE:
                     data = vars[2] as JObject;
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     break;
@@ -425,15 +508,26 @@ namespace windows_client.utils
                     string uri = (string)vars[2];
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     data.Add("dev_token", uri);
-                    data.Add("dev_type", "windows");
+                    data.Add(HikeConstants.DEVICE_TYPE_KEY, "windows");
                     break;
                 #endregion
+                case RequestType.POST_INFO_ON_APP_UPDATE:
+                    finalCallbackFunction = vars[2] as postResponseFunction;
+                    if (Utils.IsWP8)
+                        data[HikeConstants.OS_NAME] = "win8";
+                    else
+                        data[HikeConstants.OS_NAME] = "win7";
+                    data[HikeConstants.OS_VERSION] = Utils.getOSVersion();
+                    data[HikeConstants.DEVICE_VERSION] = Utils.getDeviceModel();
+                    data[HikeConstants.APP_VERSION] = Utils.getAppVersion();
+                    data[HikeConstants.DEVICE_TYPE_KEY] = "windows";
+                    break;
                 #region UPLOAD FILE
                 case RequestType.UPLOAD_FILE:
                     byte[] dataBytes = (byte[])vars[2];
                     postUploadPhotoFunction finalCallbackForUploadFile = vars[3] as postUploadPhotoFunction;
                     ConvMessage convMessage = vars[4] as ConvMessage;
-                    SentChatBubble chatBubble = vars[5] as SentChatBubble;
+                    // SentChatBubble chatBubble = vars[5] as SentChatBubble;
                     int bufferSize = 2048;
                     int startIndex = 0;
                     int noOfBytesToWrite = 0;
@@ -445,18 +539,29 @@ namespace windows_client.utils
                         noOfBytesToWrite = noOfBytesToWrite < bufferSize ? noOfBytesToWrite : bufferSize;
                         postStream.Write(dataBytes, startIndex, noOfBytesToWrite);
                         progressValue = ((double)(startIndex + noOfBytesToWrite) / dataBytes.Length) * 100;
-                        bool updated = chatBubble.updateProgress(progressValue);
-                        if (!updated)
-                        {
-                            chatBubble.setAttachmentState(Attachment.AttachmentState.CANCELED);
+                        if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.CANCELED)
                             break;
-                        }
+                        progressValue -= 10;
+                        convMessage.ProgressBarValue = progressValue < 0 ? 0 : progressValue;
                         startIndex += noOfBytesToWrite;
                     }
 
                     postStream.Close();
-                    req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage, chatBubble });
+                    req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage });
                     return;
+                #endregion
+                #region POST STATUS
+                case RequestType.POST_STATUS:
+                    data = vars[2] as JObject;
+                    finalCallbackFunction = vars[3] as postResponseFunction;
+                    break;
+                #endregion
+                #region GET STICKERS
+                case RequestType.GET_STICKERS:
+                    data = vars[2] as JObject;
+                    finalCallbackFunction = vars[3] ;
+                    obj = vars[4];
+                    break;
                 #endregion
                 #region DEFAULT
                 default:
@@ -470,10 +575,17 @@ namespace windows_client.utils
                 sw.Write(json);
             }
             postStream.Close();
-            req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
+            req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction, obj });
         }
 
-        //GET request
+        public static void GetOnhikeDate(string msisdn, postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/profile/" + msisdn)) as HttpWebRequest;
+            addToken(req);
+            req.Method = "GET";
+            req.BeginGetResponse(GetRequestCallback, new object[] { req, finalCallbackFunction });
+        }
+
         public static void createGetRequest(string requestUrl, postResponseFunction callback, bool isRelativeUrl)
         {
             HttpWebRequest request = null;
@@ -485,24 +597,22 @@ namespace windows_client.utils
             {
                 request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
             }
-            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
+            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();//to disaable caching if GET result
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
 
-        //GET request
-        public static void createGetRequest(string requestUrl, getProfilePicFunction callback, bool setCookie)
+        public static void createGetRequest(string requestUrl, downloadFile callback, bool setCookie, object metadata)
         {
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
-            if(setCookie)
+            if (setCookie)
                 addToken(request);
-            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString(); 
-            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
+            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
+            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback, metadata });
         }
 
         static void GetRequestCallback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
-
             HttpWebRequest request = vars[0] as HttpWebRequest;
             JObject jObject = null;
             string data = "";
@@ -519,7 +629,7 @@ namespace windows_client.utils
                     }
                     else
                     {
-                        if (vars[1] is postResponseFunction)
+                        if (vars[1] is postResponseFunction || vars[1] is parametrisedPostResponseFunction)
                         {
                             using (var reader = new StreamReader(responseStream))
                             {
@@ -527,7 +637,7 @@ namespace windows_client.utils
                             }
                             jObject = JObject.Parse(data);
                         }
-                        else if (vars[1] is getProfilePicFunction)
+                        else if (vars[1] is downloadFile)
                         {
                             using (BinaryReader br = new BinaryReader(responseStream))
                             {
@@ -536,17 +646,22 @@ namespace windows_client.utils
                         }
                     }
                 }
+
                 catch (IOException ioe)
                 {
+                    Debug.WriteLine("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + ioe.StackTrace);
                 }
                 catch (WebException we)
                 {
+                    Debug.WriteLine("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + we.StackTrace);
                 }
                 catch (JsonException je)
                 {
+                    Debug.WriteLine("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + je.StackTrace);
                 }
                 catch (Exception e)
                 {
+                    Debug.WriteLine("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + e.StackTrace);
                 }
                 finally
                 {
@@ -555,12 +670,16 @@ namespace windows_client.utils
                         postResponseFunction finalCallbackFunction = vars[1] as postResponseFunction;
                         finalCallbackFunction(jObject);
                     }
-                    else if (vars[1] is getProfilePicFunction)
+                    else if (vars[1] is downloadFile)
                     {
-                        getProfilePicFunction finalCallbackFunction = vars[1] as getProfilePicFunction;
-                        finalCallbackFunction(fileBytes);
+                        downloadFile downloadFileCallback = vars[1] as downloadFile;
+                        downloadFileCallback(fileBytes, vars[2] as object);
                     }
-
+                    else if (vars[1] is parametrisedPostResponseFunction)
+                    {
+                        parametrisedPostResponseFunction parametrisedCallBack = vars[1] as parametrisedPostResponseFunction;
+                        parametrisedCallBack(jObject, vars[2]);
+                    }
                 }
             }
         }
@@ -574,10 +693,12 @@ namespace windows_client.utils
             {
                 byteArray = Convert.FromBase64String(compressedText);
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("AccountUtils ::  Decompress :  Decompress , Exception : " + ex.StackTrace);
                 return compressedText;
             }
+
 
             //Prepare for decompress
             MemoryStream ms = new MemoryStream(byteArray);
@@ -617,6 +738,52 @@ namespace windows_client.utils
 
         public static byte[] Compress(string text)
         {
+            byte[] buffer = Encoding.UTF8.GetBytes(text);
+            var memoryStream = new MemoryStream();
+            using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
+            {
+                gZipStream.Write(buffer, 0, buffer.Length);
+                gZipStream.Flush();
+            }
+            memoryStream.Position = 0;
+
+            var compressedData = new byte[memoryStream.Length];
+            memoryStream.Read(compressedData, 0, compressedData.Length);
+
+            byte[] gZipBuffer = new byte[compressedData.Length + 4];
+            Buffer.BlockCopy(compressedData, 0, gZipBuffer, 4, compressedData.Length);
+            Buffer.BlockCopy(BitConverter.GetBytes(buffer.Length), 0, gZipBuffer, 0, 4);
+            return gZipBuffer;
+        }
+
+        public static byte[] Compress3(string text)
+        {
+            byte[] buffer = Encoding.UTF8.GetBytes(text);
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress))
+                {
+                    gZipStream.Write(buffer, 0, buffer.Length);
+                    gZipStream.Flush();
+                }
+                // memoryStream.Seek(0, SeekOrigin.Begin);
+                memoryStream.Flush();
+                return memoryStream.ToArray();
+            }
+        }
+
+        public static void Compress4(string text, Stream postStream)
+        {
+            byte[] buffer = Encoding.UTF8.GetBytes(text);
+            using (var gZipStream = new GZipStream(postStream, CompressionMode.Compress))
+            {
+                gZipStream.Write(buffer, 0, buffer.Length);
+                gZipStream.Flush();
+            }
+        }
+
+        public static byte[] Compress2(string text)
+        {
             // if (text.Length < 300)
             // return text;
 
@@ -635,11 +802,13 @@ namespace windows_client.utils
 
             //Compress
             gzip.Write(byteArray, 0, byteArray.Length);
-            gzip.Close();
+
 
             //Transform byte[] zip data to string
             byteArray = ms.ToArray();
-
+            gzip.Flush();
+            ms.Flush();
+            gzip.Close();
             ms.Close();
             gzip.Dispose();
             ms.Dispose();
@@ -692,18 +861,22 @@ namespace windows_client.utils
             }
             catch (IOException ioe)
             {
+                Debug.WriteLine("AccountUtils ::  json_Callback :  json_Callback , Exception : " + ioe.StackTrace);
                 obj = null;
             }
             catch (WebException we)
             {
+                Debug.WriteLine("AccountUtils ::  json_Callback :  json_Callback , Exception : " + we.StackTrace);
                 obj = null;
             }
             catch (JsonException je)
             {
+                Debug.WriteLine("AccountUtils ::  json_Callback :  json_Callback , Exception : " + je.StackTrace);
                 obj = null;
             }
             catch (Exception e)
             {
+                Debug.WriteLine("AccountUtils ::  json_Callback :  json_Callback , Exception : " + e.StackTrace);
                 obj = null;
             }
             finally
@@ -717,8 +890,13 @@ namespace windows_client.utils
                 {
                     postUploadPhotoFunction finalCallbackFunctionForUpload = vars[2] as postUploadPhotoFunction;
                     convMessage = vars[3] as ConvMessage;
-                    SentChatBubble chatBubble = vars[4] as SentChatBubble;
-                    finalCallbackFunctionForUpload(obj, convMessage, chatBubble);
+                    // SentChatBubble chatBubble = vars[4] as SentChatBubble;
+                    finalCallbackFunctionForUpload(obj, convMessage);
+                }
+                else if (vars[2] is parametrisedPostResponseFunction)
+                {
+                    parametrisedPostResponseFunction finalCallbackFunctionForStatus = vars[2] as parametrisedPostResponseFunction;
+                    finalCallbackFunctionForStatus(obj, vars[3]);
                 }
             }
         }
@@ -745,12 +923,15 @@ namespace windows_client.utils
                 }
                 return blockListMsisdns;
             }
+
             catch (ArgumentException e)
             {
+                Debug.WriteLine("AccountUtils ::  getBlockList :  getBlockList , Exception : " + e.StackTrace);
                 return null;
             }
             catch (Exception e)
             {
+                Debug.WriteLine("AccountUtils ::  getBlockList :  getBlockList , Exception : " + e.StackTrace);
                 return null;
             }
         }
@@ -758,18 +939,27 @@ namespace windows_client.utils
         private static JObject getJsonContactList(Dictionary<string, List<ContactInfo>> contactsMap)
         {
             JObject updateContacts = new JObject();
+            if (contactsMap == null)
+                return updateContacts;
             foreach (string id in contactsMap.Keys)
             {
-                List<ContactInfo> list = contactsMap[id];
-                JArray contactInfoList = new JArray();
-                foreach (ContactInfo cInfo in list)
+                try
                 {
-                    JObject contactInfo = new JObject();
-                    contactInfo.Add("name", cInfo.Name);
-                    contactInfo.Add("phone_no", cInfo.PhoneNo);
-                    contactInfoList.Add(contactInfo);
+                    List<ContactInfo> list = contactsMap[id];
+                    JArray contactInfoList = new JArray();
+                    foreach (ContactInfo cInfo in list)
+                    {
+                        JObject contactInfo = new JObject();
+                        contactInfo.Add("name", cInfo.Name);
+                        contactInfo.Add("phone_no", cInfo.PhoneNo);
+                        contactInfoList.Add(contactInfo);
+                    }
+                    updateContacts.Add(id, contactInfoList);
                 }
-                updateContacts.Add(id, contactInfoList);
+                catch (Exception e)
+                {
+                    Debug.WriteLine("AccountUtils :: getJsonContactList(outer loop) : Exception : " + e.StackTrace);
+                }
             }
             return updateContacts;
         }
@@ -779,19 +969,19 @@ namespace windows_client.utils
             try
             {
                 if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
-                {
                     return null;
-                }
+
                 JObject addressbook = (JObject)obj["addressbook"];
-                if (addressbook == null)
-                {
+
+                if (addressbook == null || new_contacts_by_id == null || new_contacts_by_id.Count == 0)
                     return null;
-                }
+
                 bool isFavSaved = false;
                 bool isPendingSaved = false;
                 int hikeCount = 1, smsCount = 1;
                 List<ContactInfo> msgToShow = null;
                 List<string> msisdns = null;
+                Dictionary<string, GroupInfo> allGroupsInfo = null;
                 if (!isRefresh)
                 {
                     msgToShow = new List<ContactInfo>(5);
@@ -800,6 +990,13 @@ namespace windows_client.utils
                 else // if refresh case load groups in cache
                 {
                     GroupManager.Instance.LoadGroupCache();
+                    List<GroupInfo> gl = GroupTableUtils.GetAllGroups();
+                    for (int i = 0; i < gl.Count; i++)
+                    {
+                        if (allGroupsInfo == null)
+                            allGroupsInfo = new Dictionary<string, GroupInfo>();
+                        allGroupsInfo[gl[i].GroupId] = gl[i];
+                    }
                 }
 
                 List<ContactInfo> server_contacts = new List<ContactInfo>();
@@ -807,77 +1004,86 @@ namespace windows_client.utils
                 KeyValuePair<string, JToken> kv;
                 int count = 0;
                 int totalContacts = 0;
+
                 while (keyVals.MoveNext())
                 {
-                    kv = keyVals.Current;
-                    JArray entries = (JArray)addressbook[kv.Key];
-                    List<ContactInfo> cList = new_contacts_by_id[kv.Key];
-                    for (int i = 0; i < entries.Count; ++i)
+                    try
                     {
-                        JObject entry = (JObject)entries[i];
-                        string msisdn = (string)entry["msisdn"];
-                        if (string.IsNullOrWhiteSpace(msisdn))
+                        kv = keyVals.Current;
+                        JArray entries = (JArray)addressbook[kv.Key];
+                        List<ContactInfo> cList = new_contacts_by_id[kv.Key];
+                        for (int i = 0; i < entries.Count; ++i)
                         {
-                            count++;
-                            continue;
-                        }
-                        bool onhike = (bool)entry["onhike"];
-                        ContactInfo cn = new ContactInfo(kv.Key, msisdn, cList[i].Name, onhike, cList[i].PhoneNo);
+                            JObject entry = (JObject)entries[i];
+                            string msisdn = (string)entry["msisdn"];
+                            if (string.IsNullOrWhiteSpace(msisdn))
+                            {
+                                count++;
+                                continue;
+                            }
+                            bool onhike = (bool)entry["onhike"];
+                            ContactInfo cinfo = cList[i];
+                            ContactInfo cn = new ContactInfo(kv.Key, msisdn, cinfo.Name, onhike, cinfo.PhoneNo);
 
-                        if (!isRefresh) // this is case for new installation
-                        {
-                            if (cn.Msisdn != (string)App.appSettings[App.MSISDN_SETTING]) // do not add own number
+                            if (!isRefresh) // this is case for new installation
                             {
-                                if (onhike && hikeCount <= 3 && !msisdns.Contains(cn.Msisdn))
+                                if (cn.Msisdn != (string)App.appSettings[App.MSISDN_SETTING]) // do not add own number
                                 {
-                                    msisdns.Add(cn.Msisdn);
-                                    msgToShow.Add(cn);
-                                    hikeCount++;
-                                }
-                                if (!onhike && smsCount <= 2 && cn.Msisdn.StartsWith("+91") && !msisdns.Contains(cn.Msisdn)) // allow only indian numbers for sms
-                                {
-                                    msisdns.Add(cn.Msisdn);
-                                    msgToShow.Add(cn);
-                                    smsCount++;
-                                }
-                            }
-                        }
-                        else // this is refresh contacts case
-                        {
-                            if (App.ViewModel.ConvMap.ContainsKey(cn.Msisdn)) // update convlist
-                            {
-                                try
-                                {
-                                    App.ViewModel.ConvMap[cn.Msisdn].ContactName = cn.Name;
-                                }
-                                catch (Exception e)
-                                {
-                                    Debug.WriteLine("REFRESH CONTACTS :: Update contact exception " + e.StackTrace);
-                                }
-                            }
-                            else // fav and pending case
-                            {
-                                ConversationListObject c = App.ViewModel.GetFav(cn.Msisdn);
-                                if (c != null) // this user is in favs
-                                {
-                                    c.ContactName = cn.Name;
-                                    MiscDBUtil.SaveFavourites(c);
-                                    isFavSaved = true;
-                                }
-                                else
-                                {
-                                    c = App.ViewModel.GetPending(cn.Msisdn);
-                                    if (c != null)
+                                    if (onhike && hikeCount <= 3 && !msisdns.Contains(cn.Msisdn))
                                     {
-                                        c.ContactName = cn.Name;
-                                        isPendingSaved = true;
+                                        msisdns.Add(cn.Msisdn);
+                                        msgToShow.Add(cn);
+                                        hikeCount++;
+                                    }
+                                    if (!onhike && smsCount <= 2 && cn.Msisdn.StartsWith(HikeConstants.INDIA_COUNTRY_CODE) && !msisdns.Contains(cn.Msisdn)) // allow only indian numbers for sms
+                                    {
+                                        msisdns.Add(cn.Msisdn);
+                                        msgToShow.Add(cn);
+                                        smsCount++;
                                     }
                                 }
                             }
-                            GroupManager.Instance.RefreshGroupCache(cn);
+                            else // this is refresh contacts case
+                            {
+                                if (App.ViewModel.ConvMap.ContainsKey(cn.Msisdn)) // update convlist
+                                {
+                                    try
+                                    {
+                                        App.ViewModel.ConvMap[cn.Msisdn].ContactName = cn.Name;
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Debug.WriteLine("REFRESH CONTACTS :: Update contact exception " + e.StackTrace);
+                                    }
+                                }
+                                else // fav and pending case
+                                {
+                                    ConversationListObject c = App.ViewModel.GetFav(cn.Msisdn);
+                                    if (c != null) // this user is in favs
+                                    {
+                                        c.ContactName = cn.Name;
+                                        MiscDBUtil.SaveFavourites(c);
+                                        isFavSaved = true;
+                                    }
+                                    else
+                                    {
+                                        c = App.ViewModel.GetPending(cn.Msisdn);
+                                        if (c != null)
+                                        {
+                                            c.ContactName = cn.Name;
+                                            isPendingSaved = true;
+                                        }
+                                    }
+                                }
+                                GroupManager.Instance.RefreshGroupCache(cn, allGroupsInfo);
+                            }
+                            server_contacts.Add(cn);
+                            totalContacts++;
                         }
-                        server_contacts.Add(cn);
-                        totalContacts++;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("AccountUtils : getContactList : Exception : " + ex.StackTrace);
                     }
                 }
                 if (isFavSaved)
@@ -891,15 +1097,20 @@ namespace windows_client.utils
                     App.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, msgToShow);
                 return server_contacts;
             }
-            catch (ArgumentException)
+
+            catch (ArgumentException e)
             {
+                Debug.WriteLine("AccountUtils ::  getContactList :  getContactList , Exception : " + e.StackTrace);
                 return null;
             }
             catch (Exception e)
             {
+                Debug.WriteLine("AccountUtils ::  getContactList :  getContactList , Exception : " + e.StackTrace);
                 return null;
             }
         }
+
+
 
     }
 }

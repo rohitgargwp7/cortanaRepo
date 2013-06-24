@@ -22,14 +22,13 @@ using System.Windows.Navigation;
 using System.Windows.Threading;
 using windows_client.Languages;
 using System.Windows.Media.Imaging;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        // Viewfinder for capturing video.
         private VideoBrush videoRecorderBrush;
-
         // Source and device for capturing video.
         private CaptureSource captureSource;
         private VideoCaptureDevice videoCaptureDevice;
@@ -77,35 +76,32 @@ namespace windows_client.View
 
             //add icon for send
             sendIconButton = new ApplicationBarIconButton();
-            sendIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
+            sendIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
             sendIconButton.Text = AppResources.Send_Txt;
             sendIconButton.Click += new EventHandler(send_Click);
             sendIconButton.IsEnabled = true;
-            //            appBar.Buttons.Add(sendIconButton);
 
             playIconButton = new ApplicationBarIconButton();
-            playIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
+            playIconButton.IconUri = new Uri("/View/images/appbar_icon_play.png", UriKind.Relative);
             playIconButton.Text = AppResources.Play_Txt;
             playIconButton.Click += new EventHandler(StartPlayback_Click);
             playIconButton.IsEnabled = true;
-            //            appBar.Buttons.Add(playIconButton);
 
             pauseIconButton = new ApplicationBarIconButton();
-            pauseIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
+            pauseIconButton.IconUri = new Uri("/View/images/icon_pause.png", UriKind.Relative);
             pauseIconButton.Text = AppResources.Pause_Txt;
             pauseIconButton.Click += new EventHandler(PausePlayback_Click);
             pauseIconButton.IsEnabled = true;
             appBar.Buttons.Add(pauseIconButton);
 
             stopIconButton = new ApplicationBarIconButton();
-            stopIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
+            stopIconButton.IconUri = new Uri("/View/images/icon_stop_appbar.png", UriKind.Relative);
             stopIconButton.Text = AppResources.Stop_Txt;
             stopIconButton.Click += new EventHandler(StopPlaybackRecording_Click);
             stopIconButton.IsEnabled = true;
-            //            appBar.Buttons.Add(stopIconButton);
 
             recordIconButton = new ApplicationBarIconButton();
-            recordIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
+            recordIconButton.IconUri = new Uri("/View/images/icon_record_appbar.png", UriKind.Relative);
             recordIconButton.Text = AppResources.Record_Txt;
             recordIconButton.Click += new EventHandler(StartRecording_Click);
             recordIconButton.IsEnabled = true;
@@ -140,7 +136,7 @@ namespace windows_client.View
 
         private void updateProgress()
         {
-            txtDebug.Text = (++runningSeconds).ToString("00") + " : " + maxPlayingTime.ToString("00");
+            txtDebug.Text = (++runningSeconds).ToString("00") + " / " + maxPlayingTime.ToString("00");
             recordProgress.Value = (double)runningSeconds / maxPlayingTime;
             if (runningSeconds == maxPlayingTime)
             {
@@ -360,6 +356,7 @@ namespace windows_client.View
             // If recording fails, display an error.
             catch (Exception e)
             {
+                Debug.WriteLine("RecoedVideo.xaml :: StartVideoRecording, Exception : " + e.StackTrace);
                 this.Dispatcher.BeginInvoke(delegate()
                 {
                     txtDebug.Text = "ERROR: " + e.Message.ToString();
@@ -403,6 +400,7 @@ namespace windows_client.View
             // If stop fails, display an error.
             catch (Exception e)
             {
+                Debug.WriteLine("RecoedVideo.xaml :: StopVideoRecording, Exception : " + e.StackTrace);
                 this.Dispatcher.BeginInvoke(delegate()
                 {
                     txtDebug.Text = "ERROR: " + e.Message.ToString();
@@ -434,6 +432,7 @@ namespace windows_client.View
             // If preview fails, display an error.
             catch (Exception e)
             {
+                Debug.WriteLine("RecoedVideo.xaml :: StartVideoPreview, Exception : " + e.StackTrace);
                 this.Dispatcher.BeginInvoke(delegate()
                 {
                     txtDebug.Text = "ERROR: " + e.Message.ToString();
@@ -444,13 +443,20 @@ namespace windows_client.View
         // Start the video recording.
         private void StartRecording_Click(object sender, EventArgs e)
         {
-            // Avoid duplicate taps.
-            recordIconButton.IsEnabled = false;
-            addOrRemoveAppBarButton(recordIconButton, false);
-            addOrRemoveAppBarButton(sendIconButton, false);
-            captureSource.CaptureImageAsync();
-            progressTimer.Start();
-            StartVideoRecording();
+            try
+            {
+                // Avoid duplicate taps.
+                recordIconButton.IsEnabled = false;
+                addOrRemoveAppBarButton(recordIconButton, false);
+                addOrRemoveAppBarButton(sendIconButton, false);
+                captureSource.CaptureImageAsync();
+                progressTimer.Start();
+                StartVideoRecording();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Record Video :: StartRecording_Click , Exception:" + ex.StackTrace);
+            }
         }
 
         // Handle stop requests.
@@ -598,6 +604,12 @@ namespace windows_client.View
             DisposeVideoPlayer();
 
             StartVideoPreview();
+        }
+
+        protected override void OnOrientationChanged(OrientationChangedEventArgs e)
+        {
+            if (e.Orientation == PageOrientation.LandscapeLeft)
+                base.OnOrientationChanged(e);
         }
     }
 }

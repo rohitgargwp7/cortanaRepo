@@ -14,6 +14,7 @@ using windows_client.Languages;
 using windows_client.ViewModel;
 using System.Threading;
 using System.Diagnostics;
+using Microsoft.Phone.Tasks;
 
 namespace windows_client.View
 {
@@ -163,8 +164,10 @@ namespace windows_client.View
             if (_isAddToFavPage)
             {
                 bool isPendingRemoved = false;
-                for (int i = 0; i < (hikeFavList == null ? 0 : hikeFavList.Count);i++ )
+                for (int i = 0; i < (hikeFavList == null ? 0 : hikeFavList.Count); i++)
                 {
+                    if (hikeFavList[i].Msisdn != App.MSISDN)
+                        FriendsTableUtils.SetFriendStatus(hikeFavList[i].Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
                     if (!App.ViewModel.Isfavourite(hikeFavList[i].Msisdn) && hikeFavList[i].Msisdn != App.MSISDN) // if not already favourite then only add to fav
                     {
                         ConversationListObject favObj = null;
@@ -175,11 +178,11 @@ namespace windows_client.View
                         }
                         else
                             favObj = new ConversationListObject(hikeFavList[i].Msisdn, hikeFavList[i].Name, hikeFavList[i].OnHike, hikeFavList[i].Avatar);
-                            
+
                         App.ViewModel.FavList.Insert(0, favObj);
                         if (App.ViewModel.IsPending(favObj.Msisdn)) // if this is in pending already , remove from pending and add to fav
                         {
-                            App.ViewModel.PendingRequests.Remove(favObj);
+                            App.ViewModel.PendingRequests.Remove(favObj.Msisdn);
                             isPendingRemoved = true;
                         }
                         int count = 0;
@@ -194,37 +197,93 @@ namespace windows_client.View
                         App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
                         MiscDBUtil.SaveFavourites(favObj);
                         App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_INVITE_USERS);
+                        if (hikeFavList[i].OnHike)
+                        {
+                            App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, hikeFavList[i]);
+                        }
                     }
                 }
                 MiscDBUtil.SaveFavourites();
                 if (isPendingRemoved)
                     MiscDBUtil.SavePendingRequests();
-                App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
             }
             #endregion
             #region INVITE
             else
             {
-                string inviteToken = "";
-                //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-                int count = 0;
-                foreach (string key in contactsList.Keys)
+                if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
                 {
-                    if (key == App.MSISDN)
-                        continue;
-                    JObject obj = new JObject();
-                    JObject data = new JObject();
-                    data[HikeConstants.SMS_MESSAGE] = string.Format(AppResources.sms_invite_message, inviteToken);
-                    data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
-                    data[HikeConstants.MESSAGE_ID] = -1;
-                    obj[HikeConstants.TO] = key;
-                    obj[HikeConstants.DATA] = data;
-                    obj[HikeConstants.TYPE] = NetworkManager.INVITE;
-                    App.MqttManagerInstance.mqttPublishToServer(obj);
-                    count++;
+                    string inviteToken = "";
+                    //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+                    int count = 0;
+                    foreach (string key in contactsList.Keys)
+                    {
+                        if (key == App.MSISDN)
+                            continue;
+                        JObject obj = new JObject();
+                        JObject data = new JObject();
+                        data[HikeConstants.SMS_MESSAGE] = Utils.GetRandomInviteString();
+                        data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
+                        data[HikeConstants.MESSAGE_ID] = -1;
+                        obj[HikeConstants.TO] = key;
+                        obj[HikeConstants.DATA] = data;
+                        obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+                        App.MqttManagerInstance.mqttPublishToServer(obj);
+                        count++;
+                    }
+                    if (count > 0)
+                        MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
                 }
-                if (count > 0)
-                    MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
+                else
+                {
+                    string msisdns = string.Empty, toNum=String.Empty;
+                    int count = 0;
+                    JObject obj = new JObject();
+                    JArray numlist = new JArray();
+                    JObject data = new JObject();
+
+                    foreach (string key in contactsList.Keys)
+                    {
+                        if (key != App.MSISDN)
+                        {
+                            msisdns += key + ";";
+                            toNum = key;
+                            numlist.Add(key);
+                        }
+
+                        count++;
+                    }
+
+                    var randomString = Utils.GetRandomInviteString();
+                    var ts = TimeUtils.getCurrentTimeStamp();
+
+                    if (count == 1)
+                    {
+                        obj[HikeConstants.TO] = toNum;
+                        data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                        data[HikeConstants.HIKE_MESSAGE] = randomString;
+                        data[HikeConstants.TIMESTAMP] = ts;
+                        obj[HikeConstants.DATA] = data;
+                        obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+                    }
+                    else
+                    {
+                        data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                        data[HikeConstants.INVITE_LIST] = numlist;
+                        obj[HikeConstants.TIMESTAMP] = ts;
+                        obj[HikeConstants.DATA] = data;
+                        obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
+                    }
+
+                    obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+
+                    App.MqttManagerInstance.mqttPublishToServer(obj);
+                    SmsComposeTask smsComposeTask = new SmsComposeTask();
+                    smsComposeTask.To = msisdns;
+                    smsComposeTask.Body = randomString;
+                    smsComposeTask.Show();
+                }
             }
             #endregion
             NavigationService.GoBack();
@@ -235,50 +294,53 @@ namespace windows_client.View
             contactsListBox.Focus();
         }
 
-        private void CheckBox_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        public void CheckBox_Tap(ContactInfo cn)
         {
-            CheckBox c = sender as CheckBox;
-            ContactInfo cn = c.DataContext as ContactInfo;
-            string msisdn;
-            if (cn.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
+            //checked for null because after binding to listbox if select unselect then add in selected contacts
+            if (contactsListBox.ItemsSource != null)
             {
-                msisdn = Utils.NormalizeNumber(cn.Name);
-                cn = GetContactIfExists(cn);
-            }
-            else
-                msisdn = cn.Msisdn;
-            if ((bool)c.IsChecked) // this will be true when checkbox is not checked initially and u clicked it
-            {
-                if(_isAddToFavPage)
+                string msisdn;
+                if (cn.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
                 {
-                    if (hikeFavList == null)
-                        hikeFavList = new List<ContactInfo>();
-                    hikeFavList.Add(cn);
+                    msisdn = Utils.NormalizeNumber(cn.Name);
+                    cn = GetContactIfExists(cn);
                 }
                 else
-                    contactsList[msisdn] = true;
-            }
-            else // this will be true when checkbox is checked initially and u clicked it to make it uncheck
-            {
-                if (_isAddToFavPage)
-                    hikeFavList.Remove(cn);
-                else
-                    contactsList.Remove(msisdn);
-            }
+                    msisdn = cn.Msisdn;
+                if (cn.IsFav) // this will be true when checkbox is not checked initially and u clicked it
+                {
+                    if (_isAddToFavPage)
+                    {
+                        if (hikeFavList == null)
+                            hikeFavList = new List<ContactInfo>();
+                        hikeFavList.Add(cn);
+                    }
+                    else
+                        contactsList[msisdn] = true;
+                }
+                else // this will be true when checkbox is checked initially and u clicked it to make it uncheck
+                {
+                    if (_isAddToFavPage)
+                        hikeFavList.Remove(cn);
+                    else
+                        contactsList.Remove(msisdn);
+                }
 
-            if (_isAddToFavPage)
-            {
-                if(hikeFavList.Count > 0)
-                    doneIconButton.IsEnabled = true;
+
+                if (_isAddToFavPage)
+                {
+                    if (hikeFavList.Count > 0)
+                        doneIconButton.IsEnabled = true;
+                    else
+                        doneIconButton.IsEnabled = false;
+                }
                 else
-                    doneIconButton.IsEnabled = false;
-            }
-            else
-            {
-                if (contactsList.Count > 0)
-                    doneIconButton.IsEnabled = true;
-                else
-                    doneIconButton.IsEnabled = false;
+                {
+                    if (contactsList.Count > 0)
+                        doneIconButton.IsEnabled = true;
+                    else
+                        doneIconButton.IsEnabled = false;
+                }
             }
         }
 
@@ -414,7 +476,7 @@ namespace windows_client.View
                 for (int j = 0; j < maxJ; j++)
                 {
                     ContactInfo cn = listToIterate[i][j];
-                    if (!_isAddToFavPage )
+                    if (!_isAddToFavPage)
                     {
                         if (contactsList.ContainsKey(cn.Msisdn))
                         {

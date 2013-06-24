@@ -7,12 +7,10 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d"
 	x:Class="windows_client.Controls.StatusUpdate.FriendRequestStatus"
-	d:DesignWidth="372" d:DesignHeight="86"
+	d:DesignWidth="372" d:DesignHeight="400"
     DataContext="{Binding RelativeSource={RelativeSource Self}, Mode=OneTime}">
 
-    <!--<Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Right">-->
-    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="44,12,0,10" HorizontalAlignment="Right">
-
+    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,0,0,24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -21,19 +19,16 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Image Source="{Binding UserImage}" Margin="0,10,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" VerticalAlignment="Top" Height="69" ></Image>
-        <TextBlock Text="{Binding UserName}" FontSize="22" Grid.Column="1" Grid.Row="0" FontFamily="Segoe WP Semibold"/>
-        <TextBlock TextWrapping="Wrap" FontSize="23" Grid.Column="1" Grid.Row="1" Margin="16,0,5,0" Text="{Binding Path= LocalizedResources.Conversations_AddedYouToFav_Txt_WP8, Source={StaticResource LocalizedStrings}}"/>
-        <!--<TextBlock x:Name="seeUpdatesTxtBlk" Text="{Binding SeeUpdates}" TextWrapping="Wrap" FontSize="23" Grid.Column="1" Grid.Row="2" Margin="16,0,5,0"/>-->
-        <TextBlock x:Name="seeUpdatesTxtBlk" TextWrapping="Wrap" FontSize="23" Grid.Column="1" Grid.Row="2" Margin="16,0,5,0"/>
-
-        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="3" Margin="5,0,0,0">
-            <Button x:Name="noBtn" Background="#2e91d3" Height="65" Width="102" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Tap="{Binding YesTap}" Foreground="White"></Button>
-            <Button x:Name="yesBtn" Background="#e9ecee" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Tap="{Binding NoTap}" Foreground="#595959"></Button>
+        <Image Source="{Binding UserImage}" Margin="0,0,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" VerticalAlignment="Top" MaxHeight="69" ></Image>
+        <TextBlock Text="{Binding UserName}" FontSize="30" Margin="21,-10,0,0" Grid.Column="1" Grid.Row="0" FontFamily="Segoe WP Semibold"/>
+        <TextBlock TextWrapping="Wrap" FontSize="20" Grid.Column="1" Grid.Row="1" Margin="21,0,0,0" Text="{Binding Path= LocalizedResources.Conversations_AddedYouToFav_Txt_WP8FrndStatus, Source={StaticResource LocalizedStrings}}"/>
+        <TextBlock x:Name="seeUpdatesTxtBlk" TextWrapping="Wrap" FontSize="18" Foreground="#797979" Text="{Binding Path= LocalizedResources.Profile_DoTheSame, Source={StaticResource LocalizedStrings}}"  Grid.Column="1" Grid.Row="2" MaxWidth="320" Margin="21,0,5,0"/>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="3" Margin="8,0,0,0">
+            <Button x:Name="yesBtn" Background="#2e91d3" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Foreground="White"></Button>
+            <Button x:Name="noBtn" Background="#e9ecee" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Foreground="#595959"></Button>
         </StackPanel>
-
     </Grid>
 </status:StatusUpdateBox>

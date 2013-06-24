@@ -4,16 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
+using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Notification;
+using Microsoft.Phone.Shell;
+using windows_client.Model;
 using windows_client.utils;
-using Newtonsoft.Json.Linq;
-using windows_client.Languages;
+using System.Windows.Media.Imaging;
 
 namespace windows_client.View
 {
@@ -22,73 +18,36 @@ namespace windows_client.View
         public Settings()
         {
             InitializeComponent();
-            initializeBaseOnState();
-        }
-
-        private void initializeBaseOnState()
-        {
-            bool isPushEnabled = true;
-            App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
-            this.pushNotifications.IsChecked = isPushEnabled;
-            if (isPushEnabled)
-                this.pushNotifications.Content = AppResources.On;
+            if (Utils.isDarkTheme())
+            {
+                privacyImage.Source = new BitmapImage(new Uri("images/privacy_dark.png", UriKind.Relative));
+                blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon_white.png", UriKind.Relative));
+                settingsImage.Source = new BitmapImage(new Uri("images/icon_notification.png", UriKind.Relative));
+            }
             else
-                this.pushNotifications.Content = AppResources.Off;
-            
-            bool isVibrateEnabled = true;
-            App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
-            this.vibrate.IsChecked = isVibrateEnabled;
-            if (isVibrateEnabled)
-                this.vibrate.Content = AppResources.On;
-            else
-                this.vibrate.Content = AppResources.Off;
-
-            bool showFreeSMS = true;
-            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
-            this.showFreeSMSToggle.IsChecked = showFreeSMS;
-            if (showFreeSMS)
-                this.showFreeSMSToggle.Content = AppResources.On;
-            else
-                this.showFreeSMSToggle.Content = AppResources.Off;
+            {
+                privacyImage.Source = new BitmapImage(new Uri("images/privacy.png", UriKind.Relative));
+                blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon.png", UriKind.Relative));
+                settingsImage.Source = new BitmapImage(new Uri("images/icon_notification_black.png", UriKind.Relative));
+            }
         }
 
-        private void pushNotifications_Checked(object sender, RoutedEventArgs e)
+        private void Notifications_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            this.pushNotifications.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED,true);
-            App.PushHelperInstance.registerPushnotifications();
+            App.AnalyticsInstance.addEvent(Analytics.NOTIFICATIONS);
+            NavigationService.Navigate(new Uri("/View/Notifications.xaml", UriKind.Relative));
         }
 
-        private void pushNotifications_Unchecked(object sender, RoutedEventArgs e)
+        private void Privacy_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            this.pushNotifications.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED,false);
-            App.PushHelperInstance.closePushnotifications();
-
+            App.AnalyticsInstance.addEvent(Analytics.PRIVACY);
+            NavigationService.Navigate(new Uri("/View/Privacy.xaml", UriKind.Relative));
         }
 
-        private void vibrate_Checked(object sender, RoutedEventArgs e)
+        private void BlockList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            this.vibrate.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(App.VIBRATE_PREF, true);
-        }
-
-        private void vibrate_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.vibrate.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.VIBRATE_PREF, false);
-        }
-
-        private void showFreeSMSToggle_Checked(object sender, RoutedEventArgs e)
-        {
-            this.showFreeSMSToggle.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
-        }
-
-        private void showFreeSMSToggle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.showFreeSMSToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
+            App.AnalyticsInstance.addEvent(Analytics.BLOCKLIST);
+            NavigationService.Navigate(new Uri("/View/BlockListPage.xaml", UriKind.Relative));
         }
     }
 }

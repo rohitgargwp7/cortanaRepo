@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Microsoft.Phone.Notification;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
+using System.Net.NetworkInformation;
+using Microsoft.Phone.Reactive;
 
 namespace windows_client.utils
 {
@@ -18,6 +11,33 @@ namespace windows_client.utils
     {
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static volatile PushHelper instance = null;
+        private readonly int maxPollingTime = 120;
+        private volatile int pollingTime; //in seconds
+        private readonly int minPollingTime = 3;
+        private volatile IScheduler scheduler; //TODO MG - we should can try pooling of scheduler objects
+        private volatile IDisposable httpPostScheduled;
+
+        private string _latestPushToken;
+        private string LatestPushToken
+        {
+            get
+            {
+                return _latestPushToken;
+            }
+            set
+            {
+                if (value != _latestPushToken)
+                {
+                    _latestPushToken = value;
+                    if (httpPostScheduled != null)
+                    {
+                        httpPostScheduled.Dispose();
+                        httpPostScheduled = null;
+                    }
+                    postTokenToServer();
+                }
+            }
+        }
 
         public static PushHelper Instance
         {
@@ -56,19 +76,26 @@ namespace windows_client.utils
                     pushChannel.Close();
                     pushChannel.Dispose();
                 }
+                LatestPushToken = null;
+                scheduler = null;
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException e)
             {
+                Debug.WriteLine("Push Helper :: closePushnotifications : " + e.StackTrace);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Debug.WriteLine("Push Helper :: closePushnotifications : " + e.StackTrace);
             }
         }
 
-
         public void registerPushnotifications()
         {
+            string pushToken;
+            App.appSettings.TryGetValue<string>(App.LATEST_PUSH_TOKEN, out pushToken);
+            _latestPushToken = pushToken;
             HttpNotificationChannel pushChannel;
+            pollingTime = minPollingTime;
             // Try to find the push channel.
             pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
             try
@@ -77,31 +104,27 @@ namespace windows_client.utils
                 if (pushChannel == null)
                 {
                     pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName, HikeConstants.PUSH_CHANNEL_CN);
-
                     // Register for all the events before attempting to open the channel.
                     pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
                     pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-                    // Register for this notification only if you need to receive the notifications while your application is running.
-                    //pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
                     pushChannel.Open();
                     // Bind this new channel for toast events.
                     pushChannel.BindToShellToast();
                     pushChannel.BindToShellTile();
-
                 }
                 else
                 {
                     // The channel was already open, so just register for all the events.
                     pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
                     pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-                    // Register for this notification only if you need to receive the notifications while your application is running.
-                    //pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
-
-                    if (pushChannel.ChannelUri != null)
-                    {
-                        Debug.WriteLine(pushChannel.ChannelUri.ToString());
-                        AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
-                    }
+                }
+                if (pushChannel.ChannelUri != null)
+                {
+                    LatestPushToken = pushChannel.ChannelUri.ToString();
+                }
+                else
+                {
+                    LatestPushToken = null;
                 }
             }
             catch (InvalidOperationException ioe)
@@ -116,8 +139,7 @@ namespace windows_client.utils
 
         void PushChannel_ChannelUriUpdated(object sender, NotificationChannelUriEventArgs e)
         {
-            if (e.ChannelUri != null)
-                AccountUtils.postPushNotification(e.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
+            LatestPushToken = e.ChannelUri.ToString();
         }
 
         void PushChannel_ErrorOccurred(object sender, NotificationChannelErrorEventArgs e)
@@ -136,15 +158,36 @@ namespace windows_client.utils
             {
                 JToken statusToken;
                 obj.TryGetValue(HikeConstants.STAT, out statusToken);
-                stat = statusToken.ToString();
+                if (statusToken != null)
+                    stat = statusToken.ToString();
             }
             if (stat != HikeConstants.OK)
             {
-                this.closePushnotifications();//if server did not ack push token, close it
+                if (scheduler == null)
+                {
+                    scheduler = Scheduler.NewThread;
+                }
+                httpPostScheduled = scheduler.Schedule(postTokenToServer, TimeSpan.FromSeconds(pollingTime));
+                pollingTime *= 2;
+                if (pollingTime > maxPollingTime)
+                    pollingTime = minPollingTime;
+            }
+            else if (stat == HikeConstants.OK)
+            {
+                App.WriteToIsoStorageSettings(App.LATEST_PUSH_TOKEN, _latestPushToken);
+                if (httpPostScheduled != null)
+                {
+                    httpPostScheduled.Dispose();
+                    httpPostScheduled = null;
+                }
+                scheduler = null;
             }
         }
 
-
-
+        private void postTokenToServer()
+        {
+            if (!string.IsNullOrEmpty(_latestPushToken) && NetworkInterface.GetIsNetworkAvailable())
+                AccountUtils.postPushNotification(_latestPushToken, new AccountUtils.postResponseFunction(postPushNotification_Callback));
+        }
     }
 }

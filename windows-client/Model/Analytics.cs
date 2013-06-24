@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using windows_client.Misc;
 using System.IO;
 using System.IO.IsolatedStorage;
+using System.Diagnostics;
 
 namespace windows_client.Model
 {
@@ -20,11 +21,16 @@ namespace windows_client.Model
         //pr = profile screen
         public static readonly string FREE_SMS = "prFrS";
         public static readonly string INVITE = "prInv";
-        public static readonly string PRIVACY = "prPrvc";
         public static readonly string SETTINGS = "prSet";
         public static readonly string HELP = "prHlp";
         public static readonly string EDIT_PROFILE = "prEdtPr";
         public static readonly string REWARDS = "prRew";
+
+        //st = settingsScreen
+
+        public static readonly string NOTIFICATIONS = "stNot";
+        public static readonly string PRIVACY = "stPriv";
+        public static readonly string BLOCKLIST = "stBlk";
 
         //in = invite Screen
         public static readonly string INVITE_SOCIAL = "inSo";
@@ -42,6 +48,7 @@ namespace windows_client.Model
         public static readonly string ADD_TO_FAVS_APP_BAR_CHATTHREAD = "ctATFAB";
         public static readonly string REMOVE_FAVS_CONTEXT_MENU_CHATTHREAD = "ctRFFAB";
         public static readonly string SEE_LARGE_PROFILE_PIC = "ctLPP"; //chat thread large profile pic
+        public static readonly string SEE_LARGE_PROFILE_PIC_FROM_USERPROFILE = "upLPP"; //chat thread large profile pic
 
         //hp = help
         public static readonly string FAQS = "hpFAQ";
@@ -130,8 +137,9 @@ namespace windows_client.Model
             {
                 count = reader.ReadInt32();
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("Analytics :: Read : read Count, Exception : " + ex.StackTrace);
             }
             string key;
             int value = -1;
@@ -149,15 +157,16 @@ namespace windows_client.Model
                     if (!String.IsNullOrEmpty(key) && value > 0)
                         eventMap[key] = value;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("Analytics :: Read : read item, Exception : " + ex.StackTrace);
                 }
             }
         }
 
         public void clearObject() //call after publish
         {
-            if(eventMap != null)
+            if (eventMap != null)
                 eventMap.Clear();
         }
 

@@ -134,7 +134,7 @@
     <comment>Network issue msg (used in all pages)</comment>
   </data>
   <data name="Conversations_AddedYouToFav_Txt" xml:space="preserve">
-    <value> hat dich als Favoriten hinzugefügt. Möchtest du das auch tun?</value>
+    <value>hat dich als Freund hinzugefügt. Möchtest du dasselbe machen?</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_DelAllChats_Txt" xml:space="preserve">
@@ -169,8 +169,8 @@
     <value>Neuer Chat</value>
     <comment>AppBar Btn (cs)</comment>
   </data>
-  <data name="Conversations_OnHike_Txt" xml:space="preserve">
-    <value>{0} ist bei hike.</value>
+  <data name="Conversations_SayHI_Txt" xml:space="preserve">
+    <value>Sag Hallo zu {0}!</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Conversations_OnSMS_Txt" xml:space="preserve">
@@ -182,7 +182,7 @@
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_Pending_Yes_Btn" xml:space="preserve">
-    <value>Ja</value>
+    <value>Bestätigen</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_Pivot_Chats_Header_Txt" xml:space="preserve">
@@ -190,7 +190,7 @@
     <comment>xaml</comment>
   </data>
   <data name="Conversations_Pivot_Favourites_Header_Txt" xml:space="preserve">
-    <value>Favoriten</value>
+    <value>Freunde</value>
     <comment>xaml</comment>
   </data>
   <data name="Conversations_Pivot_Profile_Header_Txt" xml:space="preserve">
@@ -202,15 +202,15 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Bist du sicher, dass du diesen Kontakt aus deinen Favoriten entfernen willst?</value>
+    <value>Möchtest du diesen Kontakt sicher von deiner Freundesliste entfernen?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>aus Favoriten entfernen</value>
-    <comment>cs</comment>
+    <value>aus Freundeskreis entfernen</value>
+    <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>Keine Favoriten vorhanden.</value>
+    <value>Du hast noch niemanden in deinem Freundeskreis.</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -218,11 +218,11 @@
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Conversations_YourFav_Txt" xml:space="preserve">
-    <value>Deine Favoriten</value>
+    <value>Deine Freunde</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Delete_Txt" xml:space="preserve">
-    <value>Löschen</value>
+    <value>löschen</value>
     <comment>Chats ContextMenu (xaml)</comment>
   </data>
   <data name="AppBar_Done_Btn" xml:space="preserve">
@@ -370,7 +370,7 @@
     <comment>Pivot 3 (xaml)</comment>
   </data>
   <data name="Walkthrough_LetsHike_Txt" xml:space="preserve">
-    <value>let's hike</value>
+    <value>Lass uns hiken</value>
     <comment>cs</comment>
   </data>
   <data name="Walkthrough_TitleMsg_1" xml:space="preserve">
@@ -389,8 +389,8 @@
     <value>Akzeptieren</value>
     <comment>accept button in appbar</comment>
   </data>
-  <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
-    <value>Gratis Messaging mit Spaß, ein Leben lang</value>
+  <data name="Messaging_Made_Personal_Txt" xml:space="preserve">
+    <value>Messaging wieder ganz persönlich!</value>
     <comment>This is text below hike logo on welcome screen.</comment>
   </data>
   <data name="WelcomePage_PushMsg_TxtBlk" xml:space="preserve">
@@ -410,15 +410,15 @@
     <comment>xaml</comment>
   </data>
   <data name="EditProfile_GenderFemale_lstPckr" xml:space="preserve">
-    <value>Weiblich</value>
+    <value>weiblich</value>
     <comment>gender dropdown (cs)</comment>
   </data>
   <data name="EditProfile_GenderMale_LstPckr" xml:space="preserve">
-    <value>Männlich</value>
+    <value>männlich</value>
     <comment>gender dropdown (cs)</comment>
   </data>
   <data name="EditProfile_GenderSelect_LstPckr" xml:space="preserve">
-    <value>Auswählen</value>
+    <value>auswählen</value>
     <comment>gender dropdown (cs)</comment>
   </data>
   <data name="EditProfile_Gender_TxtBlk" xml:space="preserve">
@@ -433,16 +433,8 @@
     <value>Speichern</value>
     <comment>cs</comment>
   </data>
-  <data name="FreeSMS_Cnnct_TxtBlk1" xml:space="preserve">
-    <value>Verbinde dich und erhalte sofort</value>
-    <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
-  </data>
-  <data name="FreeSMS_Cnnct_TxtBlk3" xml:space="preserve">
-    <value />
-    <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
-  </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk1" xml:space="preserve">
-    <value>Du bekommst monatlich</value>
+    <value>Verdiene zusätzliche</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk2" xml:space="preserve">
@@ -550,7 +542,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Cancel_Txt" xml:space="preserve">
-    <value>Abbrechen</value>
+    <value>abbrechen</value>
     <comment>General Text</comment>
   </data>
   <data name="CONTACT_NOT_SAVED_ON_SERVER" xml:space="preserve">
@@ -562,7 +554,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Copy_txt" xml:space="preserve">
-    <value>Kopieren</value>
+    <value>kopieren</value>
     <comment>General Text</comment>
   </data>
   <data name="CREDITS_EARNED" xml:space="preserve">
@@ -578,7 +570,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Forward_Txt" xml:space="preserve">
-    <value>Weiter</value>
+    <value>weiter</value>
     <comment>General Text</comment>
   </data>
   <data name="GROUP_CHAT_END" xml:space="preserve">
@@ -610,8 +602,8 @@
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>Zu Favoriten hinzufügen</value>
-    <comment>cs</comment>
+    <value>zu Freundeskreis hinzufügen</value>
+    <comment>fix length(24)</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
     <value>Benutzer hinzufügen</value>
@@ -642,7 +634,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_FreeMsg_Txt" xml:space="preserve">
-    <value>Kostenlose Nachricht...</value>
+    <value>Hike-Nachricht</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_Txt" xml:space="preserve">
@@ -690,7 +682,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
-    <value>SMS Nachricht...</value>
+    <value>Textnachricht</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_TapMsg_Txt" xml:space="preserve">
@@ -702,7 +694,7 @@
     <comment>xaml</comment>
   </data>
   <data name="SelectUser_TxtBoxHint_Txt" xml:space="preserve">
-    <value> Tel. # suchen / eingeben...</value>
+    <value> Tel. # suchen oder eingeben...</value>
     <comment>textbox hint (xaml)</comment>
   </data>
   <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
@@ -729,10 +721,6 @@
     <value>SMS können nur nach Indien gesendet werden.</value>
     <comment>Constants General Text</comment>
   </data>
-  <data name="sms_invite_message" xml:space="preserve">
-    <value>Hallo! Ich benutze hike, eine tolle neue kostenlose Messaging-App von Bharti SoftBank. Lade die App auf http://get.hike.in/{0} herunter, um mir kostenlos Nachrichten zu senden!</value>
-    <comment>Constants General Text</comment>
-  </data>
   <data name="UnBlock_Txt" xml:space="preserve">
     <value>Entsperren</value>
     <comment>xaml</comment>
@@ -746,7 +734,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_JOINED_HIKE" xml:space="preserve">
-    <value>{0} ist gerade bei hike Mitglied geworden!</value>
+    <value>{0} ist gerade hike beigetreten, sag doch 'Hi' :)</value>
     <comment>General Text</comment>
   </data>
   <data name="USER_LEFT" xml:space="preserve">
@@ -792,7 +780,7 @@
     <value>Um hike weiterhin zu verwenden, ist ein Update notwendig.</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Hallo! Ich habe angefangen hike zu benutzen, eine tolle neue kostenlose neue Messaging-App. Du kannst Freunden die bei hike sind, und auch denen, die es noch nicht sind, kostenlos Nachrichten schicken! Messaging war noch nie simpler. Lade die App auf http://get.hike.in/{0} herunter, um mir kostenlos Nachrichten zu senden!</value>
+    <value>Hi! Ich verwende hike - eine einfache, schöne Messaging-App, die absolut kostenlos ist. Bei hike gibt es total witzige Emoticons. Außerdem kannst du Statusmeldungen für deinen Freundeskreis posten. Genau wie BBM, nur viel, viel besser! Hol dir jetzt hike und verabschiede dich von langweiligen SMS. Hol dir hike: http://get.hike.in</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -836,7 +824,7 @@
     <comment>xaml</comment>
   </data>
   <data name="GroupNameChangedByGrpMember_Txt" xml:space="preserve">
-    <value>Gruppenname wurde durch Gruppenmitglied geändert.</value>
+    <value>{0} hat den Gruppennamen zu {1} geändert.</value>
     <comment>MessagesTableUtils</comment>
   </data>
   <data name="GROUP_NAME_TXT" xml:space="preserve">
@@ -879,7 +867,7 @@
     <value>Update erhältlich</value>
   </data>
   <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
-    <value>Es gibt eine neue Version von hike. Möchtest du updaten?</value>
+    <value>Update auf die neue Version von hike, um tolle neue Arten des Messaging zu entdecken.</value>
   </data>
   <data name="Owner_Txt" xml:space="preserve">
     <value>Besitzer</value>
@@ -913,7 +901,7 @@
     <comment>cs</comment>
   </data>
   <data name="Social_Invite_Txt" xml:space="preserve">
-    <value>Hallo! Ich benutze hike, eine tolle neue kostenlose Messaging-App! Lade die App herunter, um mir kostenlos Nachrichten zu senden! @hikeapp</value>
+    <value>Ich verwende @hikeapp 2.0 mit Statusmeldungen &amp; Smileys. Genau wie BBM, nur viel besser! Hol dir hike auf http://get.hike.in #gethike</value>
     <comment>This is used in case of Facebook and Twitter</comment>
   </data>
   <data name="Social_Txt" xml:space="preserve">
@@ -929,15 +917,15 @@
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_One_Month_Ago_Txt" xml:space="preserve">
-    <value>vor einem Monat</value>
+    <value>Vor 1 Monat</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_One_Sec_Ago_Txt" xml:space="preserve">
-    <value>vor einer Sekunde</value>
+    <value>Vor 1 Sekunde</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_One_Year_Ago_Txt" xml:space="preserve">
-    <value>vor einem Jahr</value>
+    <value>Vor 1 Jahr</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_X_Days_Ago_Txt" xml:space="preserve">
@@ -1167,20 +1155,8 @@
     <comment>Text used in app menu bar</comment>
   </data>
   <data name="Favorites_TapToAdd" xml:space="preserve">
-    <value>Zum Hinzufügen hier tippen.</value>
+    <value>Kontakte zu deinem Freundeskreis hinzufügen.</value>
     <comment>xaml (below heart image)</comment>
-  </data>
-  <data name="Favorites_Tute_Screen1" xml:space="preserve">
-    <value>Ein ständiger Platz für alle deine besten Freunde.</value>
-    <comment>xaml (below tute image)</comment>
-  </data>
-  <data name="Favorites_Tute_Screen1_2" xml:space="preserve">
-    <value>Für einen Chat mit ihnen musst du nur einmal tippen.</value>
-    <comment>xaml (below tute image)</comment>
-  </data>
-  <data name="Favorites_Tute_Screen2" xml:space="preserve">
-    <value>Um alle deine Freunde bei hike zu sehen und neue Favoriten hinzuzufügen, tippe auf +</value>
-    <comment>xaml (below tute image)</comment>
   </data>
   <data name="Invited" xml:space="preserve">
     <value>Eingeladen</value>
@@ -1209,8 +1185,8 @@
     <value>Aus Gruppe entfernen</value>
     <comment>General text</comment>
   </data>
-  <data name="Rewards_Txt" xml:space="preserve">
-    <value>Belohnung</value>
+  <data name="ConversationsList_New_Txt" xml:space="preserve">
+    <value>neu</value>
     <comment>Rewards Text</comment>
   </data>
   <data name="Tap_To_Invite_Txt" xml:space="preserve">
@@ -1222,17 +1198,618 @@
     <comment>Add to Group Msg</comment>
   </data>
   <data name="ChatThread_GCMute" xml:space="preserve">
-    <value>Dieser Gruppenchat ist stummgeschaltet</value>
+    <value>Dieser Gruppenchat ist stumm geschaltet.</value>
     <comment>xaml</comment>
   </data>
   <data name="Favorites_AddMore" xml:space="preserve">
-    <value>Mehr hinzufügen</value>
+    <value>Weitere hinzufügen</value>
     <comment>xaml</comment>
   </data>
+  <data name="ContactTransfer_Text" xml:space="preserve">
+    <value>Kontakt</value>
+  </data>
+  <data name="ShareContact_Txt" xml:space="preserve">
+    <value>Kontakt teilen</value>
+  </data>
+  <data name="ShareContact_ConfirmationText" xml:space="preserve">
+    <value>Bist du sicher, dass du die Kontaktinformationen von {0} teilen möchtest</value>
+  </data>
+  <data name="SharedContactNotFoundText" xml:space="preserve">
+    <value>Bitte aktualisiere die Kontaktliste, da der ausgewählte Kontakt nicht existiert.</value>
+  </data>
+  <data name="Pause_Txt" xml:space="preserve">
+    <value>Pausieren</value>
+    <comment>record video page app bar</comment>
+  </data>
+  <data name="Play_Txt" xml:space="preserve">
+    <value>Abspielen</value>
+    <comment>record video page app bar</comment>
+  </data>
+  <data name="Record_Txt" xml:space="preserve">
+    <value>Aufnehmen</value>
+    <comment>record video page app bar</comment>
+  </data>
+  <data name="Stop_Txt" xml:space="preserve">
+    <value>Anhalten</value>
+    <comment>record video page app bar</comment>
+  </data>
   <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
-    <value />
+    <value>Bestätige deine Nummer</value>
+  </data>
+  <data name="SharedContactNotFoundCaptionText" xml:space="preserve">
+    <value>Kontaktliste aktualisieren</value>
+  </data>
+  <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
+    <value>Zu deinem Freundeskreis hinzugefügt</value>
+    <comment>for friend requests in wp8</comment>
   </data>
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
-    <value />
+    <value>Hat das Profilbild geändert</value>
+    <comment>Text used in profile picture update</comment>
+  </data>
+  <data name="StatusUpdate_Photo" xml:space="preserve">
+    <value>Hat das Profilbild geändert</value>
+  </data>
+  <data name="StatuUpdate_Location" xml:space="preserve">
+    <value>in {0}</value>
+  </data>
+  <data name="Conversations_Pivot_Timeline_Header_Txt" xml:space="preserve">
+    <value>Chronik</value>
+  </data>
+  <data name="Conversations_PostStatus_AppBar" xml:space="preserve">
+    <value>Status posten</value>
+  </data>
+  <data name="OthersProfile_Txt" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="OnHIkeSince_Txt" xml:space="preserve">
+    <value>bei hike seit {0}</value>
+  </data>
+  <data name="InviteOnHikeBtn_Txt" xml:space="preserve">
+    <value>Zu hike einladen</value>
+  </data>
+  <data name="InviteOnHikeUpgrade_Txt" xml:space="preserve">
+    <value>Hilf ihm hike beizutreten!</value>
+  </data>
+  <data name="InviteOnHike_Txt" xml:space="preserve">
+    <value>  verpasst den ganzen Spaß!</value>
+  </data>
+  <data name="OnSms_Txt" xml:space="preserve">
+    <value>per SMS</value>
+  </data>
+  <data name="MyProfileheader_Txt" xml:space="preserve">
+    <value>Mein Profil</value>
+  </data>
+  <data name="ProfileToBeFriendBlk1" xml:space="preserve">
+    <value>Du musst befreundet sein mit</value>
+  </data>
+  <data name="ProfileToBeFriendBlk3" xml:space="preserve">
+    <value>, um Statusmeldungen zu erhalten.</value>
+  </data>
+  <data name="btnAddAsFriend_Txt" xml:space="preserve">
+    <value>Als Freund hinzufügen</value>
+  </data>
+  <data name="NewStatus_Txt" xml:space="preserve">
+    <value>NEUER STATUS</value>
+  </data>
+  <data name="Conversations_Timeline_Refresh_Status" xml:space="preserve">
+    <value>{0} neue Updates</value>
+    <comment>text on top on timeline to show # of fresh status updates</comment>
+  </data>
+  <data name="Conversations_Timeline_Refresh_SingleStatus" xml:space="preserve">
+    <value>{0} neues Update</value>
+  </data>
+  <data name="TimeUtils_Moments_Ago" xml:space="preserve">
+    <value>vor einem Moment</value>
+  </data>
+  <data name="You_Txt" xml:space="preserve">
+    <value>Du</value>
+  </data>
+  <data name="Help_System_Health_Text" xml:space="preserve">
+    <value>hike-Status auf Twitter verfolgen</value>
+  </data>
+  <data name="Help_System_Health_Title" xml:space="preserve">
+    <value>Systemintegrität</value>
+  </data>
+  <data name="Attachement_Contact_Txt" xml:space="preserve">
+    <value>Kontaktinfos</value>
+  </data>
+  <data name="Attachment_Audio_Txt" xml:space="preserve">
+    <value>Audiodatei senden</value>
+  </data>
+  <data name="Attachment_Camera_Txt" xml:space="preserve">
+    <value>Kamera</value>
+  </data>
+  <data name="Attachment_Location_Txt" xml:space="preserve">
+    <value>Standort teilen</value>
+  </data>
+  <data name="Attachment_Photo_Txt" xml:space="preserve">
+    <value>Foto senden</value>
+  </data>
+  <data name="Attachment_Video_Txt" xml:space="preserve">
+    <value>Video senden</value>
+  </data>
+  <data name="NoFreeSmsLeft_Txt" xml:space="preserve">
+    <value>Lade {0} dazu ein, hike weiter zu nutzen.</value>
+  </data>
+  <data name="SelectUser_GroupMsg_Txt" xml:space="preserve">
+    <value>Gruppennachricht</value>
+  </data>
+  <data name="HappyMessaging_Txt" xml:space="preserve">
+    <value>Viel Spaß mit hike!</value>
+  </data>
+  <data name="MessageNonHikeFriends_Blk1_Txt" xml:space="preserve">
+    <value>Mit den hike Frei-SMS kannst du ebenfalls Freunden schreiben,</value>
+  </data>
+  <data name="MessageNonHikeFriends_Blk2_Txt" xml:space="preserve">
+    <value>die nicht bei hike sind.</value>
+  </data>
+  <data name="MessagingHikeFriendsFree_Txt" xml:space="preserve">
+    <value>Nachrichten an hike-Freunde sind kostenlos &amp; unbegrenzt.</value>
+  </data>
+  <data name="ReadyToHike_Txt" xml:space="preserve">
+    <value>Los geht's mit hike...</value>
+  </data>
+  <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
+    <value>Teile auf Facebook &amp; Twitter</value>
+  </data>
+  <data name="FB_Connect_Txt" xml:space="preserve">
+    <value>Mit Facebook verbinden</value>
+  </data>
+  <data name="FeelingLazy_Txt" xml:space="preserve">
+    <value>Etwas faul heute? Wir erledigen das für dich.</value>
+    <comment>Used in Entername screen above FB Notification</comment>
+  </data>
+  <data name="Account_Txt" xml:space="preserve">
+    <value>Account</value>
+    <comment>Profile (xaml)</comment>
+  </data>
+  <data name="Delete_Txt_Caps" xml:space="preserve">
+    <value>Löschen</value>
+    <comment>Privacy page (xaml)</comment>
+  </data>
+  <data name="Unlink_Txt" xml:space="preserve">
+    <value>Trennen</value>
+    <comment>Privacy page (xaml)</comment>
+  </data>
+  <data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
+    <value>{0} hat das Gruppenbild geändert.</value>
+  </data>
+  <data name="Ask_Me_Later_Txt" xml:space="preserve">
+    <value>Später erneut fragen</value>
+  </data>
+  <data name="Love_Using_Hike_Txt" xml:space="preserve">
+    <value>Gefällt dir hike?</value>
+  </data>
+  <data name="Rate_Now_Txt" xml:space="preserve">
+    <value>Jetzt bewerten</value>
+  </data>
+  <data name="Rate_Us_Txt" xml:space="preserve">
+    <value>Bitte bewerte uns bei Marketplace.</value>
+  </data>
+  <data name="UpgradingApp_Text" xml:space="preserve">
+    <value>Bitte warten, deine App wird aktualisiert...</value>
+  </data>
+  <data name="Stop_Caption_txt" xml:space="preserve">
+    <value>Stopp!!!</value>
+  </data>
+  <data name="Stop_Contact_Scanning" xml:space="preserve">
+    <value>Möchtest du das Durchsuchen der Kontakte stoppen?</value>
+  </data>
+  <data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
+    <value>Schreibe {0} bei Hike</value>
+    <comment>Here {0} will get replaced by user name. (cs)</comment>
+  </data>
+  <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
+    <value>{0} hat dich zum Freundeskreis hinzugefügt</value>
+    <comment>{0} will be replaced by username</comment>
+  </data>
+  <data name="Profile_DoTheSame" xml:space="preserve">
+    <value>Möchtest du dasselbe machen?</value>
+  </data>
+  <data name="Profile_CancelRequest_BtnTxt" xml:space="preserve">
+    <value>Anfrage abbrechen</value>
+  </data>
+  <data name="Profile_RequestSent_Blk1" xml:space="preserve">
+    <value>Warte bis</value>
+  </data>
+  <data name="Profile_RequestSent_Blk3" xml:space="preserve">
+    <value>deine Freundschaftsanfrage akzeptiert.</value>
+  </data>
+  <data name="Profile_AddNow_Btn_Txt" xml:space="preserve">
+    <value>Jetzt hinzufügen</value>
+  </data>
+  <data name="Profile_NoStatus_Txt" xml:space="preserve">
+    <value>hat noch nichts gepostet :(</value>
+  </data>
+  <data name="Profile_NotInAddressbook_Txt" xml:space="preserve">
+    <value>ist nicht in deinem Adressbuch.</value>
+  </data>
+  <data name="Conversations_Circle_Of_friends_txt" xml:space="preserve">
+    <value>FREUNDESKREIS</value>
+  </data>
+  <data name="Conversations_Contacts_on_hike" xml:space="preserve">
+    <value>KONTAKTE BEI HIKE</value>
+  </data>
+  <data name="Profile_BlockedUser_Blk1" xml:space="preserve">
+    <value>Du hast geblockt:</value>
+  </data>
+  <data name="Profile_BlockedUser_Blk3" xml:space="preserve">
+    <value>Entsperren, um Nachricht zu senden.</value>
+  </data>
+  <data name="Share_With_Txt" xml:space="preserve">
+    <value>TEILEN</value>
+    <comment>Used in share photo</comment>
+  </data>
+  <data name="Block_Tap_Txt" xml:space="preserve">
+    <value>Hier tippen, um diese Person zu {0}.</value>
+    <comment>Used in add to block functionality, {0} will be replaced by block/unblock</comment>
+  </data>
+  <data name="Conversations_BtnUpdateStatus_Txt" xml:space="preserve">
+    <value>Status aktualisieren</value>
+  </data>
+  <data name="Conversations_EmptyStatus_AskPostStatus_Txt" xml:space="preserve">
+    <value>Du hast bis jetzt noch keine Statusmeldungen gepostet.</value>
+  </data>
+  <data name="Conversations_EmptyStatus_Hey_Txt" xml:space="preserve">
+    <value>Hey {0}!</value>
+    <comment>{0} replaced by user name</comment>
+  </data>
+  <data name="Conversations_EmptyStatus_TeamHike_Txt" xml:space="preserve">
+    <value>Hike-Team</value>
+  </data>
+  <data name="Update_Profile_Pic_txt" xml:space="preserve">
+    <value>Aktualisiertes Profilbild</value>
+    <comment>Used to show for pp update in last msg of convlist</comment>
+  </data>
+  <data name="Conversations_DefaultStatus_Txt" xml:space="preserve">
+    <value>Poste eine Statusmeldung</value>
+  </data>
+  <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
+    <value>Statusmeldungen-Benachrichtigungen </value>
+  </data>
+  <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
+    <value>Jede Stunde</value>
+  </data>
+  <data name="Settings_StatusUpdate_EveryXHour_txt" xml:space="preserve">
+    <value>Alle {0} Stunden</value>
+    <comment>{0} replaced by number of hours</comment>
+  </data>
+  <data name="Settings_StatusUpdate_Immediate_Txt" xml:space="preserve">
+    <value>Sofort</value>
+  </data>
+  <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
+    <value>Nur dein 'Freundeskreis' sieht deine Statusmeldungen</value>
+  </data>
+  <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
+    <value>Tippe auf dieses Symbol, um eine neue Statusmeldung zu posten.</value>
+  </data>
+  <data name="Conversations_Status_Tutorials_Header" xml:space="preserve">
+    <value>Statusmeldungen</value>
+  </data>
+  <data name="Notifications_Header_Txt" xml:space="preserve">
+    <value>Benachrichtigungen</value>
+  </data>
+  <data name="Now_Friends_Txt" xml:space="preserve">
+    <value>Ist jetzt dein Freund</value>
+    <comment>This is used in timeline and profile , when user becomed friend.</comment>
+  </data>
+  <data name="Friend_Confirm_Txt" xml:space="preserve">
+    <value>Hat dich als Freund bestätigt.</value>
+    <comment>This is shown when a user confirms you as friend.</comment>
+  </data>
+  <data name="Me_Txt" xml:space="preserve">
+    <value>Ich</value>
+  </data>
+  <data name="Conversations_BtnCircleOfFriends_Txt" xml:space="preserve">
+    <value>Freunde anzeigen</value>
+  </data>
+  <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
+    <value>Hier siehst du Updates aus deinem Freundeskreis.</value>
+  </data>
+  <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
+    <value>Lade deine Freunde zu hike ein.</value>
+  </data>
+  <data name="Mood_Angry" xml:space="preserve">
+    <value>Verärgert </value>
+  </data>
+  <data name="Mood_Boozing" xml:space="preserve">
+    <value>Beim Feiern </value>
+  </data>
+  <data name="Mood_Busy" xml:space="preserve">
+    <value>Beschäftigt </value>
+  </data>
+  <data name="Mood_Caffeinated" xml:space="preserve">
+    <value>Koffeeingeladen </value>
+  </data>
+  <data name="Mood_Chilling" xml:space="preserve">
+    <value>Chillen </value>
+  </data>
+  <data name="Mood_Coding" xml:space="preserve">
+    <value>Beim Coden </value>
+  </data>
+  <data name="Mood_Confused" xml:space="preserve">
+    <value>Verwirrt </value>
+  </data>
+  <data name="Mood_Driving" xml:space="preserve">
+    <value>Beim Fahren </value>
+  </data>
+  <data name="Mood_Gaming" xml:space="preserve">
+    <value>Beim Zocken </value>
+  </data>
+  <data name="Mood_Happy" xml:space="preserve">
+    <value>Fröhlich </value>
+  </data>
+  <data name="Mood_Hungover" xml:space="preserve">
+    <value>Verkatert </value>
+  </data>
+  <data name="Mood_Insomniac" xml:space="preserve">
+    <value>Schlaflos </value>
+  </data>
+  <data name="Mood_In_a_movie" xml:space="preserve">
+    <value>Im Kino </value>
+  </data>
+  <data name="Mood_In_love" xml:space="preserve">
+    <value>Verliebt </value>
+  </data>
+  <data name="Mood_Love_it" xml:space="preserve">
+    <value>Gefällt mir </value>
+  </data>
+  <data name="Mood_Middle_finger" xml:space="preserve">
+    <value>Mittelfinger </value>
+  </data>
+  <data name="Mood_Running_late" xml:space="preserve">
+    <value>Spät dran </value>
+  </data>
+  <data name="Mood_Sad" xml:space="preserve">
+    <value>Traurig </value>
+  </data>
+  <data name="Mood_Shopping" xml:space="preserve">
+    <value>Shopping </value>
+  </data>
+  <data name="Mood_Sleepy" xml:space="preserve">
+    <value>Müde </value>
+  </data>
+  <data name="Mood_Stuck_in_traffic" xml:space="preserve">
+    <value>Im Stau </value>
+  </data>
+  <data name="Mood_Studying" xml:space="preserve">
+    <value>Lernen </value>
+  </data>
+  <data name="Mood_Surprised" xml:space="preserve">
+    <value>Überrascht</value>
+  </data>
+  <data name="Mood_Watching_tv" xml:space="preserve">
+    <value>Fernsehen</value>
+  </data>
+  <data name="StatusDelete_NoNtwrk_Txt" xml:space="preserve">
+    <value>Deine Statusmeldung konnte nicht gelöscht werden. Bitte überprüfe die Netzwerkverbindung und versuche es erneut.</value>
+  </data>
+  <data name="StatusDetionFail_Txt" xml:space="preserve">
+    <value>Status kann nicht gelöscht werden.</value>
+  </data>
+  <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
+    <value>Zu Kontakten hinzufügen</value>
+  </data>
+  <data name="SettingsSubtitle_Account_Txt" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="SettingsSubtitle_Blocklist_Txt" xml:space="preserve">
+    <value>Gesperrt-Liste</value>
+  </data>
+  <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
+    <value>Benachrichtigungen</value>
+  </data>
+  <data name="Settings_AccountSettings_Txt" xml:space="preserve">
+    <value>Verwalte deinen hike-Account</value>
+  </data>
+  <data name="Settings_BlocklistSettings_Txt" xml:space="preserve">
+    <value>Eine Liste der gesperrten Nutzer</value>
+  </data>
+  <data name="Settings_NotificationSettings_Txt" xml:space="preserve">
+    <value>Deine Benachrichtigungseinstellungen</value>
+  </data>
+  <data name="Blocklist_user_txt" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+  <data name="Conversations_InviteFriend_Btn" xml:space="preserve">
+    <value>Freunde einladen</value>
+  </data>
+  <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
+    <value>Tippe auf +, um einen Kontakt zu deinem Freundeskreis hinzuzufügen.</value>
+  </data>
+  <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
+    <value>Was geht, {0}?</value>
+    <comment>{0} replaced by user name </comment>
+  </data>
+  <data name="Profile_You_NoStatus_Txt" xml:space="preserve">
+    <value>Du hast bis jetzt noch nichts gepostet :(</value>
+  </data>
+  <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
+    <value>Gruppenname kann maximal 30 Zeichen betragen.</value>
+    <comment>Warning Text</comment>
+  </data>
+  <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
+    <value>Datei senden fehlgeschlagen</value>
+  </data>
+  <data name="CT_FileSizeExceed_Text" xml:space="preserve">
+    <value>Maximale Dateigröße ist 15 MB.</value>
+  </data>
+  <data name="CT_CharCount_Sms_User" xml:space="preserve">
+    <value>{0}/{1}</value>
+    <comment>{0}-number , {1} number</comment>
+  </data>
+  <data name="CT_MessageCount_Sms_User" xml:space="preserve">
+    <value>{0} Nachrichten,</value>
+    <comment>{0} replaced by number</comment>
+  </data>
+  <data name="Hold_And_Talk" xml:space="preserve">
+    <value>Halten und sprechen</value>
+    <comment>Long press to start audio recording</comment>
+  </data>
+  <data name="Release_To_Send" xml:space="preserve">
+    <value>Zum Senden loslassen</value>
+    <comment>Release to send recorded data</comment>
+  </data>
+  <data name="BlockList_Text" xml:space="preserve">
+    <value>GESPERRT LISTE</value>
+  </data>
+  <data name="Conversations_Dismiss_Tip" xml:space="preserve">
+    <value>Schließen</value>
+    <comment>Dismiss/Close the tip which is currently visible</comment>
+  </data>
+  <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
+    <value>"Zuletzt online" anzeigen</value>
+  </data>
+  <data name="Last_Seen" xml:space="preserve">
+    <value>zuletzt online</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>online</value>
+  </data>
+  <data name="Preferences_Header_Txt" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="SettingsSubtitle_Preferences_Txt" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
+    <value>Deine Account-Einstellungen</value>
+  </data>
+  <data name="Drag_Here_To_Delete" xml:space="preserve">
+    <value>Zum Löschen hierher</value>
+    <comment>Drag to a specified area to delete ongoing recording</comment>
+  </data>
+  <data name="Message_Cancelled" xml:space="preserve">
+    <value>Nachricht verworfen</value>
+    <comment>Notify user that recording has been deleted</comment>
+  </data>
+  <data name="Message_Too_Short" xml:space="preserve">
+    <value>Nachricht zu kurz</value>
+    <comment>Message is too short to be sent</comment>
+  </data>
+  <data name="In_App_Tip_1" xml:space="preserve">
+    <value>Tippe hier, um Sticker und Emoticons zu teilen :)</value>
+  </data>
+  <data name="In_App_Tip_2" xml:space="preserve">
+    <value>Neue Sticker!</value>
+  </data>
+  <data name="In_App_Tip_3" xml:space="preserve">
+    <value>Tippe hier, um hikes neues Walkie Talkie zu verwenden!</value>
+  </data>
+  <data name="In_App_Tip_4" xml:space="preserve">
+    <value>Tippe hier, um deine Stimmung anzuhängen :)</value>
+  </data>
+  <data name="In_App_Tip_5" xml:space="preserve">
+    <value>Das ist eine Statusmeldung von {0}</value>
+  </data>
+  <data name="No_Stickers_Downloaded_Txt" xml:space="preserve">
+    <value>Aus dieser Kategorie wurden keine Sticker heruntergeladen.</value>
+    <comment>General text</comment>
+  </data>
+  <data name="Sticker_Txt" xml:space="preserve">
+    <value>Sticker</value>
+    <comment>noun</comment>
+  </data>
+  <data name="Sticker_Downloading_Txt" xml:space="preserve">
+    <value>Wird heruntergeladen</value>
+  </data>
+  <data name="At_Txt" xml:space="preserve">
+    <value>um</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="TimeUtils_A_While_Ago" xml:space="preserve">
+    <value>vor einiger Zeit</value>
+  </data>
+  <data name="Today_Txt" xml:space="preserve">
+    <value>heute</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Invite_Sent_Successfully" xml:space="preserve">
+    <value>Einladung erfolgreich gesendet.</value>
+  </data>
+  <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
+    <value>{0} ist wieder bei hike. Sag Hallo :)</value>
+    <comment>{0} to be replaced by name</comment>
+  </data>
+  <data name="StickersTut_TxtBlk1" xml:space="preserve">
+    <value>Drücke deine Stimmung noch besser aus mit</value>
+    <comment>continued string -&gt;StickersTut_TxtBlk2(50)</comment>
+  </data>
+  <data name="StickersTut_TxtBlk2" xml:space="preserve">
+    <value>neuen hike Stickern.</value>
+    <comment>StickersTut_TxtBlk1-&gt;StickersTut_TxtBlk2(50)</comment>
+  </data>
+  <data name="WelcomeTut_TxtBlk1" xml:space="preserve">
+    <value>Teile jetzt Statusmeldungen mit</value>
+    <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
+  </data>
+  <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
+    <value>deinem Freundeskreis.</value>
+    <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
+  </data>
+  <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
+    <value>Du wirst hier nun Updates von {0} sehen.</value>
+    <comment>{0} to be replaced by name</comment>
+  </data>
+  <data name="ConfimFriendUserProfile_Txt" xml:space="preserve">
+    <value>Ihr werdet jetzt eure Updates sehen</value>
+  </data>
+  <data name="In_App_Tip_6" xml:space="preserve">
+    <value>Nur dein Freundeskreis kann sehen wann du letztmals online warst.</value>
+  </data>
+  <data name="DownloadingSticker_txt" xml:space="preserve">
+    <value>Sticker wird geladen</value>
+  </data>
+  <data name="Download_txt" xml:space="preserve">
+    <value>Download</value>
+    <comment>length-8 fixed</comment>
+  </data>
+  <data name="Free_txt" xml:space="preserve">
+    <value>Free</value>
+    <comment>length-4 fixed</comment>
+  </data>
+  <data name="InternetChargesMayApply_txt" xml:space="preserve">
+    <value>*Evtl. Kosten für Mobiles Internet</value>
+  </data>
+  <data name="StickerDownloadFailed" xml:space="preserve">
+    <value>Kein Sticker-Download.</value>
+  </data>
+  <data name="TapHereToRetyTxt" xml:space="preserve">
+    <value>Tippe für neuen Versuch.</value>
+  </data>
+  <data name="Invite_Not_Sent" xml:space="preserve">
+    <value>Einladung konnte nicht gesendet werden.</value>
+  </data>
+  <data name="Please_Retry_Later" xml:space="preserve">
+    <value>Bitte später erneut versuchen</value>
+  </data>
+  <data name="sms_invite_message_1" xml:space="preserve">
+    <value>Hey, ich verwende hike und hier gibt es tolle neue Sticker und Emoticons, die ich mit dir teilen möchte. Hol dir jetzt http://hike.in/</value>
+  </data>
+  <data name="sms_invite_message_2" xml:space="preserve">
+    <value>Hey, ich verwende hike - hier sieht meinen "Zuletzt online"-Status nicht jeder, nur ausgewählten Freunde. Hol dir jetzt http://hike.in/</value>
+    <comment>Constants General Text</comment>
+  </data>
+  <data name="sms_invite_message_3" xml:space="preserve">
+    <value>Hey, ich verwende hike mit einem coolen Walkie-Talkie, mit dem du Freunden gratis Sprachnachrichten senden kannst. Besuche http://hike.in/</value>
+  </data>
+  <data name="Button_Retry_Txt" xml:space="preserve">
+    <value>Erneut versuchen</value>
+  </data>
+  <data name="DownloadFailed_Txt" xml:space="preserve">
+    <value>Ups! Download fehlgeschlagen</value>
+  </data>
+  <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
+    <value>Gratis Messaging mit Spaß, ein Leben lang</value>
+  </data>
+  <data name="Last_Seen_Today_At" xml:space="preserve">
+    <value>zuletzt online heute um</value>
+  </data>
+  <data name="Last_Seen_Yesterday_At" xml:space="preserve">
+    <value>zuletzt online gestern um</value>
+  </data>
+  <data name="Installed_Txt" xml:space="preserve">
+    <value>installiert</value>
   </data>
 </root>

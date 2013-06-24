@@ -2,12 +2,17 @@
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
+using System.IO;
+using windows_client.DbUtils;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace windows_client.utils
 {
     public class UI_Utils
     {
-        #region private variables
+        #region PRIVATE UI VARIABLES
+
         private SolidColorBrush textBoxBackground;
         private SolidColorBrush lastMsgForeground;
         private SolidColorBrush smsBackground;
@@ -16,22 +21,30 @@ namespace windows_client.utils
         private SolidColorBrush walkThroughUnselectedColumn;
         private SolidColorBrush black;
         private SolidColorBrush white;
+        private SolidColorBrush btnGrayBackground;
+        private SolidColorBrush btnGrayForeground;
         private SolidColorBrush groupChatHeaderColor;
         private SolidColorBrush signUpForeground;
         private SolidColorBrush receivedChatBubbleColor;
+        private SolidColorBrush statusBubbleColor;
         private SolidColorBrush editProfileForeground;
         private SolidColorBrush receivedChatBubbleTimestamp;
         private SolidColorBrush hikeSentChatBubbleTimestamp;
         private SolidColorBrush smsSentChatBubbleTimestamp;
         private SolidColorBrush receivedChatBubbleProgress;
         private SolidColorBrush phoneThemeColor;
+        private SolidColorBrush statusTextForeground;
+        private SolidColorBrush tappedCategoryColor;
+        private SolidColorBrush untappedCategoryColor;
+        private SolidColorBrush deleteGreyBackground;
+        private SolidColorBrush deleteBlackBackground;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
         private BitmapImage playIcon;
+        private BitmapImage pauseIcon;
+        private BitmapImage audioMicIcon;
         private BitmapImage downloadIcon;
-        private BitmapImage audioAttachmentReceive;
-        private BitmapImage audioAttachmentSend;
         private BitmapImage httpFailed;
         private BitmapImage typingNotificationBitmap;
         private BitmapImage emptyImage;
@@ -39,14 +52,46 @@ namespace windows_client.utils
         private BitmapImage delivered;
         private BitmapImage read;
         private BitmapImage trying;
-        private BitmapImage unread;
-        //private BitmapImage defaultAvatarBitmapImage;
-        //private BitmapImage defaultGroupImage;
         private BitmapImage waiting;
         private BitmapImage reward;
+        private BitmapImage chatSmsError;
+        private BitmapImage grpNameOrPicChanged;
         private BitmapImage participantLeft;
         private BitmapImage nudgeSend;
         private BitmapImage nudgeReceived;
+        private BitmapImage textStatusImage;
+        private BitmapImage friendRequestImage;
+        private BitmapImage profilePicStatusImage;
+        private BitmapImage noNewNotificationImage;
+        private BitmapImage newNotificationImage;
+        private BitmapImage contactIcon;
+        private BitmapImage whiteContactIcon;
+        private BitmapImage facebookDisabledIcon;
+        private BitmapImage facebookEnabledIcon;
+        private BitmapImage twitterDisabledIcon;
+        private BitmapImage twitterEnabledIcon;
+        private BitmapImage moodDisabledIcon;
+        private BitmapImage moodEnabledIcon;
+        private BitmapImage userProfileLockImage;
+        private BitmapImage userProfileInviteImage;
+        private BitmapImage userProfileStockImage;
+        private BitmapImage loadingImage;
+        private BitmapImage lastSeenClockImage;
+        private BitmapImage doggyOverlay;
+        private BitmapImage kittyOverlay;
+        private BitmapImage bollywoodOverlay;
+        private BitmapImage trollOverlay;
+        private BitmapImage expressionsOverlay;
+        private BitmapImage doggyInactive;
+        private BitmapImage kittyInactive;
+        private BitmapImage bollywoodInactive;
+        private BitmapImage trollInactive;
+        private BitmapImage expressionsInactive;
+        private BitmapImage doggyActive;
+        private BitmapImage kittyActive;
+        private BitmapImage bollywoodActive;
+        private BitmapImage trollActive;
+        private BitmapImage expressionsActive;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
         private string[] defaultAvatarFileNames;
@@ -55,8 +100,37 @@ namespace windows_client.utils
         private Thickness convListEmoticonMargin = new Thickness(0, 5, 0, 0);
         private Thickness chatThreadKeyPadUpMargin = new Thickness(0, 315, 15, 0);
         private Thickness chatThreadKeyPadDownMargin = new Thickness(0, 0, 15, 0);
+        BitmapImage walkieTalkieGreyImage;
+        BitmapImage walkieTalkieWhiteImage;
+        BitmapImage walkieTalkieGreyImageBig;
+        BitmapImage walkieTalkieWhiteImageBig;
+        BitmapImage walkieTalkieDeleteSucImageGrey;
+        BitmapImage walkieTalkieDeleteSucImageWhite;
+        BitmapImage closeButtonWhiteImage;
+        BitmapImage closeButtonBlackImage;
+        BitmapImage dustbinGreyImage;
+        BitmapImage dustbinWhiteImage;
+        SolidColorBrush whiteTextForeGround;
+        SolidColorBrush greyTextForeGround;
         private FontFamily groupChatMessageHeader;
         private FontFamily messageText;
+
+        #endregion
+
+        #region STATUS UPDATE CUSTOM CONTROLS
+        public Thickness TimelineStatusLayoutMargin = new Thickness(0, 0, 0, 24);
+        public Thickness UserProfileStatusLayoutMargin = new Thickness(0, 0, 0, 0);
+        public Thickness TimelineStatusTypeMargin = new Thickness(0, 8, 0, 0);
+        public Thickness UserProfileStatusTypeMargin = new Thickness(12, 34, 0, 0);
+        public Thickness TimelineStatusTextMargin = new Thickness(20, 0, 5, 0);
+        public Thickness UserProfileStatusTextMargin = new Thickness(18, 0, 5, 0);
+        public Thickness StatusImageMargin = new Thickness(12, 28, 0, 12);
+        public SolidColorBrush RedBorderBrush = new SolidColorBrush(Colors.Red);
+        public SolidColorBrush BlackBorderBrush = new SolidColorBrush(Colors.Black);
+        public BitmapImage BlankBitmapImage = new BitmapImage();
+        #endregion
+
+        private Dictionary<string, BitmapImage> _bitMapImageCache = null;
 
         private static volatile UI_Utils instance = null;
 
@@ -79,7 +153,6 @@ namespace windows_client.utils
                 return instance;
             }
         }
-        #endregion
 
         private UI_Utils()
         {
@@ -98,9 +171,25 @@ namespace windows_client.utils
             defaultAvatarFileNames[11] = "EarthyPeople.jpg";
             defaultAvatarFileNames[12] = "GreenPeople.jpg";
             defaultAvatarFileNames[13] = "PinkPeople.jpg";
+
+            _bitMapImageCache = new Dictionary<string, BitmapImage>();
         }
 
         #region public  properties
+
+        public Dictionary<string, BitmapImage> BitmapImageCache
+        {
+            get
+            {
+                return _bitMapImageCache;
+            }
+            set
+            {
+                if (value != _bitMapImageCache)
+                    _bitMapImageCache = value;
+            }
+        }
+
         public SolidColorBrush TextBoxBackground
         {
             get
@@ -181,6 +270,26 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush ButtonGrayBackground
+        {
+            get
+            {
+                if (btnGrayBackground == null)
+                    btnGrayBackground = new SolidColorBrush(Color.FromArgb(255, 89, 89, 89));
+                return btnGrayBackground;
+            }
+        }
+
+        public SolidColorBrush ButtonGrayForeground
+        {
+            get
+            {
+                if (btnGrayForeground == null)
+                    btnGrayForeground = new SolidColorBrush(Color.FromArgb(255, 233, 236, 238));
+                return btnGrayForeground;
+            }
+        }
+
         public SolidColorBrush GroupChatHeaderColor
         {
             get
@@ -218,7 +327,20 @@ namespace windows_client.utils
                 return receivedChatBubbleColor;
             }
         }
-
+        public SolidColorBrush StatusBubbleColor
+        {
+            get
+            {
+                if (statusBubbleColor == null)
+                {
+                    if (Utils.isDarkTheme())
+                        statusBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0x26, 0x26, 0x26));
+                    else
+                        statusBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
+                }
+                return statusBubbleColor;
+            }
+        }
         public SolidColorBrush EditProfileForeground
         {
             get
@@ -300,6 +422,39 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush StatusTextForeground
+        {
+            get
+            {
+                if (statusTextForeground == null)
+                {
+                    if (Utils.isDarkTheme())
+                        statusTextForeground = new SolidColorBrush(Color.FromArgb(255, 0xd9, 0xd9, 0xd9));
+                    else
+                        statusTextForeground = new SolidColorBrush(Color.FromArgb(255, 0x4f, 0x4f, 0x4f));
+                }
+                return statusTextForeground;
+            }
+        }
+
+        public SolidColorBrush TappedCategoryColor
+        {
+            get
+            {
+                if (tappedCategoryColor == null)
+                    tappedCategoryColor = new SolidColorBrush(Color.FromArgb(255, 0x1b, 0xa1, 0xe2));
+                return tappedCategoryColor;
+            }
+        }
+        public SolidColorBrush UntappedCategoryColor
+        {
+            get
+            {
+                if (untappedCategoryColor == null)
+                    untappedCategoryColor = new SolidColorBrush(Color.FromArgb(255, 0x4d, 0x4d, 0x4d));
+                return untappedCategoryColor;
+            }
+        }
         public BitmapImage OnHikeImage
         {
             get
@@ -336,7 +491,19 @@ namespace windows_client.utils
             {
                 if (playIcon == null)
                     playIcon = new BitmapImage(new Uri("/View/images/play_icon.png", UriKind.Relative));
+
                 return playIcon;
+            }
+        }
+
+        public BitmapImage PauseIcon
+        {
+            get
+            {
+                if (pauseIcon == null)
+                    pauseIcon = new BitmapImage(new Uri("/View/images/pause_icon.png", UriKind.Relative));
+
+                return pauseIcon;
             }
         }
 
@@ -347,27 +514,6 @@ namespace windows_client.utils
                 if (downloadIcon == null)
                     downloadIcon = new BitmapImage(new Uri("/View/images/download_icon.png", UriKind.Relative));
                 return downloadIcon;
-            }
-        }
-
-        public BitmapImage AudioAttachmentReceive
-        {
-            get
-            {
-                if (audioAttachmentReceive == null)
-                    audioAttachmentReceive = new BitmapImage(new Uri("/View/images/audio_file_icon.png", UriKind.Relative));
-                return audioAttachmentReceive;
-            }
-        }
-
-
-        public BitmapImage AudioAttachmentSend
-        {
-            get
-            {
-                if (audioAttachmentSend == null)
-                    audioAttachmentSend = new BitmapImage(new Uri("/View/images/audio_file_icon_white.png", UriKind.Relative));
-                return audioAttachmentSend;
             }
         }
 
@@ -388,16 +534,6 @@ namespace windows_client.utils
                 if (typingNotificationBitmap == null)
                     typingNotificationBitmap = new BitmapImage(new Uri("/View/images/typing.png", UriKind.Relative));
                 return typingNotificationBitmap;
-            }
-        }
-
-        public BitmapImage EmptyImage
-        {
-            get
-            {
-                if (emptyImage == null)
-                    emptyImage = new BitmapImage(new Uri("/View/images/emptyImage.png", UriKind.Relative));
-                return emptyImage;
             }
         }
 
@@ -436,41 +572,12 @@ namespace windows_client.utils
             get
             {
                 if (trying == null)
-                    trying = new BitmapImage(new Uri("/View/images/trying_icon.png", UriKind.Relative));
+                {
+                    trying = new BitmapImage(new Uri("/View/images/icon_sending.png", UriKind.Relative));
+                }
                 return trying;
             }
         }
-
-        public BitmapImage Unread
-        {
-            get
-            {
-                if (unread == null)
-                    unread = new BitmapImage(new Uri("/View/images/new_message.png", UriKind.Relative));
-                return unread;
-            }
-        }
-
-
-        //public BitmapImage DefaultAvatarBitmapImage
-        //{
-        //    get
-        //    {
-        //        if (defaultAvatarBitmapImage == null)
-        //            defaultAvatarBitmapImage = new BitmapImage(new Uri("/View/images/default_user.png", UriKind.Relative));
-        //        return defaultAvatarBitmapImage;
-        //    }
-        //}
-
-        //public BitmapImage DefaultGroupImage
-        //{
-        //    get
-        //    {
-        //        if (defaultGroupImage == null)
-        //            defaultGroupImage = new BitmapImage(new Uri("/View/images/default_group.png", UriKind.Relative));
-        //        return defaultGroupImage;
-        //    }
-        //}
 
         public BitmapImage Waiting
         {
@@ -496,9 +603,19 @@ namespace windows_client.utils
         {
             get
             {
-                if (reward == null)
-                    reward = new BitmapImage(new Uri("/View/images/chat_sms_error.png", UriKind.Relative));
-                return reward;
+                if (chatSmsError == null)
+                    chatSmsError = new BitmapImage(new Uri("/View/images/chat_sms_error.png", UriKind.Relative));
+                return chatSmsError;
+            }
+        }
+
+        public BitmapImage GrpNameOrPicChanged
+        {
+            get
+            {
+                if (grpNameOrPicChanged == null)
+                    grpNameOrPicChanged = new BitmapImage(new Uri("/View/images/group_name_changed.png", UriKind.Relative));
+                return grpNameOrPicChanged;
             }
         }
 
@@ -521,7 +638,7 @@ namespace windows_client.utils
                 return nudgeSend;
             }
         }
-        
+
         public BitmapImage NudgeReceived
         {
             get
@@ -529,6 +646,212 @@ namespace windows_client.utils
                 if (nudgeReceived == null)
                     nudgeReceived = new BitmapImage(new Uri("/View/images/nudge_received.png", UriKind.Relative));
                 return nudgeReceived;
+            }
+        }
+
+        public BitmapImage TextStatusImage
+        {
+            get
+            {
+                if (textStatusImage == null)
+                    textStatusImage = new BitmapImage(new Uri("/View/images/timeline_status.png", UriKind.Relative));
+                return textStatusImage;
+            }
+        }
+
+        public BitmapImage FriendRequestImage
+        {
+            get
+            {
+                if (friendRequestImage == null)
+                    friendRequestImage = new BitmapImage(new Uri("/View/images/timeline_friend.png", UriKind.Relative));
+                return friendRequestImage;
+            }
+        }
+
+        public BitmapImage ProfilePicStatusImage
+        {
+            get
+            {
+                if (profilePicStatusImage == null)
+                    profilePicStatusImage = new BitmapImage(new Uri("/View/images/timeline_photo.png", UriKind.Relative));
+                return profilePicStatusImage;
+            }
+        }
+
+        public BitmapImage NoNewNotificationImage
+        {
+            get
+            {
+                if (noNewNotificationImage == null)
+                    noNewNotificationImage = new BitmapImage(new Uri("/View/images/notification_read.png", UriKind.Relative));
+                return noNewNotificationImage;
+            }
+        }
+
+        public BitmapImage NewNotificationImage
+        {
+            get
+            {
+                if (newNotificationImage == null)
+                    newNotificationImage = new BitmapImage(new Uri("/View/images/notification_unread.png", UriKind.Relative));
+                return newNotificationImage;
+            }
+        }
+
+        public BitmapImage ContactIcon
+        {
+            get
+            {
+                if (contactIcon == null)
+                {
+                    if (Utils.isDarkTheme())
+                        contactIcon = WhiteContactIcon;
+                    else
+                        contactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon_black.png", UriKind.Relative));
+                }
+                return contactIcon;
+            }
+        }
+
+        public BitmapImage WhiteContactIcon
+        {
+            get
+            {
+                if (whiteContactIcon == null)
+                {
+                    whiteContactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
+                }
+                return whiteContactIcon;
+            }
+        }
+        public BitmapImage FacebookDisabledIcon
+        {
+            get
+            {
+                if (facebookDisabledIcon == null)
+                    facebookDisabledIcon = new BitmapImage(new Uri("/View/images/fb_status_disabled.png", UriKind.Relative));
+                return facebookDisabledIcon;
+            }
+        }
+
+        public BitmapImage FacebookEnabledIcon
+        {
+            get
+            {
+                if (facebookEnabledIcon == null)
+                    facebookEnabledIcon = new BitmapImage(new Uri("/View/images/fb_status.png", UriKind.Relative));
+                return facebookEnabledIcon;
+            }
+        }
+
+        public BitmapImage TwitterDisabledIcon
+        {
+            get
+            {
+                if (twitterDisabledIcon == null)
+                    twitterDisabledIcon = new BitmapImage(new Uri("/View/images/twitter_status_disabled.png", UriKind.Relative));
+                return twitterDisabledIcon;
+            }
+        }
+
+        public BitmapImage TwitterEnabledIcon
+        {
+            get
+            {
+                if (twitterEnabledIcon == null)
+                    twitterEnabledIcon = new BitmapImage(new Uri("/View/images/twitter_status.png", UriKind.Relative));
+                return twitterEnabledIcon;
+            }
+        }
+
+        public BitmapImage MoodDisabledIcon
+        {
+            get
+            {
+                if (moodDisabledIcon == null)
+                    moodDisabledIcon = new BitmapImage(new Uri("/View/images/moods_status_icon_disabled.png", UriKind.Relative));
+                return moodDisabledIcon;
+            }
+        }
+
+        public BitmapImage MoodEnabledIcon
+        {
+            get
+            {
+                if (moodEnabledIcon == null)
+                    moodEnabledIcon = new BitmapImage(new Uri("/View/images/moods_status_icon.png", UriKind.Relative));
+                return moodEnabledIcon;
+            }
+        }
+
+        public BitmapImage UserProfileLockImage
+        {
+            get
+            {
+                if (userProfileLockImage == null)
+                {
+                    if (Utils.isDarkTheme())
+                        userProfileLockImage = new BitmapImage(new Uri("/View/images/user_lock_white.png", UriKind.Relative));//todo:add white image
+                    else
+                        userProfileLockImage = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
+                }
+                return userProfileLockImage;
+            }
+        }
+
+        public BitmapImage UserProfileInviteImage
+        {
+            get
+            {
+                if (userProfileInviteImage == null)
+                {
+                    if (Utils.isDarkTheme())
+                        userProfileInviteImage = new BitmapImage(new Uri("/View/images/user_invite_white.png", UriKind.Relative));
+                    else
+                        userProfileInviteImage = new BitmapImage(new Uri("/View/images/user_invite.png", UriKind.Relative));
+                }
+                return userProfileInviteImage;
+            }
+        }
+
+        public BitmapImage UserProfileStockImage
+        {
+            get
+            {
+                if (userProfileStockImage == null)
+                {
+                    if (Utils.isDarkTheme())
+                        userProfileStockImage = new BitmapImage(new Uri("/View/images/profile_header_stock_dark.png", UriKind.Relative));
+                    else
+                        userProfileStockImage = new BitmapImage(new Uri("/View/images/profile_header_stock.png", UriKind.Relative));
+                }
+                return userProfileStockImage;
+            }
+        }
+
+        public BitmapImage StickerLoadingImage
+        {
+            get
+            {
+                if (loadingImage == null)
+                    loadingImage = new BitmapImage(new Uri("/View/images/loading.png", UriKind.Relative));
+                return loadingImage;
+            }
+        }
+
+        public BitmapImage LastSeenClockImage
+        {
+            get
+            {
+                if (lastSeenClockImage == null)
+                {
+                    if (Utils.isDarkTheme())
+                        lastSeenClockImage = new BitmapImage(new Uri("/View/images/last_seen_clock_white.png", UriKind.Relative));
+                    else
+                        lastSeenClockImage = new BitmapImage(new Uri("/View/images/last_seen_clock_black.png", UriKind.Relative));
+                }
+                return lastSeenClockImage;
             }
         }
 
@@ -547,9 +870,29 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush GreyTextForeGround
+        {
+            get
+            {
+                if (greyTextForeGround == null)
+                    greyTextForeGround = new SolidColorBrush(Color.FromArgb(255, 104, 104, 104));
 
+                return greyTextForeGround;
+            }
+        }
 
-        public FontFamily GroupChatMessageHeader
+        public SolidColorBrush WhiteTextForeGround
+        {
+            get
+            {
+                if (whiteTextForeGround == null)
+                    whiteTextForeGround = new SolidColorBrush(Colors.White);
+
+                return whiteTextForeGround;
+            }
+        }
+
+        public FontFamily SemiBoldFont
         {
             get
             {
@@ -559,7 +902,7 @@ namespace windows_client.utils
             }
         }
 
-        public FontFamily MessageText
+        public FontFamily SemiLightFont
         {
             get
             {
@@ -594,13 +937,320 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush DeleteBlackBackground
+        {
+            get
+            {
+                if (deleteBlackBackground == null)
+                    deleteBlackBackground = new SolidColorBrush(Colors.Black);
+                return deleteBlackBackground;
+            }
+        }
+
+        public SolidColorBrush DeleteGreyBackground
+        {
+            get
+            {
+                if (deleteGreyBackground == null)
+                    deleteGreyBackground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 105, 105, 105));
+                return deleteGreyBackground;
+            }
+        }
+
+        public BitmapImage DustbinGreyImage
+        {
+            get
+            {
+                if (dustbinGreyImage == null)
+                    dustbinGreyImage = new BitmapImage(new Uri("/View/images/deleted_grey_icon.png", UriKind.Relative));
+
+                return dustbinGreyImage;
+            }
+        }
+
+        public BitmapImage DustbinWhiteImage
+        {
+            get
+            {
+                if (dustbinWhiteImage == null)
+                    dustbinWhiteImage = new BitmapImage(new Uri("/View/images/deleted_white_icon.png", UriKind.Relative));
+
+                return dustbinWhiteImage;
+            }
+        }
+
+        public BitmapImage WalkieTalkieGreyImage
+        {
+            get
+            {
+                if (walkieTalkieGreyImage == null)
+                    walkieTalkieGreyImage = new BitmapImage(new Uri("/View/images/Walkie_Talkie_Grey_small.png", UriKind.Relative));
+
+                return walkieTalkieGreyImage;
+            }
+        }
+
+        public BitmapImage WalkieTalkieWhiteImage
+        {
+            get
+            {
+                if (walkieTalkieWhiteImage == null)
+                    walkieTalkieWhiteImage = new BitmapImage(new Uri("/View/images/Walkie_Talkie_White_small.png", UriKind.Relative));
+
+                return walkieTalkieWhiteImage;
+            }
+        }
+
+        public BitmapImage WalkieTalkieBigImage
+        {
+            get
+            {
+                if (Utils.isDarkTheme())
+                {
+                    if (walkieTalkieGreyImageBig == null)
+                        walkieTalkieGreyImageBig = new BitmapImage(new Uri("/View/images/Walkie_Talkie_Black_big.png", UriKind.Relative));
+
+                    return walkieTalkieGreyImageBig;
+                }
+                else
+                {
+                    if (walkieTalkieWhiteImageBig == null)
+                        walkieTalkieWhiteImageBig = new BitmapImage(new Uri("/View/images/Walkie_Talkie_White_big.png", UriKind.Relative));
+
+                    return walkieTalkieWhiteImageBig;
+                }
+            }
+        }
+
+        public BitmapImage WalkieTalkieDeleteSucImage
+        {
+            get
+            {
+                if (Utils.isDarkTheme())
+                {
+                    if (walkieTalkieDeleteSucImageGrey == null)
+                        walkieTalkieDeleteSucImageGrey = new BitmapImage(new Uri("/View/images/deleted_grey_icon.png", UriKind.Relative));
+
+                    return walkieTalkieDeleteSucImageGrey;
+                }
+                else
+                {
+                    if (walkieTalkieDeleteSucImageWhite == null)
+                        walkieTalkieDeleteSucImageWhite = new BitmapImage(new Uri("/View/images/deleted_white_icon.png", UriKind.Relative));
+
+                    return walkieTalkieDeleteSucImageWhite;
+                }
+            }
+        }
+
+        public BitmapImage CloseButtonImage
+        {
+            get
+            {
+                if (Utils.isDarkTheme())
+                {
+                    if (closeButtonBlackImage == null)
+                        closeButtonBlackImage = new BitmapImage(new Uri("/View/images/close_black.png", UriKind.Relative));
+
+                    return closeButtonBlackImage;
+                }
+                else
+                {
+                    if (closeButtonWhiteImage == null)
+                        closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
+
+                    return closeButtonWhiteImage;
+                }
+            }
+        }
+
+        public BitmapImage DoggyOverlay
+        {
+            get
+            {
+                if (doggyOverlay == null)
+                {
+                    doggyOverlay = new BitmapImage(new Uri("/View/images/doggy_overlay.png", UriKind.Relative));
+                }
+                return doggyOverlay;
+            }
+        }
+        public BitmapImage KittyOverlay
+        {
+            get
+            {
+                if (kittyOverlay == null)
+                {
+                    kittyOverlay = new BitmapImage(new Uri("/View/images/kitty_overlay.png", UriKind.Relative));
+                }
+                return kittyOverlay;
+            }
+        }
+        public BitmapImage BollywoodOverlay
+        {
+            get
+            {
+                if (bollywoodOverlay == null)
+                {
+                    bollywoodOverlay = new BitmapImage(new Uri("/View/images/bollywood_overlay.png", UriKind.Relative));
+                }
+                return bollywoodOverlay;
+            }
+        }
+        public BitmapImage TrollOverlay
+        {
+            get
+            {
+                if (trollOverlay == null)
+                {
+                    trollOverlay = new BitmapImage(new Uri("/View/images/troll_overlay.png", UriKind.Relative));
+                }
+                return trollOverlay;
+            }
+        }
+        public BitmapImage ExpressionsOverlay
+        {
+            get
+            {
+                if (expressionsOverlay == null)
+                {
+                    expressionsOverlay = new BitmapImage(new Uri("/View/images/expressions_overlay.png", UriKind.Relative));
+                }
+                return expressionsOverlay;
+            }
+        }
+
+        public BitmapImage DoggyInactive
+        {
+            get
+            {
+                if (doggyInactive == null)
+                {
+                    doggyInactive = new BitmapImage(new Uri("/View/images/doggy_i_icon.png", UriKind.Relative));
+                }
+                return doggyInactive;
+            }
+        }
+        public BitmapImage KittyInactive
+        {
+            get
+            {
+                if (kittyInactive == null)
+                {
+                    kittyInactive = new BitmapImage(new Uri("/View/images/kitty_i_icon.png", UriKind.Relative));
+                }
+                return kittyInactive;
+            }
+        }
+        public BitmapImage BollywoodInactive
+        {
+            get
+            {
+                if (bollywoodInactive == null)
+                {
+                    bollywoodInactive = new BitmapImage(new Uri("/View/images/Inactive_bolly.png", UriKind.Relative));
+                }
+                return bollywoodInactive;
+            }
+        }
+        public BitmapImage TrollInactive
+        {
+            get
+            {
+                if (trollInactive == null)
+                {
+                    trollInactive = new BitmapImage(new Uri("/View/images/rf_icon.png", UriKind.Relative));
+                }
+                return trollInactive;
+            }
+        }
+        public BitmapImage ExpressionsInactive
+        {
+            get
+            {
+                if (expressionsInactive == null)
+                {
+                    expressionsInactive = new BitmapImage(new Uri("/View/images/expressions_i.png", UriKind.Relative));
+                }
+                return expressionsInactive;
+            }
+        }
+
+        public BitmapImage DoggyActive
+        {
+            get
+            {
+                if (doggyActive == null)
+                {
+                    doggyActive = new BitmapImage(new Uri("/View/images/doggy_icon.png", UriKind.Relative));
+                }
+                return doggyActive;
+            }
+        }
+        public BitmapImage KittyActive
+        {
+            get
+            {
+                if (kittyActive == null)
+                {
+                    kittyActive = new BitmapImage(new Uri("/View/images/kitty_icon.png", UriKind.Relative));
+                }
+                return kittyActive;
+            }
+        }
+        public BitmapImage BollywoodActive
+        {
+            get
+            {
+                if (bollywoodActive == null)
+                {
+                    bollywoodActive = new BitmapImage(new Uri("/View/images/active_bolly.png", UriKind.Relative));
+                }
+                return bollywoodActive;
+            }
+        }
+        public BitmapImage TrollActive
+        {
+            get
+            {
+                if (trollActive == null)
+                {
+                    trollActive = new BitmapImage(new Uri("/View/images/rf_i_icon.png", UriKind.Relative));
+                }
+                return trollActive;
+            }
+        }
+        public BitmapImage ExpressionsActive
+        {
+            get
+            {
+                if (expressionsActive == null)
+                {
+                    expressionsActive = new BitmapImage(new Uri("/View/images/expressions.png", UriKind.Relative));
+                }
+                return expressionsActive;
+            }
+        }
+
+        public BitmapImage CloseButtonWhiteImage
+        {
+            get
+            {
+                if (closeButtonWhiteImage == null)
+                    closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
+
+                return closeButtonWhiteImage;
+            }
+        }
         #endregion
 
         #region DEFAULT AVATARS
+
         private int computeHash(string msisdn)
         {
-            int last3Digits = Convert.ToInt32(msisdn.Substring(msisdn.Length - 3));
-            return last3Digits % 7;
+            string last3Digits = msisdn.Substring(msisdn.Length - 3);
+            int sumOfCodes = last3Digits[0] + last3Digits[1] + last3Digits[2];
+            return sumOfCodes % 7;
         }
 
         public string getDefaultAvatarFileName(string msisdn, bool isGroup)
@@ -675,6 +1325,128 @@ namespace windows_client.utils
             }
             return defaultGroupAvatars[index];
         }
+
         #endregion
+
+        public byte[] BitmapImgToByteArray(BitmapImage image)
+        {
+            try
+            {
+                WriteableBitmap writeableBitmap = new WriteableBitmap(image);
+                using (var msLargeImage = new MemoryStream())
+                {
+                    writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
+                    return msLargeImage.ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ImageUtils ::  BitmapImgToByteArray :  BitmapImgToByteArray , Exception : " + ex.StackTrace);
+                return null;
+            }
+        }
+
+        public byte[] PngImgToJpegByteArray(BitmapImage image)
+        {
+            try
+            {
+                WriteableBitmap writeableBitmap = new WriteableBitmap(image);
+                WriteableBitmap mergedBItmpapImage = new WriteableBitmap(writeableBitmap.PixelWidth, writeableBitmap.PixelHeight); //size of mergedBItmpapImage canvas
+                double aspectratio = writeableBitmap.PixelHeight * 1.0 / writeableBitmap.PixelWidth;
+                mergedBItmpapImage.Clear(Color.FromArgb(255, 0x32, 0x32, 0x32));
+                Rect rec = new Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight);
+                mergedBItmpapImage.Blit(rec, writeableBitmap, rec);
+
+                int toHeight = 0;
+                if (Utils.PalleteResolution == Utils.Resolutions.WVGA)
+                {
+                    toHeight = 130;
+                }
+                else if (Utils.PalleteResolution == Utils.Resolutions.WXGA)
+                {
+                    toHeight = 195;
+                }
+                else
+                {
+                    toHeight = 180;
+                }
+                int toWidth = Convert.ToInt32(toHeight / aspectratio);
+
+                using (var msLargeImage = new MemoryStream())
+                {
+                    mergedBItmpapImage.SaveJpeg(msLargeImage, toWidth, toHeight, 0, 100);
+                    return msLargeImage.ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ImageUtils ::  BitmapImgToByteArray :  BitmapImgToByteArray , Exception : " + ex.StackTrace);
+                return null;
+            }
+        }
+        public BitmapImage createImageFromBytes(byte[] imagebytes)
+        {
+            if (imagebytes == null || imagebytes.Length == 0)
+                return null;
+            BitmapImage bitmapImage = null;
+            try
+            {
+                using (var memStream = new MemoryStream(imagebytes))
+                {
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    bitmapImage = new BitmapImage();
+                    bitmapImage.SetSource(memStream);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
+            }
+            return bitmapImage;
+        }
+
+        /// <summary>
+        /// Call this function only if you want to cache the Bitmap Image
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <returns></returns>
+        public BitmapImage GetBitmapImage(string msisdn)
+        {
+            return GetBitmap(msisdn, true);
+        }
+
+        /// <summary>
+        /// Call this function if donot want to save in cache
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <param name="shouldSave"></param>
+        /// <returns></returns>
+        public BitmapImage GetBitmapImage(string msisdn, bool shouldSave)
+        {
+            return GetBitmap(msisdn, false);
+        }
+
+        private BitmapImage GetBitmap(string msisdn, bool saveInCache)
+        {
+            if (_bitMapImageCache.ContainsKey(msisdn))
+                return _bitMapImageCache[msisdn];
+            // if no image for this user exists
+
+            byte[] profileImageBytes = MiscDBUtil.getThumbNailForMsisdn(msisdn);
+            if (profileImageBytes != null && profileImageBytes.Length > 0)
+            {
+                BitmapImage img = createImageFromBytes(profileImageBytes);
+                if (img != null)
+                {
+                    if (saveInCache)
+                        _bitMapImageCache[msisdn] = img;
+                    return img;
+                }
+            }
+            // do not add default avatar images to cache as they are already chached.
+            if (Utils.isGroupConversation(msisdn))
+                return getDefaultGroupAvatar(msisdn);
+            return getDefaultAvatar(msisdn);
+        }
     }
 }

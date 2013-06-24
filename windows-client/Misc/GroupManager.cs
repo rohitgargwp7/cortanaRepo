@@ -41,7 +41,7 @@ namespace windows_client.Misc
             if (!isoStore.DirectoryExists(GROUP_DIR))
                 isoStore.CreateDirectory(GROUP_DIR);
         }
-        
+
         public static GroupManager Instance
         {
             get
@@ -66,7 +66,11 @@ namespace windows_client.Misc
                     }
                 }
             }
-            ContactInfo cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+            ContactInfo cInfo = null;
+            if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                cInfo = App.ViewModel.ContactsCache[msisdn];
+            else
+                cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
             GroupParticipant gp = new GroupParticipant(grpId, cInfo != null ? cInfo.Name : string.IsNullOrWhiteSpace(defaultName) ? msisdn : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);
             if (groupCache.ContainsKey(grpId))
             {
@@ -93,7 +97,10 @@ namespace windows_client.Misc
                         if (store.FileExists(fileName))
                             store.DeleteFile(fileName);
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("GroupManager :: SaveGroupCache : delete file , Exception : " + ex.StackTrace);
+                    }
                     try
                     {
                         using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
@@ -114,7 +121,10 @@ namespace windows_client.Misc
                             file.Dispose();
                         }
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("GroupManager :: SaveGroupCache : write file , Exception : " + ex.StackTrace);
+                    }
                 }
             }
         }
@@ -135,7 +145,10 @@ namespace windows_client.Misc
                             if (store.FileExists(fileName))
                                 store.DeleteFile(fileName);
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("GroupManager :: SaveGroupCache : delete file , Exception : " + ex.StackTrace);
+                        }
                         try
                         {
                             using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
@@ -156,7 +169,10 @@ namespace windows_client.Misc
                                 file.Dispose();
                             }
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("GroupManager :: SaveGroupCache : write file , Exception : " + ex.StackTrace);
+                        }
                     }
                 }
             }
@@ -188,7 +204,10 @@ namespace windows_client.Misc
                                     {
                                         count = reader.ReadInt32();
                                     }
-                                    catch { }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine("GroupManager :: GetParticipantList : read count, Exception : " + ex.StackTrace);
+                                    }
                                     if (count > 0)
                                     {
                                         gpList = new List<GroupParticipant>(count);
@@ -199,8 +218,9 @@ namespace windows_client.Misc
                                             {
                                                 item.Read(reader);
                                             }
-                                            catch
+                                            catch (Exception ex)
                                             {
+                                                Debug.WriteLine("GroupManager :: GetParticipantList : read group participant, Exception : " + ex.StackTrace);
                                                 item = null;
                                             }
                                         }
@@ -212,7 +232,10 @@ namespace windows_client.Misc
                                     file.Close();
                                     file.Dispose();
                                 }
-                                catch { }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine("GroupManager :: GetParticipantList : dispose file , Exception : " + ex.StackTrace);
+                                }
                             }
                             if (gpList != null)
                                 groupCache[grpId] = gpList;
@@ -248,7 +271,10 @@ namespace windows_client.Misc
                                 {
                                     count = reader.ReadInt32();
                                 }
-                                catch { }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine("GroupManager :: LoadGroupParticipants : read count, Exception : " + ex.StackTrace);
+                                }
                                 if (count > 0)
                                 {
                                     gpList = new List<GroupParticipant>(count);
@@ -260,8 +286,9 @@ namespace windows_client.Misc
                                             item.Read(reader);
                                             gpList.Add(item);
                                         }
-                                        catch
+                                        catch (Exception ex)
                                         {
+                                            Debug.WriteLine("GroupManager :: LoadGroupParticipants : read item, Exception : " + ex.StackTrace);
                                             item = null;
                                         }
                                     }
@@ -273,7 +300,10 @@ namespace windows_client.Misc
                                 file.Close();
                                 file.Dispose();
                             }
-                            catch { }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("GroupManager :: LoadGroupParticipants : dispose file, Exception : " + ex.StackTrace);
+                            }
                         }
                         if (gpList != null)
                             groupCache[grpId] = gpList;
@@ -309,7 +339,10 @@ namespace windows_client.Misc
                                 {
                                     count = reader.ReadInt32();
                                 }
-                                catch { }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine("GroupManager :: LoadGroupCache : read count, Exception : " + ex.StackTrace);
+                                }
                                 if (count > 0)
                                 {
                                     gpList = new List<GroupParticipant>(count);
@@ -321,8 +354,9 @@ namespace windows_client.Misc
                                             item.Read(reader);
                                             gpList.Add(item);
                                         }
-                                        catch
+                                        catch (Exception ex)
                                         {
+                                            Debug.WriteLine("GroupManager :: LoadGroupCache : read item, Exception : " + ex.StackTrace);
                                             item = null;
                                         }
                                     }
@@ -334,7 +368,10 @@ namespace windows_client.Misc
                                 file.Close();
                                 file.Dispose();
                             }
-                            catch { }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("GroupManager :: LoadGroupCache : dispose file, Exception : " + ex.StackTrace);
+                            }
                         }
                         if (gpList != null)
                             groupCache[grpId] = gpList;
@@ -361,7 +398,7 @@ namespace windows_client.Misc
                     return activeMembers[0].FirstName + AppResources.And_txt
                     + activeMembers[1].FirstName;
                 default:
-                    return string.Format(AppResources.NamingConvention_Txt,activeMembers[0].FirstName,activeMembers.Count - 1);
+                    return string.Format(AppResources.NamingConvention_Txt, activeMembers[0].FirstName, activeMembers.Count - 1);
             }
         }
 
@@ -391,9 +428,9 @@ namespace windows_client.Misc
                         {
                             store.DeleteFile(GROUP_DIR + "\\" + files[i]);
                         }
-                        catch (Exception e)
+                        catch (Exception ex)
                         {
-                            Debug.WriteLine("Exception while deleting all groups :: " + e.StackTrace);
+                            Debug.WriteLine("GroupManager :: DeleteAllGroups :DeleteAllGroups, Exception : " + ex.StackTrace);
                         }
                     }
                 }
@@ -410,33 +447,48 @@ namespace windows_client.Misc
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
+                    if (groupCache != null)
+                        groupCache.Remove(grpId);
                     string grp = grpId.Replace(":", "_");
                     store.DeleteFile(GROUP_DIR + "\\" + grp);
                 }
             }
         }
-
-        public void RefreshGroupCache(ContactInfo cn)
+       
+        public void RefreshGroupCache(ContactInfo cn,Dictionary<string,GroupInfo> allGrpsInfo)
         {
+            if (allGrpsInfo == null || allGrpsInfo.Count == 0) // if no grp exists , do nothing
+                return;
+
             foreach (string grpId in groupCache.Keys)
             {
-                GroupParticipant gp = GetParticipant(grpId,cn.Msisdn);
+                GroupParticipant gp = GetParticipant(grpId, cn.Msisdn);
                 if (gp != null) // represents this contact lies in the group
                 {
                     gp.Name = cn.Name;
-                    App.ViewModel.ConvMap[grpId].ContactName = defaultGroupName(grpId); // update groupname
-                    // update chat thread and group info page
-                    object [] o = new object[2];
-                    o[0] = grpId;
-                    o[1] = App.ViewModel.ConvMap[grpId].ContactName;
-                    App.HikePubSubInstance.publish(HikePubSub.GROUP_NAME_CHANGED,grpId);
-                    GetParticipantList(grpId).Sort();
+                    if (App.ViewModel.ConvMap.ContainsKey(grpId))
+                    {
+                        GroupInfo g = null;
+                        allGrpsInfo.TryGetValue(grpId, out g);
+                        if (g != null && string.IsNullOrEmpty(g.GroupName))  // update groupname if not already set
+                        {
+                            GetParticipantList(grpId).Sort();
+                            App.ViewModel.ConvMap[grpId].ContactName = defaultGroupName(grpId);
+                            // update chat thread and group info page
+                            object[] o = new object[2];
+                            o[0] = grpId;
+                            o[1] = App.ViewModel.ConvMap[grpId].ContactName;
+                            App.HikePubSubInstance.publish(HikePubSub.GROUP_NAME_CHANGED, o);
+                        }
+                    }
+                    else // if this group is not present in conversation , remove it
+                        DeleteGroup(grpId);
                     SaveGroupCache(grpId); // save the cache
                 }
             }
         }
 
-        private GroupParticipant GetParticipant(string groupId,string msisdn)
+        private GroupParticipant GetParticipant(string groupId, string msisdn)
         {
             for (int i = 0; i < groupCache[groupId].Count; i++)
             {

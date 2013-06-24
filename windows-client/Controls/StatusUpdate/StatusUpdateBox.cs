@@ -1,5 +1,13 @@
-﻿using System.Windows.Controls;
+﻿using Microsoft.Phone.Controls;
+using Microsoft.Phone.Net.NetworkInformation;
+using System.IO;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using windows_client.DbUtils;
+using windows_client.Languages;
+using windows_client.Model;
+using windows_client.utils;
 
 namespace windows_client.Controls.StatusUpdate
 {
@@ -7,16 +15,17 @@ namespace windows_client.Controls.StatusUpdate
     {
         private string _userName;
         private BitmapImage _userImage;
-        public StatusType _updateType;
-
+        private string _msisdn;
+        private bool _isUnread;
+        private string _serverId;
 
         public string UserName
         {
-            get 
+            get
             {
                 return _userName;
             }
-            set 
+            set
             {
                 if (value != _userName)
                 {
@@ -40,42 +49,98 @@ namespace windows_client.Controls.StatusUpdate
             }
         }
 
-        public StatusType UpdateType
+        public string Msisdn
         {
             get
             {
-                return _updateType;
+                return _msisdn;
             }
             set
             {
-                if (value != _updateType)
+                if (value != _msisdn)
                 {
-                    _updateType = value;
+                    _msisdn = value;
                 }
             }
         }
 
-
-        public enum StatusType
-        { 
-            TEXT_UPDATE,
-            IMAGE_UPDATE,
-            IMAGE_TEXT_UPDATE,
-            LOCATION_UPDATE,
-            FRIEND_REQUEST
+        public string serverId
+        {
+            get
+            {
+                return _serverId;
+            }
         }
 
+        public virtual bool IsUnread
+        {
+            get
+            {
+                return _isUnread;
+            }
+            set
+            {
+                if (value != _isUnread)
+                {
+                    _isUnread = value;
+                }
+            }
+        }
 
-        public StatusUpdateBox(string userName, BitmapImage userImage, StatusType updateType)
+        public StatusUpdateBox(string userName, BitmapImage userImage, string msisdn, string serverId)
+            : this(userName, userImage, msisdn, serverId, true)
+        {
+        }
+
+        public StatusUpdateBox(string userName, BitmapImage userImage, string msisdn, string serverId, bool isShowOnTimeline)
         {
             this.UserName = userName;
             this.UserImage = userImage;
-            this.UpdateType = UpdateType;
+            this.Msisdn = msisdn;
+            this._serverId = serverId;
+            if (!isShowOnTimeline && App.MSISDN == msisdn)
+            {
+                ContextMenu menu = new ContextMenu();
+                menu.IsZoomEnabled = false;
+                MenuItem menuItemDelete = new MenuItem();
+                menuItemDelete.Header = AppResources.Delete_Txt;
+                menuItemDelete.Click += delete_Click;
+                menu.Items.Add(menuItemDelete);
+                ContextMenuService.SetContextMenu(this, menu);
+            }
+        }
+
+        private void delete_Click(object sender, RoutedEventArgs e)
+        {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBoxResult result = MessageBox.Show(AppResources.StatusDelete_NoNtwrk_Txt, AppResources.Please_Try_Again_Txt, MessageBoxButton.OK);
+                return;
+            }
+            StatusUpdateHelper.Instance.deleteMyStatus(this);
+        }
+
+        public StatusUpdateBox(ConversationListObject c, string serverId)
+            : this(c.NameToShow, c.AvatarImage, c.Msisdn, serverId)
+        {
         }
 
         public StatusUpdateBox()
         {
         }
 
+        public override bool Equals(object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (GetType() != obj.GetType())
+                return false;
+            StatusUpdateBox otherSb = (StatusUpdateBox)obj;
+            if (this._serverId == null || otherSb._serverId == null)
+                return false;
+            return this._serverId.Equals(otherSb._serverId);
+        }
     }
 }

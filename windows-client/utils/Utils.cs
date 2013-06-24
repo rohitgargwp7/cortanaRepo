@@ -7,15 +7,16 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using System.IO;
+using System.Linq;
 using Microsoft.Phone.Info;
 using Microsoft.Phone.Net.NetworkInformation;
 using System.Security.Cryptography;
+using windows_client.Languages;
 
 namespace windows_client.utils
 {
     public class Utils
     {
-
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
         public static void savedAccountCredentials(JObject obj)
@@ -35,7 +36,17 @@ namespace windows_client.utils
 
         public static bool isGroupConversation(string msisdn)
         {
+            if (msisdn == HikeConstants.MY_PROFILE_PIC)
+                return false;
             return !msisdn.StartsWith("+");
+        }
+
+        public static string ConvertUrlToFileName(string url)
+        {
+            var restrictedCharaters = new[] { '/', '\\', '*', '"', '|', '<', '>', ':', '?', '.' };
+            url = restrictedCharaters.Aggregate(url, (current, restrictedCharater) => current.Replace(restrictedCharater, '_'));
+
+            return url;
         }
 
         public static int CompareByName<T>(T a, T b)
@@ -228,9 +239,9 @@ namespace windows_client.utils
             byte[] uniqueId = null;
             if (DeviceExtendedProperties.TryGetValue("DeviceUniqueId", out uniqueIdObj))
             {
-                uniqueId = (byte [])uniqueIdObj;
+                uniqueId = (byte[])uniqueIdObj;
             }
-            string deviceId = uniqueId==null?null:BitConverter.ToString(uniqueId);
+            string deviceId = uniqueId == null ? null : BitConverter.ToString(uniqueId);
             if (string.IsNullOrEmpty(deviceId))
                 return null;
             deviceId = deviceId.Replace("-", "");
@@ -249,8 +260,9 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
+                Debug.WriteLine("Utils ::  computeHash :  computeHash , Exception : " + ex.StackTrace);
             }
-            return rethash; 
+            return rethash;
         }
 
         //carrier DeviceNetworkInformation.CellularMobileOperator;
@@ -274,8 +286,11 @@ namespace windows_client.utils
             info["tag"] = "cbs";
             info["_carrier"] = DeviceNetworkInformation.CellularMobileOperator;
             info["device_id"] = getHashedDeviceId();
-            info["_os_version"] = getOSVersion();
-            info["_os"] = "windows";
+            info[HikeConstants.OS_VERSION] = getOSVersion();
+            if (IsWP8)
+                info[HikeConstants.OS_NAME] = "win8";
+            else
+                info[HikeConstants.OS_NAME] = "win7";
             JObject infoPacket = new JObject();
             infoPacket[HikeConstants.DATA] = info;
             infoPacket[HikeConstants.TYPE] = HikeConstants.LOG_EVENT;
@@ -286,7 +301,7 @@ namespace windows_client.utils
         {
             if (msisdn == null)
                 return false;
-            if (msisdn.StartsWith("+91"))
+            if (msisdn.StartsWith(HikeConstants.INDIA_COUNTRY_CODE))
                 return true;
             return false;
         }
@@ -339,13 +354,179 @@ namespace windows_client.utils
             {
                 string country_code = null;
                 App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-                return ((country_code == null ? "+91" : country_code) + msisdn.Substring(1));
+                return ((country_code == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code) + msisdn.Substring(1));
             }
             else
             {
                 string country_code2 = null;
                 App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code2);
-                return (country_code2 == null ? "+91" : country_code2) + msisdn;
+                return (country_code2 == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code2) + msisdn;
+            }
+        }
+
+        public static ConversationListObject GetConvlistObj(string msisdn)
+        {
+            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                return App.ViewModel.ConvMap[msisdn];
+            else
+                return App.ViewModel.GetFav(msisdn);
+        }
+
+        public static bool IsHikeBotMsg(string msisdn)
+        {
+            return msisdn.Contains("hike");
+        }
+
+        public static bool IsWP8
+        {
+            get
+            {
+                return Environment.OSVersion.Version >= TargetedVersion;
+            }
+        }
+
+        private static Version TargetedVersion = new Version(8, 0);
+
+        public static Uri LoadPageUri(App.PageState pageState)
+        {
+            Uri nUri = null;
+
+            switch (pageState)
+            {
+                case App.PageState.WELCOME_SCREEN:
+                    nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
+                    break;
+                case App.PageState.PHONE_SCREEN:
+                    App.createDatabaseAsync();
+                    nUri = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
+                    break;
+                case App.PageState.PIN_SCREEN:
+                    App.createDatabaseAsync();
+                    nUri = new Uri("/View/EnterPin.xaml", UriKind.Relative);
+                    break;
+                case App.PageState.SETNAME_SCREEN:
+                    App.createDatabaseAsync();
+                    nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
+                    break;
+                case App.PageState.TUTORIAL_SCREEN_STATUS:
+                case App.PageState.TUTORIAL_SCREEN_STICKERS:
+                    nUri = new Uri("/View/TutorialScreen.xaml", UriKind.Relative);
+                    break;
+                case App.PageState.CONVLIST_SCREEN:
+                    nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                    break;
+                case App.PageState.UPGRADE_SCREEN:
+                    nUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
+                    break;
+                default:
+                    nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
+                    break;
+            }
+            return nUri;
+        }
+
+        public static string GetParamFromUri(string targetPage)
+        {
+            try
+            {
+                int idx = targetPage.IndexOf("msisdn");
+                return targetPage.Substring(idx);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("App :: GetParamFromUri : GetParamFromUri , Exception : " + ex.StackTrace);
+                return "";
+            }
+        }
+
+        public static string GetFirstName(string completeName)
+        {
+            string firstName = string.Empty;
+            if (!string.IsNullOrEmpty(completeName))
+            {
+                firstName = completeName.Split(' ')[0];
+            }
+            return firstName;
+        }
+
+        public enum Resolutions { Default, WVGA, WXGA, HD720p };
+
+        private static Resolutions currentResolution = Resolutions.Default;
+        private static Resolutions palleteResolution = Resolutions.Default;
+        private static bool IsWvga
+        {
+            get
+            {
+                return App.Current.Host.Content.ScaleFactor == 100;
+            }
+
+        }
+
+        private static bool IsWxga
+        {
+            get
+            {
+                return App.Current.Host.Content.ScaleFactor == 160;
+            }
+        }
+
+        private static bool Is720p
+        {
+            get
+            {
+                return App.Current.Host.Content.ScaleFactor == 150;
+            }
+        }
+
+        public static Resolutions CurrentResolution
+        {
+            get
+            {
+                if (currentResolution == Resolutions.Default)
+                {
+                    if (IsWvga) currentResolution = Resolutions.WVGA;
+                    else if (IsWxga) currentResolution = Resolutions.WXGA;
+                    else if (Is720p) currentResolution = Resolutions.HD720p;
+                    currentResolution = Resolutions.WVGA;
+                }
+                return currentResolution;
+            }
+        }
+
+        public static Resolutions PalleteResolution
+        {
+            get
+            {
+                if (currentResolution == Resolutions.Default)
+                {
+                    if (IsWvga) palleteResolution = Resolutions.WVGA;
+                    else if (IsWxga) palleteResolution = Resolutions.WXGA;
+                    else if (Is720p) palleteResolution = Resolutions.HD720p;
+                    else
+                        palleteResolution = Resolutions.WVGA;
+                }
+                return palleteResolution;
+            }
+        }
+        public static void RequestServerEpochTime()
+        {
+            JObject obj = new JObject();
+            obj[HikeConstants.TYPE] = HikeConstants.REQUEST_SERVER_TIME;
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
+
+        public static string GetRandomInviteString()
+        {
+            Random rnd = new Random();
+
+            switch (rnd.Next() % 3)
+            {
+                case 0:
+                    return AppResources.sms_invite_message_1;
+                case 1:
+                    return AppResources.sms_invite_message_2;
+                default:
+                    return AppResources.sms_invite_message_3;
             }
         }
     }

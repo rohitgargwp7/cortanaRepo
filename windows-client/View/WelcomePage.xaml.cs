@@ -37,12 +37,50 @@ namespace windows_client
             nextIconButton.Click += new EventHandler(getStarted_click);
             appBar.Buttons.Add(nextIconButton);
             welcomePage.ApplicationBar = appBar;
+
+            // if addbook is not scanned and state is not scanning
+            if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
+                ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
+
+            if (!App.IS_MARKETPLACE)
+            {
+                serverTxtBlk.Visibility = System.Windows.Visibility.Visible;
+                if (!AccountUtils.IsProd)
+                    serverTxtBlk.Text = "staging";
+                else
+                    serverTxtBlk.Text = "production";
+            }
+        }
+
+        private void signupPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            //if (AccountUtils.IsProd) // server is prod , change to staging
+            //{
+            //    AccountUtils.IsProd = false;
+            //    serverTxtBlk.Text = "staging";
+            //}
+            //else
+            //{
+            //    AccountUtils.IsProd = true;
+            //    serverTxtBlk.Text = "production";
+            //}
         }
 
         private void getStarted_click(object sender, EventArgs e)
         {
             if (isClicked)
                 return;
+            if (!App.IS_MARKETPLACE) // this is done to save the server info
+                App.appSettings.Save();
+
+            #region SERVER INFO
+            string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
+            Debug.WriteLine("SERVER SETTING : " + env);
+            Debug.WriteLine("HOST : " + AccountUtils.HOST);
+            Debug.WriteLine("PORT : " + AccountUtils.PORT);
+            Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
+            Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
+            #endregion
             NetworkErrorTxtBlk.Opacity = 0;
             if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
             {
@@ -59,7 +97,10 @@ namespace windows_client
                     MiscDBUtil.clearDatabase();
                 //App.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("WelcomePage.xaml :: getStarted_click, Exception : " + ex.StackTrace);
+            }
             isClicked = true;
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
@@ -92,6 +133,8 @@ namespace windows_client
             else
             {
                 utils.Utils.savedAccountCredentials(obj);
+                if (App.MSISDN.StartsWith(HikeConstants.INDIA_COUNTRY_CODE))
+                    App.WriteToIsoStorageSettings(App.COUNTRY_CODE_SETTING, HikeConstants.INDIA_COUNTRY_CODE);
                 nextPage = new Uri("/View/EnterName.xaml", UriKind.Relative);
                 /* scan contacts and post addressbook on server*/
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
@@ -139,7 +182,10 @@ namespace windows_client
             {
                 webBrowserTask.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("WelcomePAge.xaml :: Privacy_Tap, Exception : " + ex.StackTrace);
+            }
         }
     }
 }

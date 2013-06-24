@@ -4,11 +4,16 @@ using System.Data.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using windows_client.View;
+using System.IO.IsolatedStorage;
+using System.IO;
+using System.Diagnostics;
 
 namespace windows_client.DbUtils
 {
     public class UsersTableUtils
     {
+        public static string CONTACTS_FILENAME = "_Contacts";
+        public static object readWriteLock = new object();
         #region user table
 
         public static void block(string msisdn)
@@ -17,7 +22,14 @@ namespace windows_client.DbUtils
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.InsertOnSubmit(userBlocked);
-                SubmitWithConflictResolve(context);
+                try
+                {
+                    SubmitWithConflictResolve(context);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("UsersTable :: Block user {0} , Exception : {1}", msisdn, e.StackTrace);
+                }
             }
         }
 
@@ -46,7 +58,7 @@ namespace windows_client.DbUtils
         {
             if (contacts == null)
                 return;
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring+"; Max Buffer Size = 2048"))
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring + "; Max Buffer Size = 2048"))
             {
                 context.users.InsertAllOnSubmit(contacts);
                 context.SubmitChanges();
@@ -62,8 +74,9 @@ namespace windows_client.DbUtils
                 {
                     res = DbCompiledQueries.GetAllHikeContacts(context).ToList<ContactInfo>();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("UserTableUtils :: GetAllHikeContacts : GetAllHikeContacts, Exception : " + ex.StackTrace);
                     res = null;
                 }
                 return res;
@@ -78,8 +91,9 @@ namespace windows_client.DbUtils
                 {
                     res = DbCompiledQueries.GetAllHikeContactsOrdered(context).ToList<ContactInfo>();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("UserTableUtils :: GetAllHikeContactsOrdered : GetAllHikeContactsOrdered, Exception : " + ex.StackTrace);
                     res = null;
                 }
                 return res;
@@ -94,8 +108,9 @@ namespace windows_client.DbUtils
                 {
                     res = DbCompiledQueries.GetAllContacts(context).ToList<ContactInfo>();
                 }
-                catch (ArgumentNullException)
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("UserTableUtils :: getAllContacts : getAllContacts, Exception : " + ex.StackTrace);
                     res = null;
                 }
                 return (res == null || res.Count == 0) ? null : res;
@@ -115,7 +130,7 @@ namespace windows_client.DbUtils
         {
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
-                var users = from user in context.users where user.OnHike==false orderby user.Name select user;
+                var users = from user in context.users where user.OnHike == false orderby user.Name select user;
                 return users.ToList<ContactInfo>();
             }
         }
@@ -129,8 +144,9 @@ namespace windows_client.DbUtils
                 {
                     res = DbCompiledQueries.GetContactFromMsisdn(context, msisdn).ToList<ContactInfo>();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("UserTableUtils :: getContactInfoFromMSISDN : getContactInfoFromMSISDN, Exception : " + ex.StackTrace);
                     res = null;
                 }
                 return (res == null || res.Count == 0) ? null : res.First();
@@ -164,9 +180,9 @@ namespace windows_client.DbUtils
                 {
                     context.SubmitChanges();
                 }
-                catch (DuplicateKeyException dke)
+                catch (Exception ex)
                 {
-                    dke.ToString();
+                    Debug.WriteLine("UserTableUtils :: addBlockList : addBlockList, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -197,9 +213,9 @@ namespace windows_client.DbUtils
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 List<ContactInfo> res = DbCompiledQueries.GetContactFromMsisdn(context, msisdn).ToList<ContactInfo>();
-                if(res == null || res.Count == 0)
+                if (res == null || res.Count == 0)
                     return;
-                foreach(ContactInfo cInfo in res)
+                foreach (ContactInfo cInfo in res)
                 {
                     cInfo.OnHike = (bool)joined;
                 }
@@ -222,7 +238,7 @@ namespace windows_client.DbUtils
 
         public static void deleteMultipleRows(List<ContactInfo.DelContacts> ids)
         {
-            if(ids == null || ids.Count == 0)
+            if (ids == null || ids.Count == 0)
                 return;
             bool shouldSubmit = false;
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
@@ -236,7 +252,7 @@ namespace windows_client.DbUtils
                         {
                             ConversationListObject obj = App.ViewModel.ConvMap[ids[i].Msisdn];
                             obj.ContactName = null;
-                            ConversationTableUtils.saveConvObject(obj,obj.Msisdn);
+                            ConversationTableUtils.saveConvObject(obj, obj.Msisdn);
                             //ConversationTableUtils.saveConvObjectList();
                         }
                     }
@@ -275,7 +291,8 @@ namespace windows_client.DbUtils
             }
             catch (ChangeConflictException e)
             {
-                Console.WriteLine(e.Message);
+                Debug.WriteLine("UserTableUtils :: SubmitWithConflictResolve : SubmitWithConflictResolve, Exception : " + e.StackTrace);
+
                 // Automerge database values for members that client
                 // has not modified.
                 foreach (ObjectChangeConflict occ in context.ChangeConflicts)

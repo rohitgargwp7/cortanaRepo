@@ -188,7 +188,7 @@ namespace windows_client.Model
             }
         }
 
-        public int IsOwner
+        public bool IsOwner
         {
             get;
             set;
@@ -208,7 +208,35 @@ namespace windows_client.Model
                 NotifyPropertyChanged("FavMsg");
             }
         }
-
+        public string GroupInfoBlockText
+        {
+            get
+            {
+                if (IsOwner)
+                {
+                    return AppResources.Owner_Txt;
+                }
+                else if (!_isOnHike)
+                {
+                    return AppResources.OnSms_Txt;
+                }
+                return string.Empty;
+            }
+        }
+        public Visibility ShowGroupInfoBLock
+        {
+            get
+            {
+                if (IsOwner || !_isOnHike)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Collapsed;
+                }
+            }
+        }
         public string FavMsg
         {
             get
@@ -323,8 +351,9 @@ namespace windows_client.Model
                 writer.Write(_hasOptIn);
                 writer.Write(_isUsed);
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("GroupParticipant ::  Write : Write, Exception : " + ex.StackTrace);
                 throw new Exception("Unable to write to a file...");
             }
         }
@@ -351,8 +380,9 @@ namespace windows_client.Model
                 _hasOptIn = reader.ReadBoolean();
                 _isUsed = reader.ReadBoolean();
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("GroupParticipant ::  Read : Read, Exception : " + ex.StackTrace);
                 throw new Exception("Conversation Object corrupt");
             }
         }
@@ -374,7 +404,7 @@ namespace windows_client.Model
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("Exception in property : {0}. Exception : {1}",propertyName,ex.StackTrace);
+                        Debug.WriteLine("Exception in property : {0}. Exception : {1}", propertyName, ex.StackTrace);
                     }
                 }
             });

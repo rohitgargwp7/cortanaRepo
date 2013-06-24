@@ -70,16 +70,16 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (PhoneApplicationService.Current.State.ContainsKey("FromSocialPage")) // shows page is navigated from social page
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FROM_SOCIAL_PAGE)) // shows page is navigated from social page
             {
-                PhoneApplicationService.Current.State.Remove("FromSocialPage");
+                PhoneApplicationService.Current.State.Remove(HikeConstants.FROM_SOCIAL_PAGE);
                 ChangeElementsState(false);
                 object oo;
                 SocialState ss = SocialState.DEFAULT;
-                if (PhoneApplicationService.Current.State.TryGetValue("socialState", out oo))
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.SOCIAL_STATE, out oo))
                 {
                     ss = (SocialState)oo;
-                    PhoneApplicationService.Current.State.Remove("socialState");
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.SOCIAL_STATE);
                 }
                 switch (ss)
                 {
@@ -132,8 +132,9 @@ namespace windows_client.View
             {
                 App.HikePubSubInstance.removeListener(HikePubSub.INVITEE_NUM_CHANGED, this);
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("Free Smms ::  OnRemovedFromJournal , Exception : " + ex.StackTrace);
             }
             base.OnRemovedFromJournal(e);
         }
@@ -183,7 +184,6 @@ namespace windows_client.View
                 upperbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xce, 0xce, 0xce));
                 lowerbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
             }
-            fbFreeSMS.Text = String.Format(AppResources.FreeSMS_EarnFreeSMS_TxtBlk2, 100);
             earnSMSRun.Text = String.Format(AppResources.FreeSMS_EarnFreeSMS_TxtBlk2, 50);
         }
 
@@ -316,7 +316,10 @@ namespace windows_client.View
                 {
                     max = Int32.Parse((string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH]);
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Free Sms::  initializeCredits , Exception : " + ex.StackTrace);
+                }
             }
             long val = ((long)creditsRemaining * 435) / max;
             creditsRemainingBar.Width = val;
@@ -407,7 +410,7 @@ namespace windows_client.View
                         App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
                         App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
                         App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
-                        AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW),HikeConstants.TWITTER, false);
+                        AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), HikeConstants.TWITTER, false);
                         return;
                     }
                 }

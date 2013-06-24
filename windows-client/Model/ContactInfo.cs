@@ -9,6 +9,12 @@ using windows_client.utils;
 using System.Windows;
 using System.IO;
 using System.Diagnostics;
+using System.Collections.Generic;
+using windows_client.Misc;
+using System.Text;
+using windows_client.DbUtils;
+using windows_client.Languages;
+using windows_client.View;
 
 namespace windows_client.Model
 {
@@ -21,13 +27,13 @@ namespace windows_client.Model
         private string _name;
         private string _msisdn;
         private string _phoneNo;
-        private bool _onHike;
         private bool _hasCustomPhoto;
+        private bool _onHike;
         private bool _isInvited;
         private byte[] _avatar;
         private bool _isFav;
+        private bool _isCloseFriendNux;//for Nux , this will also be used in equals function , if true we will compare msisdns only in equals function
 
-        //it significantly improves update performance
 
         # region Users Table Members
 
@@ -177,6 +183,14 @@ namespace windows_client.Model
                 if (value != _isFav)
                 {
                     _isFav = value;
+                    if (((App)Application.Current).RootFrame.Content != null && ((App)Application.Current).RootFrame.Content is InviteUsers)
+                    {
+                        InviteUsers currentPage = ((App)Application.Current).RootFrame.Content as InviteUsers;
+                        if (currentPage != null)
+                        {
+                            currentPage.CheckBox_Tap(this);
+                        }
+                    }
                 }
             }
         }   // this is used in inviteUsers page , when you show hike users
@@ -219,6 +233,17 @@ namespace windows_client.Model
             }
         }
 
+        public bool IsUsedAtMiscPlaces
+        {
+            get
+            {
+                return _isCloseFriendNux;
+            }
+            set
+            {
+                _isCloseFriendNux = value;
+            }
+        }
         public ContactInfo()
         {
             _name = null;
@@ -257,7 +282,6 @@ namespace windows_client.Model
 
         public ContactInfo(ContactInfo contact)
         {
-            this._hasCustomPhoto = contact._hasCustomPhoto;
             this._msisdn = contact._msisdn;
             this._name = contact._name;
             this._onHike = contact._onHike;
@@ -276,6 +300,18 @@ namespace windows_client.Model
                 return false;
             ContactInfo other = (ContactInfo)obj;
 
+            if (IsUsedAtMiscPlaces)
+            {
+                // if msisdn of two contacts are equal they should be equal
+                // if msisdn is not there then other things should be compared
+                if (!string.IsNullOrEmpty(_msisdn))
+                {
+                    if (string.IsNullOrWhiteSpace(other.Msisdn))
+                        return false;
+                    else if (_msisdn == other.Msisdn)
+                        return true;
+                }
+            }
             if (string.IsNullOrWhiteSpace(Name))
             {
                 if (!string.IsNullOrWhiteSpace(other.Name))
@@ -339,7 +375,10 @@ namespace windows_client.Model
                     {
                         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("ContactInfo :: NotifyPropertyChanged : NotifyPropertyChanged, Exception : " + ex.StackTrace);
+                    }
                 });
             }
         }
@@ -395,9 +434,15 @@ namespace windows_client.Model
             }
             set
             {
-                if (value != _avatar)
                     _avatar = value;
+                    NotifyPropertyChanged("AvatarImage");
             }
+        }
+
+        public FriendsTableUtils.FriendStatusEnum FriendStatus
+        {
+            get;
+            set;
         }
 
         public BitmapImage AvatarImage
@@ -406,27 +451,15 @@ namespace windows_client.Model
             {
                 try
                 {
-                    if (_avatar == null)
-                    {
-                        if (Utils.isGroupConversation(Msisdn))
-                            return UI_Utils.Instance.getDefaultGroupAvatar(Msisdn);
-                        return UI_Utils.Instance.getDefaultAvatar(Msisdn);
-                    }
-                    else
-                    {
-                        MemoryStream memStream = new MemoryStream(_avatar);
-                        memStream.Seek(0, SeekOrigin.Begin);
-                        BitmapImage empImage = new BitmapImage();
-                        empImage.SetSource(memStream);
-                        return empImage;
-                    }
+                    // get image and save in cache too
+                    return UI_Utils.Instance.GetBitmapImage(_msisdn);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Exception in Avatar Image : {0}", e.ToString());
+                    Debug.WriteLine("ContactInfo :: AvatarImage : fetch AvatarImage, Exception : " + ex.StackTrace);
                     return null;
                 }
             }
         }
-    }
+}
 }

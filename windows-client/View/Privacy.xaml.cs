@@ -12,19 +12,20 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using windows_client.utils;
 using System.Windows.Media.Imaging;
-using Phone.Controls;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using Microsoft.Phone.Notification;
 using windows_client.Languages;
 using windows_client.DbUtils;
+using windows_client.Controls;
+using Facebook;
 
 namespace windows_client.View
 {
     public partial class Privacy : PhoneApplicationPage, HikePubSub.Listener
     {
         bool canGoBack = true;
-        public MyProgressIndicator progress = null; // there should be just one instance of this.
+        private ProgressIndicatorControl progress = null; // there should be just one instance of this.
 
         public Privacy()
         {
@@ -39,6 +40,7 @@ namespace windows_client.View
                 this.unlinkAccount.Source = new BitmapImage(new Uri("images/unlink_account_black.png", UriKind.Relative));
                 this.deleteAccount.Source = new BitmapImage(new Uri("images/delete_account_black.png", UriKind.Relative));
             }
+
             RegisterListeners();
         }
 
@@ -57,14 +59,14 @@ namespace windows_client.View
         }
         private void RegisterListeners()
         {
-           
+
         }
 
         private void RemoveListeners()
         {
             try
             {
-               
+
             }
             catch { }
         }
@@ -75,9 +77,9 @@ namespace windows_client.View
             if (result == MessageBoxResult.Cancel)
                 return;
             if (progress == null)
-                progress = new MyProgressIndicator(AppResources.Privacy_UnlinkAccountProgress);
+                progress = new ProgressIndicatorControl();
 
-            progress.Show();
+            progress.Show(LayoutRoot, AppResources.Privacy_UnlinkAccountProgress);
             canGoBack = false;
             AccountUtils.unlinkAccount(new AccountUtils.postResponseFunction(unlinkAccountResponse_Callback));
         }
@@ -90,12 +92,14 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     MessageBoxResult result = MessageBox.Show(AppResources.Privacy_UnlinkErrMsgBxText, AppResources.Privacy_UnlinkErrMsgBxCaptn, MessageBoxButton.OKCancel);
-                    progress.Hide();
+                    progress.Hide(LayoutRoot);
                     progress = null;
                     canGoBack = true;
                 });
                 return;
             }
+            if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
+                LogOutFb();
             DeleteLocalStorage();
         }
 
@@ -106,11 +110,11 @@ namespace windows_client.View
                 return;
             if (progress == null)
             {
-                progress = new MyProgressIndicator(AppResources.Privacy_DeleteAccountProgress);
+                progress = new ProgressIndicatorControl();
             }
-            progress.Show();
+            progress.Show(LayoutRoot, AppResources.Privacy_DeleteAccountProgress);
             canGoBack = false;
-            AccountUtils.deleteAccount(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback));
+            AccountUtils.deleteRequest(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback), AccountUtils.BASE + "/account");
         }
 
         private void deleteAccountResponse_Callback(JObject obj)
@@ -121,21 +125,28 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     MessageBoxResult result = MessageBox.Show("hike couldn't delete your account. Please try again.", "Account not deleted", MessageBoxButton.OKCancel);
-                    progress.Hide();
+                    progress.Hide(LayoutRoot);
                     progress = null;
                     canGoBack = true;
                 });
                 return;
             }
+            if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
+                LogOutFb();
             DeleteLocalStorage();
         }
 
         private void DeleteLocalStorage()
         {
+            // this is done so that just after unlink/delete , app can again start add book scan
+            ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING;
             NetworkManager.turnOffNetworkManager = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
             App.ClearAppSettings();
-            App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
+            App.appSettings[App.IS_DB_CREATED] = true;
+            //so that on signing up again user can see these tutorials 
+            App.appSettings[App.SHOW_STATUS_UPDATES_TUTORIAL] = true;
+            App.WriteToIsoStorageSettings(App.SHOW_BASIC_TUTORIAL, true);
             MiscDBUtil.clearDatabase();
 
             HttpNotificationChannel pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
@@ -154,25 +165,43 @@ namespace windows_client.View
                 App.ViewModel.ClearViewModel();
                 try
                 {
-                    progress.Hide();
+                    progress.Hide(LayoutRoot);
                     progress = null;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("Privacy.xaml :: DeleteLocalStorage,hideProgress, Exception : " + ex.StackTrace);
                 }
                 try
                 {
                     NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Privacy.xaml :: DeleteLocalStorage,Navigate, Exception : " + ex.StackTrace);
+                }
             });
 
 
         }
 
+        private void LogOutFb()
+        {
+            var fb = new FacebookClient();
+            var parameters = new Dictionary<string, object>();
+            parameters["access_token"] = (string)App.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
+            parameters["next"] = "https://www.facebook.com/connect/login_success.html";
+            var logoutUrl = fb.GetLogoutUrl(parameters);
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+              {
+                  WebBrowser browser = new WebBrowser();
+                  browser.Navigate(logoutUrl);
+              });
+        }
+
         public void onEventReceived(string type, object obj)
         {
-            
+
         }
     }
 }

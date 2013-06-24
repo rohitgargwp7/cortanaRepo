@@ -21,6 +21,12 @@ namespace windows_client.Mqtt
     {
         public volatile MqttConnection mqttConnection;
         private HikePubSub pubSub;
+        public bool IsLastSeenPacketSent = false;
+        public bool IsAppStarted = true; // false for resume
+
+        //Bug# 3833 - There are some changes in initialization of static objects in .Net 4. So, removing static for now.
+        //Later, on we should be using singleton so, static won't be required
+        private object lockObj = new object(); //TODO - Madhur Garg make this class singleton
 
         // constants used to define MQTT connection status
         public enum MQTTConnectionStatus
@@ -103,7 +109,7 @@ namespace windows_client.Mqtt
             App.appSettings.TryGetValue<string>(App.MSISDN_SETTING, out clientId);
             uid = topic;
             if (!String.IsNullOrEmpty(clientId))
-                clientId += ":1";
+                clientId += ":2";
             return !(String.IsNullOrEmpty(password) || String.IsNullOrEmpty(clientId) || String.IsNullOrEmpty(topic));
         }
 
@@ -129,8 +135,9 @@ namespace windows_client.Mqtt
                 }
                 setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                Debug.WriteLine("HIkeMqttManager ::  disconnectFromBroker : disconnectFromBroker, Exception : " + ex.StackTrace);
             }
         }
 
@@ -160,10 +167,12 @@ namespace windows_client.Mqtt
                 setConnectionStatus(MQTTConnectionStatus.CONNECTING);
                 mqttConnection.connect();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 /* couldn't connect, schedule a ping even earlier? */
+                Debug.WriteLine("HIkeMqttManager ::  connectToBroker : connectToBroker, Exception : " + ex.StackTrace);
             }
+
         }
 
         public bool isConnected()
@@ -190,9 +199,9 @@ namespace windows_client.Mqtt
                     mqttConnection.unsubscribe(topics[i], null);
                 }
             }
-            catch (ArgumentException e)
+            catch (Exception ex)
             {
-                //			Log.e("HikeMqttManager", "IllegalArgument trying to unsubscribe", e);
+                Debug.WriteLine("HIkeMqttManager ::  unsubscribeFromTopics : unsubscribeFromTopics, Exception : " + ex.StackTrace);
             }
         }
 
@@ -248,9 +257,9 @@ namespace windows_client.Mqtt
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //connect();
+                Debug.WriteLine("HIkeMqttManager ::  ping : ping, Exception : " + ex.StackTrace);
             }
         }
 
@@ -267,7 +276,7 @@ namespace windows_client.Mqtt
             connect();
         }
 
-        private static Border b = new Border();
+        private Border b = new Border();
 
         public void connect()
         {
@@ -285,8 +294,9 @@ namespace windows_client.Mqtt
                 };
                 bw.RunWorkerAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine("HIkeMqttManager ::  connect : connect, Exception : " + ex.StackTrace);
                 connectInBackground();
             }
         }
@@ -294,13 +304,10 @@ namespace windows_client.Mqtt
         private void connectAgain()
         {
             if (!isConnected() && !isConnecting() && connectionStatus != MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET)
-            { 
+            {
                 connect();
-            }        
+            }
         }
-
-        private static object lockObj = new object();
-
 
         private void connectInBackground()
         {
@@ -336,8 +343,9 @@ namespace windows_client.Mqtt
                     {
                         MqttDBUtils.addSentMessage(packet);
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
+                        Debug.WriteLine("HIkeMqttManager ::  send : send, Exception : " + ex.StackTrace);
                     }
                 }
                 this.connect();
@@ -411,6 +419,12 @@ namespace windows_client.Mqtt
             //TODO make it async
             List<HikePacket> packets = MqttDBUtils.getAllSentMessages();
 
+            if (!IsLastSeenPacketSent)
+            {
+                IsLastSeenPacketSent = true;
+                sendAppFGStatusToServer();
+            } 
+            
             if (packets == null)
                 return;
             Debug.WriteLine("MQTT MANAGER:: NUmber os unsent messages" + packets.Count);
@@ -482,5 +496,22 @@ namespace windows_client.Mqtt
             send(packet, qos);
         }
 
+        private void sendAppFGStatusToServer()
+        {
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
+            obj.Add(HikeConstants.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
+            obj.Add(HikeConstants.STATUS, "fg");
+            JObject data = new JObject();
+
+            if(IsAppStarted)
+                data.Add(HikeConstants.JUSTOPENED, true);
+            else
+                data.Add(HikeConstants.JUSTOPENED, false);
+
+            obj.Add(HikeConstants.DATA, data);
+
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
     }
 }

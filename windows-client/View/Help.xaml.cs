@@ -18,6 +18,7 @@ using Microsoft.Phone.Net.NetworkInformation;
 using windows_client.utils;
 using windows_client.Languages;
 using System.Text;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
@@ -35,16 +36,6 @@ namespace windows_client.View
                 this.made_with_love.Source = new BitmapImage(new Uri("images/made_with_love.png", UriKind.Relative));
             }
             applicationVersion.Text = utils.Utils.getAppVersion();
-            string country_code = null;
-            App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-            if (string.IsNullOrEmpty(country_code) || country_code == "+91")
-            {
-                walkthroughPanel.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                walkthroughPanel.Visibility = Visibility.Collapsed;
-            }
         }
 
         private void FAQs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -56,7 +47,10 @@ namespace windows_client.View
             {
                 webBrowserTask.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("HElp.xaml ::  FAQs_Tap , Exception : " + ex.StackTrace);
+            }
         }
 
         private void ContactUs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -65,27 +59,21 @@ namespace windows_client.View
             EmailComposeTask contactUsMail = new EmailComposeTask();
             contactUsMail.To = "support@hike.in";
             contactUsMail.Subject = "Feedback on WP7";
-
             string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
-
-            //string country_code = "";
-            //App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-
             StringBuilder emailBodyText = new StringBuilder();
-
             emailBodyText.Append("\n\n\n\n\n").Append(AppResources.Help_EmailHikeVersion).Append(Utils.getAppVersion()).Append(
                 "\n").Append(AppResources.Help_EmailOSVersion).Append(Utils.getOSVersion()).Append("\n").Append(AppResources.Help_EmailPhoneNo).
                 Append(msisdn).Append("\n").Append(
                 AppResources.Help_EmailDeviceModel).Append(Utils.getDeviceModel()).Append(
                 "\n").Append(AppResources.Help_EmailCarrier).Append(DeviceNetworkInformation.CellularMobileOperator);
-
             contactUsMail.Body = emailBodyText.ToString();
             try
             {
                 contactUsMail.Show();
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("HElp.xaml ::  ContactUs_Tap , Exception : " + ex.StackTrace);
             }
         }
 
@@ -98,7 +86,10 @@ namespace windows_client.View
             {
                 webBrowserTask.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("HElp.xaml ::  Legal_Tap , Exception : " + ex.StackTrace);
+            }
         }
 
         private void Updates_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -120,7 +111,24 @@ namespace windows_client.View
             {
                 marketplaceReviewTask.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("HElp.xaml ::  rateAndReview_Tap , Exception : " + ex.StackTrace);
+            }
+        }
+
+        private void SystemHealth_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            WebBrowserTask webBrowserTask = new WebBrowserTask();
+            webBrowserTask.Uri = new Uri(HikeConstants.SYSTEM_HEALTH_LINK, UriKind.Absolute);
+            try
+            {
+                webBrowserTask.Show();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("HElp.xaml ::  SystemHealth_Tap , Exception : " + ex.StackTrace);
+            }
         }
     }
 }

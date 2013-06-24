@@ -11,7 +11,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
     toolkit:TiltEffect.IsTiltEnabled="True"
     shell:SystemTray.IsVisible="True" DataContext="{Binding}" Name="inviteUsersPage">
 
@@ -44,7 +44,7 @@
         <DataTemplate x:Key="GroupHeaderTemplate">
             <Border Background="Transparent">
                 <Border Background="{StaticResource PhoneAccentBrush}" 
-                        Width="55" Height="55" HorizontalAlignment="Left">
+                        Width="55" Height="55" HorizontalAlignment="Left" Margin="0,0,0,10">
                     <TextBlock Text="{Binding Title}" 
                                 Foreground="{StaticResource PhoneForegroundBrush}" 
                                 Style="{StaticResource PhoneTextLargeStyle}"
@@ -54,8 +54,8 @@
         </DataTemplate>
 
         <DataTemplate x:Key="ItemTemplate">
-            <StackPanel Orientation="Horizontal" Margin="-14,0,0,0" Name="ItemStackPanel">
-                <CheckBox IsChecked="{Binding IsFav}" IsEnabled="{Binding IsEnabled}" Tap="CheckBox_Tap" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <StackPanel Orientation="Horizontal" Margin="-11,0,0,0" Name="ItemStackPanel">
+                <CheckBox IsChecked="{Binding IsFav,Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                 <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="-5,6,0,2">
                     <TextBlock Text="{Binding Name}" FontFamily="Segoe WP SemiLight" FontSize="42" />
                     <StackPanel Orientation="Horizontal">
@@ -67,13 +67,12 @@
         </DataTemplate>
 
     </phone:PhoneApplicationPage.Resources>
-    
+
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="646"/>
-            <RowDefinition/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Grid.Row="0">
@@ -86,22 +85,20 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Grid.Row="1" GotFocus="enterNameTxt_GotFocus" Margin="-10,5,0,0" Width="440" HorizontalAlignment="Stretch" 
+            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Grid.Row="0" GotFocus="enterNameTxt_GotFocus" Margin="-10,5,0,0" Width="440" HorizontalAlignment="Stretch" 
                                   Hint="{Binding Path= LocalizedResources.SelectUser_TxtBoxHint_Txt, Source={StaticResource LocalizedStrings}}"
                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
 
-            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="24,15,0,56"
+            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="1" Margin="24,15,0,10"
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
                           IsGroupingEnabled="True" LayoutMode="List" HideEmptyGroups="True"
                           ItemTemplate="{StaticResource ItemTemplate}"
                           GroupHeaderTemplate="{StaticResource GroupHeaderTemplate}"
                           JumpListStyle="{StaticResource LongListSelectorJumpListStyle}"/>
-                <TextBlock x:Name="emptyHikeFriendsTxt" Visibility="Collapsed" Text="Bummer! None of your friends are on hike." FontSize="26" TextWrapping="Wrap" Grid.Row="2" Margin="24,20,24,0" />
-
+            <TextBlock x:Name="emptyHikeFriendsTxt" Visibility="Collapsed" Text="Bummer! None of your friends are on hike." FontSize="26" TextWrapping="Wrap" Grid.Row="2" Margin="24,20,24,0" />
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage >

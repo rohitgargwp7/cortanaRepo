@@ -60,6 +60,8 @@ namespace windows_client
             appBar.Buttons.Add(nextIconButton);
             enterNumber.ApplicationBar = appBar;
             this.countryList.ItemsSource = GetGroupedList();
+            if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
+                ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
         }
 
         private void initializeCountryCodes()
@@ -362,6 +364,7 @@ namespace windows_client
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     txtEnterPhone.IsReadOnly = false;
+                    txtEnterPhone.Select(txtEnterPhone.Text.Length, 0);
                 });
                 return;
             }
@@ -409,11 +412,11 @@ namespace windows_client
                     RegionInfo reg = new RegionInfo(countryCodeName);
                     ISORegion = reg.TwoLetterISORegionName;
                 }
+                
                 catch (ArgumentException argEx)
                 {
-                    // The country code was not valid 
+                    Debug.WriteLine("Enter Number ::  OnNavigatedTo , Country Code Invalid, Exception : " + argEx.StackTrace);
                 }
-
                 if (isoCodeCountryCode.ContainsKey(ISORegion))
                 {
                     txtEnterCountry.Text = countryCode = isoCodeCountryCode[ISORegion];

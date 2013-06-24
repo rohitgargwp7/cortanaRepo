@@ -125,13 +125,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock x:Name="connectTxtBlk" Grid.Row="0" FontSize="22" Margin="0,5,0,0" HorizontalAlignment="Center">
-                <TextBlock.Inlines>
-                    <Run Text="{Binding Path= LocalizedResources.FreeSMS_Cnnct_TxtBlk1, Source={StaticResource LocalizedStrings}}"/>
-                    <Run x:Name="fbFreeSMS" FontFamily="Segoe WP Semibold"/>
-                    <Run Text="{Binding Path= LocalizedResources.FreeSMS_Cnnct_TxtBlk3, Source={StaticResource LocalizedStrings}}"/>
-                </TextBlock.Inlines>
-            </TextBlock>
+            <TextBlock x:Name="connectTxtBlk" Text="{Binding Path= LocalizedResources.Social_Cnnct_TxtBlk, Source={StaticResource LocalizedStrings}}" Grid.Row="0" FontSize="22" Margin="0,5,0,0" HorizontalAlignment="Center"/>
 
             <Grid Margin="0,15,0,0" HorizontalAlignment="Center" Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -139,25 +133,25 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Grid x:Name="facebook" Background="#f4f4f4" Grid.Column="0" Width="175" Height="50" Tap="facebook_Tap" Margin="0,0,15,0">
+                <Grid x:Name="facebook" Background="#f4f4f4" Grid.Column="0" Height="50" Tap="facebook_Tap" MinWidth="100" Margin="0,0,15,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Image Source="images\fb_icon.png" Margin="15,0,0,0" Width="14" VerticalAlignment="Center" Grid.Column="0"></Image>
-                    <TextBlock x:Name="fbConnStatus" FontFamily="Segoe WP Semibold" FontSize="18"  Text="{Binding Path= LocalizedResources.FreeSMS_fbConnStatus_TxtBlk, Source={StaticResource LocalizedStrings}}" Grid.Column="1" Margin="11,0,0,0" VerticalAlignment="Center"></TextBlock>
+                    <TextBlock x:Name="fbConnStatus" FontFamily="Segoe WP Semibold" FontSize="18"  Text="{Binding Path= LocalizedResources.FreeSMS_fbConnStatus_TxtBlk, Source={StaticResource LocalizedStrings}}" Grid.Column="1" Margin="11,0,0,0" VerticalAlignment="Center" MinWidth="100"></TextBlock>
                     <Image x:Name="fbConnImage" Visibility="Collapsed" Source="images\connected_tick.png" Width="16" Margin="10,0,0,0" VerticalAlignment="Center" Grid.Column="2"></Image>
                 </Grid>
 
-                <Grid x:Name="twitter" Background="#f4f4f4" Grid.Column="1" Width="175" Height="50" Tap="twitter_Tap" Margin="15,0,0,0">
+                <Grid x:Name="twitter" Background="#f4f4f4" Grid.Column="1" Height="50" Tap="twitter_Tap" Margin="15,0,0,0" MinWidth="100">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Image Source="images\tw_icon.png" Margin="15,0,0,0" Width="29" VerticalAlignment="Center" Grid.Column="0"></Image>
-                    <TextBlock x:Name="twConnStatus" FontFamily="Segoe WP Semibold" FontSize="18" Text="{Binding Path= LocalizedResources.FreeSMS_twConnStatus_TxtBlk, Source={StaticResource LocalizedStrings}}" Margin="11,0,0,0" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                    <TextBlock x:Name="twConnStatus" FontFamily="Segoe WP Semibold" FontSize="18" Text="{Binding Path= LocalizedResources.FreeSMS_twConnStatus_TxtBlk, Source={StaticResource LocalizedStrings}}" Margin="11,0,0,0" Grid.Column="1" VerticalAlignment="Center" MinWidth="100"></TextBlock>
                     <Image x:Name="twConnImage" Visibility="Collapsed" Source="images\connected_tick.png" Width="16" Margin="10,0,0,0" VerticalAlignment="Center" Grid.Column="2"></Image>
                 </Grid>
             </Grid>
@@ -177,7 +171,7 @@
                 </TextBlock>
 
             </StackPanel>
-            <Button Name="inviteNow" Grid.Row="3" Margin="0,15,0,0" Content="{Binding Path= LocalizedResources.FreeSMS_InviteNow_Btn, Source={StaticResource LocalizedStrings}}" Width="150" Height="68" FontSize="18" FontFamily="Segoe WP Semibold" Tap="InviteBtn_Tap"/>
+            <Button Name="inviteNow" Grid.Row="3" Margin="0,15,0,0" Content="{Binding Path= LocalizedResources.FreeSMS_InviteNow_Btn, Source={StaticResource LocalizedStrings}}" Height="68" FontSize="18" FontFamily="Segoe WP Semibold" Tap="InviteBtn_Tap" HorizontalAlignment="Center"/>
             <TextBlock Grid.Row="4" HorizontalAlignment="Center" Margin="0,0,0,5" FontSize="16" VerticalAlignment="Bottom" 
                        Text="{Binding Path= LocalizedResources.FreeSMS_IndiaOnly_TxtBlk, Source={StaticResource LocalizedStrings}}"></TextBlock>
         </Grid>

@@ -31,12 +31,11 @@ namespace windows_client.Model
         private bool _isOnhike;
         private ConvMessage.State _messageStatus;
         private byte[] _avatar;
-        private bool _isFirstMsg = false; // this is used in GC , when you want to show joined msg for SMS and DND users.
+        private bool _isFirstMsg = false; // not used anywhere
         private long _lastMsgId;
         private int _muteVal = -1; // this is used to track mute (added in version 1.5.0.0)
         private BitmapImage empImage = null;
         private bool _isFav;
-        private ConversationBox cBoxObj;
 
         #endregion
 
@@ -55,7 +54,6 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("ContactName");
                     _contactName = value;
-                    UpdateConversationBox();
                     NotifyPropertyChanged("ContactName");
                     NotifyPropertyChanged("NameToShow");
                 }
@@ -75,7 +73,6 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("LastMessage");
                     _lastMessage = value;
-                    UpdateConversationBox();
                     NotifyPropertyChanged("LastMessage");
                 }
             }
@@ -94,7 +91,6 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("TimeStamp");
                     _timeStamp = value;
-                    UpdateConversationBox();
                     NotifyPropertyChanged("TimeStamp");
                     NotifyPropertyChanged("FormattedTimeStamp");
                 }
@@ -114,7 +110,6 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("Msisdn");
                     _msisdn = value.Trim();
-                    UpdateConversationBox();
                     NotifyPropertyChanged("Msisdn");
                 }
             }
@@ -133,7 +128,6 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("IsOnhike");
                     _isOnhike = value;
-                    UpdateConversationBox();
                     NotifyPropertyChanged("IsOnhike");
                     NotifyPropertyChanged("ShowOnHikeImage");
                 }
@@ -153,11 +147,11 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
-                    UpdateConversationBox();
                     NotifyPropertyChanged("MessageStatus");
                     NotifyPropertyChanged("LastMessageColor");
                     NotifyPropertyChanged("SDRStatusImage");
                     NotifyPropertyChanged("SDRStatusImageVisible");
+                    NotifyPropertyChanged("UnreadCircleVisibility");
                 }
             }
         }
@@ -199,6 +193,19 @@ namespace windows_client.Model
             {
                 if (value != _muteVal)
                     _muteVal = value;
+
+                NotifyPropertyChanged("MuteIconVisibility");
+            }
+        }
+
+        public Visibility MuteIconVisibility
+        {
+            get
+            {
+                if (_muteVal > -1)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
             }
         }
 
@@ -210,6 +217,17 @@ namespace windows_client.Model
                     return true;
                 else
                     return false;
+            }
+        }
+
+        public Visibility AddToFriendVisibility
+        {
+            get
+            {
+                if (Utils.isGroupConversation(Msisdn))
+                    return Visibility.Collapsed;
+                else
+                    return Visibility.Visible;
             }
         }
 
@@ -227,8 +245,8 @@ namespace windows_client.Model
                         return UI_Utils.Instance.Read;
                     case ConvMessage.State.SENT_UNCONFIRMED:
                         return UI_Utils.Instance.Trying;
-                    case ConvMessage.State.RECEIVED_UNREAD:
-                        return UI_Utils.Instance.Unread;
+                    case ConvMessage.State.SENT_FAILED:
+                        return UI_Utils.Instance.Trying;
                     default:
                         return null;
                 }
@@ -245,11 +263,33 @@ namespace windows_client.Model
                     case ConvMessage.State.SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED_READ:
                     case ConvMessage.State.SENT_UNCONFIRMED:
-                    case ConvMessage.State.RECEIVED_UNREAD:
+                    case ConvMessage.State.SENT_FAILED:
                         return Visibility.Visible;
                     default:
                         return Visibility.Collapsed;
                 }
+            }
+        }
+        public Visibility UnreadCircleVisibility
+        {
+            get
+            {
+                if (_messageStatus == ConvMessage.State.RECEIVED_UNREAD)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+        public bool IsLastMsgStatusUpdate
+        {
+            get
+            {
+                return _isFirstMsg;
+            }
+            set
+            {
+                if (value != _isFirstMsg)
+                    _isFirstMsg = value;
             }
         }
 
@@ -284,7 +324,6 @@ namespace windows_client.Model
                 {
                     _avatar = value;
                     empImage = null; // reset to null whenever avatar changes
-                    UpdateConversationBox();
                     NotifyPropertyChanged("Avatar");
                     NotifyPropertyChanged("AvatarImage");
                 }
@@ -307,16 +346,14 @@ namespace windows_client.Model
                     }
                     else
                     {
-                        MemoryStream memStream = new MemoryStream(_avatar);
-                        memStream.Seek(0, SeekOrigin.Begin);
-                        empImage = new BitmapImage();
-                        empImage.SetSource(memStream);
+                        empImage = UI_Utils.Instance.createImageFromBytes(_avatar);
+                        UI_Utils.Instance.BitmapImageCache[_msisdn] = empImage; // update cache
                         return empImage;
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Exception in Avatar Image : {0}", e.ToString());
+                    Debug.WriteLine("ConversationListPage :: AvatarImage : AvatarImage, Exception : " + ex.StackTrace);
                     return null;
                 }
             }
@@ -337,7 +374,7 @@ namespace windows_client.Model
             }
         }
 
-        public Visibility IsLastMessageUnread
+        public Visibility IsLastMessageUnread // this too should be removed
         {
             get
             {
@@ -372,7 +409,6 @@ namespace windows_client.Model
                 if (value != _isFav)
                 {
                     _isFav = value;
-                    UpdateConvBoxFavMenu();
                     NotifyPropertyChanged("IsFav");
                     NotifyPropertyChanged("FavMsg");
                 }
@@ -400,19 +436,6 @@ namespace windows_client.Model
             }
         }
 
-        public ConversationBox ConvBoxObj
-        {
-            get
-            {
-                return cBoxObj;
-            }
-            set
-            {
-                if (value != cBoxObj)
-                    cBoxObj = value;
-            }
-
-        }
         public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar, ConvMessage.State msgStatus, long lastMsgId)
         {
             this._msisdn = msisdn;
@@ -495,8 +518,9 @@ namespace windows_client.Model
                 writer.Write(_lastMsgId);
                 writer.Write(_muteVal);
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("ConversationListPage :: Write : Unable To write, Exception : " + ex.StackTrace);
                 throw new Exception("Unable to write to a file...");
             }
         }
@@ -535,8 +559,9 @@ namespace windows_client.Model
                 _isFirstMsg = reader.ReadBoolean();
                 _lastMsgId = reader.ReadInt64();
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("ConversationListPage :: ReadVer_1_4_0_0 : Unable To write, Exception : " + ex.StackTrace);
                 throw new Exception("Conversation Object corrupt");
             }
         }
@@ -564,8 +589,9 @@ namespace windows_client.Model
                 _lastMsgId = reader.ReadInt64();
                 _muteVal = reader.ReadInt32();
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("ConversationListPage :: ReadVer_Latest : Unable To write, Exception : " + ex.StackTrace);
                 throw new Exception("Conversation Object corrupt");
             }
         }
@@ -601,8 +627,9 @@ namespace windows_client.Model
                     writer.WriteStringBytes(_contactName);
                 writer.Write(_isOnhike);
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("ConversationListPage :: WriteFavOrPending : WriteFavOrPending, Exception : " + ex.StackTrace);
                 throw new Exception("Unable to write to a file...");
             }
         }
@@ -621,28 +648,6 @@ namespace windows_client.Model
         }
         #endregion
 
-        public void UpdateConversationBox()
-        {
-            if (cBoxObj != null)
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-              {
-                  cBoxObj.update(this);
-              });
-            }
-        }
-
-        public void UpdateConvBoxFavMenu()
-        {
-            if (cBoxObj != null)
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    cBoxObj.UpdateContextMenuFavourites(_isFav);
-                });
-            }
-        }
-
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -659,8 +664,9 @@ namespace windows_client.Model
                         if (propertyName != null)
                             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        Debug.WriteLine("ConversationListPage :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
                     }
                 });
             }

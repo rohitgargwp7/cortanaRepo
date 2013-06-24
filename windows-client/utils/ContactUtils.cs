@@ -12,33 +12,57 @@ using System.ComponentModel;
 using Microsoft.Phone.Controls;
 using System.Net.NetworkInformation;
 using windows_client.Languages;
+using System.IO;
 
 namespace windows_client.utils
 {
     public class ContactUtils
     {
+        public static readonly string IS_ADDRESS_BOOK_SCANNED = "isabscanned";
+        public static bool isABScanning;
         private static Stopwatch st;
+        private static Stopwatch st2;
         public static Dictionary<string, List<ContactInfo>> contactsMap = null;
         public static Dictionary<string, List<ContactInfo>> hike_contactsMap = null;
 
         public delegate void contacts_Callback(object sender, ContactsSearchEventArgs e);
         public delegate void contactSearch_Callback(object sender, SaveContactResult e);
 
+        private static volatile ContactScanState cState = ContactScanState.ADDBOOK_NOT_SCANNING;
+        public static ContactScanState ContactState
+        {
+            get
+            {
+                return cState;
+            }
+            set
+            {
+                if (value != cState)
+                {
+                    cState = value;
+                    Debug.WriteLine("Contact state : " + cState.ToString());
+                }
+            }
+        }
+
+        public enum ContactScanState
+        {
+            ADDBOOK_NOT_SCANNING, // when api is not scanning the phone add book    
+            ADDBOOK_SCANNING, // when api is running and scanning
+            ADDBOOK_SCANNED, // contacts are scanned
+            ADDBOOK_POSTED, // http request is made for addbook 
+            ADDBOOK_STORE_FAILED,
+            ADDBOOK_STORED_IN_HIKE_DB
+        }
+
         public static void getContacts(contacts_Callback callback)
         {
             st = Stopwatch.StartNew();
-            Debug.WriteLine("Get Contacts thread : {0}", Thread.CurrentThread.ToString());
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.WorkerSupportsCancellation = true;
-            bw.DoWork += (s, e) =>
-            {
-                Debug.WriteLine("Contacts async thread : {0}", Thread.CurrentThread.ToString());
-                App.isABScanning = true;
-                Contacts cons = new Contacts();
-                cons.SearchCompleted += new EventHandler<ContactsSearchEventArgs>(callback);
-                cons.SearchAsync(string.Empty, FilterKind.None, "State string 1");
-            };
-            bw.RunWorkerAsync();
+            Debug.WriteLine("Contact Scanning started .....");
+            cState = ContactScanState.ADDBOOK_SCANNING;
+            Contacts cons = new Contacts();
+            cons.SearchCompleted += new EventHandler<ContactsSearchEventArgs>(callback);
+            cons.SearchAsync(string.Empty, FilterKind.None, "State string 1");
         }
 
         public static void getContact(string number, contacts_Callback callback)
@@ -53,44 +77,23 @@ namespace windows_client.utils
         {
             try
             {
+                Debug.WriteLine("Contact Scanning Completed ...... ");
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to scan contacts from phone : {0}", msec);
-                Debug.WriteLine("Contacts callback thread : {0}", Thread.CurrentThread.ToString());
-                IEnumerable<Contact> contacts = e.Results;
-                Dictionary<string, List<ContactInfo>> contactListMap = getContactsListMap(contacts);
-                contactsMap = contactListMap;
-                if (!NetworkInterface.GetIsNetworkAvailable())
+
+                BackgroundWorker bw = new BackgroundWorker();
+                bw.DoWork += (ss, ee) =>
                 {
-                    App.WriteToIsoStorageSettings(App.CONTACT_SCANNING_FAILED, true);
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        var currentPage = ((PhoneApplicationFrame)Application.Current.RootVisual).Content;
-
-                        if (currentPage != null)
-                        {
-                            EnterName enterNamePage = (EnterName)currentPage;
-                            if (enterNamePage.isClicked)
-                            {
-                                enterNamePage.msgTxtBlk.Opacity = 0;
-                                enterNamePage.nameErrorTxt.Text = AppResources.No_Network_Txt+" "+AppResources.Please_Try_Again_Txt;
-                                enterNamePage.nameErrorTxt.Visibility = Visibility.Visible;
-                                enterNamePage.progressBar.IsEnabled = false;
-                                enterNamePage.progressBar.Opacity = 0;
-                                enterNamePage.nextIconButton.IsEnabled = true;
-                                enterNamePage.txtBxEnterName.IsReadOnly = false;
-                            }
-                        }
-                    });
-
-                    return;
-                }
-                string token = (string)App.appSettings["token"];
-                AccountUtils.postAddressBook(contactListMap, new AccountUtils.postResponseFunction(postAddressBook_Callback));
+                    if (e != null && e.Results != null)
+                        contactsMap = getContactsListMap(e.Results);
+                    cState = ContactScanState.ADDBOOK_SCANNED;
+                };
+                bw.RunWorkerAsync();
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                //That's okay, no results//
+                Debug.WriteLine("ContactUtils ::  contactSearchCompleted_Callback :  contactSearchCompleted_Callback , Exception : " + ex.StackTrace);
             }
         }
 
@@ -154,137 +157,61 @@ namespace windows_client.utils
 
         public static Dictionary<string, List<ContactInfo>> getContactsListMap(IEnumerable<Contact> contacts)
         {
-            
             int count = 0;
             int duplicates = 0;
             Dictionary<string, List<ContactInfo>> contactListMap = null;
             if (contacts == null)
                 return null;
             contactListMap = new Dictionary<string, List<ContactInfo>>();
-            foreach (Contact cn in contacts)
-            { 
-                CompleteName cName = cn.CompleteName;
 
-                foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
+            foreach (Contact cn in contacts)
+            {
+                try
                 {
-                    if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
+                    foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
                     {
-                        count++;
-                        continue;
-                    }
-                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
-                    int idd = cInfo.GetHashCode();
-                    cInfo.Id = Convert.ToString(Math.Abs(idd));
-                    if (contactListMap.ContainsKey(cInfo.Id))
-                    {
-                        if (!contactListMap[cInfo.Id].Contains(cInfo))
-                            contactListMap[cInfo.Id].Add(cInfo);
-                        else
+                        try
                         {
-                            duplicates++;
-                            Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                            if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
+                            {
+                                count++;
+                                continue;
+                            }
+                            ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
+                            int idd = cInfo.GetHashCode();
+                            cInfo.Id = Convert.ToString(Math.Abs(idd));
+
+                            if (contactListMap.ContainsKey(cInfo.Id))
+                            {
+                                if (!contactListMap[cInfo.Id].Contains(cInfo))
+                                    contactListMap[cInfo.Id].Add(cInfo);
+                                else
+                                {
+                                    duplicates++;
+                                    Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                                }
+                            }
+                            else
+                            {
+                                List<ContactInfo> contactList = new List<ContactInfo>();
+                                contactList.Add(cInfo);
+                                contactListMap.Add(cInfo.Id, contactList);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("ContactUtils : getContactsListMap(Inner loop) : Exception : " + ex.StackTrace);
                         }
                     }
-                    else
-                    {
-                        List<ContactInfo> contactList = new List<ContactInfo>();
-                        contactList.Add(cInfo);
-                        contactListMap.Add(cInfo.Id, contactList);
-                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("ContactUtils : getContactsListMap(Outer loop) : Exception : " + e.StackTrace);
                 }
             }
             Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
             Debug.WriteLine("Total contacts with no phone number : {0}", count);
             return contactListMap;
-        }
-
-        /* This is the callback function which is called when server returns the addressbook*/
-        public static void postAddressBook_Callback(JObject jsonForAddressBookAndBlockList)
-        {
-            Debug.WriteLine("Post Addressbook callback thread : {0}", Thread.CurrentThread.ToString());
-            // test this is called
-            JObject obj = jsonForAddressBookAndBlockList;
-            if (obj == null)
-            {
-                App.WriteToIsoStorageSettings(App.CONTACT_SCANNING_FAILED, true);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    var currentPage = ((PhoneApplicationFrame)Application.Current.RootVisual).Content;
-
-                    if (currentPage != null)
-                    {
-                        EnterName enterNamePage = (EnterName)currentPage;
-                        if (enterNamePage.isClicked)
-                        {
-                            enterNamePage.msgTxtBlk.Opacity = 0;
-                            enterNamePage.nameErrorTxt.Text = AppResources.Contact_Scanning_Failed_Txt;
-                            enterNamePage.nameErrorTxt.Visibility = Visibility.Visible;
-                            enterNamePage.progressBar.IsEnabled = false;
-                            enterNamePage.progressBar.Opacity = 0;
-                            enterNamePage.nextIconButton.IsEnabled = true;
-                            enterNamePage.txtBxEnterName.IsReadOnly = false;
-                        }
-                    }
-                });
-                return;
-            }
-            List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, contactsMap,false);
-            List<string> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
-            int count = 1;
-            // waiting for DB to be created
-            while (!App.appSettings.Contains(App.IS_DB_CREATED) && count <= 30)
-            {
-                Thread.Sleep(1 * 1000);
-                count++;
-            }
-            if (!App.appSettings.Contains(App.IS_DB_CREATED)) // if DB is not created for so long
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    var currentPage = ((PhoneApplicationFrame)Application.Current.RootVisual).Content;
-
-                    if (currentPage != null)
-                    {
-                        EnterName enterNamePage = (EnterName)currentPage;
-                        enterNamePage.msgTxtBlk.Text = AppResources.EnterName_Failed_Txt;
-                    }
-                });
-            }
-
-            if (addressbook != null)
-            {
-                UsersTableUtils.deleteAllContacts();
-                UsersTableUtils.deleteBlocklist();
-                Stopwatch st = Stopwatch.StartNew();
-                UsersTableUtils.addContacts(addressbook); // add the contacts to hike users db.
-                st.Stop();
-                long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to add addressbook {0}", msec);
-                UsersTableUtils.addBlockList(blockList);
-                App.WriteToIsoStorageSettings(App.IS_ADDRESS_BOOK_SCANNED, true);
-                App.RemoveKeyFromAppSettings(App.CONTACT_SCANNING_FAILED);
-            }
-            App.Ab_scanned = true;
-            App.isABScanning = false;
-
-            while (!App.appSettings.Contains(App.ACCOUNT_NAME) && !App.appSettings.Contains(App.SET_NAME_FAILED))
-            {
-                Thread.Sleep(1 * 1000);
-            }
-
-            if (App.appSettings.Contains(App.SET_NAME_FAILED)) // case when set name api is failed
-                return;
-
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                var currentPage = ((PhoneApplicationFrame)Application.Current.RootVisual).Content;
-
-                if (currentPage != null)
-                {
-                    EnterName enterNamePage = (EnterName)currentPage;
-                    enterNamePage.processEnterName();
-                }
-            });
         }
 
         public static void saveContact(string phone, contactSearch_Callback callback)
@@ -296,7 +223,11 @@ namespace windows_client.utils
             {
                 saveContactTask.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ContactUtils ::  saveContact :  saveContact , Exception : " + ex.StackTrace);
+            }
         }
+
     }
 }

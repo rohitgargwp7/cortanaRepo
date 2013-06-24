@@ -10,7 +10,7 @@ namespace windows_client.DbUtils
 {
     public class MqttDBUtils
     {
-        public const int Latest_Version = 1;
+        public const int MqttDb_Latest_Version = 1;
 
         private static object lockObj = new object();
 
@@ -36,9 +36,9 @@ namespace windows_client.DbUtils
                 }
                 return (res == null || res.Count() == 0) ? null : res;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Debug.WriteLine("Exception while fetching MQTT msgs : " + e.StackTrace);
+                Debug.WriteLine("MqttDbUtil :: getAllSentMessages : getAllSentMessages, Exception : " + ex.StackTrace);
                 return null;
             }
         }
@@ -58,9 +58,9 @@ namespace windows_client.DbUtils
                             context.SubmitChanges();
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        Debug.WriteLine("Failed to add unsent packet with id :: " + packet.MessageId);
+                        Debug.WriteLine("MqttDbUtil :: addSentMessage : addSentMessage, Exception : " + ex.StackTrace);
                     }
                 }
             }
@@ -82,10 +82,9 @@ namespace windows_client.DbUtils
                         context.SubmitChanges(ConflictMode.ContinueOnConflict);
                         Debug.WriteLine("Removed unsent packet with timestamp :: " + timestamp);
                     }
-
                     catch (ChangeConflictException e)
                     {
-                        Debug.WriteLine(e.Message);
+                        Debug.WriteLine("MqttDbUtil :: removeSentMessage : removeSentMessage, Exception : " + e.StackTrace);
                         Debug.WriteLine("Failed to remove unsent packet with timestamp :: " + timestamp);
                         // Automerge database values for members that client
                         // has not modified.
@@ -112,7 +111,7 @@ namespace windows_client.DbUtils
 
                 catch (ChangeConflictException e)
                 {
-                    Debug.WriteLine(e.Message);
+                    Debug.WriteLine("MqttDbUtil :: deleteAllUnsentMessages : deleteAllUnsentMessages, Exception : " + e.StackTrace);
                     // Automerge database values for members that client
                     // has not modified.
                     foreach (ObjectChangeConflict occ in context.ChangeConflicts)
@@ -125,7 +124,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void UpdateToVersionOne()
+        public static void MqttDbUpdateToLatestVersion()
         {
             using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
             {
@@ -139,9 +138,15 @@ namespace windows_client.DbUtils
                 {
                     // add Address column to the table corresponding to the Person class
                     // IMPORTANT: update database schema version before calling Execute
-                    schemaUpdater.DatabaseSchemaVersion = Latest_Version;
-                    // execute changes to database schema
-                    schemaUpdater.Execute();
+                    schemaUpdater.DatabaseSchemaVersion = MqttDb_Latest_Version;
+                    try
+                    {
+                        // execute changes to database schema
+                        schemaUpdater.Execute();
+                    }
+                    catch (Exception e)
+                    {
+                    }
                 }
             }
         }

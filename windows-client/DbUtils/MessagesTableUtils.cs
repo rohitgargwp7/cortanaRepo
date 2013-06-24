@@ -1,16 +1,12 @@
-﻿using System.Windows;
-using System.Linq;
+﻿using System.Linq;
 using windows_client.Model;
 using System.Collections.Generic;
-using windows_client.View;
 using System;
 using windows_client.utils;
 using System.Data.Linq;
 using Newtonsoft.Json.Linq;
 using windows_client.Controls;
 using System.Diagnostics;
-using System.Threading;
-using Microsoft.Phone.Shell;
 using System.Text;
 using windows_client.Misc;
 using windows_client.Languages;
@@ -22,16 +18,16 @@ namespace windows_client.DbUtils
         private static object lockObj = new object();
 
         //keep a set of currently uploading or downloading messages.
-        private static Dictionary<long, MyChatBubble> uploadingOrDownloadingMessages = new Dictionary<long, MyChatBubble>();
+        private static Dictionary<long, ConvMessage> uploadingOrDownloadingMessages = new Dictionary<long, ConvMessage>();
 
-        public static void addUploadingOrDownloadingMessage(long messageId, MyChatBubble chatBubble)
+        public static void addUploadingOrDownloadingMessage(long messageId, ConvMessage conMessage)
         {
             if (messageId == -1)
                 return;
             lock (lockObj)
             {
                 if (!uploadingOrDownloadingMessages.ContainsKey(messageId))
-                    uploadingOrDownloadingMessages.Add(messageId, chatBubble);
+                    uploadingOrDownloadingMessages.Add(messageId, conMessage);
             }
         }
 
@@ -54,7 +50,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static MyChatBubble getUploadingOrDownloadingMessage(long messageId)
+        public static ConvMessage getUploadingOrDownloadingMessage(long messageId)
         {
             if (messageId == -1)
                 return null;
@@ -72,9 +68,9 @@ namespace windows_client.DbUtils
         //private static HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring); // use this chatsDbContext to improve performance
 
         /* This is shown on chat thread screen*/
-        public static List<ConvMessage> getMessagesForMsisdn(string msisdn)
+        public static List<ConvMessage> getMessagesForMsisdn(string msisdn, long lastMessageId, int count)
         {
-            List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdn(DbCompiledQueries.chatsDbContext, msisdn).ToList<ConvMessage>();
+            List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdnForPaging(DbCompiledQueries.chatsDbContext, msisdn, lastMessageId, count).ToList<ConvMessage>();
             return (res == null || res.Count == 0) ? null : res;
         }
 
@@ -119,34 +115,12 @@ namespace windows_client.DbUtils
                 {
                     context.SubmitChanges();
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("MessagesTableUtils :: addMessage : submit changes, Exception : " + ex.StackTrace);
                     return false;
                 }
-                //if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                //{
-                //    long msgId = convMessage.MessageId;
-                //    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                //    {
 
-                //        NewChatThread currentPage = App.newChatThreadPage;
-
-                //        if (currentPage != null)
-                //        {
-                //            if (convMessage.IsSent)
-                //            {
-                //                SentChatBubble sentChatBubble;
-                //                currentPage.OutgoingMsgsMap.TryGetValue(currentMessageId, out sentChatBubble);
-                //                if (sentChatBubble != null)
-                //                {
-                //                    currentPage.OutgoingMsgsMap.Remove(currentMessageId);
-                //                    currentPage.OutgoingMsgsMap.Add(convMessage.MessageId, sentChatBubble);
-                //                    sentChatBubble.MessageId = convMessage.MessageId;
-                //                }
-                //            }
-                //        }
-                //    });
-                //}
             }
             return true;
         }
@@ -222,6 +196,7 @@ namespace windows_client.DbUtils
             else
             {
                 obj = App.ViewModel.ConvMap[convMsg.Msisdn];
+                obj.IsLastMsgStatusUpdate = false;
                 #region PARTICIPANT_JOINED
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
                 {
@@ -321,36 +296,48 @@ namespace windows_client.DbUtils
                 }
                 #endregion
                 #region USER_JOINED
-                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED)
                 {
+                    string msgtext = convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED ? AppResources.USER_JOINED_HIKE : AppResources.USER_REJOINED_HIKE_TXT;
                     if (Utils.isGroupConversation(obj.Msisdn))
                     {
                         GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
-                        obj.LastMessage = string.Format(AppResources.USER_JOINED_HIKE, gp.FirstName);
+                        obj.LastMessage = string.Format(msgtext, gp.FirstName);
                     }
                     else // 1-1 chat
                     {
-                        obj.LastMessage = string.Format(AppResources.USER_JOINED_HIKE, obj.NameToShow);
+                        obj.LastMessage = string.Format(msgtext, obj.NameToShow);
                     }
                     convMsg.Message = obj.LastMessage;
                 }
                 #endregion\
-                #region GROUP NAME CHANGED
-                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
+                #region GROUP NAME/PIC CHANGED
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
                 {
-                    GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
-                    //convMsg.Message = gp.FirstName + " changed the group name.";
-                    convMsg.Message = AppResources.GroupNameChangedByGrpMember_Txt;
+                    obj.LastMessage = convMsg.Message;
                 }
                 #endregion
                 #region STATUS UPDATES
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
-                    addMessage(convMsg);
-                    return obj;
+                    obj.IsLastMsgStatusUpdate = true;
+                    obj.LastMessage = "\"" + convMsg.Message + "\"";
                 }
                 #endregion
-                #region NO_INFO or OTHER MSGS
+                #region NO_INFO
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                {
+                    //convMsg.GroupParticipant is null means message sent by urself
+                    if (convMsg.GroupParticipant != null && Utils.isGroupConversation(convMsg.Msisdn))
+                    {
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
+                        obj.LastMessage = gp != null ? (gp.FirstName + "- " + convMsg.Message) : convMsg.Message;
+                    }
+                    else
+                        obj.LastMessage = convMsg.Message;
+                }
+                #endregion
+                #region OTHER MSGS
                 else
                     obj.LastMessage = convMsg.Message;
                 #endregion
@@ -363,8 +350,16 @@ namespace windows_client.DbUtils
                 long msec1 = st1.ElapsedMilliseconds;
                 Debug.WriteLine("Time to add chat msg : {0}", msec1);
 
-                obj.MessageStatus = convMsg.MessageStatus;
-                obj.TimeStamp = convMsg.Timestamp;
+                if (convMsg.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                {
+                    obj.MessageStatus = convMsg.MessageStatus;
+                    obj.TimeStamp = convMsg.Timestamp;
+                }
+                else if (obj.MessageStatus != ConvMessage.State.RECEIVED_UNREAD)// its for status msg
+                {
+                    obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
+                }
+
                 obj.LastMsgId = convMsg.MessageId;
                 Stopwatch st = Stopwatch.StartNew();
                 ConversationTableUtils.updateConversation(obj);
@@ -372,7 +367,6 @@ namespace windows_client.DbUtils
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to update conversation  : {0}", msec);
             }
-
             return obj;
         }
 
@@ -483,9 +477,9 @@ namespace windows_client.DbUtils
             {
                 context.SubmitChanges(ConflictMode.ContinueOnConflict);
             }
-            catch (ChangeConflictException e)
+            catch (ChangeConflictException ex)
             {
-                Console.WriteLine(e.Message);
+                Debug.WriteLine("MessageTableUtils :: SubmitWithConflictResolve : submitChanges, Exception : " + ex.StackTrace);
                 // Automerge database values for members that client
                 // has not modified.
                 foreach (ObjectChangeConflict occ in context.ChangeConflicts)
@@ -493,8 +487,10 @@ namespace windows_client.DbUtils
                     occ.Resolve(RefreshMode.KeepChanges); // second client changes will be submitted.
                 }
             }
+
             // Submit succeeds on second try.           
             context.SubmitChanges(ConflictMode.FailOnFirstConflict);
         }
+
     }
 }

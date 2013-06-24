@@ -39,12 +39,14 @@ namespace windows_client
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
             enterPin.ApplicationBar = appBar;
+            if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
+                ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
         }
 
         private void btnEnterPin_Click(object sender, EventArgs e)
         {
             if (isNextClicked)
-                return;           
+                return;
             pinEntered = txtBxEnterPin.Text.Trim();
             if (string.IsNullOrEmpty(pinEntered))
                 return;
@@ -90,9 +92,6 @@ namespace windows_client
             }
 
             utils.Utils.savedAccountCredentials(obj);
-
-            /*Before calling setName function , simply scan the addressbook*/
-            ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
             nextPage = new Uri("/View/EnterName.xaml", UriKind.Relative);
             /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -108,6 +107,7 @@ namespace windows_client
         void EnterPinPage_Loaded(object sender, RoutedEventArgs e)
         {
             txtBxEnterPin.Focus();
+            txtBxEnterPin.Select(txtBxEnterPin.Text.Length, 0);
             this.Loaded -= EnterPinPage_Loaded;
         }
 
@@ -118,7 +118,10 @@ namespace windows_client
                 txtBxEnterPin.Hint = AppResources.EnterPin_PinHint;
                 txtBxEnterPin.Foreground = UI_Utils.Instance.SignUpForeground;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Enter Pin ::  txtBxEnterPin_GotFocus , Exception : " + ex.StackTrace);
+            }
         }
 
         private void btnWrongMsisdn_Click(object sender, RoutedEventArgs e)
@@ -152,7 +155,7 @@ namespace windows_client
 
         private void txtBxEnterPin_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(txtBxEnterPin.Text))
+            if (!string.IsNullOrWhiteSpace(txtBxEnterPin.Text) && txtBxEnterPin.Text.Length > 2)
             {
                 nextIconButton.IsEnabled = true;
                 txtBxEnterPin.Foreground = UI_Utils.Instance.SignUpForeground;
@@ -174,7 +177,7 @@ namespace windows_client
             base.OnNavigatedTo(e);
             if (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
-            
+
             timer.Visibility = Visibility.Visible;
             progressTimer = new DispatcherTimer();
             progressTimer.Interval = TimeSpan.FromSeconds(1);
@@ -252,7 +255,10 @@ namespace windows_client
             {
                 txtBxEnterPin.Background = UI_Utils.Instance.White;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Enter Pin ::  txtBxEnterPin_LostFocus , Exception : " + ex.StackTrace);
+            }
         }
 
         private void enableCallMeOption(object sender, EventArgs e)

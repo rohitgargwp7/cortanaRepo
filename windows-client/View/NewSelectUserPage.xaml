@@ -11,7 +11,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
     toolkit:TiltEffect.IsTiltEnabled="True"
     shell:SystemTray.IsVisible="True" DataContext="{Binding}" Name="selectUserPage">
 
@@ -42,7 +42,7 @@
         </Style>
 
         <DataTemplate x:Key="GroupHeaderTemplate">
-            <Border Background="Transparent" Margin="0,5,0,0">
+            <Border Background="Transparent" Margin="0,5,0,10">
                 <Border Background="{StaticResource PhoneAccentBrush}" 
                         Width="55" Height="55" HorizontalAlignment="Left">
                     <TextBlock Text="{Binding Title}" 
@@ -53,7 +53,7 @@
             </Border>
         </DataTemplate>
 
-        <DataTemplate x:Key="ItemTemplate">
+        <DataTemplate x:Name="defaultTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="320"/>
@@ -66,24 +66,40 @@
                         <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
                     </StackPanel>
                 </StackPanel>
-                <Button Content="{Binding Path= LocalizedResources.Invite_Small, Source={StaticResource LocalizedStrings}}" Background="#e9ecee" Foreground="#595959" Height="65" Width="110" FontSize="20" Grid.Column="1" Visibility="{Binding InvitedStringVisible}" HorizontalAlignment="Right" BorderThickness="0" Tap="Invite_Tap"/>
+                <Button Content="{Binding Path= LocalizedResources.Invite_Small, Source={StaticResource LocalizedStrings}}" Background="#e9ecee" Foreground="#595959" Height="65" MinWidth="110" FontSize="20" Grid.Column="1" Visibility="{Binding InvitedStringVisible}" HorizontalAlignment="Right" BorderThickness="0" Tap="Invite_Tap"/>
             </Grid>
         </DataTemplate>
 
+        <DataTemplate x:Name="blockTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="320"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel x:Name="Sender" Grid.Column="0" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="0,2,0,2">
+                    <TextBlock Text="{Binding Name}" FontFamily="Segoe WP SemiLight" FontSize="36" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
+                        <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
+                    </StackPanel>
+                </StackPanel>
+                <Button Content="{Binding Path= LocalizedResources.Block_Txt, Source={StaticResource LocalizedStrings}}" 
+                        Background="#e9ecee" Foreground="#595959" 
+                        Height="65" Width="120" FontSize="20" Grid.Column="1" 
+                        Visibility="{Binding InviteButtonVisible}" HorizontalAlignment="Right" 
+                        BorderThickness="0" Tap="Block_Tap"/>
+            </Grid>
+        </DataTemplate>
+        
     </phone:PhoneApplicationPage.Resources>
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="646"/>
-            <RowDefinition/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Grid.Row="0">
-            <StackPanel Orientation="Horizontal">
-                <!--<Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>-->
-
-            </StackPanel>
             <TextBlock Name="txtChat" Text="{Binding Path= LocalizedResources.SelectUser_Header_Txt, Source={StaticResource LocalizedStrings}}" FontSize="22" FontFamily="Segoe WP Semibold" FontStretch="Expanded"  Margin="30,0,0,5" />
             <TextBlock Name="txtTitle" Text="{Binding Path= LocalizedResources.SelectUser_Title_Txt, Source={StaticResource LocalizedStrings}}" FontSize="68" Height="75" FontFamily="Segoe WP SemiLight" FontStretch="Expanded" Margin="30,-10,0,0" />
         </StackPanel>
@@ -93,21 +109,18 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Grid.Row="1" GotFocus="enterNameTxt_GotFocus" Margin="-10,5,0,0" Width="440" HorizontalAlignment="Stretch" 
+            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Grid.Row="0" GotFocus="enterNameTxt_GotFocus" Margin="-10,5,0,0" Width="440" HorizontalAlignment="Stretch" 
                                   Hint="{Binding Path= LocalizedResources.SelectUser_TxtBoxHint_Txt, Source={StaticResource LocalizedStrings}}"
                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
 
-            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="28,10,0,68"
+            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="1" Margin="28,10,0,10"
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
-                          IsGroupingEnabled="True" LayoutMode="List" HideEmptyGroups="True"
-                          ItemTemplate="{StaticResource ItemTemplate}"
+                          IsGroupingEnabled="True" LayoutMode="List" HideEmptyGroups="True"                
                           GroupHeaderTemplate="{StaticResource GroupHeaderTemplate}"
                           JumpListStyle="{StaticResource LongListSelectorJumpListStyle}"/>
-
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage >

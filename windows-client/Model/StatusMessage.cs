@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,29 +17,50 @@ namespace windows_client.Model
         string _msisdn;
         string _message; // this will be stored in JSON format
         StatusType _type;
-        string _mappedId;
+        long _timestamp;
+        string _serverId;
+        long _msgId; // this is the id of convmsg used to delete status in messagestable
+        string _moodInfo;
+        bool _showOnTimeline;
+        bool _isUnread;
 
         public enum StatusType
         {
-            ADD_FRIEND,
+            FRIEND_REQUEST,
             TEXT_UPDATE,
-            PHOTO_UPDATE
+            PROFILE_PIC_UPDATE,
+            IS_NOW_FRIEND
         }
 
-        public StatusMessage(string msisdn, string msg, StatusType type,string mappedId)
+        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, long id)
+            : this(msisdn, msg, type, mappedId, ts, true, id, -1, 0, true)
+        {
+        }
+
+        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, long id, bool isUnRead)
+            : this(msisdn, msg, type, mappedId, ts, true, id, -1, 0, isUnRead)
+        {
+        }
+
+        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, bool showOnTimeline,
+            long msgId, int moodId, int timeOfDay, bool isUnread)
         {
             _msisdn = msisdn;
             _message = msg;
             _type = type;
-            _mappedId = mappedId;
-        }
-
-        public StatusMessage(string msisdn, StatusType type, string mappedId)
-        {
-            _msisdn = msisdn;
-            _message = null;
-            _type = type;
-            _mappedId = mappedId;
+            _serverId = mappedId;
+            _timestamp = ts;
+            _msgId = msgId;
+            _isUnread = isUnread;
+            _showOnTimeline = showOnTimeline;
+            if (moodId < 1)
+            {
+                _moodInfo = String.Empty;
+            }
+            else
+            {
+                _moodInfo = moodId + HikeConstants.MOOD_TOD_SEPARATOR + timeOfDay;
+            }
         }
 
         public StatusMessage()
@@ -107,18 +129,130 @@ namespace windows_client.Model
         }
 
         [Column]
-        public string MappedId
+        public long Timestamp
         {
             get
             {
-                return _mappedId;
+                return _timestamp;
             }
             set
             {
-                if (_mappedId != value)
+                if (_timestamp != value)
                 {
-                    NotifyPropertyChanging("MappedId");
-                    _mappedId = value;
+                    NotifyPropertyChanging("Timestamp");
+                    _timestamp = value;
+                }
+            }
+        }
+
+        [Column]
+        public string ServerId
+        {
+            get
+            {
+                return _serverId;
+            }
+            set
+            {
+                if (_serverId != value)
+                {
+                    NotifyPropertyChanging("ServerId");
+                    _serverId = value;
+                }
+            }
+        }
+
+        [Column]
+        public long MsgId
+        {
+            get
+            {
+                return _msgId;
+            }
+            set
+            {
+                if (_msgId != value)
+                {
+                    NotifyPropertyChanging("MsgId");
+                    _msgId = value;
+                }
+            }
+        }
+
+        [Column]
+        public string MoodInfo
+        {
+            get
+            {
+                return _moodInfo;
+            }
+            set
+            {
+                if (_moodInfo != value)
+                {
+                    NotifyPropertyChanging("MoodInfo");
+                    _moodInfo = value;
+                }
+            }
+        }
+
+        [Column]
+        public bool ShowOnTimeline
+        {
+            get
+            {
+                return _showOnTimeline;
+            }
+            set
+            {
+                if (value != _showOnTimeline)
+                {
+                    NotifyPropertyChanging("ShowOnTimeline");
+                    _showOnTimeline = value;
+                }
+            }
+        }
+
+        public bool IsUnread
+        {
+            get
+            {
+                return _isUnread;
+            }
+            set
+            {
+                _isUnread = value;
+            }
+        }
+
+        public int TimeOfDay
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_moodInfo))
+                    return 0;
+                else
+                {
+                    string[] vals = _moodInfo.Split(':');
+                    int res = 0;
+                    Int32.TryParse(vals[1], out res);
+                    return res;
+                }
+            }
+        }
+
+        public int MoodId
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_moodInfo))
+                    return 0;
+                else
+                {
+                    string[] vals = _moodInfo.Split(':');
+                    int res = 0;
+                    Int32.TryParse(vals[0], out res);
+                    return res;
                 }
             }
         }
@@ -136,8 +270,10 @@ namespace windows_client.Model
                 {
                     PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
                 }
-                catch (Exception)
-                { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("StatusMessage ::  NotifyPropertyChanging : NotifyPropertyChanging, Exception : " + ex.StackTrace);
+                }
             }
         }
         #endregion
