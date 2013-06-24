@@ -480,6 +480,11 @@ namespace windows_client.Model
             this._avatar = avatar;
             this._messageStatus = msgStatus;
             this._lastMsgId = lastMsgId;
+
+            if (msgStatus == ConvMessage.State.RECEIVED_UNREAD)
+                UnreadCounter++;
+            else
+                UnreadCounter = 0;
         }
 
         public ConversationListObject(string msisdn, string contactName, string lastMessage, long timestamp, ConvMessage.State msgStatus, long lastMsgId)
