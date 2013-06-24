@@ -27,6 +27,7 @@ namespace windows_client.Model
         private string _msisdn;
         private string _contactName;
         private string _lastMessage;
+        private int _unreadCounter = 0;
         private long _timeStamp;
         private bool _isOnhike;
         private ConvMessage.State _messageStatus;
@@ -153,6 +154,11 @@ namespace windows_client.Model
                     NotifyPropertyChanged("SDRStatusImageVisible");
                     NotifyPropertyChanged("UnreadCircleVisibility");
                 }
+
+                if (_messageStatus == ConvMessage.State.RECEIVED_UNREAD)
+                    UnreadCounter++;
+                else
+                    UnreadCounter = 0;
             }
         }
 
@@ -270,6 +276,7 @@ namespace windows_client.Model
                 }
             }
         }
+        
         public Visibility UnreadCircleVisibility
         {
             get
@@ -280,6 +287,33 @@ namespace windows_client.Model
                     return Visibility.Collapsed;
             }
         }
+
+        public double UnreadCounterWidth
+        {
+            get
+            {
+                return getUnreadCounterWidth();
+            }
+        }
+
+        public int UnreadCounter
+        {
+            get
+            {
+                return _unreadCounter;
+            }
+            set
+            {
+                if (_unreadCounter != value)
+                {
+                    _unreadCounter = value;
+
+                    NotifyPropertyChanged("UnreadCounter");
+                    NotifyPropertyChanged("UnreadCounterWidth");
+                }
+            }
+        }
+
         public bool IsLastMsgStatusUpdate
         {
             get
@@ -467,6 +501,20 @@ namespace windows_client.Model
             this._avatar = avatar;
         }
 
+        double getUnreadCounterWidth()
+        {
+            double defaultWidth = 17;
+            var num = UnreadCounter;
+
+            while (num!=0)
+            {
+                num /= 10;
+                defaultWidth += 8;
+            }
+
+            return defaultWidth;
+        }
+
         public int CompareTo(ConversationListObject rhs)
         {
             if (this.Equals(rhs))
@@ -517,6 +565,7 @@ namespace windows_client.Model
                 writer.Write(_isFirstMsg);
                 writer.Write(_lastMsgId);
                 writer.Write(_muteVal);
+                writer.Write(_unreadCounter);
             }
             catch (Exception ex)
             {
@@ -588,6 +637,19 @@ namespace windows_client.Model
                 _isFirstMsg = reader.ReadBoolean();
                 _lastMsgId = reader.ReadInt64();
                 _muteVal = reader.ReadInt32();
+
+                try
+                {
+                    _unreadCounter = reader.ReadInt32();
+                }
+                catch
+                {
+                    if (_messageStatus == ConvMessage.State.RECEIVED_UNREAD)
+                        _unreadCounter = 1;
+                    else
+                        _unreadCounter = 0;
+                }
+
             }
             catch (Exception ex)
             {
