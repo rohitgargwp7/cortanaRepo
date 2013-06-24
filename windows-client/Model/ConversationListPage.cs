@@ -292,7 +292,7 @@ namespace windows_client.Model
         {
             get
             {
-                return _unreadCounter / 10 == 0 ? 60 : _unreadCounter / 100 == 0 ? 100 : 150;
+                return getUnreadCounterWidth();
             }
         }
 
@@ -499,6 +499,20 @@ namespace windows_client.Model
             this._contactName = contactName;
             this._isOnhike = onHike;
             this._avatar = avatar;
+        }
+
+        double getUnreadCounterWidth()
+        {
+            double defaultWidth = 17;
+            var num = UnreadCounter;
+
+            while (num!=0)
+            {
+                num /= 10;
+                defaultWidth += 8;
+            }
+
+            return defaultWidth;
         }
 
         public int CompareTo(ConversationListObject rhs)
