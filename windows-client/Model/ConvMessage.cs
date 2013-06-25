@@ -8,6 +8,7 @@ using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using System.Windows.Media.Imaging;
 using System.Text;
+using System.Linq;
 using windows_client.DbUtils;
 using System.Collections.Generic;
 using Microsoft.Phone.Shell;
@@ -52,7 +53,10 @@ namespace windows_client.Model
             SENT_DELIVERED_READ, /* message viewed by recipient */
             RECEIVED_UNREAD, /* message received, but currently unread */
             RECEIVED_READ, /* message received an read */
-            UNKNOWN
+            UNKNOWN,
+            FORCE_SMS_SENT_CONFIRMED,
+            FORCE_SMS_SENT_DELIVERED, /* message delivered to client device */
+            FORCE_SMS_SENT_DELIVERED_READ, /* message viewed by recipient */
         }
 
 
@@ -259,6 +263,10 @@ namespace windows_client.Model
                     _messageStatus = value;
                     NotifyPropertyChanged("SdrImage");
                     NotifyPropertyChanged("MessageStatus");
+                    NotifyPropertyChanged("SendAsSMSVisibility");
+                    NotifyPropertyChanged("BubbleBackGroundColor");
+                    NotifyPropertyChanged("TimeStampForeGround");
+                    NotifyPropertyChanged("MessageTextForeGround");
                 }
             }
         }
@@ -389,7 +397,10 @@ namespace windows_client.Model
                         _messageStatus == State.SENT_CONFIRMED ||
                         _messageStatus == State.SENT_DELIVERED ||
                         _messageStatus == State.SENT_DELIVERED_READ ||
-                        _messageStatus == State.SENT_FAILED);
+                        _messageStatus == State.SENT_FAILED ||
+                        _messageStatus == State.FORCE_SMS_SENT_CONFIRMED ||
+                        _messageStatus == State.FORCE_SMS_SENT_DELIVERED ||
+                        _messageStatus == State.FORCE_SMS_SENT_DELIVERED_READ);
             }
         }
 
@@ -397,7 +408,7 @@ namespace windows_client.Model
         {
             get
             {
-                return _isSms;
+                return _isSms || MessageStatus >= State.FORCE_SMS_SENT_CONFIRMED ;
             }
             set
             {
@@ -489,10 +500,13 @@ namespace windows_client.Model
             {
                 switch (_messageStatus)
                 {
+                    case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
                     case ConvMessage.State.SENT_CONFIRMED:
                         return UI_Utils.Instance.Sent;
+                    case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED:
                         return UI_Utils.Instance.Delivered;
+                    case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                     case ConvMessage.State.SENT_DELIVERED_READ:
                         return UI_Utils.Instance.Read;
                     case ConvMessage.State.SENT_FAILED:
@@ -977,6 +991,40 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility SendAsSMSVisibility
+        {
+            get 
+            {
+                if (IsSent && !IsSms && MessageStatus == State.SENT_CONFIRMED && IsSMSOptionAvalable())
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
+        bool IsSMSOptionAvalable()
+        {
+            bool showFreeSMS = true;
+            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+
+            if (!showFreeSMS) // if setting is off return false
+                return showFreeSMS; // == false
+
+            if (Utils.isGroupConversation(Msisdn))//groupchat
+            {
+                GroupManager.Instance.LoadGroupParticipants(Msisdn);
+
+                showFreeSMS = (from groupParticipant in GroupManager.Instance.GroupCache[Msisdn]
+                               where groupParticipant.Msisdn.Contains("+91")
+                               select groupParticipant).ToList().Count == 0 ? false : true;
+
+            }
+            else if (!Msisdn.Contains("+91")) //Indian receiver
+                showFreeSMS = false;
+
+            return showFreeSMS;
+        }
+
         public ConvMessage(string message, string msisdn, long timestamp, State msgState, PageOrientation currentOrientation)
             : this(message, msisdn, timestamp, msgState, -1, -1, currentOrientation)
         {
@@ -999,7 +1047,10 @@ namespace windows_client.Model
                         msgState == State.SENT_CONFIRMED ||
                         msgState == State.SENT_DELIVERED ||
                         msgState == State.SENT_DELIVERED_READ ||
-                        msgState == State.SENT_FAILED);
+                        msgState == State.SENT_FAILED||
+                        msgState== State.FORCE_SMS_SENT_CONFIRMED||
+                        msgState== State.FORCE_SMS_SENT_DELIVERED||
+                        msgState== State.FORCE_SMS_SENT_DELIVERED_READ);
             MessageStatus = msgState;
         }
 

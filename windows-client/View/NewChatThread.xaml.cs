@@ -3031,7 +3031,12 @@ namespace windows_client.View
 
         private void MenuItem_Click_SendAsSMS(object sender, RoutedEventArgs e)
         {
+            ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
+            convMessage.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_CONFIRMED;
+            string msisdn = MessagesTableUtils.updateMsgStatus(mContactNumber, convMessage.MessageId, (int)ConvMessage.State.FORCE_SMS_SENT_CONFIRMED);
+            ConversationTableUtils.updateLastMsgStatus(convMessage.MessageId, msisdn, (int)ConvMessage.State.FORCE_SMS_SENT_CONFIRMED);
         }
+
         #endregion
 
         #region EMOTICONS RELATED STUFF
