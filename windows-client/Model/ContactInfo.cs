@@ -413,7 +413,7 @@ namespace windows_client.Model
         {
             get
             {
-                return "(" + Enum.GetName(typeof(Microsoft.Phone.UserData.PhoneNumberKind), Kind).ToLower(CultureInfo.CurrentCulture) + ")";
+                return "(" + Enum.GetName(typeof(Microsoft.Phone.UserData.PhoneNumberKind), Kind).ToString(CultureInfo.CurrentCulture).ToLower() + ")";
             }
         }
 

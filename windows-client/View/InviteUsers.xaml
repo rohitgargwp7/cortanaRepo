@@ -61,6 +61,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
                         <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
+                        <TextBlock Text="{Binding KindText}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
