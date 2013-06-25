@@ -195,17 +195,18 @@ namespace windows_client.DbUtils
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
 
+
                     byte[] fileBytes;
-                    MiscDBUtil.readFileFromIsolatedStorage(sourceFilePath, out fileBytes);
-                    if (fileBytes == null)
-                        return;
-                    AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
                     if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                         fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
                     else
+                        MiscDBUtil.readFileFromIsolatedStorage(sourceFilePath, out fileBytes);
+                    if (fileBytes == null)
+                        return;
+                    AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
+                    if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                         MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
                                 Convert.ToString(convMessage.MessageId), fileBytes);
-
                     AccountUtils.uploadFile(fileBytes, finalCallbackForUploadFile, convMessage);
                 });
             }
