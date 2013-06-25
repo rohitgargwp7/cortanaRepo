@@ -197,6 +197,8 @@ namespace windows_client.DbUtils
 
                     byte[] fileBytes;
                     MiscDBUtil.readFileFromIsolatedStorage(sourceFilePath, out fileBytes);
+                    if (fileBytes == null)
+                        return;
                     AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
                     if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                         fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
