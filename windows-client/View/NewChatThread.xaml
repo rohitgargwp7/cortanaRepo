@@ -69,15 +69,15 @@
                         <Image Grid.Column="1" Source="images\mute_icon_main.png" VerticalAlignment="Center" HorizontalAlignment="Right" Height="20" Width="20" Margin="0,5,12,5"/>
                     </Grid>
                 </Border>
-                <Grid Name="userHeader" HorizontalAlignment="Stretch" Margin="24,0,24,10">
+                <Grid Name="userHeader" HorizontalAlignment="Stretch" Margin="24,0,24,10" VerticalAlignment="Top">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Image Name="userImage" Height="50" HorizontalAlignment="Left"/>
-                    <StackPanel Margin="18,0,0,0" Grid.Column="1" HorizontalAlignment="Stretch">
+                    <Image Name="userImage" Height="55" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <StackPanel Margin="18,-2,0,0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                         <TextBlock x:Name="userName" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="50" VerticalAlignment="Top" Margin="0,-10,0,0"/>
-                        <StackPanel Margin="0,-5,0,0" Orientation="Horizontal" VerticalAlignment="Top" x:Name="lastSeenPannel" Visibility="Collapsed">
+                        <StackPanel Margin="2,-5,0,0" Orientation="Horizontal" VerticalAlignment="Top" x:Name="lastSeenPannel" Visibility="Collapsed">
                             <Image x:Name="onlineStatus" MaxHeight="15" MaxWidth="15" Margin="0,0,5,0" Visibility="Collapsed"/>
                             <TextBlock x:Name="lastSeenTxt" Text="" FontSize="18"/>
                         </StackPanel>
@@ -833,64 +833,53 @@
                 </Grid>
             </StackPanel>
 
-            <Grid x:Name="attachmentMenu" Visibility="Collapsed" Height="350" Background="#292929">
+            <Grid x:Name="attachmentMenu" Visibility="Collapsed" Height="350" Background="#080808" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Column="0" Grid.Row="0" Tap="clickPhoto_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Grid Grid.Column="0" Grid.Row="0" Margin="0,0,1,0" Background="#292929" Tap="clickPhoto_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Margin="0,5,0,0" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_camera_icon.png" Height="35" HorizontalAlignment="Center"/>
                         <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Camera_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock >
                     </StackPanel>
                 </Grid>
 
-                <Rectangle Width="1" Fill="#080808" Grid.Column="1"  Grid.Row="0"/>
-                <Grid Grid.Column="2" Grid.Row="0" Tap="sendImage_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Grid Grid.Column="1" Grid.Row="0" Margin="0,0,1,0" Background="#292929" Tap="sendImage_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_photo_icon.png" Height="40" HorizontalAlignment="Center"/>
                         <TextBlock  Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Photo_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock >
                     </StackPanel>
                 </Grid>
 
-                <Rectangle Width="1" Fill="#080808" Grid.Column="3" Grid.Row="0"/>
-                <Grid Grid.Column="4" Grid.Row="0" Tap="sendVideo_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Grid Grid.Column="2" Grid.Row="0" Background="#292929" Tap="sendVideo_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Margin="0,5,0,0" Orientation="Vertical"  VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_video_icon.png" Height="30" HorizontalAlignment="Center"/>
                         <TextBlock Margin="0,25,0,0" Text="{Binding Path= LocalizedResources.Attachment_Video_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
                     </StackPanel>
                 </Grid>
 
-                <Rectangle  Height="1" Fill="#080808" Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="1"/>
-                <Rectangle  Height="1" Fill="#080808" Grid.ColumnSpan="2" Grid.Column="2" Grid.Row="1"/>
-                <Rectangle  Height="1" Fill="#080808" Grid.ColumnSpan="2" Grid.Column="4" Grid.Row="1"/>
-
-                <Grid Grid.Column="0" Grid.Row="2" Tap="sendAudio_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Grid Grid.Column="0" Grid.Row="1" Margin="0,1,1,0" Background="#292929" Tap="sendAudio_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_audio_icon.png" Height="40" HorizontalAlignment="Center"/>
                         <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Audio_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
                     </StackPanel>
                 </Grid>
 
-                <Rectangle Width="1"  Fill="#080808" Grid.Column="1" Grid.Row="2"/>
-                <Grid Grid.Column="2" Grid.Row="2" Tap="shareLocation_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Grid Grid.Column="1" Grid.Row="1" Margin="0,1,1,0" Background="#292929" Tap="shareLocation_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_location_icon.png" Height="40" HorizontalAlignment="Center"/>
                         <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Location_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" ></TextBlock >
                     </StackPanel>
                 </Grid>
 
-                <Rectangle Width="1"  Fill="#080808" Grid.Column="3" Grid.Row="2"/>
-                <Grid Grid.Column="4" Grid.Row="2" Tap="sendContact_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Grid Grid.Column="2" Grid.Row="1" Margin="0,1,1,0" Background="#292929" Tap="sendContact_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Margin="0,5,0,0" Name="spContactTransfer" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_contact_icon.png" Height="35" HorizontalAlignment="Center"/>
                         <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachement_Contact_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
