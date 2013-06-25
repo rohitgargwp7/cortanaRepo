@@ -27,7 +27,7 @@ namespace windows_client.Model
         private string _name;
         private string _msisdn;
         private string _phoneNo;
-        private bool _hasCustomPhoto;
+        private bool _hasCustomPhoto;//used to show group chat in select user page
         private bool _onHike;
         private bool _isInvited;
         private byte[] _avatar;

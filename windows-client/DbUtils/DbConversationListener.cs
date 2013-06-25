@@ -198,9 +198,12 @@ namespace windows_client.DbUtils
                     byte[] fileBytes;
                     MiscDBUtil.readFileFromIsolatedStorage(sourceFilePath, out fileBytes);
                     AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
-                    if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                    if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                        fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
+                    else
                         MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
                                 Convert.ToString(convMessage.MessageId), fileBytes);
+
                     AccountUtils.uploadFile(fileBytes, finalCallbackForUploadFile, convMessage);
                 });
             }

@@ -44,11 +44,11 @@
         <DataTemplate x:Key="GroupHeaderTemplate">
             <Border Background="Transparent" Margin="0,5,0,10">
                 <Border Background="{StaticResource PhoneAccentBrush}" 
-                        Width="55" Height="55" HorizontalAlignment="Left">
+                        MinWidth="55" Height="55" HorizontalAlignment="Left">
                     <TextBlock Text="{Binding Title}" 
                                 Foreground="White" 
                                 Style="{StaticResource PhoneTextLargeStyle}"
-                                VerticalAlignment="Bottom"/>
+                                VerticalAlignment="Center"/>
                 </Border>
             </Border>
         </DataTemplate>
@@ -56,7 +56,7 @@
         <DataTemplate x:Name="defaultTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="320"/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel x:Name="Sender" Grid.Column="0" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="0,2,0,2">

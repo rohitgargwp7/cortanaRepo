@@ -1812,4 +1812,12 @@ Get hike: http://get.hike.in</value>
   <data name="DownloadFailed_Txt" xml:space="preserve">
     <value>Oops! Download Failed</value>
   </data>
+  <data name="Group_ShortName" xml:space="preserve">
+    <value>grp</value>
+    <comment>short name for grp(length 3)</comment>
+  </data>
+  <data name="SelectUser_Forward_To_Txt" xml:space="preserve">
+    <value>Forward To</value>
+    <comment>verb(length 12)</comment>
+  </data>
 </root>
