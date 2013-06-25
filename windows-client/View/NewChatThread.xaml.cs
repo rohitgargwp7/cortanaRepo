@@ -36,6 +36,7 @@ using System.Windows.Navigation;
 using Microsoft.Phone.BackgroundAudio;
 using System.Collections.ObjectModel;
 using windows_client.ViewModel;
+using System.Text.RegularExpressions;
 
 namespace windows_client.View
 {
@@ -135,7 +136,6 @@ namespace windows_client.View
         #region UI VALUES
 
         private Thickness imgMargin = new Thickness(24, 5, 0, 15);
-        private Image emptyImage;
         MediaElement mediaElement;
         ConvMessage currentAudioMessage;
 
@@ -413,9 +413,6 @@ namespace windows_client.View
             emotList0.ItemsSource = imagePathsForList0;
             emotList1.ItemsSource = imagePathsForList1;
             emotList2.ItemsSource = imagePathsForList2;
-            emptyImage = new Image();
-            emptyImage.Source = UI_Utils.Instance.EmptyImage;
-            emptyImage.Height = 1;
 
             bw.RunWorkerAsync();
             photoChooserTask = new PhotoChooserTask();
@@ -1443,7 +1440,6 @@ namespace windows_client.View
                             convMessage.MetaDataString = forwardedMsg.MetaDataString;
                         }
 
-                        convMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
                         AddMessageToOcMessages(convMessage, false);
                         object[] vals = new object[3];
                         vals[0] = convMessage;
@@ -2871,7 +2867,24 @@ namespace windows_client.View
             //this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadDownMargin;
         }
 
+        private void OnEmoticonBackKeyPress(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (sendMsgTxtbox.Text.Length > 0)
+            {
+                MatchCollection matchCollection = SmileyParser.Instance.EmoticonRegex.Matches(sendMsgTxtbox.Text);
+                if (matchCollection.Count > 0)
+                {
+                    string lastEmoticon = matchCollection[matchCollection.Count - 1].ToString();
 
+                    if (sendMsgTxtbox.Text.Substring(sendMsgTxtbox.Text.Length - lastEmoticon.Length).Equals(lastEmoticon))
+                        sendMsgTxtbox.Text = sendMsgTxtbox.Text.Substring(0, sendMsgTxtbox.Text.Length - lastEmoticon.Length);
+                    else
+                        sendMsgTxtbox.Text = sendMsgTxtbox.Text.Substring(0, sendMsgTxtbox.Text.Length - 1);
+                }
+                else
+                    sendMsgTxtbox.Text = sendMsgTxtbox.Text.Substring(0, sendMsgTxtbox.Text.Length - 1);
+            }
+        }
         #endregion
 
         #region CONTEXT MENU
@@ -2915,7 +2928,7 @@ namespace windows_client.View
         {
             isContextMenuTapped = true;
             ConvMessage msg = ((sender as MenuItem).DataContext as ConvMessage);
-            
+
             if (msg == null)
                 return;
 
@@ -2927,7 +2940,7 @@ namespace windows_client.View
 
             if (msg.FileAttachment != null && msg.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
                 msg.SetAttachmentState(Attachment.AttachmentState.CANCELED);
-            
+
             bool delConv = false;
             this.ocMessages.Remove(msg);
             ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
@@ -3782,7 +3795,7 @@ namespace windows_client.View
                 if (lastSeenSettingsValue > 0)
                 {
                     var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
-                    
+
                     if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && _lastUpdatedLastSeenTimeStamp != 0) //dont show online if his last seen setting is off
                         UpdateLastSeenOnUI(AppResources.Online);
                 }
@@ -4480,7 +4493,7 @@ namespace windows_client.View
 
         private void Stickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            LongListSelector llsStickerCategory = (sender as LongListSelector);
+            ListBox llsStickerCategory = (sender as ListBox);
             Sticker sticker = llsStickerCategory.SelectedItem as Sticker;
             llsStickerCategory.SelectedItem = null;
             if (sticker == null)
@@ -4687,7 +4700,7 @@ namespace windows_client.View
             {
                 stickerPivot.ShowNoStickers();
             }
-            else if (stickerCategory.HasMoreStickers)
+            else if (stickerCategory.ListStickers.Count == 0 && stickerCategory.HasMoreStickers)
             {
                 downloadStickers_Tap(null, null);
             }
@@ -4698,29 +4711,6 @@ namespace windows_client.View
             else
             {
                 stickerPivot.ShowStickers();
-            }
-        }
-
-        private void llsStickersCategory_OnItemsRealised(object sender, ItemRealizationEventArgs e)
-        {
-            StickerCategory stickerCategory;
-            LongListSelector llsStickerCategory = sender as LongListSelector;
-            if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0)
-            {
-                string category = ((Sticker)llsStickerCategory.ItemsSource[0]).Category;
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category)) != null && stickerCategory.HasMoreStickers && !stickerCategory.ShowDownloadMessage && !stickerCategory.IsDownLoading)
-                    if (e.ItemKind == LongListSelectorItemKind.Item)
-                    {
-                        if ((e.Container.Content as Sticker).Equals(llsStickerCategory.ItemsSource[llsStickerCategory.ItemsSource.Count - 1]))
-                        {
-                            StickerPivot stickerPivot;
-                            if (dictStickersPivot.TryGetValue(category, out stickerPivot))
-                            {
-                                stickerPivot.ShowHidMoreProgreesBar(true);
-                            }
-                            PostRequestForBatchStickers(stickerCategory);
-                        }
-                    }
             }
         }
 
@@ -4952,9 +4942,7 @@ namespace windows_client.View
             pvt.Margin = zeroThickness;
             pvt.BorderThickness = zeroThickness;
             pvt.Padding = zeroThickness;
-            EventHandler<ItemRealizationEventArgs> itemRealised = null;
-            itemRealised += new EventHandler<ItemRealizationEventArgs>(llsStickersCategory_OnItemsRealised);
-            StickerPivot stickerPivot = new StickerPivot(Stickers_Tap, itemRealised, listSticker, pivotIndex, category);
+            StickerPivot stickerPivot = new StickerPivot(Stickers_Tap, listSticker, pivotIndex, category);
             dictStickersPivot[category] = stickerPivot;
             pvt.Content = stickerPivot;
             pivotStickers.Items.Add(pvt);

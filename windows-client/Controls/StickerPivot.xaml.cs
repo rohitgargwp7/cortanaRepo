@@ -10,6 +10,8 @@ using Microsoft.Phone.Shell;
 using System.Collections.ObjectModel;
 using windows_client.utils;
 using windows_client.ViewModel;
+using System.Windows.Media;
+using System.Collections;
 
 namespace windows_client.Controls
 {
@@ -17,17 +19,13 @@ namespace windows_client.Controls
     {
         private int _pivotIndex;
         private string _category;
-        public StickerPivot(EventHandler<System.Windows.Input.GestureEventArgs> stickerTap, EventHandler<ItemRealizationEventArgs> stickerItemsRealized,
+        public StickerPivot(EventHandler<System.Windows.Input.GestureEventArgs> stickerTap,
             ObservableCollection<Sticker> listStickers, int pivotIndex, string category)
         {
             InitializeComponent();
             if (stickerTap != null)
             {
                 llsStickerCategory.Tap += stickerTap;
-            }
-            if (stickerItemsRealized != null)
-            {
-                llsStickerCategory.ItemRealized += stickerItemsRealized;
             }
             llsStickerCategory.ItemsSource = listStickers;
             _pivotIndex = pivotIndex;
@@ -73,7 +71,7 @@ namespace windows_client.Controls
             stLoading.Visibility = Visibility.Collapsed;
             stNoStickers.Visibility = Visibility.Collapsed;
             stRetry.Visibility = Visibility.Visible;
-            if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0)
+            if (llsStickerCategory.Items != null && llsStickerCategory.Items.Count > 0)
                 btnClose.Visibility = Visibility.Visible;
             else
                 btnClose.Visibility = Visibility.Collapsed;
@@ -81,7 +79,7 @@ namespace windows_client.Controls
         }
         private void RetryStickersTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0)
+            if (llsStickerCategory.Items != null && llsStickerCategory.Items.Count > 0)
             {
                 ShowStickers();
                 ShowHidMoreProgreesBar(true);
@@ -90,7 +88,7 @@ namespace windows_client.Controls
                 ShowLoadingStickers();
 
             StickerCategory stickerCategory;
-            if (App.newChatThreadPage != null && (stickerCategory=HikeViewModel.stickerHelper.GetStickersByCategory(_category))!=null)
+            if (App.newChatThreadPage != null && (stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_category)) != null)
             {
                 App.newChatThreadPage.PostRequestForBatchStickers(stickerCategory);
             }
@@ -108,6 +106,25 @@ namespace windows_client.Controls
         {
             stRetry.Visibility = Visibility.Collapsed;
             llsStickerCategory.Visibility = Visibility.Visible;
+        }
+
+        private void vgroup_CurrentStateChanging(object sender, VisualStateChangedEventArgs e)
+        {
+            if (e.NewState.Name == "CompressionBottom")
+            {
+                StickerCategory stickerCategory;
+                if (App.newChatThreadPage != null && (stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_category)) != null && stickerCategory.HasMoreStickers && !stickerCategory.ShowDownloadMessage && !stickerCategory.IsDownLoading)
+                {
+                    if (llsStickerCategory.ItemsSource != null && llsStickerCategory.Items.Count > 0)
+                    {
+                        ShowStickers();
+                        ShowHidMoreProgreesBar(true);
+                    }
+                    else
+                        ShowLoadingStickers();
+                    App.newChatThreadPage.PostRequestForBatchStickers(stickerCategory);
+                }
+            }
         }
     }
 }
