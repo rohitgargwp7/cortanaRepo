@@ -9,6 +9,7 @@ using windows_client.utils;
 using System.Windows;
 using System.IO;
 using System.Diagnostics;
+using System.Globalization;
 using System.Collections.Generic;
 using windows_client.Misc;
 using System.Text;
@@ -33,7 +34,7 @@ namespace windows_client.Model
         private byte[] _avatar;
         private bool _isFav;
         private bool _isCloseFriendNux;//for Nux , this will also be used in equals function , if true we will compare msisdns only in equals function
-
+        private int _kind;
 
         # region Users Table Members
 
@@ -156,6 +157,21 @@ namespace windows_client.Model
             }
         }
 
+        [Column]
+        public int Kind
+        {
+            get
+            {
+                return _kind;
+            }
+            set
+            {
+                NotifyPropertyChanging("Kind");
+                _kind = value;
+                NotifyPropertyChanged("Kind");
+            }
+        }
+
         public bool IsInvited
         {
             get
@@ -249,27 +265,58 @@ namespace windows_client.Model
             _name = null;
         }
 
-        public ContactInfo(string number, string name, string phoneNum)
-            : this(null, number, name, false, phoneNum, false)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="name"></param>
+        /// <param name="phoneNum"></param>
+        /// <param name="kind"></param>
+        public ContactInfo(string number, string name, string phoneNum, int kind)
+            : this(null, number, name, false, phoneNum, kind, false)
         {
         }
 
-        public ContactInfo(string id, string number, string name, string phoneNum)
-            : this(id, number, name, false, phoneNum, false)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="number"></param>
+        /// <param name="name"></param>
+        /// <param name="phoneNum"></param>
+        /// <param name="kind"></param>
+        public ContactInfo(string id, string number, string name, string phoneNum, int kind)
+            : this(id, number, name, false, phoneNum, kind, false)
         {
         }
 
-        public ContactInfo(string id, string number, string name, bool onHike, string phoneNum) :
-            this(id, number, name, onHike, phoneNum, false)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="number"></param>
+        /// <param name="name"></param>
+        /// <param name="onHike"></param>
+        /// <param name="phoneNum"></param>
+        /// <param name="kind"></param>
+        public ContactInfo(string id, string number, string name, bool onHike, string phoneNum, int kind) :
+            this(id, number, name, onHike, phoneNum, kind, false)
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="name"></param>
+        /// <param name="onHike"></param>
+        /// <param name="kind"></param>
         public ContactInfo(string number, string name, bool onHike) :
-            this(null, number, name, onHike, number, false)
+            this(null, number, name, onHike, number, 0, false)
         {
         }
 
-        public ContactInfo(string id, string msisdn, string name, bool onhike, string phoneNo, bool hasCustomPhoto)
+        public ContactInfo(string id, string msisdn, string name, bool onhike, string phoneNo, int kind, bool hasCustomPhoto)
         {
             this.Id = id;
             this.Msisdn = msisdn;
@@ -277,6 +324,7 @@ namespace windows_client.Model
             this.OnHike = onhike;
             this.PhoneNo = phoneNo;
             this.HasCustomPhoto = hasCustomPhoto;
+            this.Kind = kind;
             this.IsInvited = false;
         }
 
@@ -287,6 +335,7 @@ namespace windows_client.Model
             this._onHike = contact._onHike;
             this._phoneNo = contact._phoneNo;
             this._isInvited = contact._isInvited;
+            this._kind = contact._kind;
         }
 
 
@@ -333,7 +382,8 @@ namespace windows_client.Model
         {
             const int prime = 31;
             int result = 1;
-            result = prime * result + ((string.IsNullOrWhiteSpace(Name) == null) ? 0 : Name.GetHashCode());
+            result = prime * result + (string.IsNullOrWhiteSpace(Name) ? 0 : Name.GetHashCode());
+            result = prime * result + Kind.GetHashCode();
             result = prime * result + ((PhoneNo == null) ? 0 : PhoneNo.GetHashCode());
             return result;
         }
@@ -358,6 +408,15 @@ namespace windows_client.Model
                     return UI_Utils.Instance.NotOnHikeImage;
             }
         }
+
+        public string KindText
+        {
+            get
+            {
+                return "(" + Enum.GetName(typeof(Microsoft.Phone.UserData.PhoneNumberKind), Kind).ToLower(CultureInfo.CurrentCulture) + ")";
+            }
+        }
+
         #endregion
 
         #region INotifyPropertyChanged Members

@@ -4290,9 +4290,12 @@ namespace windows_client.View
             int count = 0;
             int duplicates = 0;
             Dictionary<string, List<ContactInfo>> contactListMap = null;
+            
             if (contacts == null)
                 return null;
+            
             contactListMap = new Dictionary<string, List<ContactInfo>>();
+            
             foreach (Contact cn in contacts)
             {
                 CompleteName cName = cn.CompleteName;
@@ -4304,10 +4307,12 @@ namespace windows_client.View
                         count++;
                         continue;
                     }
-                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
+                    
+                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber, (int)ph.Kind);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
                     contactInfo = cInfo;
+                    
                     if (contactListMap.ContainsKey(cInfo.Id))
                     {
                         if (!contactListMap[cInfo.Id].Contains(cInfo))
@@ -4326,8 +4331,10 @@ namespace windows_client.View
                     }
                 }
             }
+
             Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
             Debug.WriteLine("Total contacts with no phone number : {0}", count);
+            
             return contactListMap;
         }
 

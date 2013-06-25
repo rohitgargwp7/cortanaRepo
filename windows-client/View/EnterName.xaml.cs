@@ -207,10 +207,13 @@ namespace windows_client
             if (isFirstLaunch)
             {
                 PushHelper.Instance.registerPushnotifications();
+                
                 string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
                 msisdn = msisdn.Substring(msisdn.Length - 10);
+                
                 StringBuilder userMsisdn = new StringBuilder();
                 userMsisdn.Append(msisdn.Substring(0, 3)).Append("-").Append(msisdn.Substring(3, 3)).Append("-").Append(msisdn.Substring(6)).Append("!");
+                
                 string country_code = null;
                 App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
                 txtBlckPhoneNumber.Text = AppResources.EnterName_YourMsisdn_TxtBlk + " " + (country_code == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code) + "-" + userMsisdn.ToString();
@@ -230,17 +233,19 @@ namespace windows_client
                         string token = (string)App.appSettings["token"];
                         AccountUtils.postAddressBook(ContactUtils.contactsMap, new AccountUtils.postResponseFunction(postAddressBook_Callback));
                     };
+                
                     bw.RunWorkerAsync();
                 }
+
                 isFirstLaunch = false;
             }
 
             txtBxEnterName.Hint = AppResources.EnterName_Name_Hint;
 
-
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
                 object obj = null;
+            
                 if (this.State.TryGetValue("txtBxEnterName", out obj))
                 {
                     txtBxEnterName.Text = (string)obj;
@@ -282,6 +287,7 @@ namespace windows_client
                 else
                 {
                     _avatar = MiscDBUtil.getThumbNailForMsisdn(HikeConstants.MY_PROFILE_PIC);
+                
                     if (_avatar != null)
                     {
                         try

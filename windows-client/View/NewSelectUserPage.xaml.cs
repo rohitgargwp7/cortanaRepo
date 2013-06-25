@@ -206,10 +206,12 @@ namespace windows_client.View
                 {
                     if (filteredJumpList == null)
                         MakeFilteredJumpList();
+
                     contactsListBox.ItemsSource = filteredJumpList;
                 }
                 else
                     contactsListBox.ItemsSource = jumpList;
+
                 shellProgress.IsVisible = false;
             };
             initPage();

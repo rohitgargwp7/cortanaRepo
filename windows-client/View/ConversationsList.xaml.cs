@@ -1114,16 +1114,20 @@ namespace windows_client.View
             else if (HikePubSub.REMOVE_FRIENDS == type)
             {
                 string msisdn;
+                
                 if (obj != null)
                 {
                     msisdn = (string)obj;
                     ContactInfo c = null;
+                
                     if (!App.ViewModel.ContactsCache.TryGetValue(msisdn, out c))
                     {
                         ConversationListObject convObj = null;
+                    
                         if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                         {
                             convObj = App.ViewModel.ConvMap[msisdn];
+                        
                             if (convObj != null && convObj.IsOnhike && !string.IsNullOrEmpty(convObj.ContactName))
                             {
                                 c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
@@ -1133,6 +1137,7 @@ namespace windows_client.View
                         else
                         {
                             c = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                            
                             if (c != null)
                             {
                                 //TODO : Use image caching
@@ -1140,6 +1145,7 @@ namespace windows_client.View
                             }
                         }
                     }
+
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (c != null)
@@ -1147,6 +1153,7 @@ namespace windows_client.View
                             c.IsUsedAtMiscPlaces = true;
                             hikeContactList.Add(c);
                         }
+
                         if (hikeContactList.Count > 0)
                         {
                             emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;

@@ -53,6 +53,7 @@ namespace windows_client.utils
 
             string userName;
             BitmapImage userProfileThumbnail;
+
             if (App.MSISDN == status.Msisdn)
             {
                 userName = AppResources.Me_Txt;
@@ -61,6 +62,7 @@ namespace windows_client.utils
             else
             {
                 ConversationListObject co = Utils.GetConvlistObj(status.Msisdn);
+                
                 if (co != null)
                 {
                     userName = co.NameToShow;
@@ -69,21 +71,27 @@ namespace windows_client.utils
                 else
                 {
                     ContactInfo cn = null;
+            
                     if (App.ViewModel.ContactsCache.ContainsKey(status.Msisdn))
                         cn = App.ViewModel.ContactsCache[status.Msisdn];
                     else
                     {
                         cn = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
+                        
                         if (cn == null)
                             cn = new ContactInfo(status.Msisdn, null, true);
+                        
                         cn.FriendStatus = FriendsTableUtils.FriendStatusEnum.FRIENDS;
                         App.ViewModel.ContactsCache[status.Msisdn] = cn;
                     }
+
                     userName = (cn != null && string.IsNullOrWhiteSpace(cn.Name)) ? cn.Name : status.Msisdn;
                     userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(status.Msisdn);
                 }
             }
+
             StatusUpdateBox statusUpdateBox = null;
+            
             switch (status.Status_Type)
             {
                 case StatusMessage.StatusType.PROFILE_PIC_UPDATE:
@@ -95,15 +103,16 @@ namespace windows_client.utils
                     if (enlargePic_Tap != null)
                         (statusUpdateBox as ImageStatusUpdate).statusImage.Tap += enlargePic_Tap;
                     break;
+            
                 case StatusMessage.StatusType.IS_NOW_FRIEND:
                 case StatusMessage.StatusType.TEXT_UPDATE:
                     statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status, isShowOnTimeline, statusBubbleImageTap);
                     break;
             }
+
             if (statusBoxTap != null)
-            {
                 statusUpdateBox.Tap += statusBoxTap;
-            }
+            
             return statusUpdateBox;
         }
 
