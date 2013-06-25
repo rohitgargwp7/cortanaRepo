@@ -502,6 +502,7 @@
     <Content Include="View\images\doggy_i_icon.png" />
     <Content Include="View\images\doggy_overlay.png" />
     <Content Include="View\images\download_failed_bubble.png" />
+    <Content Include="View\images\emoticon_back_key.png" />
     <Content Include="View\images\empty_screen_logo_black.png" />
     <Content Include="View\images\empty_screen_logo_white.png" />
     <Content Include="View\images\empty_screen_tip_black.png" />
