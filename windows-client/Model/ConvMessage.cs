@@ -475,9 +475,9 @@ namespace windows_client.Model
             get
             {
                 if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                {
                     return string.IsNullOrEmpty(_fileAttachment.FileName) ? "contact" : _fileAttachment.FileName;
-                }
+                else if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                    return string.IsNullOrEmpty(_fileAttachment.FileName) ? _message : _fileAttachment.FileName;
                 else
                     return _message;
             }
@@ -1263,16 +1263,22 @@ namespace windows_client.Model
                         byte[] base64Decoded = null;
                         if (thumbnail != null)
                             base64Decoded = System.Convert.FromBase64String(thumbnail.ToString());
-                        this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
-                           contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                        
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
+                            this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString() + "\n" + fileObject[HikeConstants.LOCATION_ADDRESS].ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
+                            contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
                             JObject locationFile = new JObject();
                             locationFile[HikeConstants.LATITUDE] = fileObject[HikeConstants.LATITUDE];
                             locationFile[HikeConstants.LONGITUDE] = fileObject[HikeConstants.LONGITUDE];
                             locationFile[HikeConstants.ZOOM_LEVEL] = fileObject[HikeConstants.ZOOM_LEVEL];
                             locationFile[HikeConstants.LOCATION_ADDRESS] = fileObject[HikeConstants.LOCATION_ADDRESS];
                             this.MetaDataString = locationFile.ToString(Newtonsoft.Json.Formatting.None);
+                        }
+                        else
+                        {
+                            this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
+                           contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
                         }
 
                         if (contentType.ToString().Contains(HikeConstants.CONTACT) || contentType.ToString().Contains(HikeConstants.AUDIO))

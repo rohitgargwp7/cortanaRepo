@@ -304,7 +304,7 @@ namespace windows_client.utils
             req.ContentType = convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE) ||
                 convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO) ? "" : convMessage.FileAttachment.ContentType;
             req.Headers["Connection"] = "Keep-Alive";
-            req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
+            req.Headers["Content-Name"] = convMessage.FileAttachment.FileName.Replace("\n","_");
 
             req.Headers["X-Thumbnail-Required"] = "0";
 

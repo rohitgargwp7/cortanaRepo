@@ -4007,8 +4007,8 @@ namespace windows_client.View
                 byte[] imageThumbnail = null;
                 JObject locationJSON = (JObject)locationInfo[0];
                 imageThumbnail = (byte[])locationInfo[1];
-
-                string fileName = "Location";
+                var fileData = locationJSON[HikeConstants.FILES_DATA][0];
+                string fileName = (fileData[HikeConstants.FILE_NAME].ToString() + fileData[HikeConstants.LOCATION_ADDRESS].ToString()).Trim(new char[] { '\n', ' ' });
 
                 string locationJSONString = locationJSON.ToString();
 
@@ -5470,6 +5470,11 @@ namespace windows_client.View
             get;
             set;
         }
+        public DataTemplate DtSentBubbleLocation
+        {
+            get;
+            set;
+        }
         public DataTemplate DtSentBubbleAudioFile
         {
             get;
@@ -5516,6 +5521,8 @@ namespace windows_client.View
                             return DtSentBubbleContact;
                         else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
                             return DtSentBubbleAudioFile;
+                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                            return DtSentBubbleLocation;
                         else if (convMesssage.FileAttachment != null)
                             return DtSentBubbleFile;
                         else

@@ -15,44 +15,35 @@ using Microsoft.Phone.Maps.Services;
 using Windows.Devices.Geolocation;
 using System.Collections.Generic;
 using System.Windows.Shapes;
+using Newtonsoft.Json;
+using System.Linq;
+using windows_client.utils;
 
 namespace windows_client.View
 {
     public partial class ShareLocation : PhoneApplicationPage
     {
-        GeoCoordinate locationToBeShared;
         ApplicationBarIconButton shareIconButton = null;
-
+        ApplicationBarIconButton appBarLocateMeButton = null;
+        ApplicationBarIconButton appBarPlacesButton = null;
+        
         // Application bar menu items
         private ApplicationBarMenuItem AppBarColorModeMenuItem = null;
         private ApplicationBarMenuItem AppBarLandmarksMenuItem = null;
         private ApplicationBarMenuItem AppBarPedestrianFeaturesMenuItem = null;
-        private ApplicationBarMenuItem AppBarDirectionsMenuItem = null;
-        private ApplicationBarMenuItem AppBarAboutMenuItem = null;
 
         // Progress indicator shown in system tray
         private ProgressIndicator ProgressIndicator = null;
 
         // My current location
         private GeoCoordinate MyCoordinate = null;
+        private GeoCoordinate SelectedCoordinate = null;
 
         // List of coordinates representing search hits / destination of route
         private List<GeoCoordinate> MyCoordinates = new List<GeoCoordinate>();
 
-        // Geocode query
-        private GeocodeQuery MyGeocodeQuery = null;
-
-        // Route query
-        private RouteQuery MyRouteQuery = null;
-
         // Reverse geocode query
         private ReverseGeocodeQuery MyReverseGeocodeQuery = null;
-
-        // Route information
-        private Route MyRoute = null;
-
-        // Route overlay on map
-        private MapRoute MyMapRoute = null;
 
         /// <summary>
         /// True when this object instance has been just created, otherwise false
@@ -72,22 +63,19 @@ namespace windows_client.View
         /// <summary>
         /// True when route is being searched, otherwise false
         /// </summary>
-        private bool _isRouteSearch = false;
-
-        /// <summary>
-        /// True when directions are shown, otherwise false
-        /// </summary>
-        private bool _isDirectionsShown = false;
-
-        /// <summary>
-        /// Travel mode used when calculating route
-        /// </summary>
-        private TravelMode _travelMode = TravelMode.Driving;
+        private bool _isPlacesSearch = false;
 
         /// <summary>
         /// Accuracy of my current location in meters;
         /// </summary>
         private double _accuracy = 0.0;
+
+        private string nokiaPlacesUrl = "http://demo.places.nlp.nokia.com/places/v1/discover/explore";
+        private string nokiaPlaceUrl = "http://demo.places.nlp.nokia.com/places/v1/places/";
+        private string nokiaPlacesAppID = "KyG8YRrgO09I7bm9jXwd";
+        private string nokiaPlacesAppCode = "Uhjk-Gny7_A-ISaJb3DMKQ";
+        private List<Place> Places;
+        Place SelectedPlace;
 
         private void BuildApplicationBar()
         {
@@ -100,19 +88,16 @@ namespace windows_client.View
             ApplicationBar.IsMenuEnabled = true;
 
             // Create new buttons with the localized strings from AppResources.
-            ApplicationBarIconButton appBarSearchButton = new ApplicationBarIconButton(new Uri("/Assets/appbar.feature.search.rest.png", UriKind.Relative));
-            appBarSearchButton.Text = "Search";
-            appBarSearchButton.Click += new EventHandler(Search_Click);
-            ApplicationBar.Buttons.Add(appBarSearchButton);
+            appBarPlacesButton = new ApplicationBarIconButton(new Uri("/Assets/appbar.show.route.png", UriKind.Relative));
+            appBarPlacesButton.Text = "places";
+            appBarPlacesButton.Click += new EventHandler(Places_Click);
+            appBarPlacesButton.IsEnabled = false;
+            ApplicationBar.Buttons.Add(appBarPlacesButton);
 
-            ApplicationBarIconButton appBarRouteButton = new ApplicationBarIconButton(new Uri("/Assets/appbar.show.route.png", UriKind.Relative));
-            appBarRouteButton.Text = "route";
-            appBarRouteButton.Click += new EventHandler(Route_Click);
-            ApplicationBar.Buttons.Add(appBarRouteButton);
-
-            ApplicationBarIconButton appBarLocateMeButton = new ApplicationBarIconButton(new Uri("/Assets/appbar.locate.me.png", UriKind.Relative));
+            appBarLocateMeButton = new ApplicationBarIconButton(new Uri("/Assets/appbar.locate.me.png", UriKind.Relative));
             appBarLocateMeButton.Text = "My location";
             appBarLocateMeButton.Click += new EventHandler(LocateMe_Click);
+            appBarLocateMeButton.IsEnabled = false;
             ApplicationBar.Buttons.Add(appBarLocateMeButton);
 
             shareIconButton = new ApplicationBarIconButton();
@@ -134,49 +119,67 @@ namespace windows_client.View
             AppBarPedestrianFeaturesMenuItem = new ApplicationBarMenuItem("PedestrianFeaturesOnMenuItemText");
             AppBarPedestrianFeaturesMenuItem.Click += new EventHandler(PedestrianFeatures_Click);
             ApplicationBar.MenuItems.Add(AppBarPedestrianFeaturesMenuItem);
-
-            AppBarDirectionsMenuItem = new ApplicationBarMenuItem("DirectionsOnMenuItemText");
-            AppBarDirectionsMenuItem.Click += new EventHandler(Directions_Click);
-            AppBarDirectionsMenuItem.IsEnabled = false;
-            ApplicationBar.MenuItems.Add(AppBarDirectionsMenuItem);
         }
 
-        private void Search_Click(object sender, EventArgs e)
+        private void Places_Click(object sender, EventArgs e)
         {
-            HideDirections();
-            _isRouteSearch = false;
-            SearchTextBox.SelectAll();
-            SearchTextBox.Visibility = Visibility.Visible;
-            SearchTextBox.Focus();
-        }
-
-        private void Route_Click(object sender, EventArgs e)
-        {
-            HideDirections();
-
-            if (!_isLocationAllowed)
+            if (PlacesList.Visibility == Visibility.Collapsed)
             {
-                MessageBoxResult result = MessageBox.Show("NO Location allowed","ALLOW",
-                                                          MessageBoxButton.OKCancel);
-
-                if (result == MessageBoxResult.OK)
-                {
-                    _isLocationAllowed = true;
-                    //SaveSettings();
-                    GetCurrentCoordinate();
-                }
-            }
-            else if (MyCoordinate == null)
-            {
-                MessageBox.Show("No Current Location", "Error", MessageBoxButton.OK);
+                string url = string.Format("{0}?at={1},{2}&app_id={3}&app_code={4}&tf=plain&pretty=true", nokiaPlacesUrl, SelectedCoordinate.Latitude, SelectedCoordinate.Longitude, nokiaPlacesAppID, nokiaPlacesAppCode);
+                AccountUtils.createGetRequest(url, new AccountUtils.postResponseFunction(PlacesResult_Callback), false);
+                PlacesList.Visibility = Visibility.Visible;
+                stackPanelDetail.Visibility = Visibility.Collapsed;
+                ModePanel.Visibility = Visibility.Collapsed;
+                PitchSlider.Visibility = Visibility.Collapsed;
+                HeadingSlider.Visibility = Visibility.Collapsed;
             }
             else
             {
-                _isRouteSearch = true;
-                SearchTextBox.SelectAll();
-                SearchTextBox.Visibility = Visibility.Visible;
-                SearchTextBox.Focus();
+                PlacesList.Visibility = Visibility.Collapsed;
+                ModePanel.Visibility = Visibility.Visible;
+                PitchSlider.Visibility = Visibility.Visible;
+                HeadingSlider.Visibility = Visibility.Visible;
             }
+        }
+
+        public void PlacesResult_Callback(JObject obj)
+        {
+            Places = this.ParsePlaces(obj.ToString());
+            Deployment.Current.Dispatcher.BeginInvoke(new Action(delegate
+                {
+                    DrawMapMarkers();
+                    PlacesList.ItemsSource = Places;
+                }));
+        }
+
+        private List<Place> ParsePlaces(string json)
+        {
+            List<Place> places = new List<Place>();
+            if (json == string.Empty)
+                return places;
+
+            JToken jToken = JObject.Parse(json)["results"]["items"];
+            if (jToken == null)
+                return places;
+
+            var jlList = jToken.Children();
+            foreach (JToken token in jlList)
+            {
+                Place place = JsonConvert.DeserializeObject<Place>(token.ToString());
+
+                if (place.type == "urn:nlp-types:place")
+                {
+                    var jTokenListPosition = token["position"];
+                    GeoCoordinate position = new GeoCoordinate();
+                    position.Latitude = double.Parse(jTokenListPosition.First.ToString());
+                    position.Longitude = double.Parse(jTokenListPosition.Last.ToString());
+                    place.position = position;
+                    MyCoordinates.Add(position);
+                    places.Add(place);
+                }
+            }
+
+            return places;
         }
 
         private void LocateMe_Click(object sender, EventArgs e)
@@ -198,34 +201,6 @@ namespace windows_client.View
                     GetCurrentCoordinate();
                 }
             }
-        }
-
-        private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                if (SearchTextBox.Text.Length > 0)
-                {
-                    // New query - Clear the map of markers and routes
-                    if (MyMapRoute != null)
-                    {
-                        MyMap.RemoveRoute(MyMapRoute);
-                    }
-                    MyCoordinates.Clear();
-                    DrawMapMarkers();
-
-                    HideDirections();
-                    AppBarDirectionsMenuItem.IsEnabled = false;
-
-                    SearchForTerm(SearchTextBox.Text);
-                    this.Focus();
-                }
-            }
-        }
-
-        private void SearchTextBox_LostFocus(object sender, EventArgs e)
-        {
-            SearchTextBox.Visibility = Visibility.Collapsed;
         }
 
         private void ColorMode_Click(object sender, EventArgs e)
@@ -266,22 +241,6 @@ namespace windows_client.View
             {
                 AppBarPedestrianFeaturesMenuItem.Text = "pedes on";
             }
-        }
-
-        private void Directions_Click(object sender, EventArgs e)
-        {
-            _isDirectionsShown = !_isDirectionsShown;
-            if (_isDirectionsShown)
-            {
-                // Center map on the starting point (phone location) and zoom quite close
-                MyMap.SetView(MyCoordinate, 16, MapAnimationKind.Parabolic);
-                ShowDirections();
-            }
-            else
-            {
-                HideDirections();
-            }
-            DrawMapMarkers();
         }
 
         private void PitchValueChanged(object sender, EventArgs e)
@@ -345,176 +304,8 @@ namespace windows_client.View
             }
         }
 
-        private void TravelModeButton_Click(object sender, EventArgs e)
-        {
-            // Clear the map before before making the query
-            if (MyMapRoute != null)
-            {
-                MyMap.RemoveRoute(MyMapRoute);
-            }
-            MyMap.Layers.Clear();
-
-            if (sender == DriveButton)
-            {
-                _travelMode = TravelMode.Driving;
-            }
-            else if (sender == WalkButton)
-            {
-                _travelMode = TravelMode.Walking;
-            }
-            DriveButton.IsEnabled = !DriveButton.IsEnabled;
-            WalkButton.IsEnabled = !WalkButton.IsEnabled;
-
-            // Route from current location to first search result
-            List<GeoCoordinate> routeCoordinates = new List<GeoCoordinate>();
-            routeCoordinates.Add(MyCoordinate);
-            routeCoordinates.Add(MyCoordinates[0]);
-            CalculateRoute(routeCoordinates);
-        }
-
-        private void RouteManeuverSelected(object sender, EventArgs e)
-        {
-            object selectedObject = RouteLLS.SelectedItem;
-            int selectedIndex = RouteLLS.ItemsSource.IndexOf(selectedObject);
-            MyMap.SetView(MyRoute.Legs[0].Maneuvers[selectedIndex].StartGeoCoordinate, 16, MapAnimationKind.Parabolic);
-        }
-
         private void ZoomLevelChanged(object sender, EventArgs e)
         {
-            DrawMapMarkers();
-        }
-
-        private void ShowDirections()
-        {
-            _isDirectionsShown = true;
-            AppBarDirectionsMenuItem.Text = "directions off";
-            DirectionsTitleRowDefinition.Height = GridLength.Auto;
-            DirectionsRowDefinition.Height = new GridLength(2, GridUnitType.Star);
-            ModePanel.Visibility = Visibility.Collapsed;
-            HeadingSlider.Visibility = Visibility.Collapsed;
-            PitchSlider.Visibility = Visibility.Collapsed;
-        }
-
-        private void HideDirections()
-        {
-            _isDirectionsShown = false;
-            AppBarDirectionsMenuItem.Text = "directions on";
-            DirectionsTitleRowDefinition.Height = new GridLength(0);
-            DirectionsRowDefinition.Height = new GridLength(0);
-            ModePanel.Visibility = Visibility.Visible;
-            HeadingSlider.Visibility = Visibility.Visible;
-            PitchSlider.Visibility = Visibility.Visible;
-        }
-
-        private void SearchForTerm(String searchTerm)
-        {
-            ShowProgressIndicator("searching");
-            MyGeocodeQuery = new GeocodeQuery();
-            MyGeocodeQuery.SearchTerm = searchTerm;
-            MyGeocodeQuery.GeoCoordinate = MyCoordinate == null ? new GeoCoordinate(0, 0) : MyCoordinate;
-            MyGeocodeQuery.QueryCompleted += GeocodeQuery_QueryCompleted;
-            MyGeocodeQuery.QueryAsync();
-        }
-
-        private void GeocodeQuery_QueryCompleted(object sender, QueryCompletedEventArgs<IList<MapLocation>> e)
-        {
-            HideProgressIndicator();
-            if (e.Error == null)
-            {
-                if (e.Result.Count > 0)
-                {
-                    if (_isRouteSearch) // Query is made to locate the destination of a route
-                    {
-                        // Only store the destination for drawing the map markers
-                        MyCoordinates.Add(e.Result[0].GeoCoordinate);
-
-                        // Route from current location to first search result
-                        List<GeoCoordinate> routeCoordinates = new List<GeoCoordinate>();
-                        routeCoordinates.Add(MyCoordinate);
-                        routeCoordinates.Add(e.Result[0].GeoCoordinate);
-                        CalculateRoute(routeCoordinates);
-                    }
-                    else // Query is made to search the map for a keyword
-                    {
-                        // Add all results to MyCoordinates for drawing the map markers.
-                        for (int i = 0; i < e.Result.Count; i++)
-                        {
-                            MyCoordinates.Add(e.Result[i].GeoCoordinate);
-                        }
-
-                        // Center on the first result.
-                        MyMap.SetView(e.Result[0].GeoCoordinate, 10, MapAnimationKind.Parabolic);
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("No match found", "", MessageBoxButton.OK);
-                }
-
-                MyGeocodeQuery.Dispose();
-            }
-            DrawMapMarkers();
-        }
-
-        private void CalculateRoute(List<GeoCoordinate> route)
-        {
-            ShowProgressIndicator("Calculating Route");
-            MyRouteQuery = new RouteQuery();
-            MyRouteQuery.TravelMode = _travelMode;
-            MyRouteQuery.Waypoints = route;
-            MyRouteQuery.QueryCompleted += RouteQuery_QueryCompleted;
-            MyRouteQuery.QueryAsync();
-        }
-
-        private void RouteQuery_QueryCompleted(object sender, QueryCompletedEventArgs<Route> e)
-        {
-            HideProgressIndicator();
-            if (e.Error == null)
-            {
-                MyRoute = e.Result;
-                MyMapRoute = new MapRoute(MyRoute);
-                MyMap.AddRoute(MyMapRoute);
-
-                // Update route information and directions
-                DestinationText.Text = SearchTextBox.Text;
-                double distanceInKm = (double)MyRoute.LengthInMeters / 1000;
-                DestinationDetailsText.Text = distanceInKm.ToString("0.0") + " km, "
-                                              + MyRoute.EstimatedDuration.Hours + " hrs "
-                                              + MyRoute.EstimatedDuration.Minutes + " mins.";
-
-                List<string> routeInstructions = new List<string>();
-                foreach (RouteLeg leg in MyRoute.Legs)
-                {
-                    for (int i = 0; i < leg.Maneuvers.Count; i++)
-                    {
-                        RouteManeuver maneuver = leg.Maneuvers[i];
-                        string instructionText = maneuver.InstructionText;
-                        distanceInKm = 0;
-
-                        if (i > 0)
-                        {
-                            distanceInKm = (double)leg.Maneuvers[i - 1].LengthInMeters / 1000;
-                            instructionText += " (" + distanceInKm.ToString("0.0") + " km)";
-                        }
-                        routeInstructions.Add(instructionText);
-                    }
-                }
-                RouteLLS.ItemsSource = routeInstructions;
-
-                AppBarDirectionsMenuItem.IsEnabled = true;
-
-                if (_isDirectionsShown)
-                {
-                    // Center map on the starting point (phone location) and zoom quite close
-                    MyMap.SetView(MyCoordinate, 16, MapAnimationKind.Parabolic);
-                }
-                else
-                {
-                    // Center map and zoom so that whole route is visible
-                    MyMap.SetView(MyRoute.Legs[0].BoundingBox, MapAnimationKind.Parabolic);
-                }
-                MyRouteQuery.Dispose();
-            }
             DrawMapMarkers();
         }
 
@@ -522,39 +313,33 @@ namespace windows_client.View
         {
             Polygon p = (Polygon)sender;
             GeoCoordinate geoCoordinate = (GeoCoordinate)p.Tag;
-            if (MyReverseGeocodeQuery == null || !MyReverseGeocodeQuery.IsBusy)
+            Place place = Places.Where(pl => pl.position == geoCoordinate).FirstOrDefault();
+
+            if (place != null)
             {
-                MyReverseGeocodeQuery = new ReverseGeocodeQuery();
-                MyReverseGeocodeQuery.GeoCoordinate = new GeoCoordinate(geoCoordinate.Latitude, geoCoordinate.Longitude);
-                MyReverseGeocodeQuery.QueryCompleted += ReverseGeocodeQuery_QueryCompleted;
-                MyReverseGeocodeQuery.QueryAsync();
+                this.DataContext = place;
+                SelectedPlace = place;
+                SelectedCoordinate = place.position;
+                PlacesList.Visibility = Visibility.Collapsed;
+                stackPanelDetail.Visibility = Visibility.Visible;
+                image.Source = null;
+                string url = string.Format("{0}{1}?app_id={2}&app_code={3}", nokiaPlaceUrl, place.id, nokiaPlacesAppID, nokiaPlacesAppCode);
+                AccountUtils.createGetRequest(url, new AccountUtils.postResponseFunction(PlaceResult_Callback), false);
+                DrawMapMarkers();
             }
         }
 
-        private void ReverseGeocodeQuery_QueryCompleted(object sender, QueryCompletedEventArgs<IList<MapLocation>> e)
+        public void PlaceResult_Callback(JObject obj)
         {
-            if (e.Error == null)
-            {
-                if (e.Result.Count > 0)
+            Deployment.Current.Dispatcher.BeginInvoke(new Action(delegate
                 {
-                    MapAddress address = e.Result[0].Information.Address;
-                    String msgBoxText = "";
-                    if (address.Street.Length > 0)
+                    try
                     {
-                        msgBoxText += "\n" + address.Street;
-                        if (address.HouseNumber.Length > 0) msgBoxText += " " + address.HouseNumber;
+                        string firstImageUrl = JObject.Parse(obj.ToString())["media"]["images"]["items"].First["src"].ToString();
+                        image.Source = new BitmapImage(new Uri(firstImageUrl, UriKind.Absolute));
                     }
-                    if (address.PostalCode.Length > 0) msgBoxText += "\n" + address.PostalCode;
-                    if (address.City.Length > 0) msgBoxText += "\n" + address.City;
-                    if (address.Country.Length > 0) msgBoxText += "\n" + address.Country;
-                    MessageBox.Show(msgBoxText, "", MessageBoxButton.OK);
-                }
-                else
-                {
-                    MessageBox.Show("No info", "", MessageBoxButton.OK);
-                }
-                MyReverseGeocodeQuery.Dispose();
-            }
+                    catch { }
+                }));
         }
 
         private void DrawMapMarkers()
@@ -566,23 +351,20 @@ namespace windows_client.View
             if (MyCoordinate != null)
             {
                 DrawAccuracyRadius(mapLayer);
-                DrawMapMarker(MyCoordinate, Colors.Red, mapLayer);
+                DrawMapMarker(MyCoordinate, Colors.Green, mapLayer);
+            }
+
+            if (SelectedCoordinate != null && SelectedCoordinate != MyCoordinate)
+            {
+                DrawAccuracyRadius(mapLayer);
+                DrawMapMarker(SelectedCoordinate, Colors.Red, mapLayer);
             }
 
             // Draw markers for location(s) / destination(s)
             for (int i = 0; i < MyCoordinates.Count; i++)
             {
-                DrawMapMarker(MyCoordinates[i], Colors.Blue, mapLayer);
-            }
-
-            // Draw markers for possible waypoints when directions are shown.
-            // Start and end points are already drawn with different colors.
-            if (_isDirectionsShown && MyRoute.LengthInMeters > 0)
-            {
-                for (int i = 1; i < MyRoute.Legs[0].Maneuvers.Count - 1; i++)
-                {
-                    DrawMapMarker(MyRoute.Legs[0].Maneuvers[i].StartGeoCoordinate, Colors.Purple, mapLayer);
-                }
+                if (MyCoordinates[i] != SelectedCoordinate && MyCoordinates[i] != MyCoordinate)
+                    DrawMapMarker(MyCoordinates[i], Colors.Blue, mapLayer);
             }
 
             MyMap.Layers.Add(mapLayer);
@@ -642,9 +424,11 @@ namespace windows_client.View
                 Dispatcher.BeginInvoke(() =>
                 {
                     MyCoordinate = new GeoCoordinate(currentPosition.Coordinate.Latitude, currentPosition.Coordinate.Longitude);
-                    locationToBeShared = MyCoordinate;
+                    SelectedCoordinate = MyCoordinate;
                     DrawMapMarkers();
                     MyMap.SetView(MyCoordinate, 10, MapAnimationKind.Parabolic);
+                    appBarLocateMeButton.IsEnabled = true;
+                    appBarPlacesButton.IsEnabled = true;
                     shareIconButton.IsEnabled = true;
                 });
             }
@@ -682,18 +466,40 @@ namespace windows_client.View
             BuildApplicationBar();
         }
 
-        private void shareBtn_Click(object sender, EventArgs e)
+        private void ReverseGeocodeQuery_QueryCompleted(object sender, QueryCompletedEventArgs<IList<MapLocation>> e)
         {
+            String msgBoxText = "";
+            if (e.Error == null)
+            {
+                if (e.Result.Count > 0)
+                {
+                    MapAddress address = e.Result[0].Information.Address;
+                    if (address.Street.Length > 0)
+                    {
+                        msgBoxText += "\n" + address.Street;
+                        if (address.HouseNumber.Length > 0) msgBoxText += " " + address.HouseNumber;
+                    }
+                    if (address.PostalCode.Length > 0)
+                        msgBoxText += "\n" + address.PostalCode;
+                    if (address.City.Length > 0)
+                        msgBoxText += "\n" + address.City;
+                    if (address.Country.Length > 0)
+                        msgBoxText += "\n" + address.Country;
+                }
+
+                MyReverseGeocodeQuery.Dispose();
+            }
+
             byte[] thumbnailBytes = captureThumbnail();
             JObject metadata = new JObject();
             JArray filesData = new JArray();
             JObject singleFileInfo = new JObject();
-            singleFileInfo[HikeConstants.FILE_NAME] = "Location";
+            singleFileInfo[HikeConstants.FILE_NAME] = (e.Error == null && e.Result.Count > 0) ? e.Result[0].Information.Name + "\n" + e.Result[0].Information.Description : "Location";
             singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = "hikemap/location";
-            singleFileInfo[HikeConstants.LATITUDE] = locationToBeShared.Latitude;
-            singleFileInfo[HikeConstants.LONGITUDE] = locationToBeShared.Longitude;
+            singleFileInfo[HikeConstants.LATITUDE] = SelectedCoordinate.Latitude;
+            singleFileInfo[HikeConstants.LONGITUDE] = SelectedCoordinate.Longitude;
             singleFileInfo[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
-            singleFileInfo[HikeConstants.LOCATION_ADDRESS] = "";
+            singleFileInfo[HikeConstants.LOCATION_ADDRESS] = (e.Error == null && e.Result.Count > 0) ? msgBoxText : "";
 
             filesData.Add(singleFileInfo.ToObject<JToken>());
 
@@ -707,16 +513,55 @@ namespace windows_client.View
             NavigationService.GoBack();
         }
 
+        private void shareBtn_Click(object sender, EventArgs e)
+        {
+            MyCoordinates.Clear();
+            DrawMapMarkers();
+
+            if (SelectedPlace == null)
+            {
+                if (MyReverseGeocodeQuery == null || !MyReverseGeocodeQuery.IsBusy)
+                {
+                    MyReverseGeocodeQuery = new ReverseGeocodeQuery();
+                    MyReverseGeocodeQuery.GeoCoordinate = new GeoCoordinate(SelectedCoordinate.Latitude, SelectedCoordinate.Longitude);
+                    MyReverseGeocodeQuery.QueryCompleted += ReverseGeocodeQuery_QueryCompleted;
+                    MyReverseGeocodeQuery.QueryAsync();
+                }
+            }
+            else
+            {
+                byte[] thumbnailBytes = captureThumbnail();
+                JObject metadata = new JObject();
+                JArray filesData = new JArray();
+                JObject singleFileInfo = new JObject();
+                singleFileInfo[HikeConstants.FILE_NAME] = SelectedPlace.title;
+                singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = "hikemap/location";
+                singleFileInfo[HikeConstants.LATITUDE] = SelectedCoordinate.Latitude;
+                singleFileInfo[HikeConstants.LONGITUDE] = SelectedCoordinate.Longitude;
+                singleFileInfo[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
+                singleFileInfo[HikeConstants.LOCATION_ADDRESS] = SelectedPlace.vicinity;
+
+                filesData.Add(singleFileInfo.ToObject<JToken>());
+
+                metadata[HikeConstants.FILES_DATA] = filesData;
+
+                object[] locationDetails = new object[2];
+                locationDetails[0] = metadata;
+                locationDetails[1] = thumbnailBytes;
+                PhoneApplicationService.Current.State[HikeConstants.SHARED_LOCATION] = locationDetails;
+                MyMap = null;
+                NavigationService.GoBack();
+            }
+        }
 
         private void map_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             Point p = e.GetPosition(this.MyMap);
             GeoCoordinate geo = new GeoCoordinate();
             geo = MyMap.ConvertViewportPointToGeoCoordinate(p);
-            //map.ZoomLevel = 17;
             MyMap.Center = geo;
-            locationToBeShared = geo;
-            MyCoordinate = geo;
+            SelectedCoordinate = geo;
+            SelectedPlace = null;
             DrawMapMarkers();
         }
 
@@ -733,6 +578,90 @@ namespace windows_client.View
             return thumbnailBytes;
         }
 
-        
+        private void PlacesList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            var place = (sender as LongListSelector).SelectedItem as Place;
+
+            if (place != null)
+            {
+                PlacesList.Visibility = Visibility.Collapsed;
+                this.DataContext = place;
+                SelectedPlace = place;
+                SelectedCoordinate = place.position;
+                stackPanelDetail.Visibility = Visibility.Visible;
+                image.Source = null;
+                string url = string.Format("{0}{1}?app_id={2}&app_code={3}", nokiaPlaceUrl, place.id, nokiaPlacesAppID, nokiaPlacesAppCode);
+                AccountUtils.createGetRequest(url, new AccountUtils.postResponseFunction(PlaceResult_Callback), false);
+                DrawMapMarkers();
+                (sender as LongListSelector).SelectedItem = null;
+            }
+        }
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            if(stackPanelDetail.Visibility == Visibility.Visible)
+            {
+                stackPanelDetail.Visibility = Visibility.Collapsed;
+                PlacesList.Visibility = Visibility.Visible;
+                e.Cancel = true;
+            }
+            else if (PlacesList.Visibility == Visibility.Visible)
+            {
+                PlacesList.Visibility = Visibility.Collapsed;
+                e.Cancel = true;
+            }
+
+            base.OnBackKeyPress(e);
+        }
+    }
+
+    [JsonObject(MemberSerialization.OptIn)]
+    public class Place
+    {
+        [JsonProperty]
+        public int distance { get; set; }
+
+        [JsonProperty]
+        public string title { get; set; }
+
+        [JsonProperty]
+        public double averageRating { get; set; }
+
+        [JsonProperty]
+        public string icon { get; set; }
+
+        [JsonProperty]
+        public string vicinity { get; set; }
+
+        [JsonProperty]
+        public string type { get; set; }
+
+        [JsonProperty]
+        public string href { get; set; }
+
+        [JsonProperty]
+        public string id { get; set; }
+
+        public GeoCoordinate position { get; set; }
+
+        [JsonProperty]
+        public Category category { get; set; }
+
+    }
+
+    [JsonObject(MemberSerialization.OptIn)]
+    public class Category
+    {
+        [JsonProperty]
+        public string id { get; set; }
+
+        [JsonProperty]
+        public string title { get; set; }
+
+        [JsonProperty]
+        public string href { get; set; }
+
+        [JsonProperty]
+        public string type { get; set; }
     }
 }
