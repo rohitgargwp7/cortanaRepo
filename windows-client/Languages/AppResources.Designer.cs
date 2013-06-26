@@ -1617,15 +1617,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to grp.
-        /// </summary>
-        public static string Group_ShortName {
-            get {
-                return ResourceManager.GetString("Group_ShortName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Group Chat with {0}.
         /// </summary>
         public static string GroupChatWith_Txt {

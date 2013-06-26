@@ -112,9 +112,25 @@ namespace windows_client.View
 
         public class Group<T> : List<T>
         {
-            public Group(string name, List<T> items)
+            bool _isGroup;
+            public Visibility TextVisibility
+            {
+                get
+                {
+                    return !_isGroup ? Visibility.Visible : Visibility.Collapsed;
+                }
+            }
+            public Visibility GrpImageVisibility
+            {
+                get
+                {
+                    return _isGroup ? Visibility.Visible : Visibility.Collapsed;
+                }
+            }
+            public Group(string name, bool isGroup, List<T> items)
             {
                 this.Title = name;
+                _isGroup = isGroup;
             }
 
             public string Title
@@ -484,7 +500,7 @@ namespace windows_client.View
             if (_showExistingGroups)
             {
                 glist = new List<Group<ContactInfo>>(28);
-                Group<ContactInfo> g = new Group<ContactInfo>(AppResources.Group_ShortName, new List<ContactInfo>(1));
+                Group<ContactInfo> g = new Group<ContactInfo>(string.Empty, true, new List<ContactInfo>(1));
                 glist.Add(g);
             }
             else
@@ -492,7 +508,7 @@ namespace windows_client.View
 
             foreach (char c in Groups)
             {
-                Group<ContactInfo> g = new Group<ContactInfo>(c.ToString(), new List<ContactInfo>(1));
+                Group<ContactInfo> g = new Group<ContactInfo>(c.ToString(), false, new List<ContactInfo>(1));
                 glist.Add(g);
             }
             return glist;

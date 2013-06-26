@@ -29,12 +29,15 @@
                 <Setter.Value>
                     <DataTemplate>
                         <Border Background="{Binding Converter={StaticResource BackgroundConverter}}"
-                                        Width="113" Height="113" Margin="6" >
-                            <TextBlock Text="{Binding Title}"
+                                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="6 6 6 6">
+                            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+                                <TextBlock Text="{Binding Title}"
                                                FontFamily="{StaticResource PhoneFontFamilySemiBold}"
                                                FontSize="48" Padding="6"
                                                Foreground="{Binding Converter={StaticResource ForegroundConverter}}"
-                                               VerticalAlignment="Center"/>
+                                               VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding TextVisibility}"/>
+                                <Image Source="/View/images/icon_group_chat.png" Height="50" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding GrpImageVisibility}"></Image>
+                            </Grid>
                         </Border>
                     </DataTemplate>
                 </Setter.Value>
@@ -44,11 +47,14 @@
         <DataTemplate x:Key="GroupHeaderTemplate">
             <Border Background="Transparent" Margin="0,5,0,10">
                 <Border Background="{StaticResource PhoneAccentBrush}" 
-                        MinWidth="55" Height="55" HorizontalAlignment="Left">
-                    <TextBlock Text="{Binding Title}" 
+                        Width="55" Height="55" HorizontalAlignment="Left"  Visibility="{Binding TxtVisibility}">
+                    <Grid>
+                        <TextBlock Text="{Binding Title}" 
                                 Foreground="White" 
                                 Style="{StaticResource PhoneTextLargeStyle}"
-                                VerticalAlignment="Center"/>
+                                VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding TextVisibility}"/>
+                        <Image Source="/View/images/icon_group_chat.png" Height="40" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding GrpImageVisibility}"></Image>
+                    </Grid>
                 </Border>
             </Border>
         </DataTemplate>
@@ -90,7 +96,7 @@
                         BorderThickness="0" Tap="Block_Tap"/>
             </Grid>
         </DataTemplate>
-        
+
     </phone:PhoneApplicationPage.Resources>
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
