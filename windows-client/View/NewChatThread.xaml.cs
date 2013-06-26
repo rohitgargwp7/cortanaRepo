@@ -21,6 +21,7 @@ using System.IO;
 using System.IO.IsolatedStorage;
 using windows_client.Controls;
 using System.Text;
+using System.Linq;
 using System.Globalization;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.Media;
@@ -3035,6 +3036,8 @@ namespace windows_client.View
             convMessage.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_CONFIRMED;
             string msisdn = MessagesTableUtils.updateMsgStatus(mContactNumber, convMessage.MessageId, (int)ConvMessage.State.FORCE_SMS_SENT_CONFIRMED);
             ConversationTableUtils.updateLastMsgStatus(convMessage.MessageId, msisdn, (int)ConvMessage.State.FORCE_SMS_SENT_CONFIRMED);
+
+            SendForceSMS(convMessage);
         }
 
         #endregion
@@ -5376,6 +5379,61 @@ namespace windows_client.View
         private RecorderState _recorderState = RecorderState.NOTHING_RECORDED;
 
         #endregion
+
+        void SendForceSMS(ConvMessage message = null)
+        {
+            if (message != null) //single sms
+            {
+                JArray messageArr = new JArray();
+                JObject fmsg = new JObject();
+                fmsg.Add(HikeConstants.HIKE_MESSAGE, message.Message);
+                fmsg.Add(HikeConstants.MESSAGE_ID, message.MessageId);
+                messageArr.Add(fmsg);
+
+                JObject data = new JObject();
+                data.Add(HikeConstants.COUNT, 1);
+                data.Add(HikeConstants.MESSAGE_ID, message.MessageId);
+                data.Add(HikeConstants.FORCE_SMS_MESSAGE, messageArr);
+
+                JObject obj = new JObject();
+                obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.FORCE_SMS);
+                obj.Add(HikeConstants.TO, message.Msisdn);
+                obj.Add(HikeConstants.DATA, data);
+
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            }
+            else
+            {
+                var convMsgList = (from convMsg in ocMessages
+                             where convMsg.MessageStatus == ConvMessage.State.SENT_CONFIRMED
+                             select convMsg).ToList();
+
+                if (convMsgList.Count == 0)
+                    return;
+
+                JArray messageArr = new JArray();
+                JObject fmsg = new JObject();
+
+                foreach (var msg in convMsgList)
+                {
+                    fmsg.Add(HikeConstants.HIKE_MESSAGE, msg.Message);
+                    fmsg.Add(HikeConstants.MESSAGE_ID, msg.MessageId);
+                    messageArr.Add(fmsg);
+                }
+
+                JObject data = new JObject();
+                data.Add(HikeConstants.COUNT, convMsgList.Count);
+                data.Add(HikeConstants.MESSAGE_ID, convMsgList.Last().MessageId);
+                data.Add(HikeConstants.FORCE_SMS_MESSAGE, messageArr);
+                
+                JObject obj = new JObject();
+                obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.FORCE_SMS);
+                obj.Add(HikeConstants.TO, message.Msisdn);
+                obj.Add(HikeConstants.DATA, data);
+
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            }
+        }
 
         private void overlayRectangle_Tap_1(object sender, System.Windows.Input.GestureEventArgs e)
         {
