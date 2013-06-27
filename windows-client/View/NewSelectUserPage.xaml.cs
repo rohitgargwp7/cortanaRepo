@@ -20,7 +20,7 @@ using windows_client.Misc;
 using windows_client.Languages;
 using windows_client.Controls;
 using windows_client.ViewModel;
-
+using System.Linq;
 
 namespace windows_client.View
 {
@@ -414,7 +414,7 @@ namespace windows_client.View
                         listGroupChats.Add(convList);
                     }
                 }
-                listGroupChats.Sort(CompareConvListOnTime);
+                listGroupChats.Sort((g1, g2) => g2.TimeStamp.CompareTo(g1.TimeStamp));
                 foreach (ConversationListObject convList in listGroupChats)
                 {
                     ContactInfo cinfo = new ContactInfo();
@@ -476,11 +476,6 @@ namespace windows_client.View
                 glist[index].Add(c);
             }
             return glist;
-        }
-
-        private static int CompareConvListOnTime(ConversationListObject c1, ConversationListObject c2)
-        {
-            return c2.TimeStamp.CompareTo(c1.TimeStamp);
         }
 
         private bool msisdnAlreadyExists(string msisdn, List<GroupParticipant> activeExistingGroupMembers)
@@ -688,7 +683,7 @@ namespace windows_client.View
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, ev) =>
             {
-                glistFiltered = getFilteredContactsFromNameOrPhoneAsync(charsEntered, 0, maxCharGroups + 1);
+                glistFiltered = getFilteredContactsFromNameOrPhoneAsync(charsEntered);
             };
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (s, ev) =>
@@ -700,7 +695,7 @@ namespace windows_client.View
             };
         }
 
-        private List<Group<ContactInfo>> getFilteredContactsFromNameOrPhoneAsync(string charsEntered, int start, int end)
+        private List<Group<ContactInfo>> getFilteredContactsFromNameOrPhoneAsync(string charsEntered)
         {
             bool areCharsNumber = false;
             bool isPlus = false;
@@ -729,7 +724,7 @@ namespace windows_client.View
             else
                 listToIterate = jumpList;
             bool createNewFilteredList = true;
-            for (int i = start; i < end; i++)
+            for (int i = 0; i <= maxCharGroups; i++)
             {
                 int maxJ = listToIterate == null ? 0 : (listToIterate[i] == null ? 0 : listToIterate[i].Count);
                 for (int j = 0; j < maxJ; j++)
