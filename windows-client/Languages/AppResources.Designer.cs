@@ -3381,6 +3381,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} seems to be offline, tap to send as sms.
+        /// </summary>
+        public static string Send_All_As_SMS {
+            get {
+                return ResourceManager.GetString("Send_All_As_SMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to send as sms.
         /// </summary>
         public static string Send_As_Sms {

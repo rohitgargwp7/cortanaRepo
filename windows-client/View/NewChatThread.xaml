@@ -113,6 +113,21 @@
                                 </Grid>
                             </DataTemplate>
                         </view:ChatThreadTemplateSelector.DtInAppTip>
+                        <view:ChatThreadTemplateSelector.DtForceSMSNotification>
+                            <DataTemplate>
+                                <Border x:Name="border" BorderThickness="1" Background="Transparent" Margin="24,5,24,5" BorderBrush="#cdcdcd" HorizontalAlignment="Stretch" Tap="SendAllForceSMS_Tap">
+                                    <Grid HorizontalAlignment="Center" Margin="12 3">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image x:Name="NotificationImage" MaxHeight="20" VerticalAlignment="Center" HorizontalAlignment="Right" Source="{Binding NotificationImage}"></Image>
+                                        <TextBlock x:Name="UserName" Height="Auto"  Margin="10 0 0 0" Grid.Column="1" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
+                        Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </view:ChatThreadTemplateSelector.DtForceSMSNotification>
                         <view:ChatThreadTemplateSelector.DtNotificationBubble>
                             <DataTemplate x:Name="dtNotificationBubble">
                                 <Border x:Name="border" BorderThickness="1" Background="Transparent" Margin="24,5,24,5" BorderBrush="#cdcdcd" HorizontalAlignment="Stretch" >

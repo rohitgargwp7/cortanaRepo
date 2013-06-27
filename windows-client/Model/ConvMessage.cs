@@ -81,7 +81,8 @@ namespace windows_client.Model
             INTERNATIONAL_GROUP_USER,
             TYPING_NOTIFICATION,
             STATUS_UPDATE,
-            IN_APP_TIP
+            IN_APP_TIP,
+            FORCE_SMS_NOTIFICATION
         }
 
         public enum MessageType
@@ -100,7 +101,8 @@ namespace windows_client.Model
             GROUP_NAME_CHANGED,
             GROUP_PIC_CHANGED,
             DEFAULT,
-            UNKNOWN
+            UNKNOWN,
+            FORCE_SMS
         }
         public static ParticipantInfoState fromJSON(JObject obj)
         {

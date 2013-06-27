@@ -1819,4 +1819,7 @@ Get hike: http://get.hike.in</value>
     <value>Forward To</value>
     <comment>verb(length 12)</comment>
   </data>
+  <data name="Send_All_As_SMS" xml:space="preserve">
+    <value>{0} seems to be offline, tap to send as sms</value>
+  </data>
 </root>
