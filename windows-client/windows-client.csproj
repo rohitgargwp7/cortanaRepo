@@ -18,10 +18,10 @@
     </TargetFrameworkProfile>
     <TargetFrameworkIdentifier>WindowsPhone</TargetFrameworkIdentifier>
     <SilverlightApplication>true</SilverlightApplication>
-    <SupportedCultures>de-DE%3bfr%3bpt-BR%3bru%3bes</SupportedCultures>
+    <SupportedCultures>de-DE%3bfr%3bpt-BR%3bru%3bes%3bhi</SupportedCultures>
     <XapOutputs>true</XapOutputs>
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
-    <XapFilename>windows-client_$(Configuration)_$(Platform).xap</XapFilename>
+    <XapFilename>hike.xap</XapFilename>
     <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
     <SilverlightAppEntry>windows_client.App</SilverlightAppEntry>
     <ValidateXaml>true</ValidateXaml>
@@ -848,6 +848,7 @@
     <EmbeddedResource Include="Languages\AppResources.fr.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Languages\AppResources.hi.resx" />
     <EmbeddedResource Include="Languages\AppResources.pt-BR.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
