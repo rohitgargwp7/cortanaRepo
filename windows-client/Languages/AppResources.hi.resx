@@ -118,1702 +118,1680 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppBar_Next_Btn" xml:space="preserve">
-    <value>Next</value>
+    <value>अगला</value>
     <comment>AppBar Next Button</comment>
   </data>
   <data name="Cannot_Change_Img_Error_Txt" xml:space="preserve">
-    <value>Cannot change Profile Image. Try Later!!</value>
+    <value>आप प्रोफ़ाइल की तस्वीर  को नहीं बदल सकते हैं| बाद में कोशिश करें!</value>
     <comment>General text used in different files</comment>
   </data>
   <data name="Cannot_Select_Pic_Phone_Connected_to_PC" xml:space="preserve">
-    <value>You cannot select photo while phone is connected to computer.</value>
+    <value>जब फोन कंप्यूटर से जुड़ा हो तब आप तस्वीर का चयन नहीं कर सकते हैं !</value>
     <comment>General text used in different files</comment>
   </data>
   <data name="Connectivity_Issue" xml:space="preserve">
-    <value>Connectivity issue.</value>
+    <value>कनेक्टिविटी समस्या</value>
     <comment>Network issue msg (used in all pages)</comment>
   </data>
   <data name="Conversations_AddedYouToFav_Txt" xml:space="preserve">
-    <value>added you as friend. Would you like to do the same?</value>
+    <value>आप दोस्त में जुड़ गए, क्या आप भी ऐसा ही करना चाहेंगे?</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_DelAllChats_Txt" xml:space="preserve">
-    <value>Delete All Chats</value>
+    <value>सभी बातचीत हटाएँ</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_DelChat_Txt" xml:space="preserve">
-    <value>Delete Chat</value>
+    <value>बातचीत हटाएँ</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_Delete_Chats_Confirmation" xml:space="preserve">
-    <value>Are you sure about deleting all chats?</value>
+    <value>क्या आप वाकई सभी बातचीत हटाना चाहते हैं?</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_Delete_Chat_Confirmation" xml:space="preserve">
-    <value>Are you sure about deleting this chat?</value>
+    <value>क्या इस बातचीत को वाकई हटाना चाहते हैं?</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_EditProfile_Txt" xml:space="preserve">
-    <value>edit profile</value>
+    <value>प्रोफ़ाइल संशोधन</value>
     <comment>Edit profile text (xaml)</comment>
   </data>
   <data name="Conversations_FreeSms_Txt" xml:space="preserve">
-    <value>free SMS</value>
+    <value>मुफ्त एसएमएस</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Conversations_HikeContacts_Btn" xml:space="preserve">
-    <value>Hike Contacts</value>
+    <value>hike संपर्क</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_NewChat_AppBar_Btn" xml:space="preserve">
-    <value>new chat</value>
+    <value>नई बातचीत</value>
     <comment>AppBar Btn (cs)</comment>
   </data>
   <data name="Conversations_SayHI_Txt" xml:space="preserve">
-    <value>Say Hi to {0}!</value>
+    <value> नमस्ते {0}!</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Conversations_OnSMS_Txt" xml:space="preserve">
-    <value>Send {0} free sms.</value>
+    <value>{0}! को मुफ्त एसएमएस भेजें</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Conversations_Pending_NotNow_Btn" xml:space="preserve">
-    <value>Not Now</value>
+    <value>अभी नहीं !</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_Pending_Yes_Btn" xml:space="preserve">
-    <value>Confirm</value>
+    <value>पुष्टि करे</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_Pivot_Chats_Header_Txt" xml:space="preserve">
-    <value>chats</value>
+    <value>बातचीत</value>
     <comment>xaml</comment>
   </data>
   <data name="Conversations_Pivot_Favourites_Header_Txt" xml:space="preserve">
-    <value>friends</value>
+    <value>मित्र</value>
     <comment>xaml</comment>
   </data>
   <data name="Conversations_Pivot_Profile_Header_Txt" xml:space="preserve">
-    <value>profile</value>
+    <value>प्रोफ़ाइल</value>
     <comment>xaml</comment>
   </data>
   <data name="Conversations_ProfileName_Default_Txt" xml:space="preserve">
-    <value>Default Name</value>
+    <value>डिफ़ॉल्ट नाम</value>
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Are you sure about removing this contact from friends?</value>
+    <value>क्या आप इस संपर्क को दोस्तों से वाकई हटाना चाहते हैं?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>remove from circle of friends</value>
+    <value>दोस्तों के समूह से हटायें !</value>
     <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>You don't have anyone in your circle of friends.</value>
+    <value>आपके दोस्तों के समूह में कोई दोस्त नहीं है !</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
-    <value>invite friends</value>
+    <value>दोस्तों को आमंत्रित करे !</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Conversations_YourFav_Txt" xml:space="preserve">
-    <value>Your friends</value>
+    <value>आपके मित्र! </value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Delete_Txt" xml:space="preserve">
-    <value>delete</value>
+    <value>हटाना</value>
     <comment>Chats ContextMenu (xaml)</comment>
   </data>
   <data name="AppBar_Done_Btn" xml:space="preserve">
-    <value>done</value>
+    <value>संपन्न</value>
     <comment>CS</comment>
   </data>
   <data name="EnterName_Msg_TxtBlk" xml:space="preserve">
-    <value>Getting you in</value>
+    <value>आपको अन्दर ले जाया जा रहा है !</value>
     <comment>General msg shown (CS)</comment>
   </data>
   <data name="EnterName_NameErrorTxt" xml:space="preserve">
-    <value>Error!! Name not set. Try Again!!</value>
+    <value>त्रुटि! नाम सेट नहीं! पुंन:प्रयास करें!</value>
     <comment>error text (CS)</comment>
   </data>
   <data name="EnterName_Name_Hint" xml:space="preserve">
-    <value>Name</value>
+    <value>नाम</value>
     <comment>Name Text in hint (CS)</comment>
   </data>
   <data name="EnterName_Name_TxtBlk" xml:space="preserve">
-    <value>Enter your name below :</value>
+    <value>अपना नाम नीचे दर्ज करें:</value>
     <comment>xaml</comment>
   </data>
   <data name="EnterName_ScanningContacts_Txt" xml:space="preserve">
-    <value>Scanning Contacts ...</value>
+    <value>संपर्क स्कैनिंग ...</value>
     <comment>CS</comment>
   </data>
   <data name="EnterName_YourMsisdn_TxtBlk" xml:space="preserve">
-    <value>You're all set on </value>
+    <value>आप   पर स्थापित हैं!</value>
     <comment>This is the text shown at top (xaml)</comment>
   </data>
   <data name="EnterNumber_EnterNum_TxtBlk" xml:space="preserve">
-    <value>Enter your phone number below to get started :</value>
+    <value>आरंभ करने के लिए नीचे अपने फोन नंबर दर्ज करें:</value>
     <comment>Enter phone msg.</comment>
   </data>
   <data name="EnterNumber_IncorrectPh_TxtBlk" xml:space="preserve">
-    <value>Incorrect phone number.</value>
+    <value>गलत फोन नंबर.</value>
     <comment>CS file</comment>
   </data>
   <data name="EnterNumber_MsgBoxText_Msg" xml:space="preserve">
-    <value>Enter valid phone number.</value>
+    <value>मान्य फोन नंबर दर्ज करें.</value>
     <comment>MsgBox msg</comment>
   </data>
   <data name="EnterNumber_Ph_Hint_TxtBox" xml:space="preserve">
-    <value>Phone Number</value>
+    <value>फोन नम्बर</value>
     <comment>CS file</comment>
   </data>
   <data name="EnterNumber_SelectCountry_TxtBlk" xml:space="preserve">
-    <value>SELECT COUNTRY</value>
+    <value>देश चुनें</value>
     <comment>In longlist selector select country</comment>
   </data>
   <data name="EnterNumber_VerifyNumberMsg_TxtBlk" xml:space="preserve">
-    <value>Verifying your number.</value>
+    <value>आपका नंबर सत्यापित हो रहा है!</value>
     <comment>CS file</comment>
   </data>
   <data name="EnterPin_CallErrorMsg_MsgBox" xml:space="preserve">
-    <value>Couldn't call you. Try again later.</value>
+    <value>आप कॉल नहीं कर सकते है, कृपया बाद में प्रयास करें!</value>
     <comment>Call Error MsgBox (CS)</comment>
   </data>
   <data name="EnterPin_CallingMsg_MsgBox" xml:space="preserve">
-    <value>Calling you for PIN.</value>
+    <value>आपको पिन के लिए कॉल किया जा रहा है |</value>
     <comment>Calling MsgBox (CS) </comment>
   </data>
   <data name="EnterPin_CallMe_Btn" xml:space="preserve">
-    <value>Call me for PIN</value>
+    <value>पिन के लिए कॉल करे!</value>
     <comment>Call me button (xaml)</comment>
   </data>
   <data name="EnterPin_PinError_TxtBlk" xml:space="preserve">
-    <value>PIN not valid. Please try again.</value>
+    <value>पिन मान्य नहीं, पुन: प्रयास करें!</value>
     <comment>Pin Error Msg (xaml) </comment>
   </data>
   <data name="EnterPin_PinHint" xml:space="preserve">
-    <value>Pin</value>
+    <value>पिन</value>
     <comment>Pin Text in hint (CS)</comment>
   </data>
   <data name="EnterPin_PinMsg_TxtBlk" xml:space="preserve">
-    <value>Thanks! Did you get an SMS pin? Enter it below :</value>
+    <value>धन्यवाद! क्या आपको एसएमएस पिन मिला? उसे नीचे दर्ज करें: </value>
     <comment>Page title msg (xaml file)</comment>
   </data>
   <data name="EnterPin_SMSError_TxtBlk" xml:space="preserve">
-    <value>Didn't receive an SMS?</value>
+    <value>क्या आपको एसएमएस मिला?</value>
     <comment>Did not receive sms (xaml)</comment>
   </data>
   <data name="EnterPin_Taphere_TxtBlk" xml:space="preserve">
-    <value>Tap Here</value>
+    <value>यहाँ टैप करे !</value>
     <comment>xaml</comment>
   </data>
   <data name="EnterPin_WrongNumMsg_TxtBlk" xml:space="preserve">
-    <value>Entered a wrong number?</value>
+    <value>गलत संख्या दर्ज हुआ?</value>
     <comment>xaml</comment>
   </data>
   <data name="GrpChat_Txt" xml:space="preserve">
-    <value>Group Chat</value>
+    <value>समूह चैट</value>
     <comment>Text Group Chat </comment>
   </data>
   <data name="Help" xml:space="preserve">
-    <value>help</value>
+    <value>मदद</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Ignore_Txt" xml:space="preserve">
-    <value>Ignore</value>
+    <value>अनसुना करें |</value>
     <comment>General text used in different files</comment>
   </data>
   <data name="NetworkError_TryAgain" xml:space="preserve">
-    <value>Network Error. Try Again!!</value>
+    <value>नेटवर्क त्रुटि. फिर प्रयास करें!</value>
     <comment>Network error msg</comment>
   </data>
   <data name="No_Network_Txt" xml:space="preserve">
-    <value>No network connectivity.</value>
+    <value>नेटवर्क कनेक्टिविटी नहीं है |</value>
     <comment>General text used in different files</comment>
   </data>
   <data name="Please_Try_Again_Txt" xml:space="preserve">
-    <value>Please try again.</value>
+    <value>पुन: प्रयास करें!</value>
     <comment>General text used in different files</comment>
   </data>
   <data name="Privacy" xml:space="preserve">
-    <value>privacy</value>
+    <value>गोपनीयता</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Settings" xml:space="preserve">
-    <value>settings</value>
+    <value>सेटिंग </value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="SMS_Left_Txt" xml:space="preserve">
-    <value>{0} SMS Left</value>
+    <value>{0} एसएमएस शेष </value>
     <comment>This text is used to show how many SMS left</comment>
   </data>
   <data name="Something_Wrong_Txt" xml:space="preserve">
-    <value>Oops, something went wrong!</value>
+    <value>ओह, कुछ गलत हो गया!</value>
     <comment>General text used in different files</comment>
   </data>
   <data name="Update_Txt" xml:space="preserve">
-    <value>Update</value>
+    <value>अपडेट</value>
     <comment>General text used in different files</comment>
   </data>
   <data name="Walkthrough_FreeMsgToIndia_Txt" xml:space="preserve">
-    <value>*Free SMS can only be sent to India</value>
+    <value>नि: शुल्क एसएमएस केवल भारत में भेजे जा सकते है |</value>
     <comment>Pivot 2 (xaml)</comment>
   </data>
   <data name="Walkthrough_FreeSmsReward_Txt" xml:space="preserve">
-    <value>For every friend who joins, you get 50 Free hike SMS every month</value>
+    <value>आपके हर मित्र के ज्वाइन करने पर आप हर महीने अतिरिक्त 50 मुफ्त hike  एसऍमएस पाते हैं |</value>
     <comment>Pivot 3 (xaml)</comment>
   </data>
   <data name="Walkthrough_InviteFriends_Txt" xml:space="preserve">
-    <value>Invite Friends Earn Rewards.</value>
+    <value> मित्रो को आमंत्रित करें और पुरस्कार कमायें !</value>
     <comment>Pivot 3 (xaml)</comment>
   </data>
   <data name="Walkthrough_LetsHike_Txt" xml:space="preserve">
-    <value>let's hike</value>
+    <value>चलो hike  लेते है !</value>
     <comment>cs</comment>
   </data>
   <data name="Walkthrough_TitleMsg_1" xml:space="preserve">
-    <value>Free, always, worldwide</value>
+    <value>मुफ्त, हमेशा, विश्वव्यापी</value>
     <comment>Pivot 1 (xaml)</comment>
   </data>
   <data name="Walkthrough_TitleMsg_2" xml:space="preserve">
-    <value>Also message friends not on hike for free with Free hike SMS</value>
+    <value>आपके जो मित्र hike  पर नही है , उन्हें मुफ्त में hike एसएमएस से संदेश भेजें |</value>
     <comment>Pivot 2 (xaml)</comment>
   </data>
   <data name="WelcomePage_13YrsMsg_TxtBlk" xml:space="preserve">
-    <value>Tap next to confirm that you are 13+ years of age</value>
+    <value>टैप करे और पुष्टि करे आप की आप 13+ साल के है !</value>
     <comment>13 yrs confirm</comment>
   </data>
   <data name="WelcomePage_Accept_AppBar" xml:space="preserve">
-    <value>accept</value>
+    <value>स्वीकार करें |</value>
     <comment>accept button in appbar</comment>
   </data>
+  <data name="Messaging_Made_Personal_Txt" xml:space="preserve">
+    <value>मैसेजिंग ने फिर से निजी बनाया</value>
+    <comment>This is text below hike logo on welcome screen.</comment>
+  </data>
   <data name="WelcomePage_PushMsg_TxtBlk" xml:space="preserve">
-    <value>Push Notifications are turned on by default</value>
+    <value>पुश नोटिफिकेशन डिफ़ॉल्ट रूप से चालू !</value>
     <comment>Push Notification msg</comment>
   </data>
   <data name="WelcomePage_TnP_HlBtn" xml:space="preserve">
-    <value>Terms and Privacy</value>
+    <value>शर्तें और गोपनीयता</value>
     <comment>Terms and Privacy, hyperlink button</comment>
   </data>
   <data name="Email_Txt" xml:space="preserve">
-    <value>Email</value>
+    <value>ईमेल</value>
     <comment>xaml</comment>
   </data>
   <data name="EditProfile_FullName_TxtBlk" xml:space="preserve">
-    <value>Full Name</value>
+    <value>पूरा नाम</value>
     <comment>xaml</comment>
   </data>
   <data name="EditProfile_GenderFemale_lstPckr" xml:space="preserve">
-    <value>female</value>
+    <value>महिला</value>
     <comment>gender dropdown (cs)</comment>
   </data>
   <data name="EditProfile_GenderMale_LstPckr" xml:space="preserve">
-    <value>male</value>
+    <value>पुरुष </value>
     <comment>gender dropdown (cs)</comment>
   </data>
   <data name="EditProfile_GenderSelect_LstPckr" xml:space="preserve">
-    <value>select</value>
+    <value>चयन करें </value>
     <comment>gender dropdown (cs)</comment>
   </data>
   <data name="EditProfile_Gender_TxtBlk" xml:space="preserve">
-    <value>Gender</value>
+    <value>लिंग</value>
     <comment>xaml</comment>
   </data>
   <data name="EditProfile_Phone_TxtBlk" xml:space="preserve">
-    <value>Phone</value>
+    <value>फोन</value>
     <comment>xaml</comment>
   </data>
   <data name="Save_AppBar_Btn" xml:space="preserve">
-    <value>save</value>
+    <value>सहेजें</value>
     <comment>cs</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk1" xml:space="preserve">
-    <value>Earn an extra</value>
+    <value>अतिरिक्त कमाएँ |</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk2" xml:space="preserve">
-    <value>{0} free SMS</value>
+    <value>{0}मुफ्त एसएमएस |</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk3" xml:space="preserve">
-    <value>per month for every friend that joins through you.</value>
+    <value>प्रति माह आपके माध्यम से जुड़ने वाले हर दोस्त के लिए  !</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_fbConnStatus_TxtBlk" xml:space="preserve">
-    <value>Facebook</value>
+    <value>फेसबुक</value>
   </data>
   <data name="FreeSMS_fbOrTwitter_Connected" xml:space="preserve">
-    <value>Connected</value>
+    <value>कनेक्टेड</value>
   </data>
   <data name="FreeSMS_FbPostSuccess_MsgBx" xml:space="preserve">
-    <value>Successfully posted to facebook.</value>
+    <value>फेसबुक पर सफलतापूर्वक पोस्ट हुआ!</value>
   </data>
   <data name="FreeSMS_FbPost_MsgBxCaption" xml:space="preserve">
-    <value>Facebook Post</value>
+    <value>फेसबुक पोस्ट!</value>
   </data>
   <data name="FreeSMS_H2HHeader_TxtBlk" xml:space="preserve">
-    <value>hike to hike</value>
+    <value>हाइक से हाइक</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2HText_TxtBlk" xml:space="preserve">
-    <value>Free Worldwide</value>
+    <value>विश्वभर में मुफ्त  |</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2SHeader_TxtBlk" xml:space="preserve">
-    <value>hike to SMS</value>
+    <value>एसएमएस पर हाइक</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2SText_TxtBlk" xml:space="preserve">
-    <value>Your free SMS refill on the 1st of every month</value>
+    <value>हर महीने की 1 तारीख पर अपने नि: शुल्क एसएमएस रिफिल पाइयें!</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_IndiaOnly_TxtBlk" xml:space="preserve">
-    <value>*Free SMS can only be sent to India at the moment</value>
+    <value>इस समय नि: शुल्क एसएमएस  केवल में भारत के लिए उपलब्ध है |</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_InviteNow_Btn" xml:space="preserve">
-    <value>Invite Now</value>
+    <value>अभी आमंत्रित करे</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_InviteSMS_TxtBlk" xml:space="preserve">
-    <value>Invite via SMS</value>
+    <value>एसएमएस से आमंत्रण</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_twConnStatus_TxtBlk" xml:space="preserve">
-    <value>Twitter</value>
+    <value>ट्विटर</value>
     <comment>Connect to twitter button (unconnected state) </comment>
   </data>
   <data name="FreeSMS_TwPostSuccess_MsgBx" xml:space="preserve">
-    <value>Successfully posted to twitter.</value>
+    <value>ट्विटर पर सफलतापूर्वक पोस्ट हुआ!</value>
     <comment>Caption of Msg Bx after successfully posting to fb</comment>
   </data>
   <data name="FreeSMS_TwPost_MsgBxCaption" xml:space="preserve">
-    <value>Twitter Post</value>
+    <value>ट्विटर पोस्ट</value>
     <comment>Caption of Msg Bx while posting to fb</comment>
   </data>
   <data name="FreeSMS_UnlinkFacebook_MsgBxCaptn" xml:space="preserve">
-    <value>Unlink Facebook</value>
+    <value>फेसबुक को अनलिंक करें</value>
     <comment>Caption of Msg Bx while unlinking fb account</comment>
   </data>
   <data name="FreeSMS_UnlinkFbOrTwConfirm_MsgBx" xml:space="preserve">
-    <value>Are you sure you want to unlink your account?</value>
+    <value>क्या आप अपने खाते को अनलिंक करना चाहते हैं?</value>
     <comment>Text of Msg Bx while confirming to unlink</comment>
   </data>
   <data name="FreeSMS_UnlinkFbOrTwSuccess_MsgBx" xml:space="preserve">
-    <value>Successfully Unlinked Account.</value>
+    <value>सफलतापूर्वक खाते को अनलिंक किया</value>
     <comment>Text of Msg Bx after successfull unlinking</comment>
   </data>
   <data name="FreeSMS_UnlinkTwitter_MsgBxCaptn" xml:space="preserve">
-    <value>Unlink Twitter</value>
+    <value>ट्विटर को अनलिंक करें</value>
     <comment>Caption of Msg Bx while unlinking twitter account</comment>
   </data>
   <data name="FreeSMS_UnlinkTwSuccess_MsgBxCaptn" xml:space="preserve">
-    <value>Twitter Logout</value>
+    <value>ट्विटर लॉगआउट</value>
     <comment>Caption of Msg Bx after successfully unlinkig from fb</comment>
   </data>
   <data name="FreeSMS_unlimitedTxtBlck_TxtBlk" xml:space="preserve">
-    <value>Unlimited</value>
+    <value>असीमित</value>
     <comment>Unlimited text in hike to hike bar (xaml)</comment>
   </data>
   <data name="And_txt" xml:space="preserve">
-    <value> and </value>
+    <value> और  </value>
     <comment>General Text</comment>
   </data>
   <data name="Attach_Txt" xml:space="preserve">
-    <value>attach</value>
+    <value>जोड़ें </value>
     <comment>General Text</comment>
   </data>
   <data name="Audio_Txt" xml:space="preserve">
-    <value>Audio</value>
+    <value>ऑडियो</value>
     <comment>NewSelectUserPage (xaml)</comment>
   </data>
   <data name="Block_Txt" xml:space="preserve">
-    <value>Block</value>
+    <value>ब्लॉक</value>
     <comment>this will be used as text</comment>
   </data>
   <data name="Call_Txt" xml:space="preserve">
-    <value>call</value>
+    <value>कॉल</value>
     <comment>General Text</comment>
   </data>
   <data name="Cancel_Txt" xml:space="preserve">
-    <value>cancel</value>
+    <value>रद्द करें</value>
     <comment>General Text</comment>
   </data>
   <data name="CONTACT_NOT_SAVED_ON_SERVER" xml:space="preserve">
-    <value>Contact not saved on server, kindly refresh.</value>
+    <value>संपर्क सर्वर में सहेजा नहीं गया, कृपया रिफ्रेश करे !</value>
     <comment>This is called when a new contact is added and server error occured</comment>
   </data>
   <data name="CONTACT_SAVED_SUCCESSFULLY" xml:space="preserve">
-    <value>Contact saved successfully</value>
+    <value>संपर्क सफलतापूर्वक सहेजा गया</value>
     <comment>General Text</comment>
   </data>
   <data name="Copy_txt" xml:space="preserve">
-    <value>copy</value>
+    <value>कॉपी</value>
     <comment>General Text</comment>
   </data>
   <data name="CREDITS_EARNED" xml:space="preserve">
-    <value>You've just earned {0} free SMS</value>
+    <value>आपने अभी  {0} मुफ्त एसएमएस प्राप्त किये हैं |</value>
     <comment>General Text</comment>
   </data>
   <data name="DND_USER" xml:space="preserve">
-    <value>{0} is on DND. Waiting for {0} to reply.</value>
+    <value>{0} पर डीएनडी चालू है |  {0} के जवाब की  प्रतीक्षा कर रहें हैं |</value>
     <comment>General Text</comment>
   </data>
   <data name="FILES_MESSAGE_PREFIX" xml:space="preserve">
-    <value>Sent you a {0}. To view go to </value>
+    <value>आपको a {0} भेजा गया है | देखने के लिये   पर जाएँ |</value>
     <comment>General Text</comment>
   </data>
   <data name="Forward_Txt" xml:space="preserve">
-    <value>forward</value>
+    <value>आगे </value>
     <comment>General Text</comment>
   </data>
   <data name="GROUP_CHAT_END" xml:space="preserve">
-    <value>This group chat has ended.</value>
+    <value>यह समूह चैट खत्म हो गया।</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="Image_Txt" xml:space="preserve">
-    <value>Image</value>
+    <value>छवि</value>
     <comment>NewSelectUserPage (xaml)</comment>
   </data>
   <data name="Location_Txt" xml:space="preserve">
-    <value>Location</value>
+    <value>लोकेशन</value>
     <comment>NewSelectUserPage (xaml)</comment>
   </data>
   <data name="MORE_THAN_1_CONTACT_FOUND" xml:space="preserve">
-    <value>More than 1 contacts found for number : {0}</value>
+    <value>नंबर : {0} के लिये एक से ज्यादा संपर्क ढूंढे गए हैं |</value>
     <comment>This is called when an unknown number is added and same num already exists in phone</comment>
   </data>
   <data name="NoInfoForTask_Txt" xml:space="preserve">
-    <value>No information regarding the task result is available.</value>
+    <value>काम के परिणाम के बारे में कोई जानकारी उपलब्ध नहीं है |</value>
     <comment>cs</comment>
   </data>
   <data name="NO_CONTACT_SAVED" xml:space="preserve">
-    <value>No Contact is saved.</value>
+    <value>कोई संपर्क सहेजा नहीं गया है |                             </value>
     <comment>General Text</comment>
   </data>
   <data name="Photo_Txt" xml:space="preserve">
-    <value>photo</value>
+    <value>फ़ोटो</value>
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>add to circle of friends</value>
+    <value>दोस्तों के चक्र से जोड़ें |</value>
     <comment>fix length(24)</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
-    <value>add user</value>
+    <value>उपयोगकर्ता को जोड़ें |</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_AlreadyAdded_Txt" xml:space="preserve">
-    <value>User already added !!</value>
+    <value>उपयोगकर्ता पहले से ही जुड़ा हुआ है |</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_BlockedGroupMsg_Txt" xml:space="preserve">
-    <value>You have blocked this group. Unblock to continue hiking.</value>
+    <value>आपने इस समूह को प्रतिबंधित किया हुआ , hike का प्रयोग करने के लिये प्रतिबंध हटाएं |</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_BlockMsg_Txt" xml:space="preserve">
-    <value>You have blocked this user. Unblock to continue hiking.</value>
+    <value>आपने इस यूजर को प्रतिबंधित किया है, hike का प्रयोग करने के लिये प्रतिबंध हटाएं |</value>
     <comment>xaml</comment>
   </data>
   <data name="SelectUser_CantAddUser_Txt" xml:space="preserve">
-    <value>Cannot add user !!</value>
+    <value>यूजर को जोड़ नहीं सकते | </value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_ContactRemoved_Txt" xml:space="preserve">
-    <value>{0}[{1}] will be removed from group.</value>
+    <value>{0}[{1}] को समूह से हटा दिया जाएगा |</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_EnterValidNo_Txt" xml:space="preserve">
-    <value>Enter Valid Number</value>
+    <value>मान्य संख्या दर्ज करें</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_FreeMsg_Txt" xml:space="preserve">
-    <value>Hike Message</value>
+    <value>Hike  संदेश |</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_Txt" xml:space="preserve">
-    <value>group info</value>
+    <value>समूह की जानकारी</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_GrpOwner_Txt" xml:space="preserve">
-    <value>group owner</value>
+    <value>समूह के मालिक</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_Header_Txt" xml:space="preserve">
-    <value>CHAT</value>
+    <value>बातचीत</value>
     <comment>xaml</comment>
   </data>
   <data name="SelectUser_InviteUsr_Txt" xml:space="preserve">
-    <value>invite user</value>
+    <value>उपयोगकर्ता को आमंत्रित करें |</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_LeaveGrp_Txt" xml:space="preserve">
-    <value>leave group</value>
+    <value>समूह छोड़ें |</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_MaxUsersSelected_Txt" xml:space="preserve">
-    <value>{0} users already selected</value>
+    <value>{0} उपयोगकर्ता पहले ही चयनित हैं |</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_MuteGrp_Txt" xml:space="preserve">
-    <value>mute group</value>
+    <value>मूक समूह</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_NewGroup_Text" xml:space="preserve">
-    <value>New Group</value>
+    <value>नया समूह</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshContacts_Txt" xml:space="preserve">
-    <value>Refresh Contacts</value>
+    <value>संपर्क रिफ्रेश करें |</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshWaitMsg_Txt" xml:space="preserve">
-    <value>This may take a minute or two...</value>
+    <value>इसमें एक या दो मिनट लग सकते हैं |</value>
     <comment>This text is shown when user clicks refresh (cs)</comment>
   </data>
   <data name="SelectUser_RemoveContact_Txt" xml:space="preserve">
-    <value>Remove Contact?</value>
+    <value>संपर्क को हटाएं |</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
-    <value>Text Message</value>
+    <value>लिखित संदेश</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_TapMsg_Txt" xml:space="preserve">
-    <value>Tap here to message this person</value>
+    <value>इस व्यक्ति को मैसेज हेतु यहाँ टैप करें</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_Title_Txt" xml:space="preserve">
-    <value>with</value>
+    <value>साथ</value>
     <comment>xaml</comment>
   </data>
   <data name="SelectUser_TxtBoxHint_Txt" xml:space="preserve">
-    <value> Search or Enter Phone #...</value>
+    <value>  फ़ोन नंबर को खोजें |</value>
     <comment>textbox hint (xaml)</comment>
   </data>
   <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
-    <value>unmute</value>
+    <value>मूक हटाएं |</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_UserAlreadyAdded_Txt" xml:space="preserve">
-    <value>{0} is already added to group.</value>
+    <value>{0} को पहले ही समूह से जोड़ा जा चुका है |</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_ZeroCredits_Txt" xml:space="preserve">
-    <value>0 Free SMS left...</value>
+    <value>0 नि: शुल्क एसएमएस शेष हैं |</value>
     <comment>cs</comment>
   </data>
   <data name="Send_Txt" xml:space="preserve">
-    <value>send</value>
+    <value>भेजें</value>
     <comment>General Text</comment>
   </data>
   <data name="Smiley_Txt" xml:space="preserve">
-    <value>smiley</value>
+    <value>स्माइली</value>
     <comment>General Text</comment>
   </data>
   <data name="SMS_INDIA" xml:space="preserve">
-    <value>SMS can only be sent to India.</value>
+    <value>एसएमएस केवल भारत के लिए भेजा जा सकता है.</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="UnBlock_Txt" xml:space="preserve">
-    <value>Unblock</value>
+    <value>अनब्लॉक</value>
     <comment>xaml</comment>
   </data>
   <data name="USER_INVITED" xml:space="preserve">
-    <value> has been invited</value>
+    <value>  को आमंत्रित किया गया है |</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_JOINED_GROUP_CHAT" xml:space="preserve">
-    <value> joined the group chat!</value>
+    <value>  समूह बातचीत में शामिल हो गए |</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_JOINED_HIKE" xml:space="preserve">
-    <value>{0} just joined hike, say 'Hi' :)</value>
+    <value>{0} ने अभी hike  से जुड़े हैं उन्हें नमस्ते कहें |</value>
     <comment>General Text</comment>
   </data>
   <data name="USER_LEFT" xml:space="preserve">
-    <value> left the group chat</value>
+    <value> ने समूह बातचीत छोड़ दी है |</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_OPTED_IN_MSG" xml:space="preserve">
-    <value> just opted in to hike!</value>
+    <value> ने अभी hike  को चुना है |</value>
     <comment>General Text</comment>
   </data>
   <data name="Video_Txt" xml:space="preserve">
-    <value>Video</value>
+    <value>वीडियो</value>
     <comment>General Text</comment>
   </data>
   <data name="Voice_msg_Txt" xml:space="preserve">
-    <value>voice message</value>
+    <value>आवाज संदेश</value>
     <comment>General Text</comment>
   </data>
   <data name="WAITING_TO_JOIN" xml:space="preserve">
-    <value>Waiting for {0} to join in</value>
+    <value> {0} के जुड़ने की प्रतीक्षा में |</value>
     <comment>General Text</comment>
   </data>
   <data name="Added_X_To_GC" xml:space="preserve">
-    <value>Added {0} to the group</value>
+    <value>{0} को समूह से जोड़ा गया |</value>
     <comment>ConvMessage (cs)</comment>
   </data>
   <data name="CannotChangeGrpImg_Txt" xml:space="preserve">
-    <value>Cannot change Group Image. Try Later!!</value>
+    <value>समूह की छवि को बदल नहीं सकते. बाद में कोशिश करें!</value>
     <comment>General text</comment>
   </data>
   <data name="CannotChangeGrpName_Txt" xml:space="preserve">
-    <value>Cannot change GroupName. Try Later!!</value>
+    <value>समूह का नाम नहीं बदल सकते. बाद में कोशिश करें! </value>
     <comment>cs</comment>
   </data>
   <data name="Contact_Scanning_Failed_Txt" xml:space="preserve">
-    <value>Contact Scanning failed. Try Later!!</value>
+    <value>संपर्क स्कैनिंग विफल्। बाद में कोशिश करें!</value>
     <comment>Contact Utils</comment>
   </data>
   <data name="CRITICAL_UPDATE_HEADING" xml:space="preserve">
-    <value>Important update</value>
+    <value>महत्वपूर्ण अपडेट</value>
   </data>
   <data name="CRITICAL_UPDATE_TEXT" xml:space="preserve">
-    <value>To continue using hike, an update is required.</value>
+    <value>हाइक का इस्तेमाल जारी रखने के लिए, अपडेट जरूरी है।</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Hi!
-
-I started using hike, a simple beautiful messaging app that's absolutely free.
-
-hike comes with some hilarious emoticons. You can also post Status Updates to your close circle of friends! Think of it like BBM but much, much better!
-
-Get it now and say good bye to plain boring SMS.
-
-Get hike: http://get.hike.in</value>
+    <value>नमस्ते ! [NEWLINE][NEWLINE]I एक सरल और सुंदर संदेश सेवा का उपयोग शुरू करें जो बिलकुल मुफ्त है [NEWLINE][NEWLINE] hike  कुछ आनंददायक संदेशों के साथ उपलब्ध है | आप अपने नजदीकी मित्रों को स्थिति सूचना भेज सकते है | इसे BBM की तरह देखिए पर उससे बहुत बेहतर! [NEWLINE][NEWLINE]इसे अभी प्राप्त करें और पुराने साधारण संदेशों को अलविदा कहें [NEWLINE][NEWLINE] hike  को hike: http://get.hike.in से प्राप्त करें |</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
-    <value>Failed. Close App and try again !!</value>
+    <value>विफल. अनुप्रयोग बंद करें और पुन: प्रयास करें!</value>
     <comment>EnterName in ContactUtils (cs)</comment>
   </data>
   <data name="Error_Txt" xml:space="preserve">
-    <value>Error !!</value>
+    <value>त्रुटि!</value>
     <comment>General text</comment>
   </data>
   <data name="Friends_Txt" xml:space="preserve">
-    <value>friends</value>
+    <value>मित्र</value>
     <comment>General text</comment>
   </data>
   <data name="GroupChatWith_Txt" xml:space="preserve">
-    <value>Group Chat with {0}</value>
+    <value> {0}से समूह बातचीत |</value>
     <comment>ConvMessage (cs)</comment>
   </data>
   <data name="GroupInfo_ChangeGrpName_Txt" xml:space="preserve">
-    <value>Change Group Name</value>
+    <value>समूह का नाम बदलें</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_GrpNameCannotBeEmpty_Txt" xml:space="preserve">
-    <value>Group name cannot be empty"</value>
+    <value>समूह का नाम "खाली नहीं हो सकता"</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_GrpNameChangedTo_Txt" xml:space="preserve">
-    <value>Group name will be changed to '{0}'</value>
+    <value>समूह क नाम  '{0}' से बदल दिया जाएगा |</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSent_MsgBoxHeader_Txt" xml:space="preserve">
-    <value>Invite Sent</value>
+    <value>निमंत्रण भेजें |</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSent_MsgBoxText_Txt" xml:space="preserve">
-    <value>Your friends have been invited</value>
+    <value>आपके  मित्र आमंत्रित किये गये है</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSMSUsers_Btn_Txt" xml:space="preserve">
-    <value>Invite SMS participants to hike</value>
+    <value>एसएमएस प्रतिभागियों को hike  के लिये  आमंत्रित करें</value>
     <comment>xaml</comment>
   </data>
   <data name="GroupNameChangedByGrpMember_Txt" xml:space="preserve">
-    <value>{0} changed the group name to {1}</value>
+    <value>{0}समूह का नाम बदलकर  {1} किया गया है |</value>
     <comment>MessagesTableUtils</comment>
   </data>
   <data name="GROUP_NAME_TXT" xml:space="preserve">
-    <value>GROUP NAME</value>
+    <value>समूह नाम</value>
     <comment>General Text</comment>
   </data>
   <data name="GrpName_Txt" xml:space="preserve">
-    <value>Group Name</value>
+    <value>समूह का नाम</value>
     <comment>General Text</comment>
   </data>
   <data name="Hike_Friends_Text" xml:space="preserve">
-    <value>hike friends</value>
+    <value>hike  मित्र  </value>
     <comment>General text</comment>
   </data>
   <data name="Hike_txt" xml:space="preserve">
-    <value>hike. </value>
+    <value>hike   </value>
     <comment>General text</comment>
   </data>
   <data name="InviteUsers_FriendsInvited_Txt" xml:space="preserve">
-    <value>Friends Invited</value>
+    <value>आमंत्रित मित्र</value>
     <comment>cs</comment>
   </data>
   <data name="InviteUsers_TotalInvitesSent_Txt" xml:space="preserve">
-    <value>Total invites sent : {0}</value>
+    <value>कुल भेजे गए आमन्त्रण  : {0}</value>
     <comment>cs</comment>
   </data>
   <data name="Invite_Txt" xml:space="preserve">
-    <value>INVITE</value>
+    <value>आमंत्रित करें </value>
     <comment>General Text</comment>
   </data>
   <data name="Messaging_Txt" xml:space="preserve">
-    <value>Messaging</value>
+    <value>संदेश </value>
     <comment>General Text</comment>
   </data>
   <data name="NamingConvention_Txt" xml:space="preserve">
-    <value>{0} and {1} others</value>
+    <value>{0}और  {1} अन्य </value>
     <comment>Used at many places like GroupManager</comment>
   </data>
   <data name="NORMAL_UPDATE_HEADING" xml:space="preserve">
-    <value>Update available</value>
+    <value>अपडेट उपलब्ध</value>
   </data>
   <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
-    <value>Update to the new version of hike to discover amazing new ways to message</value>
+    <value>हाइक का नया वर्ज़न आ गया है। क्या आप इस एप को अपडेट करना चाहेगे?</value>
   </data>
   <data name="Owner_Txt" xml:space="preserve">
-    <value>owner</value>
+    <value>मालिक</value>
   </data>
   <data name="Participants_Txt" xml:space="preserve">
-    <value>Participants</value>
+    <value>प्रतिभागी</value>
     <comment>General Text</comment>
   </data>
   <data name="ShareLocation_LocationServiceNotEnabled_Txt" xml:space="preserve">
-    <value>Location Service is not enabled on the device.</value>
+    <value>लोकेशन सेवा इस यंत्र पर सक्रिय नहीं है !</value>
     <comment>cs</comment>
   </data>
   <data name="ShareLocation_LocationServiceWorking_Txt" xml:space="preserve">
-    <value>The Location Service is working, but it cannot get location data.</value>
+    <value>लोकेशन सेवा काम कर रहा है लेकिन यह लोकेशन डाटा प्राप्त नहीं कर सकता !</value>
     <comment>cs</comment>
   </data>
   <data name="ShareLocation_PlsWaitForPosition_Txt" xml:space="preserve">
-    <value>Please wait while your position is determined....</value>
+    <value>अपनी लोकेशन निर्धारित होने तक प्रतीक्षा करें ....</value>
     <comment>cs</comment>
   </data>
   <data name="ShareLocation_Txt" xml:space="preserve">
-    <value>share location</value>
+    <value>अपना लोकेशन साझा करें |</value>
     <comment>cs</comment>
   </data>
   <data name="SMS_Works_Only_In_India_Txt" xml:space="preserve">
-    <value>SMS works only to India at the moment.</value>
+    <value>एसएमएस इस समय भारत के लिए ही काम करता है!</value>
     <comment>ConvMessage (cs)</comment>
   </data>
   <data name="SocialPages_UnableToRetrieveToken_Txt" xml:space="preserve">
-    <value>Unable to retrieve request token.</value>
+    <value>अनुरोध टोकन प्राप्त करने में असमर्थ !</value>
     <comment>cs</comment>
   </data>
+  <data name="Social_Invite_Txt" xml:space="preserve">
+    <value> मैं&amp; स्थिति मिजाज़ सूचनाओं के साथ @hikeapp 2.0 उपयोग कर रहा हूँ | यह BBM जैसा है पर उससे बहुत अधिक बेहतर| http://get.hike.in #gethike से hike  को प्राप्त करें|</value>
+    <comment>This is used in case of Facebook and Twitter</comment>
+  </data>
   <data name="Social_Txt" xml:space="preserve">
-    <value>Social</value>
+    <value>सामाजिक</value>
     <comment>General Text</comment>
   </data>
   <data name="TimeUtils_An_hour_Ago_Txt" xml:space="preserve">
-    <value>an hour ago</value>
+    <value>एक घंटे पहले</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_A_Min_Ago_Txt" xml:space="preserve">
-    <value>a minute ago</value>
+    <value>एक मिनट पहले</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_One_Month_Ago_Txt" xml:space="preserve">
-    <value>1 month ago</value>
+    <value>1 महीने पहले</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_One_Sec_Ago_Txt" xml:space="preserve">
-    <value>1 second ago</value>
+    <value>1 सेकंड पहले</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_One_Year_Ago_Txt" xml:space="preserve">
-    <value>1 year ago</value>
+    <value>1 साल पहले</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_X_Days_Ago_Txt" xml:space="preserve">
-    <value>{0} days ago</value>
+    <value> {0} दिन पहले |</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_X_hours_Ago_Txt" xml:space="preserve">
-    <value>{0} hours ago</value>
+    <value>{0} घंटे पहले |</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_X_Mins_Ago_Txt" xml:space="preserve">
-    <value>{0} minutes ago</value>
+    <value>{0} मिनट पहले |</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_X_Month_Ago_Txt" xml:space="preserve">
-    <value>{0} months ago</value>
+    <value>{0} महीने पहले |</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_X_Secs_Ago_Txt" xml:space="preserve">
-    <value>{0} seconds ago</value>
+    <value>{0} सेकंड पहले |</value>
     <comment>TimeUtils , {0} will be replaced by actual value</comment>
   </data>
   <data name="TimeUtils_X_Years_Ago_Txt" xml:space="preserve">
-    <value>{0} years ago</value>
+    <value>{0} वर्ष पहले |</value>
   </data>
   <data name="User_Cancelled_Task_Txt" xml:space="preserve">
-    <value>User cancelled the task.</value>
+    <value>उपयोगकर्ता ने कार्य रद्द कर दिया!</value>
     <comment>General text</comment>
   </data>
   <data name="EditProfile_emailErrorTxt_TxtBlk" xml:space="preserve">
-    <value>Enter Correct Email</value>
+    <value>सही ईमेल दर्ज करें</value>
     <comment>xaml</comment>
   </data>
   <data name="EditProfile_EmailUpdateErr_MsgBxTxt" xml:space="preserve">
-    <value>Unable to change email or gender. Try again.</value>
+    <value>ईमेल या लिंग परिवर्तन करने में असमर्थ. फिर से कोशिश करें.</value>
   </data>
   <data name="EditProfile_nameErrorTxt_TxtBlk" xml:space="preserve">
-    <value>Please enter your name</value>
+    <value>कृपया अपना नाम दर्ज करें</value>
   </data>
   <data name="EditProfile_NameUpdateErr_MsgBxCaptn" xml:space="preserve">
-    <value>Something went wrong</value>
+    <value>कुछ गलत हो गया है |</value>
   </data>
   <data name="EditProfile_NameUpdateErr_MsgBxTxt" xml:space="preserve">
-    <value>Unable to change name. Try again.</value>
+    <value>नाम बदलने में असमर्थ. फिर से कोशिश करें |</value>
   </data>
   <data name="EditProfile_UpdatErrMsgBx_Captn" xml:space="preserve">
-    <value>Profile Not Updated!</value>
+    <value>प्रोफ़ाइल अपडेट नहीं हुआ!</value>
   </data>
   <data name="EditProfile_UpdatErrMsgBx_Text" xml:space="preserve">
-    <value>Nothing has changed!!</value>
+    <value>कुछ भी नहीं बदला है!</value>
   </data>
   <data name="EditProfile_UpdatMsgBx_Captn" xml:space="preserve">
-    <value>Profile Updated</value>
+    <value>प्रोफ़ाइल अपडेट हुआ</value>
   </data>
   <data name="EditProfile_UpdatMsgBx_Txt" xml:space="preserve">
-    <value>Your profile has been updated.</value>
+    <value>आपकी प्रोफाइल को अपडेट किया गया है |</value>
   </data>
   <data name="Help_AppVersionTitle" xml:space="preserve">
-    <value>Version</value>
+    <value>संस्करण</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_ContactUsText" xml:space="preserve">
-    <value>Contact our support team for help</value>
+    <value>मदद के लिए हमारी सहायता टीम से संपर्क करें |</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_ContactUsTitle" xml:space="preserve">
-    <value>Contact Us</value>
+    <value>हमसे संपर्क करें |</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_EmailCarrier" xml:space="preserve">
-    <value>Carrier:</value>
+    <value>संवाहक</value>
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailDeviceModel" xml:space="preserve">
-    <value>Device Model:</value>
+    <value>यंत्र मॉडल</value>
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailHikeVersion" xml:space="preserve">
-    <value>Hike Version:</value>
+    <value>hike  संस्करण</value>
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailOSVersion" xml:space="preserve">
-    <value>Win OS Version:</value>
+    <value>विंडो OS संस्करण:</value>
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailPhoneNo" xml:space="preserve">
-    <value>Phone Number:</value>
+    <value>फोन नंबर:</value>
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailSubject" xml:space="preserve">
-    <value>Feedback on WP7</value>
+    <value>WP7 पर प्रतिक्रिया</value>
     <comment>email compose task subject (cs)</comment>
   </data>
   <data name="Help_FAQsTitle" xml:space="preserve">
-    <value>FAQs</value>
+    <value>आम सवाल</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_FAQsTxt" xml:space="preserve">
-    <value>Frequently asked questions</value>
+    <value>अक्सर पूछे जाने वाले सवाल</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_LegalText" xml:space="preserve">
-    <value>Read Terms of service and privacy policy</value>
+    <value>सेवा की शर्तें और गोपनीयता नीति पढ़ें</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_LegalTitle" xml:space="preserve">
-    <value>Legal</value>
+    <value>कानूनी</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_WalkthroughText" xml:space="preserve">
-    <value>View the meet hike walkthrough</value>
+    <value>hike  पूर्वाभ्यास मीटिंग को देखें |</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_WalkthroughTitle" xml:space="preserve">
-    <value>Walkthrough</value>
+    <value>पूर्वाभ्यास</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_RateAppText" xml:space="preserve">
-    <value>Rate and review hike on the marketplace</value>
+    <value>बाज़ार में hike  को रेट करें और समीक्षा करें | </value>
     <comment>xaml</comment>
   </data>
   <data name="Help_RateAppTitle" xml:space="preserve">
-    <value>Rate the App</value>
+    <value>ऐप्प को रेट करें |</value>
     <comment>xaml</comment>
   </data>
   <data name="Off" xml:space="preserve">
-    <value>Off</value>
+    <value>बंद</value>
     <comment>used on settings page</comment>
   </data>
   <data name="On" xml:space="preserve">
-    <value>On</value>
+    <value>ऑन</value>
     <comment>used on settings page</comment>
   </data>
   <data name="Privacy_DeleteAccounConfirmMsgBxText" xml:space="preserve">
-    <value>Are you sure you want to delete your Hike account permanently?</value>
+    <value>क्या आप वाकई स्थायी रूप से अपने hike  खाता को हटाना चाहते हैं?</value>
     <comment>cs. Message box while deleting account</comment>
   </data>
   <data name="Privacy_DeleteAccountHeader" xml:space="preserve">
-    <value>Delete Account</value>
+    <value>खाता डिलीट करें</value>
     <comment>xaml + cs (mesg box caption)</comment>
   </data>
   <data name="Privacy_DeleteAccountProgress" xml:space="preserve">
-    <value>Deleting Account...</value>
+    <value>खाता हटा रहा है |</value>
     <comment>cs. delete account progress</comment>
   </data>
   <data name="Privacy_DeleteAccountText" xml:space="preserve">
-    <value>Permanently delete your hike account</value>
+    <value>स्थायी रूप से आपके hike  खाते को नष्ट करना |</value>
     <comment>xaml</comment>
   </data>
   <data name="Privacy_UnlinkAccountHeader" xml:space="preserve">
-    <value>Unlink Account</value>
+    <value>खाता अनलिंक करें</value>
     <comment>xaml + cs (mesg box caption)</comment>
   </data>
   <data name="Privacy_UnlinkAccountProgress" xml:space="preserve">
-    <value>Unlinking Account...</value>
+    <value>खाते को अलग कर रहे हैं | </value>
     <comment>cs. unlink account progress</comment>
   </data>
   <data name="Privacy_UnlinkAccountText" xml:space="preserve">
-    <value>Logout your account from this device</value>
+    <value>इस डिवाइस से अपने खाते को  लॉगआउट करें |</value>
     <comment>xaml</comment>
   </data>
   <data name="Privacy_UnlinkConfirmMsgBxText" xml:space="preserve">
-    <value>Are you sure you want to unlink your Hike account from this device?</value>
+    <value>क्या आप इस यंत्र को को अपने hike  खाते से अनलिंक करना चाहते हैं?</value>
     <comment>cs. Message box while unlinking account</comment>
   </data>
   <data name="Privacy_UnlinkErrMsgBxCaptn" xml:space="preserve">
-    <value>Account not unlinked</value>
+    <value>खाता अनलिंक नहीं हुआ |</value>
     <comment>cs. Message box Caption error while unlinking</comment>
   </data>
   <data name="Privacy_UnlinkErrMsgBxText" xml:space="preserve">
-    <value>hike couldn't unlink your account. Please try again.</value>
+    <value>hike  आपके खाते को अनलिंक नहीं कर सकता  है , पुन: प्रयास करें!</value>
     <comment>cs. Message box error while unlinking</comment>
   </data>
   <data name="Settings_FreeSMSToggleSwitchHeader" xml:space="preserve">
-    <value>Send free SMS to India</value>
+    <value>भारत में मुफ्त एसएमएस भेजें |</value>
     <comment>xaml. </comment>
   </data>
   <data name="Settings_PushToggleSwitchHeader" xml:space="preserve">
-    <value>Use push notifications</value>
+    <value>पुश नोटिफिकेशन सेवा का प्रयोग करें |</value>
     <comment>xaml. push toggle</comment>
   </data>
   <data name="Settings_VibrateToggleSwitchHeader" xml:space="preserve">
-    <value>Vibrate</value>
+    <value>वाइब्रेट</value>
     <comment>xaml</comment>
   </data>
   <data name="Walkthrough_H2H_SwipeLeft" xml:space="preserve">
-    <value>swipe left to continue</value>
+    <value>आगे बढने के लियें बाएँ तरफ घुमाएं |</value>
   </data>
   <data name="RecordAudio_AppBarCancelBtnTxt" xml:space="preserve">
-    <value>re-record</value>
+    <value>फिर रिकॉर्ड करें |</value>
     <comment>app bar button</comment>
   </data>
   <data name="RecordAudio_Play" xml:space="preserve">
-    <value>TAP TO PLAY</value>
+    <value>बजाने के लिए टैप करें</value>
     <comment>cs</comment>
   </data>
   <data name="RecordAudio_Playing" xml:space="preserve">
-    <value>PLAYING</value>
+    <value>बज रहा है</value>
     <comment>cs</comment>
   </data>
   <data name="RecordAudio_Record" xml:space="preserve">
-    <value>TAP ICON TO RECORD</value>
+    <value>रिकॉर्ड करने के लिए दबाएं </value>
     <comment>cs + xaml</comment>
   </data>
   <data name="RecordAudio_Recording" xml:space="preserve">
-    <value>RECORDING</value>
+    <value>रिकॉर्डिंग </value>
     <comment>cs</comment>
   </data>
   <data name="RecordMedia_Title" xml:space="preserve">
-    <value>record audio</value>
+    <value>ऑडियो रिकॉर्ड करें |</value>
     <comment>xaml</comment>
   </data>
   <data name="Yesterday_Txt" xml:space="preserve">
-    <value>yesterday</value>
+    <value>बिता हुआ कल</value>
     <comment>General Text</comment>
   </data>
   <data name="FileTransfer_ErrorMsgBoxText" xml:space="preserve">
-    <value>Unable to download file. </value>
+    <value>फ़ाइल  को डाउनलोड करने में असमर्थ</value>
     <comment>cs. Text in message box followed by exception message</comment>
   </data>
   <data name="SelectUser_HideSmsContacts_Txt" xml:space="preserve">
-    <value>hide sms contacts</value>
+    <value> एसएमएस संपर्कों को छिपाये !</value>
     <comment>Text used in app menu bar</comment>
   </data>
   <data name="SelectUser_ShowSmsContacts_Txt" xml:space="preserve">
-    <value>show sms contacts</value>
+    <value>एसएमएस संपर्क दिखाएँ !</value>
     <comment>Text used in app menu bar</comment>
   </data>
   <data name="Favorites_TapToAdd" xml:space="preserve">
-    <value>Add contacts to your circle of friends.</value>
+    <value>संपर्क को अपने दोस्तों के सर्कल से जोड़ें | </value>
     <comment>xaml (below heart image)</comment>
   </data>
   <data name="Invited" xml:space="preserve">
-    <value>Invited</value>
+    <value>आमंत्रित</value>
   </data>
   <data name="Invite_Small" xml:space="preserve">
-    <value>Invite</value>
+    <value>निमंत्रण</value>
   </data>
   <data name="Nudge" xml:space="preserve">
-    <value>Nudge</value>
+    <value>नज</value>
   </data>
   <data name="Nudge_Exclamation" xml:space="preserve">
-    <value>Nudge!</value>
+    <value>नज!</value>
   </data>
   <data name="Nudge_Tute" xml:space="preserve">
-    <value>Double tap anywhere on the chat to nudge your friend.</value>
+    <value>अपने दोस्तों को नज के लिए बातचीत को कही पर भी दो बार दबाएं |</value>
     <comment>xaml</comment>
   </data>
   <data name="OK" xml:space="preserve">
-    <value>OK</value>
+    <value>ओके</value>
   </data>
   <data name="RemoveFromGrpConfirmation_Txt" xml:space="preserve">
-    <value>Are you sure you want to remove this person from group ?</value>
+    <value>क्या आप समूह से इस व्यक्ति को निकालना चाहते हैं?</value>
     <comment>Remove member from group text</comment>
   </data>
   <data name="Remove_From_grp_txt" xml:space="preserve">
-    <value>remove from group</value>
+    <value>समूह से निकालें</value>
     <comment>General text</comment>
   </data>
   <data name="ConversationsList_New_Txt" xml:space="preserve">
-    <value>new</value>
+    <value>नया</value>
     <comment>Rewards Text</comment>
   </data>
   <data name="Tap_To_Invite_Txt" xml:space="preserve">
-    <value>Tap here to invite</value>
+    <value>आमंत्रित करने के लिए यहां दबाएँ</value>
     <comment>Tap to invite text</comment>
   </data>
   <data name="SelectUser_TapMsg_Grp_Txt" xml:space="preserve">
-    <value>Tap here to add this person</value>
+    <value>इस व्यक्ति को जोड़ने के लिए यहाँ टैप करें</value>
     <comment>Add to Group Msg</comment>
   </data>
   <data name="ChatThread_GCMute" xml:space="preserve">
-    <value>This group chat is muted</value>
+    <value>यह समूह बातचीत मौन है!</value>
     <comment>xaml</comment>
   </data>
   <data name="Favorites_AddMore" xml:space="preserve">
-    <value>Add More</value>
+    <value>अधिक जोड़ें |</value>
     <comment>xaml</comment>
   </data>
   <data name="ContactTransfer_Text" xml:space="preserve">
-    <value>Contact</value>
+    <value>संपर्क</value>
   </data>
   <data name="ShareContact_Txt" xml:space="preserve">
-    <value>Share Contact</value>
+    <value>संपर्क सांझा करें |</value>
   </data>
   <data name="ShareContact_ConfirmationText" xml:space="preserve">
-    <value>Are you sure you want to share contact information of {0}</value>
+    <value>क्या आप {0} की संपर्क जानकारी साझा करना चाहते हैं |</value>
   </data>
   <data name="SharedContactNotFoundText" xml:space="preserve">
-    <value>Please refresh contact list as contact selected does not exists.</value>
+    <value>संपर्क सूची रिफ्रेश करे, क्यूंकि चयनित संपर्क मौजूद नहीं है!</value>
   </data>
   <data name="Pause_Txt" xml:space="preserve">
-    <value>pause</value>
+    <value>रोकें |</value>
     <comment>record video page app bar</comment>
   </data>
   <data name="Play_Txt" xml:space="preserve">
-    <value>play</value>
+    <value>चलाएं </value>
     <comment>record video page app bar</comment>
   </data>
   <data name="Record_Txt" xml:space="preserve">
-    <value>record</value>
+    <value>रिकॉर्ड</value>
     <comment>record video page app bar</comment>
   </data>
   <data name="Stop_Txt" xml:space="preserve">
-    <value>stop</value>
+    <value>बंद करें |</value>
     <comment>record video page app bar</comment>
   </data>
   <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
-    <value>Confirm your number</value>
+    <value>अपने नम्बर की पुष्टि करे</value>
   </data>
   <data name="SharedContactNotFoundCaptionText" xml:space="preserve">
-    <value>Refresh Contact List</value>
+    <value>ताज़ा संपर्क सूची</value>
   </data>
   <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>Added you to Circle of Friends</value>
+    <value>आपको दोस्तों की मंडली में जोड़ा</value>
     <comment>for friend requests in wp8</comment>
   </data>
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
-    <value>Changed profile picture</value>
+    <value>प्रोफाइल चित्र बदला</value>
     <comment>Text used in profile picture update</comment>
   </data>
   <data name="StatusUpdate_Photo" xml:space="preserve">
-    <value>Changed profile picture</value>
+    <value>प्रोफाइल चित्र बदला</value>
   </data>
   <data name="StatuUpdate_Location" xml:space="preserve">
-    <value>at {0}</value>
+    <value> {0}पर </value>
   </data>
   <data name="Conversations_Pivot_Timeline_Header_Txt" xml:space="preserve">
-    <value>timeline</value>
+    <value>घटनाक्रम</value>
   </data>
   <data name="Conversations_PostStatus_AppBar" xml:space="preserve">
-    <value>Post Status</value>
+    <value>स्थिति पोस्ट करें |</value>
   </data>
   <data name="OthersProfile_Txt" xml:space="preserve">
-    <value>profile</value>
+    <value>प्रोफ़ाइल</value>
   </data>
   <data name="OnHIkeSince_Txt" xml:space="preserve">
-    <value>on hike since {0}</value>
+    <value>Hike  पर {0}से </value>
   </data>
   <data name="InviteOnHikeBtn_Txt" xml:space="preserve">
-    <value>Invite to hike</value>
+    <value>हाइक पर आमंत्रित करे</value>
   </data>
   <data name="InviteOnHikeUpgrade_Txt" xml:space="preserve">
-    <value>Help him upgrade to hike!</value>
+    <value>उनकी hike  पाने के लिए मदद करें | </value>
   </data>
   <data name="InviteOnHike_Txt" xml:space="preserve">
-    <value> is missing all the fun.</value>
+    <value>  मस्ती को याद कर रहे हैं।</value>
   </data>
   <data name="OnSms_Txt" xml:space="preserve">
-    <value>on SMS</value>
+    <value>SMS पर</value>
   </data>
   <data name="MyProfileheader_Txt" xml:space="preserve">
-    <value>my profile</value>
+    <value>मेरा प्रोफ़ाइल</value>
   </data>
   <data name="ProfileToBeFriendBlk1" xml:space="preserve">
-    <value>You need to be friends with</value>
+    <value>आपको उनके दोस्त होने की जरूरत!</value>
   </data>
   <data name="ProfileToBeFriendBlk3" xml:space="preserve">
-    <value>to be able to get status updates.</value>
+    <value>स्टेटस की जानकारी पाने के योग्य बने !</value>
   </data>
   <data name="btnAddAsFriend_Txt" xml:space="preserve">
-    <value>Add as a friend</value>
+    <value>मित्र के भांति जोड़ें |</value>
   </data>
   <data name="NewStatus_Txt" xml:space="preserve">
-    <value>NEW STATUS</value>
+    <value>नई स्थिति</value>
   </data>
   <data name="Conversations_Timeline_Refresh_Status" xml:space="preserve">
-    <value>{0} new updates</value>
+    <value>{0} नए अपडेट्स</value>
     <comment>text on top on timeline to show # of fresh status updates</comment>
   </data>
   <data name="Conversations_Timeline_Refresh_SingleStatus" xml:space="preserve">
-    <value>{0} new update</value>
+    <value>{0} नया अपडेट</value>
   </data>
   <data name="TimeUtils_Moments_Ago" xml:space="preserve">
-    <value>moments ago</value>
+    <value>कुछ पल पहले !</value>
   </data>
   <data name="You_Txt" xml:space="preserve">
-    <value>You</value>
+    <value>आप</value>
   </data>
   <data name="Help_System_Health_Text" xml:space="preserve">
-    <value>Check hike status on Twitter</value>
+    <value>ट्विटर पर अपना hike  स्टेट्स देखें |</value>
   </data>
   <data name="Help_System_Health_Title" xml:space="preserve">
-    <value>System Health</value>
+    <value>सिस्टम स्वास्थय</value>
   </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
-    <value>Contact Info</value>
+    <value>संपर्क जानकारी</value>
   </data>
   <data name="Attachment_Audio_Txt" xml:space="preserve">
-    <value>Send Audio</value>
+    <value>ऑडियो भेजें</value>
   </data>
   <data name="Attachment_Camera_Txt" xml:space="preserve">
-    <value>Camera</value>
+    <value>कैमरा</value>
   </data>
   <data name="Attachment_Location_Txt" xml:space="preserve">
-    <value>Share Location</value>
+    <value>लोकेशन साझा करें</value>
   </data>
   <data name="Attachment_Photo_Txt" xml:space="preserve">
-    <value>Send Photo</value>
+    <value>फोटो भेजें!</value>
   </data>
   <data name="Attachment_Video_Txt" xml:space="preserve">
-    <value>Send Video</value>
+    <value>वीडियो भेजें!</value>
   </data>
   <data name="NoFreeSmsLeft_Txt" xml:space="preserve">
-    <value>Invite {0} to continue hiking.</value>
+    <value>Hike  को चालू रखने के लिए {0} को आमत्रित करें |</value>
   </data>
   <data name="SelectUser_GroupMsg_Txt" xml:space="preserve">
-    <value>Group Message</value>
+    <value>समूह संदेश</value>
   </data>
   <data name="HappyMessaging_Txt" xml:space="preserve">
-    <value>Happy Messaging!</value>
+    <value>मजे से सन्देश करें |</value>
   </data>
   <data name="MessageNonHikeFriends_Blk1_Txt" xml:space="preserve">
-    <value>You can also message friends not</value>
+    <value>आप दोस्तों को संदेश भेज  सकते हैं बिना </value>
   </data>
   <data name="MessageNonHikeFriends_Blk2_Txt" xml:space="preserve">
-    <value>on hike with free hike SMS</value>
+    <value>hike  पर hike की मुफ्त एसएमएस सुविधा के साथ |</value>
   </data>
   <data name="MessagingHikeFriendsFree_Txt" xml:space="preserve">
-    <value>Messaging hike friends is free &amp; unlimited.</value>
+    <value>hike  के मित्रों को मुफ्त सन्देश भेजना &amp; असीमित है</value>
   </data>
   <data name="ReadyToHike_Txt" xml:space="preserve">
-    <value>Ready to hike...</value>
+    <value>hike  के लिए तैयार |</value>
   </data>
   <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
-    <value>Share on Facebook &amp; Twitter</value>
+    <value>फेसबुक और &amp; ट्विटर पर साझा करें |</value>
   </data>
   <data name="FB_Connect_Txt" xml:space="preserve">
-    <value>Connect with Facebook</value>
+    <value>फेसबुक के साथ जुड़ें</value>
   </data>
   <data name="FeelingLazy_Txt" xml:space="preserve">
-    <value>Feeling lazy? We'll do it for you.</value>
+    <value>आलसी लग रहे है? हम यह आपके लिए करेंगे !</value>
     <comment>Used in Entername screen above FB Notification</comment>
   </data>
   <data name="Account_Txt" xml:space="preserve">
-    <value>account</value>
+    <value>खाता</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Delete_Txt_Caps" xml:space="preserve">
-    <value>Delete</value>
+    <value>डिलीट</value>
     <comment>Privacy page (xaml)</comment>
   </data>
   <data name="Unlink_Txt" xml:space="preserve">
-    <value>Unlink</value>
+    <value>अनलिंक</value>
     <comment>Privacy page (xaml)</comment>
   </data>
   <data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
-    <value>{0} changed the group image.</value>
+    <value>{0} ने समूह की छवि बदल दी  है |</value>
   </data>
   <data name="Ask_Me_Later_Txt" xml:space="preserve">
-    <value>Ask Me Later</value>
+    <value>मुझसे बाद में पूछना!</value>
   </data>
   <data name="Love_Using_Hike_Txt" xml:space="preserve">
-    <value>Love using Hike?</value>
+    <value>hike  का इस्तेमाल करना पसंद है |</value>
   </data>
   <data name="Rate_Now_Txt" xml:space="preserve">
-    <value>Rate Now</value>
+    <value>अभी रेट करें |</value>
   </data>
   <data name="Rate_Us_Txt" xml:space="preserve">
-    <value>Please rate us on the Marketplace.</value>
+    <value>कृपया बाज़ार में हमें रेट करें |</value>
   </data>
   <data name="UpgradingApp_Text" xml:space="preserve">
-    <value>Please wait while your app is upgrading...</value>
+    <value> प्रतीक्षा करें, आपका ऐप्प अपग्रेड हो रहा है |</value>
   </data>
   <data name="Stop_Caption_txt" xml:space="preserve">
-    <value>Stop!!!</value>
+    <value> बंद करो!</value>
   </data>
   <data name="Stop_Contact_Scanning" xml:space="preserve">
-    <value>Do you want to stop contact scanning?</value>
+    <value>क्या आप संपर्क स्कैनिंग बंद करना चाहते हैं?</value>
   </data>
   <data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
-    <value>Message {0} on Hike</value>
+    <value>hike   {0} पर संदेश</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>{0} added you to Circle of Friends</value>
+    <value>{0} ने आपको दोस्तों की मंडली में जोड़ा</value>
     <comment>{0} will be replaced by username</comment>
   </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
-    <value>Would you like to do the same?</value>
+    <value>आप भी ऐसा ही करना चाहेंगे?</value>
   </data>
   <data name="Profile_CancelRequest_BtnTxt" xml:space="preserve">
-    <value>Cancel Request</value>
+    <value>अनुरोध रद्द करें |</value>
   </data>
   <data name="Profile_RequestSent_Blk1" xml:space="preserve">
-    <value>Waiting For</value>
+    <value>इंतज़ार में |</value>
   </data>
   <data name="Profile_RequestSent_Blk3" xml:space="preserve">
-    <value>to accept your friend request.</value>
+    <value>दोस्ती के अनुरोध को स्वीकार करने के लिए !</value>
   </data>
   <data name="Profile_AddNow_Btn_Txt" xml:space="preserve">
-    <value>Add now</value>
+    <value>अभी जोडें!</value>
   </data>
   <data name="Profile_NoStatus_Txt" xml:space="preserve">
-    <value>hasn't posted anything :(</value>
+    <value>कुछ भी पोस्ट नहीं किया है !</value>
   </data>
   <data name="Profile_NotInAddressbook_Txt" xml:space="preserve">
-    <value>is not in your address book.</value>
+    <value>यह आपके अड्रेस बुक में नहीं है !</value>
   </data>
   <data name="Conversations_Circle_Of_friends_txt" xml:space="preserve">
-    <value>CIRCLE OF FRIENDS</value>
+    <value>दोस्तों का समूह !</value>
   </data>
   <data name="Conversations_Contacts_on_hike" xml:space="preserve">
-    <value>CONTACTS ON HIKE</value>
+    <value>hike  पर उपलब्ध संपर्क |</value>
   </data>
   <data name="Profile_BlockedUser_Blk1" xml:space="preserve">
-    <value>You have blocked</value>
+    <value>आपने प्रतिबंधित किया है |</value>
   </data>
   <data name="Profile_BlockedUser_Blk3" xml:space="preserve">
-    <value>Unblock to send a message.</value>
+    <value>संदेश भेजने के लिए प्रतिबंध हटाएं |</value>
   </data>
   <data name="Share_With_Txt" xml:space="preserve">
-    <value>SHARE</value>
+    <value>सांझा करें |</value>
     <comment>Used in share photo</comment>
   </data>
   <data name="Block_Tap_Txt" xml:space="preserve">
-    <value>Tap to {0} this person</value>
+    <value>इस व्यक्ति {0} की दबाएं |</value>
     <comment>Used in add to block functionality, {0} will be replaced by block/unblock</comment>
   </data>
   <data name="Conversations_BtnUpdateStatus_Txt" xml:space="preserve">
-    <value>Update status</value>
+    <value>अपडेट स्टेटस</value>
   </data>
   <data name="Conversations_EmptyStatus_AskPostStatus_Txt" xml:space="preserve">
-    <value>Looks like you haven't posted any status update yet.</value>
+    <value>लगता है, आपने अभी तक कोई स्टेटस पोस्ट नहीं किया है !</value>
   </data>
   <data name="Conversations_EmptyStatus_Hey_Txt" xml:space="preserve">
-    <value>Hey {0}!</value>
+    <value>अरे {0}!</value>
     <comment>{0} replaced by user name</comment>
   </data>
   <data name="Conversations_EmptyStatus_TeamHike_Txt" xml:space="preserve">
-    <value>Team Hike</value>
+    <value>hike  टीम|</value>
   </data>
   <data name="Update_Profile_Pic_txt" xml:space="preserve">
-    <value>Updated profile picture</value>
+    <value>नवीनीकृत प्रोफ़ाइल तस्वीर</value>
     <comment>Used to show for pp update in last msg of convlist</comment>
   </data>
   <data name="Conversations_DefaultStatus_Txt" xml:space="preserve">
-    <value>Post a status update</value>
+    <value>एक स्टेटस अपडेट को पोस्ट करे !</value>
   </data>
   <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
-    <value>Status updates notification</value>
+    <value>स्टेटस अपडेट नोटिफिकेशन</value>
   </data>
   <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
-    <value>Every Hour</value>
+    <value>हर घंटे</value>
   </data>
   <data name="Settings_StatusUpdate_EveryXHour_txt" xml:space="preserve">
-    <value>Every {0} Hour</value>
+    <value>प्रत्येक {0} घंटे </value>
     <comment>{0} replaced by number of hours</comment>
   </data>
   <data name="Settings_StatusUpdate_Immediate_Txt" xml:space="preserve">
-    <value>Immediate</value>
+    <value>तुरंत</value>
   </data>
   <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
-    <value>Only your 'Circle of friends' can see your status updates</value>
+    <value>केवल आपके 'दोस्तों का सर्कल' आपका स्टेटस अपडेट देख सकते हैं !</value>
   </data>
   <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
-    <value>Tap on this icon to post a new status</value>
+    <value>नये स्टेटस अपडेट के लिए इस चिह्न को दबाएँ |</value>
   </data>
   <data name="Conversations_Status_Tutorials_Header" xml:space="preserve">
-    <value>Status Updates</value>
+    <value>स्थिति अपडेट</value>
   </data>
   <data name="Notifications_Header_Txt" xml:space="preserve">
-    <value>notifications</value>
+    <value>नोटिफिकेशन</value>
   </data>
   <data name="Now_Friends_Txt" xml:space="preserve">
-    <value>Is now your friend</value>
+    <value>अब आपका मित्र है!</value>
     <comment>This is used in timeline and profile , when user becomed friend.</comment>
   </data>
   <data name="Friend_Confirm_Txt" xml:space="preserve">
-    <value>Confirmed you as a friend</value>
+    <value>एक मित्र के रूप में पुष्टि की!</value>
     <comment>This is shown when a user confirms you as friend.</comment>
   </data>
   <data name="Me_Txt" xml:space="preserve">
-    <value>Me</value>
+    <value>मैं</value>
   </data>
   <data name="Conversations_BtnCircleOfFriends_Txt" xml:space="preserve">
-    <value>View friends</value>
+    <value>दोस्तो को देखे</value>
   </data>
   <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
-    <value>You can see updates from your circle of friends here.</value>
+    <value>आप अपने दोस्तों के गुट के अपडेट्स यहाँ देख सकते हैं</value>
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
-    <value>Invite your friends to hike</value>
+    <value>अपने मित्रों को hike  के लिये आमंत्रित करें!</value>
   </data>
   <data name="Mood_Angry" xml:space="preserve">
-    <value>Angry </value>
+    <value>गुस्से में  </value>
   </data>
   <data name="Mood_Boozing" xml:space="preserve">
-    <value>Boozing </value>
+    <value>पीते हुए  </value>
   </data>
   <data name="Mood_Busy" xml:space="preserve">
-    <value>Busy </value>
+    <value>व्यस्त  </value>
   </data>
   <data name="Mood_Caffeinated" xml:space="preserve">
-    <value>Caffeinated </value>
+    <value>कैफीन पीते हुए  </value>
   </data>
   <data name="Mood_Chilling" xml:space="preserve">
-    <value>Chilling </value>
+    <value>मज़े करते हुए  </value>
   </data>
   <data name="Mood_Coding" xml:space="preserve">
-    <value>Coding </value>
+    <value>कोडिंग करते हुए  </value>
   </data>
   <data name="Mood_Confused" xml:space="preserve">
-    <value>Confused </value>
+    <value>भ्रमित </value>
   </data>
   <data name="Mood_Driving" xml:space="preserve">
-    <value>Driving </value>
+    <value>वाहन चलाते हुए  </value>
   </data>
   <data name="Mood_Gaming" xml:space="preserve">
-    <value>Gaming </value>
+    <value>खेलते हुए  </value>
   </data>
   <data name="Mood_Happy" xml:space="preserve">
-    <value>Happy </value>
+    <value>खुश  </value>
   </data>
   <data name="Mood_Hungover" xml:space="preserve">
-    <value>Hungover </value>
+    <value>ख़ुमारी में  </value>
   </data>
   <data name="Mood_Insomniac" xml:space="preserve">
-    <value>Insomniac </value>
+    <value>निद्राहीन  </value>
   </data>
   <data name="Mood_In_a_movie" xml:space="preserve">
-    <value>In a movie </value>
+    <value>मूवी में </value>
   </data>
   <data name="Mood_In_love" xml:space="preserve">
-    <value>In love </value>
+    <value>प्यार में  </value>
   </data>
   <data name="Mood_Love_it" xml:space="preserve">
-    <value>Love it </value>
+    <value>अच्छा लगा  </value>
   </data>
   <data name="Mood_Middle_finger" xml:space="preserve">
-    <value>Middle finger </value>
+    <value>मध्य ऊँगली  </value>
   </data>
   <data name="Mood_Running_late" xml:space="preserve">
-    <value>Running late </value>
+    <value>देरी से चलते हुए  </value>
   </data>
   <data name="Mood_Sad" xml:space="preserve">
-    <value>Sad </value>
+    <value>उदास  </value>
   </data>
   <data name="Mood_Shopping" xml:space="preserve">
-    <value>Shopping </value>
+    <value>खरीददारी करते हुए </value>
   </data>
   <data name="Mood_Sleepy" xml:space="preserve">
-    <value>Sleepy </value>
+    <value>नींद में  </value>
   </data>
   <data name="Mood_Stuck_in_traffic" xml:space="preserve">
-    <value>Stuck in traffic </value>
+    <value>जाम में फंसे हुए </value>
   </data>
   <data name="Mood_Studying" xml:space="preserve">
-    <value>Studying </value>
+    <value>पढाई करते हुए </value>
   </data>
   <data name="Mood_Surprised" xml:space="preserve">
-    <value>Surprised</value>
+    <value>हैरान होना!</value>
   </data>
   <data name="Mood_Watching_tv" xml:space="preserve">
-    <value>Watching TV</value>
+    <value>टीवी देखते हुए |</value>
   </data>
   <data name="StatusDelete_NoNtwrk_Txt" xml:space="preserve">
-    <value>Could not delete your status update. Please check your network connection and try again later.</value>
+    <value>आपका स्टेटस अपडेट मिट नहीं सका। कृपया नेटवर्क कनेक्शन देखें और बाद में पुन: प्रयास करें।</value>
   </data>
   <data name="StatusDetionFail_Txt" xml:space="preserve">
-    <value>Unable to delete your status.</value>
+    <value>अपनी स्थिति को हटाने में असमर्थ!</value>
   </data>
   <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
-    <value>Add to Contacts</value>
+    <value>संपर्कों में जोड़ें</value>
   </data>
   <data name="SettingsSubtitle_Account_Txt" xml:space="preserve">
-    <value>Account</value>
+    <value>खाता</value>
   </data>
   <data name="SettingsSubtitle_Blocklist_Txt" xml:space="preserve">
-    <value>Blocklist</value>
+    <value>प्रतिबंधित सूची</value>
   </data>
   <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
-    <value>Notifications</value>
+    <value>अधिसूचना</value>
   </data>
   <data name="Settings_AccountSettings_Txt" xml:space="preserve">
-    <value>Manage your hike account</value>
+    <value>अपने hike  खाते को नियंत्रित करें |</value>
   </data>
   <data name="Settings_BlocklistSettings_Txt" xml:space="preserve">
-    <value>A list of people you've blocked</value>
+    <value>आपके द्वारा प्रतिबधित लोगों की सूची</value>
   </data>
   <data name="Settings_NotificationSettings_Txt" xml:space="preserve">
-    <value>Your notifications preferences</value>
+    <value>आपकी नोटिफिकेशन प्राथमिकताएं</value>
   </data>
   <data name="Blocklist_user_txt" xml:space="preserve">
-    <value>user</value>
+    <value>उपयोगकर्ता</value>
   </data>
   <data name="Conversations_InviteFriend_Btn" xml:space="preserve">
-    <value>Invite Friends</value>
+    <value>दोस्तों को आमंत्रण</value>
   </data>
   <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
-    <value>Tap on + to add a contact to your circle of friends.</value>
+    <value>दोस्तों को अपने सर्कल से जोड़ने के लिए कोई + दबाएँ |</value>
   </data>
   <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
-    <value>What's up, {0}?</value>
+    <value>क्या हो रहा है{0}</value>
     <comment>{0} replaced by user name </comment>
   </data>
   <data name="Profile_You_NoStatus_Txt" xml:space="preserve">
-    <value>You haven't posted anything :(</value>
+    <value>आपने कुछ भी पोस्ट नहीं किया है!</value>
   </data>
   <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
-    <value>Group Name can have maximum 30 chars.</value>
+    <value>समूह का नाम अधिकतम 30 अक्षर का हो सकता है |</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
-    <value>Could not send file</value>
+    <value>फ़ाइल नहीं भेजी जा सकती |</value>
   </data>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
-    <value>Max file size can be 15 MB.</value>
+    <value>अधिकतम फ़ाइल आकार 15 एमबी हो सकता है!</value>
   </data>
   <data name="CT_CharCount_Sms_User" xml:space="preserve">
     <value>{0}/{1}</value>
     <comment>{0}-number , {1} number</comment>
   </data>
   <data name="CT_MessageCount_Sms_User" xml:space="preserve">
-    <value>{0} messages,</value>
+    <value>{0} संदेश </value>
     <comment>{0} replaced by number</comment>
   </data>
   <data name="Hold_And_Talk" xml:space="preserve">
-    <value>Hold and talk</value>
+    <value>रोकें और बात करें</value>
     <comment>Long press to start audio recording</comment>
   </data>
   <data name="Release_To_Send" xml:space="preserve">
-    <value>Release to Send</value>
+    <value>भेजने हेतु मुक्तकरें</value>
     <comment>Release to send recorded data</comment>
   </data>
   <data name="BlockList_Text" xml:space="preserve">
-    <value>BLOCK LIST</value>
+    <value>ब्लॉक सूची</value>
   </data>
   <data name="Conversations_Dismiss_Tip" xml:space="preserve">
-    <value>Dismiss</value>
+    <value>डिसमिस करें</value>
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>Show last seen</value>
+    <value>ऑनलाइनटाइमस्टाम्प देखें/दिखाएं</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
-    <value>last seen</value>
+    <value>लास्ट सीन</value>
   </data>
   <data name="Online" xml:space="preserve">
-    <value>online</value>
+    <value>ऑनलाइन</value>
   </data>
   <data name="Preferences_Header_Txt" xml:space="preserve">
-    <value>preferences</value>
+    <value>प्राथमिकताएं</value>
   </data>
   <data name="SettingsSubtitle_Preferences_Txt" xml:space="preserve">
-    <value>Preferences</value>
+    <value>प्राथमिकताएं</value>
   </data>
   <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
-    <value>Your account preferences</value>
+    <value>आपकी खाता प्राथमिकताएं</value>
   </data>
   <data name="Drag_Here_To_Delete" xml:space="preserve">
-    <value>Drag here to delete</value>
+    <value>डिलीट हेतु ड्रैगकरें</value>
     <comment>Drag to a specified area to delete ongoing recording</comment>
   </data>
   <data name="Message_Cancelled" xml:space="preserve">
-    <value>Message cancelled</value>
+    <value>संदेश निरस्त</value>
     <comment>Notify user that recording has been deleted</comment>
   </data>
   <data name="Message_Too_Short" xml:space="preserve">
-    <value>Message too short</value>
+    <value>संदेश बहुत छोटा है</value>
     <comment>Message is too short to be sent</comment>
   </data>
   <data name="In_App_Tip_1" xml:space="preserve">
-    <value>Tap here to share stickers and emoticons :)</value>
+    <value>स्टिकर और इमोशिकॉन साझा करने हेतु टैप करें</value>
   </data>
   <data name="In_App_Tip_2" xml:space="preserve">
-    <value>New stickers!</value>
+    <value>नए स्टिकर!</value>
   </data>
   <data name="In_App_Tip_3" xml:space="preserve">
-    <value>Tap here to use hike's new Walkie Talkie!</value>
+    <value>hike का नया वॉकीटॉकी इस्तेमाल करने हेतु टैप करें</value>
   </data>
   <data name="In_App_Tip_4" xml:space="preserve">
-    <value>Tap here to attach a wonderful mood :)</value>
+    <value>शानदार मूड :) संलग्न करने के लिए टैप करें</value>
   </data>
   <data name="In_App_Tip_5" xml:space="preserve">
-    <value>This is a status update posted by {0}</value>
+    <value>यह {0} द्वारा पोस्ट किया गया स्टेटस अपडेट है</value>
   </data>
   <data name="No_Stickers_Downloaded_Txt" xml:space="preserve">
-    <value>No stickers downloaded in this category</value>
+    <value>इस श्रेणी में कोई स्टिकर डाउनलोड नहीं किया गया</value>
     <comment>General text</comment>
   </data>
   <data name="Sticker_Txt" xml:space="preserve">
-    <value>Sticker</value>
+    <value>स्टिकर</value>
     <comment>noun</comment>
   </data>
   <data name="Sticker_Downloading_Txt" xml:space="preserve">
-    <value>Downloading</value>
+    <value>डाउनलोड हो रहा है</value>
   </data>
   <data name="At_Txt" xml:space="preserve">
-    <value>at</value>
+    <value>पर</value>
     <comment>General Text</comment>
   </data>
   <data name="TimeUtils_A_While_Ago" xml:space="preserve">
-    <value>a while ago</value>
+    <value>कुछ समय पहले</value>
   </data>
   <data name="Today_Txt" xml:space="preserve">
-    <value>today</value>
+    <value>आज</value>
     <comment>General Text</comment>
   </data>
   <data name="Invite_Sent_Successfully" xml:space="preserve">
-    <value>Invite sent successfully</value>
+    <value>आमंत्रण सफलतापूर्वक भेजा गया</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
-    <value>{0} is back on hike. Say hi :)</value>
+    <value>{0} hike  पर वापस आ गया है। उसे hi:) बोलें</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="StickersTut_TxtBlk1" xml:space="preserve">
-    <value>Express yourself better with</value>
+    <value>के साथ खुद को बेहतर रूप से अभिव्यक्त करें।</value>
     <comment>continued string -&gt;StickersTut_TxtBlk2(50)</comment>
   </data>
   <data name="StickersTut_TxtBlk2" xml:space="preserve">
-    <value>new hike stickers</value>
+    <value>नए hike  स्टिकर</value>
     <comment>StickersTut_TxtBlk1-&gt;StickersTut_TxtBlk2(50)</comment>
   </data>
   <data name="WelcomeTut_TxtBlk1" xml:space="preserve">
-    <value>Now share your status updates with</value>
+    <value>के साथ अब अपना स्टेटस अपडेट साझा करें</value>
     <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
-    <value>your circle of friends.</value>
+    <value>आपके दोस्तों की मंडली</value>
     <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
-    <value>You will now be able to see updates from {0} here.</value>
+    <value>अब आप यहाँ {0} के अपडेट देखने में सक्षम होंगे।</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendUserProfile_Txt" xml:space="preserve">
-    <value>You will now be able to see updates from each other</value>
+    <value>अब आप एक-दूसरे के अपडेट देखने में सक्षम होंगे</value>
   </data>
   <data name="In_App_Tip_6" xml:space="preserve">
-    <value>Only your Circle of Friends can see when you were last seen</value>
+    <value>केवल आपके दोस्तों की मंडली देख पाएगी कि अंतिम बार आप कब दिखे थे</value>
   </data>
   <data name="DownloadingSticker_txt" xml:space="preserve">
-    <value>loading sticker</value>
+    <value>स्टिकर लोड हो रहा है</value>
   </data>
   <data name="Download_txt" xml:space="preserve">
-    <value>Download</value>
+    <value>डाउनलोड</value>
     <comment>length-8 fixed</comment>
   </data>
   <data name="Free_txt" xml:space="preserve">
-    <value>free</value>
+    <value>फ्री</value>
     <comment>length-4 fixed</comment>
   </data>
   <data name="InternetChargesMayApply_txt" xml:space="preserve">
-    <value>*Mobile internet charges may apply</value>
+    <value>*मोबाइल इंटरनेट शुल्क लग सकता है</value>
   </data>
   <data name="StickerDownloadFailed" xml:space="preserve">
-    <value>Sticker download failed.</value>
+    <value>स्टिकर डाउनलोड विफल</value>
   </data>
   <data name="TapHereToRetyTxt" xml:space="preserve">
-    <value>Tap here to retry.</value>
+    <value>पुन:प्रयास के लिए टैप करें</value>
   </data>
   <data name="Invite_Not_Sent" xml:space="preserve">
-    <value>Unable to send invite.</value>
+    <value>आमंत्रण भेजने में असमर्थ</value>
   </data>
   <data name="Please_Retry_Later" xml:space="preserve">
-    <value>Please retry later</value>
-  </data>
-  <data name="Installed_Txt" xml:space="preserve">
-    <value>Installed</value>
+    <value>कृपया बाद में कोशिश करें</value>
   </data>
   <data name="sms_invite_message_1" xml:space="preserve">
-    <value>Hey, I'm using hike, and it has all these awesome stickers and emoticons which I want to share with you. Get it now http://hike.in/</value>
+    <value>मैं hike  इस्तेमाल कर रहा हूँ और इसमें वे सभी स्टिकर और इमोशिकॉन हैं जिसे मैं तुम्हारे साथ साझा करना चाहता हूँ। अब http://hike.in/ पर पाएं</value>
   </data>
   <data name="sms_invite_message_2" xml:space="preserve">
-    <value>Hey, I'm using hike, which lets us show our "last seen" status only to the friends we choose, and not everyone. Get it now http://hike.in/</value>
+    <value>मैं hike  इस्तेमाल कर रहा हूँ जो सबको नहीं बल्कि केवल हमारे द्वारा चुने दोस्तों को 'लास्ट सीन' स्थिति दिखाता है। अभी http://hike.in/ पर पाएं</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="sms_invite_message_3" xml:space="preserve">
-    <value>Hey, I'm using hike; it comes with a cool Walkie-Talkie which lets me send you free voice messages. Get it now http://hike.in/</value>
-  </data>
-  <data name="Last_Seen_Today_At" xml:space="preserve">
-    <value>last seen today at</value>
-  </data>
-  <data name="Last_Seen_Yesterday_At" xml:space="preserve">
-    <value>last seen yesterday at</value>
-  </data>
-  <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
-    <value>Fun, free messaging for life</value>
-  </data>
-  <data name="Button_Retry_Txt" xml:space="preserve">
-    <value>Retry</value>
-  </data>
-  <data name="DownloadFailed_Txt" xml:space="preserve">
-    <value>Oops! Download Failed</value>
-  </data>
-  <data name="SelectUser_Forward_To_Txt" xml:space="preserve">
-    <value>Forward To</value>
-    <comment>verb(length 12)</comment>
+    <value>मैं hike  इस्तेमाल कर रहा हूँ, यह मजेदार वॉकीटॉकी के साथ आता है जिससे मुफ्त वॉयस मैसेज भेज सकते हैं। अभी इसे http://hike.in/ से पाएं</value>
   </data>
 </root>
