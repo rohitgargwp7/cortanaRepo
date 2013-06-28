@@ -364,6 +364,46 @@ namespace windows_client.View
             // this is done to update profile name , as soon as it gets updated
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PROFILE_NAME_CHANGED))
                 txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED];
+
+            txtMsisdn.Text = msisdn;
+            ContextMenu menu = new ContextMenu();
+
+            if (msisdn != App.MSISDN)
+            {
+                menu.IsZoomEnabled = false;
+                MenuItem menuItemCall = new MenuItem();
+                menuItemCall.Header = AppResources.Call_Txt;
+                menuItemCall.Click += menuItemCall_Click;
+                menu.Items.Add(menuItemCall);
+                ContextMenuService.SetContextMenu(txtMsisdn, menu);
+            }
+
+            menu.IsZoomEnabled = false;
+            MenuItem menuItemCopy = new MenuItem();
+            menuItemCopy.Header = AppResources.Copy_txt;
+            menuItemCopy.Click += menuItemCopy_Click;
+            menu.Items.Add(menuItemCopy);
+            ContextMenuService.SetContextMenu(txtMsisdn, menu);
+        }
+
+        void menuItemCopy_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(txtMsisdn.Text);
+        }
+
+        void menuItemCall_Click(object sender, RoutedEventArgs e)
+        {
+            PhoneCallTask phoneCallTask = new PhoneCallTask();
+            phoneCallTask.PhoneNumber = txtMsisdn.Text;
+            phoneCallTask.DisplayName = txtUserName.Text;
+            try
+            {
+                phoneCallTask.Show();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("UserProfile.xaml ::  menuItemCall_Click , Exception : " + ex.StackTrace);
+            }
         }
 
         private void InitChatIconBtn()
@@ -1277,6 +1317,15 @@ namespace windows_client.View
                 inAddressBook = true;
             }
             return inAddressBook;
+        }
+
+        private void GestureListener_Tap(object sender, GestureEventArgs e)
+        {
+            TextBlock textBlock = sender as TextBlock;
+            ContextMenu contextMenu = ContextMenuService.GetContextMenu(textBlock);
+         
+            if (contextMenu != null)
+                contextMenu.IsOpen = true;
         }
     }
 }

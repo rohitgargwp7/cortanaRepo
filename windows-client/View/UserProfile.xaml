@@ -26,32 +26,26 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Height="280" >
+        <Grid MaxHeight="280" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Image Name="imgBackgrund" Grid.Row="0" Grid.RowSpan="4" Stretch="UniformToFill" />
+            <Image Name="imgBackgrund" Grid.Row="0" Grid.RowSpan="3" Stretch="UniformToFill" />
 
-            <Grid Grid.Row="0" Margin="24,22,24,20">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock x:Name="txtProfileHeader" Text="{Binding Path= LocalizedResources.OthersProfile_Txt, Source={StaticResource LocalizedStrings}}"  Grid.Column="0" HorizontalAlignment="Left" FontSize="22" FontFamily="Segoe WP" Foreground="White"  />
+            <TextBlock x:Name="txtProfileHeader" Margin="24,22,0,0" Text="{Binding Path= LocalizedResources.OthersProfile_Txt, Source={StaticResource LocalizedStrings}}"  Grid.Column="0" HorizontalAlignment="Left" FontSize="22" FontFamily="Segoe WP" Foreground="White"  />
+            <Grid Grid.Row="1" Margin="24,10,24,0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Tap="onProfilePicButtonTap">
+                <Image Name="avatarImage" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="90" Width="90"/>
+                <Image Name="changePic" Visibility="Collapsed" Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Source="images\change_pic.png" />
             </Grid>
-            <Grid Grid.Row="1" Margin="24,30,24,-10" VerticalAlignment="Bottom" Tap="onProfilePicButtonTap">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Image Name="avatarImage" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="0" Height="90" Width="90"/>
-                <Image Name="changePic" Visibility="Collapsed" Grid.Column="0"  Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Source="images\change_pic.png" />
-            </Grid>
-            <StackPanel Grid.Row="2" Margin="24,-10,24,15" Orientation="Vertical"  VerticalAlignment="Bottom" >
+            <StackPanel Grid.Row="2" Margin="24,5,24,15" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" >
                 <TextBlock Name="txtUserName" HorizontalAlignment="Left" FontSize="34" FontFamily="Segoe WP" Foreground="White"/>
+                <TextBlock Name="txtMsisdn" HorizontalAlignment="Left" FontSize="30" FontFamily="Segoe WP" Foreground="White">
+                    <toolkit:GestureService.GestureListener>
+                        <toolkit:GestureListener Tap="GestureListener_Tap" />
+                    </toolkit:GestureService.GestureListener>
+                </TextBlock>
                 <TextBlock Name="txtOnHikeSmsTime" HorizontalAlignment="Left" FontSize="18"  FontFamily="Segoe WP Semilight" Foreground="White"  />
             </StackPanel>
         </Grid>
