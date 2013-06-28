@@ -2346,6 +2346,8 @@ namespace windows_client.View
                         App.appSettings.Remove(App.PRO_TIP);
                         App.appSettings.Save();
                     }
+
+                    App.AnalyticsInstance.addEvent(Analytics.PRO_TIPS_DISMISSED);
                 };
             worker.RunWorkerAsync();
 
