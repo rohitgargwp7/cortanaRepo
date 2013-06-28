@@ -1026,7 +1026,7 @@ namespace windows_client.utils
                             
                             bool onhike = (bool)entry["onhike"];
                             ContactInfo cinfo = cList[i];
-                            ContactInfo cn = new ContactInfo(kv.Key, msisdn, cinfo.Name, onhike, cinfo.PhoneNo, (int)cinfo.Kind);
+                            ContactInfo cn = new ContactInfo(kv.Key, msisdn, cinfo.Name, onhike, cinfo.PhoneNo, (int)cinfo.PhoneNoKind);
 
                             if (!isRefresh) // this is case for new installation
                             {

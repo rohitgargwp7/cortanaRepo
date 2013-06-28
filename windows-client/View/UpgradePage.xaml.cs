@@ -75,7 +75,7 @@ namespace windows_client.View
                             DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
                             if (dbUpdater.DatabaseSchemaVersion < 1)
                             {
-                                dbUpdater.AddColumn<ContactInfo>("Kind");
+                                dbUpdater.AddColumn<ContactInfo>("PhoneNoKind");
                                 dbUpdater.DatabaseSchemaVersion = 1;
                                 dbUpdater.Execute();
                             }

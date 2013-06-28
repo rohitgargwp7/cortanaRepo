@@ -34,7 +34,7 @@ namespace windows_client.Model
         private byte[] _avatar;
         private bool _isFav;
         private bool _isCloseFriendNux;//for Nux , this will also be used in equals function , if true we will compare msisdns only in equals function
-        private int _kind;
+        private int _phoneNoKind;
 
         # region Users Table Members
 
@@ -158,17 +158,17 @@ namespace windows_client.Model
         }
 
         [Column(CanBeNull = true)]
-        public int? Kind
+        public int? PhoneNoKind
         {
             get
             {
-                return _kind;
+                return _phoneNoKind;
             }
             set
             {
-                NotifyPropertyChanging("Kind");
-                _kind = value == null ? 0 : (int)value;
-                NotifyPropertyChanged("Kind");
+                NotifyPropertyChanging("PhoneNoKind");
+                _phoneNoKind = value == null ? 0 : (int)value;
+                NotifyPropertyChanged("PhoneNoKind");
             }
         }
 
@@ -223,52 +223,21 @@ namespace windows_client.Model
             _name = null;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="number"></param>
-        /// <param name="name"></param>
-        /// <param name="phoneNum"></param>
-        /// <param name="kind"></param>
         public ContactInfo(string number, string name, string phoneNum, int kind)
             : this(null, number, name, false, phoneNum, kind, false)
         {
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="number"></param>
-        /// <param name="name"></param>
-        /// <param name="phoneNum"></param>
-        /// <param name="kind"></param>
         public ContactInfo(string id, string number, string name, string phoneNum, int kind)
             : this(id, number, name, false, phoneNum, kind, false)
         {
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="number"></param>
-        /// <param name="name"></param>
-        /// <param name="onHike"></param>
-        /// <param name="phoneNum"></param>
-        /// <param name="kind"></param>
         public ContactInfo(string id, string number, string name, bool onHike, string phoneNum, int kind) :
             this(id, number, name, onHike, phoneNum, kind, false)
         {
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="number"></param>
-        /// <param name="name"></param>
-        /// <param name="onHike"></param>
-        /// <param name="kind"></param>
         public ContactInfo(string number, string name, bool onHike) :
             this(null, number, name, onHike, number, 0, false)
         {
@@ -282,7 +251,7 @@ namespace windows_client.Model
             this.OnHike = onhike;
             this.PhoneNo = phoneNo;
             this.HasCustomPhoto = hasCustomPhoto;
-            this.Kind = kind;
+            this.PhoneNoKind = kind;
         }
 
         public ContactInfo(ContactInfo contact)
@@ -291,7 +260,7 @@ namespace windows_client.Model
             this._name = contact._name;
             this._onHike = contact._onHike;
             this._phoneNo = contact._phoneNo;
-            this._kind = contact._kind;
+            this._phoneNoKind = contact._phoneNoKind;
         }
 
 
@@ -339,7 +308,7 @@ namespace windows_client.Model
             const int prime = 31;
             int result = 1;
             result = prime * result + (string.IsNullOrWhiteSpace(Name) ? 0 : Name.GetHashCode());
-            result = prime * result + Kind.GetHashCode();
+            result = prime * result + PhoneNoKind.GetHashCode();
             result = prime * result + ((PhoneNo == null) ? 0 : PhoneNo.GetHashCode());
             return result;
         }
@@ -365,11 +334,11 @@ namespace windows_client.Model
             }
         }
 
-        public string KindText
+        public string PhoneNoKindText
         {
             get
             {
-                return "(" + Enum.GetName(typeof(Microsoft.Phone.UserData.PhoneNumberKind), Kind).ToString(CultureInfo.CurrentCulture).ToLower() + ")";
+                return "(" + Enum.GetName(typeof(Microsoft.Phone.UserData.PhoneNumberKind), PhoneNoKind).ToString(CultureInfo.CurrentCulture).ToLower() + ")";
             }
         }
 
