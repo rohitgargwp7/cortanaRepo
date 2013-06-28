@@ -34,7 +34,7 @@ namespace windows_client.Model
         private byte[] _avatar;
         private bool _isFav;
         private bool _isCloseFriendNux;//for Nux , this will also be used in equals function , if true we will compare msisdns only in equals function
-        private int _phoneNoKind;
+        private int? _phoneNoKind;
 
         # region Users Table Members
 
@@ -167,7 +167,7 @@ namespace windows_client.Model
             set
             {
                 NotifyPropertyChanging("PhoneNoKind");
-                _phoneNoKind = value == null ? 0 : (int)value;
+                _phoneNoKind = value;
                 NotifyPropertyChanged("PhoneNoKind");
             }
         }
@@ -223,27 +223,27 @@ namespace windows_client.Model
             _name = null;
         }
 
-        public ContactInfo(string number, string name, string phoneNum, int kind)
-            : this(null, number, name, false, phoneNum, kind, false)
+        public ContactInfo(string number, string name, string phoneNum, int phoneNoKind)
+            : this(null, number, name, false, phoneNum, phoneNoKind, false)
         {
         }
 
-        public ContactInfo(string id, string number, string name, string phoneNum, int kind)
-            : this(id, number, name, false, phoneNum, kind, false)
+        public ContactInfo(string id, string number, string name, string phoneNum, int phoneNoKind)
+            : this(id, number, name, false, phoneNum, phoneNoKind, false)
         {
         }
 
-        public ContactInfo(string id, string number, string name, bool onHike, string phoneNum, int kind) :
-            this(id, number, name, onHike, phoneNum, kind, false)
+        public ContactInfo(string id, string number, string name, bool onHike, string phoneNum, int phoneNoKind) :
+            this(id, number, name, onHike, phoneNum, phoneNoKind, false)
         {
         }
 
         public ContactInfo(string number, string name, bool onHike) :
-            this(null, number, name, onHike, number, 0, false)
+            this(null, number, name, onHike, number, null, false)
         {
         }
 
-        public ContactInfo(string id, string msisdn, string name, bool onhike, string phoneNo, int kind, bool hasCustomPhoto)
+        public ContactInfo(string id, string msisdn, string name, bool onhike, string phoneNo, int? phoneNoKind, bool hasCustomPhoto)
         {
             this.Id = id;
             this.Msisdn = msisdn;
@@ -251,7 +251,7 @@ namespace windows_client.Model
             this.OnHike = onhike;
             this.PhoneNo = phoneNo;
             this.HasCustomPhoto = hasCustomPhoto;
-            this.PhoneNoKind = kind;
+            this.PhoneNoKind = phoneNoKind;
         }
 
         public ContactInfo(ContactInfo contact)
@@ -338,7 +338,7 @@ namespace windows_client.Model
         {
             get
             {
-                return "(" + Enum.GetName(typeof(Microsoft.Phone.UserData.PhoneNumberKind), PhoneNoKind).ToString(CultureInfo.CurrentCulture).ToLower() + ")";
+                return PhoneNoKind == null ? String.Empty : "(" + Enum.GetName(typeof(Microsoft.Phone.UserData.PhoneNumberKind), PhoneNoKind).ToString(CultureInfo.CurrentCulture).ToLower() + ")";
             }
         }
 
