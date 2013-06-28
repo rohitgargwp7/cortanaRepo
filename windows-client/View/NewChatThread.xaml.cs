@@ -1270,7 +1270,7 @@ namespace windows_client.View
 
         long lastMessageId = -1;
         bool hasMoreMessages;
-        const int INITIAL_FETCH_COUNT = 21;
+        const int INITIAL_FETCH_COUNT = 31;
         const int SUBSEQUENT_FETCH_COUNT = 11;
 
         // this variable stores the status of last SENT msg
@@ -5525,7 +5525,12 @@ namespace windows_client.View
                         var msg = new ConvMessage();
                         msg.GrpParticipantState = ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION;
                         msg.NotificationType = ConvMessage.MessageType.FORCE_SMS;
-                        msg.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
+
+                        if (isGroupChat)
+                            msg.Message = "Group members seem to be offline. Send all as sms";
+                        else
+                            msg.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
+
                         this.ocMessages.Add(msg);
                     }
 
