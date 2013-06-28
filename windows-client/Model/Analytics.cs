@@ -63,7 +63,7 @@ namespace windows_client.Model
         public static readonly string REMOVE_FAVS_CONTEXT_MENU_GROUP_INFO = "giRFFCM";
 
         //pro Tips
-        public static readonly string PRO_TIPS_DISMISSED = "proTipDis"; //chat thread large profile pic
+        public static readonly string PRO_TIPS_DISMISSED = "tip_id"; //chat thread large profile pic
 
         private Dictionary<string, int> eventMap = null;
 
