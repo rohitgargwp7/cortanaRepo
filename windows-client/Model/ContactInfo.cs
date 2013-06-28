@@ -233,7 +233,7 @@ namespace windows_client.Model
         {
         }
 
-        public ContactInfo(string id, string number, string name, bool onHike, string phoneNum, int phoneNoKind) :
+        public ContactInfo(string id, string number, string name, bool onHike, string phoneNum, int? phoneNoKind) :
             this(id, number, name, onHike, phoneNum, phoneNoKind, false)
         {
         }
