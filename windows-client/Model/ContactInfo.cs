@@ -156,22 +156,6 @@ namespace windows_client.Model
             }
         }
 
-        public bool IsInvited
-        {
-            get
-            {
-                return _isInvited;
-            }
-            set
-            {
-                NotifyPropertyChanging("IsInvited");
-                _isInvited = value;
-                NotifyPropertyChanged("IsInvited");
-                NotifyPropertyChanged("InvitedStringVisible");
-                NotifyPropertyChanged("InviteButtonVisible");
-            }
-        }
-
         public bool IsFav
         {
             get
@@ -195,41 +179,15 @@ namespace windows_client.Model
             }
         }   // this is used in inviteUsers page , when you show hike users
 
-        public bool IsInvite
-        {
-            get;
-            set;
-        }
+
 
         public bool IsEnabled
         {
             get
             {
-                if (_isFav && !IsInvite)
+                if (_isFav)
                     return false;
                 return true;
-            }
-        }
-
-        public Visibility InvitedStringVisible
-        {
-            get
-            {
-                if (IsInvited)
-                    return Visibility.Visible;
-                else
-                    return Visibility.Collapsed;
-            }
-        }
-
-        public Visibility InviteButtonVisible
-        {
-            get
-            {
-                if (IsInvited)
-                    return Visibility.Collapsed;
-                else
-                    return Visibility.Visible;
             }
         }
 
@@ -277,7 +235,6 @@ namespace windows_client.Model
             this.OnHike = onhike;
             this.PhoneNo = phoneNo;
             this.HasCustomPhoto = hasCustomPhoto;
-            this.IsInvited = false;
         }
 
         public ContactInfo(ContactInfo contact)
@@ -286,7 +243,6 @@ namespace windows_client.Model
             this._name = contact._name;
             this._onHike = contact._onHike;
             this._phoneNo = contact._phoneNo;
-            this._isInvited = contact._isInvited;
         }
 
 
@@ -434,8 +390,8 @@ namespace windows_client.Model
             }
             set
             {
-                    _avatar = value;
-                    NotifyPropertyChanged("AvatarImage");
+                _avatar = value;
+                NotifyPropertyChanged("AvatarImage");
             }
         }
 
@@ -461,5 +417,5 @@ namespace windows_client.Model
                 }
             }
         }
-}
+    }
 }

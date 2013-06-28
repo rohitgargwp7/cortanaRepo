@@ -815,7 +815,7 @@ namespace windows_client.View
                     if (gi != null && !gi.GroupAlive)
                         isGroupAlive = false;
                     ConversationListObject cobj;
-                    if(App.ViewModel.ConvMap.TryGetValue(obj.Msisdn,out cobj))
+                    if (App.ViewModel.ConvMap.TryGetValue(obj.Msisdn, out cobj))
                         IsMute = cobj.IsMute;
                 }
                 mContactNumber = obj.Msisdn;
@@ -1266,7 +1266,7 @@ namespace windows_client.View
 
         long lastMessageId = -1;
         bool hasMoreMessages;
-        const int INITIAL_FETCH_COUNT = 21;
+        const int INITIAL_FETCH_COUNT = 31;
         const int SUBSEQUENT_FETCH_COUNT = 11;
 
         // this variable stores the status of last SENT msg
@@ -4468,7 +4468,6 @@ namespace windows_client.View
 
         private void llsMessages_ItemRealized(object sender, ItemRealizationEventArgs e)
         {
-
             if (isMessageLoaded && llsMessages.ItemsSource != null && llsMessages.ItemsSource.Count > 0 && hasMoreMessages)
             {
                 if (e.ItemKind == LongListSelectorItemKind.Item)
