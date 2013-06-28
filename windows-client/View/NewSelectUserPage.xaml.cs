@@ -626,15 +626,7 @@ namespace windows_client.View
                     gl[maxCharGroups][0].Name = charsEntered;
                     if (charsEntered.Length >= 1 && charsEntered.Length <= 15)
                     {
-                        if (frmBlockedList)
-                        {
-                            if (blockedSet.Contains(Utils.NormalizeNumber(gl[maxCharGroups][0].Name)))
-                                gl[maxCharGroups][0].Msisdn = string.Format(TAP_MSG, AppResources.UnBlock_Txt.ToLower());
-                            else
-                                gl[maxCharGroups][0].Msisdn = string.Format(TAP_MSG, AppResources.Block_Txt.ToLower());
-                        }
-                        else
-                            gl[maxCharGroups][0].Msisdn = TAP_MSG;
+                        gl[maxCharGroups][0].Msisdn = frmBlockedList ? charsEntered : TAP_MSG;
                     }
                     else
                     {
