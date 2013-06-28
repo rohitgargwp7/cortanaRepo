@@ -1822,4 +1822,7 @@ Get hike: http://get.hike.in</value>
   <data name="Send_All_As_SMS" xml:space="preserve">
     <value>{0} seems to be offline, tap to send as sms</value>
   </data>
+  <data name="Send_All_As_SMS_Group" xml:space="preserve">
+    <value>Group members seem to be offline. Tap to send all as sms</value>
+  </data>
 </root>

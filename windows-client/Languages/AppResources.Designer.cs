@@ -3390,6 +3390,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Group members seem to be offline. Tap to send all as sms.
+        /// </summary>
+        public static string Send_All_As_SMS_Group {
+            get {
+                return ResourceManager.GetString("Send_All_As_SMS_Group", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to send as sms.
         /// </summary>
         public static string Send_As_Sms {

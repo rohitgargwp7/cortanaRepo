@@ -5527,7 +5527,7 @@ namespace windows_client.View
                         msg.NotificationType = ConvMessage.MessageType.FORCE_SMS;
 
                         if (isGroupChat)
-                            msg.Message = "Group members seem to be offline. Send all as sms";
+                            msg.Message = AppResources.Send_All_As_SMS_Group;
                         else
                             msg.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
 
