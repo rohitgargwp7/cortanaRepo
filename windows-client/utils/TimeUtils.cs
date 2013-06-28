@@ -30,7 +30,7 @@ namespace windows_client.utils
                 if (App.Is24HourTimeFormat)
                     return messageTime.ToString("HH\\:mm", CultureInfo.CurrentUICulture);
                 else
-                    return messageTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                    return messageTime.ToString("hh\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
             }
             else if (span.Days < 7)
                 return messageTime.ToString("ddd", CultureInfo.CurrentUICulture);
@@ -55,7 +55,7 @@ namespace windows_client.utils
                 if (App.Is24HourTimeFormat)
                     return messageTime.ToString("HH\\:mm", CultureInfo.CurrentUICulture);
                 else
-                    return messageTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                    return messageTime.ToString("hh\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
             }
            else if (span.Days < 7)
                 return messageTime.ToString("ddd", CultureInfo.CurrentUICulture);
@@ -104,14 +104,14 @@ namespace windows_client.utils
                 if (App.Is24HourTimeFormat)
                     return Languages.AppResources.Last_Seen_Today_At + " " + receivedTime.ToString("HH\\:mm", CultureInfo.CurrentUICulture);
                 else
-                    return Languages.AppResources.Last_Seen_Today_At + " " + receivedTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                    return Languages.AppResources.Last_Seen_Today_At + " " + receivedTime.ToString("hh\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
             }
             else if ((DateTime.Now.Date - receivedTime).Days  == 1) // yesterday
             {
                 if (App.Is24HourTimeFormat)
                     return Languages.AppResources.Last_Seen_Yesterday_At + " " + receivedTime.ToString("HH\\:mm", CultureInfo.CurrentUICulture);
                 else
-                    return Languages.AppResources.Last_Seen_Yesterday_At + " " + receivedTime.ToString("h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                    return Languages.AppResources.Last_Seen_Yesterday_At + " " + receivedTime.ToString("hh\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
             }
             else if ((DateTime.Now.Date - receivedTime).Days < 7) // less than two weeks ago
             {
@@ -160,27 +160,27 @@ namespace windows_client.utils
                 {
                     case 21:
                     case 31:
-                        return time.ToString("d\\s\\t MMM, h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                        return time.ToString("d\\s\\t MMM, hh\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
                     case 22:
-                        return time.ToString("d\\n\\d MMM, h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                        return time.ToString("d\\n\\d MMM, hh\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
                     case 23:
-                        return time.ToString("d\\r\\d MMM, h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                        return time.ToString("d\\r\\d MMM, hh\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
                     case 11:
                     case 12:
                     case 13:
-                        return time.ToString("d\\t\\h MMM, h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                        return time.ToString("d\\t\\h MMM, hh\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
                 }
 
                 switch (number % 10)
                 {
                     case 1:
-                        return time.ToString("d\\s\\t MMM, h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                        return time.ToString("d\\s\\t MMM, hh\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
                     case 2:
-                        return time.ToString("d\\n\\d MMM, h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                        return time.ToString("d\\n\\d MMM, hh\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
                     case 3:
-                        return time.ToString("d\\r\\d MMM, h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                        return time.ToString("d\\r\\d MMM, hh\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
                     default:
-                        return time.ToString("d\\t\\h MMM, h\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
+                        return time.ToString("d\\t\\h MMM, hh\\:mm tt", CultureInfo.CurrentUICulture).Replace(" AM", "a").Replace(" PM", "p");
                 }
             }
         }
