@@ -21,7 +21,6 @@ namespace windows_client.View
     public partial class UpgradePage : PhoneApplicationPage
     {
         Boolean _isContactsSyncComplete = false;
-        private bool stopContactScanning = false;
         private static List<ContactInfo> listContactInfo;
         public UpgradePage()
         {
@@ -73,11 +72,17 @@ namespace windows_client.View
                         if (db.DatabaseExists())
                         {
                             DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
-                            if (dbUpdater.DatabaseSchemaVersion < 1)
+                            int version = dbUpdater.DatabaseSchemaVersion;
+                            if (version == 0)
                             {
                                 dbUpdater.AddColumn<ContactInfo>("PhoneNoKind");
                                 dbUpdater.DatabaseSchemaVersion = 1;
-                                dbUpdater.Execute();
+
+                                try
+                                {
+                                    dbUpdater.Execute();
+                                }
+                                catch { }
                             }
                         }
                     } 
@@ -116,6 +121,7 @@ namespace windows_client.View
                 App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, App.LATEST_VERSION);
 
                 string targetPage = (string)PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO];
+                
                 if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
                 {
                     string param = Utils.GetParamFromUri(targetPage);
@@ -128,13 +134,13 @@ namespace windows_client.View
                 }
                 else if (targetPage != null && targetPage.Contains("NewSelectUserPage.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
                 {
-
                     if (App.PageStateVal != App.PageState.CONVLIST_SCREEN)
                     {
                         Uri nUri = Utils.LoadPageUri(App.PageStateVal);
                         NavigationService.Navigate(nUri);
                         return;
                     }
+
                     int idx = targetPage.IndexOf("?") + 1;
                     string param = targetPage.Substring(idx);
                     NavigationService.Navigate(new Uri("/View/ConversationsList.xaml?" + true, UriKind.Relative));
@@ -150,11 +156,6 @@ namespace windows_client.View
         /* This callback is on background thread started by getContacts function */
         public void makePatchRequest_Callback(object sender, ContactsSearchEventArgs e)
         {
-            if (stopContactScanning)
-            {
-                stopContactScanning = false;
-                return;
-            }
             Dictionary<string, List<ContactInfo>> new_contacts_by_id = ContactUtils.getContactsListMap(e.Results);
             Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
 
@@ -172,6 +173,7 @@ namespace windows_client.View
                 foreach (string id in new_contacts_by_id.Keys)
                 {
                     List<ContactInfo> phList = new_contacts_by_id[id];
+                  
                     if (hike_contacts_by_id == null || !hike_contacts_by_id.ContainsKey(id))
                     {
                         contacts_to_update_or_add.Add(id, phList);
@@ -179,12 +181,13 @@ namespace windows_client.View
                     }
 
                     List<ContactInfo> hkList = hike_contacts_by_id[id];
+                   
                     if (!ContactUtils.areListsEqual(phList, hkList))
-                    {
                         contacts_to_update_or_add.Add(id, phList);
-                    }
+                  
                     hike_contacts_by_id.Remove(id);
                 }
+
                 new_contacts_by_id.Clear();
                 new_contacts_by_id = null;
             }
@@ -201,9 +204,7 @@ namespace windows_client.View
             if (hike_contacts_by_id != null)
             {
                 foreach (string id in hike_contacts_by_id.Keys)
-                {
                     ids_to_delete.Add(id);
-                }
             }
 
             ContactUtils.contactsMap = contacts_to_update_or_add;
@@ -212,32 +213,18 @@ namespace windows_client.View
             App.MqttManagerInstance.disconnectFromBroker(false);
             NetworkManager.turnOffNetworkManager = true;
 
-            /*
-             * contacts_to_update : These are the contacts to add
-             * ids_json : These are the contacts to delete
-             */
-            if (stopContactScanning)
-            {
-                stopContactScanning = false;
-                return;
-            }
             AccountUtils.updateAddressBook(contacts_to_update_or_add, ids_to_delete, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
         }
 
         public void updateAddressBook_Callback(JObject patchJsonObj)
         {
-            if (stopContactScanning)
-            {
-                stopContactScanning = false;
-                return;
-            }
             if (patchJsonObj == null)
             {
                 Thread.Sleep(1000);
                 App.MqttManagerInstance.connect();
                 NetworkManager.turnOffNetworkManager = false;
                 _isContactsSyncComplete = false;
-                                 return;
+                return;
             }
 
             List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
@@ -252,6 +239,7 @@ namespace windows_client.View
                 {
                     ContactInfo.DelContacts dCn = new ContactInfo.DelContacts(id, ContactUtils.hike_contactsMap[id][0].Msisdn);
                     hikeIds.Add(dCn);
+
                     if (App.ViewModel.ConvMap.ContainsKey(dCn.Msisdn)) // check convlist map to remove the 
                     {
                         try
@@ -274,17 +262,14 @@ namespace windows_client.View
                             obj.ContactName = null;
                     }
                 }
-            }
-            if (stopContactScanning)
-            {
-                stopContactScanning = false;
-                return;
-            }
+            } 
+            
             if (hikeIds != null && hikeIds.Count > 0)
             {
                 /* Delete ids from hike user DB */
                 UsersTableUtils.deleteMultipleRows(hikeIds); // this will delete all rows in HikeUser DB that are not in Addressbook.
             }
+
             if (updatedContacts != null && updatedContacts.Count > 0)
             {
                 UsersTableUtils.updateContacts(updatedContacts);
