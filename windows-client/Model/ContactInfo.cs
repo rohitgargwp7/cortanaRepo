@@ -28,7 +28,7 @@ namespace windows_client.Model
         private string _name;
         private string _msisdn;
         private string _phoneNo;
-        private bool _hasCustomPhoto;
+        private bool _hasCustomPhoto;//used to show group chat in select user page
         private bool _onHike;
         private bool _isInvited;
         private byte[] _avatar;
@@ -172,22 +172,6 @@ namespace windows_client.Model
             }
         }
 
-        public bool IsInvited
-        {
-            get
-            {
-                return _isInvited;
-            }
-            set
-            {
-                NotifyPropertyChanging("IsInvited");
-                _isInvited = value;
-                NotifyPropertyChanged("IsInvited");
-                NotifyPropertyChanged("InvitedStringVisible");
-                NotifyPropertyChanged("InviteButtonVisible");
-            }
-        }
-
         public bool IsFav
         {
             get
@@ -211,41 +195,15 @@ namespace windows_client.Model
             }
         }   // this is used in inviteUsers page , when you show hike users
 
-        public bool IsInvite
-        {
-            get;
-            set;
-        }
+
 
         public bool IsEnabled
         {
             get
             {
-                if (_isFav && !IsInvite)
+                if (_isFav)
                     return false;
                 return true;
-            }
-        }
-
-        public Visibility InvitedStringVisible
-        {
-            get
-            {
-                if (IsInvited)
-                    return Visibility.Visible;
-                else
-                    return Visibility.Collapsed;
-            }
-        }
-
-        public Visibility InviteButtonVisible
-        {
-            get
-            {
-                if (IsInvited)
-                    return Visibility.Collapsed;
-                else
-                    return Visibility.Visible;
             }
         }
 
@@ -325,7 +283,6 @@ namespace windows_client.Model
             this.PhoneNo = phoneNo;
             this.HasCustomPhoto = hasCustomPhoto;
             this.Kind = kind;
-            this.IsInvited = false;
         }
 
         public ContactInfo(ContactInfo contact)
@@ -334,7 +291,6 @@ namespace windows_client.Model
             this._name = contact._name;
             this._onHike = contact._onHike;
             this._phoneNo = contact._phoneNo;
-            this._isInvited = contact._isInvited;
             this._kind = contact._kind;
         }
 

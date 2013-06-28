@@ -20,9 +20,7 @@ namespace windows_client.View
 {
     public partial class InviteUsers : PhoneApplicationPage
     {
-        private string TAP_MSG = AppResources.Tap_To_Invite_Txt;
 
-        private bool _isAddToFavPage;
         private bool xyz;
         private bool isClicked = false;
         private string charsEntered;
@@ -55,31 +53,16 @@ namespace windows_client.View
         public InviteUsers()
         {
             InitializeComponent();
-            object hikeFriends;
-            if (PhoneApplicationService.Current.State.TryGetValue("HIKE_FRIENDS", out hikeFriends))
-            {
-                topHeader.Text = AppResources.Add_To_Fav_Txt;
-                title.Text = AppResources.Hike_Friends_Text;
-                enterNameTxt.Visibility = System.Windows.Visibility.Collapsed;
-                _isAddToFavPage = true;
-            }
+
             shellProgress.IsVisible = true;
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
-                if (_isAddToFavPage)
-                    allContactsList = UsersTableUtils.GetAllHikeContactsOrdered();
-                else
-                    allContactsList = UsersTableUtils.getAllContactsToInvite();
+                allContactsList = UsersTableUtils.getAllContactsToInvite();
             };
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (s, e) =>
             {
-                if (_isAddToFavPage)
-                {
-                    if (allContactsList == null || allContactsList.Count == 0)
-                        emptyHikeFriendsTxt.Visibility = Visibility.Visible;
-                }
                 jumpList = getGroupedList(allContactsList);
                 contactsListBox.ItemsSource = jumpList;
                 shellProgress.IsVisible = false;
@@ -123,8 +106,7 @@ namespace windows_client.View
                 ContactInfo c = allContactsList[i];
                 if (c.Msisdn == App.MSISDN) // don't show own number in any chat.
                     continue;
-                if (_isAddToFavPage && App.ViewModel.Isfavourite(c.Msisdn))
-                    c.IsFav = true;
+                
                 string ch = GetCaptionGroup(c);
                 // calculate the index into the list
                 int index = (ch == "#") ? 26 : ch[0] - 'a';
@@ -160,132 +142,78 @@ namespace windows_client.View
 
         private void Invite_Or_Fav_Click(object sender, EventArgs e)
         {
-            #region FAV SECTION
-            if (_isAddToFavPage)
+            if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
             {
-                bool isPendingRemoved = false;
-                for (int i = 0; i < (hikeFavList == null ? 0 : hikeFavList.Count); i++)
+                string inviteToken = "";
+                //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+                int count = 0;
+                foreach (string key in contactsList.Keys)
                 {
-                    if (hikeFavList[i].Msisdn != App.MSISDN)
-                        FriendsTableUtils.SetFriendStatus(hikeFavList[i].Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
-                    if (!App.ViewModel.Isfavourite(hikeFavList[i].Msisdn) && hikeFavList[i].Msisdn != App.MSISDN) // if not already favourite then only add to fav
-                    {
-                        ConversationListObject favObj = null;
-                        if (App.ViewModel.ConvMap.ContainsKey(hikeFavList[i].Msisdn))
-                        {
-                            favObj = App.ViewModel.ConvMap[hikeFavList[i].Msisdn];
-                            favObj.IsFav = true;
-                        }
-                        else
-                            favObj = new ConversationListObject(hikeFavList[i].Msisdn, hikeFavList[i].Name, hikeFavList[i].OnHike, hikeFavList[i].Avatar);
-
-                        App.ViewModel.FavList.Insert(0, favObj);
-                        if (App.ViewModel.IsPending(favObj.Msisdn)) // if this is in pending already , remove from pending and add to fav
-                        {
-                            App.ViewModel.PendingRequests.Remove(favObj.Msisdn);
-                            isPendingRemoved = true;
-                        }
-                        int count = 0;
-                        App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                        App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
-
-                        JObject data = new JObject();
-                        data["id"] = hikeFavList[i].Msisdn;
-                        JObject obj = new JObject();
-                        obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
-                        obj[HikeConstants.DATA] = data;
-                        App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-                        MiscDBUtil.SaveFavourites(favObj);
-                        App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_INVITE_USERS);
-                        if (hikeFavList[i].OnHike)
-                        {
-                            App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, hikeFavList[i]);
-                        }
-                    }
+                    if (key == App.MSISDN)
+                        continue;
+                    JObject obj = new JObject();
+                    JObject data = new JObject();
+                    data[HikeConstants.SMS_MESSAGE] = Utils.GetRandomInviteString();
+                    data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
+                    data[HikeConstants.MESSAGE_ID] = -1;
+                    obj[HikeConstants.TO] = key;
+                    obj[HikeConstants.DATA] = data;
+                    obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+                    App.MqttManagerInstance.mqttPublishToServer(obj);
+                    count++;
                 }
-                MiscDBUtil.SaveFavourites();
-                if (isPendingRemoved)
-                    MiscDBUtil.SavePendingRequests();
-                App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
+                if (count > 0)
+                    MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
             }
-            #endregion
-            #region INVITE
             else
             {
-                if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
+                string msisdns = string.Empty, toNum = String.Empty;
+                int count = 0;
+                JObject obj = new JObject();
+                JArray numlist = new JArray();
+                JObject data = new JObject();
+
+                foreach (string key in contactsList.Keys)
                 {
-                    string inviteToken = "";
-                    //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-                    int count = 0;
-                    foreach (string key in contactsList.Keys)
+                    if (key != App.MSISDN)
                     {
-                        if (key == App.MSISDN)
-                            continue;
-                        JObject obj = new JObject();
-                        JObject data = new JObject();
-                        data[HikeConstants.SMS_MESSAGE] = Utils.GetRandomInviteString();
-                        data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
-                        data[HikeConstants.MESSAGE_ID] = -1;
-                        obj[HikeConstants.TO] = key;
-                        obj[HikeConstants.DATA] = data;
-                        obj[HikeConstants.TYPE] = NetworkManager.INVITE;
-                        App.MqttManagerInstance.mqttPublishToServer(obj);
-                        count++;
+                        msisdns += key + ";";
+                        toNum = key;
+                        numlist.Add(key);
                     }
-                    if (count > 0)
-                        MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
+
+                    count++;
+                }
+
+                var randomString = Utils.GetRandomInviteString();
+                var ts = TimeUtils.getCurrentTimeStamp();
+
+                if (count == 1)
+                {
+                    obj[HikeConstants.TO] = toNum;
+                    data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                    data[HikeConstants.HIKE_MESSAGE] = randomString;
+                    data[HikeConstants.TIMESTAMP] = ts;
+                    obj[HikeConstants.DATA] = data;
+                    obj[HikeConstants.TYPE] = NetworkManager.INVITE;
                 }
                 else
                 {
-                    string msisdns = string.Empty, toNum=String.Empty;
-                    int count = 0;
-                    JObject obj = new JObject();
-                    JArray numlist = new JArray();
-                    JObject data = new JObject();
-
-                    foreach (string key in contactsList.Keys)
-                    {
-                        if (key != App.MSISDN)
-                        {
-                            msisdns += key + ";";
-                            toNum = key;
-                            numlist.Add(key);
-                        }
-
-                        count++;
-                    }
-
-                    var randomString = Utils.GetRandomInviteString();
-                    var ts = TimeUtils.getCurrentTimeStamp();
-
-                    if (count == 1)
-                    {
-                        obj[HikeConstants.TO] = toNum;
-                        data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                        data[HikeConstants.HIKE_MESSAGE] = randomString;
-                        data[HikeConstants.TIMESTAMP] = ts;
-                        obj[HikeConstants.DATA] = data;
-                        obj[HikeConstants.TYPE] = NetworkManager.INVITE;
-                    }
-                    else
-                    {
-                        data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                        data[HikeConstants.INVITE_LIST] = numlist;
-                        obj[HikeConstants.TIMESTAMP] = ts;
-                        obj[HikeConstants.DATA] = data;
-                        obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
-                    }
-
-                    obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
-
-                    App.MqttManagerInstance.mqttPublishToServer(obj);
-                    SmsComposeTask smsComposeTask = new SmsComposeTask();
-                    smsComposeTask.To = msisdns;
-                    smsComposeTask.Body = randomString;
-                    smsComposeTask.Show();
+                    data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                    data[HikeConstants.INVITE_LIST] = numlist;
+                    obj[HikeConstants.TIMESTAMP] = ts;
+                    obj[HikeConstants.DATA] = data;
+                    obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
                 }
+
+                obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+
+                App.MqttManagerInstance.mqttPublishToServer(obj);
+                SmsComposeTask smsComposeTask = new SmsComposeTask();
+                smsComposeTask.To = msisdns;
+                smsComposeTask.Body = randomString;
+                smsComposeTask.Show();
             }
-            #endregion
             NavigationService.GoBack();
         }
 
@@ -300,7 +228,7 @@ namespace windows_client.View
             if (contactsListBox.ItemsSource != null)
             {
                 string msisdn;
-                if (cn.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
+                if (cn.Msisdn.Equals(cn.Name)) // represents this is for unadded number
                 {
                     msisdn = Utils.NormalizeNumber(cn.Name);
                     cn = GetContactIfExists(cn);
@@ -309,38 +237,17 @@ namespace windows_client.View
                     msisdn = cn.Msisdn;
                 if (cn.IsFav) // this will be true when checkbox is not checked initially and u clicked it
                 {
-                    if (_isAddToFavPage)
-                    {
-                        if (hikeFavList == null)
-                            hikeFavList = new List<ContactInfo>();
-                        hikeFavList.Add(cn);
-                    }
-                    else
-                        contactsList[msisdn] = true;
+                    contactsList[msisdn] = true;
                 }
                 else // this will be true when checkbox is checked initially and u clicked it to make it uncheck
                 {
-                    if (_isAddToFavPage)
-                        hikeFavList.Remove(cn);
-                    else
-                        contactsList.Remove(msisdn);
+                    contactsList.Remove(msisdn);
                 }
 
-
-                if (_isAddToFavPage)
-                {
-                    if (hikeFavList.Count > 0)
-                        doneIconButton.IsEnabled = true;
-                    else
-                        doneIconButton.IsEnabled = false;
-                }
+                if (contactsList.Count > 0)
+                    doneIconButton.IsEnabled = true;
                 else
-                {
-                    if (contactsList.Count > 0)
-                        doneIconButton.IsEnabled = true;
-                    else
-                        doneIconButton.IsEnabled = false;
-                }
+                    doneIconButton.IsEnabled = false;
             }
         }
 
@@ -397,23 +304,18 @@ namespace windows_client.View
                 if (gl[26].Count > 0 && gl[26][0].Msisdn != null)
                 {
                     gl[26][0].Name = charsEntered;
-                    if (!_isAddToFavPage)
+                    string num = Utils.NormalizeNumber(charsEntered);
+                    if (contactsList.ContainsKey(num))
                     {
-                        string num = Utils.NormalizeNumber(charsEntered);
-                        if (contactsList.ContainsKey(num))
-                        {
-                            gl[26][0].IsInvite = true;
-                            gl[26][0].IsFav = true;
-                        }
-                        else
-                        {
-                            gl[26][0].IsInvite = false;
-                            gl[26][0].IsFav = false;
-                        }
+                        gl[26][0].IsFav = true;
+                    }
+                    else
+                    {
+                        gl[26][0].IsFav = false;
                     }
                     if (charsEntered.Length >= 1 && charsEntered.Length <= 15)
                     {
-                        gl[26][0].Msisdn = TAP_MSG;
+                        gl[26][0].Msisdn = charsEntered;
                     }
                     else
                     {
@@ -476,18 +378,13 @@ namespace windows_client.View
                 for (int j = 0; j < maxJ; j++)
                 {
                     ContactInfo cn = listToIterate[i][j];
-                    if (!_isAddToFavPage)
+                    if (contactsList.ContainsKey(cn.Msisdn))
                     {
-                        if (contactsList.ContainsKey(cn.Msisdn))
-                        {
-                            cn.IsFav = true;
-                            cn.IsInvite = true;
-                        }
-                        else
-                        {
-                            cn.IsFav = false;
-                            cn.IsInvite = false;
-                        }
+                        cn.IsFav = true;
+                    }
+                    else
+                    {
+                        cn.IsFav = false;
                     }
                     if (cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered) || cn.PhoneNo.Contains(charsEntered))
                     {
@@ -521,7 +418,7 @@ namespace windows_client.View
                 list[26][0].Name = charsEntered;
                 if (Utils.IsNumberValid(charsEntered))
                 {
-                    list[26][0].Msisdn = TAP_MSG;
+                    list[26][0].Msisdn = charsEntered;
                 }
                 else
                 {
