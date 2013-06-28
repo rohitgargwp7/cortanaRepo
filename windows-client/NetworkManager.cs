@@ -1315,7 +1315,7 @@ namespace windows_client
                     }
                     #endregion
 
-                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj);
+                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj, ts);
                     cm.Msisdn = msisdn;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
 
