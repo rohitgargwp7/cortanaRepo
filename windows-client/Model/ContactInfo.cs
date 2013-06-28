@@ -157,7 +157,7 @@ namespace windows_client.Model
             }
         }
 
-        [Column(CanBeNull=true)]
+        [Column(CanBeNull = true)]
         public int? Kind
         {
             get
@@ -167,7 +167,7 @@ namespace windows_client.Model
             set
             {
                 NotifyPropertyChanging("Kind");
-                _kind = value == null?0 :(int)value;
+                _kind = value == null ? 0 : (int)value;
                 NotifyPropertyChanged("Kind");
             }
         }
@@ -493,8 +493,8 @@ namespace windows_client.Model
             }
             set
             {
-                    _avatar = value;
-                    NotifyPropertyChanged("AvatarImage");
+                _avatar = value;
+                NotifyPropertyChanged("AvatarImage");
             }
         }
 
@@ -520,5 +520,5 @@ namespace windows_client.Model
                 }
             }
         }
-}
+    }
 }
