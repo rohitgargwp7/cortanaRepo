@@ -675,7 +675,7 @@ namespace windows_client.View
                             }
                         }
                         List<ContactInfo> tempHikeContactList = UsersTableUtils.GetAllHikeContactsOrdered();
-                        if (hikeContactList != null)
+                        if (tempHikeContactList != null)
                         {
                             HashSet<string> msisdns = new HashSet<string>(); // used to remove duplicate contacts
                             int count = tempHikeContactList.Count;

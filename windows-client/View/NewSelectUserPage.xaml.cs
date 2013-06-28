@@ -852,7 +852,7 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.REFRESH_CONTACTS);
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
+                MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                 return;
             }
             disableAppBar();

@@ -157,8 +157,8 @@ namespace windows_client.Model
             }
         }
 
-        [Column]
-        public int Kind
+        [Column(CanBeNull=true)]
+        public int? Kind
         {
             get
             {
@@ -167,7 +167,7 @@ namespace windows_client.Model
             set
             {
                 NotifyPropertyChanging("Kind");
-                _kind = value;
+                _kind = value == null?0 :(int)value;
                 NotifyPropertyChanged("Kind");
             }
         }
