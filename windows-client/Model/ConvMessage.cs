@@ -997,35 +997,14 @@ namespace windows_client.Model
         {
             get 
             {
-                if (IsSent && !IsSms && MessageStatus == State.SENT_CONFIRMED && IsSMSOptionAvalable())
+                if (IsSent && !IsSms && MessageStatus == State.SENT_CONFIRMED && App.newChatThreadPage != null && App.newChatThreadPage.IsSMSOptionValid)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
             }
         }
 
-        bool IsSMSOptionAvalable()
-        {
-            bool showFreeSMS = true;
-            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
-
-            if (!showFreeSMS) // if setting is off return false
-                return showFreeSMS; // == false
-
-            if (Utils.isGroupConversation(Msisdn))//groupchat
-            {
-                GroupManager.Instance.LoadGroupParticipants(Msisdn);
-
-                showFreeSMS = (from groupParticipant in GroupManager.Instance.GroupCache[Msisdn]
-                               where groupParticipant.Msisdn.Contains("+91")
-                               select groupParticipant).ToList().Count == 0 ? false : true;
-
-            }
-            else if (!Msisdn.Contains("+91")) //Indian receiver
-                showFreeSMS = false;
-
-            return showFreeSMS;
-        }
+        
 
         public ConvMessage(string message, string msisdn, long timestamp, State msgState, PageOrientation currentOrientation)
             : this(message, msisdn, timestamp, msgState, -1, -1, currentOrientation)

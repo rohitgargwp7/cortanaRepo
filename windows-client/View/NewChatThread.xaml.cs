@@ -132,6 +132,8 @@ namespace windows_client.View
             }
         }
 
+        public bool IsSMSOptionValid = true;
+
         #endregion
 
         #region UI VALUES
@@ -1026,6 +1028,31 @@ namespace windows_client.View
             }
             else
                 chatThreadMainPage.ApplicationBar = appBar;
+
+            IsSMSOptionValid = IsSMSOptionAvalable();
+        }
+
+        bool IsSMSOptionAvalable()
+        {
+            bool showFreeSMS = true;
+            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+
+            if (!showFreeSMS) // if setting is off return false
+                return showFreeSMS; // == false
+
+            if (Utils.isGroupConversation(mContactNumber))//groupchat
+            {
+                GroupManager.Instance.LoadGroupParticipants(mContactNumber);
+
+                showFreeSMS = (from groupParticipant in GroupManager.Instance.GroupCache[mContactNumber]
+                               where groupParticipant.Msisdn.Contains("+91")
+                               select groupParticipant).Count() == 0 ? false : true;
+
+            }
+            else if (!mContactNumber.Contains("+91")) //Indian receiver
+                showFreeSMS = false;
+
+            return showFreeSMS;
         }
 
         private void showNudgeTute()
@@ -1403,8 +1430,6 @@ namespace windows_client.View
                 progressBar.IsEnabled = false;
                 NetworkManager.turnOffNetworkManager = false;
             });
-
-
         }
 
         private void forwardAttachmentMessage()
@@ -2171,7 +2196,7 @@ namespace windows_client.View
         private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop)
         {
             if (ocMessages != null && ocMessages.Count > 0 && ocMessages.Last().GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
-                ocMessages.Remove(ocMessages.Last());
+                ocMessages.RemoveAt(ocMessages.Count - 1);
 
             int insertPosition = 0;
             if (!insertAtTop)
@@ -5443,46 +5468,46 @@ namespace windows_client.View
                 msg = (from message in ocMessages
                        where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
                        select message).First();
+
+                if (msg != null)
+                {
+                    TimeSpan ts;
+
+                    if (isNewTimer)
+                    {
+                        ts = TimeSpan.FromSeconds(20);
+                    }
+                    else
+                    {
+                        long ticks = msg.Timestamp * 10000000;
+                        ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
+                        DateTime receivedTime = new DateTime(ticks);
+                        receivedTime = receivedTime.ToLocalTime();
+                        ts = DateTime.Now.Subtract(receivedTime);
+                        ts = ts.TotalSeconds > 20 ? TimeSpan.FromMilliseconds(10) : ts.TotalSeconds > 0 ? ts : TimeSpan.FromMilliseconds(10);
+                    }
+
+                    if (ts.TotalSeconds > 0 || isNewTimer)
+                    {
+                        if (_forceSMSTimer == null)
+                            _forceSMSTimer = new DispatcherTimer();
+                        else
+                            _forceSMSTimer.Stop();
+
+                        _forceSMSTimer.Interval = ts;
+
+                        _forceSMSTimer.Tick -= _forceSMSTimer_Tick;
+                        _forceSMSTimer.Tick += _forceSMSTimer_Tick;
+
+                        _forceSMSTimer.Start();
+                    }
+                    else
+                        ShowForceSMSOnUI();
+                }
             }
             catch
             {
                 return;
-            }
-
-            if (msg!=null && msg.IsSent && msg.MessageStatus == ConvMessage.State.SENT_CONFIRMED)
-            {
-                TimeSpan ts;
-
-                if (isNewTimer)
-                {
-                    ts = TimeSpan.FromSeconds(20);
-                }
-                else
-                {
-                    long ticks = msg.Timestamp * 10000000;
-                    ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
-                    DateTime receivedTime = new DateTime(ticks);
-                    receivedTime = receivedTime.ToLocalTime();
-                    ts = DateTime.Now.Subtract(receivedTime);
-                    ts = ts.TotalSeconds > 20 ? TimeSpan.FromMilliseconds(10) : ts.TotalSeconds > 0 ? ts : TimeSpan.FromMilliseconds(10);
-                }
-
-                if (ts.TotalSeconds > 0 || isNewTimer)
-                {
-                    if (_forceSMSTimer == null)
-                        _forceSMSTimer = new DispatcherTimer();
-                    else
-                        _forceSMSTimer.Stop();
-
-                    _forceSMSTimer.Interval = ts;
-
-                    _forceSMSTimer.Tick -= _forceSMSTimer_Tick;
-                    _forceSMSTimer.Tick += _forceSMSTimer_Tick;
-
-                    _forceSMSTimer.Start();
-                }
-                else
-                    ShowForceSMSOnUI();
             }
         }
 
@@ -5567,9 +5592,9 @@ namespace windows_client.View
 
                 var convMsgList = (from convMsg in ocMessages
                                    where convMsg.MessageStatus == ConvMessage.State.SENT_CONFIRMED
-                                   select convMsg).ToList();
+                                   select convMsg);
 
-                if (convMsgList.Count == 0)
+                if (convMsgList.Count() == 0)
                     return;
 
                 JArray messageArr = new JArray();
@@ -5587,7 +5612,7 @@ namespace windows_client.View
                 }
 
                 JObject data = new JObject();
-                data.Add(HikeConstants.COUNT, convMsgList.Count);
+                data.Add(HikeConstants.COUNT, convMsgList.Count());
                 data.Add(HikeConstants.MESSAGE_ID, convMsgList.Last().MessageId);
                 data.Add(HikeConstants.FORCE_SMS_MESSAGE, messageArr);
 

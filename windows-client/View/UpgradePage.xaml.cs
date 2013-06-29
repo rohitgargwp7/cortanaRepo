@@ -2,6 +2,7 @@
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.UserData;
 using System;
+using System.Windows;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
@@ -9,12 +10,16 @@ using System.Windows.Navigation;
 using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
+using Newtonsoft.Json.Linq;
+using Microsoft.Phone.Controls;
+using System.Net.NetworkInformation;
+using windows_client.Languages;
+using Microsoft.Phone.Data.Linq;
 
 namespace windows_client.View
 {
     public partial class UpgradePage : PhoneApplicationPage
     {
-        private static List<ContactInfo> listContactInfo;
         public UpgradePage()
         {
             InitializeComponent();
@@ -52,10 +57,34 @@ namespace windows_client.View
                     StatusMsgsTable.MessagesDbUpdateToLatestVersion();
                 if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                     MqttDBUtils.MqttDbUpdateToLatestVersion();
-                if (Utils.compareVersion("2.2.0.0", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
+                if (Utils.compareVersion("2.2.0.1", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
                 {
-                    FriendsTableUtils.UpdateOldFilesWithDefaultLastSeen();
-                    App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.TUTORIAL_SCREEN_STICKERS);
+                    using (HikeUsersDb db = new HikeUsersDb(App.UsersDBConnectionstring))
+                    {
+                        if (db.DatabaseExists())
+                        {
+                            DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
+                            int version = dbUpdater.DatabaseSchemaVersion;
+                            if (version == 0)
+                            {
+                                dbUpdater.AddColumn<ContactInfo>("PhoneNoKind");
+                                dbUpdater.DatabaseSchemaVersion = 1;
+
+                                try
+                                {
+                                    dbUpdater.Execute();
+                                }
+                                catch { }
+                            }
+                        }
+                    } 
+
+                    if (Utils.compareVersion("2.2.0.0", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
+                    {
+                        FriendsTableUtils.UpdateOldFilesWithDefaultLastSeen();
+                        App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.TUTORIAL_SCREEN_STICKERS);
+                    }
+
                     if (Utils.compareVersion("2.1.0.0", App.CURRENT_VERSION) == 1)
                     {
                         App.WriteToIsoStorageSettings(App.SHOW_STATUS_UPDATES_TUTORIAL, true);
