@@ -126,6 +126,16 @@ namespace windows_client.utils
                             flag = false;
                             break;
                         }
+                        else
+                        {
+                            foreach (var key in set1.Keys)
+                            {
+                                if (key == c)
+                                {
+
+                                }
+                            }
+                        }
                     }
                     return flag;
                 }

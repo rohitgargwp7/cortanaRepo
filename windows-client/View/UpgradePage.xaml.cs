@@ -61,12 +61,6 @@ namespace windows_client.View
                     MqttDBUtils.MqttDbUpdateToLatestVersion();
                 if (Utils.compareVersion("2.2.0.1", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
                 {
-                    if (!NetworkInterface.GetIsNetworkAvailable())
-                    {
-                        MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
-                        return;
-                    }
-
                     using (HikeUsersDb db = new HikeUsersDb(App.UsersDBConnectionstring))
                     {
                         if (db.DatabaseExists())
@@ -87,13 +81,13 @@ namespace windows_client.View
                         }
                     } 
 
-                    ContactUtils.getContacts(new ContactUtils.contacts_Callback(makePatchRequest_Callback));
-                    _isContactsSyncComplete = true;
+                    //ContactUtils.getContacts(new ContactUtils.contacts_Callback(makePatchRequest_Callback));
+                    //_isContactsSyncComplete = true;
 
-                    while (_isContactsSyncComplete)
-                    {
-                        Thread.Sleep(100);
-                    }
+                    //while (_isContactsSyncComplete)
+                    //{
+                    //    Thread.Sleep(100);
+                    //}
 
                     if (Utils.compareVersion("2.2.0.0", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
                     {
