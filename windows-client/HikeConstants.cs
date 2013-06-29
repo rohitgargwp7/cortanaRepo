@@ -87,7 +87,7 @@ namespace windows_client
         public static readonly int MAX_AUDIO_RECORDTIME_SUPPORTED = 360; // 6 minutes
         public static readonly int RECURSIVE_PING_INTERVAL = 270;//seconds
         public static readonly int LOCATION_THUMBNAIL_MAX_HEIGHT = 220;
-        public static readonly int LOCATION_THUMBNAIL_MAX_WIDTH = 220;
+        public static readonly int LOCATION_THUMBNAIL_MAX_WIDTH = 440;
         public static readonly int PROFILE_PICS_SIZE = 640; //image which are uploaded on servers
         public static readonly int MAX_THUMBNAILSIZE = 4800;
 

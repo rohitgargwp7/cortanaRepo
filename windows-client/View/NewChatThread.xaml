@@ -437,9 +437,9 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
-                                            <Image Grid.Row="0" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
-                                            <Grid Height="90" MaxWidth="180" VerticalAlignment="Bottom" Margin="12,0">
-                                                <Border Background="Black" Opacity="0.55" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                                            <Image Grid.Row="0" MaxWidth="360" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
+                                            <Grid MinHeight="80" MaxHeight="100" MaxWidth="360" VerticalAlignment="Bottom" Margin="12,0">
+                                                <Border Background="Black" Opacity="0.75" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                                                 <TextBlock Text="{Binding DispMessage}" Margin="5,0,0,0" TextWrapping="Wrap" Foreground="White" FontSize="18" />
                                             </Grid>
                                             <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>

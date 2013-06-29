@@ -600,6 +600,15 @@ namespace windows_client.utils
             request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();//to disaable caching if GET result
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
+        
+        public static void createNokiaPlacesGetRequest(string requestUrl, postResponseFunction callback)
+        {
+            HttpWebRequest request = null;
+            request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
+            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();//to disaable caching if GET result
+            request.Headers[HttpRequestHeader.AcceptLanguage] = System.Globalization.CultureInfo.CurrentCulture.Name;
+            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
+        }
 
         public static void createGetRequest(string requestUrl, downloadFile callback, bool setCookie, object metadata)
         {

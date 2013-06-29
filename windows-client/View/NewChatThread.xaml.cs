@@ -4008,7 +4008,7 @@ namespace windows_client.View
                 JObject locationJSON = (JObject)locationInfo[0];
                 imageThumbnail = (byte[])locationInfo[1];
                 var fileData = locationJSON[HikeConstants.FILES_DATA][0];
-                string fileName = (fileData[HikeConstants.FILE_NAME].ToString() + fileData[HikeConstants.LOCATION_ADDRESS].ToString()).Trim(new char[] { '\n', ' ' });
+                string fileName = (fileData[HikeConstants.FILE_NAME].ToString() + ", " + fileData[HikeConstants.LOCATION_ADDRESS].ToString()).Trim(new char[] { '\n', ' ' }).Replace("\n", ", ");
 
                 string locationJSONString = locationJSON.ToString();
 
