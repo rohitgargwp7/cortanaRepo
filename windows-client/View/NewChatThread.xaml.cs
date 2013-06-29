@@ -5592,9 +5592,9 @@ namespace windows_client.View
 
                 var convMsgList = (from convMsg in ocMessages
                                    where convMsg.MessageStatus == ConvMessage.State.SENT_CONFIRMED
-                                   select convMsg);
+                                   select convMsg).ToList();
 
-                if (convMsgList.Count() == 0)
+                if (convMsgList.Count == 0)
                     return;
 
                 JArray messageArr = new JArray();
@@ -5611,14 +5611,16 @@ namespace windows_client.View
                     string msisdn = MessagesTableUtils.updateMsgStatus(mContactNumber, msg.MessageId, (int)ConvMessage.State.FORCE_SMS_SENT_CONFIRMED);
                 }
 
+                message =  convMsgList.Last();
+
                 JObject data = new JObject();
-                data.Add(HikeConstants.COUNT, convMsgList.Count());
-                data.Add(HikeConstants.MESSAGE_ID, convMsgList.Last().MessageId);
+                data.Add(HikeConstants.COUNT, convMsgList.Count);
+                data.Add(HikeConstants.MESSAGE_ID, message.MessageId);
                 data.Add(HikeConstants.FORCE_SMS_MESSAGE, messageArr);
 
                 JObject obj = new JObject();
                 obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.FORCE_SMS);
-                obj.Add(HikeConstants.TO, convMsgList.Last().Msisdn);
+                obj.Add(HikeConstants.TO, message.Msisdn);
                 obj.Add(HikeConstants.DATA, data);
 
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
