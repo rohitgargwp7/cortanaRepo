@@ -308,7 +308,6 @@ namespace windows_client.Model
             const int prime = 31;
             int result = 1;
             result = prime * result + (string.IsNullOrWhiteSpace(Name) ? 0 : Name.GetHashCode());
-            result = prime * result + PhoneNoKind.GetHashCode();
             result = prime * result + ((PhoneNo == null) ? 0 : PhoneNo.GetHashCode());
             return result;
         }

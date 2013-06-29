@@ -3,6 +3,7 @@ using Microsoft.Phone.Shell;
 using Microsoft.Phone.UserData;
 using System;
 using System.Windows;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
@@ -79,15 +80,15 @@ namespace windows_client.View
                                 catch { }
                             }
                         }
-                    } 
+                    }
 
-                    //ContactUtils.getContacts(new ContactUtils.contacts_Callback(makePatchRequest_Callback));
-                    //_isContactsSyncComplete = true;
+                    ContactUtils.getContacts(new ContactUtils.contacts_Callback(makePatchRequest_Callback));
+                    _isContactsSyncComplete = true;
 
-                    //while (_isContactsSyncComplete)
-                    //{
-                    //    Thread.Sleep(100);
-                    //}
+                    while (_isContactsSyncComplete)
+                    {
+                        Thread.Sleep(100);
+                    }
 
                     if (Utils.compareVersion("2.2.0.0", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
                     {
@@ -115,7 +116,7 @@ namespace windows_client.View
                 App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, App.LATEST_VERSION);
 
                 string targetPage = (string)PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO];
-                
+
                 if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
                 {
                     string param = Utils.GetParamFromUri(targetPage);
@@ -160,118 +161,21 @@ namespace windows_client.View
                 return;
             }
 
-            Dictionary<string, List<ContactInfo>> contacts_to_update_or_add = new Dictionary<string, List<ContactInfo>>();
-
             if (new_contacts_by_id != null) // if there are contacts in phone perform this step
             {
                 foreach (string id in new_contacts_by_id.Keys)
                 {
                     List<ContactInfo> phList = new_contacts_by_id[id];
-                  
+
                     if (hike_contacts_by_id == null || !hike_contacts_by_id.ContainsKey(id))
-                    {
-                        contacts_to_update_or_add.Add(id, phList);
                         continue;
-                    }
 
                     List<ContactInfo> hkList = hike_contacts_by_id[id];
-                   
-                    if (!ContactUtils.areListsEqual(phList, hkList))
-                        contacts_to_update_or_add.Add(id, phList);
-                  
-                    hike_contacts_by_id.Remove(id);
+
+                    ContactUtils.areListsEqual(phList, hkList);
                 }
-
-                new_contacts_by_id.Clear();
-                new_contacts_by_id = null;
             }
 
-            /* If nothing is changed simply return without sending update request*/
-            if (contacts_to_update_or_add.Count == 0 && (hike_contacts_by_id == null || hike_contacts_by_id.Count == 0))
-            {
-                Thread.Sleep(1000);
-                _isContactsSyncComplete = false;
-                return;
-            }
-
-            JArray ids_to_delete = new JArray();
-            if (hike_contacts_by_id != null)
-            {
-                foreach (string id in hike_contacts_by_id.Keys)
-                    ids_to_delete.Add(id);
-            }
-
-            ContactUtils.contactsMap = contacts_to_update_or_add;
-            ContactUtils.hike_contactsMap = hike_contacts_by_id;
-
-            App.MqttManagerInstance.disconnectFromBroker(false);
-            NetworkManager.turnOffNetworkManager = true;
-
-            AccountUtils.updateAddressBook(contacts_to_update_or_add, ids_to_delete, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
-        }
-
-        public void updateAddressBook_Callback(JObject patchJsonObj)
-        {
-            if (patchJsonObj == null)
-            {
-                Thread.Sleep(1000);
-                App.MqttManagerInstance.connect();
-                NetworkManager.turnOffNetworkManager = false;
-                _isContactsSyncComplete = false;
-                return;
-            }
-
-            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
-            List<ContactInfo.DelContacts> hikeIds = null;
-
-            // Code to delete the removed contacts
-            if (ContactUtils.hike_contactsMap != null && ContactUtils.hike_contactsMap.Count != 0)
-            {
-                hikeIds = new List<ContactInfo.DelContacts>(ContactUtils.hike_contactsMap.Count);
-                // This loop deletes all those contacts which are removed.
-                foreach (string id in ContactUtils.hike_contactsMap.Keys)
-                {
-                    ContactInfo.DelContacts dCn = new ContactInfo.DelContacts(id, ContactUtils.hike_contactsMap[id][0].Msisdn);
-                    hikeIds.Add(dCn);
-
-                    if (App.ViewModel.ConvMap.ContainsKey(dCn.Msisdn)) // check convlist map to remove the 
-                    {
-                        try
-                        {
-                            // here we are removing name so that Msisdn will be shown instead of Name
-                            App.ViewModel.ConvMap[dCn.Msisdn].ContactName = null;
-                        }
-                        catch (Exception e)
-                        {
-                            System.Diagnostics.Debug.WriteLine("REFRESH CONTACTS :: Delete contact exception " + e.StackTrace);
-                        }
-                    }
-                    else // if this contact is in favourite or pending and not in convMap update this also
-                    {
-                        ConversationListObject obj;
-                        obj = App.ViewModel.GetFav(id);
-                        if (obj == null) // this msisdn is not in favs , check in pending
-                            obj = App.ViewModel.GetPending(id);
-                        if (obj != null)
-                            obj.ContactName = null;
-                    }
-                }
-            } 
-            
-            if (hikeIds != null && hikeIds.Count > 0)
-            {
-                /* Delete ids from hike user DB */
-                UsersTableUtils.deleteMultipleRows(hikeIds); // this will delete all rows in HikeUser DB that are not in Addressbook.
-            }
-
-            if (updatedContacts != null && updatedContacts.Count > 0)
-            {
-                UsersTableUtils.updateContacts(updatedContacts);
-                ConversationTableUtils.updateConversation(updatedContacts);
-            }
-
-            App.MqttManagerInstance.connect();
-            NetworkManager.turnOffNetworkManager = false;
             _isContactsSyncComplete = false;
         }
     }
