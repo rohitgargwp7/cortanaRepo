@@ -341,6 +341,7 @@ namespace windows_client.View
                 avatarImage.Source = profileImage;
                 txtUserName.Text = nameToShow;
                 firstName = Utils.GetFirstName(nameToShow);
+
                 //if blocked user show block ui and return
                 if (msisdn != App.MSISDN && App.ViewModel.BlockedHashset.Contains(msisdn))
                 {
@@ -351,21 +352,24 @@ namespace windows_client.View
                         appBar.IsVisible = false;
                     return;
                 }
+
                 if (!isOnHike)//sms user
-                {
                     ShowNonHikeUser();
-                }
                 else
-                {
                     InitHikeUserProfile();
-                }
+                
                 isFirstLoad = false;
             }
+
             // this is done to update profile name , as soon as it gets updated
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PROFILE_NAME_CHANGED))
                 txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED];
 
             txtMsisdn.Text = msisdn;
+
+            if (txtMsisdn.Text == txtUserName.Text)
+                txtUserName.Visibility = Visibility.Collapsed;
+            
             ContextMenu menu = new ContextMenu();
 
             if (msisdn != App.MSISDN)
