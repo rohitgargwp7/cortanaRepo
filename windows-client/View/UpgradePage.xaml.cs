@@ -82,7 +82,7 @@ namespace windows_client.View
                         }
                     }
 
-                    ContactUtils.getContacts(new ContactUtils.contacts_Callback(makePatchRequest_Callback));
+                    ContactUtils.getContacts(new ContactUtils.contacts_Callback(updatePhoneKind_Callback));
                     _isContactsSyncComplete = true;
 
                     while (_isContactsSyncComplete)
@@ -149,7 +149,7 @@ namespace windows_client.View
         }
 
         /* This callback is on background thread started by getContacts function */
-        public void makePatchRequest_Callback(object sender, ContactsSearchEventArgs e)
+        public void updatePhoneKind_Callback(object sender, ContactsSearchEventArgs e)
         {
             Dictionary<string, List<ContactInfo>> new_contacts_by_id = ContactUtils.getContactsListMap(e.Results);
             Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
