@@ -58,10 +58,17 @@ namespace windows_client.DbUtils
         {
             if (contacts == null)
                 return;
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring + "; Max Buffer Size = 2048"))
+            try
             {
-                context.users.InsertAllOnSubmit(contacts);
-                context.SubmitChanges();
+                using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring + "; Max Buffer Size = 2048"))
+                {
+                    context.users.InsertAllOnSubmit(contacts);
+                    context.SubmitChanges();
+                }
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine("UserTableUtils :: addContacts : submit changes, Exception : " + e.StackTrace);
             }
         }
 
@@ -265,13 +272,20 @@ namespace windows_client.DbUtils
         {
             if (ids == null || ids.Count == 0)
                 return;
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+
+            try
             {
-                for (int i = 0; i < ids.Count; i++)
+                using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
                 {
-                    context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.GetUsersWithGivenId(context, ids[i].Id));
+                    for (int i = 0; i < ids.Count; i++)
+                    {
+                        context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.GetUsersWithGivenId(context, ids[i].Id));
+                    }
+                    SubmitWithConflictResolve(context);
                 }
-                SubmitWithConflictResolve(context);
+            }
+            catch
+            {
             }
         }
 

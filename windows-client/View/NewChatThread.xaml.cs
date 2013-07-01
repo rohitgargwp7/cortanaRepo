@@ -36,6 +36,7 @@ using System.Windows.Navigation;
 using Microsoft.Phone.BackgroundAudio;
 using System.Collections.ObjectModel;
 using windows_client.ViewModel;
+using System.Text.RegularExpressions;
 
 namespace windows_client.View
 {
@@ -802,6 +803,21 @@ namespace windows_client.View
             else if (this.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
             {
                 ContactInfo obj = (ContactInfo)this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
+                if (obj.HasCustomPhoto) // represents group chat
+                {
+                    obj.Msisdn = obj.Id;//group id
+                    GroupManager.Instance.LoadGroupParticipants(obj.Msisdn);
+                    isGroupChat = true;
+                    BlockTxtBlk.Text = AppResources.SelectUser_BlockedGroupMsg_Txt;
+                    gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
+                    if (gi != null)
+                        groupOwner = gi.GroupOwner;
+                    if (gi != null && !gi.GroupAlive)
+                        isGroupAlive = false;
+                    ConversationListObject cobj;
+                    if (App.ViewModel.ConvMap.TryGetValue(obj.Msisdn, out cobj))
+                        IsMute = cobj.IsMute;
+                }
                 mContactNumber = obj.Msisdn;
                 if (obj.Name != null)
                     mContactName = obj.Name;
@@ -1250,7 +1266,7 @@ namespace windows_client.View
 
         long lastMessageId = -1;
         bool hasMoreMessages;
-        const int INITIAL_FETCH_COUNT = 21;
+        const int INITIAL_FETCH_COUNT = 31;
         const int SUBSEQUENT_FETCH_COUNT = 11;
 
         // this variable stores the status of last SENT msg
@@ -1406,40 +1422,43 @@ namespace windows_client.View
                     }
                     else
                     {
-                        ConvMessage forwardedMsg = (ConvMessage)attachmentData[0];
+                        string contentType = (string)attachmentData[0];
                         string sourceMsisdn = (string)attachmentData[1];
-
-                        string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + forwardedMsg.MessageId;
+                        long messageId = (long)attachmentData[2];
+                        string metaDataString = (string)attachmentData[3];
+                        string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + messageId;
 
                         ConvMessage convMessage = new ConvMessage("", mContactNumber,
                             TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                         convMessage.IsSms = !isOnHike;
                         convMessage.HasAttachment = true;
-                        convMessage.FileAttachment = forwardedMsg.FileAttachment;
+                        convMessage.FileAttachment = new Attachment();
+                        convMessage.FileAttachment.ContentType = contentType;
+                        convMessage.FileAttachment.Thumbnail = (byte[])attachmentData[4];
+                        convMessage.FileAttachment.FileName = (string)attachmentData[5];
                         convMessage.IsSms = !isOnHike;
                         convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
-                        if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                        if (contentType.Contains(HikeConstants.IMAGE))
                             convMessage.Message = AppResources.Image_Txt;
-                        else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                        else if (contentType.Contains(HikeConstants.AUDIO))
                         {
                             convMessage.Message = AppResources.Audio_Txt;
-                            convMessage.MetaDataString = forwardedMsg.MetaDataString;
+                            convMessage.MetaDataString = metaDataString;
                         }
-                        else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                        else if (contentType.Contains(HikeConstants.VIDEO))
                             convMessage.Message = AppResources.Video_Txt;
-                        else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                        else if (contentType.Contains(HikeConstants.LOCATION))
                         {
                             convMessage.Message = AppResources.Location_Txt;
-                            convMessage.MetaDataString = forwardedMsg.MetaDataString;
+                            convMessage.MetaDataString = metaDataString;
                         }
-                        else if (forwardedMsg.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                        else if (contentType.Contains(HikeConstants.CT_CONTACT))
                         {
                             convMessage.Message = AppResources.ContactTransfer_Text;
-                            convMessage.MetaDataString = forwardedMsg.MetaDataString;
+                            convMessage.MetaDataString = metaDataString;
                         }
 
-                        convMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
                         AddMessageToOcMessages(convMessage, false);
                         object[] vals = new object[3];
                         vals[0] = convMessage;
@@ -2867,7 +2886,24 @@ namespace windows_client.View
             //this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadDownMargin;
         }
 
+        private void OnEmoticonBackKeyPress(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (sendMsgTxtbox.Text.Length > 0)
+            {
+                MatchCollection matchCollection = SmileyParser.Instance.EmoticonRegex.Matches(sendMsgTxtbox.Text);
+                if (matchCollection.Count > 0)
+                {
+                    string lastEmoticon = matchCollection[matchCollection.Count - 1].ToString();
 
+                    if (sendMsgTxtbox.Text.Substring(sendMsgTxtbox.Text.Length - lastEmoticon.Length).Equals(lastEmoticon))
+                        sendMsgTxtbox.Text = sendMsgTxtbox.Text.Substring(0, sendMsgTxtbox.Text.Length - lastEmoticon.Length);
+                    else
+                        sendMsgTxtbox.Text = sendMsgTxtbox.Text.Substring(0, sendMsgTxtbox.Text.Length - 1);
+                }
+                else
+                    sendMsgTxtbox.Text = sendMsgTxtbox.Text.Substring(0, sendMsgTxtbox.Text.Length - 1);
+            }
+        }
         #endregion
 
         #region CONTEXT MENU
@@ -2888,9 +2924,15 @@ namespace windows_client.View
             }
             else
             {
-                object[] attachmentForwardMessage = new object[2];
-                attachmentForwardMessage[0] = convMessage;
+                //done this way as on locking it is unable to serialize convmessage or attachment object
+                object[] attachmentForwardMessage = new object[6];
+                attachmentForwardMessage[0] = convMessage.FileAttachment.ContentType;
                 attachmentForwardMessage[1] = mContactNumber;
+                attachmentForwardMessage[2] = convMessage.MessageId;
+                attachmentForwardMessage[3] = convMessage.MetaDataString;
+                attachmentForwardMessage[4] = convMessage.FileAttachment.Thumbnail;
+                attachmentForwardMessage[5] = convMessage.FileAttachment.FileName;
+
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
             }
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
@@ -2911,7 +2953,7 @@ namespace windows_client.View
         {
             isContextMenuTapped = true;
             ConvMessage msg = ((sender as MenuItem).DataContext as ConvMessage);
-            
+
             if (msg == null)
                 return;
 
@@ -2923,7 +2965,7 @@ namespace windows_client.View
 
             if (msg.FileAttachment != null && msg.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
                 msg.SetAttachmentState(Attachment.AttachmentState.CANCELED);
-            
+
             bool delConv = false;
             this.ocMessages.Remove(msg);
             ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
@@ -3774,7 +3816,7 @@ namespace windows_client.View
                 if (lastSeenSettingsValue > 0)
                 {
                     var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
-                    
+
                     if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && _lastUpdatedLastSeenTimeStamp != 0) //dont show online if his last seen setting is off
                         UpdateLastSeenOnUI(AppResources.Online);
                 }
@@ -4433,7 +4475,6 @@ namespace windows_client.View
 
         private void llsMessages_ItemRealized(object sender, ItemRealizationEventArgs e)
         {
-
             if (isMessageLoaded && llsMessages.ItemsSource != null && llsMessages.ItemsSource.Count > 0 && hasMoreMessages)
             {
                 if (e.ItemKind == LongListSelectorItemKind.Item)

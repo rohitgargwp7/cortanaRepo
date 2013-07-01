@@ -190,17 +190,24 @@ namespace windows_client.DbUtils
                     }
 
                     App.ViewModel.MessageListPageCollection.Insert(0, convObj);
-                    //forward attachment message
-                    string destinationFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" + convMessage.MessageId;
-                    //while writing in iso, we write it as failed and then revert to started
+                    MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId, convMessage);
+                    convMessage.SetAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                    //since, Location & Contact has required info in metadata string, no need to use raw files
-                    if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) &&
-                        !convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                    {
-                        MiscDBUtil.copyFileInIsolatedStorage(sourceFilePath, destinationFilePath);
-                    }
-                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
+                    convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
+
+
+                    byte[] fileBytes;
+                    if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                        fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
+                    else
+                        MiscDBUtil.readFileFromIsolatedStorage(sourceFilePath, out fileBytes);
+                    if (fileBytes == null)
+                        return;
+                    AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
+                    if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                        MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                                Convert.ToString(convMessage.MessageId), fileBytes);
+                    AccountUtils.uploadFile(fileBytes, finalCallbackForUploadFile, convMessage);
                 });
             }
             #endregion

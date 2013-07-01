@@ -711,9 +711,7 @@ namespace windows_client
                         img.Source = lookUpFromCache(regexMatch);
                         img.Height = 35;
                         img.Width = 35;
-                        //                        img.Margin  = new Thickness(0, 5, 0, 0);
-
-
+                        img.Margin = UI_Utils.Instance.NewChatThreadEmoticonMargin;
                         InlineUIContainer ui = new InlineUIContainer();
                         ui.Child = img;
                         p.Inlines.Add(ui);
@@ -733,6 +731,7 @@ namespace windows_client
                 r2.Text = message.Substring(startIndex, message.Length - startIndex);
                 p.Inlines.Add(r2);
             }
+
             return p;
         }
 

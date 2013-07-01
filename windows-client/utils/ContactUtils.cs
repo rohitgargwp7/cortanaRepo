@@ -97,40 +97,87 @@ namespace windows_client.utils
             }
         }
 
-        public static bool areListsEqual(List<ContactInfo> list1, List<ContactInfo> list2)
+        public static bool areListsEqual(List<ContactInfo> phList, List<ContactInfo> hkList)
         {
-            if (list1 != null && list2 != null)
+            if (phList != null && hkList != null)
             {
-                if (list1.Count != list2.Count)
+                if (phList.Count != hkList.Count)
                     return false;
-                else if (list1.Count == 0 && list2.Count == 0)
-                {
+                else if (phList.Count == 0 && hkList.Count == 0)
                     return false;
-                }
                 else
                 // represents same number of elements
                 {
                     /* compare each element */
                     /* As Windows phone does not have a hashset we are using Dictionary*/
-                    Dictionary<ContactInfo, bool> set1 = new Dictionary<ContactInfo, bool>();
-                    for (int i = 0; i < list1.Count; i++)
-                    {
-                        set1.Add(list1[i], true);
-                    }
+                    Dictionary<ContactInfo, bool> phDicSet = new Dictionary<ContactInfo, bool>();
+                
+                    for (int i = 0; i < phList.Count; i++)
+                        phDicSet.Add(phList[i], true);
+
                     bool flag = true;
-                    for (int i = 0; i < list2.Count; i++)
+
+                    for (int i = 0; i < hkList.Count; i++)
                     {
-                        ContactInfo c = list2[i];
-                        if (!set1.ContainsKey(c))
+                        ContactInfo oldContact = hkList[i];
+                        if (!phDicSet.ContainsKey(oldContact))
                         {
                             flag = false;
                             break;
                         }
                     }
+
                     return flag;
                 }
             }
+
             return false;
+        }
+
+        public static List<ContactInfo> getContactsToUpdateList(List<ContactInfo> phList, List<ContactInfo> hkList)
+        {
+            if (phList != null && hkList != null)
+            {
+                if (phList.Count == 0 || hkList.Count == 0) // return null if ny of the lists is empty
+                    return null;
+                else
+                {
+                    /* compare each element */
+                    /* As Windows phone does not have a hashset we are using Dictionary*/
+                    Dictionary<ContactInfo, bool> phDicSet = new Dictionary<ContactInfo, bool>();
+
+                    for (int i = 0; i < phList.Count; i++)
+                        phDicSet.Add(phList[i], true);
+
+                    List<ContactInfo> updatedContacts = null;
+
+                    for (int i = 0; i < hkList.Count; i++)
+                    {
+                        ContactInfo oldContact = hkList[i];
+                        if (phDicSet.ContainsKey(oldContact))
+                        {
+                            foreach (var phoneCntct in phDicSet.Keys)
+                            {
+                                //if cntct's kind has been updated, update it and add to update cnct list. 
+                                //It will be reflected in db by calling function
+                                if (phoneCntct.Id == oldContact.Id && (oldContact.PhoneNoKind == null || phoneCntct.PhoneNoKind != oldContact.PhoneNoKind))
+                                {
+                                    oldContact.PhoneNoKind = phoneCntct.PhoneNoKind;
+
+                                    if (updatedContacts == null)
+                                        updatedContacts = new List<ContactInfo>();
+
+                                    updatedContacts.Add(oldContact);
+                                }
+                            }
+                        }
+                    }
+
+                    return updatedContacts;
+                }
+            }
+
+            return null;
         }
 
         public static Dictionary<string, List<ContactInfo>> convertListToMap(List<ContactInfo> hclist)

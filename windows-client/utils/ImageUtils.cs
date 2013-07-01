@@ -97,9 +97,10 @@ namespace windows_client.utils
         private string[] defaultAvatarFileNames;
 
         private SolidColorBrush receiveMessageForeground;
-        private Thickness convListEmoticonMargin = new Thickness(0, 5, 0, 0);
+        private Thickness convListEmoticonMargin = new Thickness(0, 3, 0, -5);
         private Thickness chatThreadKeyPadUpMargin = new Thickness(0, 315, 15, 0);
         private Thickness chatThreadKeyPadDownMargin = new Thickness(0, 0, 15, 0);
+        private Thickness newChatThreadEmoticonMargin = new Thickness(0, 10, 0, -10);
         BitmapImage walkieTalkieGreyImage;
         BitmapImage walkieTalkieWhiteImage;
         BitmapImage walkieTalkieGreyImageBig;
@@ -912,6 +913,13 @@ namespace windows_client.utils
             }
         }
 
+        public Thickness NewChatThreadEmoticonMargin
+        {
+            get
+            {
+                return newChatThreadEmoticonMargin;
+            }
+        }
 
         public Thickness ConvListEmoticonMargin
         {
