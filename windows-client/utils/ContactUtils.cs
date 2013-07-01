@@ -138,7 +138,7 @@ namespace windows_client.utils
         {
             if (phList != null && hkList != null)
             {
-                if (phList.Count == 0 && hkList.Count == 0)
+                if (phList.Count == 0 || hkList.Count == 0) // return null if ny of the lists is empty
                     return null;
                 else
                 {
