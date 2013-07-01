@@ -116,37 +116,15 @@ namespace windows_client.utils
                         phDicSet.Add(phList[i], true);
 
                     bool flag = true;
-                    List<ContactInfo> updatedContacts = null;
 
                     for (int i = 0; i < hkList.Count; i++)
                     {
-                        ContactInfo hkContact = hkList[i];
-                        if (!phDicSet.ContainsKey(hkContact))
+                        ContactInfo oldContact = hkList[i];
+                        if (!phDicSet.ContainsKey(oldContact))
                         {
                             flag = false;
                             break;
                         }
-                        else
-                        {
-                            foreach (var phoneCntct in phDicSet.Keys)
-                            {
-                                if (phoneCntct.Id == hkContact.Id && (hkContact.PhoneNoKind == null || phoneCntct.PhoneNoKind != hkContact.PhoneNoKind))
-                                {
-                                    hkContact.PhoneNoKind = phoneCntct.PhoneNoKind;
-
-                                    if (updatedContacts == null)
-                                        updatedContacts = new List<ContactInfo>();
-
-                                    updatedContacts.Add(hkContact);
-                                }
-                            }
-                        }
-                    }
-
-                    if (updatedContacts != null && updatedContacts.Count > 0)
-                    {
-                        UsersTableUtils.updateContacts(updatedContacts);
-                        ConversationTableUtils.updateConversation(updatedContacts);
                     }
 
                     return flag;
@@ -154,6 +132,53 @@ namespace windows_client.utils
             }
 
             return false;
+        }
+
+        public static List<ContactInfo> getContactsToUpdateList(List<ContactInfo> phList, List<ContactInfo> hkList)
+        {
+            if (phList != null && hkList != null)
+            {
+                if (phList.Count != hkList.Count)
+                    return null;
+                else if (phList.Count == 0 && hkList.Count == 0)
+                    return null;
+                else
+                {
+                    /* compare each element */
+                    /* As Windows phone does not have a hashset we are using Dictionary*/
+                    Dictionary<ContactInfo, bool> phDicSet = new Dictionary<ContactInfo, bool>();
+
+                    for (int i = 0; i < phList.Count; i++)
+                        phDicSet.Add(phList[i], true);
+
+                    List<ContactInfo> updatedContacts = null;
+
+                    for (int i = 0; i < hkList.Count; i++)
+                    {
+                        ContactInfo oldContact = hkList[i];
+                        if (phDicSet.ContainsKey(oldContact))
+                        {
+                            foreach (var phoneCntct in phDicSet.Keys)
+                            {
+                                if (phoneCntct.Id == oldContact.Id && (oldContact.PhoneNoKind == null || phoneCntct.PhoneNoKind != oldContact.PhoneNoKind))
+                                {
+                                    oldContact.PhoneNoKind = phoneCntct.PhoneNoKind;
+
+                                    if (updatedContacts == null)
+                                        updatedContacts = new List<ContactInfo>();
+
+                                    updatedContacts.Add(oldContact);
+
+                                }
+                            }
+                        }
+                    }
+
+                    return updatedContacts;
+                }
+            }
+
+            return null;
         }
 
         public static Dictionary<string, List<ContactInfo>> convertListToMap(List<ContactInfo> hclist)

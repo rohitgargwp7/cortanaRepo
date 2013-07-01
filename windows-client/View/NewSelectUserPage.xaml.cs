@@ -914,6 +914,7 @@ namespace windows_client.View
             }
 
             Dictionary<string, List<ContactInfo>> contacts_to_update_or_add = new Dictionary<string, List<ContactInfo>>();
+            List<ContactInfo> contactsToBeUpdated = null;
 
             if (new_contacts_by_id != null) // if there are contacts in phone perform this step
             {
@@ -931,10 +932,27 @@ namespace windows_client.View
                     {
                         contacts_to_update_or_add.Add(id, phList);
                     }
+
+                    var listToUpdate = ContactUtils.getContactsToUpdateList(phList, hkList);
+                    if (listToUpdate != null)
+                    {
+                        if (contactsToBeUpdated == null)
+                            contactsToBeUpdated = new List<ContactInfo>();
+
+                        foreach (var item in listToUpdate)
+                            contactsToBeUpdated.Add(item);
+                    }
+
                     hike_contacts_by_id.Remove(id);
                 }
                 new_contacts_by_id.Clear();
                 new_contacts_by_id = null;
+            }
+
+            if (contactsToBeUpdated != null && contactsToBeUpdated.Count > 0)
+            {
+                UsersTableUtils.updateContacts(contactsToBeUpdated);
+                ConversationTableUtils.updateConversation(contactsToBeUpdated);
             }
 
             /* If nothing is changed simply return without sending update request*/

@@ -161,6 +161,7 @@ namespace windows_client.View
                 return;
             }
 
+            List<ContactInfo> contactsToBeUpdated = null;
             if (new_contacts_by_id != null) // if there are contacts in phone perform this step
             {
                 foreach (string id in new_contacts_by_id.Keys)
@@ -172,10 +173,24 @@ namespace windows_client.View
 
                     List<ContactInfo> hkList = hike_contacts_by_id[id];
 
-                    ContactUtils.areListsEqual(phList, hkList);
+                    var listToUpdate = ContactUtils.getContactsToUpdateList(phList,hkList);
+                    if(listToUpdate!=null)
+                    {
+                        if (contactsToBeUpdated == null)
+                            contactsToBeUpdated = new List<ContactInfo>();
+                       
+                        foreach(var item in listToUpdate)
+                            contactsToBeUpdated.Add(item);
+                    }
                 }
             }
 
+            if (contactsToBeUpdated != null && contactsToBeUpdated.Count > 0)
+            {
+                UsersTableUtils.updateContacts(contactsToBeUpdated);
+                ConversationTableUtils.updateConversation(contactsToBeUpdated);
+            }
+            
             _isContactsSyncComplete = false;
         }
     }
