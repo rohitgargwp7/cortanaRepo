@@ -1537,6 +1537,7 @@ namespace windows_client.View
                 {
                     //sendMsgBtn.IsEnabled = false;
                     showOverlay(true);
+                    appBar.IsMenuEnabled = false;
                 }
                 else
                 {
@@ -1678,8 +1679,6 @@ namespace windows_client.View
 
         private void blockUnblock_Click(object sender, EventArgs e)
         {
-
-
             if (mUserIsBlocked) // UNBLOCK REQUEST
             {
                 if (showNoSmsLeftOverlay)
@@ -1703,33 +1702,8 @@ namespace windows_client.View
                 }
                 mUserIsBlocked = false;
                 showOverlay(false);
+                appBar.IsMenuEnabled = false;
             }
-            //else     // BLOCK REQUEST
-            //{
-            //    if (showNoSmsLeftOverlay)
-            //        ToggleControlsToNoSms(false);
-            //    this.Focus();
-            //    sendMsgTxtbox.Text = "";
-            //    if (isGroupChat)
-            //    {
-            //        mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, groupOwner);
-            //        blockUnblockMenuItem.Text = UNBLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
-            //    }
-            //    else
-            //    {
-            //        mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
-            //        emoticonsIconButton.IsEnabled = false;
-            //        sendIconButton.IsEnabled = false;
-            //        isTypingNotificationEnabled = false;
-            //        blockUnblockMenuItem.Text = UNBLOCK_USER;
-            //        if (inviteMenuItem != null)
-            //            inviteMenuItem.IsEnabled = false;
-            //    }
-            //    emoticonPanel.Visibility = Visibility.Collapsed;
-            //    attachmentMenu.Visibility = Visibility.Collapsed;
-            //    mUserIsBlocked = true;
-            //    showOverlay(true); //true means show block animation
-            //}
         }
 
         private void FileAttachmentMessage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
