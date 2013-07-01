@@ -40,7 +40,11 @@
                 <Image Name="changePic" Visibility="Collapsed" Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Source="images\change_pic.png" />
             </Grid>
             <StackPanel Grid.Row="2" Margin="24,0,24,10" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" >
-                <TextBlock Name="txtUserName" HorizontalAlignment="Left" FontSize="36" FontFamily="Segoe WP" Foreground="White"/>
+                <TextBlock Name="txtUserName" HorizontalAlignment="Left" FontSize="36" FontFamily="Segoe WP" Foreground="White">
+                    <toolkit:GestureService.GestureListener>
+                        <toolkit:GestureListener Tap="GestureListener_Tap" />
+                    </toolkit:GestureService.GestureListener>
+                </TextBlock>
                 <TextBlock Name="txtMsisdn" HorizontalAlignment="Left" FontSize="24" Margin="0,-5,0,10" FontFamily="Segoe WP"  Foreground="#99FFFFFF">
                     <toolkit:GestureService.GestureListener>
                         <toolkit:GestureListener Tap="GestureListener_Tap" />

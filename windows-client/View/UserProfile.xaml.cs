@@ -367,7 +367,6 @@ namespace windows_client.View
 
             txtMsisdn.Text = msisdn;
 
-            ContextMenu menu = new ContextMenu();
 
             if (msisdn != App.MSISDN)
             {
@@ -389,12 +388,24 @@ namespace windows_client.View
                 UserProfilePage.ApplicationBar = appBar;
             }
 
+            ContextMenu menu = new ContextMenu();
             menu.IsZoomEnabled = false;
             MenuItem menuItemCopy = new MenuItem();
             menuItemCopy.Header = AppResources.Copy_txt;
             menuItemCopy.Click += menuItemCopy_Click;
             menu.Items.Add(menuItemCopy);
             ContextMenuService.SetContextMenu(txtMsisdn, menu);
+
+            if (msisdn == txtUserName.Text)
+            {
+                ContextMenu menu2 = new ContextMenu();
+                menu2.IsZoomEnabled = false;
+                MenuItem menuItemCopy2 = new MenuItem();
+                menuItemCopy2.Header = AppResources.Copy_txt;
+                menuItemCopy2.Click += menuItemCopy_Click;
+                menu2.Items.Add(menuItemCopy2);
+                ContextMenuService.SetContextMenu(txtUserName, menu2);
+            }
         }
 
         void menuItemCopy_Click(object sender, RoutedEventArgs e)
