@@ -902,6 +902,7 @@ namespace windows_client.View
                 stopContactScanning = false;
                 return;
             }
+
             Dictionary<string, List<ContactInfo>> new_contacts_by_id = ContactUtils.getContactsListMap(e.Results);
             Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
 
@@ -945,6 +946,7 @@ namespace windows_client.View
 
                     hike_contacts_by_id.Remove(id);
                 }
+
                 new_contacts_by_id.Clear();
                 new_contacts_by_id = null;
             }

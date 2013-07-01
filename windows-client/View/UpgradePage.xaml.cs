@@ -162,6 +162,7 @@ namespace windows_client.View
             }
 
             List<ContactInfo> contactsToBeUpdated = null;
+
             if (new_contacts_by_id != null) // if there are contacts in phone perform this step
             {
                 foreach (string id in new_contacts_by_id.Keys)
@@ -174,6 +175,7 @@ namespace windows_client.View
                     List<ContactInfo> hkList = hike_contacts_by_id[id];
 
                     var listToUpdate = ContactUtils.getContactsToUpdateList(phList,hkList);
+
                     if(listToUpdate!=null)
                     {
                         if (contactsToBeUpdated == null)

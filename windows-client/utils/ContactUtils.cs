@@ -138,9 +138,7 @@ namespace windows_client.utils
         {
             if (phList != null && hkList != null)
             {
-                if (phList.Count != hkList.Count)
-                    return null;
-                else if (phList.Count == 0 && hkList.Count == 0)
+                if (phList.Count == 0 && hkList.Count == 0)
                     return null;
                 else
                 {
@@ -160,6 +158,8 @@ namespace windows_client.utils
                         {
                             foreach (var phoneCntct in phDicSet.Keys)
                             {
+                                //if cntct's kind has been updated, update it and add to update cnct list. 
+                                //It will be reflected in db by calling function
                                 if (phoneCntct.Id == oldContact.Id && (oldContact.PhoneNoKind == null || phoneCntct.PhoneNoKind != oldContact.PhoneNoKind))
                                 {
                                     oldContact.PhoneNoKind = phoneCntct.PhoneNoKind;
@@ -168,7 +168,6 @@ namespace windows_client.utils
                                         updatedContacts = new List<ContactInfo>();
 
                                     updatedContacts.Add(oldContact);
-
                                 }
                             }
                         }
