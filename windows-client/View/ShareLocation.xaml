@@ -19,14 +19,6 @@
         <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="True" />
     </shell:SystemTray.ProgressIndicator>
 
-    <phone:PhoneApplicationPage.Resources>
-        <DataTemplate x:Key="RouteListTemplate">
-            <StackPanel Margin="5,5,0,0">
-                <TextBlock Text="{Binding title}" Style="{StaticResource PhoneTextTitle3Style}" TextWrapping="Wrap" />
-                <TextBlock Text="{Binding vicinity}" Style="{StaticResource PhoneTextSubtleStyle}" TextWrapping="Wrap"/>
-            </StackPanel>
-        </DataTemplate>
-    </phone:PhoneApplicationPage.Resources>
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
@@ -34,16 +26,33 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <maps:Map x:Name="MyMap" ZoomLevelChanged="ZoomLevelChanged" Tap="map_Tap"/>
-
+        <Grid x:Name="MapGrid">
+            <maps:Map x:Name="MyMap" ZoomLevelChanged="ZoomLevelChanged" Tap="map_Tap"/>
+            <Grid Canvas.ZIndex="2" Margin="0,0,15,15" HorizontalAlignment="Right" VerticalAlignment="Bottom" Tap="MyLocation_Tap">
+                <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <Image Source="\view\images\tw_icon.png" Margin="5" MaxHeight="50" MaxWidth="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Canvas.ZIndex="2" Margin="15,0,0,15" HorizontalAlignment="Left" VerticalAlignment="Bottom" Tap="Places_Tap">
+                <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <Image Source="\view\images\tw_icon.png" Margin="5" MaxHeight="50" MaxWidth="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+        </Grid>
         <Grid Grid.Row="1" MaxHeight="350" Visibility="Collapsed" x:Name="PlacesGrid" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <toolkit:PhoneTextBox x:Name="SearchTextBox" Hint="search" ActionIcon="/View/images/Mic_icon_black_small.png" ActionIconTapped="PhoneTextBox_ActionIconTapped_1"/>
-            <phone:LongListSelector x:Name="PlacesList" Grid.Row="1" ItemTemplate="{StaticResource RouteListTemplate}" LayoutMode="List" 
-            IsGroupingEnabled="False" SelectionChanged="PlacesList_SelectionChanged"/>
+            <ListBox x:Name="PlacesList" Grid.Row="1" SelectionChanged="PlacesList_SelectionChanged">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="10">
+                            <TextBlock Text="{Binding title}" FontSize="{StaticResource PhoneFontSizeLarge}" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding vicinity}" Foreground="{StaticResource PhoneSubtleBrush}" FontSize="18" TextWrapping="Wrap" Visibility="{Binding VicinityVisibility}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

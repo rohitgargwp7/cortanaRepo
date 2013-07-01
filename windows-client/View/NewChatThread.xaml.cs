@@ -4008,7 +4008,7 @@ namespace windows_client.View
                 JObject locationJSON = (JObject)locationInfo[0];
                 imageThumbnail = (byte[])locationInfo[1];
                 var fileData = locationJSON[HikeConstants.FILES_DATA][0];
-                string fileName = (fileData[HikeConstants.FILE_NAME].ToString() + ", " + fileData[HikeConstants.LOCATION_ADDRESS].ToString()).Trim(new char[] { '\n', ' ' }).Replace("\n", ", ");
+                string fileName = fileData[HikeConstants.FILE_NAME].ToString();
 
                 string locationJSONString = locationJSON.ToString();
 
@@ -4021,7 +4021,7 @@ namespace windows_client.View
 
                 convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED);
                 convMessage.FileAttachment.ContentType = "hikemap/location";
-                convMessage.Message = AppResources.Location_Txt;
+                convMessage.Message = (fileData[HikeConstants.FILE_NAME].ToString() + ", " + fileData[HikeConstants.LOCATION_ADDRESS].ToString()).Trim(new char[] { '\n', ' ' }).Replace("\n", ", ");
                 convMessage.MetaDataString = locationJSONString;
 
                 AddNewMessageToUI(convMessage, false);
@@ -5430,6 +5430,11 @@ namespace windows_client.View
             get;
             set;
         }
+        public DataTemplate DtRecievedBubbleLocation
+        {
+            get;
+            set;
+        }
         public DataTemplate DtRecievedBubbleText
         {
             get;
@@ -5538,6 +5543,8 @@ namespace windows_client.View
                             return DtRecievedBubbleContact;
                         else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
                             return DtRecievedBubbleAudioFile;
+                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                            return DtRecievedBubbleLocation;
                         else if (convMesssage.FileAttachment != null)
                             return DtRecievedBubbleFile;
                         else

@@ -476,8 +476,6 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                     return string.IsNullOrEmpty(_fileAttachment.FileName) ? "contact" : _fileAttachment.FileName;
-                else if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                    return string.IsNullOrEmpty(_fileAttachment.FileName) ? _message : _fileAttachment.FileName;
                 else
                     return _message;
             }
@@ -1325,7 +1323,7 @@ namespace windows_client.Model
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
                             messageText = AppResources.Video_Txt;
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                            messageText = AppResources.Location_Txt;
+                            messageText = this.FileAttachment.FileName.Replace("\n", ", ");
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                             messageText = AppResources.ContactTransfer_Text;
                         this._message = messageText;
