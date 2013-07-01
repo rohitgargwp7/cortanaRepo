@@ -367,19 +367,26 @@ namespace windows_client.View
 
             txtMsisdn.Text = msisdn;
 
-            if (txtMsisdn.Text == txtUserName.Text)
-                txtUserName.Visibility = Visibility.Collapsed;
-            
             ContextMenu menu = new ContextMenu();
 
             if (msisdn != App.MSISDN)
             {
-                menu.IsZoomEnabled = false;
-                MenuItem menuItemCall = new MenuItem();
-                menuItemCall.Header = AppResources.Call_Txt;
-                menuItemCall.Click += menuItemCall_Click;
-                menu.Items.Add(menuItemCall);
-                ContextMenuService.SetContextMenu(txtMsisdn, menu);
+                ApplicationBarIconButton callIconButton = new ApplicationBarIconButton();
+                callIconButton.IconUri = new Uri("/View/images/call.png", UriKind.Relative);
+                callIconButton.Text = AppResources.Call_Txt;
+                callIconButton.Click += new EventHandler(Call_Click);
+                callIconButton.IsEnabled = true;
+
+                if (appBar == null)
+                {
+                    appBar = new ApplicationBar();
+                    appBar.Mode = ApplicationBarMode.Default;
+                    appBar.IsVisible = true;
+                    appBar.IsMenuEnabled = true;
+                }
+                
+                appBar.Buttons.Add(callIconButton);
+                UserProfilePage.ApplicationBar = appBar;
             }
 
             menu.IsZoomEnabled = false;
@@ -395,7 +402,7 @@ namespace windows_client.View
             Clipboard.SetText(txtMsisdn.Text);
         }
 
-        void menuItemCall_Click(object sender, RoutedEventArgs e)
+        void Call_Click(object sender, EventArgs e)
         {
             PhoneCallTask phoneCallTask = new PhoneCallTask();
             phoneCallTask.PhoneNumber = txtMsisdn.Text;

@@ -35,18 +35,18 @@
             <Image Name="imgBackgrund" Grid.Row="0" Grid.RowSpan="3" Stretch="UniformToFill" />
 
             <TextBlock x:Name="txtProfileHeader" Margin="24,22,0,0" Text="{Binding Path= LocalizedResources.OthersProfile_Txt, Source={StaticResource LocalizedStrings}}"  Grid.Column="0" HorizontalAlignment="Left" FontSize="22" FontFamily="Segoe WP" Foreground="White"  />
-            <Grid Grid.Row="1" Margin="24,10,24,0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Tap="onProfilePicButtonTap">
+            <Grid Grid.Row="1" Margin="24,10,24,10" VerticalAlignment="Bottom" HorizontalAlignment="Left" Tap="onProfilePicButtonTap">
                 <Image Name="avatarImage" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="90" Width="90"/>
                 <Image Name="changePic" Visibility="Collapsed" Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Source="images\change_pic.png" />
             </Grid>
-            <StackPanel Grid.Row="2" Margin="24,5,24,15" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" >
-                <TextBlock Name="txtUserName" HorizontalAlignment="Left" FontSize="34" FontFamily="Segoe WP" Foreground="White"/>
-                <TextBlock Name="txtMsisdn" HorizontalAlignment="Left" FontSize="30" FontFamily="Segoe WP" Foreground="White">
+            <StackPanel Grid.Row="2" Margin="24,0,24,10" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" >
+                <TextBlock Name="txtUserName" HorizontalAlignment="Left" FontSize="36" FontFamily="Segoe WP" Foreground="White"/>
+                <TextBlock Name="txtMsisdn" HorizontalAlignment="Left" FontSize="24" Margin="0,-5,0,10" FontFamily="Segoe WP"  Foreground="#99FFFFFF">
                     <toolkit:GestureService.GestureListener>
                         <toolkit:GestureListener Tap="GestureListener_Tap" />
                     </toolkit:GestureService.GestureListener>
                 </TextBlock>
-                <TextBlock Name="txtOnHikeSmsTime" HorizontalAlignment="Left" FontSize="18"  FontFamily="Segoe WP Semilight" Foreground="White"  />
+                <TextBlock Name="txtOnHikeSmsTime" HorizontalAlignment="Left" FontSize="18"  FontFamily="Segoe WP Semilight" Foreground="#99FFFFFF"/>
             </StackPanel>
         </Grid>
         <Grid Name="gridAddFriendStrip" Grid.Row="1" Visibility="Collapsed">

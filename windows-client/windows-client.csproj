@@ -492,6 +492,7 @@
     <Content Include="View\images\block_list_icon.png" />
     <Content Include="View\images\block_list_icon_white.png" />
     <Content Include="View\images\bollywood_overlay.png" />
+    <Content Include="View\images\call.png" />
     <Content Include="View\images\change_pic.png" />
     <Content Include="View\images\chat_sms_error.png" />
     <Content Include="View\images\connected_tick.png" />
