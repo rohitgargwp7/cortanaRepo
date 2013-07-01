@@ -231,10 +231,12 @@ namespace windows_client.View
                 {
                     if (filteredJumpList == null)
                         MakeFilteredJumpList();
+
                     contactsListBox.ItemsSource = filteredJumpList;
                 }
                 else
                     contactsListBox.ItemsSource = jumpList;
+
                 shellProgress.IsVisible = false;
             };
             initPage();
@@ -878,7 +880,7 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.REFRESH_CONTACTS);
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
+                MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                 return;
             }
             disableAppBar();
@@ -900,6 +902,7 @@ namespace windows_client.View
                 stopContactScanning = false;
                 return;
             }
+
             Dictionary<string, List<ContactInfo>> new_contacts_by_id = ContactUtils.getContactsListMap(e.Results);
             Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
 
@@ -912,6 +915,7 @@ namespace windows_client.View
             }
 
             Dictionary<string, List<ContactInfo>> contacts_to_update_or_add = new Dictionary<string, List<ContactInfo>>();
+            List<ContactInfo> contactsToBeUpdated = null;
 
             if (new_contacts_by_id != null) // if there are contacts in phone perform this step
             {
@@ -929,10 +933,28 @@ namespace windows_client.View
                     {
                         contacts_to_update_or_add.Add(id, phList);
                     }
+
+                    var listToUpdate = ContactUtils.getContactsToUpdateList(phList, hkList);
+                    if (listToUpdate != null)
+                    {
+                        if (contactsToBeUpdated == null)
+                            contactsToBeUpdated = new List<ContactInfo>();
+
+                        foreach (var item in listToUpdate)
+                            contactsToBeUpdated.Add(item);
+                    }
+
                     hike_contacts_by_id.Remove(id);
                 }
+
                 new_contacts_by_id.Clear();
                 new_contacts_by_id = null;
+            }
+
+            if (contactsToBeUpdated != null && contactsToBeUpdated.Count > 0)
+            {
+                UsersTableUtils.updateContacts(contactsToBeUpdated);
+                ConversationTableUtils.updateConversation(contactsToBeUpdated);
             }
 
             /* If nothing is changed simply return without sending update request*/
