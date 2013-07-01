@@ -1734,6 +1734,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your free SMS balance is zero. You can invite friends to join hike and earn more free SMS.
+        /// </summary>
+        public static string H2HOfline_0SMS_Message {
+            get {
+                return ResourceManager.GetString("H2HOfline_0SMS_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pending messages will be sent as free hike SMS.
+        /// </summary>
+        public static string H2HOfline_Confirmation_Message {
+            get {
+                return ResourceManager.GetString("H2HOfline_Confirmation_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send as SMS.
+        /// </summary>
+        public static string H2HOfline_Confirmation_Message_Heading {
+            get {
+                return ResourceManager.GetString("H2HOfline_Confirmation_Message_Heading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Happy Messaging!.
         /// </summary>
         public static string HappyMessaging_Txt {
@@ -3381,20 +3408,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} seems to be offline, tap to send as sms.
+        ///   Looks up a localized string similar to Message not delivered. Tap to send as SMS.
         /// </summary>
         public static string Send_All_As_SMS {
             get {
                 return ResourceManager.GetString("Send_All_As_SMS", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Group members seem to be offline. Tap to send all as sms.
-        /// </summary>
-        public static string Send_All_As_SMS_Group {
-            get {
-                return ResourceManager.GetString("Send_All_As_SMS_Group", resourceCulture);
             }
         }
         

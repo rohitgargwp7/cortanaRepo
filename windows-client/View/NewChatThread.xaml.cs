@@ -110,8 +110,11 @@ namespace windows_client.View
         private BingMapsTask bingMapsTask = null;
         private object statusObject = null;
 
+        
         private LastSeenHelper _lastSeenHelper;
         DispatcherTimer _forceSMSTimer;
+        Boolean _isShownOnUI = false;
+        Boolean _isSendAllAsSMSVisible = false;
         //        private ObservableCollection<MyChatBubble> chatThreadPageCollection = new ObservableCollection<MyChatBubble>();
         private Dictionary<long, ConvMessage> msgMap = new Dictionary<long, ConvMessage>(); // this holds msgId -> sent message bubble mapping
         //private Dictionary<ConvMessage, SentChatBubble> _convMessageSentBubbleMap = new Dictionary<ConvMessage, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
@@ -1763,17 +1766,18 @@ namespace windows_client.View
             //}
         }
 
-        private void FileAttachmentMessage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void FileAttachmentMessage_Tap(object sender, SelectionChangedEventArgs e)
         {
             emoticonPanel.Visibility = Visibility.Collapsed;
-
             App.ViewModel.HideToolTip(LayoutRoot, 1);
-
             attachmentMenu.Visibility = Visibility.Collapsed;
+
             ConvMessage convMessage = llsMessages.SelectedItem as ConvMessage;
             llsMessages.SelectedItem = null;
+            
             if (convMessage == null)
                 return;
+            
             if (!isContextMenuTapped)
             {
                 if (!isGroupChat && convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
@@ -2196,7 +2200,10 @@ namespace windows_client.View
         private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop)
         {
             if (ocMessages != null && ocMessages.Count > 0 && ocMessages.Last().GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
+            {
                 ocMessages.RemoveAt(ocMessages.Count - 1);
+                _isSendAllAsSMSVisible = false;
+            }
 
             int insertPosition = 0;
             if (!insertAtTop)
@@ -3102,9 +3109,16 @@ namespace windows_client.View
                 ConversationTableUtils.updateLastMsgStatus(convMessage.MessageId, msisdn, (int)ConvMessage.State.FORCE_SMS_SENT_CONFIRMED);
 
                 SendForceSMS(convMessage);
+
+                if (ocMessages != null && ocMessages.Count > 0 && ocMessages.Last().GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
+                {
+                    ocMessages.RemoveAt(ocMessages.Count - 1);
+                    _isSendAllAsSMSVisible = false;
+                    ShowForceSMSOnUI();
+                }
             }
             else
-                MessageBox.Show("SMS balance no adequate");
+                MessageBox.Show(AppResources.H2HOfline_0SMS_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OK);
         }
 
         #endregion
@@ -5511,7 +5525,6 @@ namespace windows_client.View
             }
         }
 
-        Boolean _isShownOnUI = false;
 
         void _forceSMSTimer_Tick(object sender, EventArgs e)
         {
@@ -5550,13 +5563,9 @@ namespace windows_client.View
                         var msg = new ConvMessage();
                         msg.GrpParticipantState = ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION;
                         msg.NotificationType = ConvMessage.MessageType.FORCE_SMS;
-
-                        if (isGroupChat)
-                            msg.Message = AppResources.Send_All_As_SMS_Group;
-                        else
-                            msg.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
-
+                        msg.Message = AppResources.Send_All_As_SMS;
                         this.ocMessages.Add(msg);
+                        _isSendAllAsSMSVisible = true;
                     }
 
                     _isShownOnUI = false;
@@ -5671,14 +5680,45 @@ namespace windows_client.View
             }), status, showTip);
         }
 
-        private void SendAllForceSMS_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void ChatMessageSelected(object sender, SelectionChangedEventArgs e)
         {
-            _isShownOnUI = false;
+            ConvMessage msg = llsMessages.SelectedItem as ConvMessage;
 
-            SendForceSMS();
+            if (msg != null)
+            {
+                if (msg.IsSent || msg.GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
+                {
+                    if (mCredits > 0)
+                    {
+                        if (_isSendAllAsSMSVisible)
+                        {
+                            var result = MessageBox.Show(AppResources.H2HOfline_Confirmation_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OKCancel);
 
-            if (ocMessages != null && ocMessages.Count > 0 && ocMessages.Last().GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
-                ocMessages.RemoveAt(ocMessages.Count - 1);
+                            if (result == MessageBoxResult.OK)
+                            {
+                                _isShownOnUI = false;
+
+                                SendForceSMS();
+
+                                if (ocMessages != null && ocMessages.Count > 0 && ocMessages.Last().GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
+                                    ocMessages.RemoveAt(ocMessages.Count - 1);
+                            }
+                            //    else
+                            //        FileAttachmentMessage_Tap(sender, e);
+                            //}
+                            //
+                        }
+                        else
+                            FileAttachmentMessage_Tap(sender, e); // normal flow if all are sent files and send all sms option is not visible
+                    }
+                    else
+                        MessageBox.Show(AppResources.H2HOfline_0SMS_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OK);
+
+                    llsMessages.SelectedItem = null;
+                }
+                else
+                    FileAttachmentMessage_Tap(sender, e); // normal flow for recieved files
+            }
         }
     }
 
