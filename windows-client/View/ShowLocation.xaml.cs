@@ -84,7 +84,10 @@ namespace windows_client.View
                 if (_myCoordinate == null)
                     GetCurrentCoordinate();
                 else
+                {
+                    (this.ApplicationBar.Buttons[0] as ApplicationBarIconButton).IsEnabled = true;
                     GetDirections();
+                }
             } 
             
             base.OnNavigatedTo(e);
@@ -145,6 +148,10 @@ namespace windows_client.View
             {
                 // Center map on the starting point (phone location) and zoom quite close
                 MyMap.SetView(_myCoordinate, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
+                
+                if (MyRoute == null)
+                    GetDirections();
+                
                 ShowDirections();
             }
             else
@@ -188,7 +195,10 @@ namespace windows_client.View
 
                 // Update route information and directions
                 double distanceInKm = (double)MyRoute.LengthInMeters / 1000;
-                DestinationDetailsText.Text = "Total distance: "+distanceInKm.ToString("0.0") + " km, " + MyRoute.EstimatedDuration.Hours + " hrs " + MyRoute.EstimatedDuration.Minutes + " mins.";
+                var ts = new TimeSpan(MyRoute.EstimatedDuration.Hours, MyRoute.EstimatedDuration.Minutes, 0);
+
+                timeDestination.Text = ts.ToString("hh\\:mm", System.Globalization.CultureInfo.CurrentUICulture);
+                distanceDestination.Text = distanceInKm.ToString("0.0") + " km";
 
                 List<string> routeInstructions = new List<string>();
                 foreach (RouteLeg leg in MyRoute.Legs)
@@ -233,10 +243,12 @@ namespace windows_client.View
 
             // Draw marker for current position
             if (_myCoordinate != null)
-                DrawMapMarker(_myCoordinate, Colors.Orange, mapLayer);
+            {
+                DrawMapMarker(_myCoordinate, Colors.Orange, mapLayer, true);
 
-            if (_locationCoordinate != null)
-                DrawMapMarker(_locationCoordinate, Colors.Red, mapLayer);
+                if (_locationCoordinate != null)
+                    DrawMapMarker(_locationCoordinate, Colors.Red, mapLayer, true);
+            }
 
             // Draw markers for possible waypoints when directions are shown.
             // Start and end points are already drawn with different colors.
@@ -245,45 +257,86 @@ namespace windows_client.View
                 for (int i = 1; i < MyRoute.Legs[0].Maneuvers.Count - 1; i++)
                 {
                     if (MyRoute.Legs[0].Maneuvers[i].StartGeoCoordinate != _myCoordinate || MyRoute.Legs[0].Maneuvers[i].StartGeoCoordinate != _locationCoordinate)
-                        DrawMapMarker(MyRoute.Legs[0].Maneuvers[i].StartGeoCoordinate, Colors.Black, mapLayer);
+                        DrawMapMarker(MyRoute.Legs[0].Maneuvers[i].StartGeoCoordinate, (Color)Application.Current.Resources["PhoneAccentColor"], mapLayer, false);
                 }
             }
 
             MyMap.Layers.Add(mapLayer);
         }
 
-        private void DrawMapMarker(GeoCoordinate coordinate, Color color, MapLayer mapLayer)
+        private void DrawMapMarker(GeoCoordinate coordinate, Color color, MapLayer mapLayer, Boolean isPin)
         {
-            // Create a map marker
-            Polygon polygon = new Polygon();
-            polygon.Points.Add(new Point(0, 0));
-            polygon.Points.Add(new Point(0, 55));
-            polygon.Points.Add(new Point(25, 25));
-            polygon.Points.Add(new Point(25, 0));
-            polygon.Fill = new SolidColorBrush(color);
-
-            // Enable marker to be tapped for location information
-            polygon.Tag = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);
-
-            // Create a MapOverlay and add marker.
             MapOverlay overlay = new MapOverlay();
-            overlay.Content = polygon;
-            overlay.GeoCoordinate = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);
-            overlay.PositionOrigin = new Point(0.0, 1.0);
+
+            if (isPin)
+            {
+                // Create a map marker
+                Polygon polygon = new Polygon();
+                polygon.Points.Add(new Point(0, 0));
+                polygon.Points.Add(new Point(0, 55));
+                polygon.Points.Add(new Point(25, 25));
+                polygon.Points.Add(new Point(25, 0));
+                polygon.Fill = new SolidColorBrush(color);
+
+                // Enable marker to be tapped for location information
+                polygon.Tag = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);
+
+                // Create a MapOverlay and add marker.
+                overlay.Content = polygon;
+                overlay.GeoCoordinate = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);
+                overlay.PositionOrigin = new Point(0.0, 1.0);
+            }
+            else
+            {
+                Ellipse ellipse = new Ellipse();
+                ellipse.Height = MyMap.ZoomLevel;
+                ellipse.Width = MyMap.ZoomLevel;
+                ellipse.Fill = new SolidColorBrush(Colors.White);
+                ellipse.Stroke = new SolidColorBrush(color);
+                overlay.Content = ellipse;
+                overlay.GeoCoordinate = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);
+                overlay.PositionOrigin = new Point(0.0, 0.0);
+            }
+
             mapLayer.Add(overlay);
         }
 
         private void HideDirections()
         {
             _isDirectionsShown = false;
+            LayoutRoot.RowDefinitions[1].Height = new GridLength();
             DirectionGrid.Visibility = Visibility.Collapsed;
         }
 
         private void ShowDirections()
         {
             _isDirectionsShown = true;
+            LayoutRoot.RowDefinitions[0].Height = new GridLength(3, GridUnitType.Star);
+            LayoutRoot.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
             DirectionGrid.Visibility = Visibility.Visible;
             DrawMapMarkers();
+        }
+
+        Boolean _isMapBig = true;
+
+        private void DirectionGrid_ManipulationStarted(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
+        {
+            if (_isMapBig)
+            {
+                LayoutRoot.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
+                LayoutRoot.RowDefinitions[1].Height = new GridLength(3, GridUnitType.Star);
+                _isMapBig = !_isMapBig;
+            }
+        }
+
+        private void MyMap_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (!_isMapBig)
+            {
+                LayoutRoot.RowDefinitions[0].Height = new GridLength(3, GridUnitType.Star);
+                LayoutRoot.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
+                _isMapBig = !_isMapBig;
+            }
         }
     }
 }

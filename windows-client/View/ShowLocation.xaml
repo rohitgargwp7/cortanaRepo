@@ -12,7 +12,8 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="True"
+    shell:SystemTray.Opacity="0">
     
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Key="RouteListTemplate">
@@ -26,13 +27,20 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <maps:Map x:Name="MyMap" ZoomLevelChanged="ZoomLevelChanged"/>
-        <Grid x:Name="DirectionGrid" MaxHeight="350" Grid.Row="1" Visibility="Collapsed">
+        <maps:Map x:Name="MyMap" Tap="MyMap_Tap" ZoomLevelChanged="ZoomLevelChanged"/>
+        <Grid x:Name="DirectionGrid" ManipulationStarted="DirectionGrid_ManipulationStarted" Grid.Row="1" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <TextBlock x:Name="DestinationDetailsText" Margin="10" FontSize="26"/>
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="timeDestination" HorizontalAlignment="Left" Style="{StaticResource PhoneTextLargeStyle}" FontWeight="SemiBold"/>
+                <TextBlock Grid.Column="1" x:Name="distanceDestination" HorizontalAlignment="Right" Style="{StaticResource PhoneTextLargeStyle}" FontWeight="SemiBold"/>
+            </Grid>
             <phone:LongListSelector x:Name="directionList" Grid.Row="1" Margin="10,0,10,0" Background="Transparent" ItemTemplate="{StaticResource RouteListTemplate}" LayoutMode="List" 
             IsGroupingEnabled="False" SelectionChanged="RouteManeuverSelected"/>
         </Grid>
