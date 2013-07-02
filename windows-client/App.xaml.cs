@@ -388,7 +388,6 @@ namespace windows_client
             }
 
             NetworkManager.turnOffNetworkManager = false;
-       
             App.mMqttManager.IsAppStarted = false;
         }
 
