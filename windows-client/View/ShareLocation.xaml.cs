@@ -110,11 +110,17 @@ namespace windows_client.View
 
         void PlacesResult_Callback(JObject obj)
         {
+            if (MyMap == null)
+                return;
+            
             _isPlacesSearch = true;
             _places = this.ParsePlaces(obj);
             
             Deployment.Current.Dispatcher.BeginInvoke(new Action(delegate
             {
+                if (MyMap == null)
+                    return;
+                
                 PlacesGrid.Visibility = Visibility.Visible;
                 DrawMapMarkers();
                 DrawMapMarkers();

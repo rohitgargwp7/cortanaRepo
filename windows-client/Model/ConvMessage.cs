@@ -1323,7 +1323,7 @@ namespace windows_client.Model
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
                             messageText = AppResources.Video_Txt;
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                            messageText = this.FileAttachment.FileName.Replace("\n", ", ");
+                            messageText = this.FileAttachment.FileName.Trim(new char[]{'\n'}).Replace("\n", ", ");
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                             messageText = AppResources.ContactTransfer_Text;
                         this._message = messageText;

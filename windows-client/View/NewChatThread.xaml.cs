@@ -4013,17 +4013,25 @@ namespace windows_client.View
                 string locationJSONString = locationJSON.ToString();
 
                 byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
+                
+                var vicinity = fileData[HikeConstants.LOCATION_ADDRESS].ToString().Trim(new char[] { '\n', ' ' }).Replace("\n", ", ");
+                string locationMessage = String.Empty;
 
-                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(),
-                    ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                convMessage.IsSms = !isOnHike;
-                convMessage.HasAttachment = true;
+                if(String.IsNullOrEmpty(vicinity))
+                    locationMessage = fileData[HikeConstants.FILE_NAME].ToString();
+                else
+                    locationMessage = fileData[HikeConstants.FILE_NAME].ToString() + ", " + vicinity;
 
+                ConvMessage convMessage = new ConvMessage(locationMessage, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation)
+                {
+                    IsSms = !isOnHike,
+                    HasAttachment = true,
+                    MetaDataString = locationJSONString
+                };
+              
                 convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED);
                 convMessage.FileAttachment.ContentType = "hikemap/location";
-                convMessage.Message = (fileData[HikeConstants.FILE_NAME].ToString() + ", " + fileData[HikeConstants.LOCATION_ADDRESS].ToString()).Trim(new char[] { '\n', ' ' }).Replace("\n", ", ");
-                convMessage.MetaDataString = locationJSONString;
-
+                
                 AddNewMessageToUI(convMessage, false);
 
                 object[] vals = new object[3];
