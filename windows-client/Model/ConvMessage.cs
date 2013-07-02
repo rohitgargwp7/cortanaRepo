@@ -1296,8 +1296,9 @@ namespace windows_client.Model
                         
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
-                            this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString() + "\n" + fileObject[HikeConstants.LOCATION_ADDRESS].ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
-                            contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                            this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
+                        contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+
                             JObject locationFile = new JObject();
                             locationFile[HikeConstants.LATITUDE] = fileObject[HikeConstants.LATITUDE];
                             locationFile[HikeConstants.LONGITUDE] = fileObject[HikeConstants.LONGITUDE];
@@ -1355,7 +1356,7 @@ namespace windows_client.Model
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
                             messageText = AppResources.Video_Txt;
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                            messageText = this.FileAttachment.FileName.Trim(new char[]{'\n'}).Replace("\n", ", ");
+                            messageText = this.FileAttachment.FileName;
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                             messageText = AppResources.ContactTransfer_Text;
                         this._message = messageText;
