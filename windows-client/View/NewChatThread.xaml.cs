@@ -5538,7 +5538,7 @@ namespace windows_client.View
                         return;
                     }
 
-                    if (lastMsg != null && lastMsg.IsSent && lastMsg.MessageStatus == ConvMessage.State.SENT_CONFIRMED)
+                    if (lastMsg != null)
                     {
                         var msg = new ConvMessage();
                         msg.GrpParticipantState = ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION;
