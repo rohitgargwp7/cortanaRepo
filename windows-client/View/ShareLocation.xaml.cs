@@ -302,12 +302,12 @@ namespace windows_client.View
             JObject metadata = new JObject();
             JArray filesData = new JArray();
             JObject singleFileInfo = new JObject();
-            singleFileInfo[HikeConstants.FILE_NAME] = _selectedPlace == null ? "Location" : _selectedPlace.title;
+            singleFileInfo[HikeConstants.FILE_NAME] = _selectedPlace == null ? AppResources.Location_Txt : _selectedPlace.title;
             singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = "hikemap/location";
             singleFileInfo[HikeConstants.LATITUDE] = _selectedCoordinate.Latitude;
             singleFileInfo[HikeConstants.LONGITUDE] = _selectedCoordinate.Longitude;
             singleFileInfo[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
-            singleFileInfo[HikeConstants.LOCATION_ADDRESS] = _selectedPlace == null || _selectedPlace.vicinity == null ? "" : _selectedPlace.vicinity;
+            singleFileInfo[HikeConstants.LOCATION_ADDRESS] = _selectedPlace == null || _selectedPlace.vicinity == null ? String.Empty : _selectedPlace.vicinity;
 
             filesData.Add(singleFileInfo.ToObject<JToken>());
 
@@ -513,7 +513,7 @@ namespace windows_client.View
             {
                 if (_vicinity != value)
                 {
-                    _vicinity = value == null ? "" : value.Trim(new char[] { '\n', ' ' }).Replace("\n", ", ");
+                    _vicinity = value == null ? String.Empty : value.Trim(new char[] { '\n', ' ' }).Replace("\n", ", ");
                     NotifyPropertyChanged("vicinity");
                     NotifyPropertyChanged("VicinityVisibility");
                 }
