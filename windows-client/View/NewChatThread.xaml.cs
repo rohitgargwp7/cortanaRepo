@@ -110,7 +110,7 @@ namespace windows_client.View
         private BingMapsTask bingMapsTask = null;
         private object statusObject = null;
 
-        
+
         private LastSeenHelper _lastSeenHelper;
         DispatcherTimer _forceSMSTimer;
         Boolean _isShownOnUI = false;
@@ -1748,10 +1748,10 @@ namespace windows_client.View
 
             ConvMessage convMessage = llsMessages.SelectedItem as ConvMessage;
             llsMessages.SelectedItem = null;
-            
+
             if (convMessage == null)
                 return;
-            
+
             if (!isContextMenuTapped)
             {
                 if (!isGroupChat && convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
@@ -3719,7 +3719,7 @@ namespace windows_client.View
                         msgMap.TryGetValue(ids[i], out msg);
                         if (msg != null)
                         {
-                            if(msg.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
+                            if (msg.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
                                 msg.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
                             else
                                 msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
@@ -4386,12 +4386,12 @@ namespace windows_client.View
             int count = 0;
             int duplicates = 0;
             Dictionary<string, List<ContactInfo>> contactListMap = null;
-            
+
             if (contacts == null)
                 return null;
-            
+
             contactListMap = new Dictionary<string, List<ContactInfo>>();
-            
+
             foreach (Contact cn in contacts)
             {
                 CompleteName cName = cn.CompleteName;
@@ -4403,12 +4403,12 @@ namespace windows_client.View
                         count++;
                         continue;
                     }
-                    
+
                     ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber, (int)ph.Kind);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
                     contactInfo = cInfo;
-                    
+
                     if (contactListMap.ContainsKey(cInfo.Id))
                     {
                         if (!contactListMap[cInfo.Id].Contains(cInfo))
@@ -4430,7 +4430,7 @@ namespace windows_client.View
 
             Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
             Debug.WriteLine("Total contacts with no phone number : {0}", count);
-            
+
             return contactListMap;
         }
 
@@ -5600,7 +5600,7 @@ namespace windows_client.View
                     string msisdn = MessagesTableUtils.updateMsgStatus(mContactNumber, msg.MessageId, (int)ConvMessage.State.FORCE_SMS_SENT_CONFIRMED);
                 }
 
-                message =  convMsgList.Last();
+                message = convMsgList.Last();
 
                 JObject data = new JObject();
                 data.Add(HikeConstants.COUNT, convMsgList.Count);
@@ -5668,9 +5668,9 @@ namespace windows_client.View
             {
                 if (msg.IsSent || msg.GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
                 {
-                    if (mCredits > 0)
+                    if (_isSendAllAsSMSVisible)
                     {
-                        if (_isSendAllAsSMSVisible)
+                        if (mCredits > 0)
                         {
                             var result = MessageBox.Show(AppResources.H2HOfline_Confirmation_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OKCancel);
 
@@ -5689,12 +5689,12 @@ namespace windows_client.View
                             //
                         }
                         else
-                            FileAttachmentMessage_Tap(sender, e); // normal flow if all are sent files and send all sms option is not visible
+                            MessageBox.Show(AppResources.H2HOfline_0SMS_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OK);
+               
+                        llsMessages.SelectedItem = null;
                     }
                     else
-                        MessageBox.Show(AppResources.H2HOfline_0SMS_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OK);
-
-                    llsMessages.SelectedItem = null;
+                        FileAttachmentMessage_Tap(sender, e); // normal flow if all are sent files and send all sms option is not visible
                 }
                 else
                     FileAttachmentMessage_Tap(sender, e); // normal flow for recieved files
