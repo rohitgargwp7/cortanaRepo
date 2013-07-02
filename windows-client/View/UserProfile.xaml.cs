@@ -367,44 +367,46 @@ namespace windows_client.View
 
             txtMsisdn.Text = msisdn;
 
-
-            if (msisdn != App.MSISDN)
+            if (e.NavigationMode == NavigationMode.New)
             {
-                ApplicationBarIconButton callIconButton = new ApplicationBarIconButton();
-                callIconButton.IconUri = new Uri("/View/images/call.png", UriKind.Relative);
-                callIconButton.Text = AppResources.Call_Txt;
-                callIconButton.Click += new EventHandler(Call_Click);
-                callIconButton.IsEnabled = true;
-
-                if (appBar == null)
+                if (msisdn != App.MSISDN)
                 {
-                    appBar = new ApplicationBar();
-                    appBar.Mode = ApplicationBarMode.Default;
-                    appBar.IsVisible = true;
-                    appBar.IsMenuEnabled = true;
+                    ApplicationBarIconButton callIconButton = new ApplicationBarIconButton();
+                    callIconButton.IconUri = new Uri("/View/images/call.png", UriKind.Relative);
+                    callIconButton.Text = AppResources.Call_Txt;
+                    callIconButton.Click += new EventHandler(Call_Click);
+                    callIconButton.IsEnabled = true;
+
+                    if (appBar == null)
+                    {
+                        appBar = new ApplicationBar();
+                        appBar.Mode = ApplicationBarMode.Default;
+                        appBar.IsVisible = true;
+                        appBar.IsMenuEnabled = true;
+                    }
+
+                    appBar.Buttons.Add(callIconButton);
+                    UserProfilePage.ApplicationBar = appBar;
                 }
-                
-                appBar.Buttons.Add(callIconButton);
-                UserProfilePage.ApplicationBar = appBar;
-            }
 
-            ContextMenu menu = new ContextMenu();
-            menu.IsZoomEnabled = false;
-            MenuItem menuItemCopy = new MenuItem();
-            menuItemCopy.Header = AppResources.Copy_txt;
-            menuItemCopy.Click += menuItemCopy_Click;
-            menu.Items.Add(menuItemCopy);
-            ContextMenuService.SetContextMenu(txtMsisdn, menu);
+                ContextMenu menu = new ContextMenu();
+                menu.IsZoomEnabled = false;
+                MenuItem menuItemCopy = new MenuItem();
+                menuItemCopy.Header = AppResources.Copy_txt;
+                menuItemCopy.Click += menuItemCopy_Click;
+                menu.Items.Add(menuItemCopy);
+                ContextMenuService.SetContextMenu(txtMsisdn, menu);
 
-            if (msisdn == txtUserName.Text)
-            {
-                ContextMenu menu2 = new ContextMenu();
-                menu2.IsZoomEnabled = false;
-                MenuItem menuItemCopy2 = new MenuItem();
-                menuItemCopy2.Header = AppResources.Copy_txt;
-                menuItemCopy2.Click += menuItemCopy_Click;
-                menu2.Items.Add(menuItemCopy2);
-                ContextMenuService.SetContextMenu(txtUserName, menu2);
+                if (msisdn == txtUserName.Text)
+                {
+                    ContextMenu menu2 = new ContextMenu();
+                    menu2.IsZoomEnabled = false;
+                    MenuItem menuItemCopy2 = new MenuItem();
+                    menuItemCopy2.Header = AppResources.Copy_txt;
+                    menuItemCopy2.Click += menuItemCopy_Click;
+                    menu2.Items.Add(menuItemCopy2);
+                    ContextMenuService.SetContextMenu(txtUserName, menu2);
+                }
             }
         }
 
