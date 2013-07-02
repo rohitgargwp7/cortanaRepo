@@ -251,6 +251,9 @@ namespace windows_client
         public static string SOCIAL = "Social_Request";
         public static string SHOW_GROUP_CHAT_OVERLAY = "sgcol";
         public static string PLAYER_TIMER = "playerTimer";
+        public static string LOCATION_COORDINATE = "locationCoordinate";
+        public static string LOCATION_SEARCH = "locationSearch";
+        public static string LOCATION_ZOOM_LEVEL = "locationZoomLevel";
 
         /* NAVIGATION CONSTANTS*/
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
