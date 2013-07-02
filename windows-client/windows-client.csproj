@@ -855,7 +855,9 @@
     <EmbeddedResource Include="Languages\AppResources.fr.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Languages\AppResources.hi.resx" />
+    <EmbeddedResource Include="Languages\AppResources.hi.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Languages\AppResources.pt-BR.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
