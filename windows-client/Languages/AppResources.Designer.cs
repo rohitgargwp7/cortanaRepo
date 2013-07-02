@@ -2490,6 +2490,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to My Location.
+        /// </summary>
+        public static string My_Location_Text {
+            get {
+                return ResourceManager.GetString("My_Location_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to my profile.
         /// </summary>
         public static string MyProfileheader_Txt {

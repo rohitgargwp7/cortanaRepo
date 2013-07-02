@@ -124,7 +124,12 @@ namespace windows_client.View
                 PlacesGrid.Visibility = Visibility.Visible;
                 DrawMapMarkers();
                 DrawMapMarkers();
-                _selectedPlace = new Place() { position = _selectedCoordinate, title = "My Location", vicinity = _myPlaceVicinity };
+                _selectedPlace = new Place() 
+                { 
+                    position = _selectedCoordinate, 
+                    title = _myCoordinate == null || _selectedCoordinate!= _myCoordinate? AppResources.Location_Txt : AppResources.My_Location_Text, 
+                    vicinity = _myPlaceVicinity 
+                };
                 _places.Insert(0, _selectedPlace);
                 _selectedPlace = _places[0];
                 MyMap.SetView(_selectedPlace.position, MyMap.ZoomLevel, MapAnimationKind.Parabolic);

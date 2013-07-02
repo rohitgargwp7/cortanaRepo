@@ -1834,4 +1834,7 @@ Get hike: http://get.hike.in</value>
   <data name="On_Dnd_Txt" xml:space="preserve">
     <value>on DND</value>
   </data>
+  <data name="My_Location_Text" xml:space="preserve">
+    <value>My Location</value>
+  </data>
 </root>
