@@ -2083,14 +2083,20 @@ namespace windows_client.View
                     {
                         locationJSON = JObject.Parse(convMessage.MetaDataString);
                     }
-                    if (this.bingMapsTask == null)
-                        bingMapsTask = new BingMapsTask();
+
                     double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
                     double longitude = Convert.ToDouble(locationJSON[HikeConstants.LONGITUDE].ToString());
-                    double zoomLevel = Convert.ToDouble(locationJSON[HikeConstants.ZOOM_LEVEL].ToString());
-                    bingMapsTask.Center = new GeoCoordinate(latitude, longitude);
-                    bingMapsTask.ZoomLevel = zoomLevel;
-                    bingMapsTask.Show();
+
+                    PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] = new GeoCoordinate(latitude, longitude);
+
+                    this.NavigationService.Navigate(new Uri("/View/ShowLocation.xaml", UriKind.Relative));
+
+                    //if (this.bingMapsTask == null)
+                    //    bingMapsTask = new BingMapsTask();
+                    //double zoomLevel = Convert.ToDouble(locationJSON[HikeConstants.ZOOM_LEVEL].ToString());
+                    //bingMapsTask.Center = new GeoCoordinate(latitude, longitude);
+                    //bingMapsTask.ZoomLevel = zoomLevel;
+                    //bingMapsTask.Show();
                 }
                 catch (Exception ex) //Code should never reach here
                 {
@@ -4086,23 +4092,31 @@ namespace windows_client.View
                 byte[] imageThumbnail = null;
                 JObject locationJSON = (JObject)locationInfo[0];
                 imageThumbnail = (byte[])locationInfo[1];
-
-                string fileName = "Location";
+                var fileData = locationJSON[HikeConstants.FILES_DATA][0];
+                string fileName = fileData[HikeConstants.FILE_NAME].ToString();
 
                 string locationJSONString = locationJSON.ToString();
 
                 byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
+                
+                var vicinity = fileData[HikeConstants.LOCATION_ADDRESS].ToString().Trim(new char[] { '\n', ' ' }).Replace("\n", ", ");
+                string locationMessage = String.Empty;
 
-                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(),
-                    ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                convMessage.IsSms = !isOnHike;
-                convMessage.HasAttachment = true;
+                if(String.IsNullOrEmpty(vicinity))
+                    locationMessage = fileData[HikeConstants.FILE_NAME].ToString();
+                else
+                    locationMessage = fileData[HikeConstants.FILE_NAME].ToString() + ", " + vicinity;
 
+                ConvMessage convMessage = new ConvMessage(locationMessage, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation)
+                {
+                    IsSms = !isOnHike,
+                    HasAttachment = true,
+                    MetaDataString = locationJSONString
+                };
+              
                 convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED);
                 convMessage.FileAttachment.ContentType = "hikemap/location";
-                convMessage.Message = AppResources.Location_Txt;
-                convMessage.MetaDataString = locationJSONString;
-
+                
                 AddNewMessageToUI(convMessage, false);
 
                 object[] vals = new object[3];
@@ -5729,6 +5743,12 @@ namespace windows_client.View
             get;
             set;
         }
+        
+        public DataTemplate DtRecievedBubbleLocation
+        {
+            get;
+            set;
+        }
 
         public DataTemplate DtRecievedBubbleText
         {
@@ -5773,6 +5793,12 @@ namespace windows_client.View
         }
 
         public DataTemplate DtSentBubbleFile
+        {
+            get;
+            set;
+        }
+
+        public DataTemplate DtSentBubbleLocation
         {
             get;
             set;
@@ -5827,6 +5853,8 @@ namespace windows_client.View
                             return DtSentBubbleContact;
                         else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
                             return DtSentBubbleAudioFile;
+                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                            return DtSentBubbleLocation;
                         else if (convMesssage.FileAttachment != null)
                             return DtSentBubbleFile;
                         else
@@ -5842,6 +5870,8 @@ namespace windows_client.View
                             return DtRecievedBubbleContact;
                         else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
                             return DtRecievedBubbleAudioFile;
+                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                            return DtRecievedBubbleLocation;
                         else if (convMesssage.FileAttachment != null)
                             return DtRecievedBubbleFile;
                         else

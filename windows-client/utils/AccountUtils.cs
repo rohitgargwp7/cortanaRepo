@@ -304,7 +304,7 @@ namespace windows_client.utils
             req.ContentType = convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE) ||
                 convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO) ? "" : convMessage.FileAttachment.ContentType;
             req.Headers["Connection"] = "Keep-Alive";
-            req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
+            req.Headers["Content-Name"] = convMessage.FileAttachment.FileName.Replace("\n","_");
 
             req.Headers["X-Thumbnail-Required"] = "0";
 
@@ -598,6 +598,15 @@ namespace windows_client.utils
                 request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
             }
             request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();//to disaable caching if GET result
+            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
+        }
+        
+        public static void createNokiaPlacesGetRequest(string requestUrl, postResponseFunction callback)
+        {
+            HttpWebRequest request = null;
+            request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
+            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();//to disaable caching if GET result
+            request.Headers[HttpRequestHeader.AcceptLanguage] = System.Globalization.CultureInfo.CurrentCulture.Name;
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
 

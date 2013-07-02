@@ -212,6 +212,45 @@
                                 </Grid>
                             </DataTemplate>
                         </view:ChatThreadTemplateSelector.DtRecievedBubbleFile>
+                        <view:ChatThreadTemplateSelector.DtRecievedBubbleLocation>
+                            <DataTemplate x:Name="dtRecievedBubbleLocation" >
+                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24 0 0 14" HorizontalAlignment="Left">
+                                    <toolkit:ContextMenuService.ContextMenu>
+                                        <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                        </toolkit:ContextMenu>
+                                    </toolkit:ContextMenuService.ContextMenu>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="14" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <!--to maintain width-->
+                                    <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
+                                    <Grid Grid.Row="1" HorizontalAlignment="Left">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Rectangle Grid.RowSpan="2" Fill="{Binding BubbleBackGroundColor}" />
+                                        <Grid x:Name="attachment" Grid.Row="0"  >
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Image Grid.Row="0" MaxWidth="300" MaxHeight="160" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
+                                            <Grid MaxHeight="100" MaxWidth="300" VerticalAlignment="Bottom" Margin="12,0">
+                                                <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                                                <TextBlock Text="{Binding DispMessage}" Margin="5" TextWrapping="Wrap" Foreground="White" FontSize="18" />
+                                            </Grid>
+                                            <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
+                                        </Grid>
+                                        <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                    </Grid>
+                                </Grid>
+                            </DataTemplate>
+                        </view:ChatThreadTemplateSelector.DtRecievedBubbleLocation>
                         <view:ChatThreadTemplateSelector.DtRecievedBubbleAudioFile>
                             <DataTemplate x:Name="dtRecievedBubbleAudioFile" >
                                 <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24 0 0 14" HorizontalAlignment="Left">
@@ -415,6 +454,50 @@
                                 </Grid>
                             </DataTemplate>
                         </view:ChatThreadTemplateSelector.DtSentBubbleText>
+                        <view:ChatThreadTemplateSelector.DtSentBubbleLocation>
+                            <DataTemplate x:Name="DtSentBubbleLocation" >
+                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right"   >
+                                    <toolkit:ContextMenuService.ContextMenu>
+                                        <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                        </toolkit:ContextMenu>
+                                    </toolkit:ContextMenuService.ContextMenu>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="14" />
+                                    </Grid.RowDefinitions>
+                                    <Grid Grid.Row="0" HorizontalAlignment="Right">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="40"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}" />
+                                        <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
+                                        <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" >
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Image Grid.Row="0" MaxWidth="300" MaxHeight="160" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
+                                            <Grid MaxHeight="100" MaxWidth="300" VerticalAlignment="Bottom" Margin="12,0">
+                                                <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                                                <TextBlock Text="{Binding DispMessage}" Margin="5" TextWrapping="Wrap" Foreground="White" FontSize="18" />
+                                            </Grid>
+                                            <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
+                                        </Grid>
+                                        <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                    </Grid>
+                                    <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
+
+                                </Grid>
+                            </DataTemplate>
+                        </view:ChatThreadTemplateSelector.DtSentBubbleLocation>
                         <view:ChatThreadTemplateSelector.DtSentBubbleFile>
                             <DataTemplate x:Name="dtSentBubbleFile" >
                                 <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right">
