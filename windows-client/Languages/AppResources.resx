@@ -1816,4 +1816,7 @@ Get hike: http://get.hike.in</value>
     <value>Forward To</value>
     <comment>verb(length 12)</comment>
   </data>
+  <data name="On_Dnd_Txt" xml:space="preserve">
+    <value>on DND</value>
+  </data>
 </root>

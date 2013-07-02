@@ -79,7 +79,7 @@
         <DataTemplate x:Name="blockTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="320"/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel x:Name="Sender" Grid.Column="0" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="0,2,0,2">
@@ -92,7 +92,7 @@
                 </StackPanel>
                 <Button Content="{Binding Path= LocalizedResources.Block_Txt, Source={StaticResource LocalizedStrings}}" 
                         Background="#e9ecee" Foreground="#595959" 
-                        Height="65" Width="120" FontSize="20" Grid.Column="1" 
+                        Height="65" MinWidth="120" FontSize="20" Grid.Column="1" 
                         HorizontalAlignment="Right" 
                         BorderThickness="0" Tap="Block_Tap"/>
             </Grid>
