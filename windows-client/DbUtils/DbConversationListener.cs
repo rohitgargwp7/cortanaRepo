@@ -90,8 +90,8 @@ namespace windows_client.DbUtils
                 }
                 else if (contentType.Contains(HikeConstants.LOCATION))
                 {
-                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
-                        "/" + fileKey;
+                    //convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                    //    "/" + fileKey;
                 }
                 else if (contentType.Contains(HikeConstants.VIDEO))
                 {
@@ -114,7 +114,6 @@ namespace windows_client.DbUtils
             {
                 convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
                 convMessage.SetAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
-                NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
             }
         }
 
@@ -196,12 +195,8 @@ namespace windows_client.DbUtils
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
 
-
                     byte[] fileBytes;
-                    if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                        fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
-                    else
-                        MiscDBUtil.readFileFromIsolatedStorage(sourceFilePath, out fileBytes);
+                    MiscDBUtil.readFileFromIsolatedStorage(sourceFilePath, out fileBytes);
                     if (fileBytes == null)
                         return;
                     AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
