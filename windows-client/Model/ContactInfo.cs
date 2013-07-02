@@ -9,6 +9,7 @@ using windows_client.utils;
 using System.Windows;
 using System.IO;
 using System.Diagnostics;
+using System.Globalization;
 using System.Collections.Generic;
 using windows_client.Misc;
 using System.Text;
@@ -27,13 +28,13 @@ namespace windows_client.Model
         private string _name;
         private string _msisdn;
         private string _phoneNo;
-        private bool _hasCustomPhoto;
+        private bool _hasCustomPhoto;//used to show group chat in select user page
         private bool _onHike;
         private bool _isInvited;
         private byte[] _avatar;
         private bool _isFav;
         private bool _isCloseFriendNux;//for Nux , this will also be used in equals function , if true we will compare msisdns only in equals function
-
+        private int? _phoneNoKind;
 
         # region Users Table Members
 
@@ -156,19 +157,18 @@ namespace windows_client.Model
             }
         }
 
-        public bool IsInvited
+        [Column(CanBeNull = true)]
+        public int? PhoneNoKind
         {
             get
             {
-                return _isInvited;
+                return _phoneNoKind;
             }
             set
             {
-                NotifyPropertyChanging("IsInvited");
-                _isInvited = value;
-                NotifyPropertyChanged("IsInvited");
-                NotifyPropertyChanged("InvitedStringVisible");
-                NotifyPropertyChanged("InviteButtonVisible");
+                NotifyPropertyChanging("PhoneNoKind");
+                _phoneNoKind = value;
+                NotifyPropertyChanged("PhoneNoKind");
             }
         }
 
@@ -195,41 +195,15 @@ namespace windows_client.Model
             }
         }   // this is used in inviteUsers page , when you show hike users
 
-        public bool IsInvite
-        {
-            get;
-            set;
-        }
+
 
         public bool IsEnabled
         {
             get
             {
-                if (_isFav && !IsInvite)
+                if (_isFav)
                     return false;
                 return true;
-            }
-        }
-
-        public Visibility InvitedStringVisible
-        {
-            get
-            {
-                if (IsInvited)
-                    return Visibility.Visible;
-                else
-                    return Visibility.Collapsed;
-            }
-        }
-
-        public Visibility InviteButtonVisible
-        {
-            get
-            {
-                if (IsInvited)
-                    return Visibility.Collapsed;
-                else
-                    return Visibility.Visible;
             }
         }
 
@@ -249,27 +223,27 @@ namespace windows_client.Model
             _name = null;
         }
 
-        public ContactInfo(string number, string name, string phoneNum)
-            : this(null, number, name, false, phoneNum, false)
+        public ContactInfo(string number, string name, string phoneNum, int phoneNoKind)
+            : this(null, number, name, false, phoneNum, phoneNoKind, false)
         {
         }
 
-        public ContactInfo(string id, string number, string name, string phoneNum)
-            : this(id, number, name, false, phoneNum, false)
+        public ContactInfo(string id, string number, string name, string phoneNum, int phoneNoKind)
+            : this(id, number, name, false, phoneNum, phoneNoKind, false)
         {
         }
 
-        public ContactInfo(string id, string number, string name, bool onHike, string phoneNum) :
-            this(id, number, name, onHike, phoneNum, false)
+        public ContactInfo(string id, string number, string name, bool onHike, string phoneNum, int? phoneNoKind) :
+            this(id, number, name, onHike, phoneNum, phoneNoKind, false)
         {
         }
 
         public ContactInfo(string number, string name, bool onHike) :
-            this(null, number, name, onHike, number, false)
+            this(null, number, name, onHike, number, null, false)
         {
         }
 
-        public ContactInfo(string id, string msisdn, string name, bool onhike, string phoneNo, bool hasCustomPhoto)
+        public ContactInfo(string id, string msisdn, string name, bool onhike, string phoneNo, int? phoneNoKind, bool hasCustomPhoto)
         {
             this.Id = id;
             this.Msisdn = msisdn;
@@ -277,7 +251,7 @@ namespace windows_client.Model
             this.OnHike = onhike;
             this.PhoneNo = phoneNo;
             this.HasCustomPhoto = hasCustomPhoto;
-            this.IsInvited = false;
+            this.PhoneNoKind = phoneNoKind;
         }
 
         public ContactInfo(ContactInfo contact)
@@ -286,7 +260,7 @@ namespace windows_client.Model
             this._name = contact._name;
             this._onHike = contact._onHike;
             this._phoneNo = contact._phoneNo;
-            this._isInvited = contact._isInvited;
+            this._phoneNoKind = contact._phoneNoKind;
         }
 
 
@@ -333,7 +307,7 @@ namespace windows_client.Model
         {
             const int prime = 31;
             int result = 1;
-            result = prime * result + ((string.IsNullOrWhiteSpace(Name) == null) ? 0 : Name.GetHashCode());
+            result = prime * result + (string.IsNullOrWhiteSpace(Name) ? 0 : Name.GetHashCode());
             result = prime * result + ((PhoneNo == null) ? 0 : PhoneNo.GetHashCode());
             return result;
         }
@@ -358,6 +332,15 @@ namespace windows_client.Model
                     return UI_Utils.Instance.NotOnHikeImage;
             }
         }
+
+        public string PhoneNoKindText
+        {
+            get
+            {
+                return PhoneNoKind == null ? String.Empty : "(" + Enum.GetName(typeof(Microsoft.Phone.UserData.PhoneNumberKind), PhoneNoKind).ToString(CultureInfo.CurrentCulture).ToLower() + ")";
+            }
+        }
+
         #endregion
 
         #region INotifyPropertyChanged Members
@@ -434,8 +417,8 @@ namespace windows_client.Model
             }
             set
             {
-                    _avatar = value;
-                    NotifyPropertyChanged("AvatarImage");
+                _avatar = value;
+                NotifyPropertyChanged("AvatarImage");
             }
         }
 
@@ -461,5 +444,5 @@ namespace windows_client.Model
                 }
             }
         }
-}
+    }
 }

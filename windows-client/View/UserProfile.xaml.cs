@@ -580,13 +580,40 @@ namespace windows_client.View
             if (!btn.IsEnabled || ((string)btn.Content == AppResources.Invited))
                 return;
             btn.Content = AppResources.Invited;
+            if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
+            {
+                long time = TimeUtils.getCurrentTimeStamp();
+                ConvMessage convMessage = new ConvMessage(Utils.GetRandomInviteString(), msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
+                convMessage.IsSms = true;
+                convMessage.IsInvite = true;
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
+            }
+            else
+            {
+                string msisdns = string.Empty, toNum = String.Empty;
+                JObject obj = new JObject();
+                JArray numlist = new JArray();
+                JObject data = new JObject();
 
-            long time = TimeUtils.getCurrentTimeStamp();
-            ConvMessage convMessage = new ConvMessage(Utils.GetRandomInviteString(), msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
-            convMessage.IsSms = true;
-            convMessage.IsInvite = true;
+                var ts = TimeUtils.getCurrentTimeStamp();
+                var randomString = Utils.GetRandomInviteString();
 
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
+                obj[HikeConstants.TO] = toNum;
+                data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.HIKE_MESSAGE] = randomString;
+                data[HikeConstants.TIMESTAMP] = ts;
+                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+                obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+
+                App.MqttManagerInstance.mqttPublishToServer(obj);
+
+                SmsComposeTask smsComposeTask = new SmsComposeTask();
+                smsComposeTask.To = msisdns;
+                smsComposeTask.Body = randomString;
+                smsComposeTask.Show();
+            }
+
         }
 
         private void AddAsFriend_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1127,9 +1154,12 @@ namespace windows_client.View
             int count = 0;
             int duplicates = 0;
             Dictionary<string, List<ContactInfo>> contactListMap = null;
+            
             if (contacts == null)
                 return null;
+            
             contactListMap = new Dictionary<string, List<ContactInfo>>();
+            
             foreach (Contact cn in contacts)
             {
                 CompleteName cName = cn.CompleteName;
@@ -1141,10 +1171,12 @@ namespace windows_client.View
                         count++;
                         continue;
                     }
-                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
+
+                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber, (int)ph.Kind);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
                     contactInfo = cInfo;
+                    
                     if (contactListMap.ContainsKey(cInfo.Id))
                     {
                         if (!contactListMap[cInfo.Id].Contains(cInfo))
@@ -1163,8 +1195,10 @@ namespace windows_client.View
                     }
                 }
             }
+
             Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
             Debug.WriteLine("Total contacts with no phone number : {0}", count);
+            
             return contactListMap;
         }
 

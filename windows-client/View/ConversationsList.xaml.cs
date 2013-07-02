@@ -675,21 +675,23 @@ namespace windows_client.View
                             }
                         }
                         List<ContactInfo> tempHikeContactList = UsersTableUtils.GetAllHikeContactsOrdered();
-                        if (hikeContactList != null)
+                        if (tempHikeContactList != null)
                         {
                             HashSet<string> msisdns = new HashSet<string>(); // used to remove duplicate contacts
                             int count = tempHikeContactList.Count;
                             // this loop will filter out already added fav and blocked contacts from hike user list
                             for (int i = count - 1; i >= 0; i--)
                             {
-                                tempHikeContactList[i].IsUsedAtMiscPlaces = true;
+                                ContactInfo cinfoTemp = tempHikeContactList[i];
+                                cinfoTemp.IsUsedAtMiscPlaces = true;
+
                                 // if user is not fav and is not blocked then add to hike contacts
-                                if (!msisdns.Contains(tempHikeContactList[i].Msisdn) && !App.ViewModel.Isfavourite(tempHikeContactList[i].Msisdn) && !App.ViewModel.BlockedHashset.Contains(tempHikeContactList[i].Msisdn))
+                                if (!msisdns.Contains(cinfoTemp.Msisdn) && !App.ViewModel.Isfavourite(cinfoTemp.Msisdn) && !App.ViewModel.BlockedHashset.Contains(cinfoTemp.Msisdn) && cinfoTemp.Msisdn != App.MSISDN)
                                 {
-                                    msisdns.Add(tempHikeContactList[i].Msisdn);
-                                    hikeContactList.Add(tempHikeContactList[i]);
-                                    if (!App.ViewModel.ContactsCache.ContainsKey(tempHikeContactList[i].Msisdn))
-                                        App.ViewModel.ContactsCache[tempHikeContactList[i].Msisdn] = tempHikeContactList[i];
+                                    msisdns.Add(cinfoTemp.Msisdn);
+                                    hikeContactList.Add(cinfoTemp);
+                                    if (!App.ViewModel.ContactsCache.ContainsKey(cinfoTemp.Msisdn))
+                                        App.ViewModel.ContactsCache[cinfoTemp.Msisdn] = cinfoTemp;
                                 }
                             }
                         }
@@ -1114,16 +1116,20 @@ namespace windows_client.View
             else if (HikePubSub.REMOVE_FRIENDS == type)
             {
                 string msisdn;
+
                 if (obj != null)
                 {
                     msisdn = (string)obj;
                     ContactInfo c = null;
+
                     if (!App.ViewModel.ContactsCache.TryGetValue(msisdn, out c))
                     {
                         ConversationListObject convObj = null;
+
                         if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                         {
                             convObj = App.ViewModel.ConvMap[msisdn];
+
                             if (convObj != null && convObj.IsOnhike && !string.IsNullOrEmpty(convObj.ContactName))
                             {
                                 c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
@@ -1133,6 +1139,7 @@ namespace windows_client.View
                         else
                         {
                             c = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+
                             if (c != null)
                             {
                                 //TODO : Use image caching
@@ -1140,13 +1147,15 @@ namespace windows_client.View
                             }
                         }
                     }
+
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        if (c != null)
+                        if (c != null && c.Msisdn != App.MSISDN)
                         {
                             c.IsUsedAtMiscPlaces = true;
                             hikeContactList.Add(c);
                         }
+
                         if (hikeContactList.Count > 0)
                         {
                             emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
@@ -1320,7 +1329,8 @@ namespace windows_client.View
                 Dispatcher.BeginInvoke(() =>
                 {
                     c.IsUsedAtMiscPlaces = true;
-                    hikeContactList.Add(c);
+                    if (c.Msisdn != App.MSISDN)
+                        hikeContactList.Add(c);
                     if (emptyListPlaceholderHikeContacts.Visibility == Visibility.Visible)
                     {
                         emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
@@ -1441,7 +1451,8 @@ namespace windows_client.View
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                     c.Avatar = convObj.Avatar;
                     c.IsUsedAtMiscPlaces = true;
-                    hikeContactList.Add(c);
+                    if (c.Msisdn != App.MSISDN)
+                        hikeContactList.Add(c);
                 }
                 if (hikeContactList.Count > 0)
                 {
@@ -1855,7 +1866,8 @@ namespace windows_client.View
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                     c.Avatar = convObj.Avatar;
                     c.IsUsedAtMiscPlaces = true;
-                    hikeContactList.Add(c);
+                    if (c.Msisdn != App.MSISDN)
+                        hikeContactList.Add(c);
                 }
             }
             if (App.ViewModel.FavList.Count == 0)

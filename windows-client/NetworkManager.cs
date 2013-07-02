@@ -1315,7 +1315,7 @@ namespace windows_client
                     }
                     #endregion
 
-                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj);
+                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj, ts);
                     cm.Msisdn = msisdn;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
 
@@ -1874,7 +1874,7 @@ namespace windows_client
             return map;
         }
 
-        private void updateDB(string fromUser, long msgID, int status)
+        public static void updateDB(string fromUser, long msgID, int status)
         {
             Stopwatch st = Stopwatch.StartNew();
             string msisdn = MessagesTableUtils.updateMsgStatus(fromUser, msgID, status);
