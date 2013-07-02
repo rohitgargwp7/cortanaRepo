@@ -2661,6 +2661,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to on DND.
+        /// </summary>
+        public static string On_Dnd_Txt {
+            get {
+                return ResourceManager.GetString("On_Dnd_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to on hike since {0}.
         /// </summary>
         public static string OnHIkeSince_Txt {

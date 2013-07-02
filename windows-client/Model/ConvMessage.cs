@@ -1522,7 +1522,7 @@ namespace windows_client.Model
             NotifyPropertyChanged("PlayIconImage");
         }
 
-        public ConvMessage(ParticipantInfoState participantInfoState, JObject jsonObj)
+        public ConvMessage(ParticipantInfoState participantInfoState, JObject jsonObj, long timeStamp = 0)
         {
             string grpId;
             string from;
@@ -1530,7 +1530,8 @@ namespace windows_client.Model
             this.MessageId = -1;
             this.participantInfoState = participantInfoState;
             this.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-            this.Timestamp = TimeUtils.getCurrentTimeStamp();
+            this.Timestamp = timeStamp == 0 ? TimeUtils.getCurrentTimeStamp() : timeStamp;
+
             switch (this.participantInfoState)
             {
                 case ParticipantInfoState.INTERNATIONAL_USER:

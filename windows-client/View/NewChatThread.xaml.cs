@@ -1571,6 +1571,7 @@ namespace windows_client.View
                 {
                     //sendMsgBtn.IsEnabled = false;
                     showOverlay(true);
+                    appBar.IsMenuEnabled = false;
                 }
                 else
                 {
@@ -1712,8 +1713,6 @@ namespace windows_client.View
 
         private void blockUnblock_Click(object sender, EventArgs e)
         {
-
-
             if (mUserIsBlocked) // UNBLOCK REQUEST
             {
                 if (showNoSmsLeftOverlay)
@@ -1737,33 +1736,8 @@ namespace windows_client.View
                 }
                 mUserIsBlocked = false;
                 showOverlay(false);
+                appBar.IsMenuEnabled = false;
             }
-            //else     // BLOCK REQUEST
-            //{
-            //    if (showNoSmsLeftOverlay)
-            //        ToggleControlsToNoSms(false);
-            //    this.Focus();
-            //    sendMsgTxtbox.Text = "";
-            //    if (isGroupChat)
-            //    {
-            //        mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, groupOwner);
-            //        blockUnblockMenuItem.Text = UNBLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
-            //    }
-            //    else
-            //    {
-            //        mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
-            //        emoticonsIconButton.IsEnabled = false;
-            //        sendIconButton.IsEnabled = false;
-            //        isTypingNotificationEnabled = false;
-            //        blockUnblockMenuItem.Text = UNBLOCK_USER;
-            //        if (inviteMenuItem != null)
-            //            inviteMenuItem.IsEnabled = false;
-            //    }
-            //    emoticonPanel.Visibility = Visibility.Collapsed;
-            //    attachmentMenu.Visibility = Visibility.Collapsed;
-            //    mUserIsBlocked = true;
-            //    showOverlay(true); //true means show block animation
-            //}
         }
 
         private void FileAttachmentMessage_Tap(object sender, SelectionChangedEventArgs e)
@@ -4412,9 +4386,12 @@ namespace windows_client.View
             int count = 0;
             int duplicates = 0;
             Dictionary<string, List<ContactInfo>> contactListMap = null;
+            
             if (contacts == null)
                 return null;
+            
             contactListMap = new Dictionary<string, List<ContactInfo>>();
+            
             foreach (Contact cn in contacts)
             {
                 CompleteName cName = cn.CompleteName;
@@ -4426,10 +4403,12 @@ namespace windows_client.View
                         count++;
                         continue;
                     }
-                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
+                    
+                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber, (int)ph.Kind);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
                     contactInfo = cInfo;
+                    
                     if (contactListMap.ContainsKey(cInfo.Id))
                     {
                         if (!contactListMap[cInfo.Id].Contains(cInfo))
@@ -4448,8 +4427,10 @@ namespace windows_client.View
                     }
                 }
             }
+
             Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
             Debug.WriteLine("Total contacts with no phone number : {0}", count);
+            
             return contactListMap;
         }
 
@@ -4548,7 +4529,6 @@ namespace windows_client.View
 
         private void llsMessages_ItemRealized(object sender, ItemRealizationEventArgs e)
         {
-
             if (isMessageLoaded && llsMessages.ItemsSource != null && llsMessages.ItemsSource.Count > 0 && hasMoreMessages)
             {
                 if (e.ItemKind == LongListSelectorItemKind.Item)

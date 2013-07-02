@@ -1831,4 +1831,7 @@ Get hike: http://get.hike.in</value>
   <data name="H2HOfline_Confirmation_Message_Heading" xml:space="preserve">
     <value>Send as SMS</value>
   </data>
+  <data name="On_Dnd_Txt" xml:space="preserve">
+    <value>on DND</value>
+  </data>
 </root>

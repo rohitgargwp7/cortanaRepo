@@ -114,6 +114,7 @@ namespace windows_client.DbUtils
             {
                 convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
                 convMessage.SetAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
             }
         }
 

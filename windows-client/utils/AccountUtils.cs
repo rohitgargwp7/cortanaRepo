@@ -1012,18 +1012,21 @@ namespace windows_client.utils
                         kv = keyVals.Current;
                         JArray entries = (JArray)addressbook[kv.Key];
                         List<ContactInfo> cList = new_contacts_by_id[kv.Key];
+                        
                         for (int i = 0; i < entries.Count; ++i)
                         {
                             JObject entry = (JObject)entries[i];
                             string msisdn = (string)entry["msisdn"];
+                        
                             if (string.IsNullOrWhiteSpace(msisdn))
                             {
                                 count++;
                                 continue;
                             }
+                            
                             bool onhike = (bool)entry["onhike"];
                             ContactInfo cinfo = cList[i];
-                            ContactInfo cn = new ContactInfo(kv.Key, msisdn, cinfo.Name, onhike, cinfo.PhoneNo);
+                            ContactInfo cn = new ContactInfo(kv.Key, msisdn, cinfo.Name, onhike, cinfo.PhoneNo, cinfo.PhoneNoKind);
 
                             if (!isRefresh) // this is case for new installation
                             {
@@ -1059,6 +1062,7 @@ namespace windows_client.utils
                                 else // fav and pending case
                                 {
                                     ConversationListObject c = App.ViewModel.GetFav(cn.Msisdn);
+                                
                                     if (c != null) // this user is in favs
                                     {
                                         c.ContactName = cn.Name;
@@ -1075,8 +1079,10 @@ namespace windows_client.utils
                                         }
                                     }
                                 }
+                            
                                 GroupManager.Instance.RefreshGroupCache(cn, allGroupsInfo);
                             }
+
                             server_contacts.Add(cn);
                             totalContacts++;
                         }
@@ -1086,15 +1092,20 @@ namespace windows_client.utils
                         Debug.WriteLine("AccountUtils : getContactList : Exception : " + ex.StackTrace);
                     }
                 }
+
                 if (isFavSaved)
                     MiscDBUtil.SaveFavourites();
+                
                 if (isPendingSaved)
                     MiscDBUtil.SavePendingRequests();
+                
                 msisdns = null;
                 Debug.WriteLine("Total contacts with no msisdn : {0}", count);
                 Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
+                
                 if (!isRefresh)
                     App.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, msgToShow);
+                
                 return server_contacts;
             }
 

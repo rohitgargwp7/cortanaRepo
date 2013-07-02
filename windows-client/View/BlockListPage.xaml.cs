@@ -162,22 +162,27 @@ namespace windows_client.View
             // this is used to avoid removing msisdn from original blocked hashset
             HashSet<string> hashBlocked = new HashSet<string>(blockedhashSet);
             ObservableCollection<ContactInfo> blockedContacts = new ObservableCollection<ContactInfo>();
+            
             for (int i = 0; i < (allContactsList != null?allContactsList.Count:0); i++)
             {
                 ContactInfo c = allContactsList[i];
+            
                 if (hashBlocked.Contains(c.Msisdn))
                 {
                     blockedContacts.Add(c);
                     hashBlocked.Remove(c.Msisdn);
                 }
+                
                 if (hashBlocked.Count == 0)
                     break;
             }
+            
             if (hashBlocked.Count > 0)
             {
                 foreach (string msisdn in  hashBlocked)
                     blockedContacts.Add(new ContactInfo(msisdn, msisdn, false));
             }
+            
             return blockedContacts;
         }
 

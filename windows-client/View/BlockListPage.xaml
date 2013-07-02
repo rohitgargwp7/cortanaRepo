@@ -43,6 +43,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
                                     <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
+                                    <TextBlock Text="{Binding PhoneNoKindText}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
                                 </StackPanel>
                             </StackPanel>
                             <Button Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Background="#e9ecee" Foreground="#595959" Height="65" Width="120" FontSize="20" Grid.Column="1"  HorizontalAlignment="Right"  BorderThickness="0" Tap="Unblock_Tap"/>
