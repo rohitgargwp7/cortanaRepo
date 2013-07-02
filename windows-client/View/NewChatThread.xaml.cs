@@ -1484,7 +1484,7 @@ namespace windows_client.View
                             convMessage.Message = AppResources.Video_Txt;
                         else if (contentType.Contains(HikeConstants.LOCATION))
                         {
-                            convMessage.Message = AppResources.Location_Txt;
+                            convMessage.Message = (string)attachmentData[5];
                             convMessage.MetaDataString = metaDataString;
                         }
                         else if (contentType.Contains(HikeConstants.CT_CONTACT))
@@ -1803,9 +1803,6 @@ namespace windows_client.View
                         }
                         else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                         {
-                            convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
-                                "/" + convMessage.FileAttachment.FileKey;
-
                             byte[] locationInfoBytes = null;
                             MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
                                 convMessage.MessageId, out locationInfoBytes);
@@ -4093,19 +4090,19 @@ namespace windows_client.View
                 JObject locationJSON = (JObject)locationInfo[0];
                 imageThumbnail = (byte[])locationInfo[1];
                 var fileData = locationJSON[HikeConstants.FILES_DATA][0];
-                string fileName = fileData[HikeConstants.FILE_NAME].ToString();
 
                 string locationJSONString = locationJSON.ToString();
 
                 byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
                 
-                var vicinity = fileData[HikeConstants.LOCATION_ADDRESS].ToString().Trim(new char[] { '\n', ' ' }).Replace("\n", ", ");
+                var vicinity = fileData[HikeConstants.LOCATION_ADDRESS].ToString();
                 string locationMessage = String.Empty;
+                string fileName = fileData[HikeConstants.FILE_NAME].ToString();
 
-                if(String.IsNullOrEmpty(vicinity))
-                    locationMessage = fileData[HikeConstants.FILE_NAME].ToString();
-                else
-                    locationMessage = fileData[HikeConstants.FILE_NAME].ToString() + ", " + vicinity;
+                if (!String.IsNullOrEmpty(vicinity))
+                    fileName += ", " + vicinity;
+            
+                locationMessage = fileName;
 
                 ConvMessage convMessage = new ConvMessage(locationMessage, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation)
                 {

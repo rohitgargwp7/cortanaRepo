@@ -302,7 +302,7 @@ namespace windows_client.View
             singleFileInfo[HikeConstants.LATITUDE] = _selectedCoordinate.Latitude;
             singleFileInfo[HikeConstants.LONGITUDE] = _selectedCoordinate.Longitude;
             singleFileInfo[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
-            singleFileInfo[HikeConstants.LOCATION_ADDRESS] = _selectedPlace== null || _selectedPlace.vicinity == null ? "" : _selectedPlace.vicinity;
+            singleFileInfo[HikeConstants.LOCATION_ADDRESS] = _selectedPlace == null || _selectedPlace.vicinity == null ? "" : _selectedPlace.vicinity;
 
             filesData.Add(singleFileInfo.ToObject<JToken>());
 
@@ -508,7 +508,7 @@ namespace windows_client.View
             {
                 if (_vicinity != value)
                 {
-                    _vicinity = value == null ? "" : value.Replace("\n", ", ");
+                    _vicinity = value == null ? "" : value.Trim(new char[] { '\n', ' ' }).Replace("\n", ", ");
                     NotifyPropertyChanged("vicinity");
                     NotifyPropertyChanged("VicinityVisibility");
                 }
