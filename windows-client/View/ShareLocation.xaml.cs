@@ -259,7 +259,8 @@ namespace windows_client.View
             catch (Exception ex)
             {
                 // Couldn't get current location - location might be disabled in settings
-                MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
+                //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
+                System.Diagnostics.Debug.WriteLine("Location exception GetCurrentCoordinate : " + ex.StackTrace);
             }
 
             HideProgressIndicator();
@@ -286,6 +287,7 @@ namespace windows_client.View
         public ShareLocation()
         {
             InitializeComponent();
+            GetCurrentCoordinate();
             BuildApplicationBar();
         }
 
@@ -423,11 +425,12 @@ namespace windows_client.View
             if (App.IS_TOMBSTONED)
             {
                 _selectedCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] as GeoCoordinate;
+                _myCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_DEVICE_COORDINATE] as GeoCoordinate;
                 _searchString = PhoneApplicationService.Current.State[HikeConstants.LOCATION_SEARCH] as String;
 
                 MyMap.ZoomLevel =(double)PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL];
 
-                if (_selectedCoordinate == null)
+                if (_selectedCoordinate == null && _myCoordinate == null)
                     GetCurrentCoordinate();
                 else
                 {
@@ -447,13 +450,23 @@ namespace windows_client.View
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] = _selectedCoordinate;
-            PhoneApplicationService.Current.State[HikeConstants.LOCATION_SEARCH] = _searchString;
-
-            if(MyMap!=null)
-                PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Back)
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_COORDINATE);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_SEARCH);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.ZOOM_LEVEL);
+            }
             else
-                PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = 16;
+            {
+                PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] = _selectedCoordinate;
+                PhoneApplicationService.Current.State[HikeConstants.LOCATION_SEARCH] = _searchString;
+                PhoneApplicationService.Current.State[HikeConstants.LOCATION_DEVICE_COORDINATE] = _myCoordinate;
+
+                if (MyMap != null)
+                    PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
+                else
+                    PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = 16;
+            }
 
             base.OnNavigatedFrom(e);
         }

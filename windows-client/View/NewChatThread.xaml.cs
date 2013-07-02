@@ -2055,14 +2055,20 @@ namespace windows_client.View
                     {
                         locationJSON = JObject.Parse(convMessage.MetaDataString);
                     }
-                    if (this.bingMapsTask == null)
-                        bingMapsTask = new BingMapsTask();
+
                     double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
                     double longitude = Convert.ToDouble(locationJSON[HikeConstants.LONGITUDE].ToString());
-                    double zoomLevel = Convert.ToDouble(locationJSON[HikeConstants.ZOOM_LEVEL].ToString());
-                    bingMapsTask.Center = new GeoCoordinate(latitude, longitude);
-                    bingMapsTask.ZoomLevel = zoomLevel;
-                    bingMapsTask.Show();
+
+                    PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] = new GeoCoordinate(latitude, longitude);
+
+                    this.NavigationService.Navigate(new Uri("/View/ShowLocation.xaml", UriKind.Relative));
+
+                    //if (this.bingMapsTask == null)
+                    //    bingMapsTask = new BingMapsTask();
+                    //double zoomLevel = Convert.ToDouble(locationJSON[HikeConstants.ZOOM_LEVEL].ToString());
+                    //bingMapsTask.Center = new GeoCoordinate(latitude, longitude);
+                    //bingMapsTask.ZoomLevel = zoomLevel;
+                    //bingMapsTask.Show();
                 }
                 catch (Exception ex) //Code should never reach here
                 {
