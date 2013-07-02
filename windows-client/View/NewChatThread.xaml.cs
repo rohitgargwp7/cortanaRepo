@@ -5666,7 +5666,7 @@ namespace windows_client.View
 
             if (msg != null)
             {
-                if (msg.IsSent || msg.GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
+                if ((msg.IsSent && msg.MessageStatus == ConvMessage.State.SENT_CONFIRMED) || msg.GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
                 {
                     if (_isSendAllAsSMSVisible)
                     {
