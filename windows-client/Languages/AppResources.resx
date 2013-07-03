@@ -1838,6 +1838,6 @@ Get hike: http://get.hike.in</value>
     <value>My Location</value>
   </data>
   <data name="Send_All_As_SMS_Group" xml:space="preserve">
-    <value>Group members seem to be offline. Tap to send all as sms</value>
+    <value>Tap to send as SMS</value>
   </data>
 </root>

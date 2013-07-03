@@ -3435,7 +3435,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group members seem to be offline. Tap to send all as sms.
+        ///   Looks up a localized string similar to Tap to send as SMS.
         /// </summary>
         public static string Send_All_As_SMS_Group {
             get {
