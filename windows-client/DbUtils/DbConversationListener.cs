@@ -88,11 +88,6 @@ namespace windows_client.DbUtils
                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                         "/" + fileKey;
                 }
-                else if (contentType.Contains(HikeConstants.LOCATION))
-                {
-                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
-                        "/" + fileKey;
-                }
                 else if (contentType.Contains(HikeConstants.VIDEO))
                 {
                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
@@ -114,6 +109,7 @@ namespace windows_client.DbUtils
             {
                 convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
                 convMessage.SetAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
             }
         }
 
@@ -194,7 +190,6 @@ namespace windows_client.DbUtils
                     convMessage.SetAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
-
 
                     byte[] fileBytes;
                     if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))

@@ -1874,7 +1874,7 @@ namespace windows_client
             return map;
         }
 
-        private void updateDB(string fromUser, long msgID, int status)
+        public static void updateDB(string fromUser, long msgID, int status)
         {
             Stopwatch st = Stopwatch.StartNew();
             string msisdn = MessagesTableUtils.updateMsgStatus(fromUser, msgID, status);

@@ -86,8 +86,8 @@ namespace windows_client
         public static readonly int VIBRATE_DURATION = 700;
         public static readonly int MAX_AUDIO_RECORDTIME_SUPPORTED = 360; // 6 minutes
         public static readonly int RECURSIVE_PING_INTERVAL = 270;//seconds
-        public static readonly int LOCATION_THUMBNAIL_MAX_HEIGHT = 220;
-        public static readonly int LOCATION_THUMBNAIL_MAX_WIDTH = 220;
+        public static readonly int LOCATION_THUMBNAIL_MAX_HEIGHT = 160;
+        public static readonly int LOCATION_THUMBNAIL_MAX_WIDTH = 300;
         public static readonly int PROFILE_PICS_SIZE = 640; //image which are uploaded on servers
         public static readonly int MAX_THUMBNAILSIZE = 4800;
 
@@ -147,6 +147,9 @@ namespace windows_client
         public static readonly string DEVICE_TYPE_KEY = "dev_type";
 
         public static readonly string NO_SMS = "nosms";
+
+        public static readonly string COUNT = "c";
+        public static readonly string FORCE_SMS_MESSAGE = "m";
 
         public static string FAQS_LINK
         {
@@ -251,6 +254,10 @@ namespace windows_client
         public static string SOCIAL = "Social_Request";
         public static string SHOW_GROUP_CHAT_OVERLAY = "sgcol";
         public static string PLAYER_TIMER = "playerTimer";
+        public static string LOCATION_COORDINATE = "locationCoordinate";
+        public static string LOCATION_DEVICE_COORDINATE = "locationDeviceCoordinate";
+        public static string LOCATION_SEARCH = "locationSearch";
+        public static string LOCATION_ZOOM_LEVEL = "locationZoomLevel";
 
         /* NAVIGATION CONSTANTS*/
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
@@ -363,6 +370,7 @@ namespace windows_client
             public static readonly string GROUP_DISPLAY_PIC = "dp";
             public static readonly string PRO_TIPS = "pt";
             public static readonly string APP_INFO = "app";
+            public static readonly string FORCE_SMS = "fsms";
         }
 
         public static class AppSettings

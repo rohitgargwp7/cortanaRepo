@@ -377,6 +377,16 @@ namespace windows_client.DbUtils
                 ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, msgID).FirstOrDefault<ConvMessage>();
                 if (message != null)
                 {
+                    var msgState = (ConvMessage.State)val;
+
+                    if (message.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
+                    {
+                        if (msgState == ConvMessage.State.SENT_DELIVERED)
+                            val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
+                        else if (msgState == ConvMessage.State.SENT_DELIVERED_READ)
+                            val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
+                    } 
+                    
                     if ((int)message.MessageStatus < val)
                     {
                         if (fromUser == null || fromUser == message.Msisdn)
@@ -413,14 +423,26 @@ namespace windows_client.DbUtils
             {
                 for (int i = 0; i < ids.Length; i++)
                 {
+                    var val = status;
                     ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).FirstOrDefault<ConvMessage>();
+                    
                     if (message != null)
                     {
-                        if ((int)message.MessageStatus < status)
+                        if (message.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
+                        {
+                            var msgState = (ConvMessage.State)val;
+
+                            if (msgState == ConvMessage.State.SENT_DELIVERED)
+                                val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
+                            else if (msgState == ConvMessage.State.SENT_DELIVERED_READ)
+                                val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
+                        }
+
+                        if ((int)message.MessageStatus < val)
                         {
                             if (fromUser == null || fromUser == message.Msisdn)
                             {
-                                message.MessageStatus = (ConvMessage.State)status;
+                                message.MessageStatus = (ConvMessage.State)val;
                                 msisdn = message.Msisdn;
                                 shouldSubmit = true;
                             }

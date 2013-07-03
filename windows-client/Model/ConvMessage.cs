@@ -8,6 +8,7 @@ using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using System.Windows.Media.Imaging;
 using System.Text;
+using System.Linq;
 using windows_client.DbUtils;
 using System.Collections.Generic;
 using Microsoft.Phone.Shell;
@@ -52,7 +53,10 @@ namespace windows_client.Model
             SENT_DELIVERED_READ, /* message viewed by recipient */
             RECEIVED_UNREAD, /* message received, but currently unread */
             RECEIVED_READ, /* message received an read */
-            UNKNOWN
+            UNKNOWN,
+            FORCE_SMS_SENT_CONFIRMED,
+            FORCE_SMS_SENT_DELIVERED, /* message delivered to client device */
+            FORCE_SMS_SENT_DELIVERED_READ, /* message viewed by recipient */
         }
 
 
@@ -77,7 +81,8 @@ namespace windows_client.Model
             INTERNATIONAL_GROUP_USER,
             TYPING_NOTIFICATION,
             STATUS_UPDATE,
-            IN_APP_TIP
+            IN_APP_TIP,
+            FORCE_SMS_NOTIFICATION
         }
 
         public enum MessageType
@@ -96,7 +101,8 @@ namespace windows_client.Model
             GROUP_NAME_CHANGED,
             GROUP_PIC_CHANGED,
             DEFAULT,
-            UNKNOWN
+            UNKNOWN,
+            FORCE_SMS
         }
         public static ParticipantInfoState fromJSON(JObject obj)
         {
@@ -259,6 +265,10 @@ namespace windows_client.Model
                     _messageStatus = value;
                     NotifyPropertyChanged("SdrImage");
                     NotifyPropertyChanged("MessageStatus");
+                    NotifyPropertyChanged("SendAsSMSVisibility");
+                    NotifyPropertyChanged("BubbleBackGroundColor");
+                    NotifyPropertyChanged("TimeStampForeGround");
+                    NotifyPropertyChanged("MessageTextForeGround");
                 }
             }
         }
@@ -389,7 +399,10 @@ namespace windows_client.Model
                         _messageStatus == State.SENT_CONFIRMED ||
                         _messageStatus == State.SENT_DELIVERED ||
                         _messageStatus == State.SENT_DELIVERED_READ ||
-                        _messageStatus == State.SENT_FAILED);
+                        _messageStatus == State.SENT_FAILED ||
+                        _messageStatus == State.FORCE_SMS_SENT_CONFIRMED ||
+                        _messageStatus == State.FORCE_SMS_SENT_DELIVERED ||
+                        _messageStatus == State.FORCE_SMS_SENT_DELIVERED_READ);
             }
         }
 
@@ -397,7 +410,7 @@ namespace windows_client.Model
         {
             get
             {
-                return _isSms;
+                return _isSms || MessageStatus >= State.FORCE_SMS_SENT_CONFIRMED ;
             }
             set
             {
@@ -475,9 +488,7 @@ namespace windows_client.Model
             get
             {
                 if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                {
                     return string.IsNullOrEmpty(_fileAttachment.FileName) ? "contact" : _fileAttachment.FileName;
-                }
                 else
                     return _message;
             }
@@ -489,10 +500,13 @@ namespace windows_client.Model
             {
                 switch (_messageStatus)
                 {
+                    case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
                     case ConvMessage.State.SENT_CONFIRMED:
                         return UI_Utils.Instance.Sent;
+                    case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED:
                         return UI_Utils.Instance.Delivered;
+                    case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                     case ConvMessage.State.SENT_DELIVERED_READ:
                         return UI_Utils.Instance.Read;
                     case ConvMessage.State.SENT_FAILED:
@@ -977,6 +991,19 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility SendAsSMSVisibility
+        {
+            get 
+            {
+                if (IsSent && !IsSms && MessageStatus == State.SENT_CONFIRMED && App.newChatThreadPage != null && App.newChatThreadPage.IsSMSOptionValid)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
+        
+
         public ConvMessage(string message, string msisdn, long timestamp, State msgState, PageOrientation currentOrientation)
             : this(message, msisdn, timestamp, msgState, -1, -1, currentOrientation)
         {
@@ -999,7 +1026,10 @@ namespace windows_client.Model
                         msgState == State.SENT_CONFIRMED ||
                         msgState == State.SENT_DELIVERED ||
                         msgState == State.SENT_DELIVERED_READ ||
-                        msgState == State.SENT_FAILED);
+                        msgState == State.SENT_FAILED||
+                        msgState== State.FORCE_SMS_SENT_CONFIRMED||
+                        msgState== State.FORCE_SMS_SENT_DELIVERED||
+                        msgState== State.FORCE_SMS_SENT_DELIVERED_READ);
             MessageStatus = msgState;
         }
 
@@ -1263,16 +1293,23 @@ namespace windows_client.Model
                         byte[] base64Decoded = null;
                         if (thumbnail != null)
                             base64Decoded = System.Convert.FromBase64String(thumbnail.ToString());
-                        this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
-                           contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                        
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
+                            this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
+                        contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+
                             JObject locationFile = new JObject();
                             locationFile[HikeConstants.LATITUDE] = fileObject[HikeConstants.LATITUDE];
                             locationFile[HikeConstants.LONGITUDE] = fileObject[HikeConstants.LONGITUDE];
                             locationFile[HikeConstants.ZOOM_LEVEL] = fileObject[HikeConstants.ZOOM_LEVEL];
                             locationFile[HikeConstants.LOCATION_ADDRESS] = fileObject[HikeConstants.LOCATION_ADDRESS];
                             this.MetaDataString = locationFile.ToString(Newtonsoft.Json.Formatting.None);
+                        }
+                        else
+                        {
+                            this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
+                           contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
                         }
 
                         if (contentType.ToString().Contains(HikeConstants.CONTACT) || contentType.ToString().Contains(HikeConstants.AUDIO))
@@ -1319,7 +1356,7 @@ namespace windows_client.Model
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
                             messageText = AppResources.Video_Txt;
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                            messageText = AppResources.Location_Txt;
+                            messageText = this.FileAttachment.FileName;
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                             messageText = AppResources.ContactTransfer_Text;
                         this._message = messageText;
