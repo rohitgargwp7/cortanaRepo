@@ -583,6 +583,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mute Status Updates.
+        /// </summary>
+        public static string Conversations_MuteStatusNotification_txt {
+            get {
+                return ResourceManager.GetString("Conversations_MuteStatusNotification_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to new chat.
         /// </summary>
         public static string Conversations_NewChat_AppBar_Btn {
@@ -759,6 +768,15 @@ namespace windows_client.Languages {
         public static string Conversations_Timeline_Refresh_Status {
             get {
                 return ResourceManager.GetString("Conversations_Timeline_Refresh_Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unmute Status Updates.
+        /// </summary>
+        public static string Conversations_UnmuteStatusNotification_txt {
+            get {
+                return ResourceManager.GetString("Conversations_UnmuteStatusNotification_txt", resourceCulture);
             }
         }
         
@@ -2490,6 +2508,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Muted successfully!.
+        /// </summary>
+        public static string Mute_Success_Txt {
+            get {
+                return ResourceManager.GetString("Mute_Success_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to my profile.
         /// </summary>
         public static string MyProfileheader_Txt {
@@ -4043,6 +4070,15 @@ namespace windows_client.Languages {
         public static string Unlink_Txt {
             get {
                 return ResourceManager.GetString("Unlink_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unmuted successfully!.
+        /// </summary>
+        public static string Unmute_Success_Txt {
+            get {
+                return ResourceManager.GetString("Unmute_Success_Txt", resourceCulture);
             }
         }
         

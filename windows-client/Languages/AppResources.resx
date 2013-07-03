@@ -1834,4 +1834,16 @@ Get hike: http://get.hike.in</value>
   <data name="On_Dnd_Txt" xml:space="preserve">
     <value>on DND</value>
   </data>
+  <data name="Conversations_MuteStatusNotification_txt" xml:space="preserve">
+    <value>Mute Status Updates</value>
+  </data>
+  <data name="Conversations_UnmuteStatusNotification_txt" xml:space="preserve">
+    <value>Unmute Status Updates</value>
+  </data>
+  <data name="Mute_Success_Txt" xml:space="preserve">
+    <value>Muted successfully!</value>
+  </data>
+  <data name="Unmute_Success_Txt" xml:space="preserve">
+    <value>Unmuted successfully!</value>
+  </data>
 </root>
