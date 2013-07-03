@@ -124,7 +124,12 @@ namespace windows_client.View
                 PlacesGrid.Visibility = Visibility.Visible;
                 DrawMapMarkers();
                 DrawMapMarkers();
-                _selectedPlace = new Place() { position = _selectedCoordinate, title = "My Location", vicinity = _myPlaceVicinity };
+                _selectedPlace = new Place() 
+                { 
+                    position = _selectedCoordinate, 
+                    title = _myCoordinate == null || _selectedCoordinate!= _myCoordinate? AppResources.Location_Txt : AppResources.My_Location_Text, 
+                    vicinity = _myPlaceVicinity 
+                };
                 _places.Insert(0, _selectedPlace);
                 _selectedPlace = _places[0];
                 MyMap.SetView(_selectedPlace.position, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
@@ -297,12 +302,12 @@ namespace windows_client.View
             JObject metadata = new JObject();
             JArray filesData = new JArray();
             JObject singleFileInfo = new JObject();
-            singleFileInfo[HikeConstants.FILE_NAME] = _selectedPlace == null ? "Location" : _selectedPlace.title;
+            singleFileInfo[HikeConstants.FILE_NAME] = _selectedPlace == null ? AppResources.Location_Txt : _selectedPlace.title;
             singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = "hikemap/location";
             singleFileInfo[HikeConstants.LATITUDE] = _selectedCoordinate.Latitude;
             singleFileInfo[HikeConstants.LONGITUDE] = _selectedCoordinate.Longitude;
             singleFileInfo[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
-            singleFileInfo[HikeConstants.LOCATION_ADDRESS] = _selectedPlace == null || _selectedPlace.vicinity == null ? "" : _selectedPlace.vicinity;
+            singleFileInfo[HikeConstants.LOCATION_ADDRESS] = _selectedPlace == null || _selectedPlace.vicinity == null ? String.Empty : _selectedPlace.vicinity;
 
             filesData.Add(singleFileInfo.ToObject<JToken>());
 
@@ -403,12 +408,18 @@ namespace windows_client.View
 
         private void MyLocation_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (shareIconButton.IsEnabled == false)
+                return;
+
             _isMapTapped = false;
             GetCurrentCoordinate();
         }
 
         private void Places_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (shareIconButton.IsEnabled == false)
+                return;
+            
             if (PlacesGrid.Visibility == Visibility.Collapsed)
             {
                 if (!_isPlacesSearch)
@@ -508,7 +519,7 @@ namespace windows_client.View
             {
                 if (_vicinity != value)
                 {
-                    _vicinity = value == null ? "" : value.Trim(new char[] { '\n', ' ' }).Replace("\n", ", ");
+                    _vicinity = value == null ? String.Empty : value.Trim(new char[] { '\n', ' ' }).Replace("\n", ", ");
                     NotifyPropertyChanged("vicinity");
                     NotifyPropertyChanged("VicinityVisibility");
                 }

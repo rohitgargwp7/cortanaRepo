@@ -2490,6 +2490,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to My Location.
+        /// </summary>
+        public static string My_Location_Text {
+            get {
+                return ResourceManager.GetString("My_Location_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to my profile.
         /// </summary>
         public static string MyProfileheader_Txt {
@@ -3417,11 +3426,20 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Message not delivered. Tap to send as SMS.
+        ///   Looks up a localized string similar to {0} seems to be offline, tap to send as sms.
         /// </summary>
         public static string Send_All_As_SMS {
             get {
                 return ResourceManager.GetString("Send_All_As_SMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap to send as SMS.
+        /// </summary>
+        public static string Send_All_As_SMS_Group {
+            get {
+                return ResourceManager.GetString("Send_All_As_SMS_Group", resourceCulture);
             }
         }
         

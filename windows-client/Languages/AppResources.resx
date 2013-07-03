@@ -1820,7 +1820,7 @@ Get hike: http://get.hike.in</value>
     <comment>verb(length 12)</comment>
   </data>
   <data name="Send_All_As_SMS" xml:space="preserve">
-    <value>Message not delivered. Tap to send as SMS</value>
+    <value>{0} seems to be offline, tap to send as sms</value>
   </data>
   <data name="H2HOfline_0SMS_Message" xml:space="preserve">
     <value>Your free SMS balance is zero. You can invite friends to join hike and earn more free SMS</value>
@@ -1833,5 +1833,11 @@ Get hike: http://get.hike.in</value>
   </data>
   <data name="On_Dnd_Txt" xml:space="preserve">
     <value>on DND</value>
+  </data>
+  <data name="My_Location_Text" xml:space="preserve">
+    <value>My Location</value>
+  </data>
+  <data name="Send_All_As_SMS_Group" xml:space="preserve">
+    <value>Tap to send as SMS</value>
   </data>
 </root>
