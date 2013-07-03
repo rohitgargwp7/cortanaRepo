@@ -365,10 +365,12 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PROFILE_NAME_CHANGED))
                 txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED];
 
-            txtMsisdn.Text = msisdn;
+            isInAddressBook = CheckUserInAddressBook();
 
-            if (e.NavigationMode == NavigationMode.New)
+            if (e.NavigationMode == NavigationMode.New && (isInAddressBook || timeOfJoin != 0))
             {
+                txtMsisdn.Text = msisdn;
+
                 if (msisdn != App.MSISDN)
                 {
                     ApplicationBarIconButton callIconButton = new ApplicationBarIconButton();
@@ -406,6 +408,8 @@ namespace windows_client.View
                     menuItemCopy2.Click += menuItemCopy_Click;
                     menu2.Items.Add(menuItemCopy2);
                     ContextMenuService.SetContextMenu(txtUserName, menu2);
+
+                    ShowAddToContacts();
                 }
             }
         }
@@ -959,17 +963,18 @@ namespace windows_client.View
 
         private void ShowAddToContacts()
         {
-            imgInviteLock.Source = UI_Utils.Instance.ContactIcon;
-            txtSmsUserNameBlk1.Text = firstName;
-            txtSmsUserNameBlk2.Text = AppResources.Profile_NotInAddressbook_Txt;
-            txtSmsUserNameBlk3.Text = string.Empty;
-            btnInvite.Content = AppResources.Profile_AddNow_Btn_Txt;
-            btnInvite.Tap -= AddAsFriend_Tap;
-            btnInvite.Tap += AddUserToContacts_Click;
-            btnInvite.Visibility = Visibility.Visible;
-            gridSmsUser.Visibility = Visibility.Visible;
-            gridHikeUser.Visibility = Visibility.Collapsed;
-            addToFavBtn.Visibility = Visibility.Collapsed;
+            ApplicationBarIconButton addToContactsAppBarButton = new ApplicationBarIconButton()
+            {
+                Text = AppResources.UserProfile_AddToContacts_Btn,
+                IconUri = new Uri("/view/images/useradd.png", UriKind.Relative)
+            };
+
+            addToContactsAppBarButton.Click += AddUserToContacts_Click;
+
+            if (ApplicationBar == null)
+                ApplicationBar = new ApplicationBar();
+
+            this.ApplicationBar.Buttons.Add(addToContactsAppBarButton);
         }
 
         private void ShowRequestSent()
@@ -982,16 +987,10 @@ namespace windows_client.View
             txtSmsUserNameBlk3.Text = AppResources.Profile_RequestSent_Blk3;
             gridHikeUser.Visibility = Visibility.Collapsed;
             btnInvite.Visibility = Visibility.Collapsed;
+            addToFavBtn.Visibility = Visibility.Collapsed;
+        
             if (!isInAddressBook)
-            {
-                addToFavBtn.Content = AppResources.UserProfile_AddToContacts_Btn;
-                addToFavBtn.Visibility = Visibility.Visible;
-                addToFavBtn.Tap += AddUserToContacts_Click;
-            }
-            else
-            {
-                addToFavBtn.Visibility = Visibility.Collapsed;
-            }
+                ShowAddToContacts();
         }
 
         private void ShowAddAsFriends()
@@ -1004,7 +1003,6 @@ namespace windows_client.View
             txtSmsUserNameBlk2.Text = firstName;
             txtSmsUserNameBlk3.Text = AppResources.ProfileToBeFriendBlk3;
             btnInvite.Content = AppResources.btnAddAsFriend_Txt;
-            btnInvite.Tap -= AddUserToContacts_Click;
             btnInvite.Tap += AddAsFriend_Tap;
             btnInvite.Visibility = Visibility.Visible;
             isInvited = false;//resetting so that if not now can be clicked again
@@ -1012,16 +1010,10 @@ namespace windows_client.View
             gridSmsUser.Visibility = Visibility.Visible;
             gridAddFriendStrip.Visibility = Visibility.Collapsed;
             gridHikeUser.Visibility = Visibility.Collapsed;
+            addToFavBtn.Visibility = Visibility.Collapsed;
+
             if (!isInAddressBook)
-            {
-                addToFavBtn.Content = AppResources.UserProfile_AddToContacts_Btn;
-                addToFavBtn.Visibility = Visibility.Visible;
-                addToFavBtn.Tap += AddUserToContacts_Click;
-            }
-            else
-            {
-                addToFavBtn.Visibility = Visibility.Collapsed;
-            }
+                ShowAddToContacts();
         }
 
         private void ShowRequestRecievedPanel()
@@ -1174,7 +1166,7 @@ namespace windows_client.View
 
         #region ADD USER TO CONTATCS
         ContactInfo contactInfo;
-        private void AddUserToContacts_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        private void AddUserToContacts_Click(object sender, EventArgs e)
         {
             ContactUtils.saveContact(msisdn, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
         }
@@ -1335,13 +1327,11 @@ namespace windows_client.View
 
                 if (friendStatus < FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
                 {
-                    addToFavBtn.Tap -= AddUserToContacts_Click;
                     addToFavBtn.Visibility = Visibility.Collapsed;
                     txtSmsUserNameBlk2.Text = firstName;
                 }
                 else
                 {
-                    btnInvite.Tap -= AddUserToContacts_Click;
                     CreateStatusUi(statusMessagesFromDB);
                     isStatusLoaded = true;
                 }
