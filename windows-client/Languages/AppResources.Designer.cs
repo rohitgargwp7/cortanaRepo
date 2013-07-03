@@ -3426,11 +3426,20 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Message not delivered. Tap to send as SMS.
+        ///   Looks up a localized string similar to {0} seems to be offline, tap to send as sms.
         /// </summary>
         public static string Send_All_As_SMS {
             get {
                 return ResourceManager.GetString("Send_All_As_SMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group members seem to be offline. Tap to send all as sms.
+        /// </summary>
+        public static string Send_All_As_SMS_Group {
+            get {
+                return ResourceManager.GetString("Send_All_As_SMS_Group", resourceCulture);
             }
         }
         

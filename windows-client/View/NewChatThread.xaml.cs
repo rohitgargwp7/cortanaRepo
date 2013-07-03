@@ -5466,6 +5466,9 @@ namespace windows_client.View
 
         void StartForceSMSTimer(bool isNewTimer)
         {
+            if (!isOnHike)
+                return;
+
             ConvMessage msg;
 
             try
@@ -5554,7 +5557,12 @@ namespace windows_client.View
                         var msg = new ConvMessage();
                         msg.GrpParticipantState = ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION;
                         msg.NotificationType = ConvMessage.MessageType.FORCE_SMS;
-                        msg.Message = AppResources.Send_All_As_SMS;
+
+                        if (isGroupChat)
+                            msg.Message = AppResources.Send_All_As_SMS_Group;
+                        else
+                            msg.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
+
                         this.ocMessages.Add(msg);
                         _isSendAllAsSMSVisible = true;
                     }

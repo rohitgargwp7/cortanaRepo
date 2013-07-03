@@ -408,12 +408,18 @@ namespace windows_client.View
 
         private void MyLocation_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (shareIconButton.IsEnabled == false)
+                return;
+
             _isMapTapped = false;
             GetCurrentCoordinate();
         }
 
         private void Places_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (shareIconButton.IsEnabled == false)
+                return;
+            
             if (PlacesGrid.Visibility == Visibility.Collapsed)
             {
                 if (!_isPlacesSearch)
