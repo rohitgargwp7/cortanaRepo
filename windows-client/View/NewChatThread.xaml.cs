@@ -5466,7 +5466,7 @@ namespace windows_client.View
 
         void StartForceSMSTimer(bool isNewTimer)
         {
-            if (!isOnHike)
+            if (!isOnHike || !IsSMSOptionValid)
                 return;
 
             ConvMessage msg;
