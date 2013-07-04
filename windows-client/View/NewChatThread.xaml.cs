@@ -5469,10 +5469,10 @@ namespace windows_client.View
 
         void StartForceSMSTimer(bool isNewTimer)
         {
-            if (!isOnHike || !IsSMSOptionValid)
-                return;
+            ConvMessage msg = ocMessages.Last();
 
-            ConvMessage msg;
+            if (!isOnHike || !IsSMSOptionValid || !msg.IsSent)
+                return;
 
             try
             {
