@@ -50,6 +50,7 @@ namespace windows_client.View
         private List<Place> _places;
         Place _selectedPlace;
         Boolean _isMapTapped = false;
+        Boolean _isDefaultSelection = false;
 
         private void BuildApplicationBar()
         {
@@ -132,9 +133,9 @@ namespace windows_client.View
                 };
                 _places.Insert(0, _selectedPlace);
                 _selectedPlace = _places[0];
-                MyMap.SetView(_selectedPlace.position, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
                 PlacesList.ItemsSource = _places;
                 HideProgressIndicator();
+                _isDefaultSelection = true;
                 PlacesList.SelectedItem = _places[0];
             }));
         }
@@ -367,9 +368,13 @@ namespace windows_client.View
                 this.DataContext = place;
                 _selectedPlace = place;
                 _selectedCoordinate = place.position;
-                MyMap.SetView(_selectedCoordinate, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
+
+                if(!_isDefaultSelection)
+                    MyMap.SetView(_selectedCoordinate, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
+
                 DrawMapMarkers();
                 shareIconButton.IsEnabled = true;
+                _isDefaultSelection = false;
             }
         }
 
