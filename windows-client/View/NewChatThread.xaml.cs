@@ -3204,6 +3204,9 @@ namespace windows_client.View
 
         private void sendContact_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!spContactTransfer.IsHitTestVisible)
+                return;
+
             PhoneApplicationService.Current.State[HikeConstants.SHARE_CONTACT] = true;
 
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
