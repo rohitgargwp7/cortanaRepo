@@ -474,7 +474,8 @@ namespace windows_client.View
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-            _geolocator = new Geolocator();
+            if (_geolocator == null)
+                _geolocator = new Geolocator();
 
             if (_geolocator.LocationStatus == PositionStatus.Disabled)
             {

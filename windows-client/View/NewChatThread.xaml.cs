@@ -4351,25 +4351,22 @@ namespace windows_client.View
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (!isGroupChat)
+            if (mUserIsBlocked)
+                return;
+            emoticonPanel.Visibility = Visibility.Collapsed;
+            if ((!isOnHike && mCredits <= 0))
+                return;
+            ConvMessage convMessage = new ConvMessage("Nudge!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+            convMessage.IsSms = !isOnHike;
+            convMessage.HasAttachment = false;
+            convMessage.MetaDataString = "{poke:1}";
+            sendMsg(convMessage, false);
+            bool isVibrateEnabled = true;
+            App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
+            if (isVibrateEnabled)
             {
-                if (mUserIsBlocked)
-                    return;
-                emoticonPanel.Visibility = Visibility.Collapsed;
-                if ((!isOnHike && mCredits <= 0))
-                    return;
-                ConvMessage convMessage = new ConvMessage("Nudge!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                convMessage.IsSms = !isOnHike;
-                convMessage.HasAttachment = false;
-                convMessage.MetaDataString = "{poke:1}";
-                sendMsg(convMessage, false);
-                bool isVibrateEnabled = true;
-                App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
-                if (isVibrateEnabled)
-                {
-                    VibrateController vibrate = VibrateController.Default;
-                    vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
-                }
+                VibrateController vibrate = VibrateController.Default;
+                vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
             }
         }
 
