@@ -5586,7 +5586,7 @@ namespace windows_client.View
             {
                 JArray messageArr = new JArray();
                 JObject fmsg = new JObject();
-                fmsg.Add(HikeConstants.HIKE_MESSAGE, message.Message);
+                fmsg.Add(HikeConstants.HIKE_MESSAGE, message.GetMessageForServer());
                 fmsg.Add(HikeConstants.MESSAGE_ID, message.MessageId);
                 messageArr.Add(fmsg);
 
@@ -5620,7 +5620,7 @@ namespace windows_client.View
                 foreach (var msg in convMsgList)
                 {
                     fmsg = new JObject();
-                    fmsg.Add(HikeConstants.HIKE_MESSAGE, msg.Message);
+                    fmsg.Add(HikeConstants.HIKE_MESSAGE, message.GetMessageForServer());
                     fmsg.Add(HikeConstants.MESSAGE_ID, msg.MessageId);
                     messageArr.Add(fmsg);
 
