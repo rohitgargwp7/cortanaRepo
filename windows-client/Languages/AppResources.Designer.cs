@@ -2508,7 +2508,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Muted successfully!.
+        ///   Looks up a localized string similar to Status update notifications are turned OFF.
         /// </summary>
         public static string Mute_Success_Txt {
             get {
@@ -4092,7 +4092,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unmuted successfully!.
+        ///   Looks up a localized string similar to Status update notifications are turned ON.
         /// </summary>
         public static string Unmute_Success_Txt {
             get {
