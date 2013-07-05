@@ -494,8 +494,13 @@ namespace windows_client.View
                     GetCurrentCoordinate();
                     
                     _selectedCoordinate = _myCoordinate;
-                    MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
-                    DrawMapMarkers();
+
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
+                            DrawMapMarkers();
+                        });
+
                     GetMyPlaceDetails();
 
                     if (String.IsNullOrEmpty(_searchString))
