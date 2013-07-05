@@ -5469,7 +5469,7 @@ namespace windows_client.View
 
         void StartForceSMSTimer(bool isNewTimer)
         {
-            if (!isOnHike || !IsSMSOptionValid)
+            if (!isOnHike || !IsSMSOptionValid || _isSendAllAsSMSVisible)
                 return;
 
             ConvMessage msg;
@@ -5539,8 +5539,14 @@ namespace windows_client.View
 
         void ShowForceSMSOnUI()
         {
+            if (_isSendAllAsSMSVisible)
+                return; 
+            
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    if (_isSendAllAsSMSVisible)
+                        return;
+
                     ConvMessage lastMsg;
 
                     try
