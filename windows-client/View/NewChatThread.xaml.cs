@@ -2176,7 +2176,7 @@ namespace windows_client.View
       */
         private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop)
         {
-            if (ocMessages != null && ocMessages.Count > 0 && ocMessages.Last().GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
+            if (_isSendAllAsSMSVisible && ocMessages != null && ocMessages.Count > 0 && ocMessages.Last().GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
             {
                 ocMessages.RemoveAt(ocMessages.Count - 1);
                 _isSendAllAsSMSVisible = false;
