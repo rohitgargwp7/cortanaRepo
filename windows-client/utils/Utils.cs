@@ -497,7 +497,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (currentResolution == Resolutions.Default)
+                if (palleteResolution == Resolutions.Default)
                 {
                     if (IsWvga) palleteResolution = Resolutions.WVGA;
                     else if (IsWxga) palleteResolution = Resolutions.WXGA;
