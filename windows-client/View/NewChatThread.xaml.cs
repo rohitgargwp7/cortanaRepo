@@ -3698,10 +3698,10 @@ namespace windows_client.View
                     if (_isSendAllAsSMSVisible && ocMessages != null && ocMessages.Count > 0 && ocMessages.Last().GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                ocMessages.RemoveAt(ocMessages.Count - 1);
-                                _isSendAllAsSMSVisible = false;
-                            });
+                        {
+                            ocMessages.RemoveAt(ocMessages.Count - 1);
+                            _isSendAllAsSMSVisible = false;
+                        });
                     }
                 }
                 catch (Exception ex)
@@ -3787,11 +3787,10 @@ namespace windows_client.View
                 if (_isSendAllAsSMSVisible && ocMessages != null && ocMessages.Count > 0 && ocMessages.Last().GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                ocMessages.RemoveAt(ocMessages.Count - 1);
-                            });
-
-                    _isSendAllAsSMSVisible = false;
+                    {
+                        ocMessages.RemoveAt(ocMessages.Count - 1);
+                        _isSendAllAsSMSVisible = false;
+                    });
                 }
             }
 
