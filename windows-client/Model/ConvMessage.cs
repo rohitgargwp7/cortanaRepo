@@ -1236,6 +1236,9 @@ namespace windows_client.Model
         {
             string message = Message;
 
+            if (FileAttachment == null) 
+                return message;
+
             if (FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
             {
                 message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
