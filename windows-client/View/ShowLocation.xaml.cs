@@ -119,8 +119,13 @@ namespace windows_client.View
                     GetDirections();
             }
 
-            if (_myCoordinate == null || e.NavigationMode == NavigationMode.New)
-                GetCurrentCoordinate();
+            if (e.NavigationMode == NavigationMode.New)
+            {
+                if (_myCoordinate == null)
+                    GetCurrentCoordinate();
+                else
+                    GetDirections();
+            }
             else
                 GetDirections();
            
