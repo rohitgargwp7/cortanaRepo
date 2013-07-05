@@ -27,6 +27,7 @@ namespace windows_client.View
         
         // Progress indicator shown in system tray
         private ProgressIndicator _progressIndicator = null;
+        Geolocator _geolocator;
 
         // My current location
         private GeoCoordinate _myCoordinate = null;
@@ -47,6 +48,7 @@ namespace windows_client.View
         Place _selectedPlace;
         Boolean _isMapTapped = false;
         Boolean _isDefaultSelection = false;
+        Boolean _isLocationEnabled = true;
 
         private void BuildApplicationBar()
         {
@@ -235,15 +237,22 @@ namespace windows_client.View
             if (_isFetchingCurrentLocation)
                 return;
 
+            if (!_isLocationEnabled)
+            {
+                _isFetchingCurrentLocation = false;
+                HideProgressIndicator();
+                return;
+            }
+
             _isFetchingCurrentLocation = true;
 
             ShowProgressIndicator();
-            Geolocator geolocator = new Geolocator();
-            geolocator.DesiredAccuracyInMeters = 10;
-            geolocator.MovementThreshold = 5;
-            geolocator.DesiredAccuracy = PositionAccuracy.High;
 
-            IAsyncOperation<Geoposition> locationTask = geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(3));
+            _geolocator.DesiredAccuracyInMeters = 10;
+            _geolocator.MovementThreshold = 5;
+            _geolocator.DesiredAccuracy = PositionAccuracy.High;
+
+            IAsyncOperation<Geoposition> locationTask = _geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(3));
 
             try
             {
@@ -465,6 +474,17 @@ namespace windows_client.View
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
+            _geolocator = new Geolocator();
+
+            if (_geolocator.LocationStatus == PositionStatus.Disabled)
+            {
+                MessageBox.Show(AppResources.ShareLocation_LocationServiceNotEnabled_Txt);
+
+                _isLocationEnabled = false;
+            }
+            else
+                _isLocationEnabled = true;
+
             App.appSettings.TryGetValue(HikeConstants.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
 
             if (App.IS_TOMBSTONED)
@@ -487,12 +507,16 @@ namespace windows_client.View
                         Search();
                 }
             }
-            else if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New)
+
+            if (!_isLocationEnabled)
+                return;
+
+            if (_myCoordinate != null)
             {
-                if (_myCoordinate != null)
+                if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New)
                 {
                     GetCurrentCoordinate();
-                    
+
                     _selectedCoordinate = _myCoordinate;
 
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -508,9 +532,9 @@ namespace windows_client.View
                     else
                         Search();
                 }
-                else
-                    GetCurrentCoordinate();
             }
+            else
+                GetCurrentCoordinate();
 
             base.OnNavigatedTo(e);
         }
@@ -534,7 +558,8 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = 16;
             }
 
-            App.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, _myCoordinate);
+            if (_myCoordinate != null)
+                App.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, _myCoordinate);
 
             base.OnNavigatedFrom(e);
         }

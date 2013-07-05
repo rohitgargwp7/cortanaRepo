@@ -5591,6 +5591,7 @@ namespace windows_client.View
                             msg.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
 
                         this.ocMessages.Add(msg);
+                        ScrollToBottom();
                         _isSendAllAsSMSVisible = true;
                     }
 
