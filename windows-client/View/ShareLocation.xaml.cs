@@ -330,7 +330,15 @@ namespace windows_client.View
         public ShareLocation()
         {
             InitializeComponent();
-            BuildApplicationBar();
+            BuildApplicationBar(); 
+            
+            MyMap.Loaded += MyMap_Loaded;
+        }
+
+        void MyMap_Loaded(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Phone.Maps.MapsSettings.ApplicationContext.ApplicationId = HikeConstants.MICROSOFT_MAP_SERVICE_APPLICATION_ID;
+            Microsoft.Phone.Maps.MapsSettings.ApplicationContext.AuthenticationToken = HikeConstants.MICROSOFT_MAP_SERVICE_AUTHENTICATION_TOKEN;
         }
 
         private void shareBtn_Click(object sender, EventArgs e)
