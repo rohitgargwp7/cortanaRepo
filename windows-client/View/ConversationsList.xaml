@@ -266,7 +266,7 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <TextBlock FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_TeamHike_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18"/>
-                            <TextBlock Grid.Row="1" x:Name="proTipTitleText" FontSize="22" Text="" FontFamily="Segoe WP Semibold"/>
+                            <TextBlock Grid.Row="1" x:Name="proTipTitleText" FontSize="22" Text="" FontFamily="Segoe WP Semibold" TextWrapping="Wrap"/>
                             <TextBlock Grid.Row="2" Margin="0,0,0,5" x:Name="proTipContentText" FontSize="20" Text="" TextWrapping="Wrap"/>
                             <Image Margin="0,5" HorizontalAlignment="Left" Visibility="Collapsed" Grid.Row="3" x:Name="proTipImage" Stretch="Uniform" MaxWidth="236" Tap="ProTipImage_Tapped"/>
                             <Button Margin="-12,0,12,0" Grid.Row="4" x:Name="dismissButton" Click="dismissProTip_Click" Background="#e9ecee" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Dismiss_Tip, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Foreground="#595959"/>
