@@ -241,7 +241,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add as a friend.
+        ///   Looks up a localized string similar to add to circle of friends.
         /// </summary>
         public static string btnAddAsFriend_Txt {
             get {

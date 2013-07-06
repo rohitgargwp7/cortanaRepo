@@ -630,7 +630,6 @@
     <Content Include="View\images\tutorial_welcome.png" />
     <Content Include="View\images\twitter_status.png" />
     <Content Include="View\images\twitter_status_disabled.png" />
-    <Content Include="View\images\UserAdd.png" />
     <Content Include="View\images\user_invite.png" />
     <Content Include="View\images\user_invite_white.png" />
     <Content Include="View\images\user_lock.png" />

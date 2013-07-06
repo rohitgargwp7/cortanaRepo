@@ -1287,7 +1287,7 @@ Get hike: http://get.hike.in</value>
     <value>to be able to get status updates.</value>
   </data>
   <data name="btnAddAsFriend_Txt" xml:space="preserve">
-    <value>Add as a friend</value>
+    <value>add to circle of friends</value>
   </data>
   <data name="NewStatus_Txt" xml:space="preserve">
     <value>NEW STATUS</value>

@@ -38,6 +38,7 @@ namespace windows_client.View
         private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
         private ApplicationBar appBar;
         ApplicationBarIconButton editProfile_button;
+        ApplicationBarIconButton addToContactsAppBarButton;
         bool isInvited;
         bool isInAddressBook;
         bool toggleToInvitedScreen;
@@ -357,7 +358,7 @@ namespace windows_client.View
                     ShowNonHikeUser();
                 else
                     InitHikeUserProfile();
-                
+
                 isFirstLoad = false;
             }
 
@@ -365,11 +366,10 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PROFILE_NAME_CHANGED))
                 txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED];
 
-            isInAddressBook = CheckUserInAddressBook();
-
-            if (e.NavigationMode == NavigationMode.New && (isInAddressBook || timeOfJoin != 0))
+            if (e.NavigationMode == NavigationMode.New)
             {
                 txtMsisdn.Text = msisdn;
+                isInAddressBook = CheckUserInAddressBook();
 
                 if (msisdn != App.MSISDN)
                 {
@@ -389,6 +389,9 @@ namespace windows_client.View
 
                     appBar.Buttons.Add(callIconButton);
                     UserProfilePage.ApplicationBar = appBar;
+
+                    if (!isInAddressBook)
+                        ShowAddToContacts();
                 }
 
                 ContextMenu menu = new ContextMenu();
@@ -408,9 +411,8 @@ namespace windows_client.View
                     menuItemCopy2.Click += menuItemCopy_Click;
                     menu2.Items.Add(menuItemCopy2);
                     ContextMenuService.SetContextMenu(txtUserName, menu2);
-
-                    ShowAddToContacts();
                 }
+                
             }
         }
 
@@ -963,18 +965,22 @@ namespace windows_client.View
 
         private void ShowAddToContacts()
         {
-            ApplicationBarIconButton addToContactsAppBarButton = new ApplicationBarIconButton()
+            if (addToContactsAppBarButton == null)
             {
-                Text = AppResources.UserProfile_AddToContacts_Btn,
-                IconUri = new Uri("/view/images/useradd.png", UriKind.Relative)
-            };
+                addToContactsAppBarButton = new ApplicationBarIconButton()
+                {
+                    Text = AppResources.UserProfile_AddToContacts_Btn,
+                    IconUri = new Uri("/view/images/appbar_addfriend.png", UriKind.Relative)
+                };
 
-            addToContactsAppBarButton.Click += AddUserToContacts_Click;
+                addToContactsAppBarButton.Click += AddUserToContacts_Click;
+            }
 
             if (ApplicationBar == null)
                 ApplicationBar = new ApplicationBar();
 
-            this.ApplicationBar.Buttons.Add(addToContactsAppBarButton);
+            if (!ApplicationBar.Buttons.Contains(addToContactsAppBarButton))
+                this.ApplicationBar.Buttons.Add(addToContactsAppBarButton);
         }
 
         private void ShowRequestSent()
@@ -1002,7 +1008,7 @@ namespace windows_client.View
             txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
             txtSmsUserNameBlk2.Text = firstName;
             txtSmsUserNameBlk3.Text = AppResources.ProfileToBeFriendBlk3;
-            btnInvite.Content = AppResources.btnAddAsFriend_Txt;
+            btnInvite.Content = AppResources.Add_To_Fav_Txt;
             btnInvite.Tap += AddAsFriend_Tap;
             btnInvite.Visibility = Visibility.Visible;
             isInvited = false;//resetting so that if not now can be clicked again
@@ -1063,7 +1069,7 @@ namespace windows_client.View
             if (!App.ViewModel.Isfavourite(msisdn))
             {
                 addToFavBtn.Visibility = Visibility.Visible;
-                addToFavBtn.Content = AppResources.btnAddAsFriend_Txt;
+                addToFavBtn.Content = AppResources.Add_To_Fav_Txt;
                 addToFavBtn.Tap += AddAsFriend_Tap;
             }
         }
