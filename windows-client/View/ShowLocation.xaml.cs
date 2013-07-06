@@ -13,6 +13,8 @@ using Microsoft.Phone.Maps.Controls;
 using Microsoft.Phone.Maps.Services;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using windows_client.Languages;
+using Windows.Foundation;
 
 namespace windows_client.View
 {
@@ -24,13 +26,14 @@ namespace windows_client.View
         private MapRoute MyMapRoute = null;
         private Route MyRoute = null;
         private RouteQuery MyRouteQuery = null;
-
+        Geolocator _geolocator;
         Boolean _isDirectionsShown = false;
-        
+        Boolean _isLocationEnabled = true;
+        Boolean _isInitialLoad = true;
+
         public ShowLocation()
         {
             InitializeComponent();
-            GetCurrentCoordinate();
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
@@ -43,13 +46,14 @@ namespace windows_client.View
             }
             else
             {
-                PhoneApplicationService.Current.State[HikeConstants.LOCATION_DEVICE_COORDINATE] = _myCoordinate;
-
                 if (MyMap != null)
                     PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
                 else
                     PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = 16;
             }
+
+            if (_myCoordinate != null)
+                App.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, _myCoordinate);
 
             base.OnNavigatedFrom(e);
         }
@@ -74,43 +78,80 @@ namespace windows_client.View
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            _locationCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] as GeoCoordinate;
+            _geolocator = new Geolocator();
 
+            if (_geolocator.LocationStatus == PositionStatus.Disabled)
+            {
+                MessageBox.Show(AppResources.ShareLocation_LocationServiceNotEnabled_Txt);
+
+                _isLocationEnabled = false;
+            }
+            else
+                _isLocationEnabled = true;
+
+            _locationCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] as GeoCoordinate;
+            App.appSettings.TryGetValue(HikeConstants.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
+
+            if (!_isLocationEnabled)
+            {
+                ApplicationBar.IsVisible = false;
+                _isInitialLoad = false;
+
+                if (MyMapRoute != null)
+                    MyMap.RemoveRoute(MyMapRoute);
+
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    MyMap.SetView(_locationCoordinate, 16, MapAnimationKind.Parabolic);
+                    DrawMapMarkers();
+                });
+
+                return;
+            } 
+            
             if (App.IS_TOMBSTONED)
             {
-                _myCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_DEVICE_COORDINATE] as GeoCoordinate;
                 MyMap.ZoomLevel = (double)PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL];
 
                 if (_myCoordinate == null)
                     GetCurrentCoordinate();
                 else
-                {
-                    (this.ApplicationBar.Buttons[0] as ApplicationBarIconButton).IsEnabled = true;
                     GetDirections();
-                }
-            } 
-            
+            }
+
+            if (e.NavigationMode == NavigationMode.New)
+            {
+                if (_myCoordinate == null)
+                    GetCurrentCoordinate();
+                else
+                    GetDirections();
+            }
+            else
+                GetDirections();
+           
             base.OnNavigatedTo(e);
         }
 
         private async void GetCurrentCoordinate()
         {
+            if (!_isLocationEnabled)
+            {
+                HideProgressIndicator();
+                return;
+            }
+
             ShowProgressIndicator();
-            Geolocator geolocator = new Geolocator();
-            geolocator.DesiredAccuracy = PositionAccuracy.High;
+            _geolocator.DesiredAccuracyInMeters = 10;
+            _geolocator.MovementThreshold = 5;
+            _geolocator.DesiredAccuracy = PositionAccuracy.High;
+
+            IAsyncOperation<Geoposition> locationTask = _geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(3));
 
             try
             {
-                Geoposition currentPosition = await geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(10));
+                Geoposition currentPosition = await locationTask;
 
                 _myCoordinate = new GeoCoordinate(currentPosition.Coordinate.Latitude, currentPosition.Coordinate.Longitude);
-
-                Dispatcher.BeginInvoke(() =>
-                {
-                    (this.ApplicationBar.Buttons[0] as ApplicationBarIconButton).IsEnabled = true;
-                    MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
-                    DrawMapMarkers();
-                });
             }
             catch (Exception ex)
             {
@@ -118,8 +159,18 @@ namespace windows_client.View
                 //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
                 System.Diagnostics.Debug.WriteLine("Location exception GetCurrentCoordinate : " + ex.StackTrace);
             }
+            finally
+            {
+                if (locationTask != null)
+                {
+                    if (locationTask.Status == AsyncStatus.Started)
+                        locationTask.Cancel();
 
-            GetDirections();
+                    locationTask.Close();
+                }
+
+                GetDirections();
+            }
         }
 
         private void ShowProgressIndicator()
@@ -187,6 +238,9 @@ namespace windows_client.View
         private void RouteQuery_QueryCompleted(object sender, QueryCompletedEventArgs<Route> e)
         {
             HideProgressIndicator();
+
+            _isInitialLoad = false;
+
             if (e.Error == null)
             {
                 MyRoute = e.Result;
@@ -233,26 +287,36 @@ namespace windows_client.View
                 }
 
                 MyRouteQuery.Dispose();
+                this.ApplicationBar.IsVisible = true;
+            }
+            else
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    MyMap.SetView(_locationCoordinate, 16, MapAnimationKind.Parabolic);
+                    DrawMapMarkers();
+                });
             }
         }
 
         private void DrawMapMarkers()
         {
+            if (_isInitialLoad)
+                return;
+
             MyMap.Layers.Clear();
             MapLayer mapLayer = new MapLayer();
 
             // Draw marker for current position
-            if (_myCoordinate != null)
-            {
+            if (_myCoordinate != null && _isLocationEnabled)
                 DrawMapMarker(_myCoordinate, Colors.Orange, mapLayer, true);
 
-                if (_locationCoordinate != null)
-                    DrawMapMarker(_locationCoordinate, Colors.Red, mapLayer, true);
-            }
+            if (_locationCoordinate != null)
+                DrawMapMarker(_locationCoordinate, Colors.Red, mapLayer, true);
 
             // Draw markers for possible waypoints when directions are shown.
             // Start and end points are already drawn with different colors.
-            if (_isDirectionsShown && MyRoute != null && MyRoute.LengthInMeters > 0)
+            if (_isDirectionsShown && MyRoute != null && MyRoute.LengthInMeters > 0 && _isLocationEnabled)
             {
                 for (int i = 1; i < MyRoute.Legs[0].Maneuvers.Count - 1; i++)
                 {
@@ -272,10 +336,10 @@ namespace windows_client.View
             {
                 // Create a map marker
                 Polygon polygon = new Polygon();
-                polygon.Points.Add(new Point(0, 0));
-                polygon.Points.Add(new Point(0, 55));
-                polygon.Points.Add(new Point(25, 25));
-                polygon.Points.Add(new Point(25, 0));
+                polygon.Points.Add(new System.Windows.Point(0, 0));
+                polygon.Points.Add(new System.Windows.Point(0, 55));
+                polygon.Points.Add(new System.Windows.Point(25, 25));
+                polygon.Points.Add(new System.Windows.Point(25, 0));
                 polygon.Fill = new SolidColorBrush(color);
 
                 // Enable marker to be tapped for location information
@@ -284,7 +348,7 @@ namespace windows_client.View
                 // Create a MapOverlay and add marker.
                 overlay.Content = polygon;
                 overlay.GeoCoordinate = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);
-                overlay.PositionOrigin = new Point(0.0, 1.0);
+                overlay.PositionOrigin = new System.Windows.Point(0.0, 1.0);
             }
             else
             {
@@ -295,7 +359,7 @@ namespace windows_client.View
                 ellipse.Stroke = new SolidColorBrush(color);
                 overlay.Content = ellipse;
                 overlay.GeoCoordinate = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);
-                overlay.PositionOrigin = new Point(0.0, 0.0);
+                overlay.PositionOrigin = new System.Windows.Point(0.0, 0.0);
             }
 
             mapLayer.Add(overlay);

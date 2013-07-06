@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using windows_client.utils;
 using System.ComponentModel;
 using System.Windows.Controls;
+using Windows.Foundation;
 
 namespace windows_client.View
 {
@@ -26,6 +27,7 @@ namespace windows_client.View
         
         // Progress indicator shown in system tray
         private ProgressIndicator _progressIndicator = null;
+        Geolocator _geolocator;
 
         // My current location
         private GeoCoordinate _myCoordinate = null;
@@ -37,11 +39,6 @@ namespace windows_client.View
         /// </summary>
         private bool _isPlacesSearch = false;
 
-        /// <summary>
-        /// Accuracy of my current location in meters;
-        /// </summary>
-        private double _accuracy = 0.0;
-
         private string _nokiaPlacesUrl = "http://places.nlp.nokia.com/places/v1/discover/explore";
         private string _nokiaSeacrhUrl = "http://places.nlp.nokia.com/places/v1/discover/search";
         private string _nokiaHereUrl = "http://places.nlp.nokia.com/places/v1/discover/here";
@@ -50,6 +47,8 @@ namespace windows_client.View
         private List<Place> _places;
         Place _selectedPlace;
         Boolean _isMapTapped = false;
+        Boolean _isDefaultSelection = false;
+        Boolean _isLocationEnabled = true;
 
         private void BuildApplicationBar()
         {
@@ -124,12 +123,17 @@ namespace windows_client.View
                 PlacesGrid.Visibility = Visibility.Visible;
                 DrawMapMarkers();
                 DrawMapMarkers();
-                _selectedPlace = new Place() { position = _selectedCoordinate, title = "My Location", vicinity = _myPlaceVicinity };
+                _selectedPlace = new Place() 
+                { 
+                    position = _selectedCoordinate, 
+                    title = _myCoordinate == null || _selectedCoordinate!= _myCoordinate? AppResources.Location_Txt : AppResources.My_Location_Text, 
+                    vicinity = _myPlaceVicinity 
+                };
                 _places.Insert(0, _selectedPlace);
                 _selectedPlace = _places[0];
-                MyMap.SetView(_selectedPlace.position, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
                 PlacesList.ItemsSource = _places;
                 HideProgressIndicator();
+                _isDefaultSelection = true;
                 PlacesList.SelectedItem = _places[0];
             }));
         }
@@ -189,10 +193,10 @@ namespace windows_client.View
         {
             // Create a map marker
             Polygon polygon = new Polygon();
-            polygon.Points.Add(new Point(0, 0));
-            polygon.Points.Add(new Point(0, 55));
-            polygon.Points.Add(new Point(25, 25));
-            polygon.Points.Add(new Point(25, 0));
+            polygon.Points.Add(new System.Windows.Point(0, 0));
+            polygon.Points.Add(new System.Windows.Point(0, 55));
+            polygon.Points.Add(new System.Windows.Point(25, 25));
+            polygon.Points.Add(new System.Windows.Point(25, 0));
             polygon.Fill = new SolidColorBrush(color);
 
             // Enable marker to be tapped for location information
@@ -202,7 +206,7 @@ namespace windows_client.View
             MapOverlay overlay = new MapOverlay();
             overlay.Content = polygon;
             overlay.GeoCoordinate = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);
-            overlay.PositionOrigin = new Point(0.0, 1.0);
+            overlay.PositionOrigin = new System.Windows.Point(0.0, 1.0);
             mapLayer.Add(overlay);
         }
 
@@ -211,7 +215,7 @@ namespace windows_client.View
             // The ground resolution (in meters per pixel) varies depending on the level of detail 
             // and the latitude at which it’s measured. It can be calculated as follows:
             double metersPerPixels = (Math.Cos(_selectedCoordinate.Latitude * Math.PI / 180) * 2 * Math.PI * 6378137) / (256 * Math.Pow(2, MyMap.ZoomLevel));
-            double radius = _accuracy / metersPerPixels;
+            double radius = 55.0 / metersPerPixels;
 
             Ellipse ellipse = new Ellipse();
             ellipse.Width = radius * 2;
@@ -222,39 +226,63 @@ namespace windows_client.View
             MapOverlay overlay = new MapOverlay();
             overlay.Content = ellipse;
             overlay.GeoCoordinate = new GeoCoordinate(_selectedCoordinate.Latitude, _selectedCoordinate.Longitude);
-            overlay.PositionOrigin = new Point(0.5, 0.5);
+            overlay.PositionOrigin = new System.Windows.Point(0.5, 0.5);
             mapLayer.Add(overlay);
         }
 
+        Boolean _isFetchingCurrentLocation = false;
+
         private async void GetCurrentCoordinate()
         {
+            if (_isFetchingCurrentLocation)
+                return;
+
+            if (!_isLocationEnabled)
+            {
+                _isFetchingCurrentLocation = false;
+                HideProgressIndicator();
+                return;
+            }
+
+            _isFetchingCurrentLocation = true;
+
             ShowProgressIndicator();
-            Geolocator geolocator = new Geolocator();
-            geolocator.DesiredAccuracy = PositionAccuracy.High;
+
+            _geolocator.DesiredAccuracyInMeters = 10;
+            _geolocator.MovementThreshold = 5;
+            _geolocator.DesiredAccuracy = PositionAccuracy.High;
+
+            IAsyncOperation<Geoposition> locationTask = _geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(3));
 
             try
             {
-                Geoposition currentPosition = await geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(10));
-                
+                Geoposition currentPosition = await locationTask;
+
                 if (_isMapTapped)
                     return;
 
-                _accuracy = currentPosition.Coordinate.Accuracy;
-                _myCoordinate = new GeoCoordinate(currentPosition.Coordinate.Latitude, currentPosition.Coordinate.Longitude);
-                _selectedCoordinate = _myCoordinate;
+                var newCoordinate = new GeoCoordinate(currentPosition.Coordinate.Latitude, currentPosition.Coordinate.Longitude);
 
-                Dispatcher.BeginInvoke(() =>
+                if (_myCoordinate == null || _myCoordinate != newCoordinate)
                 {
-                    DrawMapMarkers();
-                    MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
-                });
+                    _myCoordinate = newCoordinate;
 
-                GetMyPlaceDetails();
+                    _selectedCoordinate = _myCoordinate;
 
-                if (String.IsNullOrEmpty(_searchString))
-                    GetPlaces();
-                else
-                    Search();
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        DrawMapMarkers();
+                        MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
+                    });
+
+                    GetMyPlaceDetails();
+
+                    if (String.IsNullOrEmpty(_searchString))
+                        GetPlaces();
+                    else
+                        Search();
+                }
+
             }
             catch (Exception ex)
             {
@@ -262,8 +290,20 @@ namespace windows_client.View
                 //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
                 System.Diagnostics.Debug.WriteLine("Location exception GetCurrentCoordinate : " + ex.StackTrace);
             }
+            finally
+            {
+                if (locationTask != null)
+                {
+                    if (locationTask.Status == AsyncStatus.Started)
+                        locationTask.Cancel();
 
-            HideProgressIndicator();
+                    locationTask.Close();
+                }
+
+                _isFetchingCurrentLocation = false;
+
+                HideProgressIndicator();
+            }
         }
 
         private void ShowProgressIndicator()
@@ -280,6 +320,9 @@ namespace windows_client.View
 
         private void HideProgressIndicator()
         {
+            if (_isFetchingCurrentLocation)
+                return;
+
             _progressIndicator.IsVisible = false;
             SystemTray.SetProgressIndicator(this, _progressIndicator);
         }
@@ -287,7 +330,6 @@ namespace windows_client.View
         public ShareLocation()
         {
             InitializeComponent();
-            GetCurrentCoordinate();
             BuildApplicationBar();
         }
 
@@ -297,12 +339,12 @@ namespace windows_client.View
             JObject metadata = new JObject();
             JArray filesData = new JArray();
             JObject singleFileInfo = new JObject();
-            singleFileInfo[HikeConstants.FILE_NAME] = _selectedPlace == null ? "Location" : _selectedPlace.title;
+            singleFileInfo[HikeConstants.FILE_NAME] = _selectedPlace == null ? AppResources.Location_Txt : _selectedPlace.title;
             singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = "hikemap/location";
             singleFileInfo[HikeConstants.LATITUDE] = _selectedCoordinate.Latitude;
             singleFileInfo[HikeConstants.LONGITUDE] = _selectedCoordinate.Longitude;
             singleFileInfo[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
-            singleFileInfo[HikeConstants.LOCATION_ADDRESS] = _selectedPlace == null || _selectedPlace.vicinity == null ? "" : _selectedPlace.vicinity;
+            singleFileInfo[HikeConstants.LOCATION_ADDRESS] = _selectedPlace == null || _selectedPlace.vicinity == null ? String.Empty : _selectedPlace.vicinity;
 
             filesData.Add(singleFileInfo.ToObject<JToken>());
 
@@ -319,7 +361,7 @@ namespace windows_client.View
         private void map_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             _isMapTapped = true;
-            Point p = e.GetPosition(this.MyMap);
+            System.Windows.Point p = e.GetPosition(this.MyMap);
             GeoCoordinate geo = new GeoCoordinate();
             geo = MyMap.ConvertViewportPointToGeoCoordinate(p);
             MyMap.SetView(geo, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
@@ -362,9 +404,13 @@ namespace windows_client.View
                 this.DataContext = place;
                 _selectedPlace = place;
                 _selectedCoordinate = place.position;
-                MyMap.SetView(_selectedCoordinate, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
+
+                if(!_isDefaultSelection)
+                    MyMap.SetView(_selectedCoordinate, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
+
                 DrawMapMarkers();
                 shareIconButton.IsEnabled = true;
+                _isDefaultSelection = false;
             }
         }
 
@@ -403,12 +449,18 @@ namespace windows_client.View
 
         private void MyLocation_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (shareIconButton.IsEnabled == false)
+                return;
+
             _isMapTapped = false;
             GetCurrentCoordinate();
         }
 
         private void Places_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (shareIconButton.IsEnabled == false)
+                return;
+            
             if (PlacesGrid.Visibility == Visibility.Collapsed)
             {
                 if (!_isPlacesSearch)
@@ -422,19 +474,56 @@ namespace windows_client.View
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
+            _geolocator = new Geolocator();
+
+            if (_geolocator.LocationStatus == PositionStatus.Disabled)
+            {
+                MessageBox.Show(AppResources.ShareLocation_LocationServiceNotEnabled_Txt);
+
+                _isLocationEnabled = false;
+            }
+            else
+                _isLocationEnabled = true;
+
+            App.appSettings.TryGetValue(HikeConstants.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
+
             if (App.IS_TOMBSTONED)
             {
                 _selectedCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] as GeoCoordinate;
-                _myCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_DEVICE_COORDINATE] as GeoCoordinate;
                 _searchString = PhoneApplicationService.Current.State[HikeConstants.LOCATION_SEARCH] as String;
 
-                MyMap.ZoomLevel =(double)PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL];
+                MyMap.ZoomLevel = (double)PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL];
 
                 if (_selectedCoordinate == null && _myCoordinate == null)
                     GetCurrentCoordinate();
                 else
                 {
                     DrawMapMarkers();
+                    GetMyPlaceDetails();
+
+                    if (String.IsNullOrEmpty(_searchString))
+                        GetPlaces();
+                    else
+                        Search();
+                }
+            }
+
+            if (!_isLocationEnabled)
+                return;
+
+            if (_myCoordinate != null)
+            {
+                if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New)
+                {
+                    GetCurrentCoordinate();
+
+                    _selectedCoordinate = _myCoordinate;
+
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
+                            DrawMapMarkers();
+                        });
 
                     GetMyPlaceDetails();
 
@@ -444,6 +533,8 @@ namespace windows_client.View
                         Search();
                 }
             }
+            else
+                GetCurrentCoordinate();
 
             base.OnNavigatedTo(e);
         }
@@ -460,13 +551,15 @@ namespace windows_client.View
             {
                 PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] = _selectedCoordinate;
                 PhoneApplicationService.Current.State[HikeConstants.LOCATION_SEARCH] = _searchString;
-                PhoneApplicationService.Current.State[HikeConstants.LOCATION_DEVICE_COORDINATE] = _myCoordinate;
 
                 if (MyMap != null)
                     PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
                 else
                     PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = 16;
             }
+
+            if (_myCoordinate != null)
+                App.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, _myCoordinate);
 
             base.OnNavigatedFrom(e);
         }
@@ -508,7 +601,7 @@ namespace windows_client.View
             {
                 if (_vicinity != value)
                 {
-                    _vicinity = value == null ? "" : value.Trim(new char[] { '\n', ' ' }).Replace("\n", ", ");
+                    _vicinity = value == null ? String.Empty : value.Trim(new char[] { '\n', ' ' }).Replace("\n", ", ");
                     NotifyPropertyChanged("vicinity");
                     NotifyPropertyChanged("VicinityVisibility");
                 }

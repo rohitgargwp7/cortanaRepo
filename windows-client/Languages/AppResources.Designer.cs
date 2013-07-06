@@ -241,7 +241,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to add to circle of friends.
+        ///   Looks up a localized string similar to Add as a friend.
         /// </summary>
         public static string btnAddAsFriend_Txt {
             get {
@@ -583,6 +583,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mute Status Updates.
+        /// </summary>
+        public static string Conversations_MuteStatusNotification_txt {
+            get {
+                return ResourceManager.GetString("Conversations_MuteStatusNotification_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to new chat.
         /// </summary>
         public static string Conversations_NewChat_AppBar_Btn {
@@ -759,6 +768,15 @@ namespace windows_client.Languages {
         public static string Conversations_Timeline_Refresh_Status {
             get {
                 return ResourceManager.GetString("Conversations_Timeline_Refresh_Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unmute Status Updates.
+        /// </summary>
+        public static string Conversations_UnmuteStatusNotification_txt {
+            get {
+                return ResourceManager.GetString("Conversations_UnmuteStatusNotification_txt", resourceCulture);
             }
         }
         
@@ -2490,6 +2508,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Muted successfully!.
+        /// </summary>
+        public static string Mute_Success_Txt {
+            get {
+                return ResourceManager.GetString("Mute_Success_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My Location.
+        /// </summary>
+        public static string My_Location_Text {
+            get {
+                return ResourceManager.GetString("My_Location_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to my profile.
         /// </summary>
         public static string MyProfileheader_Txt {
@@ -3417,11 +3453,20 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Message not delivered. Tap to send as SMS.
+        ///   Looks up a localized string similar to {0} seems to be offline, tap to send as sms.
         /// </summary>
         public static string Send_All_As_SMS {
             get {
                 return ResourceManager.GetString("Send_All_As_SMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap to send as SMS.
+        /// </summary>
+        public static string Send_All_As_SMS_Group {
+            get {
+                return ResourceManager.GetString("Send_All_As_SMS_Group", resourceCulture);
             }
         }
         
@@ -4043,6 +4088,15 @@ namespace windows_client.Languages {
         public static string Unlink_Txt {
             get {
                 return ResourceManager.GetString("Unlink_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unmuted successfully!.
+        /// </summary>
+        public static string Unmute_Success_Txt {
+            get {
+                return ResourceManager.GetString("Unmute_Success_Txt", resourceCulture);
             }
         }
         
