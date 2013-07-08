@@ -583,15 +583,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mute Status Updates.
-        /// </summary>
-        public static string Conversations_MuteStatusNotification_txt {
-            get {
-                return ResourceManager.GetString("Conversations_MuteStatusNotification_txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to new chat.
         /// </summary>
         public static string Conversations_NewChat_AppBar_Btn {
@@ -768,15 +759,6 @@ namespace windows_client.Languages {
         public static string Conversations_Timeline_Refresh_Status {
             get {
                 return ResourceManager.GetString("Conversations_Timeline_Refresh_Status", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unmute Status Updates.
-        /// </summary>
-        public static string Conversations_UnmuteStatusNotification_txt {
-            get {
-                return ResourceManager.GetString("Conversations_UnmuteStatusNotification_txt", resourceCulture);
             }
         }
         
@@ -3836,6 +3818,15 @@ namespace windows_client.Languages {
         public static string StatusDetionFail_Txt {
             get {
                 return ResourceManager.GetString("StatusDetionFail_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status Update Notifications.
+        /// </summary>
+        public static string StatusNotToggle_Caption_Txt {
+            get {
+                return ResourceManager.GetString("StatusNotToggle_Caption_Txt", resourceCulture);
             }
         }
         
