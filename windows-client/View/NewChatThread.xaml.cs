@@ -924,18 +924,16 @@ namespace windows_client.View
             bool isLastSeenSettingOn;
             if (!App.appSettings.TryGetValue<bool>(App.LAST_SEEN_SEETING, out isLastSeenSettingOn) || isLastSeenSettingOn)
             {
-                var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
-                if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
+                BackgroundWorker _worker = new BackgroundWorker();
+
+                _worker.DoWork += (ss, ee) =>
                 {
-                    BackgroundWorker _worker = new BackgroundWorker();
-
-                    _worker.DoWork += (ss, ee) =>
-                    {
+                    var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
+                    if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
                         _lastSeenHelper.requestLastSeen(mContactNumber);
-                    };
+                };
 
-                    _worker.RunWorkerAsync();
-                }
+                _worker.RunWorkerAsync();
             }
 
             #endregion
