@@ -448,15 +448,13 @@ namespace windows_client.View
 
         private void PhoneTextBox_ActionIconTapped(object sender, EventArgs e)
         {
-            var searchString = SearchTextBox.Text.Trim();
-            
-            if (_searchString.Equals(searchString))
-                return;
-
-            _searchString = searchString;
-
+            _searchString = SearchTextBox.Text.Trim();
             this.Focus();
-            Search();
+
+            if (String.IsNullOrEmpty(_searchString))
+                GetPlaces();
+            else
+                Search();
         }
 
         void Search()
