@@ -487,7 +487,10 @@ namespace windows_client.View
 
             if (_geolocator.LocationStatus == PositionStatus.Disabled)
             {
-                MessageBox.Show(AppResources.ShareLocation_LocationServiceNotEnabled_Txt);
+                var result = MessageBox.Show(AppResources.ShareLocation_LocationServiceNotEnabled_Txt, AppResources.Location_Heading, MessageBoxButton.OKCancel);
+
+                if(result == MessageBoxResult.OK)
+                    Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-location:"));
 
                 _isLocationEnabled = false;
             }
