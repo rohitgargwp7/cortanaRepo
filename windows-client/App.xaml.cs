@@ -662,6 +662,7 @@ namespace windows_client
                     {
                         App.appSettings.Remove(App.LAST_SEEN_SEETING);
                         App.appSettings.Save();
+
                         if (value > 0)
                             App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, true);
                         else

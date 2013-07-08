@@ -510,7 +510,7 @@ namespace windows_client.View
 
                 if (result == MessageBoxResult.OK)
                 {
-                    App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, (byte)1);
+                    App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, true);
                     _isLocationEnabled = true;
                 }
             }
