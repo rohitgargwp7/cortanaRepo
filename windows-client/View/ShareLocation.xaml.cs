@@ -435,7 +435,7 @@ namespace windows_client.View
 
         String _searchString = "";
 
-        private void PhoneTextBox_ActionIconTapped_1(object sender, EventArgs e)
+        private void PhoneTextBox_ActionIconTapped(object sender, EventArgs e)
         {
             var searchString = SearchTextBox.Text.Trim();
             
@@ -571,6 +571,16 @@ namespace windows_client.View
                 App.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, _myCoordinate);
 
             base.OnNavigatedFrom(e);
+        }
+
+        private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            shareIconButton.IsEnabled = false;
+        }
+
+        private void SearchTextBox_LostFocus_1(object sender, RoutedEventArgs e)
+        {
+            shareIconButton.IsEnabled = true;
         }
     }
 
