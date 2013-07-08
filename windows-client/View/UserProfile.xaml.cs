@@ -31,7 +31,6 @@ namespace windows_client.View
         BitmapImage profileImage = null;
         byte[] fullViewImageBytes = null;
         byte[] thumbnailBytes = null;
-        bool isFirstLoad = true;
         string nameToShow = null;
         string firstName = null;
         bool isOnHike = false;
@@ -265,7 +264,7 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-            if (isFirstLoad)
+            if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
             {
                 object o;
                 #region USER INFO FROM CHAT THREAD
@@ -341,6 +340,8 @@ namespace windows_client.View
 
                 avatarImage.Source = profileImage;
                 txtUserName.Text = nameToShow;
+                txtMsisdn.Text = msisdn;
+
                 firstName = Utils.GetFirstName(nameToShow);
 
                 //if blocked user show block ui and return
@@ -348,7 +349,6 @@ namespace windows_client.View
                 {
                     isBlocked = true;
                     ShowBlockedUser();
-                    isFirstLoad = false;
                     if (appBar != null)
                         appBar.IsVisible = false;
                     return;
@@ -358,18 +358,6 @@ namespace windows_client.View
                     ShowNonHikeUser();
                 else
                     InitHikeUserProfile();
-
-                isFirstLoad = false;
-            }
-
-            // this is done to update profile name , as soon as it gets updated
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PROFILE_NAME_CHANGED))
-                txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED];
-
-            if (e.NavigationMode == NavigationMode.New)
-            {
-                txtMsisdn.Text = msisdn;
-                isInAddressBook = CheckUserInAddressBook();
 
                 if (msisdn != App.MSISDN)
                 {
@@ -390,8 +378,19 @@ namespace windows_client.View
                     appBar.Buttons.Add(callIconButton);
                     UserProfilePage.ApplicationBar = appBar;
 
-                    if (!isInAddressBook)
-                        ShowAddToContacts();
+                    BackgroundWorker worker = new BackgroundWorker();
+                    worker.DoWork += delegate
+                        {
+                            if (!isInAddressBook)
+                            {
+                                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                                {
+                                    ShowAddToContacts();
+                                });
+                            }
+                        };
+
+                    worker.RunWorkerAsync();
                 }
 
                 ContextMenu menu = new ContextMenu();
@@ -412,8 +411,11 @@ namespace windows_client.View
                     menu2.Items.Add(menuItemCopy2);
                     ContextMenuService.SetContextMenu(txtUserName, menu2);
                 }
-                
             }
+
+            // this is done to update profile name , as soon as it gets updated
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PROFILE_NAME_CHANGED))
+                txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED];
         }
 
         void menuItemCopy_Click(object sender, RoutedEventArgs e)
@@ -816,17 +818,71 @@ namespace windows_client.View
             addToFavBtn.Visibility = Visibility.Collapsed;
             addToFavBtn.Tap -= UnblockUser_Tap;
             txtOnHikeSmsTime.Visibility = Visibility.Visible;
+
             if (appBar != null)
                 appBar.IsVisible = true;
+
             isBlocked = false;
+
             if (!isOnHike)
-            {
                 ShowNonHikeUser();
-            }
             else
             {
                 txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
                 InitHikeUserProfile();
+            }
+
+            if (msisdn != App.MSISDN)
+            {
+                ApplicationBarIconButton callIconButton = new ApplicationBarIconButton();
+                callIconButton.IconUri = new Uri("/View/images/call.png", UriKind.Relative);
+                callIconButton.Text = AppResources.Call_Txt;
+                callIconButton.Click += new EventHandler(Call_Click);
+                callIconButton.IsEnabled = true;
+
+                if (appBar == null)
+                {
+                    appBar = new ApplicationBar();
+                    appBar.Mode = ApplicationBarMode.Default;
+                    appBar.IsVisible = true;
+                    appBar.IsMenuEnabled = true;
+                }
+
+                appBar.Buttons.Add(callIconButton);
+                UserProfilePage.ApplicationBar = appBar;
+
+                BackgroundWorker worker = new BackgroundWorker();
+                worker.DoWork += delegate
+                {
+                    if (!isInAddressBook)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            ShowAddToContacts();
+                        });
+                    }
+                };
+
+                worker.RunWorkerAsync();
+            }
+
+            ContextMenu menu = new ContextMenu();
+            menu.IsZoomEnabled = false;
+            MenuItem menuItemCopy = new MenuItem();
+            menuItemCopy.Header = AppResources.Copy_txt;
+            menuItemCopy.Click += menuItemCopy_Click;
+            menu.Items.Add(menuItemCopy);
+            ContextMenuService.SetContextMenu(txtMsisdn, menu);
+
+            if (msisdn == txtUserName.Text)
+            {
+                ContextMenu menu2 = new ContextMenu();
+                menu2.IsZoomEnabled = false;
+                MenuItem menuItemCopy2 = new MenuItem();
+                menuItemCopy2.Header = AppResources.Copy_txt;
+                menuItemCopy2.Click += menuItemCopy_Click;
+                menu2.Items.Add(menuItemCopy2);
+                ContextMenuService.SetContextMenu(txtUserName, menu2);
             }
         }
 
