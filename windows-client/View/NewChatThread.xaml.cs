@@ -911,6 +911,14 @@ namespace windows_client.View
             }
             userName.Text = mContactName;
 
+            // if hike bot msg disable appbar, textbox etc
+            if (Utils.IsHikeBotMsg(mContactNumber))
+            {
+                sendMsgTxtbox.IsEnabled = false;
+                WalkieTalkieMicIcon.IsHitTestVisible = false;
+                return;
+            }
+
             #region LAST SEEN TIMER
 
             byte lastSeenSettingsValue;
@@ -933,13 +941,6 @@ namespace windows_client.View
             }
 
             #endregion
-
-            // if hike bot msg disable appbar, textbox etc
-            if (Utils.IsHikeBotMsg(mContactNumber))
-            {
-                sendMsgTxtbox.IsEnabled = false;
-                return;
-            }
 
             if (groupOwner != null)
                 mUserIsBlocked = App.ViewModel.BlockedHashset.Contains(groupOwner);
