@@ -46,6 +46,7 @@ namespace windows_client.View
         private string _nokiaPlacesAppCode = "Uhjk-Gny7_A-ISaJb3DMKQ";
         private List<Place> _places;
         Place _selectedPlace;
+        Place _myPlace;
         Boolean _isMapTapped = false;
         Boolean _isDefaultSelection = false;
         Boolean _isLocationEnabled = true;
@@ -123,13 +124,28 @@ namespace windows_client.View
                 PlacesGrid.Visibility = Visibility.Visible;
                 DrawMapMarkers();
                 DrawMapMarkers();
-                _selectedPlace = new Place() 
-                { 
-                    position = _selectedCoordinate, 
-                    title = _myCoordinate == null || _selectedCoordinate!= _myCoordinate? AppResources.Location_Txt : AppResources.My_Location_Text, 
-                    vicinity = _myPlaceVicinity 
-                };
-                _places.Insert(0, _selectedPlace);
+
+                if (_selectedPlace == null)
+                {
+                    if (_myPlace == null)
+                    {
+                        _myPlace = new Place()
+                        {
+                            position = _selectedCoordinate,
+                            title = _myCoordinate == null || _selectedCoordinate != _myCoordinate ? AppResources.Location_Txt : AppResources.My_Location_Text,
+                            vicinity = _myPlaceVicinity
+                        };
+                    }
+
+                    if (!_places.Contains(_myPlace))
+                        _places.Insert(0, _myPlace);
+                }
+                else
+                {
+                    if (!_places.Contains(_selectedPlace))
+                        _places.Insert(0, _selectedPlace); 
+                }
+
                 _selectedPlace = _places[0];
                 PlacesList.ItemsSource = _places;
                 HideProgressIndicator();
@@ -263,26 +279,21 @@ namespace windows_client.View
 
                 var newCoordinate = new GeoCoordinate(currentPosition.Coordinate.Latitude, currentPosition.Coordinate.Longitude);
 
-                if (_myCoordinate == null || _myCoordinate != newCoordinate)
+                _myCoordinate = newCoordinate;
+                _selectedCoordinate = _myCoordinate;
+
+                Dispatcher.BeginInvoke(() =>
                 {
-                    _myCoordinate = newCoordinate;
+                    DrawMapMarkers();
+                    MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
+                });
 
-                    _selectedCoordinate = _myCoordinate;
+                GetMyPlaceDetails();
 
-                    Dispatcher.BeginInvoke(() =>
-                    {
-                        DrawMapMarkers();
-                        MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
-                    });
-
-                    GetMyPlaceDetails();
-
-                    if (String.IsNullOrEmpty(_searchString))
-                        GetPlaces();
-                    else
-                        Search();
-                }
-
+                if (String.IsNullOrEmpty(_searchString))
+                    GetPlaces();
+                else
+                    Search();
             }
             catch (Exception ex)
             {
@@ -374,7 +385,7 @@ namespace windows_client.View
             geo = MyMap.ConvertViewportPointToGeoCoordinate(p);
             MyMap.SetView(geo, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
             _selectedCoordinate = geo;
-
+            _selectedPlace = null;
             shareIconButton.IsEnabled = true;
             _isPlacesSearch = false;
 
@@ -460,6 +471,7 @@ namespace windows_client.View
             if (shareIconButton.IsEnabled == false)
                 return;
 
+            _selectedPlace = null;
             _isMapTapped = false;
             GetCurrentCoordinate();
         }
