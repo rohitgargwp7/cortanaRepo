@@ -1239,12 +1239,13 @@ namespace windows_client.View
             {
                 case TaskResult.OK:
                     ContactUtils.getContact(msisdn, new ContactUtils.contacts_Callback(contactSearchCompleted_Callback));
+                    ApplicationBar.Buttons.Remove(addToContactsAppBarButton);
                     break;
                 case TaskResult.Cancel:
-                    MessageBox.Show(AppResources.User_Cancelled_Task_Txt);
+                    System.Diagnostics.Debug.WriteLine(AppResources.User_Cancelled_Task_Txt);
                     break;
                 case TaskResult.None:
-                    MessageBox.Show(AppResources.NoInfoForTask_Txt);
+                    System.Diagnostics.Debug.WriteLine(AppResources.NoInfoForTask_Txt);
                     break;
             }
         }
