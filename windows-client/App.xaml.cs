@@ -42,6 +42,7 @@ namespace windows_client
         public static readonly string STATUS_UPDATE_FIRST_SETTING = "stUpFirSet";
         public static readonly string STATUS_UPDATE_SECOND_SETTING = "stUpSecSet";
         public static readonly string LAST_SEEN_SEETING = "lstSeenSet";
+        public static readonly string USE_LOCATION_SETTING = "locationSet";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
         public static readonly string SHOW_BASIC_TUTORIAL = "basicTut";
@@ -650,7 +651,30 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
+            #region LAST SEEN BYTE TO BOOL FIX
 
+            if (Utils.compareVersion(_currentVersion, "2.2.0.3") < 0)
+            {
+                try
+                {
+                    byte value;
+                    if (App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out value))
+                    {
+                        App.appSettings.Remove(App.LAST_SEEN_SEETING);
+
+                        if (value > 0)
+                            App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, true);
+                        else
+                            App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, false);
+                    }
+                }
+                catch(InvalidCastException ex)
+                {
+
+                }
+            }
+
+            #endregion
             #region IN APP TIPS
 
             if (isNewInstall) //upgrade logic for inapp tips, will change with every build
@@ -810,9 +834,6 @@ namespace windows_client
                 // setting it a default counter of 2 to show notification counter for new user on conversation page
                 if (isNewInstall && !appSettings.Contains(App.PRO_TIP_COUNT)) 
                     App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, 2);
-
-                if (!appSettings.Contains(App.LAST_SEEN_SEETING))
-                    App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, (byte)1);
             }
             #endregion
             #region POST APP INFO ON UPDATE

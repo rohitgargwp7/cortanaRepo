@@ -490,7 +490,7 @@ namespace windows_client.View
                 PlacesGrid.Visibility = Visibility.Collapsed;
         }
 
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        protected override async void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             if (_geolocator == null)
                 _geolocator = new Geolocator();
@@ -500,9 +500,19 @@ namespace windows_client.View
                 var result = MessageBox.Show(AppResources.ShareLocation_LocationServiceNotEnabled_Txt, AppResources.Location_Heading, MessageBoxButton.OKCancel);
 
                 if(result == MessageBoxResult.OK)
-                    Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-location:"));
+                    await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-location:"));
 
                 _isLocationEnabled = false;
+            }
+            else if (App.appSettings.TryGetValue<bool>(App.USE_LOCATION_SETTING, out _isLocationEnabled) && !_isLocationEnabled)
+            {
+                var result = MessageBox.Show(AppResources.ShareLocation_LocationSettingsNotEnabled_Txt, AppResources.Location_Heading, MessageBoxButton.OKCancel);
+
+                if (result == MessageBoxResult.OK)
+                {
+                    App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, (byte)1);
+                    _isLocationEnabled = true;
+                }
             }
             else
                 _isLocationEnabled = true;

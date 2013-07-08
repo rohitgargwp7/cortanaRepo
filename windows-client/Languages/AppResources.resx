@@ -1855,4 +1855,10 @@ Get hike: http://get.hike.in</value>
   <data name="Location_Heading" xml:space="preserve">
     <value>Location</value>
   </data>
+  <data name="Settings_LocationToggleSwitchHeader" xml:space="preserve">
+    <value>Use location</value>
+  </data>
+  <data name="ShareLocation_LocationSettingsNotEnabled_Txt" xml:space="preserve">
+    <value>Location service setting is not enabled. Would you like to enable it?</value>
+  </data>
 </root>

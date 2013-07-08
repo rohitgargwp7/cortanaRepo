@@ -3534,6 +3534,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use location.
+        /// </summary>
+        public static string Settings_LocationToggleSwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_LocationToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your notifications preferences.
         /// </summary>
         public static string Settings_NotificationSettings_Txt {
@@ -3701,6 +3710,15 @@ namespace windows_client.Languages {
         public static string ShareLocation_LocationServiceWorking_Txt {
             get {
                 return ResourceManager.GetString("ShareLocation_LocationServiceWorking_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location service setting is not enabled. Would you like to enable it?.
+        /// </summary>
+        public static string ShareLocation_LocationSettingsNotEnabled_Txt {
+            get {
+                return ResourceManager.GetString("ShareLocation_LocationSettingsNotEnabled_Txt", resourceCulture);
             }
         }
         

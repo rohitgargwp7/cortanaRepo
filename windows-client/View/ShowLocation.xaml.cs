@@ -84,16 +84,29 @@ namespace windows_client.View
             }
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             if (_geolocator == null) 
                 _geolocator = new Geolocator();
 
             if (_geolocator.LocationStatus == PositionStatus.Disabled)
             {
-                MessageBox.Show(AppResources.ShareLocation_LocationServiceNotEnabled_Txt);
+                var result = MessageBox.Show(AppResources.ShareLocation_LocationServiceNotEnabled_Txt, AppResources.Location_Heading, MessageBoxButton.OKCancel);
+
+                if (result == MessageBoxResult.OK)
+                    await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-location:"));
 
                 _isLocationEnabled = false;
+            }
+            else if (App.appSettings.TryGetValue<bool>(App.USE_LOCATION_SETTING, out _isLocationEnabled) && !_isLocationEnabled)
+            {
+                var result = MessageBox.Show(AppResources.ShareLocation_LocationSettingsNotEnabled_Txt, AppResources.Location_Heading, MessageBoxButton.OKCancel);
+
+                if (result == MessageBoxResult.OK)
+                {
+                    App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, (byte)1);
+                    _isLocationEnabled = true;
+                }
             }
             else
                 _isLocationEnabled = true;

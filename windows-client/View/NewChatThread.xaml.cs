@@ -921,10 +921,8 @@ namespace windows_client.View
 
             #region LAST SEEN TIMER
 
-            byte lastSeenSettingsValue;
-            App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out lastSeenSettingsValue);
-
-            if (lastSeenSettingsValue > 0)
+            bool isLastSeenSettingOn;
+            if (!App.appSettings.TryGetValue<bool>(App.LAST_SEEN_SEETING, out isLastSeenSettingOn) || isLastSeenSettingOn)
             {
                 var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
                 if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
@@ -3889,10 +3887,8 @@ namespace windows_client.View
 
             else if (HikePubSub.TYPING_CONVERSATION == type)
             {
-                byte lastSeenSettingsValue;
-                App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out lastSeenSettingsValue);
-
-                if (lastSeenSettingsValue > 0)
+                bool isLastSeenSettingsOn;
+                if (!App.appSettings.TryGetValue<bool>(App.LAST_SEEN_SEETING, out isLastSeenSettingsOn) || isLastSeenSettingsOn)
                 {
                     var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
 
@@ -3947,10 +3943,8 @@ namespace windows_client.View
 
             else if (HikePubSub.LAST_SEEN == type && !isGroupChat)
             {
-                byte lastSeenSettingsValue;
-                App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out lastSeenSettingsValue);
-
-                if (lastSeenSettingsValue > 0)
+                bool isLastSeenSettingOn;
+                if (!App.appSettings.TryGetValue<bool>(App.LAST_SEEN_SEETING, out isLastSeenSettingOn) || isLastSeenSettingOn)
                 {
                     object[] vals = (object[])obj;
                     string fromMsisdn = (string)vals[0];
