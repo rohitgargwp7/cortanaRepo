@@ -1,0 +1,53 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="windows_client.View.ShowLocation"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:maps="clr-namespace:Microsoft.Phone.Maps.Controls;assembly=Microsoft.Phone.Maps"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="True"
+    shell:SystemTray.Opacity="0">
+    
+    <phone:PhoneApplicationPage.Resources>
+        <DataTemplate x:Key="RouteListTemplate">
+            <TextBlock Text="{Binding}" FontSize="{StaticResource PhoneFontSizeMedium}" TextWrapping="Wrap" Margin="5"/>
+        </DataTemplate>
+    </phone:PhoneApplicationPage.Resources>
+    
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <maps:Map x:Name="MyMap" Tap="MyMap_Tap" ZoomLevelChanged="ZoomLevelChanged"/>
+        <Grid x:Name="DirectionGrid" ManipulationStarted="DirectionGrid_ManipulationStarted" Grid.Row="1" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="timeDestination" HorizontalAlignment="Left" Style="{StaticResource PhoneTextLargeStyle}" FontWeight="SemiBold"/>
+                <TextBlock Grid.Column="1" x:Name="distanceDestination" HorizontalAlignment="Right" Style="{StaticResource PhoneTextLargeStyle}" FontWeight="SemiBold"/>
+            </Grid>
+            <phone:LongListSelector x:Name="directionList" Grid.Row="1" Margin="10,0,10,0" Background="Transparent" ItemTemplate="{StaticResource RouteListTemplate}" LayoutMode="List" 
+            IsGroupingEnabled="False" SelectionChanged="RouteManeuverSelected"/>
+        </Grid>
+    </Grid>
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="False">
+            <shell:ApplicationBarIconButton Click="Direction_Click" IconUri="view/images/route.png" Text="directions"/>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+</phone:PhoneApplicationPage>

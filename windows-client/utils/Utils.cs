@@ -124,9 +124,9 @@ namespace windows_client.utils
         }
 
         /// <summary>
-        /// -1 if v1 < v2
-        /// 0 if v1=v2
-        /// 1 is v1>v2
+        /// -1 if v1 less v2
+        /// 0 if v1 equal v2
+        /// 1 is v1 greater v2
         /// </summary>
         /// <param name="version1"></param>
         /// <param name="version2"></param>
@@ -497,7 +497,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (currentResolution == Resolutions.Default)
+                if (palleteResolution == Resolutions.Default)
                 {
                     if (IsWvga) palleteResolution = Resolutions.WVGA;
                     else if (IsWxga) palleteResolution = Resolutions.WXGA;

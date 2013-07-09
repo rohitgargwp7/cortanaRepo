@@ -255,6 +255,9 @@
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ShowLocation.xaml.cs">
+      <DependentUpon>ShowLocation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SocialPages.xaml.cs">
       <DependentUpon>SocialPages.xaml</DependentUpon>
     </Compile>
@@ -379,6 +382,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ShowLocation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\SocialPages.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -468,7 +475,6 @@
     <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
     <Content Include="View\images\active_bolly.png" />
-    <Content Include="View\images\add_favorites.png" />
     <Content Include="View\images\add_friend.png" />
     <Content Include="View\images\add_users_white.png" />
     <Content Include="View\images\appbar_addfriend.png" />
@@ -541,6 +547,7 @@
     <Content Include="View\images\kitty_overlay.png" />
     <Content Include="View\images\last_seen_clock_black.png" />
     <Content Include="View\images\last_seen_clock_white.png" />
+    <Content Include="View\images\LocationPin.png" />
     <Content Include="View\images\made_with_love.png" />
     <Content Include="View\images\menu_contact_icon_black.png" />
     <Content Include="View\images\menu_location_icon.png" />
@@ -571,10 +578,10 @@
     <Content Include="View\images\moods\22Sleepy.png" />
     <Content Include="View\images\moods\23Hungover.png" />
     <Content Include="View\images\moods_status_icon.png" />
-    <Content Include="View\images\moods_status_icon_disabled.png" />
     <Content Include="View\images\notification_read.png" />
     <Content Include="View\images\notification_unread.png" />
     <Content Include="View\images\pause_icon.png" />
+    <Content Include="View\images\places.png" />
     <Content Include="View\images\profile_header_stock.png" />
     <Content Include="View\images\profile_header_stock_dark.png" />
     <Content Include="View\images\refresh_bar_arrow.png" />
@@ -620,6 +627,7 @@
     <Content Include="View\images\tutorial_welcome.png" />
     <Content Include="View\images\twitter_status.png" />
     <Content Include="View\images\twitter_status_disabled.png" />
+    <Content Include="View\images\unmutedicon.png" />
     <Content Include="View\images\user_invite.png" />
     <Content Include="View\images\user_invite_white.png" />
     <Content Include="View\images\user_lock.png" />
@@ -632,7 +640,6 @@
     <Content Include="View\images\walkie_talkie_White_Big.png" />
     <Content Include="View\images\Walkie_Talkie_Grey_small.png" />
     <Content Include="View\images\made_with_love_dark.png" />
-    <Content Include="View\images\map-pin.png" />
     <Content Include="View\images\menu_audio_icon.png" />
     <Content Include="View\images\menu_contact_icon.png" />
     <Content Include="View\images\menu_photo_icon.png" />
@@ -813,7 +820,6 @@
     <Content Include="View\images\emoticons\emo_im_97_horror.png" />
     <Content Include="View\images\emoticons\emo_im_98_money.png" />
     <Content Include="View\images\emoticons\emo_im_99_nothing.png" />
-    <Content Include="View\images\enter_name.png" />
     <Content Include="View\images\error_icon.png" />
     <Content Include="View\images\free_sms.png" />
     <Content Include="View\images\hike_logo_small.png" />
@@ -833,7 +839,6 @@
     <Resource Include="View\images\privacy_dark.png" />
     <Content Include="View\images\signup_logo.png" />
     <Resource Include="View\images\free_sms_dark.png" />
-    <Resource Include="View\images\splash_logo.png" />
     <Content Include="View\images\ic_block_active.png" />
     <Content Include="View\images\terms_link.png" />
     <Content Include="View\images\typing.png" />
@@ -848,7 +853,9 @@
     <EmbeddedResource Include="Languages\AppResources.fr.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Languages\AppResources.hi.resx" />
+    <EmbeddedResource Include="Languages\AppResources.hi.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Languages\AppResources.pt-BR.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

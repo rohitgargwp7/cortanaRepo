@@ -1734,6 +1734,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your free SMS balance is zero. You can invite friends to join hike and earn more free SMS.
+        /// </summary>
+        public static string H2HOfline_0SMS_Message {
+            get {
+                return ResourceManager.GetString("H2HOfline_0SMS_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pending messages will be sent as free hike SMS.
+        /// </summary>
+        public static string H2HOfline_Confirmation_Message {
+            get {
+                return ResourceManager.GetString("H2HOfline_Confirmation_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send as SMS.
+        /// </summary>
+        public static string H2HOfline_Confirmation_Message_Heading {
+            get {
+                return ResourceManager.GetString("H2HOfline_Confirmation_Message_Heading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Happy Messaging!.
         /// </summary>
         public static string HappyMessaging_Txt {
@@ -1824,7 +1851,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feedback on WP7.
+        ///   Looks up a localized string similar to Feedback on WP8.
         /// </summary>
         public static string Help_EmailSubject {
             get {
@@ -2159,6 +2186,15 @@ namespace windows_client.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Location.
         /// </summary>
+        public static string Location_Heading {
+            get {
+                return ResourceManager.GetString("Location_Heading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location.
+        /// </summary>
         public static string Location_Txt {
             get {
                 return ResourceManager.GetString("Location_Txt", resourceCulture);
@@ -2463,6 +2499,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Status update notifications are turned OFF.
+        /// </summary>
+        public static string Mute_Success_Txt {
+            get {
+                return ResourceManager.GetString("Mute_Success_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My Location.
+        /// </summary>
+        public static string My_Location_Text {
+            get {
+                return ResourceManager.GetString("My_Location_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to my profile.
         /// </summary>
         public static string MyProfileheader_Txt {
@@ -2630,6 +2684,15 @@ namespace windows_client.Languages {
         public static string On {
             get {
                 return ResourceManager.GetString("On", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to on DND.
+        /// </summary>
+        public static string On_Dnd_Txt {
+            get {
+                return ResourceManager.GetString("On_Dnd_Txt", resourceCulture);
             }
         }
         
@@ -3381,6 +3444,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} seems to be offline, tap to send as sms.
+        /// </summary>
+        public static string Send_All_As_SMS {
+            get {
+                return ResourceManager.GetString("Send_All_As_SMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap to send as SMS.
+        /// </summary>
+        public static string Send_All_As_SMS_Group {
+            get {
+                return ResourceManager.GetString("Send_All_As_SMS_Group", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to send as hike sms.
+        /// </summary>
+        public static string Send_As_Sms {
+            get {
+                return ResourceManager.GetString("Send_As_Sms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to send.
         /// </summary>
         public static string Send_Txt {
@@ -3579,7 +3669,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Location Service is not enabled on the device..
+        ///   Looks up a localized string similar to Location Service is not enabled on the device. Would you like to enable it?.
         /// </summary>
         public static string ShareLocation_LocationServiceNotEnabled_Txt {
             get {
@@ -3737,6 +3827,15 @@ namespace windows_client.Languages {
         public static string StatusDetionFail_Txt {
             get {
                 return ResourceManager.GetString("StatusDetionFail_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status Update Notifications.
+        /// </summary>
+        public static string StatusNotToggle_Caption_Txt {
+            get {
+                return ResourceManager.GetString("StatusNotToggle_Caption_Txt", resourceCulture);
             }
         }
         
@@ -3989,6 +4088,15 @@ namespace windows_client.Languages {
         public static string Unlink_Txt {
             get {
                 return ResourceManager.GetString("Unlink_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status update notifications are turned ON.
+        /// </summary>
+        public static string Unmute_Success_Txt {
+            get {
+                return ResourceManager.GetString("Unmute_Success_Txt", resourceCulture);
             }
         }
         

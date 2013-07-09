@@ -218,7 +218,8 @@ namespace windows_client.Model
                 }
                 else if (!_isOnHike)
                 {
-                    return AppResources.OnSms_Txt;
+
+                    return _isDND ? AppResources.On_Dnd_Txt : AppResources.OnSms_Txt;
                 }
                 return string.Empty;
             }

@@ -364,8 +364,6 @@ namespace windows_client
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
-            App.mMqttManager.IsAppStarted = false;
-
             _isAppLaunched = false; // this means app is activated, could be tombstone or dormant state
             _isTombstoneLaunch = !e.IsApplicationInstancePreserved; //e.IsApplicationInstancePreserved  --> if this is true its dormant else tombstoned
             try
@@ -390,6 +388,7 @@ namespace windows_client
             }
 
             NetworkManager.turnOffNetworkManager = false;
+            App.mMqttManager.IsAppStarted = false;
         }
 
         // Code to execute when the application is deactivated (sent to background)
@@ -485,7 +484,7 @@ namespace windows_client
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
             // if not new install && current version is less than equal to version 1.8.0.0  and upgrade is done for wp8 device
-            if (!isNewInstall && Utils.compareVersion("2.2.0.0", _currentVersion) == 1 && Utils.IsWP8)
+            if (!isNewInstall && Utils.compareVersion("2.2.0.2", _currentVersion) == 1 && Utils.IsWP8)
             {
                 instantiateClasses(true);
                 RootFrame.Dispatcher.BeginInvoke(delegate

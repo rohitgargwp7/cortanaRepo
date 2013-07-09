@@ -25,6 +25,8 @@ using Microsoft.Phone.Net.NetworkInformation;
 using System.Collections.ObjectModel;
 using windows_client.Controls;
 using windows_client.Controls.StatusUpdate;
+using Coding4Fun.Phone.Controls;
+using System.Windows.Media;
 
 namespace windows_client.View
 {
@@ -40,12 +42,11 @@ namespace windows_client.View
         private ApplicationBar appBar;
         private BitmapImage _avatarImageBitmap = new BitmapImage();
         ApplicationBarMenuItem delConvsMenu;
-
         ApplicationBarIconButton composeIconButton;
         ApplicationBarIconButton postStatusIconButton;
         ApplicationBarIconButton groupChatIconButton;
         //ApplicationBarIconButton addFriendIconButton;
-
+        private bool isStatusUpdatesMute;
         private bool isStatusMessagesLoaded = false;
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
         #endregion
@@ -143,6 +144,14 @@ namespace windows_client.View
                 #endregion
                 App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
                 firstLoad = false;
+
+                if (appSettings.Contains(App.SHOW_BASIC_TUTORIAL))
+                {
+                    overlay.Visibility = Visibility.Visible;
+                    overlay.Tap += DismissTutorial_Tap;
+                    gridBasicTutorial.Visibility = Visibility.Visible;
+                    launchPagePivot.IsHitTestVisible = false;
+                }
             }
             // this should be called only if its not first load as it will get called in first load section
             else if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -166,13 +175,9 @@ namespace windows_client.View
             {
                 freeSMSPanel.Visibility = Visibility.Collapsed;
             }
-            if (appSettings.Contains(App.SHOW_BASIC_TUTORIAL))
-            {
-                overlay.Visibility = Visibility.Visible;
-                overlay.Tap += DismissTutorial_Tap;
-                gridBasicTutorial.Visibility = Visibility.Visible;
-                launchPagePivot.IsHitTestVisible = false;
-            }
+            byte statusSettingsValue;
+            isStatusUpdatesMute = App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue) && statusSettingsValue == 0;
+            imgToggleStatus.Source = isStatusUpdatesMute ? UI_Utils.Instance.MuteIcon : UI_Utils.Instance.UnmuteIcon;
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -370,6 +375,12 @@ namespace windows_client.View
             delConvsMenu.Text = AppResources.Conversations_DelAllChats_Txt;
             delConvsMenu.Click += new EventHandler(deleteAllConvs_Click);
             appBar.MenuItems.Add(delConvsMenu);
+
+            //toggleStatusUpdatesMenu = new ApplicationBarMenuItem();
+            //byte statusSettingsValue;
+            //App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue);
+            //toggleStatusUpdatesMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
+            //appBar.MenuItems.Add(toggleStatusUpdatesMenu);
         }
 
         public static void ReloadConversations() // running on some background thread
@@ -592,6 +603,31 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 
+        private void ToggleStatusUpdateNotification(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            MessageBox.Show(isStatusUpdatesMute ? AppResources.Unmute_Success_Txt : AppResources.Mute_Success_Txt, AppResources.StatusNotToggle_Caption_Txt, MessageBoxButton.OK);
+            int settingsValue = 0;
+            if (isStatusUpdatesMute)
+            {
+                imgToggleStatus.Source = UI_Utils.Instance.UnmuteIcon;
+                App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)1);
+                settingsValue = 0;
+            }
+            else
+            {
+                imgToggleStatus.Source = UI_Utils.Instance.MuteIcon;
+                App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)0);
+                settingsValue = -1;
+            }
+            isStatusUpdatesMute = !isStatusUpdatesMute;
+
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            JObject data = new JObject();
+            data.Add(HikeConstants.PUSH_SU, settingsValue);
+            obj.Add(HikeConstants.DATA, data);
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
 
         /* Start or continue the conversation*/
         private void selectUserBtn_Click(object sender, EventArgs e)
@@ -648,11 +684,11 @@ namespace windows_client.View
             {
                 if (!appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Insert(0, delConvsMenu);
+
+                gridToggleStatus.Visibility = Visibility.Collapsed;
             }
             else if (selectedIndex == 1) // favourite
             {
-                if (appBar.MenuItems.Contains(delConvsMenu))
-                    appBar.MenuItems.Remove(delConvsMenu);
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
                 // there will be two background workers that will independently load three sections
@@ -675,21 +711,23 @@ namespace windows_client.View
                             }
                         }
                         List<ContactInfo> tempHikeContactList = UsersTableUtils.GetAllHikeContactsOrdered();
-                        if (hikeContactList != null)
+                        if (tempHikeContactList != null)
                         {
                             HashSet<string> msisdns = new HashSet<string>(); // used to remove duplicate contacts
                             int count = tempHikeContactList.Count;
                             // this loop will filter out already added fav and blocked contacts from hike user list
                             for (int i = count - 1; i >= 0; i--)
                             {
-                                tempHikeContactList[i].IsUsedAtMiscPlaces = true;
+                                ContactInfo cinfoTemp = tempHikeContactList[i];
+                                cinfoTemp.IsUsedAtMiscPlaces = true;
+
                                 // if user is not fav and is not blocked then add to hike contacts
-                                if (!msisdns.Contains(tempHikeContactList[i].Msisdn) && !App.ViewModel.Isfavourite(tempHikeContactList[i].Msisdn) && !App.ViewModel.BlockedHashset.Contains(tempHikeContactList[i].Msisdn))
+                                if (!msisdns.Contains(cinfoTemp.Msisdn) && !App.ViewModel.Isfavourite(cinfoTemp.Msisdn) && !App.ViewModel.BlockedHashset.Contains(cinfoTemp.Msisdn) && cinfoTemp.Msisdn != App.MSISDN)
                                 {
-                                    msisdns.Add(tempHikeContactList[i].Msisdn);
-                                    hikeContactList.Add(tempHikeContactList[i]);
-                                    if (!App.ViewModel.ContactsCache.ContainsKey(tempHikeContactList[i].Msisdn))
-                                        App.ViewModel.ContactsCache[tempHikeContactList[i].Msisdn] = tempHikeContactList[i];
+                                    msisdns.Add(cinfoTemp.Msisdn);
+                                    hikeContactList.Add(cinfoTemp);
+                                    if (!App.ViewModel.ContactsCache.ContainsKey(cinfoTemp.Msisdn))
+                                        App.ViewModel.ContactsCache[cinfoTemp.Msisdn] = cinfoTemp;
                                 }
                             }
                         }
@@ -732,12 +770,17 @@ namespace windows_client.View
                 }
                 #endregion
             }
+            else if (selectedIndex == 2)
+            {
+                gridToggleStatus.Visibility = Visibility.Collapsed;
+            }
             else if (selectedIndex == 3)
             {
                 ProTipCount = 0;
 
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
+                gridToggleStatus.Visibility = Visibility.Visible;
                 if (!isStatusMessagesLoaded)
                 {
                     List<StatusMessage> statusMessagesFromDB = null;
@@ -1114,16 +1157,20 @@ namespace windows_client.View
             else if (HikePubSub.REMOVE_FRIENDS == type)
             {
                 string msisdn;
+
                 if (obj != null)
                 {
                     msisdn = (string)obj;
                     ContactInfo c = null;
+
                     if (!App.ViewModel.ContactsCache.TryGetValue(msisdn, out c))
                     {
                         ConversationListObject convObj = null;
+
                         if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                         {
                             convObj = App.ViewModel.ConvMap[msisdn];
+
                             if (convObj != null && convObj.IsOnhike && !string.IsNullOrEmpty(convObj.ContactName))
                             {
                                 c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
@@ -1133,6 +1180,7 @@ namespace windows_client.View
                         else
                         {
                             c = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+
                             if (c != null)
                             {
                                 //TODO : Use image caching
@@ -1140,13 +1188,15 @@ namespace windows_client.View
                             }
                         }
                     }
+
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        if (c != null)
+                        if (c != null && c.Msisdn != App.MSISDN)
                         {
                             c.IsUsedAtMiscPlaces = true;
                             hikeContactList.Add(c);
                         }
+
                         if (hikeContactList.Count > 0)
                         {
                             emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
@@ -1320,7 +1370,8 @@ namespace windows_client.View
                 Dispatcher.BeginInvoke(() =>
                 {
                     c.IsUsedAtMiscPlaces = true;
-                    hikeContactList.Add(c);
+                    if (c.Msisdn != App.MSISDN)
+                        hikeContactList.Add(c);
                     if (emptyListPlaceholderHikeContacts.Visibility == Visibility.Visible)
                     {
                         emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
@@ -1441,7 +1492,8 @@ namespace windows_client.View
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                     c.Avatar = convObj.Avatar;
                     c.IsUsedAtMiscPlaces = true;
-                    hikeContactList.Add(c);
+                    if (c.Msisdn != App.MSISDN)
+                        hikeContactList.Add(c);
                 }
                 if (hikeContactList.Count > 0)
                 {
@@ -1855,7 +1907,8 @@ namespace windows_client.View
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                     c.Avatar = convObj.Avatar;
                     c.IsUsedAtMiscPlaces = true;
-                    hikeContactList.Add(c);
+                    if (c.Msisdn != App.MSISDN)
+                        hikeContactList.Add(c);
                 }
             }
             if (App.ViewModel.FavList.Count == 0)

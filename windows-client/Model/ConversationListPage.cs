@@ -243,10 +243,13 @@ namespace windows_client.Model
             {
                 switch (_messageStatus)
                 {
+                    case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
                     case ConvMessage.State.SENT_CONFIRMED:
                         return UI_Utils.Instance.Sent;
+                    case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED:
                         return UI_Utils.Instance.Delivered;
+                    case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                     case ConvMessage.State.SENT_DELIVERED_READ:
                         return UI_Utils.Instance.Read;
                     case ConvMessage.State.SENT_UNCONFIRMED:
@@ -265,6 +268,9 @@ namespace windows_client.Model
             {
                 switch (_messageStatus)
                 {
+                    case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
+                    case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
+                    case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                     case ConvMessage.State.SENT_CONFIRMED:
                     case ConvMessage.State.SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED_READ:
@@ -424,8 +430,11 @@ namespace windows_client.Model
             {
                 switch (_messageStatus)
                 {
+                    case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
                     case ConvMessage.State.SENT_CONFIRMED: return "images\\ic_sent.png";
+                    case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED: return "images\\ic_delivered.png";
+                    case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                     case ConvMessage.State.SENT_DELIVERED_READ: return "images\\ic_read.png";
                     default: return "";
                 }
