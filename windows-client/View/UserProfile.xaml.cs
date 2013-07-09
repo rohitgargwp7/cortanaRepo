@@ -359,63 +359,68 @@ namespace windows_client.View
                 else
                     InitHikeUserProfile();
 
-                if (msisdn != App.MSISDN)
-                {
-                    ApplicationBarIconButton callIconButton = new ApplicationBarIconButton();
-                    callIconButton.IconUri = new Uri("/View/images/call.png", UriKind.Relative);
-                    callIconButton.Text = AppResources.Call_Txt;
-                    callIconButton.Click += new EventHandler(Call_Click);
-                    callIconButton.IsEnabled = true;
-
-                    if (appBar == null)
-                    {
-                        appBar = new ApplicationBar();
-                        appBar.Mode = ApplicationBarMode.Default;
-                        appBar.IsVisible = true;
-                        appBar.IsMenuEnabled = true;
-                    }
-
-                    appBar.Buttons.Add(callIconButton);
-                    UserProfilePage.ApplicationBar = appBar;
-
-                    BackgroundWorker worker = new BackgroundWorker();
-                    worker.DoWork += delegate
-                        {
-                            if (!isInAddressBook)
-                            {
-                                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                                {
-                                    ShowAddToContacts();
-                                });
-                            }
-                        };
-
-                    worker.RunWorkerAsync();
-                }
-
-                ContextMenu menu = new ContextMenu();
-                menu.IsZoomEnabled = false;
-                MenuItem menuItemCopy = new MenuItem();
-                menuItemCopy.Header = AppResources.Copy_txt;
-                menuItemCopy.Click += menuItemCopy_Click;
-                menu.Items.Add(menuItemCopy);
-                ContextMenuService.SetContextMenu(txtMsisdn, menu);
-
-                if (msisdn == txtUserName.Text)
-                {
-                    ContextMenu menu2 = new ContextMenu();
-                    menu2.IsZoomEnabled = false;
-                    MenuItem menuItemCopy2 = new MenuItem();
-                    menuItemCopy2.Header = AppResources.Copy_txt;
-                    menuItemCopy2.Click += menuItemCopy_Click;
-                    menu2.Items.Add(menuItemCopy2);
-                    ContextMenuService.SetContextMenu(txtUserName, menu2);
-                }
+                LoadCallCopyOptions();
             }
 
             // this is done to update profile name , as soon as it gets updated
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PROFILE_NAME_CHANGED))
                 txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED];
+        }
+
+        void LoadCallCopyOptions()
+        {
+            if (msisdn != App.MSISDN)
+            {
+                ApplicationBarIconButton callIconButton = new ApplicationBarIconButton();
+                callIconButton.IconUri = new Uri("/View/images/call.png", UriKind.Relative);
+                callIconButton.Text = AppResources.Call_Txt;
+                callIconButton.Click += new EventHandler(Call_Click);
+                callIconButton.IsEnabled = true;
+
+                if (appBar == null)
+                {
+                    appBar = new ApplicationBar();
+                    appBar.Mode = ApplicationBarMode.Default;
+                    appBar.IsVisible = true;
+                    appBar.IsMenuEnabled = true;
+                }
+
+                appBar.Buttons.Add(callIconButton);
+                UserProfilePage.ApplicationBar = appBar;
+
+                BackgroundWorker worker = new BackgroundWorker();
+                worker.DoWork += delegate
+                    {
+                        if (!isInAddressBook)
+                        {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                ShowAddToContacts();
+                            });
+                        }
+                    };
+
+                worker.RunWorkerAsync();
+            }
+
+            ContextMenu menu = new ContextMenu();
+            menu.IsZoomEnabled = false;
+            MenuItem menuItemCopy = new MenuItem();
+            menuItemCopy.Header = AppResources.Copy_txt;
+            menuItemCopy.Click += menuItemCopy_Click;
+            menu.Items.Add(menuItemCopy);
+            ContextMenuService.SetContextMenu(txtMsisdn, menu);
+
+            if (msisdn == txtUserName.Text)
+            {
+                ContextMenu menu2 = new ContextMenu();
+                menu2.IsZoomEnabled = false;
+                MenuItem menuItemCopy2 = new MenuItem();
+                menuItemCopy2.Header = AppResources.Copy_txt;
+                menuItemCopy2.Click += menuItemCopy_Click;
+                menu2.Items.Add(menuItemCopy2);
+                ContextMenuService.SetContextMenu(txtUserName, menu2);
+            }
         }
 
         void menuItemCopy_Click(object sender, RoutedEventArgs e)
@@ -832,58 +837,7 @@ namespace windows_client.View
                 InitHikeUserProfile();
             }
 
-            if (msisdn != App.MSISDN)
-            {
-                ApplicationBarIconButton callIconButton = new ApplicationBarIconButton();
-                callIconButton.IconUri = new Uri("/View/images/call.png", UriKind.Relative);
-                callIconButton.Text = AppResources.Call_Txt;
-                callIconButton.Click += new EventHandler(Call_Click);
-                callIconButton.IsEnabled = true;
-
-                if (appBar == null)
-                {
-                    appBar = new ApplicationBar();
-                    appBar.Mode = ApplicationBarMode.Default;
-                    appBar.IsVisible = true;
-                    appBar.IsMenuEnabled = true;
-                }
-
-                appBar.Buttons.Add(callIconButton);
-                UserProfilePage.ApplicationBar = appBar;
-
-                BackgroundWorker worker = new BackgroundWorker();
-                worker.DoWork += delegate
-                {
-                    if (!isInAddressBook)
-                    {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            ShowAddToContacts();
-                        });
-                    }
-                };
-
-                worker.RunWorkerAsync();
-            }
-
-            ContextMenu menu = new ContextMenu();
-            menu.IsZoomEnabled = false;
-            MenuItem menuItemCopy = new MenuItem();
-            menuItemCopy.Header = AppResources.Copy_txt;
-            menuItemCopy.Click += menuItemCopy_Click;
-            menu.Items.Add(menuItemCopy);
-            ContextMenuService.SetContextMenu(txtMsisdn, menu);
-
-            if (msisdn == txtUserName.Text)
-            {
-                ContextMenu menu2 = new ContextMenu();
-                menu2.IsZoomEnabled = false;
-                MenuItem menuItemCopy2 = new MenuItem();
-                menuItemCopy2.Header = AppResources.Copy_txt;
-                menuItemCopy2.Click += menuItemCopy_Click;
-                menu2.Items.Add(menuItemCopy2);
-                ContextMenuService.SetContextMenu(txtUserName, menu2);
-            }
+            LoadCallCopyOptions();
         }
 
         #endregion
