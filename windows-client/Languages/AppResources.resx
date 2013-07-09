@@ -1813,7 +1813,7 @@ Get hike: http://get.hike.in</value>
     <value>Oops! Download Failed</value>
   </data>
   <data name="Send_As_Sms" xml:space="preserve">
-    <value>send as sms</value>
+    <value>send as hike sms</value>
   </data>
   <data name="SelectUser_Forward_To_Txt" xml:space="preserve">
     <value>Forward To</value>
@@ -1846,10 +1846,9 @@ Get hike: http://get.hike.in</value>
   <data name="Send_All_As_SMS_Group" xml:space="preserve">
     <value>Tap to send as SMS</value>
   </data>
-
   <data name="StatusNotToggle_Caption_Txt" xml:space="preserve">
     <value>Status Update Notifications</value>
-</data>
+  </data>
   <data name="Location_Heading" xml:space="preserve">
     <value>Location</value>
   </data>
