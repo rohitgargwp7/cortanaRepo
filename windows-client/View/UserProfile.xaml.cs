@@ -1006,13 +1006,24 @@ namespace windows_client.View
         {
             if (obj != null && HikeConstants.FAIL != (string)obj[HikeConstants.STAT])
             {
-                JObject j = (JObject)obj["profile"];
-                long time = (long)j["jointime"];
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                var isOnHike = (bool)obj["onhike"];
+                if (isOnHike)
                 {
-                    txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, TimeUtils.GetOnHikeSinceDisplay(time));
-                });
-                FriendsTableUtils.SetJoiningTime(msisdn, time);
+                    JObject j = (JObject)obj["profile"];
+                    long time = (long)j["jointime"];
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, TimeUtils.GetOnHikeSinceDisplay(time));
+                    });
+                    FriendsTableUtils.SetJoiningTime(msisdn, time);
+                }
+                else
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        txtOnHikeSmsTime.Text = string.Format(AppResources.OnSms_Txt);
+                    });
+                }
             }
             // ignore if call is failed
         }
