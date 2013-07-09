@@ -5742,7 +5742,7 @@ namespace windows_client.View
                                 SendForceSMS();
 
                                 if (lastUnDeliveredMessage != null)
-                                    ocMessages.Remove(lastUnDeliveredMessage);
+                                    ocMessages.Remove(tap2SendAsSMSMessage);
                             }
                             //    else
                             //        FileAttachmentMessage_Tap(sender, e);
