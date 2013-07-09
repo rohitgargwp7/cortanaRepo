@@ -5741,8 +5741,8 @@ namespace windows_client.View
 
                                 SendForceSMS();
 
-                                if (ocMessages != null && ocMessages.Count > 0 && ocMessages.Last().GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
-                                    ocMessages.RemoveAt(ocMessages.Count - 1);
+                                if (lastUnDeliveredMessage != null)
+                                    ocMessages.Remove(lastUnDeliveredMessage);
                             }
                             //    else
                             //        FileAttachmentMessage_Tap(sender, e);
