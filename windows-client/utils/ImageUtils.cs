@@ -46,7 +46,6 @@ namespace windows_client.utils
         private BitmapImage audioMicIcon;
         private BitmapImage downloadIcon;
         private BitmapImage httpFailed;
-        private BitmapImage typingNotificationBitmap;
         private BitmapImage emptyImage;
         private BitmapImage sent;
         private BitmapImage delivered;
@@ -530,16 +529,6 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage TypingNotificationBitmap
-        {
-            get
-            {
-                if (typingNotificationBitmap == null)
-                    typingNotificationBitmap = new BitmapImage(new Uri("/View/images/typing.png", UriKind.Relative));
-                return typingNotificationBitmap;
-            }
-        }
-
         public BitmapImage Sent
         {
             get
@@ -765,26 +754,6 @@ namespace windows_client.utils
                 if (twitterEnabledIcon == null)
                     twitterEnabledIcon = new BitmapImage(new Uri("/View/images/twitter_status.png", UriKind.Relative));
                 return twitterEnabledIcon;
-            }
-        }
-
-        public BitmapImage MoodDisabledIcon
-        {
-            get
-            {
-                if (moodDisabledIcon == null)
-                    moodDisabledIcon = new BitmapImage(new Uri("/View/images/moods_status_icon_disabled.png", UriKind.Relative));
-                return moodDisabledIcon;
-            }
-        }
-
-        public BitmapImage MoodEnabledIcon
-        {
-            get
-            {
-                if (moodEnabledIcon == null)
-                    moodEnabledIcon = new BitmapImage(new Uri("/View/images/moods_status_icon.png", UriKind.Relative));
-                return moodEnabledIcon;
             }
         }
 

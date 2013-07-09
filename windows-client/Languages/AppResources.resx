@@ -881,7 +881,7 @@ Get hike: http://get.hike.in</value>
     <comment>General Text</comment>
   </data>
   <data name="ShareLocation_LocationServiceNotEnabled_Txt" xml:space="preserve">
-    <value>Location Service is not enabled on the device.</value>
+    <value>Location Service is not enabled on the device. Would you like to enable it?</value>
     <comment>cs</comment>
   </data>
   <data name="ShareLocation_LocationServiceWorking_Txt" xml:space="preserve">
@@ -1846,7 +1846,11 @@ Get hike: http://get.hike.in</value>
   <data name="Send_All_As_SMS_Group" xml:space="preserve">
     <value>Tap to send as SMS</value>
   </data>
+
   <data name="StatusNotToggle_Caption_Txt" xml:space="preserve">
     <value>Status Update Notifications</value>
+</data>
+  <data name="Location_Heading" xml:space="preserve">
+    <value>Location</value>
   </data>
 </root>

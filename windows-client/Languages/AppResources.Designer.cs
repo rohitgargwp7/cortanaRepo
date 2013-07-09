@@ -2186,6 +2186,15 @@ namespace windows_client.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Location.
         /// </summary>
+        public static string Location_Heading {
+            get {
+                return ResourceManager.GetString("Location_Heading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location.
+        /// </summary>
         public static string Location_Txt {
             get {
                 return ResourceManager.GetString("Location_Txt", resourceCulture);
@@ -3660,7 +3669,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Location Service is not enabled on the device..
+        ///   Looks up a localized string similar to Location Service is not enabled on the device. Would you like to enable it?.
         /// </summary>
         public static string ShareLocation_LocationServiceNotEnabled_Txt {
             get {

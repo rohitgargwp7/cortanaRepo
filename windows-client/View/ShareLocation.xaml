@@ -16,7 +16,7 @@
     shell:SystemTray.IsVisible="True" Name="shareLocation">
 
     <shell:SystemTray.ProgressIndicator>
-        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="True" />
+        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="False" IsVisible="True" />
     </shell:SystemTray.ProgressIndicator>
 
     <!--LayoutRoot is the root grid where all page content is placed-->
@@ -42,7 +42,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:PhoneTextBox x:Name="SearchTextBox" Hint="search" ActionIcon="/View/images/Mic_icon_black_small.png" ActionIconTapped="PhoneTextBox_ActionIconTapped_1"/>
+            <toolkit:PhoneTextBox x:Name="SearchTextBox" Hint="search" GotFocus="SearchTextBox_GotFocus" LostFocus="SearchTextBox_LostFocus_1" ActionIcon="/View/images/Mic_icon_black_small.png" ActionIconTapped="PhoneTextBox_ActionIconTapped"/>
             <ListBox x:Name="PlacesList" Grid.Row="1" SelectionChanged="PlacesList_SelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate>

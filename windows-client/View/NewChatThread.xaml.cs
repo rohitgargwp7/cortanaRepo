@@ -911,6 +911,14 @@ namespace windows_client.View
             }
             userName.Text = mContactName;
 
+            // if hike bot msg disable appbar, textbox etc
+            if (Utils.IsHikeBotMsg(mContactNumber))
+            {
+                sendMsgTxtbox.IsEnabled = false;
+                WalkieTalkieMicIcon.IsHitTestVisible = false;
+                return;
+            }
+
             #region LAST SEEN TIMER
 
             byte lastSeenSettingsValue;
@@ -933,13 +941,6 @@ namespace windows_client.View
             }
 
             #endregion
-
-            // if hike bot msg disable appbar, textbox etc
-            if (Utils.IsHikeBotMsg(mContactNumber))
-            {
-                sendMsgTxtbox.IsEnabled = false;
-                return;
-            }
 
             if (groupOwner != null)
                 mUserIsBlocked = App.ViewModel.BlockedHashset.Contains(groupOwner);
@@ -2176,7 +2177,7 @@ namespace windows_client.View
       */
         private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop)
         {
-            if (ocMessages != null && ocMessages.Count > 0 && ocMessages.Last().GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
+            if (_isSendAllAsSMSVisible && ocMessages != null && ocMessages.Count > 0 && ocMessages.Last().GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
             {
                 ocMessages.RemoveAt(ocMessages.Count - 1);
                 _isSendAllAsSMSVisible = false;
@@ -3204,6 +3205,9 @@ namespace windows_client.View
 
         private void sendContact_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!spContactTransfer.IsHitTestVisible)
+                return;
+
             PhoneApplicationService.Current.State[HikeConstants.SHARE_CONTACT] = true;
 
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
@@ -3691,6 +3695,15 @@ namespace windows_client.View
                         else
                             msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
                     }
+
+                    if (_isSendAllAsSMSVisible && ocMessages != null && ocMessages.Count > 0 && ocMessages.Last().GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            ocMessages.RemoveAt(ocMessages.Count - 1);
+                            _isSendAllAsSMSVisible = false;
+                        });
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -3771,6 +3784,15 @@ namespace windows_client.View
                     }
                 }
                 #endregion
+
+                if (_isSendAllAsSMSVisible && ocMessages != null && ocMessages.Count > 0 && ocMessages.Last().GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        ocMessages.RemoveAt(ocMessages.Count - 1);
+                        _isSendAllAsSMSVisible = false;
+                    });
+                }
             }
 
             #endregion
@@ -5464,7 +5486,7 @@ namespace windows_client.View
 
         void StartForceSMSTimer(bool isNewTimer)
         {
-            if (!isOnHike || !IsSMSOptionValid)
+            if (!isOnHike || !IsSMSOptionValid || _isSendAllAsSMSVisible)
                 return;
 
             ConvMessage msg;
@@ -5534,8 +5556,14 @@ namespace windows_client.View
 
         void ShowForceSMSOnUI()
         {
+            if (_isSendAllAsSMSVisible)
+                return; 
+            
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    if (_isSendAllAsSMSVisible)
+                        return;
+
                     ConvMessage lastMsg;
 
                     try
@@ -5562,6 +5590,7 @@ namespace windows_client.View
                             msg.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
 
                         this.ocMessages.Add(msg);
+                        ScrollToBottom();
                         _isSendAllAsSMSVisible = true;
                     }
 
@@ -5575,7 +5604,7 @@ namespace windows_client.View
             {
                 JArray messageArr = new JArray();
                 JObject fmsg = new JObject();
-                fmsg.Add(HikeConstants.HIKE_MESSAGE, message.Message);
+                fmsg.Add(HikeConstants.HIKE_MESSAGE, message.GetMessageForServer());
                 fmsg.Add(HikeConstants.MESSAGE_ID, message.MessageId);
                 messageArr.Add(fmsg);
 
@@ -5609,7 +5638,7 @@ namespace windows_client.View
                 foreach (var msg in convMsgList)
                 {
                     fmsg = new JObject();
-                    fmsg.Add(HikeConstants.HIKE_MESSAGE, msg.Message);
+                    fmsg.Add(HikeConstants.HIKE_MESSAGE, msg.GetMessageForServer());
                     fmsg.Add(HikeConstants.MESSAGE_ID, msg.MessageId);
                     messageArr.Add(fmsg);
 
