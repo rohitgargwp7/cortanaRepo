@@ -1016,7 +1016,7 @@ Get hike: http://get.hike.in</value>
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailSubject" xml:space="preserve">
-    <value>Feedback on WP7</value>
+    <value>Feedback on WP8</value>
     <comment>email compose task subject (cs)</comment>
   </data>
   <data name="Help_FAQsTitle" xml:space="preserve">

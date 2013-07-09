@@ -1851,7 +1851,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feedback on WP7.
+        ///   Looks up a localized string similar to Feedback on WP8.
         /// </summary>
         public static string Help_EmailSubject {
             get {
