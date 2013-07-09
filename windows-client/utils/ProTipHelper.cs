@@ -278,7 +278,7 @@ namespace windows_client.utils
 
                         if (store.FileExists(fileName))
                         {
-                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
                             {
                                 using (BinaryReader reader = new BinaryReader(file))
                                 {
@@ -392,7 +392,7 @@ namespace windows_client.utils
                             if (_proTipsQueue == null)
                                 _proTipsQueue = new Queue<string>();
 
-                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
                             {
                                 using (BinaryReader reader = new BinaryReader(file))
                                 {
