@@ -46,6 +46,7 @@ namespace windows_client.View
         private string _nokiaPlacesAppCode = "Uhjk-Gny7_A-ISaJb3DMKQ";
         private List<Place> _places;
         Place _selectedPlace;
+        Place _myPlace;
         Boolean _isMapTapped = false;
         Boolean _isDefaultSelection = false;
         Boolean _isLocationEnabled = true;
@@ -123,13 +124,28 @@ namespace windows_client.View
                 PlacesGrid.Visibility = Visibility.Visible;
                 DrawMapMarkers();
                 DrawMapMarkers();
-                _selectedPlace = new Place() 
-                { 
-                    position = _selectedCoordinate, 
-                    title = _myCoordinate == null || _selectedCoordinate!= _myCoordinate? AppResources.Location_Txt : AppResources.My_Location_Text, 
-                    vicinity = _myPlaceVicinity 
-                };
-                _places.Insert(0, _selectedPlace);
+
+                if (_selectedPlace == null)
+                {
+                    if (_myPlace == null)
+                    {
+                        _myPlace = new Place()
+                        {
+                            position = _selectedCoordinate,
+                            title = _myCoordinate == null || _selectedCoordinate != _myCoordinate ? AppResources.Location_Txt : AppResources.My_Location_Text,
+                            vicinity = _myPlaceVicinity
+                        };
+                    }
+
+                    if (!_places.Contains(_myPlace))
+                        _places.Insert(0, _myPlace);
+                }
+                else
+                {
+                    if (!_places.Contains(_selectedPlace))
+                        _places.Insert(0, _selectedPlace); 
+                }
+
                 _selectedPlace = _places[0];
                 PlacesList.ItemsSource = _places;
                 HideProgressIndicator();
@@ -263,26 +279,21 @@ namespace windows_client.View
 
                 var newCoordinate = new GeoCoordinate(currentPosition.Coordinate.Latitude, currentPosition.Coordinate.Longitude);
 
-                if (_myCoordinate == null || _myCoordinate != newCoordinate)
+                _myCoordinate = newCoordinate;
+                _selectedCoordinate = _myCoordinate;
+
+                Dispatcher.BeginInvoke(() =>
                 {
-                    _myCoordinate = newCoordinate;
+                    DrawMapMarkers();
+                    MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
+                });
 
-                    _selectedCoordinate = _myCoordinate;
+                GetMyPlaceDetails();
 
-                    Dispatcher.BeginInvoke(() =>
-                    {
-                        DrawMapMarkers();
-                        MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
-                    });
-
-                    GetMyPlaceDetails();
-
-                    if (String.IsNullOrEmpty(_searchString))
-                        GetPlaces();
-                    else
-                        Search();
-                }
-
+                if (String.IsNullOrEmpty(_searchString))
+                    GetPlaces();
+                else
+                    Search();
             }
             catch (Exception ex)
             {
@@ -330,7 +341,15 @@ namespace windows_client.View
         public ShareLocation()
         {
             InitializeComponent();
-            BuildApplicationBar();
+            BuildApplicationBar(); 
+            
+            MyMap.Loaded += MyMap_Loaded;
+        }
+
+        void MyMap_Loaded(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Phone.Maps.MapsSettings.ApplicationContext.ApplicationId = HikeConstants.MICROSOFT_MAP_SERVICE_APPLICATION_ID;
+            Microsoft.Phone.Maps.MapsSettings.ApplicationContext.AuthenticationToken = HikeConstants.MICROSOFT_MAP_SERVICE_AUTHENTICATION_TOKEN;
         }
 
         private void shareBtn_Click(object sender, EventArgs e)
@@ -366,7 +385,7 @@ namespace windows_client.View
             geo = MyMap.ConvertViewportPointToGeoCoordinate(p);
             MyMap.SetView(geo, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
             _selectedCoordinate = geo;
-
+            _selectedPlace = null;
             shareIconButton.IsEnabled = true;
             _isPlacesSearch = false;
 
@@ -427,17 +446,15 @@ namespace windows_client.View
 
         String _searchString = "";
 
-        private void PhoneTextBox_ActionIconTapped_1(object sender, EventArgs e)
+        private void PhoneTextBox_ActionIconTapped(object sender, EventArgs e)
         {
-            var searchString = SearchTextBox.Text.Trim();
-            
-            if (_searchString.Equals(searchString))
-                return;
-
-            _searchString = searchString;
-
+            _searchString = SearchTextBox.Text.Trim();
             this.Focus();
-            Search();
+
+            if (String.IsNullOrEmpty(_searchString))
+                GetPlaces();
+            else
+                Search();
         }
 
         void Search()
@@ -452,6 +469,7 @@ namespace windows_client.View
             if (shareIconButton.IsEnabled == false)
                 return;
 
+            _selectedPlace = null;
             _isMapTapped = false;
             GetCurrentCoordinate();
         }
@@ -474,11 +492,15 @@ namespace windows_client.View
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-            _geolocator = new Geolocator();
+            if (_geolocator == null)
+                _geolocator = new Geolocator();
 
             if (_geolocator.LocationStatus == PositionStatus.Disabled)
             {
-                MessageBox.Show(AppResources.ShareLocation_LocationServiceNotEnabled_Txt);
+                var result = MessageBox.Show(AppResources.ShareLocation_LocationServiceNotEnabled_Txt, AppResources.Location_Heading, MessageBoxButton.OKCancel);
+
+                if(result == MessageBoxResult.OK)
+                    Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-location:"));
 
                 _isLocationEnabled = false;
             }
@@ -562,6 +584,16 @@ namespace windows_client.View
                 App.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, _myCoordinate);
 
             base.OnNavigatedFrom(e);
+        }
+
+        private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            shareIconButton.IsEnabled = false;
+        }
+
+        private void SearchTextBox_LostFocus_1(object sender, RoutedEventArgs e)
+        {
+            shareIconButton.IsEnabled = true;
         }
     }
 

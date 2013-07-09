@@ -91,6 +91,8 @@ namespace windows_client.utils
         private BitmapImage bollywoodActive;
         private BitmapImage trollActive;
         private BitmapImage expressionsActive;
+        private BitmapImage muteIcon;
+        private BitmapImage unmuteIcon;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
         private string[] defaultAvatarFileNames;
@@ -1219,6 +1221,35 @@ namespace windows_client.utils
                 return closeButtonWhiteImage;
             }
         }
+
+        public BitmapImage MuteIcon
+        {
+            get
+            {
+                if (muteIcon == null)
+                {
+                    if (Utils.isDarkTheme())
+                        muteIcon = new BitmapImage(new Uri("/View/images/mute_icon_main.png", UriKind.Relative));
+                    else
+                        muteIcon = new BitmapImage(new Uri("/View/images/mute_icon_main.png", UriKind.Relative));
+                }
+                return muteIcon;
+            }
+        }
+        public BitmapImage UnmuteIcon
+        {
+            get
+            {
+                if (unmuteIcon == null)
+                {
+                    if (Utils.isDarkTheme())
+                        unmuteIcon = new BitmapImage(new Uri("/View/images/unmutedicon.png", UriKind.Relative));
+                    else
+                        unmuteIcon = new BitmapImage(new Uri("/View/images/unmutedicon.png", UriKind.Relative));
+                }
+                return unmuteIcon;
+            }
+        }
         #endregion
 
         #region DEFAULT AVATARS
@@ -1344,7 +1375,7 @@ namespace windows_client.utils
 
                 int toWidth = 0;
                 int toHeight = 0;
-                
+
                 if (writeableBitmap.PixelWidth > maxSize && writeableBitmap.PixelHeight > maxSize)
                 {
                     if (writeableBitmap.PixelWidth > writeableBitmap.PixelHeight)

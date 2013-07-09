@@ -583,15 +583,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mute Status Updates.
-        /// </summary>
-        public static string Conversations_MuteStatusNotification_txt {
-            get {
-                return ResourceManager.GetString("Conversations_MuteStatusNotification_txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to new chat.
         /// </summary>
         public static string Conversations_NewChat_AppBar_Btn {
@@ -768,15 +759,6 @@ namespace windows_client.Languages {
         public static string Conversations_Timeline_Refresh_Status {
             get {
                 return ResourceManager.GetString("Conversations_Timeline_Refresh_Status", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unmute Status Updates.
-        /// </summary>
-        public static string Conversations_UnmuteStatusNotification_txt {
-            get {
-                return ResourceManager.GetString("Conversations_UnmuteStatusNotification_txt", resourceCulture);
             }
         }
         
@@ -1869,7 +1851,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feedback on WP7.
+        ///   Looks up a localized string similar to Feedback on WP8.
         /// </summary>
         public static string Help_EmailSubject {
             get {
@@ -2204,6 +2186,15 @@ namespace windows_client.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Location.
         /// </summary>
+        public static string Location_Heading {
+            get {
+                return ResourceManager.GetString("Location_Heading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location.
+        /// </summary>
         public static string Location_Txt {
             get {
                 return ResourceManager.GetString("Location_Txt", resourceCulture);
@@ -2508,7 +2499,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Muted successfully!.
+        ///   Looks up a localized string similar to Status update notifications are turned OFF.
         /// </summary>
         public static string Mute_Success_Txt {
             get {
@@ -3678,7 +3669,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Location Service is not enabled on the device..
+        ///   Looks up a localized string similar to Location Service is not enabled on the device. Would you like to enable it?.
         /// </summary>
         public static string ShareLocation_LocationServiceNotEnabled_Txt {
             get {
@@ -3836,6 +3827,15 @@ namespace windows_client.Languages {
         public static string StatusDetionFail_Txt {
             get {
                 return ResourceManager.GetString("StatusDetionFail_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status Update Notifications.
+        /// </summary>
+        public static string StatusNotToggle_Caption_Txt {
+            get {
+                return ResourceManager.GetString("StatusNotToggle_Caption_Txt", resourceCulture);
             }
         }
         
@@ -4092,7 +4092,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unmuted successfully!.
+        ///   Looks up a localized string similar to Status update notifications are turned ON.
         /// </summary>
         public static string Unmute_Success_Txt {
             get {

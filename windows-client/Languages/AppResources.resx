@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-	<!-- 
+  <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,723 +59,723 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-		<xsd:element name="root" msdata:IsDataSet="true">
-			<xsd:complexType>
-				<xsd:choice maxOccurs="unbounded">
-					<xsd:element name="metadata">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" />
-							</xsd:sequence>
-							<xsd:attribute name="name" use="required" type="xsd:string" />
-							<xsd:attribute name="type" type="xsd:string" />
-							<xsd:attribute name="mimetype" type="xsd:string" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="assembly">
-						<xsd:complexType>
-							<xsd:attribute name="alias" type="xsd:string" />
-							<xsd:attribute name="name" type="xsd:string" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="data">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="resheader">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" />
-						</xsd:complexType>
-					</xsd:element>
-				</xsd:choice>
-			</xsd:complexType>
-		</xsd:element>
-	</xsd:schema>
-	<resheader name="resmimetype">
-		<value>text/microsoft-resx</value>
-	</resheader>
-	<resheader name="version">
-		<value>2.0</value>
-	</resheader>
-	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<data name="AppBar_Next_Btn" xml:space="preserve">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppBar_Next_Btn" xml:space="preserve">
     <value>Next</value>
     <comment>AppBar Next Button</comment>
   </data>
-	<data name="Cannot_Change_Img_Error_Txt" xml:space="preserve">
+  <data name="Cannot_Change_Img_Error_Txt" xml:space="preserve">
     <value>Cannot change Profile Image. Try Later!!</value>
     <comment>General text used in different files</comment>
   </data>
-	<data name="Cannot_Select_Pic_Phone_Connected_to_PC" xml:space="preserve">
+  <data name="Cannot_Select_Pic_Phone_Connected_to_PC" xml:space="preserve">
     <value>You cannot select photo while phone is connected to computer.</value>
     <comment>General text used in different files</comment>
   </data>
-	<data name="Connectivity_Issue" xml:space="preserve">
+  <data name="Connectivity_Issue" xml:space="preserve">
     <value>Connectivity issue.</value>
     <comment>Network issue msg (used in all pages)</comment>
   </data>
-	<data name="Conversations_AddedYouToFav_Txt" xml:space="preserve">
+  <data name="Conversations_AddedYouToFav_Txt" xml:space="preserve">
     <value>added you as friend. Would you like to do the same?</value>
     <comment>Fav (xaml)</comment>
   </data>
-	<data name="Conversations_DelAllChats_Txt" xml:space="preserve">
+  <data name="Conversations_DelAllChats_Txt" xml:space="preserve">
     <value>Delete All Chats</value>
     <comment>cs</comment>
   </data>
-	<data name="Conversations_DelChat_Txt" xml:space="preserve">
+  <data name="Conversations_DelChat_Txt" xml:space="preserve">
     <value>Delete Chat</value>
     <comment>cs</comment>
   </data>
-	<data name="Conversations_Delete_Chats_Confirmation" xml:space="preserve">
+  <data name="Conversations_Delete_Chats_Confirmation" xml:space="preserve">
     <value>Are you sure about deleting all chats?</value>
     <comment>cs</comment>
   </data>
-	<data name="Conversations_Delete_Chat_Confirmation" xml:space="preserve">
+  <data name="Conversations_Delete_Chat_Confirmation" xml:space="preserve">
     <value>Are you sure about deleting this chat?</value>
     <comment>cs</comment>
   </data>
-	<data name="Conversations_EditProfile_Txt" xml:space="preserve">
+  <data name="Conversations_EditProfile_Txt" xml:space="preserve">
     <value>edit profile</value>
     <comment>Edit profile text (xaml)</comment>
   </data>
-	<data name="Conversations_FreeSms_Txt" xml:space="preserve">
+  <data name="Conversations_FreeSms_Txt" xml:space="preserve">
     <value>free SMS</value>
     <comment>Profile (xaml)</comment>
   </data>
-	<data name="Conversations_HikeContacts_Btn" xml:space="preserve">
+  <data name="Conversations_HikeContacts_Btn" xml:space="preserve">
     <value>Hike Contacts</value>
     <comment>Fav (xaml)</comment>
   </data>
-	<data name="Conversations_NewChat_AppBar_Btn" xml:space="preserve">
+  <data name="Conversations_NewChat_AppBar_Btn" xml:space="preserve">
     <value>new chat</value>
     <comment>AppBar Btn (cs)</comment>
   </data>
-	<data name="Conversations_SayHI_Txt" xml:space="preserve">
+  <data name="Conversations_SayHI_Txt" xml:space="preserve">
     <value>Say Hi to {0}!</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
-	<data name="Conversations_OnSMS_Txt" xml:space="preserve">
+  <data name="Conversations_OnSMS_Txt" xml:space="preserve">
     <value>Send {0} free sms.</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
-	<data name="Conversations_Pending_NotNow_Btn" xml:space="preserve">
+  <data name="Conversations_Pending_NotNow_Btn" xml:space="preserve">
     <value>Not Now</value>
     <comment>Fav (xaml)</comment>
   </data>
-	<data name="Conversations_Pending_Yes_Btn" xml:space="preserve">
+  <data name="Conversations_Pending_Yes_Btn" xml:space="preserve">
     <value>Confirm</value>
     <comment>Fav (xaml)</comment>
   </data>
-	<data name="Conversations_Pivot_Chats_Header_Txt" xml:space="preserve">
+  <data name="Conversations_Pivot_Chats_Header_Txt" xml:space="preserve">
     <value>chats</value>
     <comment>xaml</comment>
   </data>
-	<data name="Conversations_Pivot_Favourites_Header_Txt" xml:space="preserve">
+  <data name="Conversations_Pivot_Favourites_Header_Txt" xml:space="preserve">
     <value>friends</value>
     <comment>xaml</comment>
   </data>
-	<data name="Conversations_Pivot_Profile_Header_Txt" xml:space="preserve">
+  <data name="Conversations_Pivot_Profile_Header_Txt" xml:space="preserve">
     <value>profile</value>
     <comment>xaml</comment>
   </data>
-	<data name="Conversations_ProfileName_Default_Txt" xml:space="preserve">
+  <data name="Conversations_ProfileName_Default_Txt" xml:space="preserve">
     <value>Default Name</value>
     <comment>Default name shown if no name (xaml)</comment>
   </data>
-	<data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
+  <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
     <value>Are you sure about removing this contact from friends?</value>
     <comment>cs</comment>
   </data>
-	<data name="RemFromFav_Txt" xml:space="preserve">
+  <data name="RemFromFav_Txt" xml:space="preserve">
     <value>remove from circle of friends</value>
     <comment>fix char length(29)</comment>
   </data>
-	<data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
+  <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
     <value>You don't have anyone in your circle of friends.</value>
     <comment>Fav (xaml)</comment>
   </data>
-	<data name="Conversations_TellFriend_Txt" xml:space="preserve">
+  <data name="Conversations_TellFriend_Txt" xml:space="preserve">
     <value>invite friends</value>
     <comment>Profile (xaml)</comment>
   </data>
-	<data name="Conversations_YourFav_Txt" xml:space="preserve">
+  <data name="Conversations_YourFav_Txt" xml:space="preserve">
     <value>Your friends</value>
     <comment>Fav (xaml)</comment>
   </data>
-	<data name="Delete_Txt" xml:space="preserve">
+  <data name="Delete_Txt" xml:space="preserve">
     <value>delete</value>
     <comment>Chats ContextMenu (xaml)</comment>
   </data>
-	<data name="AppBar_Done_Btn" xml:space="preserve">
+  <data name="AppBar_Done_Btn" xml:space="preserve">
     <value>done</value>
     <comment>CS</comment>
   </data>
-	<data name="EnterName_Msg_TxtBlk" xml:space="preserve">
+  <data name="EnterName_Msg_TxtBlk" xml:space="preserve">
     <value>Getting you in</value>
     <comment>General msg shown (CS)</comment>
   </data>
-	<data name="EnterName_NameErrorTxt" xml:space="preserve">
+  <data name="EnterName_NameErrorTxt" xml:space="preserve">
     <value>Error!! Name not set. Try Again!!</value>
     <comment>error text (CS)</comment>
   </data>
-	<data name="EnterName_Name_Hint" xml:space="preserve">
+  <data name="EnterName_Name_Hint" xml:space="preserve">
     <value>Name</value>
     <comment>Name Text in hint (CS)</comment>
   </data>
-	<data name="EnterName_Name_TxtBlk" xml:space="preserve">
+  <data name="EnterName_Name_TxtBlk" xml:space="preserve">
     <value>Enter your name below :</value>
     <comment>xaml</comment>
   </data>
-	<data name="EnterName_ScanningContacts_Txt" xml:space="preserve">
+  <data name="EnterName_ScanningContacts_Txt" xml:space="preserve">
     <value>Scanning Contacts ...</value>
     <comment>CS</comment>
   </data>
-	<data name="EnterName_YourMsisdn_TxtBlk" xml:space="preserve">
+  <data name="EnterName_YourMsisdn_TxtBlk" xml:space="preserve">
     <value>You're all set on </value>
     <comment>This is the text shown at top (xaml)</comment>
   </data>
-	<data name="EnterNumber_EnterNum_TxtBlk" xml:space="preserve">
+  <data name="EnterNumber_EnterNum_TxtBlk" xml:space="preserve">
     <value>Enter your phone number below to get started :</value>
     <comment>Enter phone msg.</comment>
   </data>
-	<data name="EnterNumber_IncorrectPh_TxtBlk" xml:space="preserve">
+  <data name="EnterNumber_IncorrectPh_TxtBlk" xml:space="preserve">
     <value>Incorrect phone number.</value>
     <comment>CS file</comment>
   </data>
-	<data name="EnterNumber_MsgBoxText_Msg" xml:space="preserve">
+  <data name="EnterNumber_MsgBoxText_Msg" xml:space="preserve">
     <value>Enter valid phone number.</value>
     <comment>MsgBox msg</comment>
   </data>
-	<data name="EnterNumber_Ph_Hint_TxtBox" xml:space="preserve">
+  <data name="EnterNumber_Ph_Hint_TxtBox" xml:space="preserve">
     <value>Phone Number</value>
     <comment>CS file</comment>
   </data>
-	<data name="EnterNumber_SelectCountry_TxtBlk" xml:space="preserve">
+  <data name="EnterNumber_SelectCountry_TxtBlk" xml:space="preserve">
     <value>SELECT COUNTRY</value>
     <comment>In longlist selector select country</comment>
   </data>
-	<data name="EnterNumber_VerifyNumberMsg_TxtBlk" xml:space="preserve">
+  <data name="EnterNumber_VerifyNumberMsg_TxtBlk" xml:space="preserve">
     <value>Verifying your number.</value>
     <comment>CS file</comment>
   </data>
-	<data name="EnterPin_CallErrorMsg_MsgBox" xml:space="preserve">
+  <data name="EnterPin_CallErrorMsg_MsgBox" xml:space="preserve">
     <value>Couldn't call you. Try again later.</value>
     <comment>Call Error MsgBox (CS)</comment>
   </data>
-	<data name="EnterPin_CallingMsg_MsgBox" xml:space="preserve">
+  <data name="EnterPin_CallingMsg_MsgBox" xml:space="preserve">
     <value>Calling you for PIN.</value>
     <comment>Calling MsgBox (CS) </comment>
   </data>
-	<data name="EnterPin_CallMe_Btn" xml:space="preserve">
+  <data name="EnterPin_CallMe_Btn" xml:space="preserve">
     <value>Call me for PIN</value>
     <comment>Call me button (xaml)</comment>
   </data>
-	<data name="EnterPin_PinError_TxtBlk" xml:space="preserve">
+  <data name="EnterPin_PinError_TxtBlk" xml:space="preserve">
     <value>PIN not valid. Please try again.</value>
     <comment>Pin Error Msg (xaml) </comment>
   </data>
-	<data name="EnterPin_PinHint" xml:space="preserve">
+  <data name="EnterPin_PinHint" xml:space="preserve">
     <value>Pin</value>
     <comment>Pin Text in hint (CS)</comment>
   </data>
-	<data name="EnterPin_PinMsg_TxtBlk" xml:space="preserve">
+  <data name="EnterPin_PinMsg_TxtBlk" xml:space="preserve">
     <value>Thanks! Did you get an SMS pin? Enter it below :</value>
     <comment>Page title msg (xaml file)</comment>
   </data>
-	<data name="EnterPin_SMSError_TxtBlk" xml:space="preserve">
+  <data name="EnterPin_SMSError_TxtBlk" xml:space="preserve">
     <value>Didn't receive an SMS?</value>
     <comment>Did not receive sms (xaml)</comment>
   </data>
-	<data name="EnterPin_Taphere_TxtBlk" xml:space="preserve">
+  <data name="EnterPin_Taphere_TxtBlk" xml:space="preserve">
     <value>Tap Here</value>
     <comment>xaml</comment>
   </data>
-	<data name="EnterPin_WrongNumMsg_TxtBlk" xml:space="preserve">
+  <data name="EnterPin_WrongNumMsg_TxtBlk" xml:space="preserve">
     <value>Entered a wrong number?</value>
     <comment>xaml</comment>
   </data>
-	<data name="GrpChat_Txt" xml:space="preserve">
+  <data name="GrpChat_Txt" xml:space="preserve">
     <value>Group Chat</value>
     <comment>Text Group Chat </comment>
   </data>
-	<data name="Help" xml:space="preserve">
+  <data name="Help" xml:space="preserve">
     <value>help</value>
     <comment>Profile (xaml)</comment>
   </data>
-	<data name="Ignore_Txt" xml:space="preserve">
+  <data name="Ignore_Txt" xml:space="preserve">
     <value>Ignore</value>
     <comment>General text used in different files</comment>
   </data>
-	<data name="NetworkError_TryAgain" xml:space="preserve">
+  <data name="NetworkError_TryAgain" xml:space="preserve">
     <value>Network Error. Try Again!!</value>
     <comment>Network error msg</comment>
   </data>
-	<data name="No_Network_Txt" xml:space="preserve">
+  <data name="No_Network_Txt" xml:space="preserve">
     <value>No network connectivity.</value>
     <comment>General text used in different files</comment>
   </data>
-	<data name="Please_Try_Again_Txt" xml:space="preserve">
+  <data name="Please_Try_Again_Txt" xml:space="preserve">
     <value>Please try again.</value>
     <comment>General text used in different files</comment>
   </data>
-	<data name="Privacy" xml:space="preserve">
+  <data name="Privacy" xml:space="preserve">
     <value>privacy</value>
     <comment>Profile (xaml)</comment>
   </data>
-	<data name="Settings" xml:space="preserve">
+  <data name="Settings" xml:space="preserve">
     <value>settings</value>
     <comment>Profile (xaml)</comment>
   </data>
-	<data name="SMS_Left_Txt" xml:space="preserve">
+  <data name="SMS_Left_Txt" xml:space="preserve">
     <value>{0} SMS Left</value>
     <comment>This text is used to show how many SMS left</comment>
   </data>
-	<data name="Something_Wrong_Txt" xml:space="preserve">
+  <data name="Something_Wrong_Txt" xml:space="preserve">
     <value>Oops, something went wrong!</value>
     <comment>General text used in different files</comment>
   </data>
-	<data name="Update_Txt" xml:space="preserve">
+  <data name="Update_Txt" xml:space="preserve">
     <value>Update</value>
     <comment>General text used in different files</comment>
   </data>
-	<data name="Walkthrough_FreeMsgToIndia_Txt" xml:space="preserve">
+  <data name="Walkthrough_FreeMsgToIndia_Txt" xml:space="preserve">
     <value>*Free SMS can only be sent to India</value>
     <comment>Pivot 2 (xaml)</comment>
   </data>
-	<data name="Walkthrough_FreeSmsReward_Txt" xml:space="preserve">
+  <data name="Walkthrough_FreeSmsReward_Txt" xml:space="preserve">
     <value>For every friend who joins, you get 50 Free hike SMS every month</value>
     <comment>Pivot 3 (xaml)</comment>
   </data>
-	<data name="Walkthrough_InviteFriends_Txt" xml:space="preserve">
+  <data name="Walkthrough_InviteFriends_Txt" xml:space="preserve">
     <value>Invite Friends Earn Rewards.</value>
     <comment>Pivot 3 (xaml)</comment>
   </data>
-	<data name="Walkthrough_LetsHike_Txt" xml:space="preserve">
+  <data name="Walkthrough_LetsHike_Txt" xml:space="preserve">
     <value>let's hike</value>
     <comment>cs</comment>
   </data>
-	<data name="Walkthrough_TitleMsg_1" xml:space="preserve">
+  <data name="Walkthrough_TitleMsg_1" xml:space="preserve">
     <value>Free, always, worldwide</value>
     <comment>Pivot 1 (xaml)</comment>
   </data>
-	<data name="Walkthrough_TitleMsg_2" xml:space="preserve">
+  <data name="Walkthrough_TitleMsg_2" xml:space="preserve">
     <value>Also message friends not on hike for free with Free hike SMS</value>
     <comment>Pivot 2 (xaml)</comment>
   </data>
-	<data name="WelcomePage_13YrsMsg_TxtBlk" xml:space="preserve">
+  <data name="WelcomePage_13YrsMsg_TxtBlk" xml:space="preserve">
     <value>Tap next to confirm that you are 13+ years of age</value>
     <comment>13 yrs confirm</comment>
   </data>
-	<data name="WelcomePage_Accept_AppBar" xml:space="preserve">
+  <data name="WelcomePage_Accept_AppBar" xml:space="preserve">
     <value>accept</value>
     <comment>accept button in appbar</comment>
   </data>
-	<data name="WelcomePage_PushMsg_TxtBlk" xml:space="preserve">
+  <data name="WelcomePage_PushMsg_TxtBlk" xml:space="preserve">
     <value>Push Notifications are turned on by default</value>
     <comment>Push Notification msg</comment>
   </data>
-	<data name="WelcomePage_TnP_HlBtn" xml:space="preserve">
+  <data name="WelcomePage_TnP_HlBtn" xml:space="preserve">
     <value>Terms and Privacy</value>
     <comment>Terms and Privacy, hyperlink button</comment>
   </data>
-	<data name="Email_Txt" xml:space="preserve">
+  <data name="Email_Txt" xml:space="preserve">
     <value>Email</value>
     <comment>xaml</comment>
   </data>
-	<data name="EditProfile_FullName_TxtBlk" xml:space="preserve">
+  <data name="EditProfile_FullName_TxtBlk" xml:space="preserve">
     <value>Full Name</value>
     <comment>xaml</comment>
   </data>
-	<data name="EditProfile_GenderFemale_lstPckr" xml:space="preserve">
+  <data name="EditProfile_GenderFemale_lstPckr" xml:space="preserve">
     <value>female</value>
     <comment>gender dropdown (cs)</comment>
   </data>
-	<data name="EditProfile_GenderMale_LstPckr" xml:space="preserve">
+  <data name="EditProfile_GenderMale_LstPckr" xml:space="preserve">
     <value>male</value>
     <comment>gender dropdown (cs)</comment>
   </data>
-	<data name="EditProfile_GenderSelect_LstPckr" xml:space="preserve">
+  <data name="EditProfile_GenderSelect_LstPckr" xml:space="preserve">
     <value>select</value>
     <comment>gender dropdown (cs)</comment>
   </data>
-	<data name="EditProfile_Gender_TxtBlk" xml:space="preserve">
+  <data name="EditProfile_Gender_TxtBlk" xml:space="preserve">
     <value>Gender</value>
     <comment>xaml</comment>
   </data>
-	<data name="EditProfile_Phone_TxtBlk" xml:space="preserve">
+  <data name="EditProfile_Phone_TxtBlk" xml:space="preserve">
     <value>Phone</value>
     <comment>xaml</comment>
   </data>
-	<data name="Save_AppBar_Btn" xml:space="preserve">
+  <data name="Save_AppBar_Btn" xml:space="preserve">
     <value>save</value>
     <comment>cs</comment>
   </data>
-	<data name="FreeSMS_EarnFreeSMS_TxtBlk1" xml:space="preserve">
+  <data name="FreeSMS_EarnFreeSMS_TxtBlk1" xml:space="preserve">
     <value>Earn an extra</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
   </data>
-	<data name="FreeSMS_EarnFreeSMS_TxtBlk2" xml:space="preserve">
+  <data name="FreeSMS_EarnFreeSMS_TxtBlk2" xml:space="preserve">
     <value>{0} free SMS</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
   </data>
-	<data name="FreeSMS_EarnFreeSMS_TxtBlk3" xml:space="preserve">
+  <data name="FreeSMS_EarnFreeSMS_TxtBlk3" xml:space="preserve">
     <value>per month for every friend that joins through you.</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
   </data>
-	<data name="FreeSMS_fbConnStatus_TxtBlk" xml:space="preserve">
+  <data name="FreeSMS_fbConnStatus_TxtBlk" xml:space="preserve">
     <value>Facebook</value>
   </data>
-	<data name="FreeSMS_fbOrTwitter_Connected" xml:space="preserve">
+  <data name="FreeSMS_fbOrTwitter_Connected" xml:space="preserve">
     <value>Connected</value>
   </data>
-	<data name="FreeSMS_FbPostSuccess_MsgBx" xml:space="preserve">
+  <data name="FreeSMS_FbPostSuccess_MsgBx" xml:space="preserve">
     <value>Successfully posted to facebook.</value>
   </data>
-	<data name="FreeSMS_FbPost_MsgBxCaption" xml:space="preserve">
+  <data name="FreeSMS_FbPost_MsgBxCaption" xml:space="preserve">
     <value>Facebook Post</value>
   </data>
-	<data name="FreeSMS_H2HHeader_TxtBlk" xml:space="preserve">
+  <data name="FreeSMS_H2HHeader_TxtBlk" xml:space="preserve">
     <value>hike to hike</value>
     <comment>xaml</comment>
   </data>
-	<data name="FreeSMS_H2HText_TxtBlk" xml:space="preserve">
+  <data name="FreeSMS_H2HText_TxtBlk" xml:space="preserve">
     <value>Free Worldwide</value>
     <comment>xaml</comment>
   </data>
-	<data name="FreeSMS_H2SHeader_TxtBlk" xml:space="preserve">
+  <data name="FreeSMS_H2SHeader_TxtBlk" xml:space="preserve">
     <value>hike to SMS</value>
     <comment>xaml</comment>
   </data>
-	<data name="FreeSMS_H2SText_TxtBlk" xml:space="preserve">
+  <data name="FreeSMS_H2SText_TxtBlk" xml:space="preserve">
     <value>Your free SMS refill on the 1st of every month</value>
     <comment>xaml</comment>
   </data>
-	<data name="FreeSMS_IndiaOnly_TxtBlk" xml:space="preserve">
+  <data name="FreeSMS_IndiaOnly_TxtBlk" xml:space="preserve">
     <value>*Free SMS can only be sent to India at the moment</value>
     <comment>xaml</comment>
   </data>
-	<data name="FreeSMS_InviteNow_Btn" xml:space="preserve">
+  <data name="FreeSMS_InviteNow_Btn" xml:space="preserve">
     <value>Invite Now</value>
     <comment>xaml</comment>
   </data>
-	<data name="FreeSMS_InviteSMS_TxtBlk" xml:space="preserve">
+  <data name="FreeSMS_InviteSMS_TxtBlk" xml:space="preserve">
     <value>Invite via SMS</value>
     <comment>xaml</comment>
   </data>
-	<data name="FreeSMS_twConnStatus_TxtBlk" xml:space="preserve">
+  <data name="FreeSMS_twConnStatus_TxtBlk" xml:space="preserve">
     <value>Twitter</value>
     <comment>Connect to twitter button (unconnected state) </comment>
   </data>
-	<data name="FreeSMS_TwPostSuccess_MsgBx" xml:space="preserve">
+  <data name="FreeSMS_TwPostSuccess_MsgBx" xml:space="preserve">
     <value>Successfully posted to twitter.</value>
     <comment>Caption of Msg Bx after successfully posting to fb</comment>
   </data>
-	<data name="FreeSMS_TwPost_MsgBxCaption" xml:space="preserve">
+  <data name="FreeSMS_TwPost_MsgBxCaption" xml:space="preserve">
     <value>Twitter Post</value>
     <comment>Caption of Msg Bx while posting to fb</comment>
   </data>
-	<data name="FreeSMS_UnlinkFacebook_MsgBxCaptn" xml:space="preserve">
+  <data name="FreeSMS_UnlinkFacebook_MsgBxCaptn" xml:space="preserve">
     <value>Unlink Facebook</value>
     <comment>Caption of Msg Bx while unlinking fb account</comment>
   </data>
-	<data name="FreeSMS_UnlinkFbOrTwConfirm_MsgBx" xml:space="preserve">
+  <data name="FreeSMS_UnlinkFbOrTwConfirm_MsgBx" xml:space="preserve">
     <value>Are you sure you want to unlink your account?</value>
     <comment>Text of Msg Bx while confirming to unlink</comment>
   </data>
-	<data name="FreeSMS_UnlinkFbOrTwSuccess_MsgBx" xml:space="preserve">
+  <data name="FreeSMS_UnlinkFbOrTwSuccess_MsgBx" xml:space="preserve">
     <value>Successfully Unlinked Account.</value>
     <comment>Text of Msg Bx after successfull unlinking</comment>
   </data>
-	<data name="FreeSMS_UnlinkTwitter_MsgBxCaptn" xml:space="preserve">
+  <data name="FreeSMS_UnlinkTwitter_MsgBxCaptn" xml:space="preserve">
     <value>Unlink Twitter</value>
     <comment>Caption of Msg Bx while unlinking twitter account</comment>
   </data>
-	<data name="FreeSMS_UnlinkTwSuccess_MsgBxCaptn" xml:space="preserve">
+  <data name="FreeSMS_UnlinkTwSuccess_MsgBxCaptn" xml:space="preserve">
     <value>Twitter Logout</value>
     <comment>Caption of Msg Bx after successfully unlinkig from fb</comment>
   </data>
-	<data name="FreeSMS_unlimitedTxtBlck_TxtBlk" xml:space="preserve">
+  <data name="FreeSMS_unlimitedTxtBlck_TxtBlk" xml:space="preserve">
     <value>Unlimited</value>
     <comment>Unlimited text in hike to hike bar (xaml)</comment>
   </data>
-	<data name="And_txt" xml:space="preserve">
+  <data name="And_txt" xml:space="preserve">
     <value> and </value>
     <comment>General Text</comment>
   </data>
-	<data name="Attach_Txt" xml:space="preserve">
+  <data name="Attach_Txt" xml:space="preserve">
     <value>attach</value>
     <comment>General Text</comment>
   </data>
-	<data name="Audio_Txt" xml:space="preserve">
+  <data name="Audio_Txt" xml:space="preserve">
     <value>Audio</value>
     <comment>NewSelectUserPage (xaml)</comment>
   </data>
-	<data name="Block_Txt" xml:space="preserve">
+  <data name="Block_Txt" xml:space="preserve">
     <value>Block</value>
     <comment>this will be used as text</comment>
   </data>
-	<data name="Call_Txt" xml:space="preserve">
+  <data name="Call_Txt" xml:space="preserve">
     <value>call</value>
     <comment>General Text</comment>
   </data>
-	<data name="Cancel_Txt" xml:space="preserve">
+  <data name="Cancel_Txt" xml:space="preserve">
     <value>cancel</value>
     <comment>General Text</comment>
   </data>
-	<data name="CONTACT_NOT_SAVED_ON_SERVER" xml:space="preserve">
+  <data name="CONTACT_NOT_SAVED_ON_SERVER" xml:space="preserve">
     <value>Contact not saved on server, kindly refresh.</value>
     <comment>This is called when a new contact is added and server error occured</comment>
   </data>
-	<data name="CONTACT_SAVED_SUCCESSFULLY" xml:space="preserve">
+  <data name="CONTACT_SAVED_SUCCESSFULLY" xml:space="preserve">
     <value>Contact saved successfully</value>
     <comment>General Text</comment>
   </data>
-	<data name="Copy_txt" xml:space="preserve">
+  <data name="Copy_txt" xml:space="preserve">
     <value>copy</value>
     <comment>General Text</comment>
   </data>
-	<data name="CREDITS_EARNED" xml:space="preserve">
+  <data name="CREDITS_EARNED" xml:space="preserve">
     <value>You've just earned {0} free SMS</value>
     <comment>General Text</comment>
   </data>
-	<data name="DND_USER" xml:space="preserve">
+  <data name="DND_USER" xml:space="preserve">
     <value>{0} is on DND. Waiting for {0} to reply.</value>
     <comment>General Text</comment>
   </data>
-	<data name="FILES_MESSAGE_PREFIX" xml:space="preserve">
+  <data name="FILES_MESSAGE_PREFIX" xml:space="preserve">
     <value>Sent you a {0}. To view go to </value>
     <comment>General Text</comment>
   </data>
-	<data name="Forward_Txt" xml:space="preserve">
+  <data name="Forward_Txt" xml:space="preserve">
     <value>forward</value>
     <comment>General Text</comment>
   </data>
-	<data name="GROUP_CHAT_END" xml:space="preserve">
+  <data name="GROUP_CHAT_END" xml:space="preserve">
     <value>This group chat has ended.</value>
     <comment>Constants General Text</comment>
   </data>
-	<data name="Image_Txt" xml:space="preserve">
+  <data name="Image_Txt" xml:space="preserve">
     <value>Image</value>
     <comment>NewSelectUserPage (xaml)</comment>
   </data>
-	<data name="Location_Txt" xml:space="preserve">
+  <data name="Location_Txt" xml:space="preserve">
     <value>Location</value>
     <comment>NewSelectUserPage (xaml)</comment>
   </data>
-	<data name="MORE_THAN_1_CONTACT_FOUND" xml:space="preserve">
+  <data name="MORE_THAN_1_CONTACT_FOUND" xml:space="preserve">
     <value>More than 1 contacts found for number : {0}</value>
     <comment>This is called when an unknown number is added and same num already exists in phone</comment>
   </data>
-	<data name="NoInfoForTask_Txt" xml:space="preserve">
+  <data name="NoInfoForTask_Txt" xml:space="preserve">
     <value>No information regarding the task result is available.</value>
     <comment>cs</comment>
   </data>
-	<data name="NO_CONTACT_SAVED" xml:space="preserve">
+  <data name="NO_CONTACT_SAVED" xml:space="preserve">
     <value>No Contact is saved.</value>
     <comment>General Text</comment>
   </data>
-	<data name="Photo_Txt" xml:space="preserve">
+  <data name="Photo_Txt" xml:space="preserve">
     <value>photo</value>
     <comment>General Text</comment>
   </data>
-	<data name="Add_To_Fav_Txt" xml:space="preserve">
+  <data name="Add_To_Fav_Txt" xml:space="preserve">
     <value>add to circle of friends</value>
     <comment>fix length(24)</comment>
   </data>
-	<data name="SelectUser_AddUser_Txt" xml:space="preserve">
+  <data name="SelectUser_AddUser_Txt" xml:space="preserve">
     <value>add user</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_AlreadyAdded_Txt" xml:space="preserve">
+  <data name="SelectUser_AlreadyAdded_Txt" xml:space="preserve">
     <value>User already added !!</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_BlockedGroupMsg_Txt" xml:space="preserve">
+  <data name="SelectUser_BlockedGroupMsg_Txt" xml:space="preserve">
     <value>You have blocked this group. Unblock to continue hiking.</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_BlockMsg_Txt" xml:space="preserve">
+  <data name="SelectUser_BlockMsg_Txt" xml:space="preserve">
     <value>You have blocked this user. Unblock to continue hiking.</value>
     <comment>xaml</comment>
   </data>
-	<data name="SelectUser_CantAddUser_Txt" xml:space="preserve">
+  <data name="SelectUser_CantAddUser_Txt" xml:space="preserve">
     <value>Cannot add user !!</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_ContactRemoved_Txt" xml:space="preserve">
+  <data name="SelectUser_ContactRemoved_Txt" xml:space="preserve">
     <value>{0}[{1}] will be removed from group.</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_EnterValidNo_Txt" xml:space="preserve">
+  <data name="SelectUser_EnterValidNo_Txt" xml:space="preserve">
     <value>Enter Valid Number</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_FreeMsg_Txt" xml:space="preserve">
+  <data name="SelectUser_FreeMsg_Txt" xml:space="preserve">
     <value>Hike Message</value>
     <comment>cs</comment>
   </data>
-	<data name="GroupInfo_Txt" xml:space="preserve">
+  <data name="GroupInfo_Txt" xml:space="preserve">
     <value>group info</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_GrpOwner_Txt" xml:space="preserve">
+  <data name="SelectUser_GrpOwner_Txt" xml:space="preserve">
     <value>group owner</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_Header_Txt" xml:space="preserve">
+  <data name="SelectUser_Header_Txt" xml:space="preserve">
     <value>CHAT</value>
     <comment>xaml</comment>
   </data>
-	<data name="SelectUser_InviteUsr_Txt" xml:space="preserve">
+  <data name="SelectUser_InviteUsr_Txt" xml:space="preserve">
     <value>invite user</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_LeaveGrp_Txt" xml:space="preserve">
+  <data name="SelectUser_LeaveGrp_Txt" xml:space="preserve">
     <value>leave group</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_MaxUsersSelected_Txt" xml:space="preserve">
+  <data name="SelectUser_MaxUsersSelected_Txt" xml:space="preserve">
     <value>{0} users already selected</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_MuteGrp_Txt" xml:space="preserve">
+  <data name="SelectUser_MuteGrp_Txt" xml:space="preserve">
     <value>mute group</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_NewGroup_Text" xml:space="preserve">
+  <data name="SelectUser_NewGroup_Text" xml:space="preserve">
     <value>New Group</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_RefreshContacts_Txt" xml:space="preserve">
+  <data name="SelectUser_RefreshContacts_Txt" xml:space="preserve">
     <value>Refresh Contacts</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_RefreshWaitMsg_Txt" xml:space="preserve">
+  <data name="SelectUser_RefreshWaitMsg_Txt" xml:space="preserve">
     <value>This may take a minute or two...</value>
     <comment>This text is shown when user clicks refresh (cs)</comment>
   </data>
-	<data name="SelectUser_RemoveContact_Txt" xml:space="preserve">
+  <data name="SelectUser_RemoveContact_Txt" xml:space="preserve">
     <value>Remove Contact?</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
+  <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
     <value>Text Message</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_TapMsg_Txt" xml:space="preserve">
+  <data name="SelectUser_TapMsg_Txt" xml:space="preserve">
     <value>Tap here to message this person</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_Title_Txt" xml:space="preserve">
+  <data name="SelectUser_Title_Txt" xml:space="preserve">
     <value>with</value>
     <comment>xaml</comment>
   </data>
-	<data name="SelectUser_TxtBoxHint_Txt" xml:space="preserve">
+  <data name="SelectUser_TxtBoxHint_Txt" xml:space="preserve">
     <value> Search or Enter Phone #...</value>
     <comment>textbox hint (xaml)</comment>
   </data>
-	<data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
+  <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
     <value>unmute</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_UserAlreadyAdded_Txt" xml:space="preserve">
+  <data name="SelectUser_UserAlreadyAdded_Txt" xml:space="preserve">
     <value>{0} is already added to group.</value>
     <comment>cs</comment>
   </data>
-	<data name="SelectUser_ZeroCredits_Txt" xml:space="preserve">
+  <data name="SelectUser_ZeroCredits_Txt" xml:space="preserve">
     <value>0 Free SMS left...</value>
     <comment>cs</comment>
   </data>
-	<data name="Send_Txt" xml:space="preserve">
+  <data name="Send_Txt" xml:space="preserve">
     <value>send</value>
     <comment>General Text</comment>
   </data>
-	<data name="Smiley_Txt" xml:space="preserve">
+  <data name="Smiley_Txt" xml:space="preserve">
     <value>smiley</value>
     <comment>General Text</comment>
   </data>
-	<data name="SMS_INDIA" xml:space="preserve">
+  <data name="SMS_INDIA" xml:space="preserve">
     <value>SMS can only be sent to India.</value>
     <comment>Constants General Text</comment>
   </data>
-	<data name="UnBlock_Txt" xml:space="preserve">
+  <data name="UnBlock_Txt" xml:space="preserve">
     <value>Unblock</value>
     <comment>xaml</comment>
   </data>
-	<data name="USER_INVITED" xml:space="preserve">
+  <data name="USER_INVITED" xml:space="preserve">
     <value> has been invited</value>
     <comment>Constants General Text</comment>
   </data>
-	<data name="USER_JOINED_GROUP_CHAT" xml:space="preserve">
+  <data name="USER_JOINED_GROUP_CHAT" xml:space="preserve">
     <value> joined the group chat!</value>
     <comment>Constants General Text</comment>
   </data>
-	<data name="USER_JOINED_HIKE" xml:space="preserve">
+  <data name="USER_JOINED_HIKE" xml:space="preserve">
     <value>{0} just joined hike, say 'Hi' :)</value>
     <comment>General Text</comment>
   </data>
-	<data name="USER_LEFT" xml:space="preserve">
+  <data name="USER_LEFT" xml:space="preserve">
     <value> left the group chat</value>
     <comment>Constants General Text</comment>
   </data>
-	<data name="USER_OPTED_IN_MSG" xml:space="preserve">
+  <data name="USER_OPTED_IN_MSG" xml:space="preserve">
     <value> just opted in to hike!</value>
     <comment>General Text</comment>
   </data>
-	<data name="Video_Txt" xml:space="preserve">
+  <data name="Video_Txt" xml:space="preserve">
     <value>Video</value>
     <comment>General Text</comment>
   </data>
-	<data name="Voice_msg_Txt" xml:space="preserve">
+  <data name="Voice_msg_Txt" xml:space="preserve">
     <value>voice message</value>
     <comment>General Text</comment>
   </data>
-	<data name="WAITING_TO_JOIN" xml:space="preserve">
+  <data name="WAITING_TO_JOIN" xml:space="preserve">
     <value>Waiting for {0} to join in</value>
     <comment>General Text</comment>
   </data>
-	<data name="Added_X_To_GC" xml:space="preserve">
+  <data name="Added_X_To_GC" xml:space="preserve">
     <value>Added {0} to the group</value>
     <comment>ConvMessage (cs)</comment>
   </data>
-	<data name="CannotChangeGrpImg_Txt" xml:space="preserve">
+  <data name="CannotChangeGrpImg_Txt" xml:space="preserve">
     <value>Cannot change Group Image. Try Later!!</value>
     <comment>General text</comment>
   </data>
-	<data name="CannotChangeGrpName_Txt" xml:space="preserve">
+  <data name="CannotChangeGrpName_Txt" xml:space="preserve">
     <value>Cannot change GroupName. Try Later!!</value>
     <comment>cs</comment>
   </data>
-	<data name="Contact_Scanning_Failed_Txt" xml:space="preserve">
+  <data name="Contact_Scanning_Failed_Txt" xml:space="preserve">
     <value>Contact Scanning failed. Try Later!!</value>
     <comment>Contact Utils</comment>
   </data>
-	<data name="CRITICAL_UPDATE_HEADING" xml:space="preserve">
+  <data name="CRITICAL_UPDATE_HEADING" xml:space="preserve">
     <value>Important update</value>
   </data>
-	<data name="CRITICAL_UPDATE_TEXT" xml:space="preserve">
+  <data name="CRITICAL_UPDATE_TEXT" xml:space="preserve">
     <value>To continue using hike, an update is required.</value>
   </data>
-	<data name="Email_Invite_Txt" xml:space="preserve">
+  <data name="Email_Invite_Txt" xml:space="preserve">
     <value>Hi!
 
 I started using hike, a simple beautiful messaging app that's absolutely free.
@@ -787,1069 +787,1070 @@ Get it now and say good bye to plain boring SMS.
 Get hike: http://get.hike.in</value>
     <comment>Email Invite Text</comment>
   </data>
-	<data name="EnterName_Failed_Txt" xml:space="preserve">
+  <data name="EnterName_Failed_Txt" xml:space="preserve">
     <value>Failed. Close App and try again !!</value>
     <comment>EnterName in ContactUtils (cs)</comment>
   </data>
-	<data name="Error_Txt" xml:space="preserve">
+  <data name="Error_Txt" xml:space="preserve">
     <value>Error !!</value>
     <comment>General text</comment>
   </data>
-	<data name="Friends_Txt" xml:space="preserve">
+  <data name="Friends_Txt" xml:space="preserve">
     <value>friends</value>
     <comment>General text</comment>
   </data>
-	<data name="GroupChatWith_Txt" xml:space="preserve">
+  <data name="GroupChatWith_Txt" xml:space="preserve">
     <value>Group Chat with {0}</value>
     <comment>ConvMessage (cs)</comment>
   </data>
-	<data name="GroupInfo_ChangeGrpName_Txt" xml:space="preserve">
+  <data name="GroupInfo_ChangeGrpName_Txt" xml:space="preserve">
     <value>Change Group Name</value>
     <comment>cs</comment>
   </data>
-	<data name="GroupInfo_GrpNameCannotBeEmpty_Txt" xml:space="preserve">
+  <data name="GroupInfo_GrpNameCannotBeEmpty_Txt" xml:space="preserve">
     <value>Group name cannot be empty"</value>
     <comment>cs</comment>
   </data>
-	<data name="GroupInfo_GrpNameChangedTo_Txt" xml:space="preserve">
+  <data name="GroupInfo_GrpNameChangedTo_Txt" xml:space="preserve">
     <value>Group name will be changed to '{0}'</value>
     <comment>cs</comment>
   </data>
-	<data name="GroupInfo_InviteSent_MsgBoxHeader_Txt" xml:space="preserve">
+  <data name="GroupInfo_InviteSent_MsgBoxHeader_Txt" xml:space="preserve">
     <value>Invite Sent</value>
     <comment>cs</comment>
   </data>
-	<data name="GroupInfo_InviteSent_MsgBoxText_Txt" xml:space="preserve">
+  <data name="GroupInfo_InviteSent_MsgBoxText_Txt" xml:space="preserve">
     <value>Your friends have been invited</value>
     <comment>cs</comment>
   </data>
-	<data name="GroupInfo_InviteSMSUsers_Btn_Txt" xml:space="preserve">
+  <data name="GroupInfo_InviteSMSUsers_Btn_Txt" xml:space="preserve">
     <value>Invite SMS participants to hike</value>
     <comment>xaml</comment>
   </data>
-	<data name="GroupNameChangedByGrpMember_Txt" xml:space="preserve">
+  <data name="GroupNameChangedByGrpMember_Txt" xml:space="preserve">
     <value>{0} changed the group name to {1}</value>
     <comment>MessagesTableUtils</comment>
   </data>
-	<data name="GROUP_NAME_TXT" xml:space="preserve">
+  <data name="GROUP_NAME_TXT" xml:space="preserve">
     <value>GROUP NAME</value>
     <comment>General Text</comment>
   </data>
-	<data name="GrpName_Txt" xml:space="preserve">
+  <data name="GrpName_Txt" xml:space="preserve">
     <value>Group Name</value>
     <comment>General Text</comment>
   </data>
-	<data name="Hike_Friends_Text" xml:space="preserve">
+  <data name="Hike_Friends_Text" xml:space="preserve">
     <value>hike friends</value>
     <comment>General text</comment>
   </data>
-	<data name="Hike_txt" xml:space="preserve">
+  <data name="Hike_txt" xml:space="preserve">
     <value>hike. </value>
     <comment>General text</comment>
   </data>
-	<data name="InviteUsers_FriendsInvited_Txt" xml:space="preserve">
+  <data name="InviteUsers_FriendsInvited_Txt" xml:space="preserve">
     <value>Friends Invited</value>
     <comment>cs</comment>
   </data>
-	<data name="InviteUsers_TotalInvitesSent_Txt" xml:space="preserve">
+  <data name="InviteUsers_TotalInvitesSent_Txt" xml:space="preserve">
     <value>Total invites sent : {0}</value>
     <comment>cs</comment>
   </data>
-	<data name="Invite_Txt" xml:space="preserve">
+  <data name="Invite_Txt" xml:space="preserve">
     <value>INVITE</value>
     <comment>General Text</comment>
   </data>
-	<data name="Messaging_Txt" xml:space="preserve">
+  <data name="Messaging_Txt" xml:space="preserve">
     <value>Messaging</value>
     <comment>General Text</comment>
   </data>
-	<data name="NamingConvention_Txt" xml:space="preserve">
+  <data name="NamingConvention_Txt" xml:space="preserve">
     <value>{0} and {1} others</value>
     <comment>Used at many places like GroupManager</comment>
   </data>
-	<data name="NORMAL_UPDATE_HEADING" xml:space="preserve">
+  <data name="NORMAL_UPDATE_HEADING" xml:space="preserve">
     <value>Update available</value>
   </data>
-	<data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
+  <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
     <value>Update to the new version of hike to discover amazing new ways to message</value>
   </data>
-	<data name="Owner_Txt" xml:space="preserve">
+  <data name="Owner_Txt" xml:space="preserve">
     <value>owner</value>
   </data>
-	<data name="Participants_Txt" xml:space="preserve">
+  <data name="Participants_Txt" xml:space="preserve">
     <value>Participants</value>
     <comment>General Text</comment>
   </data>
-	<data name="ShareLocation_LocationServiceNotEnabled_Txt" xml:space="preserve">
-    <value>Location Service is not enabled on the device.</value>
+  <data name="ShareLocation_LocationServiceNotEnabled_Txt" xml:space="preserve">
+    <value>Location Service is not enabled on the device. Would you like to enable it?</value>
     <comment>cs</comment>
   </data>
-	<data name="ShareLocation_LocationServiceWorking_Txt" xml:space="preserve">
+  <data name="ShareLocation_LocationServiceWorking_Txt" xml:space="preserve">
     <value>The Location Service is working, but it cannot get location data.</value>
     <comment>cs</comment>
   </data>
-	<data name="ShareLocation_PlsWaitForPosition_Txt" xml:space="preserve">
+  <data name="ShareLocation_PlsWaitForPosition_Txt" xml:space="preserve">
     <value>Please wait while your position is determined....</value>
     <comment>cs</comment>
   </data>
-	<data name="ShareLocation_Txt" xml:space="preserve">
+  <data name="ShareLocation_Txt" xml:space="preserve">
     <value>share location</value>
     <comment>cs</comment>
   </data>
-	<data name="SMS_Works_Only_In_India_Txt" xml:space="preserve">
+  <data name="SMS_Works_Only_In_India_Txt" xml:space="preserve">
     <value>SMS works only to India at the moment.</value>
     <comment>ConvMessage (cs)</comment>
   </data>
-	<data name="SocialPages_UnableToRetrieveToken_Txt" xml:space="preserve">
+  <data name="SocialPages_UnableToRetrieveToken_Txt" xml:space="preserve">
     <value>Unable to retrieve request token.</value>
     <comment>cs</comment>
   </data>
-	<data name="Social_Txt" xml:space="preserve">
+  <data name="Social_Txt" xml:space="preserve">
     <value>Social</value>
     <comment>General Text</comment>
   </data>
-	<data name="TimeUtils_An_hour_Ago_Txt" xml:space="preserve">
+  <data name="TimeUtils_An_hour_Ago_Txt" xml:space="preserve">
     <value>an hour ago</value>
     <comment>TimeUtils</comment>
   </data>
-	<data name="TimeUtils_A_Min_Ago_Txt" xml:space="preserve">
+  <data name="TimeUtils_A_Min_Ago_Txt" xml:space="preserve">
     <value>a minute ago</value>
     <comment>TimeUtils</comment>
   </data>
-	<data name="TimeUtils_One_Month_Ago_Txt" xml:space="preserve">
+  <data name="TimeUtils_One_Month_Ago_Txt" xml:space="preserve">
     <value>1 month ago</value>
     <comment>TimeUtils</comment>
   </data>
-	<data name="TimeUtils_One_Sec_Ago_Txt" xml:space="preserve">
+  <data name="TimeUtils_One_Sec_Ago_Txt" xml:space="preserve">
     <value>1 second ago</value>
     <comment>TimeUtils</comment>
   </data>
-	<data name="TimeUtils_One_Year_Ago_Txt" xml:space="preserve">
+  <data name="TimeUtils_One_Year_Ago_Txt" xml:space="preserve">
     <value>1 year ago</value>
     <comment>TimeUtils</comment>
   </data>
-	<data name="TimeUtils_X_Days_Ago_Txt" xml:space="preserve">
+  <data name="TimeUtils_X_Days_Ago_Txt" xml:space="preserve">
     <value>{0} days ago</value>
     <comment>TimeUtils</comment>
   </data>
-	<data name="TimeUtils_X_hours_Ago_Txt" xml:space="preserve">
+  <data name="TimeUtils_X_hours_Ago_Txt" xml:space="preserve">
     <value>{0} hours ago</value>
     <comment>TimeUtils</comment>
   </data>
-	<data name="TimeUtils_X_Mins_Ago_Txt" xml:space="preserve">
+  <data name="TimeUtils_X_Mins_Ago_Txt" xml:space="preserve">
     <value>{0} minutes ago</value>
     <comment>TimeUtils</comment>
   </data>
-	<data name="TimeUtils_X_Month_Ago_Txt" xml:space="preserve">
+  <data name="TimeUtils_X_Month_Ago_Txt" xml:space="preserve">
     <value>{0} months ago</value>
     <comment>TimeUtils</comment>
   </data>
-	<data name="TimeUtils_X_Secs_Ago_Txt" xml:space="preserve">
+  <data name="TimeUtils_X_Secs_Ago_Txt" xml:space="preserve">
     <value>{0} seconds ago</value>
     <comment>TimeUtils , {0} will be replaced by actual value</comment>
   </data>
-	<data name="TimeUtils_X_Years_Ago_Txt" xml:space="preserve">
+  <data name="TimeUtils_X_Years_Ago_Txt" xml:space="preserve">
     <value>{0} years ago</value>
   </data>
-	<data name="User_Cancelled_Task_Txt" xml:space="preserve">
+  <data name="User_Cancelled_Task_Txt" xml:space="preserve">
     <value>User cancelled the task.</value>
     <comment>General text</comment>
   </data>
-	<data name="EditProfile_emailErrorTxt_TxtBlk" xml:space="preserve">
+  <data name="EditProfile_emailErrorTxt_TxtBlk" xml:space="preserve">
     <value>Enter Correct Email</value>
     <comment>xaml</comment>
   </data>
-	<data name="EditProfile_EmailUpdateErr_MsgBxTxt" xml:space="preserve">
+  <data name="EditProfile_EmailUpdateErr_MsgBxTxt" xml:space="preserve">
     <value>Unable to change email or gender. Try again.</value>
   </data>
-	<data name="EditProfile_nameErrorTxt_TxtBlk" xml:space="preserve">
+  <data name="EditProfile_nameErrorTxt_TxtBlk" xml:space="preserve">
     <value>Please enter your name</value>
   </data>
-	<data name="EditProfile_NameUpdateErr_MsgBxCaptn" xml:space="preserve">
+  <data name="EditProfile_NameUpdateErr_MsgBxCaptn" xml:space="preserve">
     <value>Something went wrong</value>
   </data>
-	<data name="EditProfile_NameUpdateErr_MsgBxTxt" xml:space="preserve">
+  <data name="EditProfile_NameUpdateErr_MsgBxTxt" xml:space="preserve">
     <value>Unable to change name. Try again.</value>
   </data>
-	<data name="EditProfile_UpdatErrMsgBx_Captn" xml:space="preserve">
+  <data name="EditProfile_UpdatErrMsgBx_Captn" xml:space="preserve">
     <value>Profile Not Updated!</value>
   </data>
-	<data name="EditProfile_UpdatErrMsgBx_Text" xml:space="preserve">
+  <data name="EditProfile_UpdatErrMsgBx_Text" xml:space="preserve">
     <value>Nothing has changed!!</value>
   </data>
-	<data name="EditProfile_UpdatMsgBx_Captn" xml:space="preserve">
+  <data name="EditProfile_UpdatMsgBx_Captn" xml:space="preserve">
     <value>Profile Updated</value>
   </data>
-	<data name="EditProfile_UpdatMsgBx_Txt" xml:space="preserve">
+  <data name="EditProfile_UpdatMsgBx_Txt" xml:space="preserve">
     <value>Your profile has been updated.</value>
   </data>
-	<data name="Help_AppVersionTitle" xml:space="preserve">
+  <data name="Help_AppVersionTitle" xml:space="preserve">
     <value>Version</value>
     <comment>xaml</comment>
   </data>
-	<data name="Help_ContactUsText" xml:space="preserve">
+  <data name="Help_ContactUsText" xml:space="preserve">
     <value>Contact our support team for help</value>
     <comment>xaml</comment>
   </data>
-	<data name="Help_ContactUsTitle" xml:space="preserve">
+  <data name="Help_ContactUsTitle" xml:space="preserve">
     <value>Contact Us</value>
     <comment>xaml</comment>
   </data>
-	<data name="Help_EmailCarrier" xml:space="preserve">
+  <data name="Help_EmailCarrier" xml:space="preserve">
     <value>Carrier:</value>
     <comment>email compose task (cs)</comment>
   </data>
-	<data name="Help_EmailDeviceModel" xml:space="preserve">
+  <data name="Help_EmailDeviceModel" xml:space="preserve">
     <value>Device Model:</value>
     <comment>email compose task (cs)</comment>
   </data>
-	<data name="Help_EmailHikeVersion" xml:space="preserve">
+  <data name="Help_EmailHikeVersion" xml:space="preserve">
     <value>Hike Version:</value>
     <comment>email compose task (cs)</comment>
   </data>
-	<data name="Help_EmailOSVersion" xml:space="preserve">
+  <data name="Help_EmailOSVersion" xml:space="preserve">
     <value>Win OS Version:</value>
     <comment>email compose task (cs)</comment>
   </data>
-	<data name="Help_EmailPhoneNo" xml:space="preserve">
+  <data name="Help_EmailPhoneNo" xml:space="preserve">
     <value>Phone Number:</value>
     <comment>email compose task (cs)</comment>
   </data>
-	<data name="Help_EmailSubject" xml:space="preserve">
-    <value>Feedback on WP7</value>
+  <data name="Help_EmailSubject" xml:space="preserve">
+    <value>Feedback on WP8</value>
     <comment>email compose task subject (cs)</comment>
   </data>
-	<data name="Help_FAQsTitle" xml:space="preserve">
+  <data name="Help_FAQsTitle" xml:space="preserve">
     <value>FAQs</value>
     <comment>xaml</comment>
   </data>
-	<data name="Help_FAQsTxt" xml:space="preserve">
+  <data name="Help_FAQsTxt" xml:space="preserve">
     <value>Frequently asked questions</value>
     <comment>xaml</comment>
   </data>
-	<data name="Help_LegalText" xml:space="preserve">
+  <data name="Help_LegalText" xml:space="preserve">
     <value>Read Terms of service and privacy policy</value>
     <comment>xaml</comment>
   </data>
-	<data name="Help_LegalTitle" xml:space="preserve">
+  <data name="Help_LegalTitle" xml:space="preserve">
     <value>Legal</value>
     <comment>xaml</comment>
   </data>
-	<data name="Help_WalkthroughText" xml:space="preserve">
+  <data name="Help_WalkthroughText" xml:space="preserve">
     <value>View the meet hike walkthrough</value>
     <comment>xaml</comment>
   </data>
-	<data name="Help_WalkthroughTitle" xml:space="preserve">
+  <data name="Help_WalkthroughTitle" xml:space="preserve">
     <value>Walkthrough</value>
     <comment>xaml</comment>
   </data>
-	<data name="Help_RateAppText" xml:space="preserve">
+  <data name="Help_RateAppText" xml:space="preserve">
     <value>Rate and review hike on the marketplace</value>
     <comment>xaml</comment>
   </data>
-	<data name="Help_RateAppTitle" xml:space="preserve">
+  <data name="Help_RateAppTitle" xml:space="preserve">
     <value>Rate the App</value>
     <comment>xaml</comment>
   </data>
-	<data name="Off" xml:space="preserve">
+  <data name="Off" xml:space="preserve">
     <value>Off</value>
     <comment>used on settings page</comment>
   </data>
-	<data name="On" xml:space="preserve">
+  <data name="On" xml:space="preserve">
     <value>On</value>
     <comment>used on settings page</comment>
   </data>
-	<data name="Privacy_DeleteAccounConfirmMsgBxText" xml:space="preserve">
+  <data name="Privacy_DeleteAccounConfirmMsgBxText" xml:space="preserve">
     <value>Are you sure you want to delete your Hike account permanently?</value>
     <comment>cs. Message box while deleting account</comment>
   </data>
-	<data name="Privacy_DeleteAccountHeader" xml:space="preserve">
+  <data name="Privacy_DeleteAccountHeader" xml:space="preserve">
     <value>Delete Account</value>
     <comment>xaml + cs (mesg box caption)</comment>
   </data>
-	<data name="Privacy_DeleteAccountProgress" xml:space="preserve">
+  <data name="Privacy_DeleteAccountProgress" xml:space="preserve">
     <value>Deleting Account...</value>
     <comment>cs. delete account progress</comment>
   </data>
-	<data name="Privacy_DeleteAccountText" xml:space="preserve">
+  <data name="Privacy_DeleteAccountText" xml:space="preserve">
     <value>Permanently delete your hike account</value>
     <comment>xaml</comment>
   </data>
-	<data name="Privacy_UnlinkAccountHeader" xml:space="preserve">
+  <data name="Privacy_UnlinkAccountHeader" xml:space="preserve">
     <value>Unlink Account</value>
     <comment>xaml + cs (mesg box caption)</comment>
   </data>
-	<data name="Privacy_UnlinkAccountProgress" xml:space="preserve">
+  <data name="Privacy_UnlinkAccountProgress" xml:space="preserve">
     <value>Unlinking Account...</value>
     <comment>cs. unlink account progress</comment>
   </data>
-	<data name="Privacy_UnlinkAccountText" xml:space="preserve">
+  <data name="Privacy_UnlinkAccountText" xml:space="preserve">
     <value>Logout your account from this device</value>
     <comment>xaml</comment>
   </data>
-	<data name="Privacy_UnlinkConfirmMsgBxText" xml:space="preserve">
+  <data name="Privacy_UnlinkConfirmMsgBxText" xml:space="preserve">
     <value>Are you sure you want to unlink your Hike account from this device?</value>
     <comment>cs. Message box while unlinking account</comment>
   </data>
-	<data name="Privacy_UnlinkErrMsgBxCaptn" xml:space="preserve">
+  <data name="Privacy_UnlinkErrMsgBxCaptn" xml:space="preserve">
     <value>Account not unlinked</value>
     <comment>cs. Message box Caption error while unlinking</comment>
   </data>
-	<data name="Privacy_UnlinkErrMsgBxText" xml:space="preserve">
+  <data name="Privacy_UnlinkErrMsgBxText" xml:space="preserve">
     <value>hike couldn't unlink your account. Please try again.</value>
     <comment>cs. Message box error while unlinking</comment>
   </data>
-	<data name="Settings_FreeSMSToggleSwitchHeader" xml:space="preserve">
+  <data name="Settings_FreeSMSToggleSwitchHeader" xml:space="preserve">
     <value>Send free SMS to India</value>
     <comment>xaml. </comment>
   </data>
-	<data name="Settings_PushToggleSwitchHeader" xml:space="preserve">
+  <data name="Settings_PushToggleSwitchHeader" xml:space="preserve">
     <value>Use push notifications</value>
     <comment>xaml. push toggle</comment>
   </data>
-	<data name="Settings_VibrateToggleSwitchHeader" xml:space="preserve">
+  <data name="Settings_VibrateToggleSwitchHeader" xml:space="preserve">
     <value>Vibrate</value>
     <comment>xaml</comment>
   </data>
-	<data name="Walkthrough_H2H_SwipeLeft" xml:space="preserve">
+  <data name="Walkthrough_H2H_SwipeLeft" xml:space="preserve">
     <value>swipe left to continue</value>
   </data>
-	<data name="RecordAudio_AppBarCancelBtnTxt" xml:space="preserve">
+  <data name="RecordAudio_AppBarCancelBtnTxt" xml:space="preserve">
     <value>re-record</value>
     <comment>app bar button</comment>
   </data>
-	<data name="RecordAudio_Play" xml:space="preserve">
+  <data name="RecordAudio_Play" xml:space="preserve">
     <value>TAP TO PLAY</value>
     <comment>cs</comment>
   </data>
-	<data name="RecordAudio_Playing" xml:space="preserve">
+  <data name="RecordAudio_Playing" xml:space="preserve">
     <value>PLAYING</value>
     <comment>cs</comment>
   </data>
-	<data name="RecordAudio_Record" xml:space="preserve">
+  <data name="RecordAudio_Record" xml:space="preserve">
     <value>TAP ICON TO RECORD</value>
     <comment>cs + xaml</comment>
   </data>
-	<data name="RecordAudio_Recording" xml:space="preserve">
+  <data name="RecordAudio_Recording" xml:space="preserve">
     <value>RECORDING</value>
     <comment>cs</comment>
   </data>
-	<data name="RecordMedia_Title" xml:space="preserve">
+  <data name="RecordMedia_Title" xml:space="preserve">
     <value>record audio</value>
     <comment>xaml</comment>
   </data>
-	<data name="Yesterday_Txt" xml:space="preserve">
+  <data name="Yesterday_Txt" xml:space="preserve">
     <value>yesterday</value>
     <comment>General Text</comment>
   </data>
-	<data name="FileTransfer_ErrorMsgBoxText" xml:space="preserve">
+  <data name="FileTransfer_ErrorMsgBoxText" xml:space="preserve">
     <value>Unable to download file. </value>
     <comment>cs. Text in message box followed by exception message</comment>
   </data>
-	<data name="SelectUser_HideSmsContacts_Txt" xml:space="preserve">
+  <data name="SelectUser_HideSmsContacts_Txt" xml:space="preserve">
     <value>hide sms contacts</value>
     <comment>Text used in app menu bar</comment>
   </data>
-	<data name="SelectUser_ShowSmsContacts_Txt" xml:space="preserve">
+  <data name="SelectUser_ShowSmsContacts_Txt" xml:space="preserve">
     <value>show sms contacts</value>
     <comment>Text used in app menu bar</comment>
   </data>
-	<data name="Favorites_TapToAdd" xml:space="preserve">
+  <data name="Favorites_TapToAdd" xml:space="preserve">
     <value>Add contacts to your circle of friends.</value>
     <comment>xaml (below heart image)</comment>
   </data>
-	<data name="Invited" xml:space="preserve">
+  <data name="Invited" xml:space="preserve">
     <value>Invited</value>
   </data>
-	<data name="Invite_Small" xml:space="preserve">
+  <data name="Invite_Small" xml:space="preserve">
     <value>Invite</value>
   </data>
-	<data name="Nudge" xml:space="preserve">
+  <data name="Nudge" xml:space="preserve">
     <value>Nudge</value>
   </data>
-	<data name="Nudge_Exclamation" xml:space="preserve">
+  <data name="Nudge_Exclamation" xml:space="preserve">
     <value>Nudge!</value>
   </data>
-	<data name="Nudge_Tute" xml:space="preserve">
+  <data name="Nudge_Tute" xml:space="preserve">
     <value>Double tap anywhere on the chat to nudge your friend.</value>
     <comment>xaml</comment>
   </data>
-	<data name="OK" xml:space="preserve">
+  <data name="OK" xml:space="preserve">
     <value>OK</value>
   </data>
-	<data name="RemoveFromGrpConfirmation_Txt" xml:space="preserve">
+  <data name="RemoveFromGrpConfirmation_Txt" xml:space="preserve">
     <value>Are you sure you want to remove this person from group ?</value>
     <comment>Remove member from group text</comment>
   </data>
-	<data name="Remove_From_grp_txt" xml:space="preserve">
+  <data name="Remove_From_grp_txt" xml:space="preserve">
     <value>remove from group</value>
     <comment>General text</comment>
   </data>
-	<data name="ConversationsList_New_Txt" xml:space="preserve">
+  <data name="ConversationsList_New_Txt" xml:space="preserve">
     <value>new</value>
     <comment>Rewards Text</comment>
   </data>
-	<data name="Tap_To_Invite_Txt" xml:space="preserve">
+  <data name="Tap_To_Invite_Txt" xml:space="preserve">
     <value>Tap here to invite</value>
     <comment>Tap to invite text</comment>
   </data>
-	<data name="SelectUser_TapMsg_Grp_Txt" xml:space="preserve">
+  <data name="SelectUser_TapMsg_Grp_Txt" xml:space="preserve">
     <value>Tap here to add this person</value>
     <comment>Add to Group Msg</comment>
   </data>
-	<data name="ChatThread_GCMute" xml:space="preserve">
+  <data name="ChatThread_GCMute" xml:space="preserve">
     <value>This group chat is muted</value>
     <comment>xaml</comment>
   </data>
-	<data name="Favorites_AddMore" xml:space="preserve">
+  <data name="Favorites_AddMore" xml:space="preserve">
     <value>Add More</value>
     <comment>xaml</comment>
   </data>
-	<data name="ContactTransfer_Text" xml:space="preserve">
+  <data name="ContactTransfer_Text" xml:space="preserve">
     <value>Contact</value>
   </data>
-	<data name="ShareContact_Txt" xml:space="preserve">
+  <data name="ShareContact_Txt" xml:space="preserve">
     <value>Share Contact</value>
   </data>
-	<data name="ShareContact_ConfirmationText" xml:space="preserve">
+  <data name="ShareContact_ConfirmationText" xml:space="preserve">
     <value>Are you sure you want to share contact information of {0}</value>
   </data>
-	<data name="SharedContactNotFoundText" xml:space="preserve">
+  <data name="SharedContactNotFoundText" xml:space="preserve">
     <value>Please refresh contact list as contact selected does not exists.</value>
   </data>
-	<data name="Pause_Txt" xml:space="preserve">
+  <data name="Pause_Txt" xml:space="preserve">
     <value>pause</value>
     <comment>record video page app bar</comment>
   </data>
-	<data name="Play_Txt" xml:space="preserve">
+  <data name="Play_Txt" xml:space="preserve">
     <value>play</value>
     <comment>record video page app bar</comment>
   </data>
-	<data name="Record_Txt" xml:space="preserve">
+  <data name="Record_Txt" xml:space="preserve">
     <value>record</value>
     <comment>record video page app bar</comment>
   </data>
-	<data name="Stop_Txt" xml:space="preserve">
+  <data name="Stop_Txt" xml:space="preserve">
     <value>stop</value>
     <comment>record video page app bar</comment>
   </data>
-	<data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
+  <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
     <value>Confirm your number</value>
   </data>
-	<data name="SharedContactNotFoundCaptionText" xml:space="preserve">
+  <data name="SharedContactNotFoundCaptionText" xml:space="preserve">
     <value>Refresh Contact List</value>
   </data>
-	<data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
+  <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
     <value>Added you to Circle of Friends</value>
     <comment>for friend requests in wp8</comment>
   </data>
-	<data name="PicUpdate_StatusTxt" xml:space="preserve">
+  <data name="PicUpdate_StatusTxt" xml:space="preserve">
     <value>Changed profile picture</value>
     <comment>Text used in profile picture update</comment>
   </data>
-	<data name="StatusUpdate_Photo" xml:space="preserve">
+  <data name="StatusUpdate_Photo" xml:space="preserve">
     <value>Changed profile picture</value>
   </data>
-	<data name="StatuUpdate_Location" xml:space="preserve">
+  <data name="StatuUpdate_Location" xml:space="preserve">
     <value>at {0}</value>
   </data>
-	<data name="Conversations_Pivot_Timeline_Header_Txt" xml:space="preserve">
+  <data name="Conversations_Pivot_Timeline_Header_Txt" xml:space="preserve">
     <value>timeline</value>
   </data>
-	<data name="Conversations_PostStatus_AppBar" xml:space="preserve">
+  <data name="Conversations_PostStatus_AppBar" xml:space="preserve">
     <value>Post Status</value>
   </data>
-	<data name="OthersProfile_Txt" xml:space="preserve">
+  <data name="OthersProfile_Txt" xml:space="preserve">
     <value>profile</value>
   </data>
-	<data name="OnHIkeSince_Txt" xml:space="preserve">
+  <data name="OnHIkeSince_Txt" xml:space="preserve">
     <value>on hike since {0}</value>
   </data>
-	<data name="InviteOnHikeBtn_Txt" xml:space="preserve">
+  <data name="InviteOnHikeBtn_Txt" xml:space="preserve">
     <value>Invite to hike</value>
   </data>
-	<data name="InviteOnHikeUpgrade_Txt" xml:space="preserve">
+  <data name="InviteOnHikeUpgrade_Txt" xml:space="preserve">
     <value>Help him upgrade to hike!</value>
   </data>
-	<data name="InviteOnHike_Txt" xml:space="preserve">
+  <data name="InviteOnHike_Txt" xml:space="preserve">
     <value> is missing all the fun.</value>
   </data>
-	<data name="OnSms_Txt" xml:space="preserve">
+  <data name="OnSms_Txt" xml:space="preserve">
     <value>on SMS</value>
   </data>
-	<data name="MyProfileheader_Txt" xml:space="preserve">
+  <data name="MyProfileheader_Txt" xml:space="preserve">
     <value>my profile</value>
   </data>
-	<data name="ProfileToBeFriendBlk1" xml:space="preserve">
+  <data name="ProfileToBeFriendBlk1" xml:space="preserve">
     <value>You need to be friends with</value>
   </data>
-	<data name="ProfileToBeFriendBlk3" xml:space="preserve">
+  <data name="ProfileToBeFriendBlk3" xml:space="preserve">
     <value>to be able to get status updates.</value>
   </data>
-	<data name="btnAddAsFriend_Txt" xml:space="preserve">
+  <data name="btnAddAsFriend_Txt" xml:space="preserve">
     <value>Add as a friend</value>
   </data>
-	<data name="NewStatus_Txt" xml:space="preserve">
+  <data name="NewStatus_Txt" xml:space="preserve">
     <value>NEW STATUS</value>
   </data>
-	<data name="Conversations_Timeline_Refresh_Status" xml:space="preserve">
+  <data name="Conversations_Timeline_Refresh_Status" xml:space="preserve">
     <value>{0} new updates</value>
     <comment>text on top on timeline to show # of fresh status updates</comment>
   </data>
-	<data name="Conversations_Timeline_Refresh_SingleStatus" xml:space="preserve">
+  <data name="Conversations_Timeline_Refresh_SingleStatus" xml:space="preserve">
     <value>{0} new update</value>
   </data>
-	<data name="TimeUtils_Moments_Ago" xml:space="preserve">
+  <data name="TimeUtils_Moments_Ago" xml:space="preserve">
     <value>moments ago</value>
   </data>
-	<data name="You_Txt" xml:space="preserve">
+  <data name="You_Txt" xml:space="preserve">
     <value>You</value>
   </data>
-	<data name="Help_System_Health_Text" xml:space="preserve">
+  <data name="Help_System_Health_Text" xml:space="preserve">
     <value>Check hike status on Twitter</value>
   </data>
-	<data name="Help_System_Health_Title" xml:space="preserve">
+  <data name="Help_System_Health_Title" xml:space="preserve">
     <value>System Health</value>
   </data>
-	<data name="Attachement_Contact_Txt" xml:space="preserve">
+  <data name="Attachement_Contact_Txt" xml:space="preserve">
     <value>Contact Info</value>
   </data>
-	<data name="Attachment_Audio_Txt" xml:space="preserve">
+  <data name="Attachment_Audio_Txt" xml:space="preserve">
     <value>Send Audio</value>
   </data>
-	<data name="Attachment_Camera_Txt" xml:space="preserve">
+  <data name="Attachment_Camera_Txt" xml:space="preserve">
     <value>Camera</value>
   </data>
-	<data name="Attachment_Location_Txt" xml:space="preserve">
+  <data name="Attachment_Location_Txt" xml:space="preserve">
     <value>Share Location</value>
   </data>
-	<data name="Attachment_Photo_Txt" xml:space="preserve">
+  <data name="Attachment_Photo_Txt" xml:space="preserve">
     <value>Send Photo</value>
   </data>
-	<data name="Attachment_Video_Txt" xml:space="preserve">
+  <data name="Attachment_Video_Txt" xml:space="preserve">
     <value>Send Video</value>
   </data>
-	<data name="NoFreeSmsLeft_Txt" xml:space="preserve">
+  <data name="NoFreeSmsLeft_Txt" xml:space="preserve">
     <value>Invite {0} to continue hiking.</value>
   </data>
-	<data name="SelectUser_GroupMsg_Txt" xml:space="preserve">
+  <data name="SelectUser_GroupMsg_Txt" xml:space="preserve">
     <value>Group Message</value>
   </data>
-	<data name="HappyMessaging_Txt" xml:space="preserve">
+  <data name="HappyMessaging_Txt" xml:space="preserve">
     <value>Happy Messaging!</value>
   </data>
-	<data name="MessageNonHikeFriends_Blk1_Txt" xml:space="preserve">
+  <data name="MessageNonHikeFriends_Blk1_Txt" xml:space="preserve">
     <value>You can also message friends not</value>
   </data>
-	<data name="MessageNonHikeFriends_Blk2_Txt" xml:space="preserve">
+  <data name="MessageNonHikeFriends_Blk2_Txt" xml:space="preserve">
     <value>on hike with free hike SMS</value>
   </data>
-	<data name="MessagingHikeFriendsFree_Txt" xml:space="preserve">
+  <data name="MessagingHikeFriendsFree_Txt" xml:space="preserve">
     <value>Messaging hike friends is free &amp; unlimited.</value>
   </data>
-	<data name="ReadyToHike_Txt" xml:space="preserve">
+  <data name="ReadyToHike_Txt" xml:space="preserve">
     <value>Ready to hike...</value>
   </data>
-	<data name="Social_Cnnct_TxtBlk" xml:space="preserve">
+  <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
     <value>Share on Facebook &amp; Twitter</value>
   </data>
-	<data name="FB_Connect_Txt" xml:space="preserve">
+  <data name="FB_Connect_Txt" xml:space="preserve">
     <value>Connect with Facebook</value>
   </data>
-	<data name="FeelingLazy_Txt" xml:space="preserve">
+  <data name="FeelingLazy_Txt" xml:space="preserve">
     <value>Feeling lazy? We'll do it for you.</value>
     <comment>Used in Entername screen above FB Notification</comment>
   </data>
-	<data name="Account_Txt" xml:space="preserve">
+  <data name="Account_Txt" xml:space="preserve">
     <value>account</value>
     <comment>Profile (xaml)</comment>
   </data>
-	<data name="Delete_Txt_Caps" xml:space="preserve">
+  <data name="Delete_Txt_Caps" xml:space="preserve">
     <value>Delete</value>
     <comment>Privacy page (xaml)</comment>
   </data>
-	<data name="Unlink_Txt" xml:space="preserve">
+  <data name="Unlink_Txt" xml:space="preserve">
     <value>Unlink</value>
     <comment>Privacy page (xaml)</comment>
   </data>
-	<data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
+  <data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
     <value>{0} changed the group image.</value>
   </data>
-	<data name="Ask_Me_Later_Txt" xml:space="preserve">
+  <data name="Ask_Me_Later_Txt" xml:space="preserve">
     <value>Ask Me Later</value>
   </data>
-	<data name="Love_Using_Hike_Txt" xml:space="preserve">
+  <data name="Love_Using_Hike_Txt" xml:space="preserve">
     <value>Love using Hike?</value>
   </data>
-	<data name="Rate_Now_Txt" xml:space="preserve">
+  <data name="Rate_Now_Txt" xml:space="preserve">
     <value>Rate Now</value>
   </data>
-	<data name="Rate_Us_Txt" xml:space="preserve">
+  <data name="Rate_Us_Txt" xml:space="preserve">
     <value>Please rate us on the Marketplace.</value>
   </data>
-	<data name="UpgradingApp_Text" xml:space="preserve">
+  <data name="UpgradingApp_Text" xml:space="preserve">
     <value>Please wait while your app is upgrading...</value>
   </data>
-	<data name="Stop_Caption_txt" xml:space="preserve">
+  <data name="Stop_Caption_txt" xml:space="preserve">
     <value>Stop!!!</value>
   </data>
-	<data name="Stop_Contact_Scanning" xml:space="preserve">
+  <data name="Stop_Contact_Scanning" xml:space="preserve">
     <value>Do you want to stop contact scanning?</value>
   </data>
-	<data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
+  <data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
     <value>Message {0} on Hike</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
-	<data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
+  <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
     <value>{0} added you to Circle of Friends</value>
     <comment>{0} will be replaced by username</comment>
   </data>
-	<data name="Profile_DoTheSame" xml:space="preserve">
+  <data name="Profile_DoTheSame" xml:space="preserve">
     <value>Would you like to do the same?</value>
   </data>
-	<data name="Profile_CancelRequest_BtnTxt" xml:space="preserve">
+  <data name="Profile_CancelRequest_BtnTxt" xml:space="preserve">
     <value>Cancel Request</value>
   </data>
-	<data name="Profile_RequestSent_Blk1" xml:space="preserve">
+  <data name="Profile_RequestSent_Blk1" xml:space="preserve">
     <value>Waiting For</value>
   </data>
-	<data name="Profile_RequestSent_Blk3" xml:space="preserve">
+  <data name="Profile_RequestSent_Blk3" xml:space="preserve">
     <value>to accept your friend request.</value>
   </data>
-	<data name="Profile_AddNow_Btn_Txt" xml:space="preserve">
+  <data name="Profile_AddNow_Btn_Txt" xml:space="preserve">
     <value>Add now</value>
   </data>
-	<data name="Profile_NoStatus_Txt" xml:space="preserve">
+  <data name="Profile_NoStatus_Txt" xml:space="preserve">
     <value>hasn't posted anything :(</value>
   </data>
-	<data name="Profile_NotInAddressbook_Txt" xml:space="preserve">
+  <data name="Profile_NotInAddressbook_Txt" xml:space="preserve">
     <value>is not in your address book.</value>
   </data>
-	<data name="Conversations_Circle_Of_friends_txt" xml:space="preserve">
+  <data name="Conversations_Circle_Of_friends_txt" xml:space="preserve">
     <value>CIRCLE OF FRIENDS</value>
   </data>
-	<data name="Conversations_Contacts_on_hike" xml:space="preserve">
+  <data name="Conversations_Contacts_on_hike" xml:space="preserve">
     <value>CONTACTS ON HIKE</value>
   </data>
-	<data name="Profile_BlockedUser_Blk1" xml:space="preserve">
+  <data name="Profile_BlockedUser_Blk1" xml:space="preserve">
     <value>You have blocked</value>
   </data>
-	<data name="Profile_BlockedUser_Blk3" xml:space="preserve">
+  <data name="Profile_BlockedUser_Blk3" xml:space="preserve">
     <value>Unblock to send a message.</value>
   </data>
-	<data name="Share_With_Txt" xml:space="preserve">
+  <data name="Share_With_Txt" xml:space="preserve">
     <value>SHARE</value>
     <comment>Used in share photo</comment>
   </data>
-	<data name="Block_Tap_Txt" xml:space="preserve">
+  <data name="Block_Tap_Txt" xml:space="preserve">
     <value>Tap to {0} this person</value>
     <comment>Used in add to block functionality, {0} will be replaced by block/unblock</comment>
   </data>
-	<data name="Conversations_BtnUpdateStatus_Txt" xml:space="preserve">
+  <data name="Conversations_BtnUpdateStatus_Txt" xml:space="preserve">
     <value>Update status</value>
   </data>
-	<data name="Conversations_EmptyStatus_AskPostStatus_Txt" xml:space="preserve">
+  <data name="Conversations_EmptyStatus_AskPostStatus_Txt" xml:space="preserve">
     <value>Looks like you haven't posted any status update yet.</value>
   </data>
-	<data name="Conversations_EmptyStatus_Hey_Txt" xml:space="preserve">
+  <data name="Conversations_EmptyStatus_Hey_Txt" xml:space="preserve">
     <value>Hey {0}!</value>
     <comment>{0} replaced by user name</comment>
   </data>
-	<data name="Conversations_EmptyStatus_TeamHike_Txt" xml:space="preserve">
+  <data name="Conversations_EmptyStatus_TeamHike_Txt" xml:space="preserve">
     <value>Team Hike</value>
   </data>
-	<data name="Update_Profile_Pic_txt" xml:space="preserve">
+  <data name="Update_Profile_Pic_txt" xml:space="preserve">
     <value>Updated profile picture</value>
     <comment>Used to show for pp update in last msg of convlist</comment>
   </data>
-	<data name="Conversations_DefaultStatus_Txt" xml:space="preserve">
+  <data name="Conversations_DefaultStatus_Txt" xml:space="preserve">
     <value>Post a status update</value>
   </data>
-	<data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
+  <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
     <value>Status updates notification</value>
   </data>
-	<data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
+  <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
     <value>Every Hour</value>
   </data>
-	<data name="Settings_StatusUpdate_EveryXHour_txt" xml:space="preserve">
+  <data name="Settings_StatusUpdate_EveryXHour_txt" xml:space="preserve">
     <value>Every {0} Hour</value>
     <comment>{0} replaced by number of hours</comment>
   </data>
-	<data name="Settings_StatusUpdate_Immediate_Txt" xml:space="preserve">
+  <data name="Settings_StatusUpdate_Immediate_Txt" xml:space="preserve">
     <value>Immediate</value>
   </data>
-	<data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
+  <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
     <value>Only your 'Circle of friends' can see your status updates</value>
   </data>
-	<data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
+  <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
     <value>Tap on this icon to post a new status</value>
   </data>
-	<data name="Conversations_Status_Tutorials_Header" xml:space="preserve">
+  <data name="Conversations_Status_Tutorials_Header" xml:space="preserve">
     <value>Status Updates</value>
   </data>
-	<data name="Notifications_Header_Txt" xml:space="preserve">
+  <data name="Notifications_Header_Txt" xml:space="preserve">
     <value>notifications</value>
   </data>
-	<data name="Now_Friends_Txt" xml:space="preserve">
+  <data name="Now_Friends_Txt" xml:space="preserve">
     <value>Is now your friend</value>
     <comment>This is used in timeline and profile , when user becomed friend.</comment>
   </data>
-	<data name="Friend_Confirm_Txt" xml:space="preserve">
+  <data name="Friend_Confirm_Txt" xml:space="preserve">
     <value>Confirmed you as a friend</value>
     <comment>This is shown when a user confirms you as friend.</comment>
   </data>
-	<data name="Me_Txt" xml:space="preserve">
+  <data name="Me_Txt" xml:space="preserve">
     <value>Me</value>
   </data>
-	<data name="Conversations_BtnCircleOfFriends_Txt" xml:space="preserve">
+  <data name="Conversations_BtnCircleOfFriends_Txt" xml:space="preserve">
     <value>View friends</value>
   </data>
-	<data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
+  <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
     <value>You can see updates from your circle of friends here.</value>
   </data>
-	<data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
+  <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
     <value>Invite your friends to hike</value>
   </data>
-	<data name="Mood_Angry" xml:space="preserve">
+  <data name="Mood_Angry" xml:space="preserve">
     <value>Angry </value>
   </data>
-	<data name="Mood_Boozing" xml:space="preserve">
+  <data name="Mood_Boozing" xml:space="preserve">
     <value>Boozing </value>
   </data>
-	<data name="Mood_Busy" xml:space="preserve">
+  <data name="Mood_Busy" xml:space="preserve">
     <value>Busy </value>
   </data>
-	<data name="Mood_Caffeinated" xml:space="preserve">
+  <data name="Mood_Caffeinated" xml:space="preserve">
     <value>Caffeinated </value>
   </data>
-	<data name="Mood_Chilling" xml:space="preserve">
+  <data name="Mood_Chilling" xml:space="preserve">
     <value>Chilling </value>
   </data>
-	<data name="Mood_Coding" xml:space="preserve">
+  <data name="Mood_Coding" xml:space="preserve">
     <value>Coding </value>
   </data>
-	<data name="Mood_Confused" xml:space="preserve">
+  <data name="Mood_Confused" xml:space="preserve">
     <value>Confused </value>
   </data>
-	<data name="Mood_Driving" xml:space="preserve">
+  <data name="Mood_Driving" xml:space="preserve">
     <value>Driving </value>
   </data>
-	<data name="Mood_Gaming" xml:space="preserve">
+  <data name="Mood_Gaming" xml:space="preserve">
     <value>Gaming </value>
   </data>
-	<data name="Mood_Happy" xml:space="preserve">
+  <data name="Mood_Happy" xml:space="preserve">
     <value>Happy </value>
   </data>
-	<data name="Mood_Hungover" xml:space="preserve">
+  <data name="Mood_Hungover" xml:space="preserve">
     <value>Hungover </value>
   </data>
-	<data name="Mood_Insomniac" xml:space="preserve">
+  <data name="Mood_Insomniac" xml:space="preserve">
     <value>Insomniac </value>
   </data>
-	<data name="Mood_In_a_movie" xml:space="preserve">
+  <data name="Mood_In_a_movie" xml:space="preserve">
     <value>In a movie </value>
   </data>
-	<data name="Mood_In_love" xml:space="preserve">
+  <data name="Mood_In_love" xml:space="preserve">
     <value>In love </value>
   </data>
-	<data name="Mood_Love_it" xml:space="preserve">
+  <data name="Mood_Love_it" xml:space="preserve">
     <value>Love it </value>
   </data>
-	<data name="Mood_Middle_finger" xml:space="preserve">
+  <data name="Mood_Middle_finger" xml:space="preserve">
     <value>Middle finger </value>
   </data>
-	<data name="Mood_Running_late" xml:space="preserve">
+  <data name="Mood_Running_late" xml:space="preserve">
     <value>Running late </value>
   </data>
-	<data name="Mood_Sad" xml:space="preserve">
+  <data name="Mood_Sad" xml:space="preserve">
     <value>Sad </value>
   </data>
-	<data name="Mood_Shopping" xml:space="preserve">
+  <data name="Mood_Shopping" xml:space="preserve">
     <value>Shopping </value>
   </data>
-	<data name="Mood_Sleepy" xml:space="preserve">
+  <data name="Mood_Sleepy" xml:space="preserve">
     <value>Sleepy </value>
   </data>
-	<data name="Mood_Stuck_in_traffic" xml:space="preserve">
+  <data name="Mood_Stuck_in_traffic" xml:space="preserve">
     <value>Stuck in traffic </value>
   </data>
-	<data name="Mood_Studying" xml:space="preserve">
+  <data name="Mood_Studying" xml:space="preserve">
     <value>Studying </value>
   </data>
-	<data name="Mood_Surprised" xml:space="preserve">
+  <data name="Mood_Surprised" xml:space="preserve">
     <value>Surprised</value>
   </data>
-	<data name="Mood_Watching_tv" xml:space="preserve">
+  <data name="Mood_Watching_tv" xml:space="preserve">
     <value>Watching TV</value>
   </data>
-	<data name="StatusDelete_NoNtwrk_Txt" xml:space="preserve">
+  <data name="StatusDelete_NoNtwrk_Txt" xml:space="preserve">
     <value>Could not delete your status update. Please check your network connection and try again later.</value>
   </data>
-	<data name="StatusDetionFail_Txt" xml:space="preserve">
+  <data name="StatusDetionFail_Txt" xml:space="preserve">
     <value>Unable to delete your status.</value>
   </data>
-	<data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
+  <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
     <value>Add to Contacts</value>
   </data>
-	<data name="SettingsSubtitle_Account_Txt" xml:space="preserve">
+  <data name="SettingsSubtitle_Account_Txt" xml:space="preserve">
     <value>Account</value>
   </data>
-	<data name="SettingsSubtitle_Blocklist_Txt" xml:space="preserve">
+  <data name="SettingsSubtitle_Blocklist_Txt" xml:space="preserve">
     <value>Blocklist</value>
   </data>
-	<data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
+  <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
     <value>Notifications</value>
   </data>
-	<data name="Settings_AccountSettings_Txt" xml:space="preserve">
+  <data name="Settings_AccountSettings_Txt" xml:space="preserve">
     <value>Manage your hike account</value>
   </data>
-	<data name="Settings_BlocklistSettings_Txt" xml:space="preserve">
+  <data name="Settings_BlocklistSettings_Txt" xml:space="preserve">
     <value>A list of people you've blocked</value>
   </data>
-	<data name="Settings_NotificationSettings_Txt" xml:space="preserve">
+  <data name="Settings_NotificationSettings_Txt" xml:space="preserve">
     <value>Your notifications preferences</value>
   </data>
-	<data name="Blocklist_user_txt" xml:space="preserve">
+  <data name="Blocklist_user_txt" xml:space="preserve">
     <value>user</value>
   </data>
-	<data name="Conversations_InviteFriend_Btn" xml:space="preserve">
+  <data name="Conversations_InviteFriend_Btn" xml:space="preserve">
     <value>Invite Friends</value>
   </data>
-	<data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
+  <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
     <value>Tap on + to add a contact to your circle of friends.</value>
   </data>
-	<data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
+  <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
     <value>What's up, {0}?</value>
     <comment>{0} replaced by user name </comment>
   </data>
-	<data name="Profile_You_NoStatus_Txt" xml:space="preserve">
+  <data name="Profile_You_NoStatus_Txt" xml:space="preserve">
     <value>You haven't posted anything :(</value>
   </data>
-	<data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
+  <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
     <value>Group Name can have maximum 30 chars.</value>
     <comment>Warning Text</comment>
   </data>
-	<data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
+  <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
     <value>Could not send file</value>
   </data>
-	<data name="CT_FileSizeExceed_Text" xml:space="preserve">
+  <data name="CT_FileSizeExceed_Text" xml:space="preserve">
     <value>Max file size can be 15 MB.</value>
   </data>
-	<data name="CT_CharCount_Sms_User" xml:space="preserve">
+  <data name="CT_CharCount_Sms_User" xml:space="preserve">
     <value>{0}/{1}</value>
     <comment>{0}-number , {1} number</comment>
   </data>
-	<data name="CT_MessageCount_Sms_User" xml:space="preserve">
+  <data name="CT_MessageCount_Sms_User" xml:space="preserve">
     <value>{0} messages,</value>
     <comment>{0} replaced by number</comment>
   </data>
-	<data name="Hold_And_Talk" xml:space="preserve">
+  <data name="Hold_And_Talk" xml:space="preserve">
     <value>Hold and talk</value>
     <comment>Long press to start audio recording</comment>
   </data>
-	<data name="Release_To_Send" xml:space="preserve">
+  <data name="Release_To_Send" xml:space="preserve">
     <value>Release to Send</value>
     <comment>Release to send recorded data</comment>
   </data>
-	<data name="BlockList_Text" xml:space="preserve">
+  <data name="BlockList_Text" xml:space="preserve">
     <value>BLOCK LIST</value>
   </data>
-	<data name="Conversations_Dismiss_Tip" xml:space="preserve">
+  <data name="Conversations_Dismiss_Tip" xml:space="preserve">
     <value>Dismiss</value>
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
-	<data name="Show_LastSeen_TimeStamp" xml:space="preserve">
+  <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
     <value>Show last seen</value>
   </data>
-	<data name="Last_Seen" xml:space="preserve">
+  <data name="Last_Seen" xml:space="preserve">
     <value>last seen</value>
   </data>
-	<data name="Online" xml:space="preserve">
+  <data name="Online" xml:space="preserve">
     <value>online</value>
   </data>
-	<data name="Preferences_Header_Txt" xml:space="preserve">
+  <data name="Preferences_Header_Txt" xml:space="preserve">
     <value>preferences</value>
   </data>
-	<data name="SettingsSubtitle_Preferences_Txt" xml:space="preserve">
+  <data name="SettingsSubtitle_Preferences_Txt" xml:space="preserve">
     <value>Preferences</value>
   </data>
-	<data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
+  <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
     <value>Your account preferences</value>
   </data>
-	<data name="Drag_Here_To_Delete" xml:space="preserve">
+  <data name="Drag_Here_To_Delete" xml:space="preserve">
     <value>Drag here to delete</value>
     <comment>Drag to a specified area to delete ongoing recording</comment>
   </data>
-	<data name="Message_Cancelled" xml:space="preserve">
+  <data name="Message_Cancelled" xml:space="preserve">
     <value>Message cancelled</value>
     <comment>Notify user that recording has been deleted</comment>
   </data>
-	<data name="Message_Too_Short" xml:space="preserve">
+  <data name="Message_Too_Short" xml:space="preserve">
     <value>Message too short</value>
     <comment>Message is too short to be sent</comment>
   </data>
-	<data name="In_App_Tip_1" xml:space="preserve">
+  <data name="In_App_Tip_1" xml:space="preserve">
     <value>Tap here to share stickers and emoticons :)</value>
   </data>
-	<data name="In_App_Tip_2" xml:space="preserve">
+  <data name="In_App_Tip_2" xml:space="preserve">
     <value>New stickers!</value>
   </data>
-	<data name="In_App_Tip_3" xml:space="preserve">
+  <data name="In_App_Tip_3" xml:space="preserve">
     <value>Tap here to use hike's new Walkie Talkie!</value>
   </data>
-	<data name="In_App_Tip_4" xml:space="preserve">
+  <data name="In_App_Tip_4" xml:space="preserve">
     <value>Tap here to attach a wonderful mood :)</value>
   </data>
-	<data name="In_App_Tip_5" xml:space="preserve">
+  <data name="In_App_Tip_5" xml:space="preserve">
     <value>This is a status update posted by {0}</value>
   </data>
-	<data name="No_Stickers_Downloaded_Txt" xml:space="preserve">
+  <data name="No_Stickers_Downloaded_Txt" xml:space="preserve">
     <value>No stickers downloaded in this category</value>
     <comment>General text</comment>
   </data>
-	<data name="Sticker_Txt" xml:space="preserve">
+  <data name="Sticker_Txt" xml:space="preserve">
     <value>Sticker</value>
     <comment>noun</comment>
   </data>
-	<data name="Sticker_Downloading_Txt" xml:space="preserve">
+  <data name="Sticker_Downloading_Txt" xml:space="preserve">
     <value>Downloading</value>
   </data>
-	<data name="At_Txt" xml:space="preserve">
+  <data name="At_Txt" xml:space="preserve">
     <value>at</value>
     <comment>General Text</comment>
   </data>
-	<data name="TimeUtils_A_While_Ago" xml:space="preserve">
+  <data name="TimeUtils_A_While_Ago" xml:space="preserve">
     <value>a while ago</value>
   </data>
-	<data name="Today_Txt" xml:space="preserve">
+  <data name="Today_Txt" xml:space="preserve">
     <value>today</value>
     <comment>General Text</comment>
   </data>
-	<data name="Invite_Sent_Successfully" xml:space="preserve">
+  <data name="Invite_Sent_Successfully" xml:space="preserve">
     <value>Invite sent successfully</value>
   </data>
-	<data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
+  <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
     <value>{0} is back on hike. Say hi :)</value>
     <comment>{0} to be replaced by name</comment>
   </data>
-	<data name="StickersTut_TxtBlk1" xml:space="preserve">
+  <data name="StickersTut_TxtBlk1" xml:space="preserve">
     <value>Express yourself better with</value>
     <comment>continued string -&gt;StickersTut_TxtBlk2(50)</comment>
   </data>
-	<data name="StickersTut_TxtBlk2" xml:space="preserve">
+  <data name="StickersTut_TxtBlk2" xml:space="preserve">
     <value>new hike stickers</value>
     <comment>StickersTut_TxtBlk1-&gt;StickersTut_TxtBlk2(50)</comment>
   </data>
-	<data name="WelcomeTut_TxtBlk1" xml:space="preserve">
+  <data name="WelcomeTut_TxtBlk1" xml:space="preserve">
     <value>Now share your status updates with</value>
     <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
-	<data name="WelcomeTut_TxtBlk2" xml:space="preserve">
+  <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
     <value>your circle of friends.</value>
     <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
-	<data name="ConfimFriendTimeline_Txt" xml:space="preserve">
+  <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
     <value>You will now be able to see updates from {0} here.</value>
     <comment>{0} to be replaced by name</comment>
   </data>
-	<data name="ConfimFriendUserProfile_Txt" xml:space="preserve">
+  <data name="ConfimFriendUserProfile_Txt" xml:space="preserve">
     <value>You will now be able to see updates from each other</value>
   </data>
-	<data name="In_App_Tip_6" xml:space="preserve">
+  <data name="In_App_Tip_6" xml:space="preserve">
     <value>Only your Circle of Friends can see when you were last seen</value>
   </data>
-	<data name="DownloadingSticker_txt" xml:space="preserve">
+  <data name="DownloadingSticker_txt" xml:space="preserve">
     <value>loading sticker</value>
   </data>
-	<data name="Download_txt" xml:space="preserve">
+  <data name="Download_txt" xml:space="preserve">
     <value>Download</value>
     <comment>length-8 fixed</comment>
   </data>
-	<data name="Free_txt" xml:space="preserve">
+  <data name="Free_txt" xml:space="preserve">
     <value>free</value>
     <comment>length-4 fixed</comment>
   </data>
-	<data name="InternetChargesMayApply_txt" xml:space="preserve">
+  <data name="InternetChargesMayApply_txt" xml:space="preserve">
     <value>*Mobile internet charges may apply</value>
   </data>
-	<data name="StickerDownloadFailed" xml:space="preserve">
+  <data name="StickerDownloadFailed" xml:space="preserve">
     <value>Sticker download failed.</value>
   </data>
-	<data name="TapHereToRetyTxt" xml:space="preserve">
+  <data name="TapHereToRetyTxt" xml:space="preserve">
     <value>Tap here to retry.</value>
   </data>
-	<data name="Invite_Not_Sent" xml:space="preserve">
+  <data name="Invite_Not_Sent" xml:space="preserve">
     <value>Unable to send invite.</value>
   </data>
-	<data name="Please_Retry_Later" xml:space="preserve">
+  <data name="Please_Retry_Later" xml:space="preserve">
     <value>Please retry later</value>
   </data>
-	<data name="Installed_Txt" xml:space="preserve">
+  <data name="Installed_Txt" xml:space="preserve">
     <value>Installed</value>
   </data>
-	<data name="sms_invite_message_1" xml:space="preserve">
+  <data name="sms_invite_message_1" xml:space="preserve">
     <value>Hey, I'm using hike, and it has all these awesome stickers and emoticons which I want to share with you. Get it now http://hike.in/</value>
   </data>
-	<data name="sms_invite_message_2" xml:space="preserve">
+  <data name="sms_invite_message_2" xml:space="preserve">
     <value>Hey, I'm using hike, which lets us show our "last seen" status only to the friends we choose, and not everyone. Get it now http://hike.in/</value>
     <comment>Constants General Text</comment>
   </data>
-	<data name="sms_invite_message_3" xml:space="preserve">
+  <data name="sms_invite_message_3" xml:space="preserve">
     <value>Hey, I'm using hike; it comes with a cool Walkie-Talkie which lets me send you free voice messages. Get it now http://hike.in/</value>
   </data>
-	<data name="Last_Seen_Today_At" xml:space="preserve">
+  <data name="Last_Seen_Today_At" xml:space="preserve">
     <value>last seen today at</value>
   </data>
-	<data name="Last_Seen_Yesterday_At" xml:space="preserve">
+  <data name="Last_Seen_Yesterday_At" xml:space="preserve">
     <value>last seen yesterday at</value>
   </data>
-	<data name="Fun_Free_Messaging_Txt" xml:space="preserve">
+  <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
     <value>Fun, free messaging for life</value>
   </data>
-	<data name="Button_Retry_Txt" xml:space="preserve">
+  <data name="Button_Retry_Txt" xml:space="preserve">
     <value>Retry</value>
   </data>
-	<data name="DownloadFailed_Txt" xml:space="preserve">
+  <data name="DownloadFailed_Txt" xml:space="preserve">
     <value>Oops! Download Failed</value>
   </data>
-	<data name="Send_As_Sms" xml:space="preserve">
+  <data name="Send_As_Sms" xml:space="preserve">
     <value>send as sms</value>
   </data>
-	<data name="SelectUser_Forward_To_Txt" xml:space="preserve">
+  <data name="SelectUser_Forward_To_Txt" xml:space="preserve">
     <value>Forward To</value>
     <comment>verb(length 12)</comment>
   </data>
-	<data name="Send_All_As_SMS" xml:space="preserve">
+  <data name="Send_All_As_SMS" xml:space="preserve">
     <value>{0} seems to be offline, tap to send as sms</value>
   </data>
-	<data name="H2HOfline_0SMS_Message" xml:space="preserve">
+  <data name="H2HOfline_0SMS_Message" xml:space="preserve">
     <value>Your free SMS balance is zero. You can invite friends to join hike and earn more free SMS</value>
   </data>
-	<data name="H2HOfline_Confirmation_Message" xml:space="preserve">
+  <data name="H2HOfline_Confirmation_Message" xml:space="preserve">
     <value>Pending messages will be sent as free hike SMS</value>
   </data>
-	<data name="H2HOfline_Confirmation_Message_Heading" xml:space="preserve">
+  <data name="H2HOfline_Confirmation_Message_Heading" xml:space="preserve">
     <value>Send as SMS</value>
   </data>
-	<data name="On_Dnd_Txt" xml:space="preserve">
+  <data name="On_Dnd_Txt" xml:space="preserve">
     <value>on DND</value>
   </data>
-	<data name="Conversations_MuteStatusNotification_txt" xml:space="preserve">
-    <value>Mute Status Updates</value>
+  <data name="Mute_Success_Txt" xml:space="preserve">
+    <value>Status update notifications are turned OFF</value>
   </data>
-	<data name="Conversations_UnmuteStatusNotification_txt" xml:space="preserve">
-    <value>Unmute Status Updates</value>
+  <data name="Unmute_Success_Txt" xml:space="preserve">
+    <value>Status update notifications are turned ON</value>
   </data>
-	<data name="Mute_Success_Txt" xml:space="preserve">
-    <value>Muted successfully!</value>
-  </data>
-	<data name="Unmute_Success_Txt" xml:space="preserve">
-    <value>Unmuted successfully!</value>
-</data>
-	<data name="My_Location_Text" xml:space="preserve">
+  <data name="My_Location_Text" xml:space="preserve">
     <value>My Location</value>
   </data>
-	<data name="Send_All_As_SMS_Group" xml:space="preserve">
+  <data name="Send_All_As_SMS_Group" xml:space="preserve">
     <value>Tap to send as SMS</value>
+  </data>
+
+  <data name="StatusNotToggle_Caption_Txt" xml:space="preserve">
+    <value>Status Update Notifications</value>
+</data>
+  <data name="Location_Heading" xml:space="preserve">
+    <value>Location</value>
   </data>
 </root>
