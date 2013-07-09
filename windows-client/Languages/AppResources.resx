@@ -881,7 +881,7 @@ Get hike: http://get.hike.in</value>
     <comment>General Text</comment>
   </data>
   <data name="ShareLocation_LocationServiceNotEnabled_Txt" xml:space="preserve">
-    <value>Location Service is not enabled on the device.</value>
+    <value>Location Service is not enabled on the device. Would you like to enable it?</value>
     <comment>cs</comment>
   </data>
   <data name="ShareLocation_LocationServiceWorking_Txt" xml:space="preserve">
@@ -1016,7 +1016,7 @@ Get hike: http://get.hike.in</value>
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailSubject" xml:space="preserve">
-    <value>Feedback on WP7</value>
+    <value>Feedback on WP8</value>
     <comment>email compose task subject (cs)</comment>
   </data>
   <data name="Help_FAQsTitle" xml:space="preserve">
@@ -1834,12 +1834,6 @@ Get hike: http://get.hike.in</value>
   <data name="On_Dnd_Txt" xml:space="preserve">
     <value>on DND</value>
   </data>
-  <data name="Conversations_MuteStatusNotification_txt" xml:space="preserve">
-    <value>Mute Status Updates</value>
-  </data>
-  <data name="Conversations_UnmuteStatusNotification_txt" xml:space="preserve">
-    <value>Unmute Status Updates</value>
-  </data>
   <data name="Mute_Success_Txt" xml:space="preserve">
     <value>Status update notifications are turned OFF</value>
   </data>
@@ -1851,5 +1845,12 @@ Get hike: http://get.hike.in</value>
   </data>
   <data name="Send_All_As_SMS_Group" xml:space="preserve">
     <value>Tap to send as SMS</value>
+  </data>
+
+  <data name="StatusNotToggle_Caption_Txt" xml:space="preserve">
+    <value>Status Update Notifications</value>
+</data>
+  <data name="Location_Heading" xml:space="preserve">
+    <value>Location</value>
   </data>
 </root>

@@ -605,14 +605,8 @@ namespace windows_client.View
 
         private void ToggleStatusUpdateNotification(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            MessageBox.Show(isStatusUpdatesMute ? AppResources.Unmute_Success_Txt : AppResources.Mute_Success_Txt, AppResources.StatusNotToggle_Caption_Txt, MessageBoxButton.OK);
             int settingsValue = 0;
-            ToastPrompt toast = new ToastPrompt();
-            toast.Foreground = UI_Utils.Instance.White;
-            toast.Background = UI_Utils.Instance.TappedCategoryColor;
-            toast.Message = isStatusUpdatesMute ? AppResources.Unmute_Success_Txt : AppResources.Mute_Success_Txt;
-            toast.MillisecondsUntilHidden = 800;
-            toast.Show();
-
             if (isStatusUpdatesMute)
             {
                 imgToggleStatus.Source = UI_Utils.Instance.UnmuteIcon;

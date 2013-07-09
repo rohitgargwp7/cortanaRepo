@@ -46,8 +46,8 @@
         </Grid>
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar>
-            <shell:ApplicationBarIconButton Click="Direction_Click" IconUri="view/images/route.png" Text="directions" IsEnabled="False"/>
+        <shell:ApplicationBar IsVisible="False">
+            <shell:ApplicationBarIconButton Click="Direction_Click" IconUri="view/images/route.png" Text="directions"/>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

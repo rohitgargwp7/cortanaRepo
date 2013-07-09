@@ -151,6 +151,9 @@ namespace windows_client
         public static readonly string COUNT = "c";
         public static readonly string FORCE_SMS_MESSAGE = "m";
 
+        public static readonly string MICROSOFT_MAP_SERVICE_APPLICATION_ID = "b4703e38-092f-4144-826a-3e3d41f50714";
+        public static readonly string MICROSOFT_MAP_SERVICE_AUTHENTICATION_TOKEN = "CjsOsVAhJ0GPdjiP12KwvA";
+
         public static string FAQS_LINK
         {
             get

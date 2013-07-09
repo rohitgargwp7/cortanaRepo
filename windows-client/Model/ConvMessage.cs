@@ -1232,6 +1232,42 @@ namespace windows_client.Model
         }
         #endregion
 
+        public String GetMessageForServer()
+        {
+            string message = Message;
+
+            if (FileAttachment == null) 
+                return message;
+
+            if (FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+            {
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                    "/" + FileAttachment.FileKey;
+            }
+            else if (FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+            {
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                    "/" + FileAttachment.FileKey;
+            }
+            else if (FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+            {
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                    "/" + FileAttachment.FileKey;
+            }
+            else if (FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+            {
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                    "/" + FileAttachment.FileKey;
+            }
+            else if (FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+            {
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                    "/" + FileAttachment.FileKey;
+            }
+
+            return message;
+        }
+
         public JObject serializeDeliveryReportRead()
         {
             JObject obj = new JObject();
