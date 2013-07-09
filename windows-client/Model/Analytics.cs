@@ -63,7 +63,7 @@ namespace windows_client.Model
         public static readonly string REMOVE_FAVS_CONTEXT_MENU_GROUP_INFO = "giRFFCM";
 
         //pro Tips
-        public static readonly string PRO_TIPS_DISMISSED = "tip_id"; //chat thread large profile pic
+        public static readonly string PRO_TIPS_DISMISSED = "tip_id";
 
         private Dictionary<string, int> eventMap = null;
 
@@ -109,7 +109,7 @@ namespace windows_client.Model
             if (eventMap == null || eventMap.Count == 0)
                 return null;
             JObject eventsData = new JObject();
-            eventsData["tag"] = "wp7";
+            eventsData["tag"] = utils.Utils.IsWP8 ? "wp8" : "wp7";
             foreach (KeyValuePair<string, int> entry in eventMap)
             {
                 if (entry.Value > 0)
