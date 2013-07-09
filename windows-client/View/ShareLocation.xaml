@@ -46,10 +46,19 @@
             <ListBox x:Name="PlacesList" Grid.Row="1" SelectionChanged="PlacesList_SelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Margin="10">
-                            <TextBlock Text="{Binding title}" FontSize="{StaticResource PhoneFontSizeLarge}" TextWrapping="Wrap" />
-                            <TextBlock Text="{Binding vicinity}" Foreground="{StaticResource PhoneSubtleBrush}" FontSize="18" TextWrapping="Wrap" Visibility="{Binding VicinityVisibility}"/>
-                        </StackPanel>
+                        <Grid Margin="12,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <Image MaxHeight="50" Source="{Binding PlaceImage}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                            <StackPanel Grid.Column="1" Margin="15,0,0,0">
+                                <TextBlock Text="{Binding title}" FontSize="{StaticResource PhoneFontSizeLarge}" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding vicinity}" Foreground="{StaticResource PhoneSubtleBrush}" FontSize="18" TextWrapping="Wrap" Visibility="{Binding VicinityVisibility}"/>
+                            </StackPanel>
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

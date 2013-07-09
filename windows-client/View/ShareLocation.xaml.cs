@@ -133,7 +133,8 @@ namespace windows_client.View
                         {
                             position = _selectedCoordinate,
                             title = _myCoordinate == null || _selectedCoordinate != _myCoordinate ? AppResources.Location_Txt : AppResources.My_Location_Text,
-                            vicinity = _myPlaceVicinity
+                            vicinity = _myPlaceVicinity,
+                            icon = String.Empty
                         };
                     }
 
@@ -195,54 +196,31 @@ namespace windows_client.View
                 MyMap.Layers.Clear();
                 MapLayer mapLayer = new MapLayer();
 
-                if (_selectedCoordinate != null)
-                {
-                    DrawAccuracyRadius(mapLayer);
-                    DrawMapMarker(_selectedCoordinate, Colors.Orange, mapLayer);
-                }
+                if (_selectedPlace != null)
+                    DrawMapMarker(_selectedPlace, Colors.Orange, mapLayer);
 
                 MyMap.Layers.Add(mapLayer);
             }
         }
 
-        private void DrawMapMarker(GeoCoordinate coordinate, Color color, MapLayer mapLayer)
+        private void DrawMapMarker(Place place, Color color, MapLayer mapLayer)
         {
             // Create a map marker
-            Polygon polygon = new Polygon();
-            polygon.Points.Add(new System.Windows.Point(0, 0));
-            polygon.Points.Add(new System.Windows.Point(0, 55));
-            polygon.Points.Add(new System.Windows.Point(25, 25));
-            polygon.Points.Add(new System.Windows.Point(25, 0));
-            polygon.Fill = new SolidColorBrush(color);
+            Image polygon = new Image();
+
+            if (place == _myPlace)
+                polygon.Source = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
+            else
+                polygon.Source = place.PlaceImage;
 
             // Enable marker to be tapped for location information
-            polygon.Tag = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);
+            polygon.Tag = new GeoCoordinate(place.position.Latitude, place.position.Longitude);
 
             // Create a MapOverlay and add marker.
             MapOverlay overlay = new MapOverlay();
             overlay.Content = polygon;
-            overlay.GeoCoordinate = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);
+            overlay.GeoCoordinate = new GeoCoordinate(place.position.Latitude, place.position.Longitude);
             overlay.PositionOrigin = new System.Windows.Point(0.0, 1.0);
-            mapLayer.Add(overlay);
-        }
-
-        private void DrawAccuracyRadius(MapLayer mapLayer)
-        {
-            // The ground resolution (in meters per pixel) varies depending on the level of detail 
-            // and the latitude at which it’s measured. It can be calculated as follows:
-            double metersPerPixels = (Math.Cos(_selectedCoordinate.Latitude * Math.PI / 180) * 2 * Math.PI * 6378137) / (256 * Math.Pow(2, MyMap.ZoomLevel));
-            double radius = 55.0 / metersPerPixels;
-
-            Ellipse ellipse = new Ellipse();
-            ellipse.Width = radius * 2;
-            ellipse.Height = radius * 2;
-            ellipse.Fill = new SolidColorBrush(Color.FromArgb(20, 0, 0, 0));
-            ellipse.Stroke = new SolidColorBrush(Color.FromArgb(75, 0, 0, 0));
-
-            MapOverlay overlay = new MapOverlay();
-            overlay.Content = ellipse;
-            overlay.GeoCoordinate = new GeoCoordinate(_selectedCoordinate.Latitude, _selectedCoordinate.Longitude);
-            overlay.PositionOrigin = new System.Windows.Point(0.5, 0.5);
             mapLayer.Add(overlay);
         }
 
@@ -611,12 +589,33 @@ namespace windows_client.View
     public class Place : INotifyPropertyChanged
     {
         string _vicinity;
+        string _icon;
+        BitmapImage _place;
 
         public Visibility VicinityVisibility
         {
             get
             {
                 return String.IsNullOrEmpty(vicinity) ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        public BitmapImage PlaceImage
+        {
+            get
+            {
+                if(_place == null)
+                    _place = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
+
+                return _place;
+            }
+            set
+            {
+                if (_place != value)
+                {
+                    _place = value;
+                    NotifyPropertyChanged("PlaceImage");
+                }
             }
         }
 
@@ -630,7 +629,29 @@ namespace windows_client.View
         public double averageRating { get; set; }
 
         [JsonProperty]
-        public string icon { get; set; }
+        public string icon
+        {
+            get
+            {
+               return _icon;
+            }
+            set
+            {
+                if (_icon != value)
+                {
+                    _icon = value == null ? String.Empty:value;
+
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (!String.IsNullOrEmpty(_icon))
+                                PlaceImage = new BitmapImage(new Uri(icon));
+                        });
+
+                    NotifyPropertyChanged("icon");
+                    NotifyPropertyChanged("PlaceImage");
+                }
+            }
+        }
 
         [JsonProperty]
         public string vicinity
