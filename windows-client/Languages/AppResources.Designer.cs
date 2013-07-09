@@ -3462,7 +3462,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to send as sms.
+        ///   Looks up a localized string similar to send as hike sms.
         /// </summary>
         public static string Send_As_Sms {
             get {
