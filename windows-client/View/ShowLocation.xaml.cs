@@ -12,6 +12,7 @@ using Windows.Devices.Geolocation;
 using Microsoft.Phone.Maps.Controls;
 using Microsoft.Phone.Maps.Services;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using windows_client.Languages;
 using Windows.Foundation;
@@ -142,12 +143,7 @@ namespace windows_client.View
             }
 
             if (e.NavigationMode == NavigationMode.New)
-            {
-                if (_myCoordinate == null)
-                    GetCurrentCoordinate();
-                else
-                    GetDirections();
-            }
+                GetCurrentCoordinate();
             else
                 GetDirections();
            
@@ -270,28 +266,42 @@ namespace windows_client.View
                 MyMap.AddRoute(MyMapRoute);
 
                 // Update route information and directions
-                double distanceInKm = (double)MyRoute.LengthInMeters / 1000;
+                double distance = (double)MyRoute.LengthInMeters / 1000;
                 var ts = new TimeSpan(MyRoute.EstimatedDuration.Hours, MyRoute.EstimatedDuration.Minutes, 0);
 
                 timeDestination.Text = ts.ToString("hh\\:mm", System.Globalization.CultureInfo.CurrentUICulture);
-                distanceDestination.Text = distanceInKm.ToString("0.0") + " km";
+                distanceDestination.Text = distance.ToString("0.0") + " km";
 
-                List<string> routeInstructions = new List<string>();
+                List<Direction> routeInstructions = new List<Direction>();
                 foreach (RouteLeg leg in MyRoute.Legs)
                 {
                     for (int i = 0; i < leg.Maneuvers.Count; i++)
                     {
                         RouteManeuver maneuver = leg.Maneuvers[i];
-                        string instructionText = maneuver.InstructionText;
-                        distanceInKm = 0;
+                        Direction direction = new Direction()
+                        {
+                            Instruction = maneuver.InstructionText,
+                            InstructionKind = maneuver.InstructionKind
+                        };
+
+                        distance = 0;
 
                         if (i > 0)
                         {
-                            distanceInKm = (double)leg.Maneuvers[i - 1].LengthInMeters / 1000;
-                            instructionText += " (" + distanceInKm.ToString("0.0") + " km)";
+                            if (leg.Maneuvers[i - 1].LengthInMeters > 1000)
+                            {
+                                distance = (double)leg.Maneuvers[i - 1].LengthInMeters / 1000;
+                                direction.Distance = String.Format(AppResources.Kilometer_Abbreviation, distance.ToString("0.0"));
+                            }
+                            else
+                            {
+                                distance = (double)leg.Maneuvers[i - 1].LengthInMeters;
+                                direction.Distance = String.Format(AppResources.Meter_Abbreviation, distance.ToString("0.0"));
+                            }
+                            
                         }
 
-                        routeInstructions.Add(instructionText);
+                        routeInstructions.Add(direction);
                     }
                 }
 
@@ -422,6 +432,44 @@ namespace windows_client.View
                 LayoutRoot.RowDefinitions[0].Height = new GridLength(3, GridUnitType.Star);
                 LayoutRoot.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
                 _isMapBig = !_isMapBig;
+            }
+        }
+    }
+
+    public class Direction
+    {
+        public string Instruction { get; set; }
+        
+        public string InstructionKindText
+        {
+            get
+            {
+                return InstructionKind.ToString(System.Globalization.CultureInfo.CurrentCulture);
+            }
+        }
+
+        public RouteManeuverInstructionKind InstructionKind { get; set; }
+
+        public BitmapImage DirectionImage
+        {
+            get
+            {
+                return InstructionKindToImage();
+            }
+        }
+        
+        public string Distance { get; set; }
+
+        BitmapImage InstructionKindToImage()
+        {
+            return new BitmapImage();
+        }
+
+        public Visibility DistanceVisibility
+        {
+            get
+            {
+                return String.IsNullOrEmpty(Distance) ? Visibility.Collapsed : Visibility.Visible;
             }
         }
     }
