@@ -42,12 +42,11 @@ namespace windows_client.View
         private ApplicationBar appBar;
         private BitmapImage _avatarImageBitmap = new BitmapImage();
         ApplicationBarMenuItem delConvsMenu;
-        ApplicationBarMenuItem toggleStatusUpdatesMenu;
         ApplicationBarIconButton composeIconButton;
         ApplicationBarIconButton postStatusIconButton;
         ApplicationBarIconButton groupChatIconButton;
         //ApplicationBarIconButton addFriendIconButton;
-
+        private bool isStatusUpdatesMute;
         private bool isStatusMessagesLoaded = false;
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
         #endregion
@@ -177,8 +176,8 @@ namespace windows_client.View
                 freeSMSPanel.Visibility = Visibility.Collapsed;
             }
             byte statusSettingsValue;
-            App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue);
-            toggleStatusUpdatesMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
+            isStatusUpdatesMute = App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue) && statusSettingsValue == 0;
+            imgToggleStatus.Source = isStatusUpdatesMute ? UI_Utils.Instance.MuteIcon : UI_Utils.Instance.UnmuteIcon;
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -377,12 +376,11 @@ namespace windows_client.View
             delConvsMenu.Click += new EventHandler(deleteAllConvs_Click);
             appBar.MenuItems.Add(delConvsMenu);
 
-            toggleStatusUpdatesMenu = new ApplicationBarMenuItem();
-            byte statusSettingsValue;
-            App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue);
-            toggleStatusUpdatesMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
-            toggleStatusUpdatesMenu.Click += ToggleStatusUpdateNotification;
-            appBar.MenuItems.Add(toggleStatusUpdatesMenu);
+            //toggleStatusUpdatesMenu = new ApplicationBarMenuItem();
+            //byte statusSettingsValue;
+            //App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue);
+            //toggleStatusUpdatesMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
+            //appBar.MenuItems.Add(toggleStatusUpdatesMenu);
         }
 
         public static void ReloadConversations() // running on some background thread
@@ -605,37 +603,30 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 
-        private void ToggleStatusUpdateNotification(object sender, EventArgs e)
+        private void ToggleStatusUpdateNotification(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            MessageBox.Show(isStatusUpdatesMute ? AppResources.Unmute_Success_Txt : AppResources.Mute_Success_Txt, AppResources.StatusNotToggle_Caption_Txt, MessageBoxButton.OK);
             int settingsValue = 0;
-            if (toggleStatusUpdatesMenu.Text == AppResources.Conversations_MuteStatusNotification_txt)
+            if (isStatusUpdatesMute)
             {
-                this.toggleStatusUpdatesMenu.Text = AppResources.Conversations_UnmuteStatusNotification_txt;
-                App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)0);
-                settingsValue = -1;
-            }
-            else
-            {
-                this.toggleStatusUpdatesMenu.Text = AppResources.Conversations_MuteStatusNotification_txt;
+                imgToggleStatus.Source = UI_Utils.Instance.UnmuteIcon;
                 App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)1);
                 settingsValue = 0;
             }
+            else
+            {
+                imgToggleStatus.Source = UI_Utils.Instance.MuteIcon;
+                App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)0);
+                settingsValue = -1;
+            }
+            isStatusUpdatesMute = !isStatusUpdatesMute;
+
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
             data.Add(HikeConstants.PUSH_SU, settingsValue);
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-
-            ToastPrompt toast = new ToastPrompt();
-            toast.Foreground = UI_Utils.Instance.White;
-            toast.Background = UI_Utils.Instance.TappedCategoryColor;
-            toast.Title = settingsValue == 0 ? AppResources.Unmute_Success_Txt : AppResources.Mute_Success_Txt;
-            //BitmapImage image = new BitmapImage(new Uri("/View/images/mute_icon_main.png", UriKind.Relative));
-            //image.DecodePixelHeight = 25;
-            //toast.ImageSource = image;
-            toast.MillisecondsUntilHidden = 800;
-            toast.Show();
         }
 
         /* Start or continue the conversation*/
@@ -693,8 +684,8 @@ namespace windows_client.View
             {
                 if (!appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Insert(0, delConvsMenu);
-                if (appBar.MenuItems.Contains(toggleStatusUpdatesMenu))
-                    appBar.MenuItems.Remove(toggleStatusUpdatesMenu);
+
+                gridToggleStatus.Visibility = Visibility.Collapsed;
             }
             else if (selectedIndex == 1) // favourite
             {
@@ -781,8 +772,7 @@ namespace windows_client.View
             }
             else if (selectedIndex == 2)
             {
-                if (appBar.MenuItems.Contains(toggleStatusUpdatesMenu))
-                    appBar.MenuItems.Remove(toggleStatusUpdatesMenu);
+                gridToggleStatus.Visibility = Visibility.Collapsed;
             }
             else if (selectedIndex == 3)
             {
@@ -790,7 +780,7 @@ namespace windows_client.View
 
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
-                appBar.MenuItems.Add(toggleStatusUpdatesMenu);
+                gridToggleStatus.Visibility = Visibility.Visible;
                 if (!isStatusMessagesLoaded)
                 {
                     List<StatusMessage> statusMessagesFromDB = null;

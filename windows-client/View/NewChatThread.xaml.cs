@@ -3572,7 +3572,7 @@ namespace windows_client.View
                 //TODO handle vibration for user profile and GC.
                 if ((convMessage.Msisdn == mContactNumber && (convMessage.MetaDataString != null &&
                     convMessage.MetaDataString.Contains(HikeConstants.POKE))) &&
-                    convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE && !isGroupChat)
+                    convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE && (!isGroupChat || !_isMute))
                 {
                     bool isVibrateEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
@@ -4116,14 +4116,14 @@ namespace windows_client.View
                 string locationJSONString = locationJSON.ToString();
 
                 byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
-                
+
                 var vicinity = fileData[HikeConstants.LOCATION_ADDRESS].ToString();
                 string locationMessage = String.Empty;
                 string fileName = fileData[HikeConstants.FILE_NAME].ToString();
 
                 if (!String.IsNullOrEmpty(vicinity))
                     fileName += ", " + vicinity;
-            
+
                 locationMessage = fileName;
 
                 ConvMessage convMessage = new ConvMessage(locationMessage, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation)
@@ -4132,10 +4132,10 @@ namespace windows_client.View
                     HasAttachment = true,
                     MetaDataString = locationJSONString
                 };
-              
+
                 convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED);
                 convMessage.FileAttachment.ContentType = "hikemap/location";
-                
+
                 AddNewMessageToUI(convMessage, false);
 
                 object[] vals = new object[3];
@@ -4352,25 +4352,23 @@ namespace windows_client.View
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (!isGroupChat)
+
+            if (mUserIsBlocked)
+                return;
+            emoticonPanel.Visibility = Visibility.Collapsed;
+            if ((!isOnHike && mCredits <= 0))
+                return;
+            ConvMessage convMessage = new ConvMessage("Nudge!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+            convMessage.IsSms = !isOnHike;
+            convMessage.HasAttachment = false;
+            convMessage.MetaDataString = "{poke:1}";
+            sendMsg(convMessage, false);
+            bool isVibrateEnabled = true;
+            App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
+            if (isVibrateEnabled)
             {
-                if (mUserIsBlocked)
-                    return;
-                emoticonPanel.Visibility = Visibility.Collapsed;
-                if ((!isOnHike && mCredits <= 0))
-                    return;
-                ConvMessage convMessage = new ConvMessage("Nudge!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                convMessage.IsSms = !isOnHike;
-                convMessage.HasAttachment = false;
-                convMessage.MetaDataString = "{poke:1}";
-                sendMsg(convMessage, false);
-                bool isVibrateEnabled = true;
-                App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
-                if (isVibrateEnabled)
-                {
-                    VibrateController vibrate = VibrateController.Default;
-                    vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
-                }
+                VibrateController vibrate = VibrateController.Default;
+                vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
             }
         }
 
@@ -5738,7 +5736,7 @@ namespace windows_client.View
                         }
                         else
                             MessageBox.Show(AppResources.H2HOfline_0SMS_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OK);
-               
+
                         llsMessages.SelectedItem = null;
                     }
                     else
@@ -5777,7 +5775,7 @@ namespace windows_client.View
             get;
             set;
         }
-        
+
         public DataTemplate DtRecievedBubbleLocation
         {
             get;
