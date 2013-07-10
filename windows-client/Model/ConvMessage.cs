@@ -1236,6 +1236,10 @@ namespace windows_client.Model
         {
             string message = Message;
 
+            if (StickerObj != null)
+                return String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Sticker_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                    "/sticker?" + HikeConstants.CATEGORY_ID + "=" + StickerObj.Category + "&" + HikeConstants.STICKER_ID + "=" + StickerObj.Id;
+
             if (FileAttachment == null) 
                 return message;
 
