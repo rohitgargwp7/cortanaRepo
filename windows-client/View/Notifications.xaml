@@ -27,38 +27,35 @@
             <TextBlock Text="{Binding Path= LocalizedResources.Preferences_Header_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="68"  Margin="25,0,0,0"/>
         </StackPanel>
 
-        <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="17,20,17,0" Background="Transparent">
-            <ScrollViewer>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="1" Margin="17,20,17,0">
+            <!--ContentPanel - place additional content here-->
+            <Grid x:Name="ContentPanel" Background="Transparent">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                    <toolkit:ToggleSwitch  Grid.Row="0" x:Name="locationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                <toolkit:ToggleSwitch  Grid.Row="0" x:Name="locationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_LocationToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="location_Checked" Unchecked="location_Unchecked"/>
-                    <toolkit:ToggleSwitch  Grid.Row="1" x:Name="pushNotifications" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                <toolkit:ToggleSwitch  Grid.Row="1" x:Name="pushNotifications" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_PushToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="pushNotifications_Checked" Unchecked="pushNotifications_Unchecked"/>
-                    <toolkit:ToggleSwitch Grid.Row="2" x:Name="vibrate" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                <toolkit:ToggleSwitch Grid.Row="2" x:Name="vibrate" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_VibrateToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="vibrate_Checked" Unchecked="vibrate_Unchecked"/>
-                    <toolkit:ToggleSwitch Grid.Row="3" x:Name="showFreeSMSToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                <toolkit:ToggleSwitch Grid.Row="3" x:Name="showFreeSMSToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_FreeSMSToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="showFreeSMSToggle_Checked" Unchecked="showFreeSMSToggle_Unchecked"/>
-                    <toolkit:ToggleSwitch Grid.Row="4" x:Name="lastSeenTimeStampToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="lastSeenTimeStampToggle_Loaded"
+                <toolkit:ToggleSwitch Grid.Row="4" x:Name="lastSeenTimeStampToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="lastSeenTimeStampToggle_Loaded"
                                           Header="{Binding Path= LocalizedResources.Show_LastSeen_TimeStamp, Source={StaticResource LocalizedStrings}}" />
-                    <toolkit:ToggleSwitch Grid.Row="5" x:Name="statusUpdateNotificationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="statusUpdateNotificationToggle_Loaded"
+                <toolkit:ToggleSwitch Grid.Row="5" x:Name="statusUpdateNotificationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="statusUpdateNotificationToggle_Loaded"
                                           Header="{Binding Path= LocalizedResources.Settings_StatusNotification_SwitchHeader, Source={StaticResource LocalizedStrings}}" />
-                    <toolkit:ListPicker Grid.Row="6" x:Name="listBoxStatusSettings" Loaded="listBoxStatusSettings_Loaded" Margin="10 -5 10 0" Visibility="Collapsed"/>
-                    <Button Grid.Row="7" Content="Set Lock Screen Notifications" Tap="btnGoToLockSettings_Click" />
-                </Grid>
-            </ScrollViewer>
-        </Grid>
+                <toolkit:ListPicker Grid.Row="6" x:Name="listBoxStatusSettings" Loaded="listBoxStatusSettings_Loaded" Margin="10 -5 10 0" Visibility="Collapsed"/>
+                <Button Grid.Row="7" Content="Set Lock Screen Notifications" Tap="btnGoToLockSettings_Click" />
+            </Grid>
+        </ScrollViewer>
     </Grid>
-
 </phone:PhoneApplicationPage>
