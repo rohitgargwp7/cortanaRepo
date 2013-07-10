@@ -2390,16 +2390,26 @@ namespace windows_client.View
             proTipsGrid.Visibility = Visibility.Collapsed;
             ProTipCount = 0;
 
+            JObject proTipAnalyticsJson = new JObject();
+            proTipAnalyticsJson.Add(Analytics.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip._id);
+
+            JObject data = new JObject();
+            data.Add(HikeConstants.METADATA, proTipAnalyticsJson);
+            data.Add(HikeConstants.SUB_TYPE, HikeConstants.UI_EVENT);
+            data[HikeConstants.TAG] = utils.Utils.IsWP8 ? "wp8" : "wp7";
+
+            JObject jsonObj = new JObject();
+            jsonObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
+            jsonObj.Add(HikeConstants.DATA, data);
+
+            object[] publishData = new object[2];
+            publishData[0] = jsonObj;
+            publishData[1] = 1; //qos
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, publishData);
+
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (ss, ee) =>
                 {
-                    JObject proTipAnalyticsJson = new JObject();
-                    proTipAnalyticsJson.Add(Analytics.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip._id);
-                    object[] publishData = new object[2];
-                    publishData[0] = proTipAnalyticsJson;
-                    publishData[1] = 1; //qos
-                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, publishData);
-
                     if (App.appSettings.Contains(App.PRO_TIP))
                     {
                         ProTipHelper.Instance.RemoveCurrentProTip();
