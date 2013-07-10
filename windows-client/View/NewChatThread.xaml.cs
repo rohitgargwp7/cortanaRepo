@@ -1739,7 +1739,7 @@ namespace windows_client.View
                 }
                 mUserIsBlocked = false;
                 showOverlay(false);
-                appBar.IsMenuEnabled = false;
+                appBar.IsMenuEnabled = true;
             }
         }
 

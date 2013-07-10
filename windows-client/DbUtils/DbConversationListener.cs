@@ -277,6 +277,9 @@ namespace windows_client.DbUtils
 
                 ConversationListObject c = (ConversationListObject)o[1];
                 bool delConv = (bool)o[2];
+                //remove attachment if present
+                MiscDBUtil.deleteMessageData(c.Msisdn, msgId);
+
                 if (delConv)
                 {
                     // delete the conversation from DB.

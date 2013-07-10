@@ -19,6 +19,7 @@ using windows_client.Languages;
 using windows_client.DbUtils;
 using windows_client.Controls;
 using Facebook;
+using windows_client.ViewModel;
 
 namespace windows_client.View
 {
@@ -142,6 +143,7 @@ namespace windows_client.View
             ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING;
             NetworkManager.turnOffNetworkManager = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
+            HikeViewModel.stickerHelper = null;
             App.ClearAppSettings();
             App.appSettings[App.IS_DB_CREATED] = true;
             //so that on signing up again user can see these tutorials 
