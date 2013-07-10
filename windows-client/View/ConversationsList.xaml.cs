@@ -2393,6 +2393,13 @@ namespace windows_client.View
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (ss, ee) =>
                 {
+                    JObject proTipAnalyticsJson = new JObject();
+                    proTipAnalyticsJson.Add(Analytics.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip._id);
+                    object[] publishData = new object[2];
+                    publishData[0] = proTipAnalyticsJson;
+                    publishData[1] = 1; //qos
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, publishData);
+
                     if (App.appSettings.Contains(App.PRO_TIP))
                     {
                         ProTipHelper.Instance.RemoveCurrentProTip();
