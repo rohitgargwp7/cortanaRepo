@@ -34,10 +34,7 @@ namespace windows_client.View
                 isLocationEnabled = true;
 
             this.locationToggle.IsChecked = isLocationEnabled;
-            if (isLocationEnabled)
-                this.locationToggle.Content = AppResources.On;
-            else
-                this.locationToggle.Content = AppResources.Off;
+            this.locationToggle.Content = isLocationEnabled ? AppResources.On : AppResources.Off;
 
             bool isPushEnabled = true;
             App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
@@ -87,10 +84,7 @@ namespace windows_client.View
             if (!App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out showlastSeen))
                 showlastSeen = true;
             lastSeenTimeStampToggle.IsChecked = showlastSeen;
-            if (showlastSeen)
-                this.lastSeenTimeStampToggle.Content = AppResources.On;
-            else
-                this.lastSeenTimeStampToggle.Content = AppResources.Off;
+            this.lastSeenTimeStampToggle.Content = showlastSeen ? AppResources.On : AppResources.Off;
 
             byte statusSettingsValue;
             if (App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue))
