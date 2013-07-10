@@ -271,7 +271,7 @@ namespace windows_client.DbUtils
                             {
                                 if (file.Length > 0)
                                 {
-                                    using (var reader = new BinaryReader(file))
+                                    using (var reader = new BinaryReader(file, Encoding.UTF8, true))
                                     {
                                         fStatus = (FriendStatusEnum)reader.ReadByte();
 
@@ -327,7 +327,7 @@ namespace windows_client.DbUtils
                                 {
                                     if (file.Length > 0)
                                     {
-                                        using (var reader = new BinaryReader(file))
+                                        using (var reader = new BinaryReader(file, Encoding.UTF8, true))
                                         {
                                             try
                                             {

@@ -283,7 +283,7 @@ namespace windows_client.utils
             JObject info = new JObject();
             info["_device"] = getDeviceModel();
             info["_app_version"] = getAppVersion();
-            info["tag"] = "cbs";
+            info[HikeConstants.TAG] = "cbs";
             info["_carrier"] = DeviceNetworkInformation.CellularMobileOperator;
             info["device_id"] = getHashedDeviceId();
             info[HikeConstants.OS_VERSION] = getOSVersion();
@@ -497,7 +497,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (currentResolution == Resolutions.Default)
+                if (palleteResolution == Resolutions.Default)
                 {
                     if (IsWvga) palleteResolution = Resolutions.WVGA;
                     else if (IsWxga) palleteResolution = Resolutions.WXGA;

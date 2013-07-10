@@ -31,13 +31,13 @@ namespace windows_client.View
         BitmapImage profileImage = null;
         byte[] fullViewImageBytes = null;
         byte[] thumbnailBytes = null;
-        bool isFirstLoad = true;
         string nameToShow = null;
         string firstName = null;
         bool isOnHike = false;
         private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
         private ApplicationBar appBar;
         ApplicationBarIconButton editProfile_button;
+        ApplicationBarIconButton addToContactsAppBarButton;
         bool isInvited;
         bool isInAddressBook;
         bool toggleToInvitedScreen;
@@ -264,7 +264,7 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-            if (isFirstLoad)
+            if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
             {
                 object o;
                 #region USER INFO FROM CHAT THREAD
@@ -340,30 +340,107 @@ namespace windows_client.View
 
                 avatarImage.Source = profileImage;
                 txtUserName.Text = nameToShow;
+                txtMsisdn.Text = msisdn;
+
                 firstName = Utils.GetFirstName(nameToShow);
+
                 //if blocked user show block ui and return
                 if (msisdn != App.MSISDN && App.ViewModel.BlockedHashset.Contains(msisdn))
                 {
                     isBlocked = true;
                     ShowBlockedUser();
-                    isFirstLoad = false;
                     if (appBar != null)
                         appBar.IsVisible = false;
                     return;
                 }
+
                 if (!isOnHike)//sms user
-                {
                     ShowNonHikeUser();
-                }
                 else
-                {
                     InitHikeUserProfile();
-                }
-                isFirstLoad = false;
+
+                LoadCallCopyOptions();
             }
+
             // this is done to update profile name , as soon as it gets updated
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PROFILE_NAME_CHANGED))
                 txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED];
+        }
+
+        void LoadCallCopyOptions()
+        {
+            if (msisdn != App.MSISDN)
+            {
+                ApplicationBarIconButton callIconButton = new ApplicationBarIconButton();
+                callIconButton.IconUri = new Uri("/View/images/call.png", UriKind.Relative);
+                callIconButton.Text = AppResources.Call_Txt;
+                callIconButton.Click += new EventHandler(Call_Click);
+                callIconButton.IsEnabled = true;
+
+                if (appBar == null)
+                {
+                    appBar = new ApplicationBar();
+                    appBar.Mode = ApplicationBarMode.Default;
+                    appBar.IsVisible = true;
+                    appBar.IsMenuEnabled = true;
+                }
+
+                appBar.Buttons.Add(callIconButton);
+                UserProfilePage.ApplicationBar = appBar;
+
+                BackgroundWorker worker = new BackgroundWorker();
+                worker.DoWork += delegate
+                    {
+                        if (!isInAddressBook)
+                        {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                ShowAddToContacts();
+                            });
+                        }
+                    };
+
+                worker.RunWorkerAsync();
+            }
+
+            ContextMenu menu = new ContextMenu();
+            menu.IsZoomEnabled = false;
+            MenuItem menuItemCopy = new MenuItem();
+            menuItemCopy.Header = AppResources.Copy_txt;
+            menuItemCopy.Click += menuItemCopy_Click;
+            menu.Items.Add(menuItemCopy);
+            ContextMenuService.SetContextMenu(txtMsisdn, menu);
+
+            if (msisdn == txtUserName.Text)
+            {
+                ContextMenu menu2 = new ContextMenu();
+                menu2.IsZoomEnabled = false;
+                MenuItem menuItemCopy2 = new MenuItem();
+                menuItemCopy2.Header = AppResources.Copy_txt;
+                menuItemCopy2.Click += menuItemCopy_Click;
+                menu2.Items.Add(menuItemCopy2);
+                ContextMenuService.SetContextMenu(txtUserName, menu2);
+            }
+        }
+
+        void menuItemCopy_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(txtMsisdn.Text);
+        }
+
+        void Call_Click(object sender, EventArgs e)
+        {
+            PhoneCallTask phoneCallTask = new PhoneCallTask();
+            phoneCallTask.PhoneNumber = txtMsisdn.Text;
+            phoneCallTask.DisplayName = txtUserName.Text;
+            try
+            {
+                phoneCallTask.Show();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("UserProfile.xaml ::  menuItemCall_Click , Exception : " + ex.StackTrace);
+            }
         }
 
         private void InitChatIconBtn()
@@ -746,18 +823,21 @@ namespace windows_client.View
             addToFavBtn.Visibility = Visibility.Collapsed;
             addToFavBtn.Tap -= UnblockUser_Tap;
             txtOnHikeSmsTime.Visibility = Visibility.Visible;
+
             if (appBar != null)
                 appBar.IsVisible = true;
+
             isBlocked = false;
+
             if (!isOnHike)
-            {
                 ShowNonHikeUser();
-            }
             else
             {
                 txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
                 InitHikeUserProfile();
             }
+
+            LoadCallCopyOptions();
         }
 
         #endregion
@@ -880,13 +960,24 @@ namespace windows_client.View
         {
             if (obj != null && HikeConstants.FAIL != (string)obj[HikeConstants.STAT])
             {
-                JObject j = (JObject)obj["profile"];
-                long time = (long)j["jointime"];
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                var isOnHike = (bool)obj["onhike"];
+                if (isOnHike)
                 {
-                    txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, TimeUtils.GetOnHikeSinceDisplay(time));
-                });
-                FriendsTableUtils.SetJoiningTime(msisdn, time);
+                    JObject j = (JObject)obj["profile"];
+                    long time = (long)j["jointime"];
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, TimeUtils.GetOnHikeSinceDisplay(time));
+                    });
+                    FriendsTableUtils.SetJoiningTime(msisdn, time);
+                }
+                else
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        txtOnHikeSmsTime.Text = string.Format(AppResources.OnSms_Txt);
+                    });
+                }
             }
             // ignore if call is failed
         }
@@ -895,17 +986,22 @@ namespace windows_client.View
 
         private void ShowAddToContacts()
         {
-            imgInviteLock.Source = UI_Utils.Instance.ContactIcon;
-            txtSmsUserNameBlk1.Text = firstName;
-            txtSmsUserNameBlk2.Text = AppResources.Profile_NotInAddressbook_Txt;
-            txtSmsUserNameBlk3.Text = string.Empty;
-            btnInvite.Content = AppResources.Profile_AddNow_Btn_Txt;
-            btnInvite.Tap -= AddAsFriend_Tap;
-            btnInvite.Tap += AddUserToContacts_Click;
-            btnInvite.Visibility = Visibility.Visible;
-            gridSmsUser.Visibility = Visibility.Visible;
-            gridHikeUser.Visibility = Visibility.Collapsed;
-            addToFavBtn.Visibility = Visibility.Collapsed;
+            if (addToContactsAppBarButton == null)
+            {
+                addToContactsAppBarButton = new ApplicationBarIconButton()
+                {
+                    Text = AppResources.UserProfile_AddToContacts_Btn,
+                    IconUri = new Uri("/view/images/appbar_addfriend.png", UriKind.Relative)
+                };
+
+                addToContactsAppBarButton.Click += AddUserToContacts_Click;
+            }
+
+            if (ApplicationBar == null)
+                ApplicationBar = new ApplicationBar();
+
+            if (!ApplicationBar.Buttons.Contains(addToContactsAppBarButton))
+                this.ApplicationBar.Buttons.Add(addToContactsAppBarButton);
         }
 
         private void ShowRequestSent()
@@ -918,16 +1014,10 @@ namespace windows_client.View
             txtSmsUserNameBlk3.Text = AppResources.Profile_RequestSent_Blk3;
             gridHikeUser.Visibility = Visibility.Collapsed;
             btnInvite.Visibility = Visibility.Collapsed;
+            addToFavBtn.Visibility = Visibility.Collapsed;
+        
             if (!isInAddressBook)
-            {
-                addToFavBtn.Content = AppResources.UserProfile_AddToContacts_Btn;
-                addToFavBtn.Visibility = Visibility.Visible;
-                addToFavBtn.Tap += AddUserToContacts_Click;
-            }
-            else
-            {
-                addToFavBtn.Visibility = Visibility.Collapsed;
-            }
+                ShowAddToContacts();
         }
 
         private void ShowAddAsFriends()
@@ -939,8 +1029,7 @@ namespace windows_client.View
             txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
             txtSmsUserNameBlk2.Text = firstName;
             txtSmsUserNameBlk3.Text = AppResources.ProfileToBeFriendBlk3;
-            btnInvite.Content = AppResources.btnAddAsFriend_Txt;
-            btnInvite.Tap -= AddUserToContacts_Click;
+            btnInvite.Content = AppResources.Add_To_Fav_Txt;
             btnInvite.Tap += AddAsFriend_Tap;
             btnInvite.Visibility = Visibility.Visible;
             isInvited = false;//resetting so that if not now can be clicked again
@@ -948,16 +1037,10 @@ namespace windows_client.View
             gridSmsUser.Visibility = Visibility.Visible;
             gridAddFriendStrip.Visibility = Visibility.Collapsed;
             gridHikeUser.Visibility = Visibility.Collapsed;
+            addToFavBtn.Visibility = Visibility.Collapsed;
+
             if (!isInAddressBook)
-            {
-                addToFavBtn.Content = AppResources.UserProfile_AddToContacts_Btn;
-                addToFavBtn.Visibility = Visibility.Visible;
-                addToFavBtn.Tap += AddUserToContacts_Click;
-            }
-            else
-            {
-                addToFavBtn.Visibility = Visibility.Collapsed;
-            }
+                ShowAddToContacts();
         }
 
         private void ShowRequestRecievedPanel()
@@ -1007,7 +1090,7 @@ namespace windows_client.View
             if (!App.ViewModel.Isfavourite(msisdn))
             {
                 addToFavBtn.Visibility = Visibility.Visible;
-                addToFavBtn.Content = AppResources.btnAddAsFriend_Txt;
+                addToFavBtn.Content = AppResources.Add_To_Fav_Txt;
                 addToFavBtn.Tap += AddAsFriend_Tap;
             }
         }
@@ -1110,7 +1193,7 @@ namespace windows_client.View
 
         #region ADD USER TO CONTATCS
         ContactInfo contactInfo;
-        private void AddUserToContacts_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        private void AddUserToContacts_Click(object sender, EventArgs e)
         {
             ContactUtils.saveContact(msisdn, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
         }
@@ -1121,12 +1204,13 @@ namespace windows_client.View
             {
                 case TaskResult.OK:
                     ContactUtils.getContact(msisdn, new ContactUtils.contacts_Callback(contactSearchCompleted_Callback));
+                    ApplicationBar.Buttons.Remove(addToContactsAppBarButton);
                     break;
                 case TaskResult.Cancel:
-                    MessageBox.Show(AppResources.User_Cancelled_Task_Txt);
+                    System.Diagnostics.Debug.WriteLine(AppResources.User_Cancelled_Task_Txt);
                     break;
                 case TaskResult.None:
-                    MessageBox.Show(AppResources.NoInfoForTask_Txt);
+                    System.Diagnostics.Debug.WriteLine(AppResources.NoInfoForTask_Txt);
                     break;
             }
         }
@@ -1271,13 +1355,11 @@ namespace windows_client.View
 
                 if (friendStatus < FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
                 {
-                    addToFavBtn.Tap -= AddUserToContacts_Click;
                     addToFavBtn.Visibility = Visibility.Collapsed;
                     txtSmsUserNameBlk2.Text = firstName;
                 }
                 else
                 {
-                    btnInvite.Tap -= AddUserToContacts_Click;
                     CreateStatusUi(statusMessagesFromDB);
                     isStatusLoaded = true;
                 }
@@ -1304,6 +1386,15 @@ namespace windows_client.View
                 inAddressBook = true;
             }
             return inAddressBook;
+        }
+
+        private void GestureListener_Tap(object sender, GestureEventArgs e)
+        {
+            TextBlock textBlock = sender as TextBlock;
+            ContextMenu contextMenu = ContextMenuService.GetContextMenu(textBlock);
+         
+            if (contextMenu != null)
+                contextMenu.IsOpen = true;
         }
     }
 }
