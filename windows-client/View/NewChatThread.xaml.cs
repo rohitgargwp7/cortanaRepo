@@ -928,18 +928,18 @@ namespace windows_client.View
 
             if (lastSeenSettingsValue > 0)
             {
-                var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
-                if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
-                {
-                    BackgroundWorker _worker = new BackgroundWorker();
+                BackgroundWorker _worker = new BackgroundWorker();
 
-                    _worker.DoWork += (ss, ee) =>
+                _worker.DoWork += (ss, ee) =>
+                {
+                    var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
+                    if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
                     {
                         _lastSeenHelper.requestLastSeen(mContactNumber);
-                    };
+                    }
+                };
 
-                    _worker.RunWorkerAsync();
-                }
+                _worker.RunWorkerAsync();
             }
 
             #endregion

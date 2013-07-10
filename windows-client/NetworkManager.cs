@@ -81,6 +81,7 @@ namespace windows_client
             }
         }
 
+
         public void onMessage(string msg)
         {
             if (string.IsNullOrEmpty(msg))
@@ -89,7 +90,6 @@ namespace windows_client
             {
                 Thread.Sleep(500);
             }
-
             JObject jsonObj = null;
             try
             {
