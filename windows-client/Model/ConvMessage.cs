@@ -1234,8 +1234,11 @@ namespace windows_client.Model
 
         public String GetMessageForServer()
         {
+            if (StickerObj != null)
+                return String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Sticker_Txt) + HikeConstants.STICKER_URL + StickerObj.Category + "/" + StickerObj.Id.Substring(0, StickerObj.Id.IndexOf("_"));
+            
             string message = Message;
-
+            
             if (FileAttachment == null) 
                 return message;
 
