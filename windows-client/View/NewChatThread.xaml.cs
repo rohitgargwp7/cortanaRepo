@@ -905,40 +905,41 @@ namespace windows_client.View
             }
             #endregion
 
-            BackgroundWorker worker = new BackgroundWorker();
-
-            worker.DoWork += (ss, ee) =>
-            {
-                long timeOfJoin;
-                FriendsTableUtils.GetFriendInfo(mContactNumber, out timeOfJoin);
-
-                if (timeOfJoin == 0)
-                    AccountUtils.GetOnhikeDate(mContactNumber, new AccountUtils.postResponseFunction(GetHikeStatus_Callback));
-                else
-                {
-                    isOnHike = true;
-
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (!isGroupChat)
-                            sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
-
-                        spContactTransfer.IsHitTestVisible = true;
-                        spContactTransfer.Opacity = 1;
-
-                        if (appBar.MenuItems.Contains(inviteMenuItem))
-                            appBar.MenuItems.Remove(inviteMenuItem);
-                    });
-                }
-            };
-
-            worker.RunWorkerAsync();
-
             if (!isOnHike)
             {
+                BackgroundWorker worker = new BackgroundWorker();
+
+                worker.DoWork += (ss, ee) =>
+                {
+                    long timeOfJoin;
+                    FriendsTableUtils.GetFriendInfo(mContactNumber, out timeOfJoin);
+
+                    if (timeOfJoin == 0)
+                        AccountUtils.GetOnhikeDate(mContactNumber, new AccountUtils.postResponseFunction(GetHikeStatus_Callback));
+                    else
+                    {
+                        isOnHike = true;
+
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (!isGroupChat)
+                                sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
+
+                            spContactTransfer.IsHitTestVisible = true;
+                            spContactTransfer.Opacity = 1;
+
+                            if (appBar.MenuItems.Contains(inviteMenuItem))
+                                appBar.MenuItems.Remove(inviteMenuItem);
+                        });
+                    }
+                };
+
+                worker.RunWorkerAsync();
+            
                 spContactTransfer.IsHitTestVisible = false;
                 spContactTransfer.Opacity = 0.4;
             }
+
             userName.Text = mContactName;
 
             // if hike bot msg disable appbar, textbox etc
