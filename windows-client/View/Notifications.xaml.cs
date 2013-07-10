@@ -32,11 +32,11 @@ namespace windows_client.View
             if (!App.appSettings.TryGetValue<bool>(App.USE_LOCATION_SETTING, out isLocationEnabled))
                 isLocationEnabled = true;
 
-            this.locationSettings.IsChecked = isLocationEnabled;
+            this.locationToggle.IsChecked = isLocationEnabled;
             if (isLocationEnabled)
-                this.locationSettings.Content = AppResources.On;
+                this.locationToggle.Content = AppResources.On;
             else
-                this.locationSettings.Content = AppResources.Off;
+                this.locationToggle.Content = AppResources.Off;
 
             bool isPushEnabled = true;
             App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);

@@ -41,7 +41,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <toolkit:ToggleSwitch  Grid.Row="0" x:Name="locationSettings" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                    <toolkit:ToggleSwitch  Grid.Row="0" x:Name="locationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_LocationToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="location_Checked" Unchecked="location_Unchecked"/>
                     <toolkit:ToggleSwitch  Grid.Row="1" x:Name="pushNotifications" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_PushToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="pushNotifications_Checked" Unchecked="pushNotifications_Unchecked"/>
