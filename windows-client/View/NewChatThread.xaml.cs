@@ -1098,6 +1098,15 @@ namespace windows_client.View
 
                             if (appBar.MenuItems.Contains(inviteMenuItem))
                                 appBar.MenuItems.Remove(inviteMenuItem);
+
+                            if (ocMessages != null && ocMessages.Count > 0)
+                            {
+                                foreach (var msg in ocMessages)
+                                {
+                                    if (!msg.IsSms)
+                                        msg.IsSms = true;
+                                }
+                            }
                         });
                 }
             }
