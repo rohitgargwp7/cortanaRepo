@@ -450,7 +450,23 @@ namespace windows_client.View
                 _dt.Tick += dt_Tick;
                 _dt.Start();
             }
+            App.newChatThreadPage = this;
+            if (HikeViewModel.stickerHelper == null)
+                HikeViewModel.stickerHelper = new StickerHelper();
 
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += (s, ee) =>
+            {
+                HikeViewModel.stickerHelper.InitialiseLowResStickers();
+            };
+            bw.RunWorkerCompleted += (s, ee) =>
+            {
+                CreateStickerPivot();
+                if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
+                    CreateStickerCategoriesPallete();
+
+            };
+            bw.RunWorkerAsync();
             #region PUSH NOTIFICATION
             // push notification , needs to be handled just once.
             if (this.NavigationContext.QueryString.ContainsKey("msisdn"))
@@ -566,22 +582,6 @@ namespace windows_client.View
             }
 
             #endregion
-            App.newChatThreadPage = this;
-            if (HikeViewModel.stickerHelper == null)
-            {
-                HikeViewModel.stickerHelper = new StickerHelper();
-            }
-
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += (s, ee) =>
-            {
-                HikeViewModel.stickerHelper.InitialiseLowResStickers();
-            };
-            bw.RunWorkerCompleted += (s, ee) =>
-            {
-                CreateStickerPivot();
-            };
-            bw.RunWorkerAsync();
             #region AUDIO FT
             if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
                 PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED)))
@@ -2214,7 +2214,6 @@ namespace windows_client.View
                         {
                             JObject meataDataJson = JObject.Parse(convMessage.MetaDataString);
                             convMessage.StickerObj = new Sticker((string)meataDataJson[HikeConstants.CATEGORY_ID], (string)meataDataJson[HikeConstants.STICKER_ID], null);
-
                             string categoryStickerId = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
                             if (dictStickerCache.ContainsKey(categoryStickerId))
                             {
@@ -4576,12 +4575,13 @@ namespace windows_client.View
             llsStickerCategory.SelectedItem = null;
             if (sticker == null)
                 return;
+
             ConvMessage conv = new ConvMessage(AppResources.Sticker_Txt, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
             conv.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
             conv.StickerObj = new Sticker(sticker.Category, sticker.Id, null);
             conv.MetaDataString = string.Format("{{{0}:'{1}',{2}:'{3}'}}", HikeConstants.STICKER_ID, sticker.Id, HikeConstants.CATEGORY_ID, sticker.Category);
-
-            AddNewMessageToUI(conv, false);
+            //Stickers_tap is binded to pivot and cached so to update latest object this is done
+            App.newChatThreadPage.AddNewMessageToUI(conv, false);
 
             mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
         }
@@ -5028,7 +5028,7 @@ namespace windows_client.View
             PostRequestForBatchStickers(stickerCategory);
         }
 
-        private void CreateStickerPivot()
+        private void CreateStickerCategoriesPallete()
         {
             StickerCategory stickerCategory;
             //done thos way to maintain order of insertion
@@ -5071,6 +5071,10 @@ namespace windows_client.View
                 if (stickerCategory.HasNewMessages)
                     stCategory5.BorderThickness = newCategoryThickness;
             }
+
+        }
+        private void CreateStickerPivot()
+        {
             StickerPivotHelper.Instance.InitialiseStickerPivot(Stickers_Tap);
             pivotStickers = StickerPivotHelper.Instance.StickerPivot;
             pivotStickers.SelectionChanged += PivotStickers_SelectionChanged;
