@@ -1056,7 +1056,8 @@
             </Border>
         </Grid>
 
-        <Grid Canvas.ZIndex="1" x:Name="WalkieTalkieDeleteGrid" IsHitTestVisible="False" Background="#696969" Visibility="Collapsed" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Grid Canvas.ZIndex="1" x:Name="WalkieTalkieDeleteGrid" IsHitTestVisible="False" Background="Transparent" Visibility="Collapsed" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Border x:Name="WalkieTalkieDeletedBorder" Background="{StaticResource PhoneForegroundBrush}" Opacity="0.75" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
             <StackPanel Canvas.ZIndex="3" Margin="35" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Image x:Name="deleteRecImageSuc" Margin="0,0,10,0" Grid.Column="0" Height="30" Stretch="Uniform" HorizontalAlignment="Center"/>
                 <TextBlock x:Name="deleteRecTextSuc" Foreground="White" TextAlignment="Center" Grid.Column="1" FontSize="24"  Text="{Binding Path= LocalizedResources.Message_Cancelled, Source={StaticResource LocalizedStrings}}"/>
