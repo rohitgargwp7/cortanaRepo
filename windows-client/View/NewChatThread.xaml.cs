@@ -939,6 +939,9 @@ namespace windows_client.View
                                         msg.IsSms = true;
                                 }
                             }
+
+                            showNoSmsLeftOverlay = false;
+                            ToggleAlertOnNoSms(false);
                         });
                     }
                 };
@@ -1107,6 +1110,9 @@ namespace windows_client.View
                                         msg.IsSms = true;
                                 }
                             }
+
+                            showNoSmsLeftOverlay = false;
+                            ToggleAlertOnNoSms(false);
                         });
                 }
             }
