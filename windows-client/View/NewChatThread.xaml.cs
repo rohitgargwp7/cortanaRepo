@@ -396,7 +396,7 @@ namespace windows_client.View
                 loadMessages(INITIAL_FETCH_COUNT);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    ScrollToBottom();
+                    //ScrollToBottom();
                     StartForceSMSTimer(false);
                 });
                 st.Stop();
@@ -1386,7 +1386,7 @@ namespace windows_client.View
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    AddMessageToOcMessages(cm, true);
+                    AddMessageToOcMessages(cm, true, false);
                 });
             }
 
@@ -1496,7 +1496,7 @@ namespace windows_client.View
                             convMessage.MetaDataString = metaDataString;
                         }
 
-                        AddMessageToOcMessages(convMessage, false);
+                        AddMessageToOcMessages(convMessage, false, false);
                         object[] vals = new object[3];
                         vals[0] = convMessage;
                         vals[1] = sourceFilePath;
@@ -2156,7 +2156,7 @@ namespace windows_client.View
             mediaElement.Stop();
         }
 
-        private void AddNewMessageToUI(ConvMessage convMessage, bool insertAtTop)
+        private void AddNewMessageToUI(ConvMessage convMessage, bool insertAtTop, bool isReceived = false)
         {
             if (isTypingNotificationActive)
             {
@@ -2164,7 +2164,7 @@ namespace windows_client.View
                 isReshowTypingNotification = true;
             }
 
-            AddMessageToOcMessages(convMessage, insertAtTop);
+            AddMessageToOcMessages(convMessage, insertAtTop, isReceived);
 
             if (isReshowTypingNotification)
             {
@@ -2177,7 +2177,7 @@ namespace windows_client.View
       * If readFromDB is true & message state is SENT_UNCONFIRMED, then trying image is set else 
       * it is scheduled
       */
-        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop)
+        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived)
         {
             if (_isSendAllAsSMSVisible && ocMessages != null && convMessage.IsSent)
             {
@@ -2550,7 +2550,7 @@ namespace windows_client.View
                 }
                 #endregion
 
-                if (!insertAtTop)
+                if (!insertAtTop && !isReceived)
                     ScrollToBottom();
 
             }
@@ -3528,7 +3528,7 @@ namespace windows_client.View
                     this.ocMessages.Add(convTypingNotification);
                 }
                 isTypingNotificationActive = true;
-                ScrollToBottom();
+                //ScrollToBottom();
             });
             lastTypingNotificationShownTime = TimeUtils.getCurrentTimeStamp();
             scheduler.Schedule(autoHideTypingNotification, TimeSpan.FromSeconds(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE));
@@ -3621,12 +3621,12 @@ namespace windows_client.View
                         else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
                             userImage.Source = App.ViewModel.ConvMap[convMessage.Msisdn].AvatarImage;
 
-                        AddNewMessageToUI(convMessage, false);
+                        AddNewMessageToUI(convMessage, false, true);
                         if (vals.Length == 3)
                         {
                             ConvMessage cm = (ConvMessage)vals[2];
                             if (cm != null)
-                                AddNewMessageToUI(cm, false);
+                                AddNewMessageToUI(cm, false, true);
                         }
                     });
                 }
@@ -4573,11 +4573,11 @@ namespace windows_client.View
 
         private void llsMessages_ItemRealized(object sender, ItemRealizationEventArgs e)
         {
-            if (isMessageLoaded && llsMessages.ItemsSource != null && llsMessages.ItemsSource.Count > 0 && hasMoreMessages)
+            if (isMessageLoaded && llsMessages.ItemsSource != null && llsMessages.ItemsSource.Count > 0)
             {
                 if (e.ItemKind == LongListSelectorItemKind.Item)
                 {
-                    if ((e.Container.Content as ConvMessage).Equals(llsMessages.ItemsSource[0]))
+                    if ((e.Container.Content as ConvMessage).Equals(llsMessages.ItemsSource[0]) && hasMoreMessages)
                     {
                         BackgroundWorker bw = new BackgroundWorker();
                         bw.DoWork += (s1, ev1) =>
@@ -4592,9 +4592,15 @@ namespace windows_client.View
                                 shellProgress.IsVisible = false;
                             });
                         };
+
+                        JumpToBottomGrid.Visibility = Visibility.Visible;
                     }
+                    else if ((llsMessages.ItemsSource.Contains(e.Container.Content as ConvMessage) && llsMessages.ItemsSource.IndexOf(e.Container.Content as ConvMessage) < llsMessages.ItemsSource.Count - INITIAL_FETCH_COUNT) ||  ((e.Container.Content as ConvMessage).Equals(llsMessages.ItemsSource[llsMessages.ItemsSource.Count - 1]) && !(e.Container.Content as ConvMessage).IsSent))
+                        JumpToBottomGrid.Visibility = Visibility.Visible;
                 }
             }
+
+            viewportChanged = true;
         }
 
         #region Stickers
@@ -5606,7 +5612,7 @@ namespace windows_client.View
 
                 if (indexToInsert == ocMessages.Count - 1)
                     ScrollToBottom();
-                
+
                 _isSendAllAsSMSVisible = true;
             }
 
@@ -5760,6 +5766,57 @@ namespace windows_client.View
                 else
                     FileAttachmentMessage_Tap(sender, e); // normal flow for recieved files
             }
+        }
+
+        private void JumpToBottom_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ScrollToBottom();
+            JumpToBottomGrid.Visibility = Visibility.Collapsed;
+        }
+
+        bool viewportChanged = false;
+        bool isMoving = false;
+        double manipulationStart = 0;
+        double manipulationEnd = 0;
+
+        void listbox_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            var pos = e.GetPosition(null);
+
+            if (!isMoving)
+                manipulationStart = pos.Y;
+            else
+                manipulationEnd = pos.Y;
+
+            isMoving = true;
+        }
+
+        void listbox_ManipulationStateChanged(object sender, EventArgs e)
+        {
+            if (llsMessages.ManipulationState == ManipulationState.Idle)
+            {
+                isMoving = false;
+                viewportChanged = false;
+            }
+            else if (llsMessages.ManipulationState == ManipulationState.Manipulating)
+            {
+                viewportChanged = false;
+            }
+            else if (llsMessages.ManipulationState == ManipulationState.Animating)
+            {
+                var total = manipulationStart - manipulationEnd;
+
+                if (!viewportChanged)
+                {
+                    if (total < 0)
+                        JumpToBottomGrid.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
+
+        private void llsMessages_ItemUnRealized(object sender, ItemRealizationEventArgs e)
+        {
+            viewportChanged = true;
         }
     }
 
