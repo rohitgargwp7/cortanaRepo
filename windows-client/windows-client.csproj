@@ -476,7 +476,6 @@
     <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
     <Content Include="View\images\active_bolly.png" />
-    <Content Include="View\images\add_favorites.png" />
     <Content Include="View\images\add_friend.png" />
     <Content Include="View\images\add_users_white.png" />
     <Content Include="View\images\appbar_addfriend.png" />
@@ -500,6 +499,7 @@
     <Content Include="View\images\block_list_icon.png" />
     <Content Include="View\images\block_list_icon_white.png" />
     <Content Include="View\images\bollywood_overlay.png" />
+    <Content Include="View\images\call.png" />
     <Content Include="View\images\change_pic.png" />
     <Content Include="View\images\chat_sms_error.png" />
     <Content Include="View\images\connected_tick.png" />
@@ -580,7 +580,6 @@
     <Content Include="View\images\moods\22Sleepy.png" />
     <Content Include="View\images\moods\23Hungover.png" />
     <Content Include="View\images\moods_status_icon.png" />
-    <Content Include="View\images\moods_status_icon_disabled.png" />
     <Content Include="View\images\notification_read.png" />
     <Content Include="View\images\notification_unread.png" />
     <Content Include="View\images\pause_icon.png" />
@@ -643,7 +642,6 @@
     <Content Include="View\images\walkie_talkie_White_Big.png" />
     <Content Include="View\images\Walkie_Talkie_Grey_small.png" />
     <Content Include="View\images\made_with_love_dark.png" />
-    <Content Include="View\images\map-pin.png" />
     <Content Include="View\images\menu_audio_icon.png" />
     <Content Include="View\images\menu_contact_icon.png" />
     <Content Include="View\images\menu_photo_icon.png" />
@@ -824,7 +822,6 @@
     <Content Include="View\images\emoticons\emo_im_97_horror.png" />
     <Content Include="View\images\emoticons\emo_im_98_money.png" />
     <Content Include="View\images\emoticons\emo_im_99_nothing.png" />
-    <Content Include="View\images\enter_name.png" />
     <Content Include="View\images\error_icon.png" />
     <Content Include="View\images\free_sms.png" />
     <Content Include="View\images\hike_logo_small.png" />
@@ -844,7 +841,6 @@
     <Resource Include="View\images\privacy_dark.png" />
     <Content Include="View\images\signup_logo.png" />
     <Resource Include="View\images\free_sms_dark.png" />
-    <Resource Include="View\images\splash_logo.png" />
     <Content Include="View\images\ic_block_active.png" />
     <Content Include="View\images\terms_link.png" />
     <Content Include="View\images\typing.png" />

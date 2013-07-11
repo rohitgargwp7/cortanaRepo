@@ -18,6 +18,7 @@ namespace windows_client
         public static readonly string SUB_TYPE = "st";
         public static readonly string SUBTYPE_NEW_JOIN = "nu";
         public static readonly string SUBTYPE_REJOIN = "ru";
+        public static readonly string TAG = "tag";
 
         public static readonly string ADD_STICKER = "addStk";
         public static readonly string ADD_CATEGORY = "addCat";
@@ -115,7 +116,7 @@ namespace windows_client
         //private static readonly string CONTACT_US_LINK = "http://support.hike.in";
         public static readonly string UPDATE_URL = AccountUtils.IsProd ? "http://get.hike.in/updates/wp8" : "http://staging.im.hike.in:8080/updates/wp8";
         public static readonly string SYSTEM_HEALTH_LINK = "http://twitter.com/hikestatus/";
-
+        public static readonly string STICKER_URL = AccountUtils.IsProd ? "http://hike.in/s/" : "http://staging.im.hike.in/s/";
         //for device info
         public static readonly string DEVICE_TYPE = "devicetype";//The OS
         public static readonly string DEVICE_ID = "deviceid";//A unique ID of the device
@@ -147,9 +148,13 @@ namespace windows_client
         public static readonly string DEVICE_TYPE_KEY = "dev_type";
 
         public static readonly string NO_SMS = "nosms";
+        public static readonly string UI_EVENT = "uiEvent";
 
         public static readonly string COUNT = "c";
         public static readonly string FORCE_SMS_MESSAGE = "m";
+
+        public static readonly string MICROSOFT_MAP_SERVICE_APPLICATION_ID = "b4703e38-092f-4144-826a-3e3d41f50714";
+        public static readonly string MICROSOFT_MAP_SERVICE_AUTHENTICATION_TOKEN = "CjsOsVAhJ0GPdjiP12KwvA";
 
         public static string FAQS_LINK
         {

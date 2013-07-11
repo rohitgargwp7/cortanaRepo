@@ -57,8 +57,8 @@
 
 
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="HikeTitle" Orientation="Vertical" HorizontalAlignment="Stretch" DoubleTap="MessageList_DoubleTap">
-            <StackPanel Orientation="Vertical" Margin="0,0,0,0">
+        <StackPanel x:Name="HikeTitle" Orientation="Vertical" HorizontalAlignment="Stretch">
+            <StackPanel Orientation="Vertical" Margin="0,10,0,0">
                 <Border HorizontalAlignment="Stretch" Height="45" BorderThickness="1" BorderBrush="#414141" Background="#414141" x:Name="gcMuteGrid" Visibility="Collapsed" Margin="0,0,0,10">
                     <Grid HorizontalAlignment="Stretch" Margin="12,0">
                         <Grid.ColumnDefinitions>
@@ -462,6 +462,7 @@
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
                                     <Grid.RowDefinitions>
@@ -748,7 +749,7 @@
                             </Grid.ColumnDefinitions>
                             <toolkit:PhoneTextBox TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Chat" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
                                                 MinHeight="68" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto"  />
-                            <Image Grid.Column="1" Source="/View/images/Mic_icon_black_small.png" Tap="Record_ActionIconTapped" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="Uniform" Margin="0,0,15,17" MaxHeight="30"/>
+                            <Image x:Name="WalkieTalkieMicIcon" Grid.Column="1" Source="/View/images/Mic_icon_black_small.png" Tap="Record_ActionIconTapped" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="Uniform" Margin="0,0,15,17" MaxHeight="30"/>
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>
@@ -1009,7 +1010,7 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Image Name="downloadDialogueImage" Grid.ColumnSpan="2" Grid.RowSpan="2" Height="509" Width="368" ></Image>
+                <Image Name="downloadDialogueImage" Grid.ColumnSpan="2" Grid.RowSpan="2" Width="368" ></Image>
                 <Button Name="btnDownload" Width="150" Foreground="White" Grid.Row="2" Grid.Column="2" Content="{Binding Path= LocalizedResources.Download_txt, Source={StaticResource LocalizedStrings}}" VerticalContentAlignment="Center" VerticalAlignment="Bottom" FontFamily="Segoe WP Regular" FontSize="18" Height="70" BorderBrush="#3d3d3d" Background="#3d3d3d" Tap="downloadStickers_Tap" Margin="10 0 0 10"></Button>
                 <Button Background="#7aa700" Grid.Row="2" Foreground="White" Grid.Column="2" Width="70" Height="50" Content="{Binding Path= LocalizedResources.Free_txt, Source={StaticResource LocalizedStrings}}" Padding="0" VerticalAlignment="Bottom" FontFamily="Segoe WP Regular" FontSize="12" BorderThickness="0" Margin="105 0 0 45"  />
             </Grid>

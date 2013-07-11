@@ -605,14 +605,8 @@ namespace windows_client.View
 
         private void ToggleStatusUpdateNotification(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            MessageBox.Show(isStatusUpdatesMute ? AppResources.Unmute_Success_Txt : AppResources.Mute_Success_Txt, AppResources.StatusNotToggle_Caption_Txt, MessageBoxButton.OK);
             int settingsValue = 0;
-            ToastPrompt toast = new ToastPrompt();
-            toast.Foreground = UI_Utils.Instance.White;
-            toast.Background = UI_Utils.Instance.TappedCategoryColor;
-            toast.Message = isStatusUpdatesMute ? AppResources.Unmute_Success_Txt : AppResources.Mute_Success_Txt;
-            toast.MillisecondsUntilHidden = 800;
-            toast.Show();
-
             if (isStatusUpdatesMute)
             {
                 imgToggleStatus.Source = UI_Utils.Instance.UnmuteIcon;
@@ -2395,6 +2389,23 @@ namespace windows_client.View
             proTipImage.Visibility = Visibility.Collapsed;
             proTipsGrid.Visibility = Visibility.Collapsed;
             ProTipCount = 0;
+
+            JObject proTipAnalyticsJson = new JObject();
+            proTipAnalyticsJson.Add(Analytics.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip._id);
+
+            JObject data = new JObject();
+            data.Add(HikeConstants.METADATA, proTipAnalyticsJson);
+            data.Add(HikeConstants.SUB_TYPE, HikeConstants.UI_EVENT);
+            data[HikeConstants.TAG] = utils.Utils.IsWP8 ? "wp8" : "wp7";
+
+            JObject jsonObj = new JObject();
+            jsonObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
+            jsonObj.Add(HikeConstants.DATA, data);
+
+            object[] publishData = new object[2];
+            publishData[0] = jsonObj;
+            publishData[1] = 1; //qos
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, publishData);
 
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (ss, ee) =>
