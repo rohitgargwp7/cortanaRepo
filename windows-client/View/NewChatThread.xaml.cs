@@ -445,7 +445,7 @@ namespace windows_client.View
                     _microphone.BufferReady += microphone_BufferReady;
                 }
             }
-
+            
             if (_dt != null)
             {
                 _dt.Tick -= dt_Tick;
@@ -603,7 +603,6 @@ namespace windows_client.View
                 ContactTransfer();
             }
             #endregion
-
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -908,9 +907,51 @@ namespace windows_client.View
 
             if (!isOnHike)
             {
+                BackgroundWorker worker = new BackgroundWorker();
+
+                worker.DoWork += (ss, ee) =>
+                {
+                    long timeOfJoin;
+                    FriendsTableUtils.GetFriendInfo(mContactNumber, out timeOfJoin);
+
+                    if (timeOfJoin == 0)
+                        AccountUtils.GetOnhikeDate(mContactNumber, new AccountUtils.postResponseFunction(GetHikeStatus_Callback));
+                    else
+                    {
+                        isOnHike = true;
+
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (!isGroupChat)
+                                sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
+
+                            spContactTransfer.IsHitTestVisible = true;
+                            spContactTransfer.Opacity = 1;
+
+                            if (appBar.MenuItems.Contains(inviteMenuItem))
+                                appBar.MenuItems.Remove(inviteMenuItem);
+
+                            if (ocMessages != null && ocMessages.Count > 0)
+                            {
+                                foreach (var msg in ocMessages)
+                                {
+                                    if (!msg.IsSms)
+                                        msg.IsSms = true;
+                                }
+                            }
+
+                            showNoSmsLeftOverlay = false;
+                            ToggleAlertOnNoSms(false);
+                        });
+                    }
+                };
+
+                worker.RunWorkerAsync();
+            
                 spContactTransfer.IsHitTestVisible = false;
                 spContactTransfer.Opacity = 0.4;
             }
+
             userName.Text = mContactName;
 
             // if hike bot msg disable appbar, textbox etc
@@ -1036,6 +1077,45 @@ namespace windows_client.View
                 chatThreadMainPage.ApplicationBar = appBar;
 
             IsSMSOptionValid = IsSMSOptionAvalable();
+        }
+
+        public void GetHikeStatus_Callback(JObject obj)
+        {
+            if (obj != null && HikeConstants.FAIL != (string)obj[HikeConstants.STAT])
+            {
+                var isonhike = (bool)obj["onhike"];
+                if (isonhike != isOnHike)
+                {
+                    isOnHike = isonhike;
+                    JObject j = (JObject)obj["profile"];
+                    long time = (long)j["jointime"];
+                    FriendsTableUtils.SetJoiningTime(mContactNumber, time);
+
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (!isGroupChat)
+                                sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
+
+                            spContactTransfer.IsHitTestVisible = true;
+                            spContactTransfer.Opacity = 1;
+
+                            if (appBar.MenuItems.Contains(inviteMenuItem))
+                                appBar.MenuItems.Remove(inviteMenuItem);
+
+                            if (ocMessages != null && ocMessages.Count > 0)
+                            {
+                                foreach (var msg in ocMessages)
+                                {
+                                    if (!msg.IsSms)
+                                        msg.IsSms = true;
+                                }
+                            }
+
+                            showNoSmsLeftOverlay = false;
+                            ToggleAlertOnNoSms(false);
+                        });
+                }
+            }
         }
 
         bool IsSMSOptionAvalable()

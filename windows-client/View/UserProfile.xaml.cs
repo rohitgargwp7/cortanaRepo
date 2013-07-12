@@ -391,6 +391,9 @@ namespace windows_client.View
                 BackgroundWorker worker = new BackgroundWorker();
                 worker.DoWork += delegate
                     {
+                        if (!isOnHike)
+                            isInAddressBook = CheckUserInAddressBook();
+
                         if (!isInAddressBook)
                         {
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
