@@ -29,6 +29,13 @@ namespace windows_client.View
 
         private void initializeBaseOnState()
         {
+            bool isLocationEnabled = true;
+            if (!App.appSettings.TryGetValue<bool>(App.USE_LOCATION_SETTING, out isLocationEnabled))
+                isLocationEnabled = true;
+
+            this.locationToggle.IsChecked = isLocationEnabled;
+            this.locationToggle.Content = isLocationEnabled ? AppResources.On : AppResources.Off;
+
             bool isPushEnabled = true;
             App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
             this.pushNotifications.IsChecked = isPushEnabled;
@@ -73,20 +80,11 @@ namespace windows_client.View
                     listSettingsValue.Add(string.Format(AppResources.Settings_StatusUpdate_EveryXHour_txt, firstSetting));
             }
 
-            byte lastSeenSettingsValue;
-            if (App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out lastSeenSettingsValue))
-            {
-                if (lastSeenSettingsValue > 0)
-                {
-                    lastSeenTimeStampToggle.IsChecked = true;
-                    lastSeenTimeStampToggle.Content = AppResources.On;
-                }
-                else
-                {
-                    lastSeenTimeStampToggle.IsChecked = false;
-                    lastSeenTimeStampToggle.Content = AppResources.Off;
-                }
-            }
+            bool showlastSeen = true;
+            if (!App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out showlastSeen))
+                showlastSeen = true;
+            lastSeenTimeStampToggle.IsChecked = showlastSeen;
+            this.lastSeenTimeStampToggle.Content = showlastSeen ? AppResources.On : AppResources.Off;
 
             byte statusSettingsValue;
             if (App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue))
@@ -215,7 +213,8 @@ namespace windows_client.View
         private void lastSeenTimeStampToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.lastSeenTimeStampToggle.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, (byte)1);
+            App.appSettings.Remove(App.LAST_SEEN_SEETING);
+            App.appSettings.Save();
 
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
@@ -228,7 +227,7 @@ namespace windows_client.View
         private void lastSeenTimeStampToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.lastSeenTimeStampToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, (byte)0);
+            App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, false);
 
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
@@ -238,11 +237,23 @@ namespace windows_client.View
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
+        private void locationToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.lastSeenTimeStampToggle.Content = AppResources.On;
+            App.appSettings.Remove(App.USE_LOCATION_SETTING);
+            App.appSettings.Save();
+        }
+
+        private void locationToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.lastSeenTimeStampToggle.Content = AppResources.Off;
+            App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, false);
+        }
+       
         private async void btnGoToLockSettings_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             // Launch URI for the lock screen settings screen.
             var op = await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-lock:"));
         }
-
     }
 }
