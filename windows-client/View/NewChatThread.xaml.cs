@@ -5664,8 +5664,8 @@ namespace windows_client.View
             StickerCategory s2 = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
             if (s2 == null || s2.ListStickers.Count == 0)
             {
-                if (StickerPivotHelper.Instance.dictStickersPivot.ContainsKey(s2.Category))
-                    StickerPivotHelper.Instance.dictStickersPivot[s2.Category].ShowNoStickers();
+                if (StickerPivotHelper.Instance.dictStickersPivot.ContainsKey(_selectedCategory))
+                    StickerPivotHelper.Instance.dictStickersPivot[_selectedCategory].ShowNoStickers();
             }
             else
             {
