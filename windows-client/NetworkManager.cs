@@ -702,7 +702,10 @@ namespace windows_client
                                                 var val = kkvv.Value.ToString();
 
                                                 if (String.IsNullOrEmpty(val) || Convert.ToBoolean(val))
-                                                    App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, true);
+                                                {
+                                                    App.appSettings.Remove(App.LAST_SEEN_SEETING);
+                                                    App.appSettings.Save();
+                                                }
                                                 else
                                                     App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, false);
                                             }

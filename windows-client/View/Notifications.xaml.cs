@@ -213,7 +213,8 @@ namespace windows_client.View
         private void lastSeenTimeStampToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.lastSeenTimeStampToggle.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, true);
+            App.appSettings.Remove(App.LAST_SEEN_SEETING);
+            App.appSettings.Save();
 
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
@@ -236,13 +237,14 @@ namespace windows_client.View
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
-        private void location_Checked(object sender, RoutedEventArgs e)
+        private void locationToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.lastSeenTimeStampToggle.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, true);
+            App.appSettings.Remove(App.USE_LOCATION_SETTING);
+            App.appSettings.Save();
         }
 
-        private void location_Unchecked(object sender, RoutedEventArgs e)
+        private void locationToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.lastSeenTimeStampToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, false);

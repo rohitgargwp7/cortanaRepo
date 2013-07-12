@@ -127,7 +127,7 @@ namespace windows_client.DbUtils
             DeleteFavourites();
             DeletePendingRequests();
             ProTipHelper.Instance.ClearProTips();
-            App.appSettings[App.LAST_SEEN_SEETING] = true; // reset last seen rather than deleting the setting
+            App.appSettings.Remove(App.LAST_SEEN_SEETING); // reset last seen rather than deleting the setting
             App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, 2); // reset value of protip count for next new user
             #endregion
             #region DELETE CATEGORIES

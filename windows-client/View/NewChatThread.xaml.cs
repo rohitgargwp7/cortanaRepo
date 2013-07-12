@@ -923,8 +923,7 @@ namespace windows_client.View
 
             #region LAST SEEN TIMER
 
-            bool isLastSeenSettingOn;
-            if (!App.appSettings.TryGetValue<bool>(App.LAST_SEEN_SEETING, out isLastSeenSettingOn) || isLastSeenSettingOn)
+            if (!App.appSettings.Contains(App.LAST_SEEN_SEETING))
             {
                 BackgroundWorker _worker = new BackgroundWorker();
 
@@ -3898,8 +3897,7 @@ namespace windows_client.View
 
             else if (HikePubSub.TYPING_CONVERSATION == type)
             {
-                bool isLastSeenSettingsOn;
-                if (!App.appSettings.TryGetValue<bool>(App.LAST_SEEN_SEETING, out isLastSeenSettingsOn) || isLastSeenSettingsOn)
+                if (!App.appSettings.Contains(App.LAST_SEEN_SEETING))
                 {
                     var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
 
@@ -3954,8 +3952,7 @@ namespace windows_client.View
 
             else if (HikePubSub.LAST_SEEN == type && !isGroupChat)
             {
-                bool isLastSeenSettingOn;
-                if (!App.appSettings.TryGetValue<bool>(App.LAST_SEEN_SEETING, out isLastSeenSettingOn) || isLastSeenSettingOn)
+                if (!App.appSettings.Contains(App.LAST_SEEN_SEETING))
                 {
                     object[] vals = (object[])obj;
                     string fromMsisdn = (string)vals[0];
