@@ -619,33 +619,12 @@ namespace windows_client.View
     public class Place : INotifyPropertyChanged
     {
         string _vicinity;
-        string _icon;
-        BitmapImage _place;
 
         public Visibility VicinityVisibility
         {
             get
             {
                 return String.IsNullOrEmpty(vicinity) ? Visibility.Collapsed : Visibility.Visible;
-            }
-        }
-
-        public BitmapImage PlaceImage
-        {
-            get
-            {
-                if(_place == null)
-                    _place = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
-
-                return _place;
-            }
-            set
-            {
-                if (_place != value)
-                {
-                    _place = value;
-                    NotifyPropertyChanged("PlaceImage");
-                }
             }
         }
 
@@ -659,29 +638,35 @@ namespace windows_client.View
         public double averageRating { get; set; }
 
         [JsonProperty]
-        public string icon
+        public string icon { get; set; }
+
+        ImageSource _placeImage;
+        public ImageSource PlaceImage
         {
             get
             {
-               return _icon;
-            }
-            set
-            {
-                if (_icon != value)
+                if (_placeImage == null)
                 {
-                    _icon = value == null ? String.Empty:value;
-
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            if (!String.IsNullOrEmpty(_icon))
-                                PlaceImage = new BitmapImage(new Uri(icon));
-                        });
-
-                    NotifyPropertyChanged("icon");
-                    NotifyPropertyChanged("PlaceImage");
+                    _placeImage = ProcesImageSource();
+                    return _placeImage;
                 }
+                else
+                    return _placeImage;
             }
         }
+
+        private ImageSource ProcesImageSource()
+        {
+            ImageSource source = null;
+
+            source = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
+
+            if (!String.IsNullOrEmpty(icon))
+                ImageLoader.Load(source as BitmapImage, new Uri(icon), null, Utils.ConvertUrlToFileName(icon), true);
+
+            return source;
+        }
+
 
         [JsonProperty]
         public string vicinity
