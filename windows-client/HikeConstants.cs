@@ -63,6 +63,7 @@ namespace windows_client
         public static readonly string LONGITUDE = "long";
         public static readonly string ZOOM_LEVEL = "zoom";
         public static readonly string LOCATION_ADDRESS = "add";
+        public static readonly string PLACES_SEARCH = "placeSearch";
 
         public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
         public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
