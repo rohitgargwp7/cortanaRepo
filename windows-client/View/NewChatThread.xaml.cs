@@ -242,7 +242,7 @@ namespace windows_client.View
             if (Utils.isDarkTheme())
             {
                 deleteRecTextSuc.Foreground = UI_Utils.Instance.DeleteGreyBackground;
-                WalkieTalkieDeleteGrid.Background = UI_Utils.Instance.WhiteTextForeGround;
+                WalkieTalkieDeletedBorder.Opacity = 1;
                 WalkieTalkieGridOverlayLayer.Opacity = 1;
             }
 
