@@ -236,13 +236,15 @@ namespace windows_client.View
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
-        private void location_Checked(object sender, RoutedEventArgs e)
+        private void locationToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.lastSeenTimeStampToggle.Content = AppResources.On;
             App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, true);
+
+            App.ViewModel.LoadCurrentLocation(); // load current location
         }
 
-        private void location_Unchecked(object sender, RoutedEventArgs e)
+        private void locationToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.lastSeenTimeStampToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, false);

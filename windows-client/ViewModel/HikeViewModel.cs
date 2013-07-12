@@ -14,7 +14,9 @@ using System.Diagnostics;
 using System.Windows.Controls;
 using windows_client.Languages;
 using windows_client.utils;
-
+using Windows.Devices.Geolocation;
+using Windows.Foundation;
+using System.Device.Location;
 
 namespace windows_client.ViewModel
 {
@@ -180,6 +182,8 @@ namespace windows_client.ViewModel
             RegisterListeners();
 
             LoadToolTips();
+
+            LoadCurrentLocation();
         }
 
         public HikeViewModel()
@@ -199,8 +203,63 @@ namespace windows_client.ViewModel
             RegisterListeners();
 
             LoadToolTips();
+
+            LoadCurrentLocation();
         }
 
+        /// <summary>
+        /// called on app start, app resume from tombstone state and when user turn on location sharing in app settings
+        /// </summary>
+        public void LoadCurrentLocation()
+        {
+            bool _isLocationEnabled;
+            if (!App.appSettings.TryGetValue<bool>(App.USE_LOCATION_SETTING, out _isLocationEnabled) || _isLocationEnabled)
+            {
+                BackgroundWorker getCoordinateWorker = new BackgroundWorker();
+
+                getCoordinateWorker.DoWork += async delegate
+                {
+                    Geolocator geolocator = new Geolocator();
+                    if (geolocator.LocationStatus == PositionStatus.Disabled)
+                        return;
+
+                    geolocator.DesiredAccuracyInMeters = 10;
+                    geolocator.MovementThreshold = 5;
+                    geolocator.DesiredAccuracy = PositionAccuracy.High;
+
+                    IAsyncOperation<Geoposition> locationTask = geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(3));
+
+                    try
+                    {
+                        Geoposition currentPosition = await locationTask;
+
+                        var newCoordinate = new GeoCoordinate(currentPosition.Coordinate.Latitude, currentPosition.Coordinate.Longitude);
+                        App.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, newCoordinate);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        // Couldn't get current location - location might be disabled in settings
+                        //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
+                        System.Diagnostics.Debug.WriteLine("Location exception GetCurrentCoordinate HikeViewModel : " + ex.StackTrace);
+                    }
+                    finally
+                    {
+                        if (locationTask != null)
+                        {
+                            if (locationTask.Status == AsyncStatus.Started)
+                                locationTask.Cancel();
+
+                            locationTask.Close();
+                        }
+
+                    }
+                };
+
+                getCoordinateWorker.RunWorkerAsync();
+            }
+        }
+        
         public bool Isfavourite(string mContactNumber)
         {
             if (_favList.Count == 0)

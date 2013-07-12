@@ -79,7 +79,6 @@ namespace windows_client.View
             if (MyMap == null)
                 return;
             
-            _isPlacesSearch = true;
             _places = this.ParsePlaces(obj);
 
             Deployment.Current.Dispatcher.BeginInvoke(new Action(delegate
@@ -416,8 +415,12 @@ namespace windows_client.View
                 return;
 
             _searchString = searchString;
+            _isPlacesSearch = true;
 
             this.Focus();
+
+            if (_selectedPlace != _myPlace)
+                _myPlace = null;
 
             if (String.IsNullOrEmpty(_searchString))
                 GetPlaces();
@@ -435,7 +438,20 @@ namespace windows_client.View
         private void MyLocation_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (shareIconButton.IsEnabled == false)
+                return; 
+            
+            if (_myPlace != null && _myPlace.title == AppResources.My_Location_Text)
+            {
+                if (_selectedPlace != _myPlace)
+                {
+                    _selectedPlace = _myPlace;
+                    PlacesList.SelectedItem = _myPlace;
+                    UpdateLayout();
+                    PlacesList.ScrollIntoView(_myPlace);
+                }
+                
                 return;
+            }
 
             shareIconButton.IsEnabled = false;
             _selectedPlace = null;
@@ -462,6 +478,9 @@ namespace windows_client.View
                 if (_selectedPlace == null || _selectedPlace != _places[0]) // avoid duplicate places call
                 {
                     shareIconButton.IsEnabled = false;
+                    _myPlace = null;
+                    _isPlacesSearch = true;
+                    _searchString = SearchTextBox.Text.Trim();
 
                     if (String.IsNullOrEmpty(_searchString))
                         GetPlaces();
@@ -506,6 +525,9 @@ namespace windows_client.View
             else
                 _isLocationEnabled = true;
 
+            if (!_isLocationEnabled)
+                return;
+
             App.appSettings.TryGetValue(HikeConstants.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
 
             if (App.IS_TOMBSTONED)
@@ -520,10 +542,14 @@ namespace windows_client.View
                     GetCurrentCoordinate();
                 else
                 {
+                    shareIconButton.IsEnabled = true;
+
                     DrawMapMarkers();
 
-                    if (!_isPlacesSearch)
+                    if (_isPlacesSearch)
                     {
+                        SearchTextBox.Text = _searchString;
+
                         if (String.IsNullOrEmpty(_searchString))
                             GetPlaces();
                         else
@@ -531,16 +557,12 @@ namespace windows_client.View
                     }
                 }
             }
-
-            if (!_isLocationEnabled)
-                return;
-
-            if (_myCoordinate != null)
+            else
             {
-                if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New)
-                {
-                    GetCurrentCoordinate();
+                GetCurrentCoordinate(); // get current coordinate and load last catched coordinate if its not null
 
+                if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New && _myCoordinate != null)
+                {
                     _selectedCoordinate = _myCoordinate;
 
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -550,8 +572,6 @@ namespace windows_client.View
                         });
                 }
             }
-            else
-                GetCurrentCoordinate();
 
             base.OnNavigatedTo(e);
         }
