@@ -75,9 +75,9 @@ namespace windows_client.utils
             if (_proTipsQueue == null)
                 ReadProTipIdsFromFile();
 
-            if (_proTipsQueue != null && (_proTipsQueue.Contains(id) || (CurrentProTip!=null && CurrentProTip._id == id)))
-                    return;
-            else
+            if (_proTipsQueue != null && (_proTipsQueue.Contains(id) || (CurrentProTip != null && CurrentProTip._id == id)))
+                return;
+            else if (_proTipsQueue == null)
                 _proTipsQueue = new Queue<string>();
 
             if (_proTipsQueue.Count == MAX_QUEUE_SIZE)
@@ -119,19 +119,18 @@ namespace windows_client.utils
             {
                 CurrentProTip = GetProTipFromFile(_proTipsQueue.Dequeue());
 
+                WriteProTipIdsToFile(); // new protip fetched from file. write changes
+
                 if (CurrentProTip != null)
                 {
                     App.WriteToIsoStorageSettings(App.PRO_TIP,CurrentProTip);
 
                     if (ShowProTip != null)
                         ShowProTip(null, null);
-                }
 
-                WriteProTipIdsToFile(); // new protip fetched from file. write changes
+                    return;
+                }
             }
-            else
-                CurrentProTip = null;
-            //still currentprotip may be null if queue is empty
 
             if (CurrentProTip == null && _proTipsQueue != null && _proTipsQueue.Count > 0)
                 getNextProTip();
@@ -278,7 +277,7 @@ namespace windows_client.utils
 
                         if (store.FileExists(fileName))
                         {
-                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
                             {
                                 using (BinaryReader reader = new BinaryReader(file))
                                 {
@@ -317,7 +316,7 @@ namespace windows_client.utils
                         if (store.FileExists(fileName))
                             store.DeleteFile(fileName);
 
-                        using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                        using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.Write))
                         {
                             using (BinaryWriter writer = new BinaryWriter(file))
                             {
@@ -355,7 +354,7 @@ namespace windows_client.utils
                         if (store.FileExists(fileName))
                             store.DeleteFile(fileName);
 
-                        using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                        using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.Write))
                         {
                             using (BinaryWriter writer = new BinaryWriter(file))
                             {
@@ -392,7 +391,7 @@ namespace windows_client.utils
                             if (_proTipsQueue == null)
                                 _proTipsQueue = new Queue<string>();
 
-                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
                             {
                                 using (BinaryReader reader = new BinaryReader(file))
                                 {
@@ -430,7 +429,7 @@ namespace windows_client.utils
                         if (!store.DirectoryExists(PROTIPS_DIRECTORY))
                             store.CreateDirectory(PROTIPS_DIRECTORY);
 
-                        using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                        using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.Write))
                         {
                             using (BinaryWriter writer = new BinaryWriter(file))
                             {
@@ -513,11 +512,13 @@ namespace windows_client.utils
             if (time > 0)
             {
                 if (proTipTimer == null)
+                {
                     proTipTimer = new DispatcherTimer();
+                    proTipTimer.Tick -= proTipTimer_Tick;
+                    proTipTimer.Tick += proTipTimer_Tick;
+                }
 
                 proTipTimer.Interval = TimeSpan.FromSeconds(time); //time might have changed, hence reinitializing timer
-
-                proTipTimer.Tick += proTipTimer_Tick;
 
                 proTipTimer.Start();
             }

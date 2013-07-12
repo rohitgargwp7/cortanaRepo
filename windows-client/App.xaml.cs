@@ -669,7 +669,7 @@ namespace windows_client
                 }
                 catch(InvalidCastException ex)
                 {
-
+                    // will not reach here for new user & upgraded user.
                 }
             }
 

@@ -892,7 +892,7 @@
                         </Button>
                     </Grid>
                 </Grid>
-                <Grid Name="gridStickers" Visibility="Collapsed"  Background="#313334" Margin="12">
+                <Grid Name="gridStickers" Visibility="Collapsed"  Background="#313334" Margin="0 12 0 12">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -900,7 +900,7 @@
                     <controls:Pivot Name="pivotStickers" Grid.Row="0" SelectionChanged="PivotStickers_SelectionChanged" Height="240">
                     </controls:Pivot>
 
-                    <Grid Grid.Row="1" Margin="5 15 5 0" Name="gridStickerPivot" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Grid Grid.Row="1" Margin="17 15 17 5" Name="gridStickerPivot" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
@@ -1056,7 +1056,8 @@
             </Border>
         </Grid>
 
-        <Grid Canvas.ZIndex="1" x:Name="WalkieTalkieDeleteGrid" IsHitTestVisible="False" Background="#696969" Visibility="Collapsed" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Grid Canvas.ZIndex="1" x:Name="WalkieTalkieDeleteGrid" IsHitTestVisible="False" Background="Transparent" Visibility="Collapsed" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Border x:Name="WalkieTalkieDeletedBorder" Background="{StaticResource PhoneForegroundBrush}" Opacity="0.75" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
             <StackPanel Canvas.ZIndex="3" Margin="35" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Image x:Name="deleteRecImageSuc" Margin="0,0,10,0" Grid.Column="0" Height="30" Stretch="Uniform" HorizontalAlignment="Center"/>
                 <TextBlock x:Name="deleteRecTextSuc" Foreground="White" TextAlignment="Center" Grid.Column="1" FontSize="24"  Text="{Binding Path= LocalizedResources.Message_Cancelled, Source={StaticResource LocalizedStrings}}"/>

@@ -1016,7 +1016,7 @@ Get hike: http://get.hike.in</value>
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailSubject" xml:space="preserve">
-    <value>Feedback on WP7</value>
+    <value>Feedback on WP8</value>
     <comment>email compose task subject (cs)</comment>
   </data>
   <data name="Help_FAQsTitle" xml:space="preserve">
@@ -1813,7 +1813,7 @@ Get hike: http://get.hike.in</value>
     <value>Oops! Download Failed</value>
   </data>
   <data name="Send_As_Sms" xml:space="preserve">
-    <value>send as sms</value>
+    <value>send as hike sms</value>
   </data>
   <data name="SelectUser_Forward_To_Txt" xml:space="preserve">
     <value>Forward To</value>
@@ -1834,23 +1834,20 @@ Get hike: http://get.hike.in</value>
   <data name="On_Dnd_Txt" xml:space="preserve">
     <value>on DND</value>
   </data>
-  <data name="Conversations_MuteStatusNotification_txt" xml:space="preserve">
-    <value>Mute Status Updates</value>
-  </data>
-  <data name="Conversations_UnmuteStatusNotification_txt" xml:space="preserve">
-    <value>Unmute Status Updates</value>
-  </data>
   <data name="Mute_Success_Txt" xml:space="preserve">
-    <value>Muted successfully!</value>
+    <value>Status update notifications are turned OFF</value>
   </data>
   <data name="Unmute_Success_Txt" xml:space="preserve">
-    <value>Unmuted successfully!</value>
+    <value>Status update notifications are turned ON</value>
   </data>
   <data name="My_Location_Text" xml:space="preserve">
     <value>My Location</value>
   </data>
   <data name="Send_All_As_SMS_Group" xml:space="preserve">
     <value>Tap to send as SMS</value>
+  </data>
+  <data name="StatusNotToggle_Caption_Txt" xml:space="preserve">
+    <value>Status Update Notifications</value>
   </data>
   <data name="Location_Heading" xml:space="preserve">
     <value>Location</value>

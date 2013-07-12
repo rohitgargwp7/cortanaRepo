@@ -583,15 +583,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mute Status Updates.
-        /// </summary>
-        public static string Conversations_MuteStatusNotification_txt {
-            get {
-                return ResourceManager.GetString("Conversations_MuteStatusNotification_txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to new chat.
         /// </summary>
         public static string Conversations_NewChat_AppBar_Btn {
@@ -768,15 +759,6 @@ namespace windows_client.Languages {
         public static string Conversations_Timeline_Refresh_Status {
             get {
                 return ResourceManager.GetString("Conversations_Timeline_Refresh_Status", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unmute Status Updates.
-        /// </summary>
-        public static string Conversations_UnmuteStatusNotification_txt {
-            get {
-                return ResourceManager.GetString("Conversations_UnmuteStatusNotification_txt", resourceCulture);
             }
         }
         
@@ -1869,7 +1851,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feedback on WP7.
+        ///   Looks up a localized string similar to Feedback on WP8.
         /// </summary>
         public static string Help_EmailSubject {
             get {
@@ -2535,7 +2517,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Muted successfully!.
+        ///   Looks up a localized string similar to Status update notifications are turned OFF.
         /// </summary>
         public static string Mute_Success_Txt {
             get {
@@ -3498,7 +3480,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to send as sms.
+        ///   Looks up a localized string similar to send as hike sms.
         /// </summary>
         public static string Send_As_Sms {
             get {
@@ -3885,6 +3867,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Status Update Notifications.
+        /// </summary>
+        public static string StatusNotToggle_Caption_Txt {
+            get {
+                return ResourceManager.GetString("StatusNotToggle_Caption_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Changed profile picture.
         /// </summary>
         public static string StatusUpdate_Photo {
@@ -4137,7 +4128,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unmuted successfully!.
+        ///   Looks up a localized string similar to Status update notifications are turned ON.
         /// </summary>
         public static string Unmute_Success_Txt {
             get {
