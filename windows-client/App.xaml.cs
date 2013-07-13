@@ -337,6 +337,7 @@ namespace windows_client
             }
 
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
+            RootFrame.Navigating += RootFrame_CheckForFastResume;
 
             Is24HourTimeFormat = System.Globalization.DateTimeFormatInfo.CurrentInfo.LongTimePattern.Contains("H") ? true : false;
         }
@@ -461,6 +462,26 @@ namespace windows_client
                         App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
                 }
             }
+        }
+
+        Boolean wasRelaunched;
+        void RootFrame_CheckForFastResume(object sender, NavigatingCancelEventArgs e)
+        {
+            if (e.NavigationMode == NavigationMode.Reset)
+            {
+                // This block will execute if the current navigation is a relaunch.
+                // If so, another navigation will be coming, so this records that a relaunch just happened
+                // so that the next navigation can use this info.
+                wasRelaunched = true;
+            }
+            else if (e.NavigationMode == NavigationMode.New && wasRelaunched)
+            {
+                // This block will run if the previous navigation was a relaunch
+                wasRelaunched = false;
+
+                if (e.Uri.ToString().Contains("/View/NewSelectUserPage.xaml"))
+                    e.Cancel = true;
+            }            
         }
 
         void RootFrame_Navigating(object sender, NavigatingCancelEventArgs e)
