@@ -467,6 +467,7 @@ namespace windows_client
         Boolean wasRelaunched;
         void RootFrame_CheckForFastResume(object sender, NavigatingCancelEventArgs e)
         {
+            var targetPage = e.Uri.ToString();
             if (e.NavigationMode == NavigationMode.Reset)
             {
                 // This block will execute if the current navigation is a relaunch.
@@ -479,9 +480,42 @@ namespace windows_client
                 // This block will run if the previous navigation was a relaunch
                 wasRelaunched = false;
 
-                if (e.Uri.ToString().Contains("/View/NewSelectUserPage.xaml"))
+                if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
+                {
+                    APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
+                    string param = Utils.GetParamFromUri(targetPage);
                     e.Cancel = true;
-            }            
+                    RootFrame.Dispatcher.BeginInvoke(delegate
+                    {
+                        RootFrame.Navigate(new Uri("/View/NewChatThread.xaml?" + param, UriKind.Relative));
+                    });
+                }
+                else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
+                {
+                    APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
+                    PhoneApplicationService.Current.State["IsStatusPush"] = true;
+                    e.Cancel = true;
+                    RootFrame.Dispatcher.BeginInvoke(delegate
+                    {
+                        RootFrame.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+                    });
+                }
+                else if (targetPage != null && targetPage.Contains("NewSelectUserPage.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
+                {
+                    APP_LAUNCH_STATE = LaunchState.SHARE_PICKER_LAUNCH;
+
+                    int idx = targetPage.IndexOf("?") + 1;
+                    string param = targetPage.Substring(idx);
+                    e.Cancel = true;
+                    
+                    RootFrame.Dispatcher.BeginInvoke(delegate
+                    {
+                        RootFrame.Navigate(new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative));
+                    });
+                }
+                else if (targetPage.Contains("/View/NewSelectUserPage.xaml"))
+                    e.Cancel = true;
+            }
         }
 
         void RootFrame_Navigating(object sender, NavigatingCancelEventArgs e)
