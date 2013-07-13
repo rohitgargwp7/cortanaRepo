@@ -699,7 +699,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("RecordMedia.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("NewChatThread.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
                 }
 
                 if (App.newChatThreadPage == this)
