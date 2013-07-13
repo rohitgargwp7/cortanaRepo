@@ -220,7 +220,9 @@ namespace windows_client.View
                 
                 if (MyRoute == null)
                     GetDirections();
-                
+
+                _isMapBig = true;
+
                 ShowDirections();
             }
             else
