@@ -445,7 +445,7 @@ namespace windows_client.View
                     _microphone.BufferReady += microphone_BufferReady;
                 }
             }
-            
+
             if (_dt != null)
             {
                 _dt.Tick -= dt_Tick;
@@ -555,7 +555,7 @@ namespace windows_client.View
                 }
                 else //removing here because it may be case that user pressed back without selecting any user
                     PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
-
+                
                 /* This is called only when you add more participants to group */
                 if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
                 {
@@ -947,7 +947,7 @@ namespace windows_client.View
                 };
 
                 worker.RunWorkerAsync();
-            
+
                 spContactTransfer.IsHitTestVisible = false;
                 spContactTransfer.Opacity = 0.4;
             }
@@ -2318,18 +2318,27 @@ namespace windows_client.View
                                 chatBubble.GroupMemberName = isGroupChat ?
                                    GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                         }
-                        else if (convMessage.IsSent)
-                        {
-                            chatBubble = convMessage;//todo:split
-                            if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
-                                || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
-                                msgMap.Add(convMessage.MessageId, chatBubble);
-                        }
                         else
                         {
-                            chatBubble = convMessage;
-                            chatBubble.GroupMemberName = isGroupChat ?
-                                GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
+                            if (convMessage.MetaDataString!=null && convMessage.MetaDataString.Contains("lm"))
+                            {
+                                string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp,convMessage.Msisdn);
+                                if (message.Length > 0)
+                                    convMessage.Message = message;
+                            }
+                            if (convMessage.IsSent)
+                            {
+                                chatBubble = convMessage;//todo:split
+                                if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                                    || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
+                                    msgMap.Add(convMessage.MessageId, chatBubble);
+                            }
+                            else
+                            {
+                                chatBubble = convMessage;
+                                chatBubble.GroupMemberName = isGroupChat ?
+                                    GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
+                            }
                         }
                     }
                     chatBubble.IsSms = !isOnHike;
@@ -5686,7 +5695,7 @@ namespace windows_client.View
 
                 if (indexToInsert == ocMessages.Count - 1)
                     ScrollToBottom();
-                
+
                 _isSendAllAsSMSVisible = true;
             }
 

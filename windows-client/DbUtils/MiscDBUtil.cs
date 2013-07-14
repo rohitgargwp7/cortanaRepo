@@ -45,6 +45,7 @@ namespace windows_client.DbUtils
             StatusMsgsTable.DeleteUnreadCountFile();
             GroupManager.Instance.DeleteAllGroups();
             FriendsTableUtils.DeleteAllFriends();
+            MessagesTableUtils.DeleteAllLongMessages();
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
@@ -284,33 +285,33 @@ namespace windows_client.DbUtils
 
         public static void saveAvatarImage(string msisdn, byte[] imageBytes, bool isUpdated)
         {
-            if (imageBytes == null)
-                return;
-            msisdn = msisdn.Replace(":", "_");
-            string FileName = THUMBNAILS + "\\" + msisdn;
-            lock (lockObj)
-            {
-                try
+                if (imageBytes == null)
+                    return;
+                msisdn = msisdn.Replace(":", "_");
+                string FileName = THUMBNAILS + "\\" + msisdn;
+                lock (lockObj)
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    try
                     {
-                        if (isUpdated && store.FileExists(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX))
+                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                         {
-                            store.DeleteFile(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX);
-                        }
-                        using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, store))
-                        {
-                            stream.Write(imageBytes, 0, imageBytes.Length);
-                            stream.Flush();
-                            stream.Close();
+                            if (isUpdated && store.FileExists(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX))
+                            {
+                                store.DeleteFile(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX);
+                            }
+                            using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, store))
+                            {
+                                stream.Write(imageBytes, 0, imageBytes.Length);
+                                stream.Flush();
+                                stream.Close();
+                            }
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("MiscDbUtil :: saveAvatarImage : saveAvatarImage, Exception : " + ex.StackTrace);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("MiscDbUtil :: saveAvatarImage : saveAvatarImage, Exception : " + ex.StackTrace);
-                }
-            }
         }
 
         public static bool hasCustomProfileImage(string msisdn)
