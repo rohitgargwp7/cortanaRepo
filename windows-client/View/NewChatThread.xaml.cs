@@ -452,23 +452,27 @@ namespace windows_client.View
                 _dt.Tick += dt_Tick;
                 _dt.Start();
             }
-            App.newChatThreadPage = this;
             if (HikeViewModel.stickerHelper == null)
                 HikeViewModel.stickerHelper = new StickerHelper();
 
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += (s, ee) =>
+            if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
             {
-                HikeViewModel.stickerHelper.InitialiseLowResStickers();
-            };
-            bw.RunWorkerCompleted += (s, ee) =>
-            {
-                CreateStickerPivot();
-                if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
+                if (App.newChatThreadPage != null)
+                    App.newChatThreadPage.gridStickers.Children.Remove(App.newChatThreadPage.pivotStickers);
+                BackgroundWorker bw = new BackgroundWorker();
+                bw.DoWork += (s, ee) =>
+                {
+                    HikeViewModel.stickerHelper.InitialiseLowResStickers();
+                };
+                bw.RunWorkerCompleted += (s, ee) =>
+                {
+                    CreateStickerPivot();
                     CreateStickerCategoriesPallete();
+                };
+                bw.RunWorkerAsync();
+                App.newChatThreadPage = this;
+            }
 
-            };
-            bw.RunWorkerAsync();
             #region PUSH NOTIFICATION
             // push notification , needs to be handled just once.
             if (this.NavigationContext.QueryString.ContainsKey("msisdn"))
@@ -613,7 +617,6 @@ namespace windows_client.View
             if (_microphone != null)
                 _microphone.BufferReady -= microphone_BufferReady;
 
-            gridStickers.Children.Remove(pivotStickers);
             if (e.IsNavigationInitiator)
             {
                 if (mediaElement != null)
@@ -702,6 +705,7 @@ namespace windows_client.View
                 {
                     Debug.WriteLine("RecordMedia.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
                 }
+                gridStickers.Children.Remove(pivotStickers);
 
                 if (App.newChatThreadPage == this)
                     App.newChatThreadPage = null;
@@ -5585,7 +5589,7 @@ namespace windows_client.View
 
                 if (indexToInsert == ocMessages.Count - 1)
                     ScrollToBottom();
-                
+
                 _isSendAllAsSMSVisible = true;
             }
 
