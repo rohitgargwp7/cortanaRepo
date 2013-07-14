@@ -15,11 +15,11 @@ using System.Collections;
 
 namespace windows_client.Controls
 {
-    public partial class StickerPivot : UserControl
+    public partial class StickerPivotItem : UserControl
     {
         private int _pivotIndex;
         private string _category;
-        public StickerPivot(EventHandler<System.Windows.Input.GestureEventArgs> stickerTap,
+        public StickerPivotItem(EventHandler<System.Windows.Input.GestureEventArgs> stickerTap,
             ObservableCollection<Sticker> listStickers, int pivotIndex, string category)
         {
             InitializeComponent();

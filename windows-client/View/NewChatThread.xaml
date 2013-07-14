@@ -897,8 +897,6 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <controls:Pivot Name="pivotStickers" Grid.Row="0" SelectionChanged="PivotStickers_SelectionChanged" Height="240">
-                    </controls:Pivot>
 
                     <Grid Grid.Row="1" Margin="17 15 17 5" Name="gridStickerPivot" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
