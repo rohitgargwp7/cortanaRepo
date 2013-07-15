@@ -27,8 +27,8 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <ScrollViewer Height="600" Margin="12 0 0 0">
-                <StackPanel Name="stMessage" Margin="0 12 0 12" />
+            <ScrollViewer Height="640" Margin="12 0 0 0">
+                <StackPanel Name="stMessage"/>
             </ScrollViewer>
         </Grid>
     </Grid>

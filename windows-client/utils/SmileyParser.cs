@@ -773,7 +773,7 @@ namespace windows_client
         }
 
         const int MAX_CHARS_PER_LINE = 30;
-        const int MAX_LINES_PER_BLOCK = 75;
+        const int MAX_LINES_PER_BLOCK = 35;
         public int GetMaxCharForBlock(string message)
         {
             string trimmedMessage = message;
