@@ -140,6 +140,8 @@ namespace windows_client.View
                     GetCurrentCoordinate();
                 else
                     GetDirections();
+
+                return;
             }
 
             if (e.NavigationMode == NavigationMode.New)

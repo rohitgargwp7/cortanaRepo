@@ -186,7 +186,7 @@ namespace windows_client.View
             // Create a map marker
             Image polygon = new Image();
 
-            polygon.Source = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
+            polygon.Source = UI_Utils.Instance.MyLocationPin;
 
             // Enable marker to be tapped for location information
             polygon.Tag = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);
@@ -204,10 +204,7 @@ namespace windows_client.View
             // Create a map marker
             Image polygon = new Image();
 
-            if (place == _myPlace)
-                polygon.Source = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
-            else
-                polygon.Source = place.PlaceImage;
+            polygon.Source = place.PlaceImage;
 
             // Enable marker to be tapped for location information
             polygon.Tag = new GeoCoordinate(place.position.Latitude, place.position.Longitude);
@@ -557,11 +554,11 @@ namespace windows_client.View
                     }
                 }
             }
-            else
+            else if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New)
             {
                 GetCurrentCoordinate(); // get current coordinate and load last catched coordinate if its not null
 
-                if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New && _myCoordinate != null)
+                if (_myCoordinate != null)
                 {
                     _selectedCoordinate = _myCoordinate;
 
@@ -659,7 +656,7 @@ namespace windows_client.View
         {
             ImageSource source = null;
 
-            source = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
+            source = UI_Utils.Instance.MyLocationPin;
 
             if (!String.IsNullOrEmpty(icon))
                 ImageLoader.Load(source as BitmapImage, new Uri(icon), null, Utils.ConvertUrlToFileName(icon), true);
