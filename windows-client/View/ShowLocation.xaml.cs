@@ -270,13 +270,21 @@ namespace windows_client.View
                 MyMap.AddRoute(MyMapRoute);
 
                 // Update route information and directions
-                double distance = (double)MyRoute.LengthInMeters / 1000;
+                double distance = (double)MyRoute.LengthInMeters;
                 var ts = new TimeSpan(MyRoute.EstimatedDuration.Hours, MyRoute.EstimatedDuration.Minutes, 0);
 
                 timeDestination.Text = ts.ToString("hh\\:mm", System.Globalization.CultureInfo.CurrentUICulture);
-                distanceDestination.Text = distance.ToString("0.0") + " km";
+                
+                if (MyRoute.LengthInMeters > 1000)
+                {
+                    distance /= 1000;
+                    distanceDestination.Text = String.Format(AppResources.Kilometer_Abbreviation, distance.ToString("0.0"));
+                }
+                else
+                    distanceDestination.Text = String.Format(AppResources.Meter_Abbreviation, distance.ToString("0.0"));
 
                 List<Direction> routeInstructions = new List<Direction>();
+                
                 foreach (RouteLeg leg in MyRoute.Legs)
                 {
                     for (int i = 0; i < leg.Maneuvers.Count; i++)
@@ -288,20 +296,17 @@ namespace windows_client.View
                             InstructionKind = maneuver.InstructionKind
                         };
 
-                        distance = 0;
-
                         if (i > 0)
                         {
-                            if (leg.Maneuvers[i - 1].LengthInMeters > 1000)
+                            distance = (double)leg.Maneuvers[i - 1].LengthInMeters;
+
+                            if (distance > 1000)
                             {
-                                distance = (double)leg.Maneuvers[i - 1].LengthInMeters / 1000;
+                                distance = distance / 1000;
                                 direction.Distance = String.Format(AppResources.Kilometer_Abbreviation, distance.ToString("0.0"));
                             }
                             else
-                            {
-                                distance = (double)leg.Maneuvers[i - 1].LengthInMeters;
                                 direction.Distance = String.Format(AppResources.Meter_Abbreviation, distance.ToString("0.0"));
-                            }
                             
                         }
 

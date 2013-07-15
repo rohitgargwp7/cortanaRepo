@@ -390,5 +390,18 @@ namespace windows_client
             public static readonly string TIME_DIFF_EPOCH = "serverEpochTime";
             public static readonly string SHOW_DOGGY_OVERLAY = "doggyOverlay";
         }
+
+        public static class NokiaHere
+        {
+            public static readonly string SEARCH = "search";
+            public static readonly string CONTEXT = "context";
+            public static readonly string LOCATION = "location";
+            public static readonly string ADDRESS = "address";
+            public static readonly string TEXT = "text";
+            public static readonly string RESULTS = "results";
+            public static readonly string ITEMS = "items";
+            public static readonly string PLACE_TYPE = "urn:nlp-types:place";
+            public static readonly string POSITION = "position";
+        }
     }
 }

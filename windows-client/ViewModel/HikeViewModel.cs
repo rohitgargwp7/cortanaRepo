@@ -212,8 +212,7 @@ namespace windows_client.ViewModel
         /// </summary>
         public void LoadCurrentLocation()
         {
-            bool _isLocationEnabled;
-            if (!App.appSettings.TryGetValue<bool>(App.USE_LOCATION_SETTING, out _isLocationEnabled) || _isLocationEnabled)
+            if (!App.appSettings.Contains(App.USE_LOCATION_SETTING) && !App.appSettings.Contains(HikeConstants.LOCATION_DEVICE_COORDINATE))
             {
                 BackgroundWorker getCoordinateWorker = new BackgroundWorker();
 
