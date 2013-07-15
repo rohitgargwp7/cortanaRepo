@@ -672,7 +672,7 @@ namespace windows_client
         private void ViewFullMessage_Click(object sender, RoutedEventArgs e)
         {
             Hyperlink hp = sender as Hyperlink;
-            PhoneApplicationService.Current.State["message"] = hp.TargetName;
+            PhoneApplicationService.Current.State[HikeConstants.MESSAGE_OBJ_FROM_CT] = hp.TargetName;
             var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
             currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.RelativeOrAbsolute));
         }

@@ -21,13 +21,13 @@
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel Grid.Row="0" Margin="12,17,0,0">
-            <TextBlock Text="message" Margin="12,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+        <StackPanel Grid.Row="0" Margin="12,0,0,0">
+            <TextBlock Text="{Binding Path= LocalizedResources.ViewMessage_Title_txt, Source={StaticResource LocalizedStrings}}" Margin="12,0,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <ScrollViewer Height="640" Margin="12 0 0 0">
+            <ScrollViewer Height="650" Margin="12 0 0 0">
                 <StackPanel Name="stMessage"/>
             </ScrollViewer>
         </Grid>

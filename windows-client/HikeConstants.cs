@@ -281,7 +281,7 @@ namespace windows_client
         public static string ACCOUNT = "account";
         public static string OBJ_FROM_BLOCKED_LIST = "objFrmBlckList";
         public static readonly string PAGE_TO_NAVIGATE_TO = "pageToNavigateTo";
-
+        public static readonly string MESSAGE_OBJ_FROM_CT = "msgCT";
         public static string USERINFO_FROM_CHATTHREAD_PAGE = "userInfoFromChatThread";
         public static string USERINFO_FROM_GROUPCHAT_PAGE = "userInfoFromGroupChatThread";
         public static string USERINFO_FROM_PROFILE = "userInfoFromProfile";

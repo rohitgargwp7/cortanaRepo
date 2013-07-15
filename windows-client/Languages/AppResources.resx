@@ -1866,4 +1866,8 @@ Get hike: http://get.hike.in</value>
   <data name="ShareLocation_LocationSettingsNotEnabled_Txt" xml:space="preserve">
     <value>Location service setting is not enabled. Would you like to enable it?</value>
   </data>
+  <data name="ViewMessage_Title_txt" xml:space="preserve">
+    <value>message</value>
+    <comment>page heading(view one single message)</comment>
+  </data>
 </root>
