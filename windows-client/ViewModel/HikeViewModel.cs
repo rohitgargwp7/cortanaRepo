@@ -226,7 +226,7 @@ namespace windows_client.ViewModel
                     geolocator.MovementThreshold = 5;
                     geolocator.DesiredAccuracy = PositionAccuracy.High;
 
-                    IAsyncOperation<Geoposition> locationTask = geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(10), TimeSpan.FromSeconds(3));
+                    IAsyncOperation<Geoposition> locationTask = geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(10), TimeSpan.FromSeconds(5));
 
                     try
                     {
