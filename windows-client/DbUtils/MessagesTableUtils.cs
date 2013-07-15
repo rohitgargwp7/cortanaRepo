@@ -102,6 +102,7 @@ namespace windows_client.DbUtils
         /* Adds a chat message to message Table.*/
         public static bool addMessage(ConvMessage convMessage)
         {
+            string message = convMessage.Message;//cached message for long message if db is updated with empty message it can be regained
             SaveLongMessage(convMessage);
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
             {
@@ -123,8 +124,8 @@ namespace windows_client.DbUtils
                     Debug.WriteLine("MessagesTableUtils :: addMessage : submit changes, Exception : " + ex.StackTrace);
                     return false;
                 }
-
             }
+            convMessage.Message = message;
             return true;
         }
 
