@@ -156,8 +156,8 @@
       <DependentUpon>ImageStatusUpdate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\StatusUpdate\StatusUpdateBox.cs" />
-    <Compile Include="Controls\StickerPivot.xaml.cs">
-      <DependentUpon>StickerPivot.xaml</DependentUpon>
+    <Compile Include="Controls\StickerPivotItem.xaml.cs">
+      <DependentUpon>StickerPivotItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\TemplateSelector.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
@@ -203,6 +203,7 @@
     <Compile Include="utils\AccountUtils.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
+    <Compile Include="utils\StickerPivotHelper.cs" />
     <Compile Include="utils\ContactUtils.cs" />
     <Compile Include="utils\ImageLoader.cs" />
     <Compile Include="utils\ImageUtils.cs" />
@@ -330,7 +331,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\StickerPivot.xaml">
+    <Page Include="Controls\StickerPivotItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -498,6 +499,7 @@
     <Content Include="View\images\block_list_icon.png" />
     <Content Include="View\images\block_list_icon_white.png" />
     <Content Include="View\images\bollywood_overlay.png" />
+    <Content Include="View\images\call.png" />
     <Content Include="View\images\change_pic.png" />
     <Content Include="View\images\chat_sms_error.png" />
     <Content Include="View\images\connected_tick.png" />
@@ -629,6 +631,7 @@
     <Content Include="View\images\tutorial_welcome.png" />
     <Content Include="View\images\twitter_status.png" />
     <Content Include="View\images\twitter_status_disabled.png" />
+    <Content Include="View\images\unmutedicon.png" />
     <Content Include="View\images\user_invite.png" />
     <Content Include="View\images\user_invite_white.png" />
     <Content Include="View\images\user_lock.png" />

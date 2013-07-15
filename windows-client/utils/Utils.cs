@@ -283,7 +283,7 @@ namespace windows_client.utils
             JObject info = new JObject();
             info["_device"] = getDeviceModel();
             info["_app_version"] = getAppVersion();
-            info["tag"] = "cbs";
+            info[HikeConstants.TAG] = "cbs";
             info["_carrier"] = DeviceNetworkInformation.CellularMobileOperator;
             info["device_id"] = getHashedDeviceId();
             info[HikeConstants.OS_VERSION] = getOSVersion();
@@ -385,6 +385,17 @@ namespace windows_client.utils
             }
         }
 
+        private static bool? _isBollywoodVisible;
+        public static bool IsBollywoodVisible
+        {
+            get
+            {
+                if (_isBollywoodVisible == null)
+                    _isBollywoodVisible = App.MSISDN.Contains("+91") || App.MSISDN.Contains("+94") || App.MSISDN.Contains("+880") || App.MSISDN.Contains("+977") || App.MSISDN.Contains("+93") || App.MSISDN.Contains("+92") || App.MSISDN.Contains("+975") || App.MSISDN.Contains("+960") || App.MSISDN.Contains("+968") || App.MSISDN.Contains("+966") || App.MSISDN.Contains("+961") || App.MSISDN.Contains("+962") || App.MSISDN.Contains("+965") || App.MSISDN.Contains("+973") || App.MSISDN.Contains("+971") || App.MSISDN.Contains("+974");
+
+                return _isBollywoodVisible == true ? true : false;
+            }
+        }
         private static Version TargetedVersion = new Version(8, 0);
 
         public static Uri LoadPageUri(App.PageState pageState)
@@ -497,7 +508,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (currentResolution == Resolutions.Default)
+                if (palleteResolution == Resolutions.Default)
                 {
                     if (IsWvga) palleteResolution = Resolutions.WVGA;
                     else if (IsWxga) palleteResolution = Resolutions.WXGA;

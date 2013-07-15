@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="windows_client.Controls.StickerPivot"
+﻿<UserControl x:Class="windows_client.Controls.StickerPivotItem"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -59,40 +59,41 @@
         </Style>
 
     </UserControl.Resources>
-    <Grid x:Name="LayoutRoot" Background="#323232">
-        <Grid >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <ListBox Name="llsStickerCategory">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <toolkit:WrapPanel ItemHeight="125" ItemWidth="145"/>
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Image Margin="5,5,5,5" MaxHeight="120" MaxWidth="120" Source="{Binding StickerImage}">
+    <Grid x:Name="LayoutRoot" Background="#323232" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <ListBox Name="llsStickerCategory" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Margin="10 0 0 0">
+
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <toolkit:WrapPanel ItemHeight="140" ItemWidth="150"  VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Height="140" Width="150">
+                        <Image Margin="5,5,5,5" Source="{Binding StickerImage}" MaxHeight="130" MaxWidth="130"  HorizontalAlignment="Center" VerticalAlignment="Center">
                         </Image>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <StackPanel Visibility="Collapsed" x:Name="stLoading" Height="230" Margin="0 10 0 0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
-                <TextBlock Text="{Binding Path=LocalizedResources.Sticker_Downloading_Txt,Source={StaticResource LocalizedStrings}}" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 80 0 0"/>
-                <ProgressBar Height="5"  VerticalContentAlignment="Bottom" IsIndeterminate="True" IsEnabled="True" Foreground="White" HorizontalAlignment="Stretch" VerticalAlignment="Center"></ProgressBar>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <StackPanel Visibility="Collapsed" x:Name="stLoading" Height="230" Margin="0 10 0 0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+            <TextBlock Text="{Binding Path=LocalizedResources.Sticker_Downloading_Txt,Source={StaticResource LocalizedStrings}}" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 80 0 0"/>
+            <ProgressBar Height="5"  VerticalContentAlignment="Bottom" IsIndeterminate="True" IsEnabled="True" Foreground="White" HorizontalAlignment="Stretch" VerticalAlignment="Center"></ProgressBar>
+        </StackPanel>
+        <StackPanel Visibility="Collapsed" x:Name="stNoStickers" Height="230" Margin="0 10 0 0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+            <TextBlock Text="{Binding Path=LocalizedResources.No_Stickers_Downloaded_Txt,Source={StaticResource LocalizedStrings}}" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 100 0 0"/>
+        </StackPanel>
+        <StackPanel Visibility="Collapsed" x:Name="stRetry"  Height="230" Margin="0 10 0 0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+            <TextBlock Text="{Binding Path=LocalizedResources.DownloadFailed_Txt,Source={StaticResource LocalizedStrings}}"  FontSize="20" Foreground="#e9ecee" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 80 0 0"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                <Button MinWidth="120" Content="{Binding Path=LocalizedResources.Button_Retry_Txt,Source={StaticResource LocalizedStrings}}" x:Name="btnRetry" Background="#e9ecee" BorderThickness="0" Margin="0" Foreground="Gray" FontSize="20" Height="70" Tap="RetryStickersTap"></Button>
+                <Button MinWidth="120" x:Name="btnClose" Background="#e9ecee" BorderThickness="0" Margin="0" Foreground="Gray" FontSize="20" Content="{Binding Path=LocalizedResources.Conversations_Dismiss_Tip,Source={StaticResource LocalizedStrings}}" Height="70" Tap="btnClose_Tap"></Button>
             </StackPanel>
-            <StackPanel Visibility="Collapsed" x:Name="stNoStickers" Height="230" Margin="0 10 0 0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
-                <TextBlock Text="{Binding Path=LocalizedResources.No_Stickers_Downloaded_Txt,Source={StaticResource LocalizedStrings}}" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 100 0 0"/>
-            </StackPanel>
-            <StackPanel Visibility="Collapsed" x:Name="stRetry"  Height="230" Margin="0 10 0 0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
-                <TextBlock Text="{Binding Path=LocalizedResources.DownloadFailed_Txt,Source={StaticResource LocalizedStrings}}"  FontSize="20" Foreground="#e9ecee" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 80 0 0"/>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-                    <Button MinWidth="120" Content="{Binding Path=LocalizedResources.Button_Retry_Txt,Source={StaticResource LocalizedStrings}}" x:Name="btnRetry" Background="#e9ecee" BorderThickness="0" Margin="0" Foreground="Gray" FontSize="20" Height="70" Tap="RetryStickersTap"></Button>
-                    <Button MinWidth="120" x:Name="btnClose" Background="#e9ecee" BorderThickness="0" Margin="0" Foreground="Gray" FontSize="20" Content="{Binding Path=LocalizedResources.Conversations_Dismiss_Tip,Source={StaticResource LocalizedStrings}}" Height="70" Tap="btnClose_Tap"></Button>
-                </StackPanel>
-            </StackPanel>
-            <ProgressBar Name="moreProgressBar" Visibility="Collapsed" Grid.Row="1" Height="5" Margin="0 0 0 5"  VerticalContentAlignment="Bottom" IsIndeterminate="True" IsEnabled="True" Foreground="White" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-        </Grid>
+        </StackPanel>
+        <ProgressBar Name="moreProgressBar" Visibility="Collapsed" Grid.Row="1" Height="5" Margin="0 0 0 5"  VerticalContentAlignment="Bottom" IsIndeterminate="True" IsEnabled="True" Foreground="White" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
     </Grid>
 </UserControl>

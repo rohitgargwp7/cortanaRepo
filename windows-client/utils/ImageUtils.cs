@@ -91,6 +91,8 @@ namespace windows_client.utils
         private BitmapImage bollywoodActive;
         private BitmapImage trollActive;
         private BitmapImage expressionsActive;
+        private BitmapImage muteIcon;
+        private BitmapImage unmuteIcon;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
         private string[] defaultAvatarFileNames;
@@ -1232,6 +1234,35 @@ namespace windows_client.utils
                 return closeButtonWhiteImage;
             }
         }
+
+        public BitmapImage MuteIcon
+        {
+            get
+            {
+                if (muteIcon == null)
+                {
+                    if (Utils.isDarkTheme())
+                        muteIcon = new BitmapImage(new Uri("/View/images/mute_icon_main.png", UriKind.Relative));
+                    else
+                        muteIcon = new BitmapImage(new Uri("/View/images/mute_icon_main.png", UriKind.Relative));
+                }
+                return muteIcon;
+            }
+        }
+        public BitmapImage UnmuteIcon
+        {
+            get
+            {
+                if (unmuteIcon == null)
+                {
+                    if (Utils.isDarkTheme())
+                        unmuteIcon = new BitmapImage(new Uri("/View/images/unmutedicon.png", UriKind.Relative));
+                    else
+                        unmuteIcon = new BitmapImage(new Uri("/View/images/unmutedicon.png", UriKind.Relative));
+                }
+                return unmuteIcon;
+            }
+        }
         #endregion
 
         #region DEFAULT AVATARS
@@ -1347,21 +1378,45 @@ namespace windows_client.utils
                 Rect rec = new Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight);
                 mergedBItmpapImage.Blit(rec, writeableBitmap, rec);
 
-                int toHeight = 0;
+                int maxSize = 0;
                 if (Utils.PalleteResolution == Utils.Resolutions.WVGA)
-                {
-                    toHeight = 130;
-                }
+                    maxSize = 135;
                 else if (Utils.PalleteResolution == Utils.Resolutions.WXGA)
+                    maxSize = 200;
+                else
+                    maxSize = 190;
+
+                int toWidth = 0;
+                int toHeight = 0;
+
+                if (writeableBitmap.PixelWidth > maxSize && writeableBitmap.PixelHeight > maxSize)
                 {
-                    toHeight = 195;
+                    if (writeableBitmap.PixelWidth > writeableBitmap.PixelHeight)
+                    {
+                        toWidth = maxSize;
+                        toHeight = Convert.ToInt32(maxSize * aspectratio);
+                    }
+                    else
+                    {
+                        toHeight = maxSize;
+                        toWidth = Convert.ToInt32(toHeight / aspectratio);
+                    }
+                }
+                else if (writeableBitmap.PixelWidth > maxSize)
+                {
+                    toWidth = maxSize;
+                    toHeight = Convert.ToInt32(maxSize * aspectratio);
+                }
+                else if (writeableBitmap.PixelHeight > maxSize)
+                {
+                    toHeight = maxSize;
+                    toWidth = Convert.ToInt32(toHeight / aspectratio);
                 }
                 else
                 {
-                    toHeight = 180;
+                    toWidth = Convert.ToInt32(writeableBitmap.PixelWidth);
+                    toHeight = Convert.ToInt32(writeableBitmap.PixelHeight);
                 }
-                int toWidth = Convert.ToInt32(toHeight / aspectratio);
-
                 using (var msLargeImage = new MemoryStream())
                 {
                     mergedBItmpapImage.SaveJpeg(msLargeImage, toWidth, toHeight, 0, 100);

@@ -20,6 +20,7 @@ namespace windows_client.View
 {
     public partial class Notifications : PhoneApplicationPage
     {
+        bool showStatusUpdatesSettings = false;
         public Notifications()
         {
             InitializeComponent();
@@ -32,11 +33,8 @@ namespace windows_client.View
             if (!App.appSettings.TryGetValue<bool>(App.USE_LOCATION_SETTING, out isLocationEnabled))
                 isLocationEnabled = true;
 
-            this.locationSettings.IsChecked = isLocationEnabled;
-            if (isLocationEnabled)
-                this.locationSettings.Content = AppResources.On;
-            else
-                this.locationSettings.Content = AppResources.Off;
+            this.locationToggle.IsChecked = isLocationEnabled;
+            this.locationToggle.Content = isLocationEnabled ? AppResources.On : AppResources.Off;
 
             bool isPushEnabled = true;
             App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
@@ -86,10 +84,7 @@ namespace windows_client.View
             if (!App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out showlastSeen))
                 showlastSeen = true;
             lastSeenTimeStampToggle.IsChecked = showlastSeen;
-            if (showlastSeen)
-                this.lastSeenTimeStampToggle.Content = AppResources.On;
-            else
-                this.lastSeenTimeStampToggle.Content = AppResources.Off;
+            this.lastSeenTimeStampToggle.Content = showlastSeen ? AppResources.On : AppResources.Off;
 
             byte statusSettingsValue;
             if (App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue))
@@ -103,12 +98,16 @@ namespace windows_client.View
                 {
                     statusUpdateNotificationToggle.IsChecked = false;
                     statusUpdateNotificationToggle.Content = AppResources.Off;
-                    listBoxStatusSettings.IsEnabled = false;
+                    listBoxStatusSettings.Visibility = Visibility.Collapsed;
                 }
             }
-            
             listBoxStatusSettings.ItemsSource = listSettingsValue;
             listBoxStatusSettings.SelectedIndex = statusSettingsValue == 0 ? 0 : statusSettingsValue - 1;
+            if (listSettingsValue.Count > 1)
+            {
+                showStatusUpdatesSettings = true;
+                listBoxStatusSettings.Visibility = Visibility.Visible;
+            }
         }
 
         private void pushNotifications_Checked(object sender, RoutedEventArgs e)
@@ -152,7 +151,8 @@ namespace windows_client.View
         private void statusUpdateNotification_Checked(object sender, RoutedEventArgs e)
         {
             this.statusUpdateNotificationToggle.Content = AppResources.On;
-            listBoxStatusSettings.IsEnabled = true;
+            if (showStatusUpdatesSettings)
+                listBoxStatusSettings.Visibility = Visibility.Visible;
             App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)1);
             JObject obj = new JObject();
 
@@ -166,7 +166,7 @@ namespace windows_client.View
         private void statusUpdateNotification_Unchecked(object sender, RoutedEventArgs e)
         {
             this.statusUpdateNotificationToggle.Content = AppResources.Off;
-            listBoxStatusSettings.IsEnabled = false;
+            listBoxStatusSettings.Visibility = Visibility.Collapsed;
             listBoxStatusSettings.SelectedIndex = 0;
             App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)0);
 
@@ -240,9 +240,11 @@ namespace windows_client.View
         private void locationToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.lastSeenTimeStampToggle.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, true);
 
             App.ViewModel.LoadCurrentLocation(); // load current location
+
+            App.appSettings.Remove(App.USE_LOCATION_SETTING);
+            App.appSettings.Save();
         }
 
         private void locationToggle_Unchecked(object sender, RoutedEventArgs e)
@@ -252,6 +254,12 @@ namespace windows_client.View
 
             App.appSettings.Remove(HikeConstants.LOCATION_DEVICE_COORDINATE);
             App.appSettings.Save();
+        }
+       
+        private async void btnGoToLockSettings_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            // Launch URI for the lock screen settings screen.
+            var op = await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-lock:"));
         }
     }
 }
