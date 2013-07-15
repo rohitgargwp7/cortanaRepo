@@ -41,14 +41,12 @@ namespace windows_client.View
 
         private string _nokiaPlacesUrl = "http://places.nlp.nokia.com/places/v1/discover/explore";
         private string _nokiaSeacrhUrl = "http://places.nlp.nokia.com/places/v1/discover/search";
-        private string _nokiaHereUrl = "http://places.nlp.nokia.com/places/v1/discover/here";
         private string _nokiaPlacesAppID = "KyG8YRrgO09I7bm9jXwd";
         private string _nokiaPlacesAppCode = "Uhjk-Gny7_A-ISaJb3DMKQ";
         private List<Place> _places;
         Place _selectedPlace;
         Place _myPlace;
         Boolean _isMapTapped = false;
-        Boolean _isDefaultSelection = false;
         Boolean _isLocationEnabled = true;
 
         private void BuildApplicationBar()
@@ -69,38 +67,6 @@ namespace windows_client.View
             ApplicationBar.Buttons.Add(shareIconButton);
         }
 
-        void GetMyPlaceDetails()
-        {
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    ShowProgressIndicator();
-                });
-
-            string url = string.Format("{0}?at={1},{2}&app_id={3}&app_code={4}&tf=plain&pretty=true", _nokiaHereUrl, _selectedCoordinate.Latitude, _selectedCoordinate.Longitude, _nokiaPlacesAppID, _nokiaPlacesAppCode);
-            AccountUtils.createNokiaPlacesGetRequest(url, new AccountUtils.postResponseFunction(MyPlace_Callback));
-        }
-
-        void MyPlace_Callback(JObject obj)
-        {
-            if (obj == null)
-                return;
-
-            try
-            {
-                JToken jToken = obj["search"]["context"]["location"]["address"];
-                _myPlaceVicinity = jToken["text"].ToString().Replace("\n", ", ");
-            }
-            catch
-            {
-                _myPlaceVicinity = String.Empty;
-            }
-
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                HideProgressIndicator();
-            });
-        }
-
         void GetPlaces()
         {
             ShowProgressIndicator();
@@ -113,27 +79,37 @@ namespace windows_client.View
             if (MyMap == null)
                 return;
             
-            _isPlacesSearch = true;
             _places = this.ParsePlaces(obj);
-            
+
             Deployment.Current.Dispatcher.BeginInvoke(new Action(delegate
             {
                 if (MyMap == null)
                     return;
-                
+
                 PlacesGrid.Visibility = Visibility.Visible;
                 DrawMapMarkers();
                 DrawMapMarkers();
 
                 if (_selectedPlace == null)
                 {
+                    try
+                    {
+                        JToken jToken = obj["search"]["context"]["location"]["address"];
+                        _myPlaceVicinity = jToken["text"].ToString().Replace("\n", ", ");
+                    }
+                    catch
+                    {
+                        _myPlaceVicinity = String.Empty;
+                    }
+
                     if (_myPlace == null)
                     {
                         _myPlace = new Place()
                         {
                             position = _selectedCoordinate,
                             title = _myCoordinate == null || _selectedCoordinate != _myCoordinate ? AppResources.Location_Txt : AppResources.My_Location_Text,
-                            vicinity = _myPlaceVicinity
+                            vicinity = _myPlaceVicinity,
+                            icon = String.Empty
                         };
                     }
 
@@ -143,14 +119,15 @@ namespace windows_client.View
                 else
                 {
                     if (!_places.Contains(_selectedPlace))
-                        _places.Insert(0, _selectedPlace); 
+                        _places.Insert(0, _selectedPlace);
                 }
 
                 _selectedPlace = _places[0];
                 PlacesList.ItemsSource = _places;
                 HideProgressIndicator();
-                _isDefaultSelection = true;
                 PlacesList.SelectedItem = _places[0];
+                UpdateLayout();
+                PlacesList.ScrollIntoView(PlacesList.SelectedItem);
             }));
         }
 
@@ -195,25 +172,21 @@ namespace windows_client.View
                 MyMap.Layers.Clear();
                 MapLayer mapLayer = new MapLayer();
 
-                if (_selectedCoordinate != null)
-                {
-                    DrawAccuracyRadius(mapLayer);
-                    DrawMapMarker(_selectedCoordinate, Colors.Orange, mapLayer);
-                }
+                if (_selectedPlace != null)
+                    DrawMapMarker(_selectedPlace, mapLayer);
+                else if (_selectedCoordinate != null)
+                    DrawMapMarker(_selectedCoordinate, mapLayer);
 
                 MyMap.Layers.Add(mapLayer);
             }
         }
 
-        private void DrawMapMarker(GeoCoordinate coordinate, Color color, MapLayer mapLayer)
+        private void DrawMapMarker(GeoCoordinate coordinate, MapLayer mapLayer)
         {
             // Create a map marker
-            Polygon polygon = new Polygon();
-            polygon.Points.Add(new System.Windows.Point(0, 0));
-            polygon.Points.Add(new System.Windows.Point(0, 55));
-            polygon.Points.Add(new System.Windows.Point(25, 25));
-            polygon.Points.Add(new System.Windows.Point(25, 0));
-            polygon.Fill = new SolidColorBrush(color);
+            Image polygon = new Image();
+
+            polygon.Source = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
 
             // Enable marker to be tapped for location information
             polygon.Tag = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);
@@ -226,23 +199,24 @@ namespace windows_client.View
             mapLayer.Add(overlay);
         }
 
-        private void DrawAccuracyRadius(MapLayer mapLayer)
+        private void DrawMapMarker(Place place, MapLayer mapLayer)
         {
-            // The ground resolution (in meters per pixel) varies depending on the level of detail 
-            // and the latitude at which it’s measured. It can be calculated as follows:
-            double metersPerPixels = (Math.Cos(_selectedCoordinate.Latitude * Math.PI / 180) * 2 * Math.PI * 6378137) / (256 * Math.Pow(2, MyMap.ZoomLevel));
-            double radius = 55.0 / metersPerPixels;
+            // Create a map marker
+            Image polygon = new Image();
 
-            Ellipse ellipse = new Ellipse();
-            ellipse.Width = radius * 2;
-            ellipse.Height = radius * 2;
-            ellipse.Fill = new SolidColorBrush(Color.FromArgb(20, 0, 0, 0));
-            ellipse.Stroke = new SolidColorBrush(Color.FromArgb(75, 0, 0, 0));
+            if (place == _myPlace)
+                polygon.Source = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
+            else
+                polygon.Source = place.PlaceImage;
 
+            // Enable marker to be tapped for location information
+            polygon.Tag = new GeoCoordinate(place.position.Latitude, place.position.Longitude);
+
+            // Create a MapOverlay and add marker.
             MapOverlay overlay = new MapOverlay();
-            overlay.Content = ellipse;
-            overlay.GeoCoordinate = new GeoCoordinate(_selectedCoordinate.Latitude, _selectedCoordinate.Longitude);
-            overlay.PositionOrigin = new System.Windows.Point(0.5, 0.5);
+            overlay.Content = polygon;
+            overlay.GeoCoordinate = new GeoCoordinate(place.position.Latitude, place.position.Longitude);
+            overlay.PositionOrigin = new System.Windows.Point(0.0, 1.0);
             mapLayer.Add(overlay);
         }
 
@@ -284,16 +258,11 @@ namespace windows_client.View
 
                 Dispatcher.BeginInvoke(() =>
                 {
+                    shareIconButton.IsEnabled = true;
+
                     DrawMapMarkers();
                     MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
                 });
-
-                GetMyPlaceDetails();
-
-                if (String.IsNullOrEmpty(_searchString))
-                    GetPlaces();
-                else
-                    Search();
             }
             catch (Exception ex)
             {
@@ -386,16 +355,10 @@ namespace windows_client.View
             MyMap.SetView(geo, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
             _selectedCoordinate = geo;
             _selectedPlace = null;
+            _myPlace = null;
             shareIconButton.IsEnabled = true;
             _isPlacesSearch = false;
-
-            GetMyPlaceDetails();
-
-            if (String.IsNullOrEmpty(_searchString))
-                GetPlaces();
-            else
-                Search();
-
+            PlacesGrid.Visibility = Visibility.Collapsed;
             DrawMapMarkers();
         }
 
@@ -424,12 +387,10 @@ namespace windows_client.View
                 _selectedPlace = place;
                 _selectedCoordinate = place.position;
 
-                if(!_isDefaultSelection)
-                    MyMap.SetView(_selectedCoordinate, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
+                MyMap.SetView(_selectedCoordinate, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
 
                 DrawMapMarkers();
                 shareIconButton.IsEnabled = true;
-                _isDefaultSelection = false;
             }
         }
 
@@ -448,8 +409,18 @@ namespace windows_client.View
 
         private void PhoneTextBox_ActionIconTapped(object sender, EventArgs e)
         {
-            _searchString = SearchTextBox.Text.Trim();
+            var searchString = SearchTextBox.Text.Trim();
+
+            if (_searchString == searchString) // avoid duplicated search calls
+                return;
+
+            _searchString = searchString;
+            _isPlacesSearch = true;
+
             this.Focus();
+
+            if (_selectedPlace != _myPlace)
+                _myPlace = null;
 
             if (String.IsNullOrEmpty(_searchString))
                 GetPlaces();
@@ -467,24 +438,61 @@ namespace windows_client.View
         private void MyLocation_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (shareIconButton.IsEnabled == false)
+                return; 
+            
+            if (_myPlace != null && _myPlace.title == AppResources.My_Location_Text)
+            {
+                if (_selectedPlace != _myPlace)
+                {
+                    _selectedPlace = _myPlace;
+                    PlacesList.SelectedItem = _myPlace;
+                    UpdateLayout();
+                    PlacesList.ScrollIntoView(_myPlace);
+                }
+                
                 return;
+            }
 
+            shareIconButton.IsEnabled = false;
             _selectedPlace = null;
+            _myPlace = null;
             _isMapTapped = false;
+            _isPlacesSearch = false;
+            PlacesGrid.Visibility = Visibility.Collapsed;
             GetCurrentCoordinate();
         }
 
         private void Places_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
+                return;
+            }
+
             if (shareIconButton.IsEnabled == false)
                 return;
-            
+
             if (PlacesGrid.Visibility == Visibility.Collapsed)
             {
-                if (!_isPlacesSearch)
-                    GetPlaces();
+                if (_selectedPlace == null || _selectedPlace != _places[0]) // avoid duplicate places call
+                {
+                    shareIconButton.IsEnabled = false;
+                    _myPlace = null;
+                    _isPlacesSearch = true;
+                    _searchString = SearchTextBox.Text.Trim();
+
+                    if (String.IsNullOrEmpty(_searchString))
+                        GetPlaces();
+                    else
+                        Search();
+                }
                 else
+                {
                     PlacesGrid.Visibility = Visibility.Visible;
+                    UpdateLayout();
+                    PlacesList.ScrollIntoView(_places[0]);
+                }
             }
             else
                 PlacesGrid.Visibility = Visibility.Collapsed;
@@ -518,12 +526,16 @@ namespace windows_client.View
             else
                 _isLocationEnabled = true;
 
+            if (!_isLocationEnabled)
+                return;
+
             App.appSettings.TryGetValue(HikeConstants.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
 
             if (App.IS_TOMBSTONED)
             {
                 _selectedCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] as GeoCoordinate;
                 _searchString = PhoneApplicationService.Current.State[HikeConstants.LOCATION_SEARCH] as String;
+                _isPlacesSearch = (bool)PhoneApplicationService.Current.State[HikeConstants.PLACES_SEARCH];
 
                 MyMap.ZoomLevel = (double)PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL];
 
@@ -531,25 +543,27 @@ namespace windows_client.View
                     GetCurrentCoordinate();
                 else
                 {
-                    DrawMapMarkers();
-                    GetMyPlaceDetails();
+                    shareIconButton.IsEnabled = true;
 
-                    if (String.IsNullOrEmpty(_searchString))
-                        GetPlaces();
-                    else
-                        Search();
+                    DrawMapMarkers();
+
+                    if (_isPlacesSearch)
+                    {
+                        SearchTextBox.Text = _searchString;
+
+                        if (String.IsNullOrEmpty(_searchString))
+                            GetPlaces();
+                        else
+                            Search();
+                    }
                 }
             }
-
-            if (!_isLocationEnabled)
-                return;
-
-            if (_myCoordinate != null)
+            else
             {
-                if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New)
-                {
-                    GetCurrentCoordinate();
+                GetCurrentCoordinate(); // get current coordinate and load last catched coordinate if its not null
 
+                if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New && _myCoordinate != null)
+                {
                     _selectedCoordinate = _myCoordinate;
 
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -557,17 +571,8 @@ namespace windows_client.View
                             MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
                             DrawMapMarkers();
                         });
-
-                    GetMyPlaceDetails();
-
-                    if (String.IsNullOrEmpty(_searchString))
-                        GetPlaces();
-                    else
-                        Search();
                 }
             }
-            else
-                GetCurrentCoordinate();
 
             base.OnNavigatedTo(e);
         }
@@ -579,6 +584,7 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_COORDINATE);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_SEARCH);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.ZOOM_LEVEL);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.PLACES_SEARCH);
             }
             else
             {
@@ -589,6 +595,8 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
                 else
                     PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = 16;
+
+                PhoneApplicationService.Current.State[HikeConstants.PLACES_SEARCH] = _isPlacesSearch;
             }
 
             if (_myCoordinate != null)
@@ -612,12 +620,33 @@ namespace windows_client.View
     public class Place : INotifyPropertyChanged
     {
         string _vicinity;
+        string _icon;
+        BitmapImage _place;
 
         public Visibility VicinityVisibility
         {
             get
             {
                 return String.IsNullOrEmpty(vicinity) ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        public BitmapImage PlaceImage
+        {
+            get
+            {
+                if(_place == null)
+                    _place = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
+
+                return _place;
+            }
+            set
+            {
+                if (_place != value)
+                {
+                    _place = value;
+                    NotifyPropertyChanged("PlaceImage");
+                }
             }
         }
 
@@ -631,7 +660,29 @@ namespace windows_client.View
         public double averageRating { get; set; }
 
         [JsonProperty]
-        public string icon { get; set; }
+        public string icon
+        {
+            get
+            {
+               return _icon;
+            }
+            set
+            {
+                if (_icon != value)
+                {
+                    _icon = value == null ? String.Empty:value;
+
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (!String.IsNullOrEmpty(_icon))
+                                PlaceImage = new BitmapImage(new Uri(icon));
+                        });
+
+                    NotifyPropertyChanged("icon");
+                    NotifyPropertyChanged("PlaceImage");
+                }
+            }
+        }
 
         [JsonProperty]
         public string vicinity

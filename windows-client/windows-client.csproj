@@ -580,6 +580,7 @@
     <Content Include="View\images\moods\22Sleepy.png" />
     <Content Include="View\images\moods\23Hungover.png" />
     <Content Include="View\images\moods_status_icon.png" />
+    <Content Include="View\images\MyLocation.png" />
     <Content Include="View\images\notification_read.png" />
     <Content Include="View\images\notification_unread.png" />
     <Content Include="View\images\pause_icon.png" />

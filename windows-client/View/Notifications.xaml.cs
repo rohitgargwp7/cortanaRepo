@@ -242,6 +242,8 @@ namespace windows_client.View
             this.lastSeenTimeStampToggle.Content = AppResources.On;
             App.appSettings.Remove(App.USE_LOCATION_SETTING);
             App.appSettings.Save();
+
+            App.ViewModel.LoadCurrentLocation(); // load current location
         }
 
         private void locationToggle_Unchecked(object sender, RoutedEventArgs e)
