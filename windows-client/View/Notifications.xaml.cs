@@ -213,7 +213,8 @@ namespace windows_client.View
         private void lastSeenTimeStampToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.lastSeenTimeStampToggle.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, true);
+            App.appSettings.Remove(App.LAST_SEEN_SEETING);
+            App.appSettings.Save();
 
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);

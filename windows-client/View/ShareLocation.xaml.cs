@@ -71,7 +71,7 @@ namespace windows_client.View
         void GetPlaces()
         {
             ShowProgressIndicator();
-            string url = string.Format("{0}?at={1},{2}&app_id={3}&app_code={4}&tf=plain&size=40&pretty=true", _nokiaPlacesUrl, HttpUtility.UrlEncode(_selectedCoordinate.Latitude.ToString()), HttpUtility.UrlEncode(_selectedCoordinate.Longitude.ToString()), HttpUtility.UrlEncode(_nokiaPlacesAppID), HttpUtility.UrlEncode(_nokiaPlacesAppCode));
+            string url = string.Format("{0}?at={1},{2}&app_id={3}&app_code={4}&tf=plain&pretty=true", _nokiaPlacesUrl, HttpUtility.UrlEncode(_selectedCoordinate.Latitude.ToString()), HttpUtility.UrlEncode(_selectedCoordinate.Longitude.ToString()), HttpUtility.UrlEncode(_nokiaPlacesAppID), HttpUtility.UrlEncode(_nokiaPlacesAppCode));
             AccountUtils.createNokiaPlacesGetRequest(url, new AccountUtils.postResponseFunction(PlacesResult_Callback));
         }
 
