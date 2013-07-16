@@ -575,7 +575,7 @@ namespace windows_client.View
                 }
                 else //removing here because it may be case that user pressed back without selecting any user
                     PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
-                
+
                 /* This is called only when you add more participants to group */
                 if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
                 {
@@ -924,30 +924,7 @@ namespace windows_client.View
                     else
                     {
                         isOnHike = true;
-
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            if (!isGroupChat)
-                                sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
-
-                            spContactTransfer.IsHitTestVisible = true;
-                            spContactTransfer.Opacity = 1;
-
-                            if (appBar.MenuItems.Contains(inviteMenuItem))
-                                appBar.MenuItems.Remove(inviteMenuItem);
-
-                            if (ocMessages != null && ocMessages.Count > 0)
-                            {
-                                foreach (var msg in ocMessages)
-                                {
-                                    if (!msg.IsSms)
-                                        msg.IsSms = true;
-                                }
-                            }
-
-                            showNoSmsLeftOverlay = false;
-                            ToggleAlertOnNoSms(false);
-                        });
+                        UpdateUiForHikeUser();
                     }
                 };
 
@@ -1079,6 +1056,39 @@ namespace windows_client.View
             IsSMSOptionValid = IsSMSOptionAvalable();
         }
 
+        private void UpdateUiForHikeUser()
+        {
+            if (statusObject is ContactInfo)
+            {
+                ContactInfo cinfo = (ContactInfo)statusObject;
+                cinfo.OnHike = true;
+            }
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                if (!isGroupChat)
+                    sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
+
+                spContactTransfer.IsHitTestVisible = true;
+                spContactTransfer.Opacity = 1;
+
+                if (appBar.MenuItems.Contains(inviteMenuItem))
+                    appBar.MenuItems.Remove(inviteMenuItem);
+
+                if (ocMessages != null && ocMessages.Count > 0)
+                {
+                    foreach (var msg in ocMessages)
+                    {
+                        if (msg.IsSms)
+                            msg.IsSms = false;
+                    }
+                }
+
+                showNoSmsLeftOverlay = false;
+                ToggleAlertOnNoSms(false);
+
+            });
+        }
+
         public void GetHikeStatus_Callback(JObject obj)
         {
             if (obj != null && HikeConstants.FAIL != (string)obj[HikeConstants.STAT])
@@ -1090,30 +1100,7 @@ namespace windows_client.View
                     JObject j = (JObject)obj["profile"];
                     long time = (long)j["jointime"];
                     FriendsTableUtils.SetJoiningTime(mContactNumber, time);
-
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            if (!isGroupChat)
-                                sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
-
-                            spContactTransfer.IsHitTestVisible = true;
-                            spContactTransfer.Opacity = 1;
-
-                            if (appBar.MenuItems.Contains(inviteMenuItem))
-                                appBar.MenuItems.Remove(inviteMenuItem);
-
-                            if (ocMessages != null && ocMessages.Count > 0)
-                            {
-                                foreach (var msg in ocMessages)
-                                {
-                                    if (!msg.IsSms)
-                                        msg.IsSms = true;
-                                }
-                            }
-
-                            showNoSmsLeftOverlay = false;
-                            ToggleAlertOnNoSms(false);
-                        });
+                    UpdateUiForHikeUser();
                 }
             }
         }
@@ -2319,9 +2306,9 @@ namespace windows_client.View
                         }
                         else
                         {
-                            if (convMessage.MetaDataString!=null && convMessage.MetaDataString.Contains("lm"))
+                            if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains("lm"))
                             {
-                                string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp,convMessage.Msisdn);
+                                string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
                                 if (message.Length > 0)
                                     convMessage.Message = message;
                             }
@@ -4453,7 +4440,7 @@ namespace windows_client.View
             emoticonPanel.Visibility = Visibility.Collapsed;
             if ((!isOnHike && mCredits <= 0))
                 return;
-            ConvMessage convMessage = new ConvMessage("Nudge!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+            ConvMessage convMessage = new ConvMessage(string.Format("{0}!", AppResources.Nudge), mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
             convMessage.IsSms = !isOnHike;
             convMessage.HasAttachment = false;
             convMessage.MetaDataString = "{poke:1}";
@@ -4481,10 +4468,10 @@ namespace windows_client.View
                     ContactUtils.getContact(mContactNumber, new ContactUtils.contacts_Callback(contactSearchCompleted_Callback));
                     break;
                 case TaskResult.Cancel:
-                    MessageBox.Show(AppResources.User_Cancelled_Task_Txt);
+                    //MessageBox.Show(AppResources.User_Cancelled_Task_Txt);
                     break;
                 case TaskResult.None:
-                    MessageBox.Show(AppResources.NoInfoForTask_Txt);
+                    //MessageBox.Show(AppResources.NoInfoForTask_Txt);
                     break;
             }
         }
