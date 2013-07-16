@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.IO;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Controls;
+using windows_client.Languages;
 
 namespace windows_client
 {
@@ -661,7 +662,7 @@ namespace windows_client
 
                 MyLink.Foreground = foreground;
                 MyLink.TargetName = originalMessage;
-                MyLink.Inlines.Add("Click here to view all");
+                MyLink.Inlines.Add(AppResources.ViewFullMessage_Txt);
 
                 MyLink.Click += ViewFullMessage_Click;
                 p.Inlines.Add(MyLink);

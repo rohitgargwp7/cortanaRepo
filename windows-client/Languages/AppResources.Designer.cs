@@ -4245,6 +4245,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View full message.
+        /// </summary>
+        public static string ViewFullMessage_Txt {
+            get {
+                return ResourceManager.GetString("ViewFullMessage_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to message.
         /// </summary>
         public static string ViewMessage_Title_txt {
