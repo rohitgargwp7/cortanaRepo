@@ -513,6 +513,7 @@
     <Content Include="View\images\deleted_grey_icon.png" />
     <Content Include="View\images\deleted_white_icon.png" />
     <Content Include="View\images\delete_account_white.png" />
+    <Content Include="View\images\route.png" />
     <Content Include="View\images\doggy_icon.png" />
     <Content Include="View\images\doggy_i_icon.png" />
     <Content Include="View\images\doggy_overlay.png" />

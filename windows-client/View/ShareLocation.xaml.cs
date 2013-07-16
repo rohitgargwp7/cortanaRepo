@@ -18,6 +18,7 @@ using windows_client.utils;
 using System.ComponentModel;
 using System.Windows.Controls;
 using Windows.Foundation;
+using System.Web;
 
 namespace windows_client.View
 {
@@ -70,7 +71,7 @@ namespace windows_client.View
         void GetPlaces()
         {
             ShowProgressIndicator();
-            string url = string.Format("{0}?at={1},{2}&app_id={3}&app_code={4}&tf=plain&pretty=true", _nokiaPlacesUrl, _selectedCoordinate.Latitude, _selectedCoordinate.Longitude, _nokiaPlacesAppID, _nokiaPlacesAppCode);
+            string url = string.Format("{0}?at={1},{2}&app_id={3}&app_code={4}&tf=plain&pretty=true", _nokiaPlacesUrl, HttpUtility.UrlEncode(_selectedCoordinate.Latitude.ToString()), HttpUtility.UrlEncode(_selectedCoordinate.Longitude.ToString()), HttpUtility.UrlEncode(_nokiaPlacesAppID), HttpUtility.UrlEncode(_nokiaPlacesAppCode));
             AccountUtils.createNokiaPlacesGetRequest(url, new AccountUtils.postResponseFunction(PlacesResult_Callback));
         }
 
@@ -94,8 +95,8 @@ namespace windows_client.View
                 {
                     try
                     {
-                        JToken jToken = obj["search"]["context"]["location"]["address"];
-                        _myPlaceVicinity = jToken["text"].ToString().Replace("\n", ", ");
+                        JToken jToken = obj[HikeConstants.NokiaHere.SEARCH][HikeConstants.NokiaHere.CONTEXT][HikeConstants.NokiaHere.LOCATION][HikeConstants.NokiaHere.ADDRESS];
+                        _myPlaceVicinity = jToken[HikeConstants.NokiaHere.TEXT].ToString(Newtonsoft.Json.Formatting.None).Replace("\n", ", ");
                     }
                     catch
                     {
@@ -136,25 +137,31 @@ namespace windows_client.View
             List<Place> places = new List<Place>();
             if (json == null)
                 return places;
-
-            JToken jToken = json["results"]["items"];
-            if (jToken == null)
-                return places;
-
-            var jlList = jToken.Children();
-            foreach (JToken token in jlList)
+            try
             {
-                Place place = JsonConvert.DeserializeObject<Place>(token.ToString());
+                JToken jToken = json[HikeConstants.NokiaHere.RESULTS][HikeConstants.NokiaHere.ITEMS];
+                if (jToken == null)
+                    return places;
 
-                if (place.type == "urn:nlp-types:place")
+                var jlList = jToken.Children();
+                foreach (JToken token in jlList)
                 {
-                    var jTokenListPosition = token["position"];
-                    GeoCoordinate position = new GeoCoordinate();
-                    position.Latitude = double.Parse(jTokenListPosition.First.ToString());
-                    position.Longitude = double.Parse(jTokenListPosition.Last.ToString());
-                    place.position = position;
-                    places.Add(place);
+                    Place place = JsonConvert.DeserializeObject<Place>(token.ToString());
+
+                    if (place.type == HikeConstants.NokiaHere.PLACE_TYPE)
+                    {
+                        var jTokenListPosition = token[HikeConstants.NokiaHere.POSITION];
+                        GeoCoordinate position = new GeoCoordinate();
+                        position.Latitude = (double) jTokenListPosition.First;
+                        position.Longitude = (double) jTokenListPosition.Last;
+                        place.position = position;
+                        places.Add(place);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("ShareLocation :: ParsePlaces : ParsePlaces , Exception : " + ex.StackTrace);
             }
 
             return places;
@@ -186,7 +193,7 @@ namespace windows_client.View
             // Create a map marker
             Image polygon = new Image();
 
-            polygon.Source = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
+            polygon.Source = UI_Utils.Instance.MyLocationPin;
 
             // Enable marker to be tapped for location information
             polygon.Tag = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);
@@ -204,10 +211,7 @@ namespace windows_client.View
             // Create a map marker
             Image polygon = new Image();
 
-            if (place == _myPlace)
-                polygon.Source = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
-            else
-                polygon.Source = place.PlaceImage;
+            polygon.Source = place.PlaceImage;
 
             // Enable marker to be tapped for location information
             polygon.Tag = new GeoCoordinate(place.position.Latitude, place.position.Longitude);
@@ -242,7 +246,7 @@ namespace windows_client.View
             _geolocator.MovementThreshold = 5;
             _geolocator.DesiredAccuracy = PositionAccuracy.High;
 
-            IAsyncOperation<Geoposition> locationTask = _geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(3));
+            IAsyncOperation<Geoposition> locationTask = _geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(10), TimeSpan.FromSeconds(5));
 
             try
             {
@@ -431,13 +435,13 @@ namespace windows_client.View
         void Search()
         {
             ShowProgressIndicator();
-            string url = string.Format("{0}?q={1}&at={2},{3}&app_id={4}&app_code={5}&tf=plain&pretty=true", _nokiaSeacrhUrl,_searchString, _selectedCoordinate.Latitude, _selectedCoordinate.Longitude, _nokiaPlacesAppID, _nokiaPlacesAppCode);
+            string url = string.Format("{0}?q={1}&at={2},{3}&app_id={4}&app_code={5}&tf=plain&pretty=true", _nokiaSeacrhUrl, HttpUtility.UrlEncode(_searchString), HttpUtility.UrlEncode(_selectedCoordinate.Latitude.ToString()), HttpUtility.UrlEncode(_selectedCoordinate.Longitude.ToString()), HttpUtility.UrlEncode(_nokiaPlacesAppID), HttpUtility.UrlEncode(_nokiaPlacesAppCode));
             AccountUtils.createNokiaPlacesGetRequest(url, new AccountUtils.postResponseFunction(PlacesResult_Callback));
         }
 
         private void MyLocation_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (shareIconButton.IsEnabled == false)
+            if (shareIconButton.IsEnabled == false || !_isLocationEnabled)
                 return; 
             
             if (_myPlace != null && _myPlace.title == AppResources.My_Location_Text)
@@ -558,11 +562,11 @@ namespace windows_client.View
                     }
                 }
             }
-            else
+            else if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New)
             {
                 GetCurrentCoordinate(); // get current coordinate and load last catched coordinate if its not null
 
-                if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New && _myCoordinate != null)
+                if (_myCoordinate != null)
                 {
                     _selectedCoordinate = _myCoordinate;
 
@@ -620,33 +624,12 @@ namespace windows_client.View
     public class Place : INotifyPropertyChanged
     {
         string _vicinity;
-        string _icon;
-        BitmapImage _place;
 
         public Visibility VicinityVisibility
         {
             get
             {
                 return String.IsNullOrEmpty(vicinity) ? Visibility.Collapsed : Visibility.Visible;
-            }
-        }
-
-        public BitmapImage PlaceImage
-        {
-            get
-            {
-                if(_place == null)
-                    _place = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
-
-                return _place;
-            }
-            set
-            {
-                if (_place != value)
-                {
-                    _place = value;
-                    NotifyPropertyChanged("PlaceImage");
-                }
             }
         }
 
@@ -660,29 +643,35 @@ namespace windows_client.View
         public double averageRating { get; set; }
 
         [JsonProperty]
-        public string icon
+        public string icon { get; set; }
+
+        ImageSource _placeImage;
+        public ImageSource PlaceImage
         {
             get
             {
-               return _icon;
-            }
-            set
-            {
-                if (_icon != value)
+                if (_placeImage == null)
                 {
-                    _icon = value == null ? String.Empty:value;
-
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            if (!String.IsNullOrEmpty(_icon))
-                                PlaceImage = new BitmapImage(new Uri(icon));
-                        });
-
-                    NotifyPropertyChanged("icon");
-                    NotifyPropertyChanged("PlaceImage");
+                    _placeImage = ProcesImageSource();
+                    return _placeImage;
                 }
+                else
+                    return _placeImage;
             }
         }
+
+        private ImageSource ProcesImageSource()
+        {
+            ImageSource source = null;
+
+            source = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
+
+            if (!String.IsNullOrEmpty(icon))
+                ImageLoader.Load(source as BitmapImage, new Uri(icon), null, Utils.ConvertUrlToFileName(icon), true);
+
+            return source;
+        }
+
 
         [JsonProperty]
         public string vicinity

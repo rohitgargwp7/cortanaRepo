@@ -406,14 +406,6 @@ namespace windows_client.View
                 worker.RunWorkerAsync();
             }
 
-            ContextMenu menu = new ContextMenu();
-            menu.IsZoomEnabled = false;
-            MenuItem menuItemCopy = new MenuItem();
-            menuItemCopy.Header = AppResources.Copy_txt;
-            menuItemCopy.Click += menuItemCopy_Click;
-            menu.Items.Add(menuItemCopy);
-            ContextMenuService.SetContextMenu(txtMsisdn, menu);
-
             if (msisdn == txtUserName.Text)
             {
                 ContextMenu menu2 = new ContextMenu();
@@ -423,6 +415,17 @@ namespace windows_client.View
                 menuItemCopy2.Click += menuItemCopy_Click;
                 menu2.Items.Add(menuItemCopy2);
                 ContextMenuService.SetContextMenu(txtUserName, menu2);
+                txtMsisdn.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ContextMenu menu = new ContextMenu();
+                menu.IsZoomEnabled = false;
+                MenuItem menuItemCopy = new MenuItem();
+                menuItemCopy.Header = AppResources.Copy_txt;
+                menuItemCopy.Click += menuItemCopy_Click;
+                menu.Items.Add(menuItemCopy);
+                ContextMenuService.SetContextMenu(txtMsisdn, menu);
             }
         }
 

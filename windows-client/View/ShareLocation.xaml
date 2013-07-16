@@ -30,11 +30,11 @@
             <maps:Map x:Name="MyMap" ZoomLevelChanged="ZoomLevelChanged" Tap="map_Tap"/>
             <Grid Canvas.ZIndex="2" Margin="0,0,15,15" HorizontalAlignment="Right" VerticalAlignment="Bottom" Tap="MyLocation_Tap">
                 <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                <Image Source="\view\images\LocationPin.png" Margin="5" MaxHeight="50" MaxWidth="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Image Source="\view\images\LocationPin.png" Margin="15" MaxHeight="20" MaxWidth="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
             <Grid Canvas.ZIndex="2" Margin="15,0,0,15" HorizontalAlignment="Left" VerticalAlignment="Bottom" Tap="Places_Tap">
                 <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                <Image Source="\view\images\places.png" Margin="5" MaxHeight="50" MaxWidth="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Image Source="\view\images\places.png" Margin="15" MaxHeight="20" MaxWidth="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
         </Grid>
         <Grid Grid.Row="1" MaxHeight="350" Visibility="Collapsed" x:Name="PlacesGrid" >

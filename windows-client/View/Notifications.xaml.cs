@@ -250,6 +250,9 @@ namespace windows_client.View
         {
             this.lastSeenTimeStampToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, false);
+
+            App.appSettings.Remove(HikeConstants.LOCATION_DEVICE_COORDINATE);
+            App.appSettings.Save();
         }
        
         private async void btnGoToLockSettings_Click(object sender, System.Windows.Input.GestureEventArgs e)
