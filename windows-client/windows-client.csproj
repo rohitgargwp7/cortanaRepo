@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -244,9 +244,11 @@
     <Compile Include="View\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\NewChatThread.xaml.cs">
+
+    <Compile Include="View\NewChatThread.xaml.cs" >
+
       <DependentUpon>NewChatThread.xaml</DependentUpon>
-    </Compile>
+</Compile>
     <Compile Include="View\PostStatus.xaml.cs">
       <DependentUpon>PostStatus.xaml</DependentUpon>
     </Compile>
@@ -372,7 +374,8 @@
     </Page>
     <Page Include="View\NewChatThread.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
+<Generator>MSBuild:Compile</Generator>
+
     </Page>
     <Page Include="View\PostStatus.xaml">
       <SubType>Designer</SubType>
@@ -513,6 +516,14 @@
     <Content Include="View\images\deleted_grey_icon.png" />
     <Content Include="View\images\deleted_white_icon.png" />
     <Content Include="View\images\delete_account_white.png" />
+    <Content Include="View\images\moods\24Music.png" />
+    <Content Include="View\images\moods\25PartyingHard.png" />
+    <Content Include="View\images\moods\26Singing.png" />
+    <Content Include="View\images\moods\27Eating.png" />
+    <Content Include="View\images\moods\27Hogging.png" />
+    <Content Include="View\images\moods\28WorkingOut.png" />
+    <Content Include="View\images\moods\29Cooking.png" />
+    <Content Include="View\images\moods\30BeautySaloon.png" />
     <Content Include="View\images\route.png" />
     <Content Include="View\images\doggy_icon.png" />
     <Content Include="View\images\doggy_i_icon.png" />

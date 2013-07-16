@@ -1211,6 +1211,9 @@ namespace windows_client.View
                 case TaskResult.OK:
                     ContactUtils.getContact(msisdn, new ContactUtils.contacts_Callback(contactSearchCompleted_Callback));
                     ApplicationBar.Buttons.Remove(addToContactsAppBarButton);
+
+                    if (txtMsisdn.Visibility == Visibility.Collapsed)
+                        txtMsisdn.Visibility = Visibility.Visible;
                     break;
                 case TaskResult.Cancel:
                     System.Diagnostics.Debug.WriteLine(AppResources.User_Cancelled_Task_Txt);
