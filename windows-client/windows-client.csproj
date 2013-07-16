@@ -298,6 +298,9 @@
     <Compile Include="View\UpgradePage.xaml.cs">
       <DependentUpon>UpgradePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ViewMessage.xaml.cs">
+      <DependentUpon>ViewMessage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\WelcomePage.xaml.cs">
       <DependentUpon>WelcomePage.xaml</DependentUpon>
     </Compile>
@@ -436,6 +439,10 @@
     </Page>
     <Page Include="View\UpgradePage.xaml">
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ViewMessage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\WelcomePage.xaml">
       <SubType>Designer</SubType>

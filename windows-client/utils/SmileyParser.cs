@@ -10,6 +10,9 @@ using windows_client.utils;
 using Microsoft.Phone.Tasks;
 using System.Diagnostics;
 using System.Windows.Media;
+using System.IO;
+using Microsoft.Phone.Shell;
+using Microsoft.Phone.Controls;
 
 namespace windows_client
 {
@@ -639,6 +642,40 @@ namespace windows_client
             }
         }
 
+        public Paragraph LinkifyAllPerTextBlock(string originalMessage, SolidColorBrush foreground)
+        {
+            int maxChar = GetMaxCharForBlock(originalMessage);
+            bool isMessageExtended = false;
+            string message = originalMessage;
+            if (originalMessage.Length > maxChar)
+            {
+                message = originalMessage.Substring(0, maxChar + 1);
+                isMessageExtended = true;
+            }
+            var p = LinkifyAll(message, foreground);
+            if (isMessageExtended)
+            {
+                p.Inlines.Add(new LineBreak());
+
+                Hyperlink MyLink = new Hyperlink();
+
+                MyLink.Foreground = foreground;
+                MyLink.TargetName = originalMessage;
+                MyLink.Inlines.Add("Click here to view all");
+
+                MyLink.Click += ViewFullMessage_Click;
+                p.Inlines.Add(MyLink);
+            }
+
+            return p;
+        }
+        private void ViewFullMessage_Click(object sender, RoutedEventArgs e)
+        {
+            Hyperlink hp = sender as Hyperlink;
+            PhoneApplicationService.Current.State[HikeConstants.MESSAGE_OBJ_FROM_CT] = hp.TargetName;
+            var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
+            currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.RelativeOrAbsolute));
+        }
         public Paragraph LinkifyAll(string message, SolidColorBrush foreground)
         {
             MatchCollection matchCollection = ChatThreadRegex.Matches(message);
@@ -735,5 +772,52 @@ namespace windows_client
             return p;
         }
 
+        const int MAX_CHARS_PER_LINE = 30;
+        const int MAX_LINES_PER_BLOCK = 35;
+        public int GetMaxCharForBlock(string message)
+        {
+            string trimmedMessage = message;
+            int lineCount = 1;
+            int charCount = 0;
+            while (trimmedMessage.Length > 0)
+            {
+                char[] newLineChar = new char[] { '\r', '\n' };
+                int index = trimmedMessage.IndexOfAny(newLineChar);
+                if (index == -1)
+                {
+                    string currentString = trimmedMessage;
+                    charCount += currentString.Length;
+                    lineCount += Convert.ToInt32(Math.Floor(currentString.Length / (double)MAX_CHARS_PER_LINE));
+                    if (lineCount > MAX_LINES_PER_BLOCK)
+                    {
+                        charCount -= MAX_CHARS_PER_LINE * (lineCount - MAX_LINES_PER_BLOCK - 1);
+                        charCount -= currentString.Length % MAX_CHARS_PER_LINE;
+                    }
+                    break;
+                }
+                else if (index == 0)
+                {
+                    trimmedMessage = trimmedMessage.Substring(index + 1);
+                    lineCount += 1;
+                    charCount += 1;
+                    if (lineCount > MAX_LINES_PER_BLOCK)
+                        break;
+                }
+                else
+                {
+                    string currentString = trimmedMessage.Substring(0, index - 1);
+                    charCount += currentString.Length + 2;
+                    trimmedMessage = trimmedMessage.Substring(index + 1);
+                    lineCount += 1 + Convert.ToInt32(Math.Floor(currentString.Length / (double)MAX_CHARS_PER_LINE));
+                    if (lineCount > MAX_LINES_PER_BLOCK)
+                    {
+                        charCount -= (lineCount - MAX_LINES_PER_BLOCK - 2) > 0 ? MAX_CHARS_PER_LINE * (lineCount - MAX_LINES_PER_BLOCK - 2) : 0;
+                        charCount -= currentString.Length % MAX_CHARS_PER_LINE;
+                        break;
+                    }
+                }
+            }
+            return charCount;
+        }
     }
 }

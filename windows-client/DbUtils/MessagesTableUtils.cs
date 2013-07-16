@@ -10,6 +10,8 @@ using System.Diagnostics;
 using System.Text;
 using windows_client.Misc;
 using windows_client.Languages;
+using System.IO.IsolatedStorage;
+using System.IO;
 
 namespace windows_client.DbUtils
 {
@@ -100,6 +102,8 @@ namespace windows_client.DbUtils
         /* Adds a chat message to message Table.*/
         public static bool addMessage(ConvMessage convMessage)
         {
+            string message = convMessage.Message;//cached message for long message if db is updated with empty message it can be regained
+            SaveLongMessage(convMessage);
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
             {
                 if (convMessage.MappedMessageId > 0)
@@ -120,9 +124,19 @@ namespace windows_client.DbUtils
                     Debug.WriteLine("MessagesTableUtils :: addMessage : submit changes, Exception : " + ex.StackTrace);
                     return false;
                 }
-
             }
+            convMessage.Message = message;
             return true;
+        }
+
+        private static void SaveLongMessage(ConvMessage convMessage)
+        {
+            if (convMessage.Message.Length > 4000)
+            {
+                SaveLongMessageFile(convMessage.Message, convMessage.Msisdn, convMessage.Timestamp);
+                convMessage.Message = string.Empty;
+                convMessage.MetaDataString = "{lm:true}";
+            }
         }
 
         // this is called in case of gcj from Network manager
@@ -385,8 +399,8 @@ namespace windows_client.DbUtils
                             val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
                         else if (msgState == ConvMessage.State.SENT_DELIVERED_READ)
                             val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
-                    } 
-                    
+                    }
+
                     if ((int)message.MessageStatus < val)
                     {
                         if (fromUser == null || fromUser == message.Msisdn)
@@ -425,7 +439,7 @@ namespace windows_client.DbUtils
                 {
                     var val = status;
                     ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).FirstOrDefault<ConvMessage>();
-                    
+
                     if (message != null)
                     {
                         if (message.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
@@ -514,5 +528,138 @@ namespace windows_client.DbUtils
             context.SubmitChanges(ConflictMode.FailOnFirstConflict);
         }
 
+        private const string LONG_MSG_DIRECTORY = "LONGMSG";
+
+        public static void SaveLongMessageFile(string message, string msisdn, long timestamp)
+        {
+            lock (lockObj)
+            {
+                try
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        msisdn = msisdn.Replace(':', '_');
+                        if (!store.DirectoryExists(LONG_MSG_DIRECTORY))
+                        {
+                            store.CreateDirectory(LONG_MSG_DIRECTORY);
+                        }
+                        string msidnDirectory = LONG_MSG_DIRECTORY + "\\" + msisdn;
+                        if (!store.DirectoryExists(msidnDirectory))
+                        {
+                            store.CreateDirectory(msidnDirectory);
+                        }
+                        string fileName = msidnDirectory + "\\" + timestamp;
+                        if (store.FileExists(fileName))
+                        {
+                            store.DeleteFile(fileName);
+                        }
+                        using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
+                        {
+                            using (BinaryWriter writer = new BinaryWriter(file))
+                            {
+                                writer.WriteStringBytes(message);
+                                writer.Close();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("MessageTableUtils::SaveLongMessage, Exception:", ex.Message);
+                }
+            }
+        }
+
+        public static string ReadLongMessageFile(long timestamp, string msisdn)
+        {
+            string message = string.Empty;
+            lock (lockObj)
+            {
+                try
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        msisdn = msisdn.Replace(':', '_');
+                        string fileName = LONG_MSG_DIRECTORY + "\\" + msisdn + "\\" + timestamp;
+                        if (store.FileExists(fileName))
+                        {
+                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                            {
+                                using (BinaryReader reader = new BinaryReader(file))
+                                {
+                                    int count = reader.ReadInt32();
+                                    message = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                                    reader.Close();
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("MessageTableUtils :: ReadLongMessage, Exception:", ex.Message);
+                }
+            }
+            return message;
+        }
+
+        public static void DeleteLongMessages(string msisdn)
+        {
+            lock (lockObj)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    msisdn = msisdn.Replace(':', '_');
+                    try
+                    {
+                        string msisdnDirectory = LONG_MSG_DIRECTORY + "\\" + msisdn;
+                        if (store.DirectoryExists(msisdnDirectory))
+                        {
+                            string[] files = store.GetFileNames(msisdnDirectory + "\\*");
+                            if (files != null)
+                                foreach (string fileName in files)
+                                    store.DeleteFile(msisdnDirectory + "\\" + fileName);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("ConversationTableUtils :: deleteConversation : deleteConversation , Exception : " + ex.StackTrace);
+                    }
+                }
+            }
+
+        }
+
+        public static void DeleteAllLongMessages()
+        {
+            lock (lockObj)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    try
+                    {
+                        if (store.DirectoryExists(LONG_MSG_DIRECTORY))
+                        {
+                            string[] directories = store.GetDirectoryNames(LONG_MSG_DIRECTORY + "\\*");
+                            if (directories != null)
+                                foreach (string msisdn in directories)
+                                {
+                                    string msisdnDirectory = LONG_MSG_DIRECTORY + "\\" + msisdn;
+
+                                    string[] files = store.GetFileNames(msisdnDirectory + "\\*");
+                                    if (files != null)
+                                        foreach (string fileName in files)
+                                            store.DeleteFile(msisdnDirectory + "\\" + fileName);
+                                }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("ConversationTableUtils :: deleteConversation : deleteConversation , Exception : " + ex.StackTrace);
+                    }
+                }
+            }
+
+        }
     }
 }
