@@ -46,38 +46,28 @@ namespace windows_client.utils
     }
 
     /// <summary>
-    /// The class handles downloading of images from the net and storing them to localCache or Isolatedstorage.
+    /// The class handles downloading of images from the net and storing them Isolatedstorage.
     /// </summary>
     public static class ImageLoader
     {
-        /// <summary>
-        /// Constructor linking the webclient's OpenReadCompleted event. 
-        /// On completion invokes the _client_OpenReadCompleted function
-        /// </summary>
         static ImageLoader()
         {
+            _client.OpenReadCompleted += new OpenReadCompletedEventHandler(_client_OpenReadCompleted);
         }
 
         #region "Isolated Storage"
-        
-        /// <summary>
-        /// Read from the Isolated Storage
-        /// </summary>
-        /// 
-        /// <param name="imgInfo">
-        /// Info about the image which needs to be read from Isolated Storage
-        /// </param>
-        /// 
-        /// <returns>
-        /// Image in Bytes if found else null
-        /// </returns>
+
         private static Byte[] ReadFromIsolatedStorage(ImageInfo imgInfo)
         {
-            string fileName = "ProTips//" + imgInfo.FileName;
             using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
             {
+                string fileName = "ProTips//" + imgInfo.FileName;
                 if (!myIsolatedStorage.FileExists(fileName))
-                    return null;
+                {
+                    fileName = "Misc//" + imgInfo.FileName;
+                    if (!myIsolatedStorage.FileExists(fileName))
+                        return null;
+                }
 
                 MemoryStream retStream = new MemoryStream();
 
@@ -93,22 +83,11 @@ namespace windows_client.utils
                 {
                     return null;
                 }
-               
+
                 return retStream.Length == 0 ? null : retStream.GetBuffer();
             }
         }
 
-        /// <summary>
-        /// Writes ImageBytes to Isolated Storage
-        /// </summary>
-        /// 
-        /// <param name="imgInfo">
-        /// Information of image which needs to be stored in the Isolated Storage
-        /// </param>
-        /// 
-        /// <param name="imageData">
-        /// Image in bytes which needs to be stored in the Isolated Storage
-        /// </param>
         private static void SaveFileInIsolatedStorage(String fileName, Byte[] imageData)
         {
             System.Windows.Resources.StreamResourceInfo streamResourceInfo = Application.GetResourceStream(new Uri(fileName, UriKind.Relative));
@@ -117,6 +96,9 @@ namespace windows_client.utils
             using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
             {
                 fileName = "ProTips//" + fileName;
+
+                if (!myIsolatedStorage.DirectoryExists("ProTips"))
+                    myIsolatedStorage.CreateDirectory("ProTips");
 
                 if (myIsolatedStorage.FileExists(fileName))
                     myIsolatedStorage.DeleteFile(fileName);
@@ -131,7 +113,50 @@ namespace windows_client.utils
                         int readCount = 0;
 
                         using (resourceStream)
-                        {   
+                        {
+                            resourceStream.Seek(0, SeekOrigin.Begin);
+
+                            // Read file in chunks in order to reduce memory consumption and increase performance
+                            while (readCount < length)
+                            {
+                                int actual = resourceStream.Read(buffer, 0, buffer.Length);
+                                readCount += actual;
+                                writer.Write(buffer, 0, actual);
+                            }
+                        }
+                    }
+
+                    fileStream.Close();
+                }
+            }
+        }
+
+        private static void SaveFileInIsolatedStorage(ImageInfo imgInfo, Byte[] imageData)
+        {
+            // Create a filename for JPEG file in isolated storage.
+            String tempJPEG = "Misc//" + imgInfo.FileName;
+            System.Windows.Resources.StreamResourceInfo streamResourceInfo = Application.GetResourceStream(new Uri(tempJPEG, UriKind.Relative));
+
+            // Create virtual store and file stream. Check for duplicate tempJPEG files.
+            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (!myIsolatedStorage.DirectoryExists("Misc"))
+                    myIsolatedStorage.CreateDirectory("Misc");
+
+                if (myIsolatedStorage.FileExists(tempJPEG))
+                    myIsolatedStorage.DeleteFile(tempJPEG);
+
+                using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(tempJPEG, FileMode.Create, myIsolatedStorage))
+                {
+                    using (BinaryWriter writer = new BinaryWriter(fileStream))
+                    {
+                        Stream resourceStream = new MemoryStream(imageData);
+                        long length = resourceStream.Length;
+                        byte[] buffer = new byte[32];
+                        int readCount = 0;
+
+                        using (resourceStream)
+                        {
                             resourceStream.Seek(0, SeekOrigin.Begin);
 
                             // Read file in chunks in order to reduce memory consumption and increase performance
@@ -151,16 +176,24 @@ namespace windows_client.utils
 
         #endregion
 
-        private static void LoadReq()
+        private static void LoadReq(bool useWebClient)
         {
             if (Sources.Count > 0)
             {
-                ImageInfo imgInfo = Sources[Sources.Count - 1];
-
+                ImageInfo imgInfo = Sources[0];
+                Sources.Remove(imgInfo);
                 Byte[] bytes = ReadFromIsolatedStorage(imgInfo);
 
                 if (bytes == null)
-                    Download(imgInfo);
+                {
+                    Boolean isDownloadSuccessfullyPlaced = Download(imgInfo, useWebClient);
+
+                    if (!isDownloadSuccessfullyPlaced)
+                    {
+                        // So need to wait for downloader. So add it back to the end of the queue
+                        Sources.Add(imgInfo);
+                    }
+                }
                 else
                     Deployment.Current.Dispatcher.BeginInvoke(new Action<ImageInfo, Byte[]>(SetImageSource), imgInfo, bytes);
             }
@@ -168,7 +201,7 @@ namespace windows_client.utils
 
         static System.ComponentModel.BackgroundWorker _loadWorker;
 
-        public static void Load(BitmapImage imageSource, Uri uri, Uri defaultImgUrl = null, String fileName = null)
+        public static void Load(BitmapImage imageSource, Uri uri, Uri defaultImgUrl = null, String fileName = null, bool useWebClient = false)
         {
             imageSource.CreateOptions = BitmapCreateOptions.DelayCreation;
             ImageInfo imgInfo = new ImageInfo(imageSource, uri, defaultImgUrl, fileName);
@@ -179,7 +212,7 @@ namespace windows_client.utils
                 _loadWorker = new System.ComponentModel.BackgroundWorker();
                 _loadWorker.DoWork += delegate
                 {
-                    LoadReq();
+                    LoadReq(useWebClient);
                 };
 
                 _loadWorker.RunWorkerCompleted += delegate
@@ -196,13 +229,56 @@ namespace windows_client.utils
                 _loadWorker.RunWorkerAsync();
         }
 
-        private static void Download(ImageInfo imgInfo)
+        private static Boolean Download(ImageInfo imgInfo, bool useWebClient)
         {
-            AccountUtils.createGetRequest(imgInfo.Uri.OriginalString, getProTipPic_Callback, true, Utils.ConvertUrlToFileName(imgInfo.FileName));
+            if (useWebClient)
+            {
+                if (_client.IsBusy)
+                    return false;
+                else
+                {
+                    System.Threading.Thread.Sleep(100);
+                    _client.OpenReadAsync(imgInfo.Uri, imgInfo);
+                    return true;
+                }
+            }
+            else
+            {
+                AccountUtils.createGetRequest(imgInfo.Uri.OriginalString, getPicFromHikeServer_Callback, true, Utils.ConvertUrlToFileName(imgInfo.FileName));
+                return true;
+            }
         }
 
-        public static void getProTipPic_Callback(byte[] fullBytes, object fName)
-        {   
+        static void _client_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
+        {
+            try
+            {
+                var resInfo = new System.Windows.Resources.StreamResourceInfo(e.Result, null);
+                var reader = new StreamReader(resInfo.Stream);
+                byte[] myByte;
+
+                using (BinaryReader bReader = new BinaryReader(reader.BaseStream))
+                {
+                    myByte = bReader.ReadBytes((int)reader.BaseStream.Length);
+                }
+
+                System.Diagnostics.Debug.WriteLine("Image Was Under Download " + (e.UserState as ImageInfo).Uri);
+                Deployment.Current.Dispatcher.BeginInvoke(new Action<ImageInfo, Byte[]>(SetImageSource), e.UserState as ImageInfo, myByte);
+
+                SaveFileInIsolatedStorage(e.UserState as ImageInfo, myByte);
+
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+
+            if (!_loadWorker.IsBusy)
+                _loadWorker.RunWorkerAsync();
+        }
+
+        public static void getPicFromHikeServer_Callback(byte[] fullBytes, object fName)
+        {
             try
             {
                 string fileName = fName as string;
@@ -231,17 +307,18 @@ namespace windows_client.utils
                 Stream data = new MemoryStream(imgData);
                 imgInfo.BitmapImage.SetSource(data);
             }
-            catch 
+            catch
             {
                 System.Diagnostics.Debug.WriteLine("Image Render Failed, " + imgInfo.Uri);
                 imgInfo.BitmapImage.UriSource = imgInfo.DefaultImgUri;
             }
         }
 
-       
+
         /// <summary>
         /// Queue of Images which have been downloaded but need to be linked to their respective imageSource
         /// </summary>
         static List<ImageInfo> Sources = new List<ImageInfo>();
+        private static WebClient _client = new WebClient();
     }
 }

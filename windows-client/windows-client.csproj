@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -156,8 +156,8 @@
       <DependentUpon>ImageStatusUpdate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\StatusUpdate\StatusUpdateBox.cs" />
-    <Compile Include="Controls\StickerPivot.xaml.cs">
-      <DependentUpon>StickerPivot.xaml</DependentUpon>
+    <Compile Include="Controls\StickerPivotItem.xaml.cs">
+      <DependentUpon>StickerPivotItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\TemplateSelector.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
@@ -203,6 +203,7 @@
     <Compile Include="utils\AccountUtils.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
+    <Compile Include="utils\StickerPivotHelper.cs" />
     <Compile Include="utils\ContactUtils.cs" />
     <Compile Include="utils\ImageLoader.cs" />
     <Compile Include="utils\ImageUtils.cs" />
@@ -243,9 +244,11 @@
     <Compile Include="View\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\NewChatThread.xaml.cs">
+
+    <Compile Include="View\NewChatThread.xaml.cs" >
+
       <DependentUpon>NewChatThread.xaml</DependentUpon>
-    </Compile>
+</Compile>
     <Compile Include="View\PostStatus.xaml.cs">
       <DependentUpon>PostStatus.xaml</DependentUpon>
     </Compile>
@@ -297,6 +300,9 @@
     <Compile Include="View\UpgradePage.xaml.cs">
       <DependentUpon>UpgradePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ViewMessage.xaml.cs">
+      <DependentUpon>ViewMessage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\WelcomePage.xaml.cs">
       <DependentUpon>WelcomePage.xaml</DependentUpon>
     </Compile>
@@ -330,7 +336,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\StickerPivot.xaml">
+    <Page Include="Controls\StickerPivotItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -368,7 +374,8 @@
     </Page>
     <Page Include="View\NewChatThread.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
+<Generator>MSBuild:Compile</Generator>
+
     </Page>
     <Page Include="View\PostStatus.xaml">
       <SubType>Designer</SubType>
@@ -435,6 +442,10 @@
     </Page>
     <Page Include="View\UpgradePage.xaml">
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ViewMessage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\WelcomePage.xaml">
       <SubType>Designer</SubType>
@@ -505,6 +516,15 @@
     <Content Include="View\images\deleted_grey_icon.png" />
     <Content Include="View\images\deleted_white_icon.png" />
     <Content Include="View\images\delete_account_white.png" />
+    <Content Include="View\images\moods\24Music.png" />
+    <Content Include="View\images\moods\25PartyingHard.png" />
+    <Content Include="View\images\moods\26Singing.png" />
+    <Content Include="View\images\moods\27Eating.png" />
+    <Content Include="View\images\moods\27Hogging.png" />
+    <Content Include="View\images\moods\28WorkingOut.png" />
+    <Content Include="View\images\moods\29Cooking.png" />
+    <Content Include="View\images\moods\30BeautySaloon.png" />
+    <Content Include="View\images\route.png" />
     <Content Include="View\images\doggy_icon.png" />
     <Content Include="View\images\doggy_i_icon.png" />
     <Content Include="View\images\doggy_overlay.png" />
@@ -579,6 +599,7 @@
     <Content Include="View\images\moods\22Sleepy.png" />
     <Content Include="View\images\moods\23Hungover.png" />
     <Content Include="View\images\moods_status_icon.png" />
+    <Content Include="View\images\MyLocation.png" />
     <Content Include="View\images\notification_read.png" />
     <Content Include="View\images\notification_unread.png" />
     <Content Include="View\images\pause_icon.png" />

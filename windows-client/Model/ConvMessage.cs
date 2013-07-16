@@ -415,7 +415,13 @@ namespace windows_client.Model
             set
             {
                 if (value != _isSms)
+                {
                     _isSms = value;
+                    NotifyPropertyChanged("SendAsSMSVisibility");
+                    NotifyPropertyChanged("BubbleBackGroundColor");
+                    NotifyPropertyChanged("TimeStampForeGround");
+                    NotifyPropertyChanged("MessageTextForeGround");
+                }
             }
         }
 

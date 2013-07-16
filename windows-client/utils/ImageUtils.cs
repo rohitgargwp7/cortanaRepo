@@ -116,6 +116,7 @@ namespace windows_client.utils
         SolidColorBrush greyTextForeGround;
         private FontFamily groupChatMessageHeader;
         private FontFamily messageText;
+        private BitmapImage myLocationPin;
 
         #endregion
 
@@ -457,6 +458,18 @@ namespace windows_client.utils
                 return untappedCategoryColor;
             }
         }
+
+        public BitmapImage MyLocationPin
+        {
+            get
+            {
+                if (myLocationPin == null)
+                    myLocationPin = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
+
+                return myLocationPin;
+            }
+        }
+        
         public BitmapImage OnHikeImage
         {
             get

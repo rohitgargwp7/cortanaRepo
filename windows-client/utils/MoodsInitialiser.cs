@@ -13,7 +13,7 @@ namespace windows_client.utils
     {
         private static MoodsInitialiser instance = null;
         private BitmapImage[] moodImages;
-        public static readonly int totalMoodCount = 24;
+        public static readonly int totalMoodCount = 31;
 
         public static MoodsInitialiser Instance
         {
@@ -34,30 +34,37 @@ namespace windows_client.utils
 
         private string[,] moodInfo = new string[,]
         {
-            {"/View/images/moods/17Happy.png",         AppResources.Mood_Happy             ,                   "",	"",	""},
-            {"/View/images/moods/18Sad.png",           AppResources.Mood_Sad               ,                   "",	"",	""},
-            {"/View/images/moods/15InLove.png",        AppResources.Mood_In_love           ,                   "",	"",	""},
-            { "/View/images/moods/21OMG.png",          AppResources.Mood_Surprised         ,                   "",	"",	""},
-            {"/View/images/moods/20Confused.png",      AppResources.Mood_Confused          ,                   "",	"",	""},
-            {"/View/images/moods/19Angry.png",         AppResources.Mood_Angry             ,                   "",	"",	""},
-            {"/View/images/moods/22Sleepy.png",        AppResources.Mood_Sleepy            ,                   "",	"",	""},
-            {"/View/images/moods/23Hungover.png",      AppResources.Mood_Hungover          ,                   "",	"",	""},
-            {"/View/images/moods/14Chilling.png",      AppResources.Mood_Chilling          ,                   "",	"",	""},
-            {"/View/images/moods/13Reading.png",       AppResources.Mood_Studying          ,                   "",	"",	""},
-            {"/View/images/moods/16Busy.png",          AppResources.Mood_Busy              ,                   "",	"",	""},   
-            {"/View/images/moods/12Love.png",          AppResources.Mood_Love_it           ,                   "",	"",	""},   
-            {"/View/images/moods/11MiddleFinger.png",  AppResources.Mood_Middle_finger     ,                   "",	"",	""},   
-            {"/View/images/moods/00Boozing.png",       AppResources.Mood_Boozing           ,                   "",	"",	""},
-            {"/View/images/moods/09Movie.png",         AppResources.Mood_In_a_movie        ,                   "",	"",	""},
-            {"/View/images/moods/08Caffeinating.png",  AppResources.Mood_Caffeinated       ,                   "",	"",	""},
-            {"/View/images/moods/01Insomniac.png",     AppResources.Mood_Insomniac         ,                   "",	"",	""},
-            {"/View/images/moods/07Driving.png",       AppResources.Mood_Driving           ,                   "",	"",	""},
-            {"/View/images/moods/03Traffic.png",       AppResources.Mood_Stuck_in_traffic  ,                   "",	"",	""},
-            {"/View/images/moods/04Late.png",          AppResources.Mood_Running_late      ,                   "",	"",	""},
-            {"/View/images/moods/05Shopping.png",      AppResources.Mood_Shopping          ,                   "",	"",	""},
-            {"/View/images/moods/06Gaming.png",        AppResources.Mood_Gaming            ,                   "",	"",	""},
-            {"/View/images/moods/02Coding.png",        AppResources.Mood_Coding            ,                   "",	"",	""},
-            {"/View/images/moods/10Television.png",    AppResources.Mood_Watching_tv       ,                   "",	"",	""}
+            {"/View/images/moods/17Happy.png",          AppResources.Mood_Happy             ,                   "",	"",	""},
+            {"/View/images/moods/18Sad.png",            AppResources.Mood_Sad               ,                   "",	"",	""},
+            {"/View/images/moods/15InLove.png",         AppResources.Mood_In_love           ,                   "",	"",	""},
+            { "/View/images/moods/21OMG.png",           AppResources.Mood_Surprised         ,                   "",	"",	""},
+            {"/View/images/moods/20Confused.png",       AppResources.Mood_Confused          ,                   "",	"",	""},
+            {"/View/images/moods/19Angry.png",          AppResources.Mood_Angry             ,                   "",	"",	""},
+            {"/View/images/moods/22Sleepy.png",         AppResources.Mood_Sleepy            ,                   "",	"",	""},
+            {"/View/images/moods/23Hungover.png",       AppResources.Mood_Hungover          ,                   "",	"",	""},
+            {"/View/images/moods/14Chilling.png",       AppResources.Mood_Chilling          ,                   "",	"",	""},
+            {"/View/images/moods/13Reading.png",        AppResources.Mood_Studying          ,                   "",	"",	""},
+            {"/View/images/moods/16Busy.png",           AppResources.Mood_Busy              ,                   "",	"",	""},   
+            {"/View/images/moods/12Love.png",           AppResources.Mood_Love_it           ,                   "",	"",	""},   
+            {"/View/images/moods/11MiddleFinger.png",   AppResources.Mood_Middle_finger     ,                   "",	"",	""},   
+            {"/View/images/moods/00Boozing.png",        AppResources.Mood_Boozing           ,                   "",	"",	""},
+            {"/View/images/moods/09Movie.png",          AppResources.Mood_In_a_movie        ,                   "",	"",	""},
+            {"/View/images/moods/08Caffeinating.png",   AppResources.Mood_Caffeinated       ,                   "",	"",	""},
+            {"/View/images/moods/01Insomniac.png",      AppResources.Mood_Insomniac         ,                   "",	"",	""},
+            {"/View/images/moods/07Driving.png",        AppResources.Mood_Driving           ,                   "",	"",	""},
+            {"/View/images/moods/03Traffic.png",        AppResources.Mood_Stuck_in_traffic  ,                   "",	"",	""},
+            {"/View/images/moods/04Late.png",           AppResources.Mood_Running_late      ,                   "",	"",	""},
+            {"/View/images/moods/05Shopping.png",       AppResources.Mood_Shopping          ,                   "",	"",	""},
+            {"/View/images/moods/06Gaming.png",         AppResources.Mood_Gaming            ,                   "",	"",	""},
+            {"/View/images/moods/02Coding.png",         AppResources.Mood_Coding            ,                   "",	"",	""},
+            {"/View/images/moods/10Television.png",     AppResources.Mood_Watching_tv       ,                   "",	"",	""},
+            {"/View/images/moods/24Music.png",          AppResources.Mood_Music           ,                   "",	"",	""},
+            {"/View/images/moods/25PartyingHard.png",   AppResources.Mood_PartyingHard,                   "",	"",	""},
+            {"/View/images/moods/26Singing.png",          AppResources.Mood_Singing      ,                   "",	"",	""},
+            {"/View/images/moods/27Eating.png",           AppResources.Mood_Eating       ,                   "",	"",	""},
+            {"/View/images/moods/28WorkingOut.png",        AppResources.Mood_WorkingOut,                   "",	"",	""},
+            {"/View/images/moods/29Cooking.png",        AppResources.Mood_Cooking,                   "",	"",	""},
+            {"/View/images/moods/30BeautySaloon.png",    AppResources.Mood_BeautySaloon,                   "",	"",	""}
             };
 
         public BitmapImage GetMoodImageForMoodId(int moodId)
@@ -164,68 +171,3 @@ namespace windows_client.utils
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
