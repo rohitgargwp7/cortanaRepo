@@ -118,13 +118,13 @@ namespace windows_client.View
             App.IS_TOMBSTONED = false;
             App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
             App.newChatThreadPage = null;
+
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
 
             if (Utils.isCriticalUpdatePending())
-            {
                 showCriticalUpdateMessage();
-            }
+            
             if (firstLoad)
             {
                 shellProgress.IsVisible = true;
@@ -163,9 +163,9 @@ namespace windows_client.View
             {
                 emptyScreenImage.Opacity = 0;
                 emptyScreenTip.Opacity = 0;
-                llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
             }
 
+            //Todo: dont do on every navigation event - loading is slow
             App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
             if (showFreeSMS)
             {
@@ -178,6 +178,9 @@ namespace windows_client.View
             byte statusSettingsValue;
             isStatusUpdatesMute = App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue) && statusSettingsValue == 0;
             imgToggleStatus.Source = isStatusUpdatesMute ? UI_Utils.Instance.MuteIcon : UI_Utils.Instance.UnmuteIcon;
+
+            if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush") && e.NavigationMode == System.Windows.Navigation.NavigationMode.Reset)
+                launchPagePivot.SelectedIndex = 3;
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)

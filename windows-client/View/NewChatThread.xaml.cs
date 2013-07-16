@@ -729,14 +729,16 @@ namespace windows_client.View
                 return;
             }
 
+            if (mediaElement != null)
+                mediaElement.Stop();
+
             if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
             {
                 Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
                 NavigationService.Navigate(nUri);
+                e.Cancel = true;
+                return;
             }
-
-            if (mediaElement != null)
-                mediaElement.Stop();
 
             base.OnBackKeyPress(e);
         }

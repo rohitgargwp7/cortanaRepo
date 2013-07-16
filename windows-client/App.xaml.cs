@@ -284,7 +284,8 @@ namespace windows_client
         {
             NORMAL_LAUNCH, // user clicks the app from menu
             PUSH_NOTIFICATION_LAUNCH,   // app is alunched after push notification is clicked
-            SHARE_PICKER_LAUNCH  // app is alunched after share is clicked
+            SHARE_PICKER_LAUNCH,  // app is alunched after share is clicked
+            FAST_RESUME
         }
 
         #endregion
@@ -337,9 +338,18 @@ namespace windows_client
             }
 
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
-            RootFrame.Navigating += RootFrame_CheckForFastResume;
+            RootFrame.Navigated += RootFrame_Navigated;
+            
 
             Is24HourTimeFormat = System.Globalization.DateTimeFormatInfo.CurrentInfo.LongTimePattern.Contains("H") ? true : false;
+        }
+
+        void RootFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            if (e.NavigationMode == NavigationMode.Reset)
+            {
+                RootFrame.Navigating += RootFrame_CheckForFastResume;
+            }
         }
 
         // Code to execute when the application is launching (eg, from Start)
@@ -367,17 +377,18 @@ namespace windows_client
         {
             _isAppLaunched = false; // this means app is activated, could be tombstone or dormant state
             _isTombstoneLaunch = !e.IsApplicationInstancePreserved; //e.IsApplicationInstancePreserved  --> if this is true its dormant else tombstoned
-            try
-            {
-                _appLaunchState = (LaunchState)PhoneApplicationService.Current.State[LAUNCH_STATE];
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("App :: Application_Activated : Setting launch state , Exception : " + ex.StackTrace);
-            }
-
+            
             if (_isTombstoneLaunch)
             {
+                try
+                {
+                    _appLaunchState = (LaunchState)PhoneApplicationService.Current.State[LAUNCH_STATE];
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("App :: Application_Activated : Setting launch state , Exception : " + ex.StackTrace);
+                }
+
                 if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
                     isNewInstall = false;
                 instantiateClasses(false);
@@ -467,15 +478,12 @@ namespace windows_client
         Boolean wasRelaunched;
         void RootFrame_CheckForFastResume(object sender, NavigatingCancelEventArgs e)
         {
+            RootFrame.Navigating -= RootFrame_CheckForFastResume;
+
+            APP_LAUNCH_STATE = LaunchState.FAST_RESUME;
             var targetPage = e.Uri.ToString();
-            if (e.NavigationMode == NavigationMode.Reset)
-            {
-                // This block will execute if the current navigation is a relaunch.
-                // If so, another navigation will be coming, so this records that a relaunch just happened
-                // so that the next navigation can use this info.
-                wasRelaunched = true;
-            }
-            else if (e.NavigationMode == NavigationMode.New && wasRelaunched)
+
+            if (e.NavigationMode == NavigationMode.New)
             {
                 // This block will run if the previous navigation was a relaunch
                 wasRelaunched = false;
