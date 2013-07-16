@@ -410,7 +410,7 @@ namespace windows_client
                 ConversationTableUtils.updateOnHikeStatus(uMsisdn, joined);
                 JToken jt;
                 long ts = 0;
-                if (jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out jt))
+                if (joined && jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out jt))
                     ts = jt.ToObject<long>();
                 FriendsTableUtils.SetJoiningTime(uMsisdn, ts);
                 this.pubSub.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
@@ -702,9 +702,12 @@ namespace windows_client
                                                 var val = kkvv.Value.ToString();
 
                                                 if (String.IsNullOrEmpty(val) || Convert.ToBoolean(val))
-                                                    App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, (byte)1);
+                                                {
+                                                    App.appSettings.Remove(App.LAST_SEEN_SEETING);
+                                                    App.appSettings.Save();
+                                                }
                                                 else
-                                                    App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, (byte)0);
+                                                    App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, false);
                                             }
                                             catch { }
                                         }
@@ -1253,10 +1256,10 @@ namespace windows_client
                     StatusMessage sm = null;
                     JToken val;
                     string iconBase64 = null;
-                    
+
                     if (data.TryGetValue(HikeConstants.THUMBNAIL, out val) && val != null)
                         iconBase64 = val.ToString();
-                    
+
                     val = null;
                     long ts = 0;
 
@@ -1272,7 +1275,7 @@ namespace windows_client
                     val = null;
                     string id = null;
                     JToken idToken;
-                    
+
                     if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
                         id = idToken.ToString();
 

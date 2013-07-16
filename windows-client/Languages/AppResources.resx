@@ -1852,4 +1852,46 @@ Get hike: http://get.hike.in</value>
   <data name="Location_Heading" xml:space="preserve">
     <value>Location</value>
   </data>
+  <data name="Kilometer_Abbreviation" xml:space="preserve">
+    <value>{0} km</value>
+    <comment>kilometer</comment>
+  </data>
+  <data name="Meter_Abbreviation" xml:space="preserve">
+    <value>{0} m</value>
+    <comment>meter</comment>
+  </data>
+  <data name="Settings_LocationToggleSwitchHeader" xml:space="preserve">
+    <value>Use location</value>
+  </data>
+  <data name="ShareLocation_LocationSettingsNotEnabled_Txt" xml:space="preserve">
+    <value>Location service setting is not enabled. Would you like to enable it?</value>
+  </data>
+  <data name="ViewMessage_Title_txt" xml:space="preserve">
+    <value>message</value>
+    <comment>page heading(view one single message)</comment>
+  </data>
+  <data name="Mood_BeautySaloon" xml:space="preserve">
+    <value>Beauty Saloon</value>
+  </data>
+  <data name="Mood_Cooking" xml:space="preserve">
+    <value>Cooking</value>
+  </data>
+  <data name="Mood_Eating" xml:space="preserve">
+    <value>Eating</value>
+  </data>
+  <data name="Mood_Music" xml:space="preserve">
+    <value>Music</value>
+  </data>
+  <data name="Mood_PartyingHard" xml:space="preserve">
+    <value>Partying Hard</value>
+  </data>
+  <data name="Mood_Singing" xml:space="preserve">
+    <value>Singing</value>
+  </data>
+  <data name="Mood_WorkingOut" xml:space="preserve">
+    <value>Working Out</value>
+  </data>
+  <data name="ViewFullMessage_Txt" xml:space="preserve">
+    <value>View full message</value>
+  </data>
 </root>

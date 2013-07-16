@@ -64,6 +64,7 @@ namespace windows_client
         public static readonly string LONGITUDE = "long";
         public static readonly string ZOOM_LEVEL = "zoom";
         public static readonly string LOCATION_ADDRESS = "add";
+        public static readonly string PLACES_SEARCH = "placeSearch";
 
         public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
         public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
@@ -116,7 +117,7 @@ namespace windows_client
         //private static readonly string CONTACT_US_LINK = "http://support.hike.in";
         public static readonly string UPDATE_URL = AccountUtils.IsProd ? "http://get.hike.in/updates/wp8" : "http://staging.im.hike.in:8080/updates/wp8";
         public static readonly string SYSTEM_HEALTH_LINK = "http://twitter.com/hikestatus/";
-
+        public static readonly string STICKER_URL = AccountUtils.IsProd ? "http://hike.in/s/" : "http://staging.im.hike.in/s/";
         //for device info
         public static readonly string DEVICE_TYPE = "devicetype";//The OS
         public static readonly string DEVICE_ID = "deviceid";//A unique ID of the device
@@ -281,7 +282,7 @@ namespace windows_client
         public static string ACCOUNT = "account";
         public static string OBJ_FROM_BLOCKED_LIST = "objFrmBlckList";
         public static readonly string PAGE_TO_NAVIGATE_TO = "pageToNavigateTo";
-
+        public static readonly string MESSAGE_OBJ_FROM_CT = "msgCT";
         public static string USERINFO_FROM_CHATTHREAD_PAGE = "userInfoFromChatThread";
         public static string USERINFO_FROM_GROUPCHAT_PAGE = "userInfoFromGroupChatThread";
         public static string USERINFO_FROM_PROFILE = "userInfoFromProfile";
@@ -390,6 +391,19 @@ namespace windows_client
             public static readonly string APP_LAUNCH_COUNT = "App_Launch_Count";
             public static readonly string TIME_DIFF_EPOCH = "serverEpochTime";
             public static readonly string SHOW_DOGGY_OVERLAY = "doggyOverlay";
+        }
+
+        public static class NokiaHere
+        {
+            public static readonly string SEARCH = "search";
+            public static readonly string CONTEXT = "context";
+            public static readonly string LOCATION = "location";
+            public static readonly string ADDRESS = "address";
+            public static readonly string TEXT = "text";
+            public static readonly string RESULTS = "results";
+            public static readonly string ITEMS = "items";
+            public static readonly string PLACE_TYPE = "urn:nlp-types:place";
+            public static readonly string POSITION = "position";
         }
     }
 }

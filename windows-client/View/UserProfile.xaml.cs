@@ -391,6 +391,9 @@ namespace windows_client.View
                 BackgroundWorker worker = new BackgroundWorker();
                 worker.DoWork += delegate
                     {
+                        if (!isOnHike)
+                            isInAddressBook = CheckUserInAddressBook();
+
                         if (!isInAddressBook)
                         {
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -403,14 +406,6 @@ namespace windows_client.View
                 worker.RunWorkerAsync();
             }
 
-            ContextMenu menu = new ContextMenu();
-            menu.IsZoomEnabled = false;
-            MenuItem menuItemCopy = new MenuItem();
-            menuItemCopy.Header = AppResources.Copy_txt;
-            menuItemCopy.Click += menuItemCopy_Click;
-            menu.Items.Add(menuItemCopy);
-            ContextMenuService.SetContextMenu(txtMsisdn, menu);
-
             if (msisdn == txtUserName.Text)
             {
                 ContextMenu menu2 = new ContextMenu();
@@ -420,6 +415,17 @@ namespace windows_client.View
                 menuItemCopy2.Click += menuItemCopy_Click;
                 menu2.Items.Add(menuItemCopy2);
                 ContextMenuService.SetContextMenu(txtUserName, menu2);
+                txtMsisdn.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ContextMenu menu = new ContextMenu();
+                menu.IsZoomEnabled = false;
+                MenuItem menuItemCopy = new MenuItem();
+                menuItemCopy.Header = AppResources.Copy_txt;
+                menuItemCopy.Click += menuItemCopy_Click;
+                menu.Items.Add(menuItemCopy);
+                ContextMenuService.SetContextMenu(txtMsisdn, menu);
             }
         }
 
@@ -1205,6 +1211,9 @@ namespace windows_client.View
                 case TaskResult.OK:
                     ContactUtils.getContact(msisdn, new ContactUtils.contacts_Callback(contactSearchCompleted_Callback));
                     ApplicationBar.Buttons.Remove(addToContactsAppBarButton);
+
+                    if (txtMsisdn.Visibility == Visibility.Collapsed)
+                        txtMsisdn.Visibility = Visibility.Visible;
                     break;
                 case TaskResult.Cancel:
                     System.Diagnostics.Debug.WriteLine(AppResources.User_Cancelled_Task_Txt);

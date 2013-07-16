@@ -20,6 +20,9 @@ namespace windows_client.Controls
         public static readonly DependencyProperty TypeProperty =
            DependencyProperty.Register("LinkifyAll", typeof(bool), typeof(MyRichTextBox), new PropertyMetadata(default(bool)));
 
+        public static readonly DependencyProperty ColorProperty =
+            DependencyProperty.Register("TextForeground", typeof(SolidColorBrush), typeof(MyRichTextBox), new PropertyMetadata(default(SolidColorBrush)));
+
         private string lastText = string.Empty;
         public string Text
         {
@@ -44,7 +47,17 @@ namespace windows_client.Controls
                 SetValue(TypeProperty, value);
             }
         }
-
+        public SolidColorBrush TextForeground
+        {
+            get
+            {
+                return (SolidColorBrush)GetValue(ColorProperty);
+            }
+            set
+            {
+                SetValue(ColorProperty, value);
+            }
+        }
         private static void TextPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             try
@@ -56,7 +69,7 @@ namespace windows_client.Controls
                     return;
                 richTextBox.lastText = text;
 
-                var paragraph = richTextBox.LinkifyAll ? SmileyParser.Instance.LinkifyAll(text, (SolidColorBrush)richTextBox.Foreground) : SmileyParser.Instance.LinkifyEmoticons(text);
+                var paragraph = richTextBox.LinkifyAll ? SmileyParser.Instance.LinkifyAllPerTextBlock(text, (SolidColorBrush)richTextBox.TextForeground) : SmileyParser.Instance.LinkifyEmoticons(text);
                 richTextBox.Blocks.Clear();
                 richTextBox.Blocks.Add(paragraph);
             }

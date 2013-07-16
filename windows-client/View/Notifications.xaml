@@ -26,12 +26,12 @@
             <!--<Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>-->
             <TextBlock Text="{Binding Path= LocalizedResources.Preferences_Header_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="68"  Margin="25,0,0,0"/>
         </StackPanel>
-
+     
         <!--ContentPanel - place additional content here-->
-        <ScrollViewer Grid.Row="1" Margin="17,20,17,0" >
+        <ScrollViewer Grid.Row="1" Margin="17,20,17,0">
             <Grid x:Name="ContentPanel" Background="Transparent">
-
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -41,20 +41,21 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <toolkit:ToggleSwitch  Grid.Row="0" x:Name="pushNotifications" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
-                                  Header="{Binding Path= LocalizedResources.Settings_PushToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="pushNotifications_Checked" Unchecked="pushNotifications_Unchecked"/>
-                <toolkit:ToggleSwitch Grid.Row="1" x:Name="vibrate" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
-                                  Header="{Binding Path= LocalizedResources.Settings_VibrateToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="vibrate_Checked" Unchecked="vibrate_Unchecked"/>
-                <toolkit:ToggleSwitch Grid.Row="2" x:Name="showFreeSMSToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
-                                  Header="{Binding Path= LocalizedResources.Settings_FreeSMSToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="showFreeSMSToggle_Checked" Unchecked="showFreeSMSToggle_Unchecked"/>
-                <toolkit:ToggleSwitch Grid.Row="3" x:Name="lastSeenTimeStampToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="lastSeenTimeStampToggle_Loaded"
-                                  Header="{Binding Path= LocalizedResources.Show_LastSeen_TimeStamp, Source={StaticResource LocalizedStrings}}" />
-                <toolkit:ToggleSwitch Grid.Row="4" x:Name="statusUpdateNotificationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="statusUpdateNotificationToggle_Loaded"
-                                  Header="{Binding Path= LocalizedResources.Settings_StatusNotification_SwitchHeader, Source={StaticResource LocalizedStrings}}" />
-                <toolkit:ListPicker Grid.Row="5" x:Name="listBoxStatusSettings" Loaded="listBoxStatusSettings_Loaded" Margin="10 -5 10 0" Visibility="Collapsed"/>
-                <Button Grid.Row="6" Content="Set Lock Screen Notifications" Tap="btnGoToLockSettings_Click" />
+                <toolkit:ToggleSwitch  Grid.Row="0" x:Name="locationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                          Header="{Binding Path= LocalizedResources.Settings_LocationToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="locationToggle_Checked" Unchecked="locationToggle_Unchecked"/>
+                <toolkit:ToggleSwitch  Grid.Row="1" x:Name="pushNotifications" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                          Header="{Binding Path= LocalizedResources.Settings_PushToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="pushNotifications_Checked" Unchecked="pushNotifications_Unchecked"/>
+                <toolkit:ToggleSwitch Grid.Row="2" x:Name="vibrate" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                          Header="{Binding Path= LocalizedResources.Settings_VibrateToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="vibrate_Checked" Unchecked="vibrate_Unchecked"/>
+                <toolkit:ToggleSwitch Grid.Row="3" x:Name="showFreeSMSToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                          Header="{Binding Path= LocalizedResources.Settings_FreeSMSToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="showFreeSMSToggle_Checked" Unchecked="showFreeSMSToggle_Unchecked"/>
+                <toolkit:ToggleSwitch Grid.Row="4" x:Name="lastSeenTimeStampToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="lastSeenTimeStampToggle_Loaded"
+                                          Header="{Binding Path= LocalizedResources.Show_LastSeen_TimeStamp, Source={StaticResource LocalizedStrings}}" />
+                <toolkit:ToggleSwitch Grid.Row="5" x:Name="statusUpdateNotificationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="statusUpdateNotificationToggle_Loaded"
+                                          Header="{Binding Path= LocalizedResources.Settings_StatusNotification_SwitchHeader, Source={StaticResource LocalizedStrings}}" />
+                <toolkit:ListPicker Grid.Row="6" x:Name="listBoxStatusSettings" Loaded="listBoxStatusSettings_Loaded" Margin="10 -5 10 0" Visibility="Collapsed"/>
+                <Button Grid.Row="7" Content="Set Lock Screen Notifications" Tap="btnGoToLockSettings_Click" />
             </Grid>
         </ScrollViewer>
     </Grid>
-
 </phone:PhoneApplicationPage>
