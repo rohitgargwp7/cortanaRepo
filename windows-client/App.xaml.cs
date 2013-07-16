@@ -502,11 +502,6 @@ namespace windows_client
                 {
                     APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                     PhoneApplicationService.Current.State["IsStatusPush"] = true;
-                    e.Cancel = true;
-                    RootFrame.Dispatcher.BeginInvoke(delegate
-                    {
-                        RootFrame.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
-                    });
                 }
                 else if (targetPage != null && targetPage.Contains("NewSelectUserPage.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
                 {

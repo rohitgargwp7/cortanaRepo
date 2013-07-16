@@ -100,11 +100,24 @@ namespace windows_client.View
             base.OnNavigatedFrom(e);
             if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
                 TotalUnreadStatuses = 0;
+
+            if(IsReset)
+                App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
         }
+
+        bool IsReset;
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Reset)
+            {
+                IsReset = true;
+                return;
+            }
+            else
+                IsReset = false;
 
             if (launchPagePivot.SelectedIndex == 3)
             {
@@ -179,7 +192,7 @@ namespace windows_client.View
             isStatusUpdatesMute = App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue) && statusSettingsValue == 0;
             imgToggleStatus.Source = isStatusUpdatesMute ? UI_Utils.Instance.MuteIcon : UI_Utils.Instance.UnmuteIcon;
 
-            if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush") && e.NavigationMode == System.Windows.Navigation.NavigationMode.Reset)
+            if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush") )
                 launchPagePivot.SelectedIndex = 3;
         }
 
