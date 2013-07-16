@@ -2301,6 +2301,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Beauty Saloon.
+        /// </summary>
+        public static string Mood_BeautySaloon {
+            get {
+                return ResourceManager.GetString("Mood_BeautySaloon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Boozing .
         /// </summary>
         public static string Mood_Boozing {
@@ -2355,11 +2364,29 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cooking.
+        /// </summary>
+        public static string Mood_Cooking {
+            get {
+                return ResourceManager.GetString("Mood_Cooking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Driving .
         /// </summary>
         public static string Mood_Driving {
             get {
                 return ResourceManager.GetString("Mood_Driving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eating.
+        /// </summary>
+        public static string Mood_Eating {
+            get {
+                return ResourceManager.GetString("Mood_Eating", resourceCulture);
             }
         }
         
@@ -2436,6 +2463,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Music.
+        /// </summary>
+        public static string Mood_Music {
+            get {
+                return ResourceManager.GetString("Mood_Music", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Partying Hard.
+        /// </summary>
+        public static string Mood_PartyingHard {
+            get {
+                return ResourceManager.GetString("Mood_PartyingHard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Running late .
         /// </summary>
         public static string Mood_Running_late {
@@ -2459,6 +2504,15 @@ namespace windows_client.Languages {
         public static string Mood_Shopping {
             get {
                 return ResourceManager.GetString("Mood_Shopping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Singing.
+        /// </summary>
+        public static string Mood_Singing {
+            get {
+                return ResourceManager.GetString("Mood_Singing", resourceCulture);
             }
         }
         
@@ -2504,6 +2558,15 @@ namespace windows_client.Languages {
         public static string Mood_Watching_tv {
             get {
                 return ResourceManager.GetString("Mood_Watching_tv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Working Out.
+        /// </summary>
+        public static string Mood_WorkingOut {
+            get {
+                return ResourceManager.GetString("Mood_WorkingOut", resourceCulture);
             }
         }
         

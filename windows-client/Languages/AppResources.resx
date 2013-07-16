@@ -1870,4 +1870,28 @@ Get hike: http://get.hike.in</value>
     <value>message</value>
     <comment>page heading(view one single message)</comment>
   </data>
+  <data name="Mood_BeautySaloon" xml:space="preserve">
+    <value>Beauty Saloon</value>
+  </data>
+  <data name="Mood_Cooking" xml:space="preserve">
+    <value>Cooking</value>
+  </data>
+  <data name="Mood_Eating" xml:space="preserve">
+    <value>Eating</value>
+  </data>
+  <data name="Mood_Music" xml:space="preserve">
+    <value>Music</value>
+  </data>
+  <data name="Mood_PartyingHard" xml:space="preserve">
+    <value>Partying Hard</value>
+  </data>
+  <data name="Mood_Singing" xml:space="preserve">
+    <value>Singing</value>
+  </data>
+  <data name="Mood_WorkingOut" xml:space="preserve">
+    <value>Working Out</value>
+  </data>
+  <data name="ViewFullMessage_Txt" xml:space="preserve">
+    <value>View full message</value>
+  </data>
 </root>
