@@ -108,6 +108,19 @@ namespace windows_client.utils
             }
         }
 
+        public static int GetSendingMoodId(int currentMoodId)
+        {
+            if (currentMoodId > 24)
+                currentMoodId += 9;
+            return currentMoodId;
+        }
+
+        public static int GetRecieverMoodId(int currentMoodId)
+        {
+            if (currentMoodId > 33)
+                currentMoodId -= 9;
+            return currentMoodId;
+        }
         public class Mood
         {
             int _moodId;
@@ -161,6 +174,7 @@ namespace windows_client.utils
                     if (!string.IsNullOrEmpty(moodId_String))
                     {
                         int.TryParse(moodId_String, out moodId);
+                        moodId = GetRecieverMoodId(moodId);
                     }
                 }
             }

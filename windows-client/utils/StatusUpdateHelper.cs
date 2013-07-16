@@ -174,6 +174,7 @@ namespace windows_client.utils
                             if (!string.IsNullOrEmpty(moodId_String))
                             {
                                 int.TryParse(moodId_String, out moodId);
+                                moodId = MoodsInitialiser.GetRecieverMoodId(moodId);
                                 if (moodId > 0)
                                     tod = statusData[HikeConstants.TIME_OF_DAY].ToObject<int>();
                             }
