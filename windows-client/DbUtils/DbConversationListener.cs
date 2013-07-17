@@ -285,6 +285,8 @@ namespace windows_client.DbUtils
                     // delete the conversation from DB.
                     ConversationTableUtils.deleteConversation(c.Msisdn);
                     //ConversationTableUtils.saveConvObjectList();
+                    MessagesTableUtils.DeleteLongMessages(c.Msisdn);
+
                 }
                 else
                 {
@@ -389,6 +391,7 @@ namespace windows_client.DbUtils
                 ConversationTableUtils.deleteConversation(convMsisdn); // removed entry from conversation table
                 //ConversationTableUtils.saveConvObjectList();
                 MiscDBUtil.deleteMsisdnData(convMsisdn);
+                MessagesTableUtils.DeleteLongMessages(convMsisdn);
             }
             #endregion
             else if (type == HikePubSub.SAVE_STATUS_IN_DB)

@@ -227,6 +227,7 @@ namespace windows_client.View
             }
             postStatusIcon.IsEnabled = true;
             moodId = moodListBox.SelectedIndex + 1;
+            moodId = MoodsInitialiser.GetSendingMoodId(moodId);
             txtStatus.Hint = hintText = mood.MoodText;
             moodImage.Source = mood.MoodImage;
             moodImage.Height = 60;

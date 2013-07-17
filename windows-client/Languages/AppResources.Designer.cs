@@ -2157,6 +2157,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} km.
+        /// </summary>
+        public static string Kilometer_Abbreviation {
+            get {
+                return ResourceManager.GetString("Kilometer_Abbreviation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to last seen.
         /// </summary>
         public static string Last_Seen {
@@ -2274,11 +2283,29 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} m.
+        /// </summary>
+        public static string Meter_Abbreviation {
+            get {
+                return ResourceManager.GetString("Meter_Abbreviation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Angry .
         /// </summary>
         public static string Mood_Angry {
             get {
                 return ResourceManager.GetString("Mood_Angry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Beauty Saloon.
+        /// </summary>
+        public static string Mood_BeautySaloon {
+            get {
+                return ResourceManager.GetString("Mood_BeautySaloon", resourceCulture);
             }
         }
         
@@ -2337,11 +2364,29 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cooking.
+        /// </summary>
+        public static string Mood_Cooking {
+            get {
+                return ResourceManager.GetString("Mood_Cooking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Driving .
         /// </summary>
         public static string Mood_Driving {
             get {
                 return ResourceManager.GetString("Mood_Driving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eating.
+        /// </summary>
+        public static string Mood_Eating {
+            get {
+                return ResourceManager.GetString("Mood_Eating", resourceCulture);
             }
         }
         
@@ -2418,6 +2463,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Music.
+        /// </summary>
+        public static string Mood_Music {
+            get {
+                return ResourceManager.GetString("Mood_Music", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Partying Hard.
+        /// </summary>
+        public static string Mood_PartyingHard {
+            get {
+                return ResourceManager.GetString("Mood_PartyingHard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Running late .
         /// </summary>
         public static string Mood_Running_late {
@@ -2441,6 +2504,15 @@ namespace windows_client.Languages {
         public static string Mood_Shopping {
             get {
                 return ResourceManager.GetString("Mood_Shopping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Singing.
+        /// </summary>
+        public static string Mood_Singing {
+            get {
+                return ResourceManager.GetString("Mood_Singing", resourceCulture);
             }
         }
         
@@ -2486,6 +2558,15 @@ namespace windows_client.Languages {
         public static string Mood_Watching_tv {
             get {
                 return ResourceManager.GetString("Mood_Watching_tv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Working Out.
+        /// </summary>
+        public static string Mood_WorkingOut {
+            get {
+                return ResourceManager.GetString("Mood_WorkingOut", resourceCulture);
             }
         }
         
@@ -3516,6 +3597,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use location.
+        /// </summary>
+        public static string Settings_LocationToggleSwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_LocationToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your notifications preferences.
         /// </summary>
         public static string Settings_NotificationSettings_Txt {
@@ -3683,6 +3773,15 @@ namespace windows_client.Languages {
         public static string ShareLocation_LocationServiceWorking_Txt {
             get {
                 return ResourceManager.GetString("ShareLocation_LocationServiceWorking_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location service setting is not enabled. Would you like to enable it?.
+        /// </summary>
+        public static string ShareLocation_LocationSettingsNotEnabled_Txt {
+            get {
+                return ResourceManager.GetString("ShareLocation_LocationSettingsNotEnabled_Txt", resourceCulture);
             }
         }
         
@@ -4205,6 +4304,24 @@ namespace windows_client.Languages {
         public static string Video_Txt {
             get {
                 return ResourceManager.GetString("Video_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View full message.
+        /// </summary>
+        public static string ViewFullMessage_Txt {
+            get {
+                return ResourceManager.GetString("ViewFullMessage_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to message.
+        /// </summary>
+        public static string ViewMessage_Title_txt {
+            get {
+                return ResourceManager.GetString("ViewMessage_Title_txt", resourceCulture);
             }
         }
         

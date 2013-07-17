@@ -17,7 +17,28 @@
     
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Key="RouteListTemplate">
-            <TextBlock Text="{Binding}" FontSize="{StaticResource PhoneFontSizeMedium}" TextWrapping="Wrap" Margin="5"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid Visibility="{Binding DistanceVisibility}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border BorderBrush="{StaticResource PhoneSubtleBrush}" BorderThickness="0,1,0,0"/>
+                    <TextBlock Grid.Column="1" Margin="5,-15,0,5"  Text="{Binding Distance}" Foreground="{StaticResource PhoneSubtleBrush}" FontSize="{StaticResource PhoneFontSizeNormal}"/>
+                </Grid>
+                <Grid Margin="0,10,0,20" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="{Binding DirectionImage}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Instruction}" FontSize="{StaticResource PhoneFontSizeMedium}" TextWrapping="Wrap" Margin="5"/>
+                </Grid>
+            </Grid>
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
     
