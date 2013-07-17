@@ -4290,7 +4290,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add to Contacts.
+        ///   Looks up a localized string similar to add contact.
         /// </summary>
         public static string UserProfile_AddToContacts_Btn {
             get {

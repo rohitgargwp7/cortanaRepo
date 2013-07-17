@@ -1589,7 +1589,7 @@ Get hike: http://get.hike.in</value>
     <value>Unable to delete your status.</value>
   </data>
   <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
-    <value>Add to Contacts</value>
+    <value>add contact</value>
   </data>
   <data name="SettingsSubtitle_Account_Txt" xml:space="preserve">
     <value>Account</value>
