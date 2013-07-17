@@ -100,7 +100,7 @@ namespace windows_client.View
         private ApplicationBar appBar;
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
-        ApplicationBarMenuItem addUserMenuItem;
+        public ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarMenuItem infoMenuItem;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
@@ -245,27 +245,27 @@ namespace windows_client.View
                 WalkieTalkieDeletedBorder.Opacity = 1;
                 WalkieTalkieGridOverlayLayer.Opacity = 1;
             }
+        }
 
-            CompositionTarget.Rendering += (sender, args) =>
+        void CompositionTarget_Rendering(object sender, EventArgs e)
+        {
+            if (mediaElement != null && mediaElement.Source != null)
             {
-                if (mediaElement != null && mediaElement.Source != null)
+                var pos = mediaElement.Position.TotalSeconds;
+                var dur = mediaElement.NaturalDuration.TimeSpan.TotalSeconds;
+
+                if (currentAudioMessage != null && dur != 0)
                 {
-                    var pos = mediaElement.Position.TotalSeconds;
-                    var dur = mediaElement.NaturalDuration.TimeSpan.TotalSeconds;
+                    if (pos == dur)
+                        currentAudioMessage.PlayProgressBarValue = 0;
+                    else
+                        currentAudioMessage.PlayProgressBarValue = pos * 100 / dur;
 
-                    if (currentAudioMessage != null && dur != 0)
-                    {
-                        if (pos == dur)
-                            currentAudioMessage.PlayProgressBarValue = 0;
-                        else
-                            currentAudioMessage.PlayProgressBarValue = pos * 100 / dur;
+                    string durationText = String.IsNullOrEmpty(currentAudioMessage.DurationText) ? String.Empty : currentAudioMessage.DurationText;
 
-                        string durationText = String.IsNullOrEmpty(currentAudioMessage.DurationText) ? String.Empty : currentAudioMessage.DurationText;
-
-                        currentAudioMessage.PlayTimeText = pos == dur || pos == 0 ? durationText : mediaElement.NaturalDuration.TimeSpan.Subtract(mediaElement.Position).ToString("mm\\:ss");
-                    }
+                    currentAudioMessage.PlayTimeText = pos == dur || pos == 0 ? durationText : mediaElement.NaturalDuration.TimeSpan.Subtract(mediaElement.Position).ToString("mm\\:ss");
                 }
-            };
+            }
         }
 
         void LastSeenResponseReceived(object sender, LastSeenEventArgs e)
@@ -436,6 +436,9 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            CompositionTarget.Rendering += CompositionTarget_Rendering;
 
             if (e.NavigationMode == NavigationMode.Back)
             {
@@ -666,6 +669,8 @@ namespace windows_client.View
                 this.State["sendMsgTxtbox.Text"] = sendMsgTxtbox.Text;
             else
                 this.State.Remove("sendMsgTxtbox.Text");
+
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
 
             App.IS_TOMBSTONED = false;
         }
@@ -1063,6 +1068,12 @@ namespace windows_client.View
                 ContactInfo cinfo = (ContactInfo)statusObject;
                 cinfo.OnHike = true;
             }
+            else if (statusObject is ConversationListObject)
+            {
+                ConversationListObject co = (ConversationListObject)statusObject;
+                co.IsOnhike = true;
+            }
+
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 if (!isGroupChat)
