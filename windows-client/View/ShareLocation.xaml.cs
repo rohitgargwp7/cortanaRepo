@@ -96,7 +96,7 @@ namespace windows_client.View
                     try
                     {
                         JToken jToken = obj[HikeConstants.NokiaHere.SEARCH][HikeConstants.NokiaHere.CONTEXT][HikeConstants.NokiaHere.LOCATION][HikeConstants.NokiaHere.ADDRESS];
-                        _myPlaceVicinity = jToken[HikeConstants.NokiaHere.TEXT].ToString(Newtonsoft.Json.Formatting.None).Replace("\n", ", ");
+                        _myPlaceVicinity = jToken[HikeConstants.NokiaHere.TEXT].ToString().Replace("\n", ", ");
                     }
                     catch
                     {
