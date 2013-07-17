@@ -3525,7 +3525,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} seems to be offline, tap to send as sms.
+        ///   Looks up a localized string similar to {0} is offline, tap to send as sms.
         /// </summary>
         public static string Send_All_As_SMS {
             get {
@@ -4290,7 +4290,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add to Contacts.
+        ///   Looks up a localized string similar to add contact.
         /// </summary>
         public static string UserProfile_AddToContacts_Btn {
             get {
