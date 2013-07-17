@@ -528,7 +528,12 @@ namespace windows_client.View
                 }
             }
             else
+            {
                 _isLocationEnabled = true;
+
+                if (e.NavigationMode != System.Windows.Navigation.NavigationMode.New && _myCoordinate == null && !App.IS_TOMBSTONED)
+                    GetCurrentCoordinate();
+            }
 
             if (!_isLocationEnabled)
                 return;
