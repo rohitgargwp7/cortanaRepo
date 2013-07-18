@@ -362,8 +362,8 @@ namespace windows_client.View
                 // Create the VideoRecorder objects.
                 captureSource = new CaptureSource();
                 fileSink = new FileSink();
-                videoCaptureDevice = CaptureDeviceConfiguration.GetDefaultVideoCaptureDevice();
-
+                var devices = CaptureDeviceConfiguration.GetAvailableVideoCaptureDevices();
+                videoCaptureDevice = devices.First();
                 SetResolutionsItemSource();
 
                 captureSource.CaptureImageCompleted += captureSource_CaptureImageCompleted;
