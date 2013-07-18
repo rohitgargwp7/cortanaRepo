@@ -451,7 +451,7 @@ namespace windows_client.ViewModel
             isShownVal = (marked & 0x02) > 0;
             isCurrentShown = (currentlyShowing & 0x02) > 0;
             if (!isShownVal || isCurrentShown)
-                    DictInAppTip.Add(1, new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 130, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
+                DictInAppTip.Add(1, new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 130, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
 
             isShownVal = (marked & 0x04) > 0;
             isCurrentShown = (currentlyShowing & 0x04) > 0;
