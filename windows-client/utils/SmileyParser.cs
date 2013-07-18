@@ -23,10 +23,12 @@ namespace windows_client
         public BitmapImage[] _emoticonImagesForList0 = null;
         public BitmapImage[] _emoticonImagesForList1 = null;
         public BitmapImage[] _emoticonImagesForList2 = null;
+        public BitmapImage[] _emoticonImagesForList3 = null;
 
         public readonly int emoticon0Size = 80;
         public readonly int emoticon1Size = 30;
         public readonly int emoticon2Size = 39;
+        public readonly int emoticon3Size = 24;
 
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static volatile SmileyParser instance = null;
@@ -202,6 +204,30 @@ namespace windows_client
             "(yuush2)",  // 148 yuush 
             "(brains2)",  // 149 brains 
             "(sleeping2)",  // 150 sleeping 
+            "(auto4)",
+            "(batti4)",
+            "(best4)",
+            "(biscuit4)",
+            "(chai4)",
+            "(Chips4)",
+            "(cupid4)",
+            "(dd4)",
+            "(hero4)",
+            "(icecream4)",
+            "(jalebi4)",
+            "(love4)",
+            "(metro4)",
+            "(nariyal4)",
+            "(neta4)",
+            "(nimbu4)",
+            "(Old4)",
+            "(paisa4)",
+            "(patakha4)",
+            "(samosa4)",
+            "(shakti4)",
+            "(tandoori4)",
+            "(thulla4)",
+            "(noodles4)",
       };
         //regex for emoticons, email, url and phone number
         private Regex chatThreadRegex;
@@ -291,7 +317,7 @@ namespace windows_client
             if (IS_INSTANTIATED)
                 return;
             _emoticonImagesForList0 = new BitmapImage[emoticon0Size];
-            int i, j, k = 0;
+            int i, j, k, l = 0;
             for (i = 0; i < emoticon0Size; i++)
             {
                 _emoticonImagesForList0[i] = new BitmapImage();
@@ -313,6 +339,14 @@ namespace windows_client
                 _emoticonImagesForList2[k] = new BitmapImage();
                 _emoticonImagesForList2[k].CreateOptions = BitmapCreateOptions.BackgroundCreation;
                 _emoticonImagesForList2[k].UriSource = new Uri(emoticonPaths[i + j + k], UriKind.Relative);
+            }
+
+            _emoticonImagesForList3 = new BitmapImage[emoticon3Size];
+            for (l = 0; l < emoticon3Size; l++)
+            {
+                _emoticonImagesForList3[l] = new BitmapImage();
+                _emoticonImagesForList3[l].CreateOptions = BitmapCreateOptions.BackgroundCreation;
+                _emoticonImagesForList3[l].UriSource = new Uri(emoticonPaths[i + j + k + l], UriKind.Relative);
             }
             IS_INSTANTIATED = true;
         }
@@ -477,6 +511,32 @@ namespace windows_client
 			"/View/images/emoticons/emo_im_148_yuush.png",
 			"/View/images/emoticons/emo_im_149_brains.png",
 			"/View/images/emoticons/emo_im_150_sleeping.png",
+
+            "/View/images/emoticons/auto4.png",
+            "/View/images/emoticons/batti4.png",
+            "/View/images/emoticons/best4.png",
+            "/View/images/emoticons/biscuit4.png",
+            "/View/images/emoticons/chai4.png",
+            "/View/images/emoticons/Chips4.png",
+            "/View/images/emoticons/cupid4.png",
+            "/View/images/emoticons/dd4.png",
+            "/View/images/emoticons/hero4.png",
+            "/View/images/emoticons/icecream4.png",
+            "/View/images/emoticons/jalebi4.png",
+            "/View/images/emoticons/love4.png",
+            "/View/images/emoticons/metro4.png",
+            "/View/images/emoticons/nariyal4.png",
+            "/View/images/emoticons/neta4.png",
+            "/View/images/emoticons/nimbu4.png",
+            "/View/images/emoticons/Old4.png",
+            "/View/images/emoticons/paisa4.png",
+            "/View/images/emoticons/patakha4.png",
+            "/View/images/emoticons/samosa4.png",
+            "/View/images/emoticons/shakti4.png",
+            "/View/images/emoticons/tandoori4.png",
+            "/View/images/emoticons/thulla4.png",
+            "/View/images/emoticons/noodles4.png",
+
         };
 
 
@@ -494,9 +554,13 @@ namespace windows_client
             {
                 return _emoticonImagesForList1[imgIndex - _emoticonImagesForList0.Length];
             }
-            else
+            else if (imgIndex < _emoticonImagesForList0.Length + _emoticonImagesForList1.Length + _emoticonImagesForList2.Length)
             {
                 return _emoticonImagesForList2[imgIndex - _emoticonImagesForList0.Length - _emoticonImagesForList1.Length];
+            }
+            else
+            {
+                return _emoticonImagesForList3[imgIndex - _emoticonImagesForList0.Length - _emoticonImagesForList1.Length - _emoticonImagesForList2.Length];
             }
         }
 

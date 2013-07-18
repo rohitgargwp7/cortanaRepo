@@ -82,7 +82,7 @@
                             <TextBlock x:Name="lastSeenTxt" Text="" FontSize="18"/>
                         </StackPanel>
                     </StackPanel>
-                 </Grid>
+                </Grid>
             </StackPanel>
         </StackPanel>
 
@@ -128,7 +128,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                            <Image x:Name="NotificationImage" MaxHeight="20" VerticalAlignment="Center" HorizontalAlignment="Right" Source="{Binding NotificationImage}"></Image>
+                                        <Image x:Name="NotificationImage" MaxHeight="20" VerticalAlignment="Center" HorizontalAlignment="Right" Source="{Binding NotificationImage}"></Image>
                                         <TextBlock x:Name="UserName" Height="Auto"  Margin="10 0 0 0" Grid.Column="1" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
                         Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                     </Grid>
@@ -780,13 +780,6 @@
                     <controls:Pivot Name="emoticonPivot" Grid.Row="0" SelectionChanged="emoticonPivot_SelectionChanged" Foreground="Black" Height="240">
                         <controls:PivotItem Margin="0,8,0,0">
                             <Grid x:Name="emotGrid0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-
                                 <ListBox Height="230" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList0_Tap">
                                     <ListBox.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -795,7 +788,6 @@
                                     </ListBox.ItemsPanel>
 
                                     <ListBox.ItemTemplate>
-
                                         <DataTemplate>
                                             <Image Margin="5,5,5,5" Height="40" Width="40" Source="{Binding}">
                                             </Image>
@@ -807,12 +799,6 @@
 
                         <controls:PivotItem Margin="0,8,0,0">
                             <Grid x:Name="emotGrid1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
 
                                 <ListBox Height="230" Name="emotList1" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList1_Tap">
                                     <ListBox.ItemsPanel>
@@ -822,7 +808,6 @@
                                     </ListBox.ItemsPanel>
 
                                     <ListBox.ItemTemplate>
-
                                         <DataTemplate>
                                             <Image Margin="5,5,5,5" Height="40" Width="40" Source="{Binding}">
                                             </Image>
@@ -834,13 +819,6 @@
 
                         <controls:PivotItem Margin="0,8,0,0">
                             <Grid x:Name="emotGrid2">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-
                                 <ListBox Height="230" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList2_Tap">
                                     <ListBox.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -858,37 +836,52 @@
                                 </ListBox>
                             </Grid>
                         </controls:PivotItem>
+                        <controls:PivotItem Margin="0,8,0,0" Name="indianEmoticonPivot">
+                            <Grid x:Name="emotGrid3">
+
+                                <ListBox Height="230" Name="emotList3" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList3_Tap">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <toolkit:WrapPanel ItemHeight="65" ItemWidth="65"/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+
+                                    <ListBox.ItemTemplate>
+
+                                        <DataTemplate>
+                                            <Image Margin="5,5,5,5" Height="45" Width="45" Source="{Binding}">
+                                            </Image>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </controls:PivotItem>
                     </controls:Pivot>
-                    <Grid Height="52" Grid.Row="1" VerticalAlignment="Bottom" Margin="5 15 5 5" >
+                    <Grid Height="52" Grid.Row="1" VerticalAlignment="Bottom" Margin="5 15 5 5" Name="gridEmoticonLabels">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <StackPanel Name="emotHeaderRect0" Grid.Column="0" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect0_Tap">
-                            <Image Source="images\emoticons\emo_im_01_bigsmile.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </StackPanel>
-                        <Rectangle Width="2" Grid.Column="1" />
-                        <StackPanel Name="emotHeaderRect1" Grid.Column="2" Background="#1ba1e2"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect1_Tap" >
-                            <Image Source="images\emoticons\emo_im_102_scorn.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"  VerticalAlignment="Center"/>
-                        </StackPanel>
-                        <Rectangle Width="2" Grid.Column="3" />
-                        <StackPanel Name="emotHeaderRect2"  Grid.Column="4" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect2_Tap">
-                            <Image Source="images\emoticons\emo_im_111_grin.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                        <Rectangle Width="2" Grid.Column="5" />
-                        <StackPanel Name="stickerTab"  Grid.Column="6" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="StickersTab_Tap">
-                            <Image Source="images\expressions.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                        <Rectangle Width="2" Grid.Column="7" />
-                        <Button Style="{StaticResource ButtonWithNoPaddingStyle}" Margin="0" BorderThickness="0"  Grid.Column="8" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="OnEmoticonBackKeyPress" >
-                            <Image Source="images\emoticon_back_key.png"   Height="20" HorizontalAlignment="Center"/>
+                        <Border Name="emotHeaderRect0" Grid.Column="0" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect0_Tap">
+                            <Image Source="images\emoticons\emo_im_01_bigsmile.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border Name="emotHeaderRect1" Grid.Column="1" Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect1_Tap" >
+                            <Image Source="images\emoticons\emo_im_102_scorn.png" Height="30" HorizontalAlignment="Center"  VerticalAlignment="Center"/>
+                        </Border>
+                        <Border Name="emotHeaderRect2"  Grid.Column="2" Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect2_Tap">
+                            <Image Source="images\emoticons\emo_im_111_grin.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border Name="emotHeaderRect3" Visibility="Collapsed"  Grid.Column="3"  Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect3_Tap">
+                            <Image Source="images\indianemoticon.jpg" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border Name="stickerTab"  Grid.Column="3" Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="StickersTab_Tap">
+                            <Image Source="images\expressions.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Button Name="btnBackKey" Style="{StaticResource ButtonWithNoPaddingStyle}" Margin="2,0,0,0" BorderThickness="0"  Grid.Column="4" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="OnEmoticonBackKeyPress" >
+                            <Image Source="images\emoticon_back_key.png"  Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button>
                     </Grid>
                 </Grid>

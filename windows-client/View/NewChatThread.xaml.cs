@@ -172,7 +172,13 @@ namespace windows_client.View
                 return SmileyParser.Instance._emoticonImagesForList2;
             }
         }
-
+        private BitmapImage[] imagePathsForList3
+        {
+            get
+            {
+                return SmileyParser.Instance._emoticonImagesForList3;
+            }
+        }
 
         public Dictionary<long, ConvMessage> OutgoingMsgsMap      /* This map will contain only outgoing messages */
         {
@@ -423,6 +429,20 @@ namespace windows_client.View
             emotList0.ItemsSource = imagePathsForList0;
             emotList1.ItemsSource = imagePathsForList1;
             emotList2.ItemsSource = imagePathsForList2;
+            emotList3.ItemsSource = imagePathsForList3;
+
+            if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))
+            {
+                ColumnDefinition col = new ColumnDefinition();
+                gridEmoticonLabels.ColumnDefinitions.Add(col);
+                stickerTab.SetValue(Grid.ColumnProperty, 4);
+                btnBackKey.SetValue(Grid.ColumnProperty, 5);
+                emotHeaderRect3.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                emoticonPivot.Items.RemoveAt(3);
+            }
 
             bw.RunWorkerAsync();
             photoChooserTask = new PhotoChooserTask();
@@ -1133,7 +1153,7 @@ namespace windows_client.View
                                select groupParticipant).Count() == 0 ? false : true;
 
             }
-            else if (!mContactNumber.Contains("+91")) //Indian receiver
+            else if (!mContactNumber.Contains(HikeConstants.INDIA_COUNTRY_CODE)) //Indian receiver
                 showFreeSMS = false;
 
             return showFreeSMS;
@@ -3385,7 +3405,14 @@ namespace windows_client.View
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             //emoticonPanel.Visibility = Visibility.Collapsed;
         }
-
+        private void emotList3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            recordGrid.Visibility = Visibility.Collapsed;
+            sendMsgTxtbox.Visibility = Visibility.Visible;
+            int index = emotList3.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size + SmileyParser.Instance.emoticon2Size;
+            sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
+            //emoticonPanel.Visibility = Visibility.Collapsed;
+        }
         #endregion
 
         #region HELPER FUNCTIONS
@@ -4364,6 +4391,7 @@ namespace windows_client.View
             emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
             emoticonPivot.SelectedIndex = 0;
         }
 
@@ -4372,6 +4400,7 @@ namespace windows_client.View
             emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.TappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
             emoticonPivot.SelectedIndex = 1;
 
         }
@@ -4381,9 +4410,17 @@ namespace windows_client.View
             emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.TappedCategoryColor;
+            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
             emoticonPivot.SelectedIndex = 2;
         }
-
+        private void emotHeaderRect3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect3.Background = UI_Utils.Instance.TappedCategoryColor;
+            emoticonPivot.SelectedIndex = 3;
+        }
         private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             switch (emoticonPivot.SelectedIndex)
@@ -4392,16 +4429,25 @@ namespace windows_client.View
                     emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
                     break;
                 case 1:
                     emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.TappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
                     break;
                 case 2:
                     emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.TappedCategoryColor;
+                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    break;
+                case 3:
+                    emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect3.Background = UI_Utils.Instance.TappedCategoryColor;
                     break;
             }
         }
