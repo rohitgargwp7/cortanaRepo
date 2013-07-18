@@ -24,7 +24,7 @@
     shell:SystemTray.IsVisible="False" Name="recordVideo">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Canvas x:Name="LayoutRoot" Background="Transparent">
+    <Grid x:Name="LayoutRoot" Background="Transparent">
 
         <!--Camera viewfinder >-->
         <Rectangle 
@@ -32,7 +32,7 @@
             Width="640" 
             Height="480" 
             HorizontalAlignment="Left" 
-            Canvas.Left="80"/>
+            Margin="80,0,0,0"/>
 
         <MediaElement 
             x:Name="VideoPlayer" 
@@ -46,18 +46,24 @@
             Canvas.Left="80"/>
 
         <!--Used for debugging >-->
-        <StackPanel HorizontalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Margin="90,12,12,12" VerticalAlignment="Bottom">
             <TextBlock 
-            Height="40" 
-            HorizontalAlignment="Center" 
-            Margin="100,428,0,0"
-            Name="txtDebug" 
-            VerticalAlignment="Top"
-            Width="626"
-            FontSize="24" 
-            FontWeight="ExtraBold"/>
-            <ProgressBar x:Name="recordProgress" Margin="0,5,0,0" Height="8" Background="Transparent" Foreground="White" Minimum="0" Maximum="1"></ProgressBar>
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Bottom"
+            Name="txtDebug" FontWeight="Thin"
+            Text="00.00" Foreground="White"
+            FontSize="100" />
 
+        <TextBlock 
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Name="txtSize" Foreground="White"
+            Margin="10,0,0,15"
+            FontSize="24"/>
         </StackPanel>
-    </Canvas>
+
+        <Grid x:Name="SettingsGrid" Canvas.ZIndex="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Collapsed">
+            <ListBox FontSize="40" x:Name="resolutionList" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionChanged="resolutionList_SelectionChanged"/>
+        </Grid>
+        </Grid>
 </phone:PhoneApplicationPage>
