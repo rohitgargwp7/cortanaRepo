@@ -52,8 +52,8 @@
             <Grid HorizontalAlignment="Stretch">
                 <Image x:Name="icon" Grid.Column="0" Source="images\hike_header.png" Height="40" Margin="4,25,0,0" HorizontalAlignment="Left"/>
             </Grid>
-            <Grid Name="gridToggleStatus"  Grid.Column="1" Margin="0,25,30,0" Height="50" Width="80" Tap="ToggleStatusUpdateNotification" HorizontalAlignment="Right" VerticalAlignment="Stretch" >
-                <Image Name="imgToggleStatus" MaxHeight="40" HorizontalAlignment="Center"/>
+            <Grid Name="gridToggleStatus" Grid.Column="1" Margin="0,25,30,0" Height="50" Width="80" Tap="ToggleStatusUpdateNotification" HorizontalAlignment="Right" VerticalAlignment="Stretch" >
+                <Image Name="imgToggleStatus" MaxHeight="30" HorizontalAlignment="Center"/>
             </Grid>
             <Grid Grid.Column="2" Margin="0,25,0,0" Height="50" Tap="notification_Tap" HorizontalAlignment="Right" VerticalAlignment="Stretch">
                 <Grid Margin="0,0,20,0">
@@ -99,7 +99,7 @@
                                             </Grid.ColumnDefinitions>
                                             <TextBlock HorizontalAlignment="Left" x:Name="userNameTxtBlck" Margin="0,-10,0,0" Text="{Binding NameToShow}" VerticalAlignment="Top" FontSize="39" FontFamily="Segoe WP SemiLight" FontStyle="Normal" MaxWidth="280" FontWeight="ExtraLight" TextAlignment="Left"/>
                                             <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="5,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-                                                <Image Source="images\mute_icon_main.png" Visibility="{Binding MuteIconVisibility}" VerticalAlignment="Top" HorizontalAlignment="Right" Height="20" Width="20" Margin="0,5,5,0"/>
+                                                <Image Source="{Binding MuteIcon}" Visibility="{Binding MuteIconVisibility}" VerticalAlignment="Top" HorizontalAlignment="Right" Height="20" Width="20" Margin="0,5,5,0"/>
                                                 <TextBlock x:Name="timestampTxtBlck" Text="{Binding FormattedTimeStamp}" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="20" Foreground="{StaticResource PhoneSubtleBrush}"/>
                                             </StackPanel>
                                         </Grid>
@@ -265,15 +265,14 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <TextBlock FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_TeamHike_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18"/>
-                            <TextBlock Grid.Row="1" x:Name="proTipTitleText" FontSize="22" Text="" FontFamily="Segoe WP Semibold" TextWrapping="Wrap"/>
-                            <TextBlock Grid.Row="2" Margin="0,0,0,5" x:Name="proTipContentText" FontSize="20" Text="" TextWrapping="Wrap"/>
-                            <Image Margin="0,5" HorizontalAlignment="Left" Visibility="Collapsed" Grid.Row="3" x:Name="proTipImage" Stretch="Uniform" MaxWidth="236" Tap="ProTipImage_Tapped"/>
-                            <Button Margin="-12,0,12,0" Grid.Row="4" x:Name="dismissButton" Click="dismissProTip_Click" Background="#e9ecee" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Dismiss_Tip, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Foreground="#595959"/>
+                            <StackPanel Grid.Row="1">
+                                <TextBlock x:Name="proTipTitleText" FontSize="22" Visibility="Collapsed" FontFamily="Segoe WP Semibold" TextWrapping="Wrap"/>
+                                <TextBlock Margin="0,0,0,5" x:Name="proTipContentText" FontSize="20" Visibility="Collapsed" TextWrapping="Wrap"/>
+                                <Image Margin="0,5" HorizontalAlignment="Left" Visibility="Collapsed" x:Name="proTipImage" Stretch="Uniform" MaxWidth="236" Tap="ProTipImage_Tapped"/>
+                                <Button Margin="-12,0,12,0" x:Name="dismissButton" Click="dismissProTip_Click" Background="#e9ecee" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Dismiss_Tip, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Foreground="#595959"/>
+                            </StackPanel>
                         </Grid>
                     </Grid>
                     <Grid Grid.Row="1">

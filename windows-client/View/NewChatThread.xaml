@@ -285,7 +285,7 @@
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
                                                 <Border Margin="0" Background="Black" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
-                                                <Image Stretch="None" x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
+                                                <Image Stretch="Uniform" x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" MaxWidth="46" MaxHeight="46" VerticalAlignment="Center"/>
                                                 <Grid Grid.Column="1">
                                                     <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
                                                         <Image Margin="10,0,0,0" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="/View/images/Mic_icon_grey_small.png"/>
@@ -579,7 +579,7 @@
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
                                                 <Border Margin="0" Background="Black" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
-                                                <Image Stretch="None" x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                <Image Stretch="Uniform" x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" HorizontalAlignment="Center" MaxWidth="46" MaxHeight="46" VerticalAlignment="Center"/>
                                                 <Grid Grid.Column="1">
                                                     <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
                                                         <Image Margin="10,0,0,0" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="/View/images/Mic_icon_grey_small.png"/>

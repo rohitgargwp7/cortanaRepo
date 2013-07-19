@@ -2429,8 +2429,17 @@ namespace windows_client.View
 
             if (proTip != null)
             {
-                proTipTitleText.Text = proTip._header;
-                proTipContentText.Text = proTip._body;
+                if (!String.IsNullOrEmpty(proTip._header))
+                {
+                    proTipTitleText.Visibility = Visibility.Visible;
+                    proTipTitleText.Text = proTip._header;
+                }
+
+                if (!String.IsNullOrEmpty(proTip._body))
+                {
+                    proTipContentText.Visibility = Visibility.Visible;
+                    proTipContentText.Text = proTip._body;
+                }
 
                 if (!String.IsNullOrEmpty(proTip.ImageUrl))
                 {
