@@ -85,8 +85,10 @@ namespace windows_client.View
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IMAGE_TO_DISPLAY))
             {
-                BitmapImage imageToDisplay = (BitmapImage)PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY];
-                this.FileImage.Source = imageToDisplay;
+                PhoneApplicationService.Current.State.Remove(HikeConstants.IMAGE_TO_DISPLAY);
+             
+                if (ProTipHelper.CurrentProTip != null)
+                    this.FileImage.Source = ProTipHelper.CurrentProTip.TipImage;
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.STATUS_IMAGE_TO_DISPLAY))
             {

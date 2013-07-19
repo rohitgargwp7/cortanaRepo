@@ -2448,9 +2448,8 @@ namespace windows_client.View
 
         private void ProTipImage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY] = proTipImage.Source as BitmapImage;
-            Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
-            NavigationService.Navigate(nextPage);
+            PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY] = true;
+            NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
         }
 
         #endregion

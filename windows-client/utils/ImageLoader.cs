@@ -26,18 +26,19 @@ namespace windows_client.utils
     /// </value>
     public class ImageInfo
     {
-        public ImageInfo(BitmapImage imageSource, Uri uri, Uri defaultImgUrl, String fileName = null)
+        public ImageInfo(BitmapImage imageSource, Uri uri, Uri defaultImgUrl, bool useWebClient, String fileName = null)
         {
             BitmapImage = imageSource;
             DefaultImgUri = defaultImgUrl;
             Uri = uri;
             FileName = String.IsNullOrEmpty(fileName) ? Utils.ConvertUrlToFileName(Uri.OriginalString) : fileName;
+            UseWebClient = useWebClient;
         }
 
         public BitmapImage BitmapImage;
         public Uri DefaultImgUri;
         public Uri Uri;
-
+        public bool UseWebClient;
         public String FileName
         {
             get;
@@ -176,19 +177,22 @@ namespace windows_client.utils
 
         #endregion
 
-        private static void LoadReq(bool useWebClient)
+        private static void LoadReq()
         {
             if (Sources.Count > 0)
             {
                 ImageInfo imgInfo = Sources[0];
-                Sources.Remove(imgInfo);
+
+                if (imgInfo.UseWebClient)
+                    Sources.Remove(imgInfo);
+
                 Byte[] bytes = ReadFromIsolatedStorage(imgInfo);
 
                 if (bytes == null)
                 {
-                    Boolean isDownloadSuccessfullyPlaced = Download(imgInfo, useWebClient);
+                    Boolean isDownloadSuccessfullyPlaced = Download(imgInfo);
 
-                    if (!isDownloadSuccessfullyPlaced)
+                    if (!isDownloadSuccessfullyPlaced && imgInfo.UseWebClient)
                     {
                         // So need to wait for downloader. So add it back to the end of the queue
                         Sources.Add(imgInfo);
@@ -204,7 +208,7 @@ namespace windows_client.utils
         public static void Load(BitmapImage imageSource, Uri uri, Uri defaultImgUrl = null, String fileName = null, bool useWebClient = false)
         {
             imageSource.CreateOptions = BitmapCreateOptions.DelayCreation;
-            ImageInfo imgInfo = new ImageInfo(imageSource, uri, defaultImgUrl, fileName);
+            ImageInfo imgInfo = new ImageInfo(imageSource, uri, defaultImgUrl, useWebClient,fileName);
             Sources.Add(imgInfo);
 
             if (_loadWorker == null)
@@ -212,7 +216,7 @@ namespace windows_client.utils
                 _loadWorker = new System.ComponentModel.BackgroundWorker();
                 _loadWorker.DoWork += delegate
                 {
-                    LoadReq(useWebClient);
+                    LoadReq();
                 };
 
                 _loadWorker.RunWorkerCompleted += delegate
@@ -229,9 +233,9 @@ namespace windows_client.utils
                 _loadWorker.RunWorkerAsync();
         }
 
-        private static Boolean Download(ImageInfo imgInfo, bool useWebClient)
+        private static Boolean Download(ImageInfo imgInfo)
         {
-            if (useWebClient)
+            if (imgInfo.UseWebClient)
             {
                 if (_client.IsBusy)
                     return false;
