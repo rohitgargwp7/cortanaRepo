@@ -29,15 +29,22 @@
         <!--Camera viewfinder >-->
         <Rectangle 
             x:Name="viewfinderRectangle"
-            Width="640" 
+            Width="730" 
             Height="480" 
             HorizontalAlignment="Left" 
-            Margin="80,0,0,0"/>
+            Margin="0,0,0,0">
+            <Rectangle.Fill>
+                <VideoBrush x:Name="videoRecorderBrush" AlignmentX="Left" AlignmentY="Top" Stretch="UniformToFill">
+                    <VideoBrush.RelativeTransform>
+                        <CompositeTransform x:Name="viewfinderTransform" 
+                                            CenterX="0.5" CenterY="0.5"/>
+                    </VideoBrush.RelativeTransform>
+                </VideoBrush>
+            </Rectangle.Fill>
+        </Rectangle>
 
         <MediaElement 
             x:Name="VideoPlayer" 
-            Width="640" 
-            Height="480"
             AutoPlay="True" 
             RenderTransformOrigin="0.5, 0.5" 
             VerticalAlignment="Center" 
@@ -46,7 +53,7 @@
             Canvas.Left="80"/>
 
         <!--Used for debugging >-->
-        <StackPanel Orientation="Horizontal" Margin="90,12,12,12" VerticalAlignment="Bottom">
+        <StackPanel Orientation="Horizontal" Margin="12" VerticalAlignment="Bottom">
             <TextBlock 
             HorizontalAlignment="Left" 
             VerticalAlignment="Bottom"
@@ -63,7 +70,11 @@
         </StackPanel>
 
         <Grid x:Name="SettingsGrid" Canvas.ZIndex="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Collapsed">
-            <ListBox FontSize="40" x:Name="resolutionList" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionChanged="resolutionList_SelectionChanged"/>
+            <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource PhoneBackgroundBrush}"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ListBox FontSize="40" x:Name="resolutionList" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionChanged="resolutionList_SelectionChanged"/>
+                <ListBox FontSize="40" Margin="25,0,0,0" x:Name="cameraList" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionChanged="cameraList_SelectionChanged"/>
+            </StackPanel>
         </Grid>
         </Grid>
 </phone:PhoneApplicationPage>

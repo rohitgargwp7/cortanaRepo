@@ -30,7 +30,6 @@ namespace windows_client.View
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        private VideoBrush videoRecorderBrush;
         // Source and device for capturing video.
         private CaptureSource captureSource;
         private VideoCaptureDevice videoCaptureDevice;
@@ -48,7 +47,7 @@ namespace windows_client.View
         private enum ButtonState { Initialized, Ready, Recording, Playback, Paused, NoChange, CameraNotSupported, SettingMenu };
         private ButtonState currentAppState;
 
-
+        bool isPrimaryCam = true;
         private ApplicationBar appBar;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton doneIconButton = null;
@@ -133,13 +132,23 @@ namespace windows_client.View
         void doneIconButton_Click(object sender, EventArgs e)
         {
             SettingsGrid.Visibility = Visibility.Collapsed;
-            UpdateUI(ButtonState.Initialized);
+            if (runningSeconds <= 0)
+            {
+                UpdateUI(ButtonState.Initialized);
+                captureSource.Start();
+            }
+            else
+            {
+                addOrRemoveAppBarButton(sendIconButton, true);
+                UpdateUI(ButtonState.Ready);
+            }
         }
 
         void settingsButton_Click(object sender, EventArgs e)
         {
             UpdateUI(ButtonState.SettingMenu);
             SettingsGrid.Visibility = Visibility.Visible;
+            captureSource.Stop();
         }
 
         private void send_Click(object sender, EventArgs e)
@@ -152,7 +161,7 @@ namespace windows_client.View
         {
             if (isAdd)
             {
-                if (!this.appBar.Buttons.Contains(iconButton))
+                if (!this.appBar.Buttons.Contains(iconButton) && this.appBar.Buttons.Count < 4)
                     this.appBar.Buttons.Add(iconButton);
             }
             else
@@ -237,11 +246,11 @@ namespace windows_client.View
                         doneIconButton.IsEnabled = false;
 
                         addOrRemoveAppBarButton(doneIconButton, false);
-                        addOrRemoveAppBarButton(recordIconButton, true);
-                        addOrRemoveAppBarButton(settingIconButton, true);
                         addOrRemoveAppBarButton(stopIconButton, false);
                         addOrRemoveAppBarButton(playIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);
+                        addOrRemoveAppBarButton(recordIconButton, true);
+                        addOrRemoveAppBarButton(settingIconButton, true);
 
                         break;
 
@@ -255,11 +264,11 @@ namespace windows_client.View
                         doneIconButton.IsEnabled = false;
 
                         addOrRemoveAppBarButton(doneIconButton, false);
+                        addOrRemoveAppBarButton(stopIconButton, false);
+                        addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, true);
                         addOrRemoveAppBarButton(settingIconButton, true);
-                        addOrRemoveAppBarButton(stopIconButton, false);
                         addOrRemoveAppBarButton(playIconButton, true);
-                        addOrRemoveAppBarButton(pauseIconButton, false);
 
                         break;
 
@@ -275,9 +284,9 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(doneIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, false);
                         addOrRemoveAppBarButton(settingIconButton, false);
-                        addOrRemoveAppBarButton(stopIconButton, true);
                         addOrRemoveAppBarButton(playIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);
+                        addOrRemoveAppBarButton(stopIconButton, true);
 
                         break;
 
@@ -293,9 +302,9 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(doneIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, false);
                         addOrRemoveAppBarButton(settingIconButton, false);
-                        addOrRemoveAppBarButton(stopIconButton, true);
                         addOrRemoveAppBarButton(playIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, true);
+                        addOrRemoveAppBarButton(stopIconButton, true);
 
                         break;
 
@@ -310,10 +319,10 @@ namespace windows_client.View
 
                         addOrRemoveAppBarButton(doneIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, false);
+                        addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(settingIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, true);
                         addOrRemoveAppBarButton(playIconButton, true);
-                        addOrRemoveAppBarButton(pauseIconButton, false);
 
                         break;
 
@@ -325,12 +334,13 @@ namespace windows_client.View
                         pauseIconButton.IsEnabled = false;
                         doneIconButton.IsEnabled = true;
 
-                        addOrRemoveAppBarButton(doneIconButton, true);
+                        addOrRemoveAppBarButton(sendIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, false);
                         addOrRemoveAppBarButton(settingIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, false);
                         addOrRemoveAppBarButton(playIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);
+                        addOrRemoveAppBarButton(doneIconButton, true);
                         break;
                     default:
                         break;
@@ -362,10 +372,11 @@ namespace windows_client.View
                 // Create the VideoRecorder objects.
                 captureSource = new CaptureSource();
                 fileSink = new FileSink();
-                var devices = CaptureDeviceConfiguration.GetAvailableVideoCaptureDevices();
-                videoCaptureDevice = devices.First();
-                SetResolutionsItemSource();
 
+                SetCameraDevices();
+                SetResolutions();
+
+                captureSource.VideoCaptureDevice = videoCaptureDevice;
                 captureSource.CaptureImageCompleted += captureSource_CaptureImageCompleted;
                 // Add eventhandlers for captureSource.
                 captureSource.CaptureFailed += new EventHandler<ExceptionRoutedEventArgs>(OnCaptureFailed);
@@ -373,11 +384,7 @@ namespace windows_client.View
                 if (videoCaptureDevice != null)
                 {
                     // Create the VideoBrush for the viewfinder.
-                    videoRecorderBrush = new VideoBrush();
                     videoRecorderBrush.SetSource(captureSource);
-
-                    // Display the viewfinder image on the rectangle.
-                    viewfinderRectangle.Fill = videoRecorderBrush;
 
                     // Start video capture and display it on the viewfinder.
                     captureSource.Start();
@@ -393,20 +400,41 @@ namespace windows_client.View
             }
         }
 
-        private void SetResolutionsItemSource()
+        private void SetResolutions()
         {
-            List<String> res= new List<string>();
+            List<String> resList = new List<string>();
+
             foreach (var format in videoCaptureDevice.SupportedFormats)
                 if (format.PixelFormat == PixelFormatType.Format32bppArgb)
                 {
                     if (videoCaptureDevice.DesiredFormat == null)
                         videoCaptureDevice.DesiredFormat = format;
 
-                    res.Add(format.PixelHeight.ToString());
+                    resList.Add(format.PixelHeight.ToString());
                 }
 
-            resolutionList.ItemsSource = res;
-            resolutionList.SelectedItem = res.First();
+            resolutionList.ItemsSource = resList;
+            resolutionList.SelectedItem = resList.First();
+        }
+
+        private void SetCameraDevices()
+        {
+            List<String> camList = new List<string>();
+            var devices = CaptureDeviceConfiguration.GetAvailableVideoCaptureDevices();
+
+            foreach (var device in devices)
+            {
+                camList.Add(device.FriendlyName);
+
+                if (device.FriendlyName.Contains("Primary"))
+                {
+                    isPrimaryCam = true;
+                    videoCaptureDevice = device;
+                }
+            }
+
+            cameraList.ItemsSource = camList;
+            cameraList.SelectedItem = camList.Where(d => d.Contains("Primary")).First();
         }
 
 
@@ -505,9 +533,6 @@ namespace windows_client.View
                 {
                     // Add captureSource to videoBrush.
                     videoRecorderBrush.SetSource(captureSource);
-
-                    // Add videoBrush to the visual tree.
-                    viewfinderRectangle.Fill = videoRecorderBrush;
 
                     captureSource.Start();
 
@@ -668,7 +693,6 @@ namespace windows_client.View
                 captureSource = null;
                 videoCaptureDevice = null;
                 fileSink = null;
-                videoRecorderBrush = null;
             }
         }
 
@@ -692,8 +716,50 @@ namespace windows_client.View
 
         protected override void OnOrientationChanged(OrientationChangedEventArgs e)
         {
-            if (e.Orientation == PageOrientation.LandscapeLeft)
-                base.OnOrientationChanged(e);
+            if (isPrimaryCam)
+            {
+                if (e.Orientation == PageOrientation.LandscapeLeft)
+                    base.OnOrientationChanged(e);
+            }
+            else
+            {
+                if ((e.Orientation & PageOrientation.Portrait) == PageOrientation.Portrait)
+                {
+                   
+                }
+            }
+        }
+
+        private void cameraList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (SettingsGrid.Visibility == Visibility.Collapsed)
+                return;
+
+            var list = sender as ListBox;
+            if (list != null && list.SelectedItem != null)
+            {
+                var devices = CaptureDeviceConfiguration.GetAvailableVideoCaptureDevices();
+                var camName = list.SelectedItem as String;
+      
+                foreach (var device in devices)
+                {
+                    if (device.FriendlyName == camName)
+                    {
+                        if (camName.Contains("Primary"))
+                            isPrimaryCam = true;
+                        else
+                        {
+                            isPrimaryCam = false;
+                            viewfinderTransform.Rotation = 270;
+                        }
+                        
+                        videoCaptureDevice = device;
+                        break;
+                    }
+                }
+
+                SetResolutions();
+            }
         }
 
         private void resolutionList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -701,7 +767,6 @@ namespace windows_client.View
             if (SettingsGrid.Visibility == Visibility.Collapsed)
                 return;
 
-            UpdateUI(ButtonState.SettingMenu);
             var list = sender as ListBox;
             if (list != null && list.SelectedItem != null)
             {
@@ -709,19 +774,16 @@ namespace windows_client.View
                 var height = Convert.ToInt32(res);
 
                 VideoFormat newFormat = videoCaptureDevice.SupportedFormats.First();
+
                 foreach(var format in videoCaptureDevice.SupportedFormats)
                     if(format.PixelFormat == PixelFormatType.Format32bppArgb && format.PixelHeight == height)
                         newFormat = format;
 
                 videoCaptureDevice.DesiredFormat = newFormat;
 
-                videoRecorderBrush = new VideoBrush();
                 videoRecorderBrush.SetSource(captureSource);
 
-                viewfinderRectangle.Fill = videoRecorderBrush;
-
-                // Start video capture and display it on the viewfinder.
-                captureSource.Start();
+                captureSource.VideoCaptureDevice = videoCaptureDevice;
             }
         }
     }
