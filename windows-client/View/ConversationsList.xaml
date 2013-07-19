@@ -271,7 +271,7 @@
                                 <TextBlock x:Name="proTipTitleText" FontSize="22" Visibility="Collapsed" FontFamily="Segoe WP Semibold" TextWrapping="Wrap"/>
                                 <TextBlock Margin="0,0,0,5" x:Name="proTipContentText" FontSize="20" Visibility="Collapsed" TextWrapping="Wrap"/>
                                 <Image Margin="0,5" HorizontalAlignment="Left" Visibility="Collapsed" x:Name="proTipImage" Stretch="Uniform" MaxWidth="236" Tap="ProTipImage_Tapped"/>
-                                <Button Margin="-12,0,12,0" x:Name="dismissButton" Click="dismissProTip_Click" Background="#e9ecee" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Dismiss_Tip, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Foreground="#595959"/>
+                                <Button Margin="-12,0,12,0" x:Name="dismissButton" FontFamily="Segoe WP" Click="dismissProTip_Click" Background="#e9ecee" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Dismiss_Tip, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Foreground="#595959"/>
                             </StackPanel>
                         </Grid>
                     </Grid>
