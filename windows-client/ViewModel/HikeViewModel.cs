@@ -232,7 +232,10 @@ namespace windows_client.ViewModel
                     {
                         Geoposition currentPosition = await locationTask;
 
-                        var newCoordinate = new GeoCoordinate(currentPosition.Coordinate.Latitude, currentPosition.Coordinate.Longitude);
+                        var latitutde = Math.Round(currentPosition.Coordinate.Latitude, 6);
+                        var longitute = Math.Round(currentPosition.Coordinate.Longitude, 6);
+                        var newCoordinate = new GeoCoordinate(latitutde, longitute);
+                        
                         App.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, newCoordinate);
                     }
                     catch (Exception ex)

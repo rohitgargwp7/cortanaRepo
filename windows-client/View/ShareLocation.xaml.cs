@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Windows.Controls;
 using Windows.Foundation;
 using System.Web;
+using System.Globalization;
 
 namespace windows_client.View
 {
@@ -71,7 +72,7 @@ namespace windows_client.View
         void GetPlaces()
         {
             ShowProgressIndicator();
-            string url = string.Format("{0}?at={1},{2}&app_id={3}&app_code={4}&tf=plain&pretty=true", _nokiaPlacesUrl, _selectedCoordinate.Latitude, _selectedCoordinate.Longitude, HttpUtility.UrlEncode(_nokiaPlacesAppID), HttpUtility.UrlEncode(_nokiaPlacesAppCode));
+            string url = string.Format("{0}?at={1},{2}&app_id={3}&app_code={4}&tf=plain&pretty=true", _nokiaPlacesUrl, _selectedCoordinate.Latitude.ToString("0.000000", CultureInfo.InvariantCulture), _selectedCoordinate.Longitude.ToString("0.000000", CultureInfo.InvariantCulture), _nokiaPlacesAppID, _nokiaPlacesAppCode);
             AccountUtils.createNokiaPlacesGetRequest(url, new AccountUtils.postResponseFunction(PlacesResult_Callback));
         }
 
@@ -191,7 +192,7 @@ namespace windows_client.View
         private void DrawMapMarker(GeoCoordinate coordinate, MapLayer mapLayer)
         {
             // Create a map marker
-            Image polygon = new Image();
+            Image polygon = new Image() { MaxHeight = 42, MaxWidth = 42 };
 
             polygon.Source = UI_Utils.Instance.MyLocationPin;
 
@@ -209,7 +210,7 @@ namespace windows_client.View
         private void DrawMapMarker(Place place, MapLayer mapLayer)
         {
             // Create a map marker
-            Image polygon = new Image();
+            Image polygon = new Image() { MaxHeight = 42, MaxWidth = 42 };
 
             polygon.Source = place.PlaceImage;
 
@@ -242,6 +243,8 @@ namespace windows_client.View
 
             ShowProgressIndicator();
 
+            GeoCoordinate newCoordinate = null;
+
             _geolocator.DesiredAccuracyInMeters = 10;
             _geolocator.MovementThreshold = 5;
             _geolocator.DesiredAccuracy = PositionAccuracy.High;
@@ -255,11 +258,21 @@ namespace windows_client.View
                 if (_isMapTapped)
                     return;
 
-                var newCoordinate = new GeoCoordinate(currentPosition.Coordinate.Latitude, currentPosition.Coordinate.Longitude);
+                var latitutde = Math.Round(currentPosition.Coordinate.Latitude, 6);
+                var longitute = Math.Round(currentPosition.Coordinate.Longitude, 6);
+                newCoordinate = new GeoCoordinate(latitutde, longitute);
+                
+                _selectedCoordinate = newCoordinate;
 
-                _myCoordinate = newCoordinate;
-                _selectedCoordinate = _myCoordinate;
-
+                if (_myCoordinate != newCoordinate || _isMapTapped || _places == null)
+                {
+                    _myCoordinate = newCoordinate;
+                    _isMapTapped = false;
+                    GetPlaces();
+                }
+                else
+                    HideProgressIndicator();
+                
                 Dispatcher.BeginInvoke(() =>
                 {
                     shareIconButton.IsEnabled = true;
@@ -285,8 +298,6 @@ namespace windows_client.View
                 }
 
                 _isFetchingCurrentLocation = false;
-
-                HideProgressIndicator();
             }
         }
 
@@ -435,7 +446,7 @@ namespace windows_client.View
         void Search()
         {
             ShowProgressIndicator();
-            string url = string.Format("{0}?q={1}&at={2},{3}&app_id={4}&app_code={5}&tf=plain&pretty=true", _nokiaSeacrhUrl, HttpUtility.UrlEncode(_searchString), _selectedCoordinate.Latitude, _selectedCoordinate.Longitude, HttpUtility.UrlEncode(_nokiaPlacesAppID), HttpUtility.UrlEncode(_nokiaPlacesAppCode));
+            string url = string.Format("{0}?q={1}&at={2},{3}&app_id={4}&app_code={5}&tf=plain&pretty=true", _nokiaSeacrhUrl, HttpUtility.UrlEncode(_searchString), _selectedCoordinate.Latitude.ToString("0.000000", CultureInfo.InvariantCulture), _selectedCoordinate.Longitude.ToString("0.000000", CultureInfo.InvariantCulture), _nokiaPlacesAppID, _nokiaPlacesAppCode);
             AccountUtils.createNokiaPlacesGetRequest(url, new AccountUtils.postResponseFunction(PlacesResult_Callback));
         }
 
@@ -460,7 +471,6 @@ namespace windows_client.View
             shareIconButton.IsEnabled = false;
             _selectedPlace = null;
             _myPlace = null;
-            _isMapTapped = false;
             _isPlacesSearch = false;
             PlacesGrid.Visibility = Visibility.Collapsed;
             GetCurrentCoordinate();

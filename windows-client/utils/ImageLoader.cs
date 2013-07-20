@@ -199,7 +199,10 @@ namespace windows_client.utils
                     }
                 }
                 else
+                {
                     Deployment.Current.Dispatcher.BeginInvoke(new Action<ImageInfo, Byte[]>(SetImageSource), imgInfo, bytes);
+                    Sources.Remove(imgInfo);
+                }
             }
         }
 
