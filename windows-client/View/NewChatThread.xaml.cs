@@ -5712,6 +5712,31 @@ namespace windows_client.View
                 var indexToInsert = ocMessages.IndexOf(lastUnDeliveredMessage) + 1;
                 this.ocMessages.Insert(indexToInsert, tap2SendAsSMSMessage);
 
+                HikeToolTip tip;
+                App.ViewModel.DictInAppTip.TryGetValue(6, out tip);
+
+                if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                {
+                    _toolTipMessage = new ConvMessage();
+                    _toolTipMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP;
+                    _toolTipMessage.Message = tip.Tip;
+                    this.ocMessages.Insert(indexToInsert + 1, _toolTipMessage);
+                    _isStatusUpdateToolTipShown = true;
+
+                    tip.IsShown = true;
+                    tip.IsCurrentlyShown = true;
+
+                    byte marked;
+                    App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
+                    marked |= (byte)(1 << 4);
+                    App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
+
+                    byte currentShown;
+                    App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
+                    currentShown |= (byte)(1 << 4);
+                    App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
+                }
+
                 if (indexToInsert == ocMessages.Count - 1)
                     ScrollToBottom();
 
@@ -5806,9 +5831,14 @@ namespace windows_client.View
         private void TipDismiss_Tap(object sender, System.Windows.Input.GestureEventArgs e) // invoked for status update tooltip #4
         {
             if (_toolTipMessage != null)
+            {
                 this.ocMessages.Remove(_toolTipMessage);
 
-            App.ViewModel.HideToolTip(null, 4);
+                if (_toolTipMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
+                    App.ViewModel.HideToolTip(null, 6);
+                else
+                    App.ViewModel.HideToolTip(null, 4);
+            }
         }
 
         void UpdateLastSeenOnUI(string status, bool showTip = false)
@@ -5839,6 +5869,14 @@ namespace windows_client.View
                 {
                     if (_isSendAllAsSMSVisible)
                     {
+                        if (_toolTipMessage != null)
+                        {
+                            this.ocMessages.Remove(_toolTipMessage);
+
+                            if (_toolTipMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
+                                App.ViewModel.HideToolTip(null, 6);
+                        }
+
                         if (mCredits > 0)
                         {
                             var result = MessageBox.Show(AppResources.H2HOfline_Confirmation_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OKCancel);
@@ -5876,6 +5914,12 @@ namespace windows_client.View
         #region Properties
 
         public DataTemplate DtInAppTip
+        {
+            get;
+            set;
+        }
+
+        public DataTemplate DtH2HOfflineInAppTip
         {
             get;
             set;
@@ -6035,6 +6079,8 @@ namespace windows_client.View
                 }
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.IN_APP_TIP)
                     return DtInAppTip;
+                else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
+                    return DtH2HOfflineInAppTip;
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
                     return DtForceSMSNotification;
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)

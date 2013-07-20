@@ -1894,4 +1894,7 @@ Get hike: http://get.hike.in</value>
   <data name="ViewFullMessage_Txt" xml:space="preserve">
     <value>View full message</value>
   </data>
+  <data name="In_App_Tip_7" xml:space="preserve">
+    <value>Now you can send messages to people who are offline via Free Hike SMS. Isn't that great!</value>
+  </data>
 </root>

@@ -91,6 +91,28 @@
             <phone:LongListSelector.ItemTemplate>
                 <DataTemplate>
                     <view:ChatThreadTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
+                        <view:ChatThreadTemplateSelector.DtH2HOfflineInAppTip>
+                            <DataTemplate>
+                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24,-5,24,5" HorizontalAlignment="Stretch" Tap="TipDismiss_Tap">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="14"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Path x:Name="topBubblePointer" Opacity="0.95" Data="M0,0 L1,1 L-1,1" HorizontalAlignment="Left" Fill="{StaticResource PhoneForegroundBrush}" Stretch="Fill" UseLayoutRounding="False" Width="16" Margin="350,0,0,-1"/>
+                                    <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+                                        <Border Background="{StaticResource PhoneForegroundBrush}" Opacity="0.95"/>
+                                        <Grid VerticalAlignment="Center" Margin="15" HorizontalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock x:Name="tipText" Margin="0,3,5,5" Text="{Binding DispMessage}" TextWrapping="Wrap"  Foreground="{StaticResource PhoneBackgroundBrush}"/>
+                                            <Image Grid.Column="1" MaxHeight="35" Margin="0,0,0,0" x:Name="closeButtonImage" Source="{Binding CloseImage}" Stretch="Uniform" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </DataTemplate>
+                        </view:ChatThreadTemplateSelector.DtH2HOfflineInAppTip>
                         <view:ChatThreadTemplateSelector.DtInAppTip>
                             <DataTemplate>
                                 <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24,5,24,5" HorizontalAlignment="Stretch" Tap="TipDismiss_Tap">

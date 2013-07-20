@@ -82,7 +82,8 @@ namespace windows_client.Model
             TYPING_NOTIFICATION,
             STATUS_UPDATE,
             IN_APP_TIP,
-            FORCE_SMS_NOTIFICATION
+            FORCE_SMS_NOTIFICATION,
+            H2H_OFFLINE_IN_APP_TIP
         }
 
         public enum MessageType
