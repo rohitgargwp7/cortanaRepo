@@ -537,6 +537,7 @@
     <Content Include="View\images\emoticons\shakti4.png" />
     <Content Include="View\images\emoticons\tandoori4.png" />
     <Content Include="View\images\emoticons\thulla4.png" />
+    <Content Include="View\images\icon_direction.png" />
     <Content Include="View\images\indianemoticon.jpg" />
     <Content Include="View\images\moods\24Music.png" />
     <Content Include="View\images\moods\25PartyingHard.png" />
@@ -546,7 +547,6 @@
     <Content Include="View\images\moods\28WorkingOut.png" />
     <Content Include="View\images\moods\29Cooking.png" />
     <Content Include="View\images\moods\30BeautySaloon.png" />
-    <Content Include="View\images\route.png" />
     <Content Include="View\images\doggy_icon.png" />
     <Content Include="View\images\doggy_i_icon.png" />
     <Content Include="View\images\doggy_overlay.png" />
@@ -621,17 +621,20 @@
     <Content Include="View\images\moods\22Sleepy.png" />
     <Content Include="View\images\moods\23Hungover.png" />
     <Content Include="View\images\moods_status_icon.png" />
+    <Content Include="View\images\mute_icon_main_g.png" />
+    <Content Include="View\images\mute_icon_main_l.png" />
     <Content Include="View\images\MyLocation.png" />
     <Content Include="View\images\notification_read.png" />
     <Content Include="View\images\notification_unread.png" />
     <Content Include="View\images\pause_icon.png" />
-    <Content Include="View\images\places.png" />
+    <Content Include="View\images\places_icon.png" />
     <Content Include="View\images\profile_header_stock.png" />
     <Content Include="View\images\profile_header_stock_dark.png" />
     <Content Include="View\images\refresh_bar_arrow.png" />
     <Content Include="View\images\remove_wt_icon.png" />
     <Content Include="View\images\rf_icon.png" />
     <Content Include="View\images\rf_i_icon.png" />
+    <Content Include="View\images\search_icon.png" />
     <Content Include="View\images\settings_icon_dark.png" />
     <Content Include="View\images\settings_icon_white.png" />
     <Content Include="View\images\close_white.png" />
@@ -672,6 +675,8 @@
     <Content Include="View\images\twitter_status.png" />
     <Content Include="View\images\twitter_status_disabled.png" />
     <Content Include="View\images\unmutedicon.png" />
+    <Content Include="View\images\unmute_icon_main_g.png" />
+    <Content Include="View\images\unmute_icon_main_l.png" />
     <Content Include="View\images\user_invite.png" />
     <Content Include="View\images\user_invite_white.png" />
     <Content Include="View\images\user_lock.png" />

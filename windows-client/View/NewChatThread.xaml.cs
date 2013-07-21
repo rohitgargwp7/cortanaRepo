@@ -4241,10 +4241,11 @@ namespace windows_client.View
                 string locationMessage = String.Empty;
                 string fileName = fileData[HikeConstants.FILE_NAME].ToString();
 
-                if (!String.IsNullOrEmpty(vicinity))
-                    fileName += ", " + vicinity;
-
                 locationMessage = fileName;
+
+                if (!String.IsNullOrEmpty(vicinity))
+                    locationMessage += ", " + vicinity;
+
 
                 ConvMessage convMessage = new ConvMessage(locationMessage, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation)
                 {

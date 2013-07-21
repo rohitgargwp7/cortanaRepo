@@ -1303,6 +1303,7 @@ namespace windows_client.Model
                 JObject metadataObject = null;
                 JToken val = null;
                 obj.TryGetValue(HikeConstants.TO, out val);
+                string messageText = "";
 
                 JToken metadataToken = null;
                 try
@@ -1341,7 +1342,7 @@ namespace windows_client.Model
                         
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
-                            this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
+                            this.FileAttachment = new Attachment(fileName == null ? AppResources.Location_Txt : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
                         contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
 
                             JObject locationFile = new JObject();
@@ -1350,6 +1351,8 @@ namespace windows_client.Model
                             locationFile[HikeConstants.ZOOM_LEVEL] = fileObject[HikeConstants.ZOOM_LEVEL];
                             locationFile[HikeConstants.LOCATION_ADDRESS] = fileObject[HikeConstants.LOCATION_ADDRESS];
                             this.MetaDataString = locationFile.ToString(Newtonsoft.Json.Formatting.None);
+
+                            messageText = fileObject[HikeConstants.LOCATION_ADDRESS].ToString();
                         }
                         else
                         {
@@ -1393,7 +1396,6 @@ namespace windows_client.Model
                     _isSms = false;
                     if (this.HasAttachment)
                     {
-                        string messageText = "";
                         if (this.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                             messageText = AppResources.Image_Txt;
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
@@ -1401,7 +1403,12 @@ namespace windows_client.Model
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
                             messageText = AppResources.Video_Txt;
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                            messageText = this.FileAttachment.FileName;
+                        {
+                            if (String.IsNullOrEmpty(messageText))
+                                messageText = this.FileAttachment.FileName;
+                            else
+                                messageText = this.FileAttachment.FileName + ", " + messageText;
+                        }
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                             messageText = AppResources.ContactTransfer_Text;
                         this._message = messageText;
