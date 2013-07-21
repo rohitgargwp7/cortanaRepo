@@ -849,7 +849,7 @@ namespace windows_client.View
                     GroupManager.Instance.LoadGroupParticipants(obj.Msisdn);
                     isGroupChat = true;
                     BlockTxtBlk.Text = AppResources.SelectUser_BlockedGroupMsg_Txt;
-                    gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
+                    gi = GroupTableUtils.getGroupInfoForId(obj.Msisdn);
                     if (gi != null)
                         groupOwner = gi.GroupOwner;
                     if (gi != null && !gi.GroupAlive)
