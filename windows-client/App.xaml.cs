@@ -110,8 +110,6 @@ namespace windows_client
 
         #region PROPERTIES
 
-        public static bool Is24HourTimeFormat { get; private set; }
-
         public static PageState PageStateVal
         {
             get
@@ -338,8 +336,6 @@ namespace windows_client
             }
 
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
-
-            Is24HourTimeFormat = System.Globalization.DateTimeFormatInfo.CurrentInfo.LongTimePattern.Contains("H") ? true : false;
         }
 
         // Code to execute when the application is launching (eg, from Start)

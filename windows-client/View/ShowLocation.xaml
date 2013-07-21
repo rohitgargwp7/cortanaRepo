@@ -35,7 +35,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Image Source="{Binding DirectionImage}"/>
+                    <Image Source="{Binding DirectionImage}" Margin="12,0"/>
                     <TextBlock Grid.Column="1" Text="{Binding Instruction}" FontSize="{StaticResource PhoneFontSizeMedium}" TextWrapping="Wrap" Margin="5"/>
                 </Grid>
             </Grid>

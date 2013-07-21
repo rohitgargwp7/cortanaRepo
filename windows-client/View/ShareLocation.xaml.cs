@@ -96,7 +96,7 @@ namespace windows_client.View
                     try
                     {
                         JToken jToken = obj[HikeConstants.NokiaHere.SEARCH][HikeConstants.NokiaHere.CONTEXT][HikeConstants.NokiaHere.LOCATION][HikeConstants.NokiaHere.ADDRESS];
-                        _myPlaceVicinity = jToken[HikeConstants.NokiaHere.TEXT].ToString(Newtonsoft.Json.Formatting.None).Replace("\n", ", ");
+                        _myPlaceVicinity = jToken[HikeConstants.NokiaHere.TEXT].ToString().Replace("\n", ", ");
                     }
                     catch
                     {
@@ -528,7 +528,12 @@ namespace windows_client.View
                 }
             }
             else
+            {
                 _isLocationEnabled = true;
+
+                if (e.NavigationMode != System.Windows.Navigation.NavigationMode.New && _myCoordinate == null && !App.IS_TOMBSTONED)
+                    GetCurrentCoordinate();
+            }
 
             if (!_isLocationEnabled)
                 return;
