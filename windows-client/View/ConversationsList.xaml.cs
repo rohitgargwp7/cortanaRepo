@@ -163,7 +163,6 @@ namespace windows_client.View
             {
                 emptyScreenImage.Opacity = 0;
                 emptyScreenTip.Opacity = 0;
-                llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
             }
 
             App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
