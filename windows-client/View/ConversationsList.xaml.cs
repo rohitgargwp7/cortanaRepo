@@ -113,7 +113,7 @@ namespace windows_client.View
             this.llsConversations.SelectedItem = null;
             this.favourites.SelectedIndex = -1;
             this.hikeContactListBox.SelectedIndex = -1;
-            this.statusLLS.SelectedIndex = -1;
+            this.statusLLS.SelectedItem = null;
 
             App.IS_TOMBSTONED = false;
             App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
@@ -819,12 +819,13 @@ namespace windows_client.View
                             }
                         }
                         this.statusLLS.ItemsSource = App.ViewModel.StatusList;
-                        if (App.ViewModel.StatusList.Count == 0)
+                        if (App.ViewModel.StatusList.Count == 1 && App.ViewModel.StatusList[0].ProTip != null)
                         {
-                            emptyStatusPlaceHolder.Visibility = Visibility.Visible;
-                            string firstName = Utils.GetFirstName(accountName.Text);
-                            txtEmptyStatusFriendBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName);
-                            statusLLS.Visibility = Visibility.Collapsed;
+                            App.ViewModel.StatusList.Add(new StatusUpdateBox() { isDummy = true });
+                            //emptyStatusPlaceHolder.Visibility = Visibility.Visible;
+                            //string firstName = Utils.GetFirstName(accountName.Text);
+                            //txtEmptyStatusFriendBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName);
+                            //statusLLS.Visibility = Visibility.Collapsed;
                         }
                         RefreshBarCount = 0;
                         UnreadFriendRequests = 0;
@@ -2185,7 +2186,7 @@ namespace windows_client.View
                 emptyStatusPlaceHolder.Visibility = Visibility.Collapsed;
                 statusLLS.Visibility = Visibility.Visible;
             }
-            statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount]);
+            statusLLS.ScrollTo(App.ViewModel.StatusList[pendingCount]);
             RefreshBarCount = 0;
         }
         private void postStatusBtn_Click(object sender, EventArgs e)
@@ -2291,13 +2292,13 @@ namespace windows_client.View
                 {
                     int x = pendingCount - UnreadFriendRequests;
                     if (x >= 0 && App.ViewModel.StatusList.Count > x)
-                        statusLLS.ScrollIntoView(App.ViewModel.StatusList[x]); //handling index out of bounds exception
+                        statusLLS.ScrollTo(App.ViewModel.StatusList[x]); //handling index out of bounds exception
                 }
                 //scroll to latest unread status
                 else if ((App.ViewModel.StatusList.Count > pendingCount) && RefreshBarCount > 0
                     && App.ViewModel.StatusList.Count > pendingCount) //handling index out of bounds exception
                 {
-                    statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount]);
+                    statusLLS.ScrollTo(App.ViewModel.StatusList[pendingCount]);
                 }
             }
         }
@@ -2386,8 +2387,10 @@ namespace windows_client.View
 
         private void dismissProTip_Click(object sender, RoutedEventArgs e)
         {
-            proTipImage.Visibility = Visibility.Collapsed;
-            proTipsGrid.Visibility = Visibility.Collapsed;
+            //proTipImage.Visibility = Visibility.Collapsed;
+            //proTipsGrid.Visibility = Visibility.Collapsed;
+            App.ViewModel.StatusList.RemoveAt(0);
+
             ProTipCount = 0;
 
             JObject proTipAnalyticsJson = new JObject();
@@ -2429,27 +2432,28 @@ namespace windows_client.View
 
             if (proTip != null)
             {
-                if (!String.IsNullOrEmpty(proTip._header))
-                {
-                    proTipTitleText.Visibility = Visibility.Visible;
-                    proTipTitleText.Text = proTip._header;
-                }
+                App.ViewModel.StatusList.Insert(0, new StatusUpdateBox() { ProTip = proTip });
+                //if (!String.IsNullOrEmpty(proTip._header))
+                //{
+                //    proTipTitleText.Visibility = Visibility.Visible;
+                //    proTipTitleText.Text = proTip._header;
+                //}
 
-                if (!String.IsNullOrEmpty(proTip._body))
-                {
-                    proTipContentText.Visibility = Visibility.Visible;
-                    proTipContentText.Text = proTip._body;
-                }
+                //if (!String.IsNullOrEmpty(proTip._body))
+                //{
+                //    proTipContentText.Visibility = Visibility.Visible;
+                //    proTipContentText.Text = proTip._body;
+                //}
 
-                if (!String.IsNullOrEmpty(proTip.ImageUrl))
-                {
-                    Binding myBinding = new Binding();
-                    myBinding.Source = proTip.TipImage;
-                    proTipImage.SetBinding(Image.SourceProperty, myBinding);
-                    proTipImage.Visibility = Visibility.Visible;
-                }
+                //if (!String.IsNullOrEmpty(proTip.ImageUrl))
+                //{
+                //    Binding myBinding = new Binding();
+                //    myBinding.Source = proTip.TipImage;
+                //    proTipImage.SetBinding(Image.SourceProperty, myBinding);
+                //    proTipImage.Visibility = Visibility.Visible;
+                //}
 
-                proTipsGrid.Visibility = Visibility.Visible;
+                //proTipsGrid.Visibility = Visibility.Visible;
 
                 ProTipCount = 1;
             }
@@ -2462,6 +2466,48 @@ namespace windows_client.View
         }
 
         #endregion
+    }
 
+    public class TimeLineTemplateSelector : TemplateSelector
+    {
+        public DataTemplate StatusUpdate
+        {
+            get;
+            set;
+        }
+
+        public DataTemplate ProTip
+        {
+            get;
+            set;
+        }
+
+        public DataTemplate EmptyStatus
+        {
+            get;
+            set;
+        }
+
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            // Determine which template to return;
+            var stUpdate = item as StatusUpdateBox;
+            if (App.ViewModel.ConversationListPage != null)
+            {
+                if (stUpdate != null)
+                {
+                    if (stUpdate.ProTip != null)
+                        return ProTip;
+                    else if (stUpdate.isDummy == true)
+                        return EmptyStatus;
+                    else
+                        return StatusUpdate;
+                }
+                else
+                    return (new DataTemplate());
+            }
+
+            return (new DataTemplate());
+        }
     }
 }

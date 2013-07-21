@@ -142,5 +142,8 @@ namespace windows_client.Controls.StatusUpdate
                 return false;
             return this._serverId.Equals(otherSb._serverId);
         }
+
+        public bool isDummy = false;
+        public ProTip ProTip { get; set; }
     }
 }
