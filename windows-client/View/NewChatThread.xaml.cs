@@ -109,7 +109,7 @@ namespace windows_client.View
         private CameraCaptureTask cameraCaptureTask;
         private BingMapsTask bingMapsTask = null;
         private object statusObject = null;
-
+        private int _unreadMessageCounter = 0;
 
         private LastSeenHelper _lastSeenHelper;
         DispatcherTimer _forceSMSTimer;
@@ -3697,11 +3697,16 @@ namespace windows_client.View
                             userImage.Source = App.ViewModel.ConvMap[convMessage.Msisdn].AvatarImage;
 
                         AddNewMessageToUI(convMessage, false, true);
+                        ShowJumpToBottom(true);
+
                         if (vals.Length == 3)
                         {
                             ConvMessage cm = (ConvMessage)vals[2];
                             if (cm != null)
+                            {
                                 AddNewMessageToUI(cm, false, true);
+                                ShowJumpToBottom(true);
+                            }
                         }
                     });
                 }
@@ -4646,7 +4651,8 @@ namespace windows_client.View
             {
                 if (e.ItemKind == LongListSelectorItemKind.Item)
                 {
-                    if ((e.Container.Content as ConvMessage).Equals(llsMessages.ItemsSource[0]) && hasMoreMessages)
+                    ConvMessage convMessage = e.Container.Content as ConvMessage;
+                    if (convMessage.Equals(llsMessages.ItemsSource[0]) && hasMoreMessages)
                     {
                         BackgroundWorker bw = new BackgroundWorker();
                         bw.DoWork += (s1, ev1) =>
@@ -4661,15 +4667,57 @@ namespace windows_client.View
                                 shellProgress.IsVisible = false;
                             });
                         };
-
-                        JumpToBottomGrid.Visibility = Visibility.Visible;
                     }
-                    else if ((llsMessages.ItemsSource.Contains(e.Container.Content as ConvMessage) && llsMessages.ItemsSource.IndexOf(e.Container.Content as ConvMessage) < llsMessages.ItemsSource.Count - INITIAL_FETCH_COUNT) ||  ((e.Container.Content as ConvMessage).Equals(llsMessages.ItemsSource[llsMessages.ItemsSource.Count - 1]) && !(e.Container.Content as ConvMessage).IsSent))
-                        JumpToBottomGrid.Visibility = Visibility.Visible;
+
                 }
             }
+        }
 
-            viewportChanged = true;
+        ScrollBar vScrollBar = null;
+        private void vScrollBar1_ValueChanged(Object sender, EventArgs e)
+        {
+            vScrollBar = sender as ScrollBar;
+            if (vScrollBar != null)
+            {
+                if ((vScrollBar.Maximum - vScrollBar.Value) < 100)
+                {
+                    JumpToBottomGrid.Visibility = Visibility.Collapsed;
+                    _unreadMessageCounter = 0;
+                }
+            }
+        }
+
+        private void JumpToBottom_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ScrollToBottom();
+            JumpToBottomGrid.Visibility = Visibility.Collapsed;
+            _unreadMessageCounter = 0;
+        }
+
+        private void llsMessages_ItemUnRealized(object sender, ItemRealizationEventArgs e)
+        {
+            if (isMessageLoaded && llsMessages.ItemsSource != null && llsMessages.ItemsSource.Count > 0)
+            {
+                if (e.ItemKind == LongListSelectorItemKind.Item)
+                {
+                    ConvMessage convMessage = e.Container.Content as ConvMessage;
+                    if (convMessage.Equals(llsMessages.ItemsSource[llsMessages.ItemsSource.Count - 1]))
+                    {
+                        ShowJumpToBottom(false);
+                    }
+                }
+            }
+        }
+
+        private void ShowJumpToBottom(bool increaseUnreadCounter)
+        {
+            if (vScrollBar != null && (ocMessages != null && ocMessages.Count > 6))
+            {
+                if (increaseUnreadCounter)
+                    _unreadMessageCounter += 1;
+                JumpToBottomGrid.Visibility = Visibility.Visible;
+                txtJumpToBttom.Text = _unreadMessageCounter > 0 ? string.Format("{0} new message", _unreadMessageCounter) : "Jump to bottom";
+            }
         }
 
         #region Stickers
@@ -5818,56 +5866,8 @@ namespace windows_client.View
             }
         }
 
-        private void JumpToBottom_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            ScrollToBottom();
-            JumpToBottomGrid.Visibility = Visibility.Collapsed;
-        }
 
-        bool viewportChanged = false;
-        bool isMoving = false;
-        double manipulationStart = 0;
-        double manipulationEnd = 0;
 
-        void listbox_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            var pos = e.GetPosition(null);
-
-            if (!isMoving)
-                manipulationStart = pos.Y;
-            else
-                manipulationEnd = pos.Y;
-
-            isMoving = true;
-        }
-
-        void listbox_ManipulationStateChanged(object sender, EventArgs e)
-        {
-            if (llsMessages.ManipulationState == ManipulationState.Idle)
-            {
-                isMoving = false;
-                viewportChanged = false;
-            }
-            else if (llsMessages.ManipulationState == ManipulationState.Manipulating)
-            {
-                viewportChanged = false;
-            }
-            else if (llsMessages.ManipulationState == ManipulationState.Animating)
-            {
-                var total = manipulationStart - manipulationEnd;
-
-                if (!viewportChanged)
-                {
-                    if (total < 0)
-                        JumpToBottomGrid.Visibility = Visibility.Collapsed;
-                }
-            }
-        }
-
-        private void llsMessages_ItemUnRealized(object sender, ItemRealizationEventArgs e)
-        {
-            viewportChanged = true;
-        }
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector

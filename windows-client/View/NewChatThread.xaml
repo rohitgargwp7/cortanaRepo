@@ -28,7 +28,13 @@
                     <ControlTemplate TargetType="phone:LongListSelector">
                         <Grid Background="{TemplateBinding Background}" d:DesignWidth="480" d:DesignHeight="800">
                             <Grid Margin="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
                                 <ViewportControl x:Name="ViewportControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom"/>
+                                <ScrollBar x:Name="VerticalScrollBar" Grid.Column="1" Opacity="1" Margin="4 0 4 0" Orientation="Vertical"  ValueChanged="vScrollBar1_ValueChanged"  />
+                                    
                             </Grid>
                         </Grid>
                     </ControlTemplate>
@@ -76,7 +82,7 @@
                     </Grid.ColumnDefinitions>
                     <Image Name="userImage" Height="55" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     <StackPanel Margin="18,-2,0,0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-                        <TextBlock x:Name="userName" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="50" VerticalAlignment="Top" Margin="0,-10,0,0"/>
+                        <TextBlock x:Name="userName"  FontFamily="Segoe WP SemiLight" FontSize="50" VerticalAlignment="Top" Margin="0,-10,0,0"/>
                         <StackPanel Margin="2,-5,0,0" Orientation="Horizontal" VerticalAlignment="Top" x:Name="lastSeenPannel" Visibility="Collapsed">
                             <Image x:Name="onlineStatus" MaxHeight="15" MaxWidth="15" Margin="0,0,5,0" Visibility="Collapsed"/>
                             <TextBlock x:Name="lastSeenTxt" Text="" FontSize="18"/>
@@ -89,7 +95,7 @@
         <Grid Grid.Row="1">
 
             <!--(-15) margin to hide vertical scroll bar  -->
-            <phone:LongListSelector Name="llsMessages" ItemRealized="llsMessages_ItemRealized" SelectionChanged="ChatMessageSelected" DoubleTap="MessageList_DoubleTap" HorizontalContentAlignment="Stretch">
+            <phone:LongListSelector Name="llsMessages" ItemRealized="llsMessages_ItemRealized" ItemUnrealized="llsMessages_ItemUnRealized" SelectionChanged="ChatMessageSelected" DoubleTap="MessageList_DoubleTap" HorizontalContentAlignment="Stretch">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <view:ChatThreadTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
@@ -738,7 +744,7 @@
 
             <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" x:Name="JumpToBottomGrid" Tap="JumpToBottom_Tapped" Canvas.ZIndex="3" Visibility="Collapsed">
                 <Border Background="{StaticResource PhoneForegroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                <TextBlock Text="Jump to bottom" Foreground="{StaticResource PhoneBackgroundBrush}" Margin="10" HorizontalAlignment="Center"/>
+                <TextBlock Name="txtJumpToBttom" Text="Jump to bottom" Foreground="{StaticResource PhoneBackgroundBrush}" Margin="10" HorizontalAlignment="Center"/>
             </Grid>
         </Grid>
         
