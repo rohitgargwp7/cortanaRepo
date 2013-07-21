@@ -1436,7 +1436,6 @@ namespace windows_client.View
                 if (count % 5 == 0)
                     Thread.Sleep(5);
                 messagesList[i].IsSms = !isOnHike;
-
                 #region PERCEPTION FIX ZONE
 
                 // perception fix is only used for msgs of normal type in which SDR applies
@@ -2348,6 +2347,7 @@ namespace windows_client.View
                         }
                     }
                     chatBubble.IsSms = !isOnHike;
+                    chatBubble.CurrentOrientation = this.Orientation;
                     this.ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
