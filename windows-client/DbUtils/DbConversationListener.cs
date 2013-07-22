@@ -150,14 +150,7 @@ namespace windows_client.DbUtils
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    addSentMessageToMsgMap(convMessage);
-
-                    if (App.ViewModel.MessageListPageCollection.Contains(convObj))//cannot use convMap here because object has pushed to map but not to ui
-                    {
-                        App.ViewModel.MessageListPageCollection.Remove(convObj);
-                    }
-
-                    App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                    UpdateConvListForSentMessage(convMessage, convObj);
 
                     if (!isNewGroup)
                         mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));
@@ -178,14 +171,8 @@ namespace windows_client.DbUtils
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    addSentMessageToMsgMap(convMessage);
+                    UpdateConvListForSentMessage(convMessage, convObj);
 
-                    if (App.ViewModel.MessageListPageCollection.Contains(convObj))//cannot use convMap here because object has pushed to map but not to ui
-                    {
-                        App.ViewModel.MessageListPageCollection.Remove(convObj);
-                    }
-
-                    App.ViewModel.MessageListPageCollection.Insert(0, convObj);
                     MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId, convMessage);
                     convMessage.SetAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
@@ -223,12 +210,7 @@ namespace windows_client.DbUtils
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    addSentMessageToMsgMap(convMessage);
-                    if (App.ViewModel.MessageListPageCollection.Contains(convObj))
-                    {
-                        App.ViewModel.MessageListPageCollection.Remove(convObj);
-                    }
-                    App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                    UpdateConvListForSentMessage(convMessage, convObj);
                     //send attachment message (new attachment - upload case)
                     MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId, convMessage);
                     convMessage.SetAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
@@ -399,6 +381,22 @@ namespace windows_client.DbUtils
                 StatusMessage sm = obj as StatusMessage;
                 StatusMsgsTable.InsertStatusMsg(sm, false);
             }
+        }
+
+        private void UpdateConvListForSentMessage(ConvMessage convMessage, ConversationListObject convObj)
+        {
+            if (convObj == null)
+                return;
+            addSentMessageToMsgMap(convMessage);
+
+            if (App.ViewModel.MessageListPageCollection.Contains(convObj))//cannot use convMap here because object has pushed to map but not to ui
+            {
+                App.ViewModel.MessageListPageCollection.Remove(convObj);
+            }
+
+            App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+            if (App.ViewModel.ConversationListPage != null)
+                App.ViewModel.ConversationListPage.ConversationListUpdated = true;
         }
 
         private JObject blockUnblockSerialize(string type, string msisdn)

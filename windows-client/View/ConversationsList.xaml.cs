@@ -48,6 +48,13 @@ namespace windows_client.View
         //ApplicationBarIconButton addFriendIconButton;
         private bool isStatusUpdatesMute;
         private bool isStatusMessagesLoaded = false;
+
+        public bool ConversationListUpdated
+        {
+            get;
+            set;
+        }
+        
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
         #endregion
         #region Page Based Functions
@@ -163,6 +170,11 @@ namespace windows_client.View
             {
                 emptyScreenImage.Opacity = 0;
                 emptyScreenTip.Opacity = 0;
+                if (ConversationListUpdated)
+                {
+                    llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
+                    ConversationListUpdated = false;
+                }
             }
 
             App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
