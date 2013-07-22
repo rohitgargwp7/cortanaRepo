@@ -4745,21 +4745,14 @@ namespace windows_client.View
         Thickness zeroThickness = new Thickness(0, 0, 0, 0);
         Thickness newCategoryThickness = new Thickness(0, 1, 0, 0);
 
-
-        private void Stickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        public void SendSticker(Sticker sticker)
         {
-            ListBox llsStickerCategory = (sender as ListBox);
-            Sticker sticker = llsStickerCategory.SelectedItem as Sticker;
-            llsStickerCategory.SelectedItem = null;
-            if (sticker == null)
-                return;
-
             ConvMessage conv = new ConvMessage(AppResources.Sticker_Txt, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
             conv.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
             conv.StickerObj = new Sticker(sticker.Category, sticker.Id, null);
             conv.MetaDataString = string.Format("{{{0}:'{1}',{2}:'{3}'}}", HikeConstants.STICKER_ID, sticker.Id, HikeConstants.CATEGORY_ID, sticker.Category);
             //Stickers_tap is binded to pivot and cached so to update latest object this is done
-            App.newChatThreadPage.AddNewMessageToUI(conv, false);
+            AddNewMessageToUI(conv, false);
 
             mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
         }
@@ -5253,7 +5246,7 @@ namespace windows_client.View
         }
         private void CreateStickerPivot()
         {
-            StickerPivotHelper.Instance.InitialiseStickerPivot(Stickers_Tap);
+            StickerPivotHelper.Instance.InitialiseStickerPivot();
             pivotStickers = StickerPivotHelper.Instance.StickerPivot;
             pivotStickers.SelectionChanged += PivotStickers_SelectionChanged;
             pivotStickers.Height = 240;
