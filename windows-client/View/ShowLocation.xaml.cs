@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using windows_client.Languages;
 using Windows.Foundation;
 using windows_client.utils;
+using System.Globalization;
 
 namespace windows_client.View
 {
@@ -280,10 +281,10 @@ namespace windows_client.View
                 if (MyRoute.LengthInMeters > 1000)
                 {
                     distance /= 1000;
-                    distanceDestination.Text = String.Format(AppResources.Kilometer_Abbreviation, distance.ToString("0.0"));
+                    distanceDestination.Text = String.Format(AppResources.Kilometer_Abbreviation, distance.ToString("0.0", CultureInfo.InvariantCulture));
                 }
                 else
-                    distanceDestination.Text = String.Format(AppResources.Meter_Abbreviation, distance.ToString("0.0"));
+                    distanceDestination.Text = String.Format(AppResources.Meter_Abbreviation, distance.ToString("0.0", CultureInfo.InvariantCulture));
 
                 List<Direction> routeInstructions = new List<Direction>();
                 
@@ -305,10 +306,10 @@ namespace windows_client.View
                             if (distance > 1000)
                             {
                                 distance = distance / 1000;
-                                direction.Distance = String.Format(AppResources.Kilometer_Abbreviation, distance.ToString("0.0"));
+                                direction.Distance = String.Format(AppResources.Kilometer_Abbreviation, distance.ToString("0.0", CultureInfo.InvariantCulture));
                             }
                             else
-                                direction.Distance = String.Format(AppResources.Meter_Abbreviation, distance.ToString("0.0"));
+                                direction.Distance = String.Format(AppResources.Meter_Abbreviation, distance.ToString("0.0", CultureInfo.InvariantCulture));
                             
                         }
 
