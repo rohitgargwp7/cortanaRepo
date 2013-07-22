@@ -92,7 +92,7 @@ namespace windows_client.View
         private long lastTypingNotificationShownTime;
 
         private HikePubSub mPubSub;
-        private IScheduler scheduler = Scheduler.NewThread;
+        public IScheduler scheduler = Scheduler.NewThread;
         private ConvMessage convTypingNotification;
         ContactInfo contactInfo = null; // this will be used if someone adds an unknown number to addressbook
         private byte[] avatar;
@@ -1483,7 +1483,7 @@ namespace windows_client.View
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    AddMessageToOcMessages(cm, true);
+                    AddMessageToOcMessages(cm, true, true);
                 });
             }
 
@@ -2274,7 +2274,7 @@ namespace windows_client.View
       * If readFromDB is true & message state is SENT_UNCONFIRMED, then trying image is set else 
       * it is scheduled
       */
-        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop)
+        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool readFromDb = false)
         {
             if (_isSendAllAsSMSVisible && ocMessages != null && convMessage.IsSent)
             {
@@ -2357,7 +2357,8 @@ namespace windows_client.View
                             }
                         }
                     }
-                    ScheduleMsg(chatBubble);
+                    if (!readFromDb)
+                        ScheduleMsg(chatBubble);
                     chatBubble.IsSms = !isOnHike;
                     chatBubble.CurrentOrientation = this.Orientation;
                     this.ocMessages.Insert(insertPosition, chatBubble);
@@ -2762,14 +2763,14 @@ namespace windows_client.View
 
         private void ScheduleMsg(ConvMessage convMessage)
         {
-            if (convMessage != null && convMessage.IsSent && convMessage.MessageStatus == ConvMessage.State.SENT_UNCONFIRMED )
+            if (convMessage != null && convMessage.IsSent && convMessage.MessageStatus == ConvMessage.State.SENT_UNCONFIRMED)
             {
                 convMessage.SdrImageVisibility = Visibility.Collapsed;
                 scheduler.Schedule(convMessage.UpdateVisibilitySdrImage, TimeSpan.FromSeconds(1));
             }
         }
-         
-       
+
+
         #endregion
 
         #region PAGE EVENTS
