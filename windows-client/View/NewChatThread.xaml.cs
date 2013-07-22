@@ -2357,6 +2357,7 @@ namespace windows_client.View
                             }
                         }
                     }
+                    ScheduleMsg(chatBubble);
                     chatBubble.IsSms = !isOnHike;
                     chatBubble.CurrentOrientation = this.Orientation;
                     this.ocMessages.Insert(insertPosition, chatBubble);
@@ -2758,6 +2759,17 @@ namespace windows_client.View
                 Debug.WriteLine("NewChatThread :: inviteUserBtn_Click : Exception Occored:{0}", ex.StackTrace);
             }
         }
+
+        private void ScheduleMsg(ConvMessage convMessage)
+        {
+            if (convMessage != null && convMessage.IsSent && convMessage.MessageStatus == ConvMessage.State.SENT_UNCONFIRMED )
+            {
+                convMessage.SdrImageVisibility = Visibility.Collapsed;
+                scheduler.Schedule(convMessage.UpdateVisibilitySdrImage, TimeSpan.FromSeconds(1));
+            }
+        }
+         
+       
         #endregion
 
         #region PAGE EVENTS
