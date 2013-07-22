@@ -849,7 +849,7 @@ namespace windows_client.View
                     GroupManager.Instance.LoadGroupParticipants(obj.Msisdn);
                     isGroupChat = true;
                     BlockTxtBlk.Text = AppResources.SelectUser_BlockedGroupMsg_Txt;
-                    gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
+                    gi = GroupTableUtils.getGroupInfoForId(obj.Msisdn);
                     if (gi != null)
                         groupOwner = gi.GroupOwner;
                     if (gi != null && !gi.GroupAlive)
@@ -1447,7 +1447,6 @@ namespace windows_client.View
                 if (count % 5 == 0)
                     Thread.Sleep(5);
                 messagesList[i].IsSms = !isOnHike;
-
                 #region PERCEPTION FIX ZONE
 
                 // perception fix is only used for msgs of normal type in which SDR applies
@@ -2359,6 +2358,7 @@ namespace windows_client.View
                         }
                     }
                     chatBubble.IsSms = !isOnHike;
+                    chatBubble.CurrentOrientation = this.Orientation;
                     this.ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }

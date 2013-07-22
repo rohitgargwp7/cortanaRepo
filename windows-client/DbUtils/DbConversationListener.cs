@@ -192,7 +192,7 @@ namespace windows_client.DbUtils
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
 
                     byte[] fileBytes;
-                    if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                    if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                         fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
                     else
                         MiscDBUtil.readFileFromIsolatedStorage(sourceFilePath, out fileBytes);
