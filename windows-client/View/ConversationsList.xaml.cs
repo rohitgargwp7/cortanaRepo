@@ -679,6 +679,10 @@ namespace windows_client.View
             PivotItem pItem = e.AddedItems[0] as PivotItem;
             var panorama = pItem.Parent as Pivot;
             var selectedIndex = panorama.SelectedIndex;
+
+            if (selectedIndex != 3 && RefreshBarCount > 0)
+                UpdatePendingStatusFromRefreshBar();
+
             if (selectedIndex == 0)
             {
                 if (!appBar.MenuItems.Contains(delConvsMenu))
@@ -796,6 +800,7 @@ namespace windows_client.View
                     statusBw.RunWorkerCompleted += (ss, ee) =>
                     {
                         shellProgress.IsVisible = false;
+                        
                         foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
                         {
                             FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click, statusBubblePhoto_Tap);
@@ -809,30 +814,36 @@ namespace windows_client.View
                                 // if this user is blocked dont show his/her statuses
                                 if (App.ViewModel.BlockedHashset.Contains(statusMessagesFromDB[i].Msisdn))
                                     continue;
+                                
                                 if (i < TotalUnreadStatuses)
                                     statusMessagesFromDB[i].IsUnread = true;
+                                
                                 StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], true,
                                     statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap);
+                                
                                 if (statusUpdate != null)
                                     App.ViewModel.StatusList.Add(statusUpdate);
                             }
                         }
+                        
                         this.statusLLS.ItemsSource = App.ViewModel.StatusList;
-                        if (App.ViewModel.StatusList.Count == 0)
+                        
+                        if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
                         {
-                            emptyStatusPlaceHolder.Visibility = Visibility.Visible;
                             string firstName = Utils.GetFirstName(accountName.Text);
-                            txtEmptyStatusFriendBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName);
-                            statusLLS.Visibility = Visibility.Collapsed;
+                            App.ViewModel.StatusList.Add(new DefaultStatusUpdateUC(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName), CircleOfFriends_Tap, UpdateStatus_Tap));
                         }
+
                         RefreshBarCount = 0;
                         UnreadFriendRequests = 0;
+                        
                         if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                         {
                             NetworkManager.turnOffNetworkManager = false;
                             Utils.RequestServerEpochTime();
                             PhoneApplicationService.Current.State.Remove("IsStatusPush");
                         }
+                        
                         isStatusMessagesLoaded = true;
                     };
                     if (appSettings.Contains(App.SHOW_STATUS_UPDATES_TUTORIAL))
@@ -961,14 +972,16 @@ namespace windows_client.View
                         // be shown twice , one here and one from DB.
                         if (isStatusMessagesLoaded && App.ViewModel.IsPendingListLoaded)
                         {
-                            FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click, statusBubblePhoto_Tap);
-                            App.ViewModel.StatusList.Insert(0, frs);
+                            int index = 0;
+                            if (ProTipHelper.CurrentProTip != null)
+                                index = 1;
 
-                            if (emptyStatusPlaceHolder.Visibility == Visibility.Visible)
-                            {
-                                emptyStatusPlaceHolder.Visibility = Visibility.Collapsed;
-                                statusLLS.Visibility = Visibility.Visible;
-                            }
+                            if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC)
+                                App.ViewModel.StatusList.RemoveAt(index);
+
+                            FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click, statusBubblePhoto_Tap);
+                            App.ViewModel.StatusList.Insert(index, frs);
+
                         }
                         if (launchPagePivot.SelectedIndex != 3)
                         {
@@ -1074,12 +1087,14 @@ namespace windows_client.View
                                 statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap);
                             if (statusUpdate != null)
                             {
-                                App.ViewModel.StatusList.Insert(count, statusUpdate);
-                                if (emptyStatusPlaceHolder.Visibility == Visibility.Visible)
-                                {
-                                    emptyStatusPlaceHolder.Visibility = Visibility.Collapsed;
-                                    statusLLS.Visibility = Visibility.Visible;
-                                }
+                                int index = 0;
+                                if (ProTipHelper.CurrentProTip != null)
+                                    index = 1;
+
+                                if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC)
+                                    App.ViewModel.StatusList.RemoveAt(index);
+
+                                App.ViewModel.StatusList.Insert(count + index, statusUpdate);
                             }
                         }
                     }
@@ -1102,12 +1117,14 @@ namespace windows_client.View
                                     statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap);
                                 if (statusUpdate != null)
                                 {
-                                    App.ViewModel.StatusList.Insert(count, statusUpdate);
-                                    if (emptyStatusPlaceHolder.Visibility == Visibility.Visible)
-                                    {
-                                        emptyStatusPlaceHolder.Visibility = Visibility.Collapsed;
-                                        statusLLS.Visibility = Visibility.Visible;
-                                    }
+                                    int index = 0;
+                                    if (ProTipHelper.CurrentProTip != null)
+                                        index = 1;
+
+                                    if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC)
+                                        App.ViewModel.StatusList.RemoveAt(index);
+                                    
+                                    App.ViewModel.StatusList.Insert(count + index, statusUpdate);
                                 }
                             }
                         }
@@ -1141,12 +1158,11 @@ namespace windows_client.View
                             _totalUnreadStatuses--;
                             RefreshBarCount--;
                         }
-                        if (App.ViewModel.StatusList.Count == 0)
+
+                        if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
                         {
-                            emptyStatusPlaceHolder.Visibility = Visibility.Visible;
                             string firstName = Utils.GetFirstName(accountName.Text);
-                            txtEmptyStatusFriendBlk1.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName);
-                            statusLLS.Visibility = Visibility.Collapsed;
+                            App.ViewModel.StatusList.Add(new DefaultStatusUpdateUC(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName), CircleOfFriends_Tap, UpdateStatus_Tap));
                         }
                     }
                 });
@@ -2168,8 +2184,17 @@ namespace windows_client.View
 
         private void refreshStatuses_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            UpdatePendingStatusFromRefreshBar();
+        }
+
+        private void UpdatePendingStatusFromRefreshBar()
+        {
+            int index = 0;
+            if (ProTipHelper.CurrentProTip != null)
+                index = 1;
+
             // this fix will solve the possible crash , suggested by nitesh
-            int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
+            int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count + index : index;
             for (int i = 0; i < (FreshStatusUpdates != null ? FreshStatusUpdates.Count : 0); i++)
             {
                 StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(FreshStatusUpdates[i], true,
@@ -2179,12 +2204,15 @@ namespace windows_client.View
                     App.ViewModel.StatusList.Insert(pendingCount, statusUpdate);
                 }
             }
-            if (emptyStatusPlaceHolder.Visibility == Visibility.Visible)
+
+            if (pendingCount > index)
             {
-                emptyStatusPlaceHolder.Visibility = Visibility.Collapsed;
-                statusLLS.Visibility = Visibility.Visible;
+                if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC)
+                    App.ViewModel.StatusList.RemoveAt(index);
+
+                statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount]);
             }
-            statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount]);
+            
             RefreshBarCount = 0;
         }
         private void postStatusBtn_Click(object sender, EventArgs e)
@@ -2284,19 +2312,24 @@ namespace windows_client.View
             if (launchPagePivot.SelectedIndex != 3)
             {
                 launchPagePivot.SelectedIndex = 3;
+                
+                int index = 0;
+                if (ProTipHelper.CurrentProTip != null)
+                    index = 1;
+
                 int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
                 //if no new status scroll to latest unseen friends request
                 if (UnreadFriendRequests > 0 && (pendingCount > UnreadFriendRequests))
                 {
                     int x = pendingCount - UnreadFriendRequests;
                     if (x >= 0 && App.ViewModel.StatusList.Count > x)
-                        statusLLS.ScrollIntoView(App.ViewModel.StatusList[x]); //handling index out of bounds exception
+                        statusLLS.ScrollIntoView(App.ViewModel.StatusList[x + index]); //handling index out of bounds exception
                 }
                 //scroll to latest unread status
                 else if ((App.ViewModel.StatusList.Count > pendingCount) && RefreshBarCount > 0
                     && App.ViewModel.StatusList.Count > pendingCount) //handling index out of bounds exception
                 {
-                    statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount]);
+                    statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount + index]);
                 }
             }
         }
@@ -2383,10 +2416,10 @@ namespace windows_client.View
 
         #region Pro Tips
 
-        private void dismissProTip_Click(object sender, RoutedEventArgs e)
+        private void dismissProTip_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            proTipImage.Visibility = Visibility.Collapsed;
-            proTipsGrid.Visibility = Visibility.Collapsed;
+            App.ViewModel.StatusList.RemoveAt(0);
+
             ProTipCount = 0;
 
             JObject proTipAnalyticsJson = new JObject();
@@ -2428,28 +2461,7 @@ namespace windows_client.View
 
             if (proTip != null)
             {
-                if (!String.IsNullOrEmpty(proTip._header))
-                {
-                    proTipTitleText.Visibility = Visibility.Visible;
-                    proTipTitleText.Text = proTip._header;
-                }
-
-                if (!String.IsNullOrEmpty(proTip._body))
-                {
-                    proTipContentText.Visibility = Visibility.Visible;
-                    proTipContentText.Text = proTip._body;
-                }
-
-                if (!String.IsNullOrEmpty(proTip.ImageUrl))
-                {
-                    Binding myBinding = new Binding();
-                    myBinding.Source = proTip.TipImage;
-                    proTipImage.SetBinding(Image.SourceProperty, myBinding);
-                    proTipImage.Visibility = Visibility.Visible;
-                }
-
-                proTipsGrid.Visibility = Visibility.Visible;
-
+                App.ViewModel.StatusList.Insert(0, new ProTipUC(proTip, ProTipImage_Tapped, dismissProTip_Click));
                 ProTipCount = 1;
             }
         }
@@ -2461,6 +2473,5 @@ namespace windows_client.View
         }
 
         #endregion
-
     }
 }
