@@ -1894,4 +1894,10 @@ Get hike: http://get.hike.in</value>
   <data name="ViewFullMessage_Txt" xml:space="preserve">
     <value>View full message</value>
   </data>
+  <data name="File_Not_Exist_Caption" xml:space="preserve">
+    <value>No file</value>
+  </data>
+  <data name="File_Not_Exist_Message" xml:space="preserve">
+    <value>File no longer exists </value>
+  </data>
 </root>

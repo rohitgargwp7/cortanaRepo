@@ -1329,6 +1329,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No file.
+        /// </summary>
+        public static string File_Not_Exist_Caption {
+            get {
+                return ResourceManager.GetString("File_Not_Exist_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File no longer exists .
+        /// </summary>
+        public static string File_Not_Exist_Message {
+            get {
+                return ResourceManager.GetString("File_Not_Exist_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sent you a {0}. To view go to .
         /// </summary>
         public static string FILES_MESSAGE_PREFIX {
