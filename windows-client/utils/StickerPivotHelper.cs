@@ -44,7 +44,7 @@ namespace windows_client.utils
                 return _stickerPivot;
             }
         }
-        public void InitialiseStickerPivot(EventHandler<System.Windows.Input.GestureEventArgs> stickerTap)
+        public void InitialiseStickerPivot()
         {
             if (!isInitialised)
             {
@@ -54,21 +54,21 @@ namespace windows_client.utils
                 //done thos way to maintain order of insertion
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex, stickerTap);
+                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_DOGGY;
                     pivotIndex++;
                 }
 
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex, stickerTap);
+                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_KITTY;
                     pivotIndex++;
                 }
 
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex, stickerTap);
+                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_EXPRESSIONS;
                     pivotIndex++;
                 }
@@ -76,26 +76,26 @@ namespace windows_client.utils
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null
                     && Utils.IsBollywoodVisible)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex, stickerTap);
+                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_BOLLYWOOD;
                     pivotIndex++;
                 }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex, stickerTap);
+                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_TROLL;
                 }
                 isInitialised = true;
             }
         }
 
-        private void CreateStickerPivotItem(string category, ObservableCollection<Sticker> listSticker, int pivotIndex, EventHandler<System.Windows.Input.GestureEventArgs> stickerTap)
+        private void CreateStickerPivotItem(string category, ObservableCollection<Sticker> listSticker, int pivotIndex)
         {
             PivotItem pvt = new PivotItem();
             pvt.Margin = zeroThickness;
             pvt.BorderThickness = zeroThickness;
             pvt.Padding = zeroThickness;
-            StickerPivotItem stickerPivot = new StickerPivotItem(stickerTap, listSticker, pivotIndex, category);
+            StickerPivotItem stickerPivot = new StickerPivotItem( listSticker, pivotIndex, category);
             StickerPivotHelper.Instance.dictStickersPivot[category] = stickerPivot;
             pvt.Content = stickerPivot;
             _stickerPivot.Items.Add(pvt);
