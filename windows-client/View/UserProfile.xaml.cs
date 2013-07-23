@@ -391,7 +391,7 @@ namespace windows_client.View
                 BackgroundWorker worker = new BackgroundWorker();
                 worker.DoWork += delegate
                     {
-                        if (!isOnHike)
+                        if (!isOnHike || friendStatus == FriendsTableUtils.FriendStatusEnum.FRIENDS)
                             isInAddressBook = CheckUserInAddressBook();
 
                         if (!isInAddressBook)
@@ -1210,10 +1210,9 @@ namespace windows_client.View
             {
                 case TaskResult.OK:
                     ContactUtils.getContact(msisdn, new ContactUtils.contacts_Callback(contactSearchCompleted_Callback));
-                    ApplicationBar.Buttons.Remove(addToContactsAppBarButton);
 
-                    if (txtMsisdn.Visibility == Visibility.Collapsed)
-                        txtMsisdn.Visibility = Visibility.Visible;
+                    if (ApplicationBar.Buttons.Contains(addToContactsAppBarButton))
+                        ApplicationBar.Buttons.Remove(addToContactsAppBarButton);
                     break;
                 case TaskResult.Cancel:
                     System.Diagnostics.Debug.WriteLine(AppResources.User_Cancelled_Task_Txt);
@@ -1373,6 +1372,18 @@ namespace windows_client.View
                     isStatusLoaded = true;
                 }
                 isInAddressBook = true;
+
+                if (ApplicationBar.Buttons.Contains(addToContactsAppBarButton))
+                    ApplicationBar.Buttons.Remove(addToContactsAppBarButton);
+
+                if (txtMsisdn.Visibility == Visibility.Collapsed && txtMsisdn.Text != txtUserName.Text)
+                    txtMsisdn.Visibility = Visibility.Visible;
+
+                if (App.newChatThreadPage != null)
+                {
+                    if (App.newChatThreadPage.ApplicationBar.MenuItems != null && App.newChatThreadPage.ApplicationBar.MenuItems.Contains(App.newChatThreadPage.addUserMenuItem))
+                        App.newChatThreadPage.ApplicationBar.MenuItems.Remove(App.newChatThreadPage.addUserMenuItem);
+                }
             });
         }
         #endregion

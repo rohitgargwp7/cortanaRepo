@@ -1589,7 +1589,7 @@ Get hike: http://get.hike.in</value>
     <value>Unable to delete your status.</value>
   </data>
   <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
-    <value>Add to Contacts</value>
+    <value>add contact</value>
   </data>
   <data name="SettingsSubtitle_Account_Txt" xml:space="preserve">
     <value>Account</value>
@@ -1820,7 +1820,7 @@ Get hike: http://get.hike.in</value>
     <comment>verb(length 12)</comment>
   </data>
   <data name="Send_All_As_SMS" xml:space="preserve">
-    <value>{0} seems to be offline, tap to send as sms</value>
+    <value>{0} is offline, tap to send as sms</value>
   </data>
   <data name="H2HOfline_0SMS_Message" xml:space="preserve">
     <value>Your free SMS balance is zero. You can invite friends to join hike and earn more free SMS</value>

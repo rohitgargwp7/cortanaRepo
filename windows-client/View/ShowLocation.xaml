@@ -35,7 +35,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Image Source="{Binding DirectionImage}"/>
+                    <Image Source="{Binding DirectionImage}" Margin="12,0"/>
                     <TextBlock Grid.Column="1" Text="{Binding Instruction}" FontSize="{StaticResource PhoneFontSizeMedium}" TextWrapping="Wrap" Margin="5"/>
                 </Grid>
             </Grid>
@@ -68,7 +68,7 @@
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="False">
-            <shell:ApplicationBarIconButton Click="Direction_Click" IconUri="view/images/route.png" Text="directions"/>
+            <shell:ApplicationBarIconButton Click="Direction_Click" IconUri="view/images/icon_direction.png" Text="directions"/>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

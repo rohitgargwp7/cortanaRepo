@@ -27,14 +27,27 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="phone:LongListSelector">
                         <Grid Background="{TemplateBinding Background}" d:DesignWidth="480" d:DesignHeight="800">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="ScrollStates">
+                                    <VisualStateGroup.Transitions>
+                                        <VisualTransition GeneratedDuration="00:00:00.5"/>
+                                    </VisualStateGroup.Transitions>
+                                    <VisualState x:Name="Scrolling">
+                                        <Storyboard>
+                                            <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="VerticalScrollBar"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="NotScrolling"/>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
                             <Grid Margin="0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="auto"/>
                                 </Grid.ColumnDefinitions>
                                 <ViewportControl x:Name="ViewportControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom"/>
-                                <ScrollBar x:Name="VerticalScrollBar" Grid.Column="1" Opacity="1" Margin="4 0 4 0" Orientation="Vertical"  ValueChanged="vScrollBar1_ValueChanged"  />
-                                    
+                                <ScrollBar x:Name="VerticalScrollBar" Grid.Column="1" Opacity="0" Margin="2 0 2 0" Orientation="Vertical"  ValueChanged="vScrollBar1_ValueChanged"  />
+
                             </Grid>
                         </Grid>
                     </ControlTemplate>
@@ -88,14 +101,13 @@
                             <TextBlock x:Name="lastSeenTxt" Text="" FontSize="18"/>
                         </StackPanel>
                     </StackPanel>
-                 </Grid>
+                </Grid>
             </StackPanel>
         </StackPanel>
 
         <Grid Grid.Row="1">
 
-            <!--(-15) margin to hide vertical scroll bar  -->
-            <phone:LongListSelector Name="llsMessages" ItemRealized="llsMessages_ItemRealized" ItemUnrealized="llsMessages_ItemUnRealized" SelectionChanged="ChatMessageSelected" DoubleTap="MessageList_DoubleTap" HorizontalContentAlignment="Stretch">
+            <phone:LongListSelector Name="llsMessages" ItemUnrealized="llsMessages_ItemUnRealized" ItemRealized="llsMessages_ItemRealized" SelectionChanged="ChatMessageSelected" Grid.Row="1" DoubleTap="MessageList_DoubleTap" HorizontalContentAlignment="Stretch">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <view:ChatThreadTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
@@ -293,7 +305,7 @@
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
                                                     <Border Margin="0" Background="Black" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
-                                                    <Image Stretch="None" x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
+                                                    <Image Stretch="Uniform" x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" MaxWidth="46" MaxHeight="46" VerticalAlignment="Center"/>
                                                     <Grid Grid.Column="1">
                                                         <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
                                                             <Image Margin="10,0,0,0" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="/View/images/Mic_icon_grey_small.png"/>
@@ -452,7 +464,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}"/>
-                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
+                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
 
                                             <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Grid.Row="0" Grid.Column="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" />
                                             <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,24,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
@@ -487,7 +499,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}" />
-                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
+                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
                                             <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" >
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
@@ -532,7 +544,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}" />
-                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
+                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
                                             <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" >
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
@@ -575,7 +587,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}" />
-                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
+                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
                                             <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" Margin="10">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto"/>
@@ -587,7 +599,7 @@
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
                                                     <Border Margin="0" Background="Black" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
-                                                    <Image Stretch="None" x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    <Image Stretch="Uniform" x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" HorizontalAlignment="Center" MaxWidth="46" MaxHeight="46" VerticalAlignment="Center"/>
                                                     <Grid Grid.Column="1">
                                                         <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
                                                             <Image Margin="10,0,0,0" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="/View/images/Mic_icon_grey_small.png"/>
@@ -627,7 +639,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{StaticResource PhoneAccentBrush}"  />
-                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
+                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
                                             <Image Grid.Row="0" Grid.Column="1"  Width="46" Height="35" Margin="12,12,12,10" HorizontalAlignment="Right" Source="/View/images/nudge_sent.png"/>
                                         </Grid>
                                         <Path Grid.Column="1" Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{StaticResource PhoneAccentBrush}"/>
@@ -659,7 +671,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Rectangle Grid.RowSpan="2" Grid.Column="2"  Fill="{Binding BubbleBackGroundColor}" />
-                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
+                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
                                             <Grid x:Name="attachment" Grid.Row="0"  Grid.Column="1">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
@@ -699,7 +711,7 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Width="30" Grid.Column="0" HorizontalAlignment="Right" Grid.RowSpan="2"></Image>
+                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Width="30" Grid.Column="0" HorizontalAlignment="Right" Grid.RowSpan="2"></Image>
                                             <Image HorizontalAlignment="Right" Source="{Binding MessageImage}" Grid.Row="0" Grid.Column="1" />
                                             <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                         </Grid>
@@ -741,18 +753,19 @@
                     </DataTemplate>
                 </phone:LongListSelector.ItemTemplate>
             </phone:LongListSelector>
-
-            <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" x:Name="JumpToBottomGrid" Tap="JumpToBottom_Tapped" Canvas.ZIndex="3" Visibility="Collapsed">
-                <Border Background="{StaticResource PhoneForegroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                <TextBlock Name="txtJumpToBttom" Text="Jump to bottom" Foreground="{StaticResource PhoneBackgroundBrush}" Margin="10" HorizontalAlignment="Center"/>
+            <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" x:Name="JumpToBottomGrid" Tap="JumpToBottom_Tapped" Background="Black" Canvas.ZIndex="3" Height="50" Visibility="Collapsed" Opacity="0.9">
+                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                    <Image MaxHeight="20" Source="images/downArrow.png" VerticalAlignment="Center" />
+                    <TextBlock Name="txtJumpToBttom" Text="Jump to bottom"  Margin="10" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </StackPanel>
             </Grid>
         </Grid>
-        
+
         <StackPanel x:Name="bottomPanel" Height="Auto" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Bottom" Background="Transparent">
             <StackPanel x:Name="smscounter" Margin="0,5,0,0" Visibility="Collapsed" >
                 <TextBlock x:Name="smsCounterTxtBlk"  Margin="20,0,0,0"></TextBlock>
             </StackPanel>
-            <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <Grid Background="#eeeeec">
                 <ScrollViewer Name="svMessage" MaxHeight="150" Background="#eeeeec" >
                     <StackPanel Background="#eeeeec">
@@ -794,13 +807,6 @@
                     <controls:Pivot Name="emoticonPivot" Grid.Row="0" SelectionChanged="emoticonPivot_SelectionChanged" Foreground="Black" Height="240">
                         <controls:PivotItem Margin="0,8,0,0">
                             <Grid x:Name="emotGrid0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-
                                 <ListBox Height="230" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList0_Tap">
                                     <ListBox.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -809,7 +815,6 @@
                                     </ListBox.ItemsPanel>
 
                                     <ListBox.ItemTemplate>
-
                                         <DataTemplate>
                                             <Image Margin="5,5,5,5" Height="40" Width="40" Source="{Binding}">
                                             </Image>
@@ -821,12 +826,6 @@
 
                         <controls:PivotItem Margin="0,8,0,0">
                             <Grid x:Name="emotGrid1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
 
                                 <ListBox Height="230" Name="emotList1" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList1_Tap">
                                     <ListBox.ItemsPanel>
@@ -836,7 +835,6 @@
                                     </ListBox.ItemsPanel>
 
                                     <ListBox.ItemTemplate>
-
                                         <DataTemplate>
                                             <Image Margin="5,5,5,5" Height="40" Width="40" Source="{Binding}">
                                             </Image>
@@ -848,13 +846,6 @@
 
                         <controls:PivotItem Margin="0,8,0,0">
                             <Grid x:Name="emotGrid2">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-
                                 <ListBox Height="230" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList2_Tap">
                                     <ListBox.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -872,37 +863,52 @@
                                 </ListBox>
                             </Grid>
                         </controls:PivotItem>
+                        <controls:PivotItem Margin="0,8,0,0" Name="indianEmoticonPivot">
+                            <Grid x:Name="emotGrid3">
+
+                                <ListBox Height="230" Name="emotList3" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList3_Tap">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <toolkit:WrapPanel ItemHeight="65" ItemWidth="65"/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+
+                                    <ListBox.ItemTemplate>
+
+                                        <DataTemplate>
+                                            <Image Margin="5,5,5,5" Height="45" Width="45" Source="{Binding}">
+                                            </Image>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </controls:PivotItem>
                     </controls:Pivot>
-                    <Grid Height="52" Grid.Row="1" VerticalAlignment="Bottom" Margin="5 15 5 5" >
+                    <Grid Height="52" Grid.Row="1" VerticalAlignment="Bottom" Margin="5 15 5 5" Name="gridEmoticonLabels">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <StackPanel Name="emotHeaderRect0" Grid.Column="0" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect0_Tap">
-                            <Image Source="images\emoticons\emo_im_01_bigsmile.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </StackPanel>
-                        <Rectangle Width="2" Grid.Column="1" />
-                        <StackPanel Name="emotHeaderRect1" Grid.Column="2" Background="#1ba1e2"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect1_Tap" >
-                            <Image Source="images\emoticons\emo_im_102_scorn.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"  VerticalAlignment="Center"/>
-                        </StackPanel>
-                        <Rectangle Width="2" Grid.Column="3" />
-                        <StackPanel Name="emotHeaderRect2"  Grid.Column="4" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect2_Tap">
-                            <Image Source="images\emoticons\emo_im_111_grin.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                        <Rectangle Width="2" Grid.Column="5" />
-                        <StackPanel Name="stickerTab"  Grid.Column="6" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="StickersTab_Tap">
-                            <Image Source="images\expressions.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                        <Rectangle Width="2" Grid.Column="7" />
-                        <Button Style="{StaticResource ButtonWithNoPaddingStyle}" Margin="0" BorderThickness="0"  Grid.Column="8" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="OnEmoticonBackKeyPress" >
-                            <Image Source="images\emoticon_back_key.png"   Height="20" HorizontalAlignment="Center"/>
+                        <Border Name="emotHeaderRect0" Grid.Column="0" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect0_Tap">
+                            <Image Source="images\emoticons\emo_im_01_bigsmile.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border Name="emotHeaderRect1" Grid.Column="1" Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect1_Tap" >
+                            <Image Source="images\emoticons\emo_im_102_scorn.png" Height="30" HorizontalAlignment="Center"  VerticalAlignment="Center"/>
+                        </Border>
+                        <Border Name="emotHeaderRect2"  Grid.Column="2" Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect2_Tap">
+                            <Image Source="images\emoticons\emo_im_111_grin.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border Name="emotHeaderRect3" Visibility="Collapsed"  Grid.Column="3"  Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect3_Tap">
+                            <Image Source="images\indianemoticon.jpg" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border Name="stickerTab"  Grid.Column="3" Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="StickersTab_Tap">
+                            <Image Source="images\expressions.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Button Name="btnBackKey" Style="{StaticResource ButtonWithNoPaddingStyle}" Margin="2,0,0,0" BorderThickness="0"  Grid.Column="4" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="OnEmoticonBackKeyPress" >
+                            <Image Source="images\emoticon_back_key.png"  Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button>
                     </Grid>
                 </Grid>
@@ -956,42 +962,42 @@
                 <Grid Grid.Column="0" Grid.Row="0" Margin="0,0,1,0" Background="#292929" Tap="clickPhoto_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Margin="0,5,0,0" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_camera_icon.png" Height="35" HorizontalAlignment="Center"/>
-                        <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Camera_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock >
+                        <TextBlock Margin="5,20,5,0" Text="{Binding Path= LocalizedResources.Attachment_Camera_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Grid>
 
                 <Grid Grid.Column="1" Grid.Row="0" Margin="0,0,1,0" Background="#292929" Tap="sendImage_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_photo_icon.png" Height="40" HorizontalAlignment="Center"/>
-                        <TextBlock  Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Photo_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock >
+                        <TextBlock  Margin="5,20,5,0" Text="{Binding Path= LocalizedResources.Attachment_Photo_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Grid>
 
                 <Grid Grid.Column="2" Grid.Row="0" Background="#292929" Tap="sendVideo_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Margin="0,5,0,0" Orientation="Vertical"  VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_video_icon.png" Height="30" HorizontalAlignment="Center"/>
-                        <TextBlock Margin="0,25,0,0" Text="{Binding Path= LocalizedResources.Attachment_Video_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
+                        <TextBlock Margin="5,25,5,0" Text="{Binding Path= LocalizedResources.Attachment_Video_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Grid>
 
                 <Grid Grid.Column="0" Grid.Row="1" Margin="0,1,1,0" Background="#292929" Tap="sendAudio_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_audio_icon.png" Height="40" HorizontalAlignment="Center"/>
-                        <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Audio_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
+                        <TextBlock Margin="5,20,5,0" Text="{Binding Path= LocalizedResources.Attachment_Audio_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Grid>
 
                 <Grid Grid.Column="1" Grid.Row="1" Margin="0,1,1,0" Background="#292929" Tap="shareLocation_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_location_icon.png" Height="40" HorizontalAlignment="Center"/>
-                        <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Location_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" ></TextBlock >
+                        <TextBlock Margin="5,20,5,0" Text="{Binding Path= LocalizedResources.Attachment_Location_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Grid>
 
                 <Grid Grid.Column="2" Grid.Row="1" Margin="0,1,1,0" Background="#292929" Tap="sendContact_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Margin="0,5,0,0" Name="spContactTransfer" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_contact_icon.png" Height="35" HorizontalAlignment="Center"/>
-                        <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachement_Contact_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
+                        <TextBlock Margin="5,20,5,0" Text="{Binding Path= LocalizedResources.Attachement_Contact_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Grid>
             </Grid>

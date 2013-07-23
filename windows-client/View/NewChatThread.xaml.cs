@@ -92,7 +92,7 @@ namespace windows_client.View
         private long lastTypingNotificationShownTime;
 
         private HikePubSub mPubSub;
-        private IScheduler scheduler = Scheduler.NewThread;
+        public IScheduler scheduler = Scheduler.NewThread;
         private ConvMessage convTypingNotification;
         ContactInfo contactInfo = null; // this will be used if someone adds an unknown number to addressbook
         private byte[] avatar;
@@ -100,7 +100,7 @@ namespace windows_client.View
         private ApplicationBar appBar;
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
-        ApplicationBarMenuItem addUserMenuItem;
+        public ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarMenuItem infoMenuItem;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
@@ -172,7 +172,13 @@ namespace windows_client.View
                 return SmileyParser.Instance._emoticonImagesForList2;
             }
         }
-
+        private BitmapImage[] imagePathsForList3
+        {
+            get
+            {
+                return SmileyParser.Instance._emoticonImagesForList3;
+            }
+        }
 
         public Dictionary<long, ConvMessage> OutgoingMsgsMap      /* This map will contain only outgoing messages */
         {
@@ -245,27 +251,28 @@ namespace windows_client.View
                 WalkieTalkieDeletedBorder.Opacity = 1;
                 WalkieTalkieGridOverlayLayer.Opacity = 1;
             }
+            _currentOrientation = this.Orientation;
+        }
 
-            CompositionTarget.Rendering += (sender, args) =>
+        void CompositionTarget_Rendering(object sender, EventArgs e)
+        {
+            if (mediaElement != null && mediaElement.Source != null)
             {
-                if (mediaElement != null && mediaElement.Source != null)
+                var pos = mediaElement.Position.TotalSeconds;
+                var dur = mediaElement.NaturalDuration.TimeSpan.TotalSeconds;
+
+                if (currentAudioMessage != null && dur != 0)
                 {
-                    var pos = mediaElement.Position.TotalSeconds;
-                    var dur = mediaElement.NaturalDuration.TimeSpan.TotalSeconds;
+                    if (pos == dur)
+                        currentAudioMessage.PlayProgressBarValue = 0;
+                    else
+                        currentAudioMessage.PlayProgressBarValue = pos * 100 / dur;
 
-                    if (currentAudioMessage != null && dur != 0)
-                    {
-                        if (pos == dur)
-                            currentAudioMessage.PlayProgressBarValue = 0;
-                        else
-                            currentAudioMessage.PlayProgressBarValue = pos * 100 / dur;
+                    string durationText = String.IsNullOrEmpty(currentAudioMessage.DurationText) ? String.Empty : currentAudioMessage.DurationText;
 
-                        string durationText = String.IsNullOrEmpty(currentAudioMessage.DurationText) ? String.Empty : currentAudioMessage.DurationText;
-
-                        currentAudioMessage.PlayTimeText = pos == dur || pos == 0 ? durationText : mediaElement.NaturalDuration.TimeSpan.Subtract(mediaElement.Position).ToString("mm\\:ss");
-                    }
+                    currentAudioMessage.PlayTimeText = pos == dur || pos == 0 ? durationText : mediaElement.NaturalDuration.TimeSpan.Subtract(mediaElement.Position).ToString("mm\\:ss");
                 }
-            };
+            }
         }
 
         void LastSeenResponseReceived(object sender, LastSeenEventArgs e)
@@ -423,6 +430,20 @@ namespace windows_client.View
             emotList0.ItemsSource = imagePathsForList0;
             emotList1.ItemsSource = imagePathsForList1;
             emotList2.ItemsSource = imagePathsForList2;
+            emotList3.ItemsSource = imagePathsForList3;
+
+            if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))
+            {
+                ColumnDefinition col = new ColumnDefinition();
+                gridEmoticonLabels.ColumnDefinitions.Add(col);
+                stickerTab.SetValue(Grid.ColumnProperty, 4);
+                btnBackKey.SetValue(Grid.ColumnProperty, 5);
+                emotHeaderRect3.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                emoticonPivot.Items.RemoveAt(3);
+            }
 
             bw.RunWorkerAsync();
             photoChooserTask = new PhotoChooserTask();
@@ -436,6 +457,9 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            CompositionTarget.Rendering += CompositionTarget_Rendering;
 
             if (e.NavigationMode == NavigationMode.Back)
             {
@@ -667,6 +691,8 @@ namespace windows_client.View
             else
                 this.State.Remove("sendMsgTxtbox.Text");
 
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
+
             App.IS_TOMBSTONED = false;
         }
 
@@ -824,7 +850,7 @@ namespace windows_client.View
                     GroupManager.Instance.LoadGroupParticipants(obj.Msisdn);
                     isGroupChat = true;
                     BlockTxtBlk.Text = AppResources.SelectUser_BlockedGroupMsg_Txt;
-                    gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
+                    gi = GroupTableUtils.getGroupInfoForId(obj.Msisdn);
                     if (gi != null)
                         groupOwner = gi.GroupOwner;
                     if (gi != null && !gi.GroupAlive)
@@ -1063,6 +1089,12 @@ namespace windows_client.View
                 ContactInfo cinfo = (ContactInfo)statusObject;
                 cinfo.OnHike = true;
             }
+            else if (statusObject is ConversationListObject)
+            {
+                ConversationListObject co = (ConversationListObject)statusObject;
+                co.IsOnhike = true;
+            }
+
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 if (!isGroupChat)
@@ -1122,7 +1154,7 @@ namespace windows_client.View
                                select groupParticipant).Count() == 0 ? false : true;
 
             }
-            else if (!mContactNumber.Contains("+91")) //Indian receiver
+            else if (!mContactNumber.Contains(HikeConstants.INDIA_COUNTRY_CODE)) //Indian receiver
                 showFreeSMS = false;
 
             return showFreeSMS;
@@ -1416,7 +1448,6 @@ namespace windows_client.View
                 if (count % 5 == 0)
                     Thread.Sleep(5);
                 messagesList[i].IsSms = !isOnHike;
-
                 #region PERCEPTION FIX ZONE
 
                 // perception fix is only used for msgs of normal type in which SDR applies
@@ -1453,7 +1484,8 @@ namespace windows_client.View
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    AddMessageToOcMessages(cm, true, false);
+
+                    AddMessageToOcMessages(cm, true, false, true);
                 });
             }
 
@@ -2244,7 +2276,8 @@ namespace windows_client.View
       * If readFromDB is true & message state is SENT_UNCONFIRMED, then trying image is set else 
       * it is scheduled
       */
-        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived)
+
+        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived, bool readFromDb = false)
         {
             if (_isSendAllAsSMSVisible && ocMessages != null && convMessage.IsSent)
             {
@@ -2327,7 +2360,10 @@ namespace windows_client.View
                             }
                         }
                     }
+                    if (!readFromDb)
+                        ScheduleMsg(chatBubble);
                     chatBubble.IsSms = !isOnHike;
+                    chatBubble.CurrentOrientation = this.Orientation;
                     this.ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
@@ -2727,6 +2763,17 @@ namespace windows_client.View
                 Debug.WriteLine("NewChatThread :: inviteUserBtn_Click : Exception Occored:{0}", ex.StackTrace);
             }
         }
+
+        private void ScheduleMsg(ConvMessage convMessage)
+        {
+            if (convMessage != null && convMessage.IsSent && convMessage.MessageStatus == ConvMessage.State.SENT_UNCONFIRMED)
+            {
+                convMessage.SdrImageVisibility = Visibility.Collapsed;
+                scheduler.Schedule(convMessage.UpdateVisibilitySdrImage, TimeSpan.FromSeconds(5));
+            }
+        }
+
+
         #endregion
 
         #region PAGE EVENTS
@@ -3374,7 +3421,14 @@ namespace windows_client.View
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             //emoticonPanel.Visibility = Visibility.Collapsed;
         }
-
+        private void emotList3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            recordGrid.Visibility = Visibility.Collapsed;
+            sendMsgTxtbox.Visibility = Visibility.Visible;
+            int index = emotList3.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size + SmileyParser.Instance.emoticon2Size;
+            sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
+            //emoticonPanel.Visibility = Visibility.Collapsed;
+        }
         #endregion
 
         #region HELPER FUNCTIONS
@@ -4208,10 +4262,11 @@ namespace windows_client.View
                 string locationMessage = String.Empty;
                 string fileName = fileData[HikeConstants.FILE_NAME].ToString();
 
-                if (!String.IsNullOrEmpty(vicinity))
-                    fileName += ", " + vicinity;
-
                 locationMessage = fileName;
+
+                if (!String.IsNullOrEmpty(vicinity))
+                    locationMessage += ", " + vicinity;
+
 
                 ConvMessage convMessage = new ConvMessage(locationMessage, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation)
                 {
@@ -4224,6 +4279,8 @@ namespace windows_client.View
                 convMessage.FileAttachment.ContentType = "hikemap/location";
 
                 AddNewMessageToUI(convMessage, false);
+
+                ScrollToBottom();
 
                 object[] vals = new object[3];
                 vals[0] = convMessage;
@@ -4358,6 +4415,7 @@ namespace windows_client.View
             emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
             emoticonPivot.SelectedIndex = 0;
         }
 
@@ -4366,6 +4424,7 @@ namespace windows_client.View
             emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.TappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
             emoticonPivot.SelectedIndex = 1;
 
         }
@@ -4375,9 +4434,17 @@ namespace windows_client.View
             emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.TappedCategoryColor;
+            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
             emoticonPivot.SelectedIndex = 2;
         }
-
+        private void emotHeaderRect3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect3.Background = UI_Utils.Instance.TappedCategoryColor;
+            emoticonPivot.SelectedIndex = 3;
+        }
         private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             switch (emoticonPivot.SelectedIndex)
@@ -4386,16 +4453,25 @@ namespace windows_client.View
                     emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
                     break;
                 case 1:
                     emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.TappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
                     break;
                 case 2:
                     emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.TappedCategoryColor;
+                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    break;
+                case 3:
+                    emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect3.Background = UI_Utils.Instance.TappedCategoryColor;
                     break;
             }
         }
@@ -4619,9 +4695,10 @@ namespace windows_client.View
         }
 
         #region Orientation Handling
-
+        PageOrientation _currentOrientation ;
         private void PhoneApplicationPage_OrientationChanged(object sender, OrientationChangedEventArgs e)
         {
+            _currentOrientation = this.Orientation;
             for (int i = 0; i < ocMessages.Count; i++)
             {
                 ConvMessage convMessage = ocMessages[i];
@@ -4677,7 +4754,7 @@ namespace windows_client.View
         private void vScrollBar1_ValueChanged(Object sender, EventArgs e)
         {
             vScrollBar = sender as ScrollBar;
-            if (vScrollBar != null)
+            if (vScrollBar != null && vScrollBar.Maximum < 100000 && _currentOrientation==this.Orientation)
             {
                 if ((vScrollBar.Maximum - vScrollBar.Value) < 100)
                 {
@@ -4713,10 +4790,15 @@ namespace windows_client.View
         {
             if (vScrollBar != null && (ocMessages != null && ocMessages.Count > 6))
             {
-                if (increaseUnreadCounter)
-                    _unreadMessageCounter += 1;
-                JumpToBottomGrid.Visibility = Visibility.Visible;
-                txtJumpToBttom.Text = _unreadMessageCounter > 0 ? string.Format("{0} new message", _unreadMessageCounter) : "Jump to bottom";
+                if ((vScrollBar.Maximum - vScrollBar.Value) > 300)
+                {
+                    if (increaseUnreadCounter)
+                        _unreadMessageCounter += 1;
+                    JumpToBottomGrid.Visibility = Visibility.Visible;
+                    txtJumpToBttom.Text = _unreadMessageCounter > 0 ? string.Format("{0} new message", _unreadMessageCounter) : "Jump to latest";
+                }
+                else if (increaseUnreadCounter)
+                    ScrollToBottom();
             }
         }
 
@@ -4728,21 +4810,14 @@ namespace windows_client.View
         Thickness zeroThickness = new Thickness(0, 0, 0, 0);
         Thickness newCategoryThickness = new Thickness(0, 1, 0, 0);
 
-
-        private void Stickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        public void SendSticker(Sticker sticker)
         {
-            ListBox llsStickerCategory = (sender as ListBox);
-            Sticker sticker = llsStickerCategory.SelectedItem as Sticker;
-            llsStickerCategory.SelectedItem = null;
-            if (sticker == null)
-                return;
-
             ConvMessage conv = new ConvMessage(AppResources.Sticker_Txt, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
             conv.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
             conv.StickerObj = new Sticker(sticker.Category, sticker.Id, null);
             conv.MetaDataString = string.Format("{{{0}:'{1}',{2}:'{3}'}}", HikeConstants.STICKER_ID, sticker.Id, HikeConstants.CATEGORY_ID, sticker.Category);
             //Stickers_tap is binded to pivot and cached so to update latest object this is done
-            App.newChatThreadPage.AddNewMessageToUI(conv, false);
+            AddNewMessageToUI(conv, false);
 
             mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
         }
@@ -5236,7 +5311,7 @@ namespace windows_client.View
         }
         private void CreateStickerPivot()
         {
-            StickerPivotHelper.Instance.InitialiseStickerPivot(Stickers_Tap);
+            StickerPivotHelper.Instance.InitialiseStickerPivot();
             pivotStickers = StickerPivotHelper.Instance.StickerPivot;
             pivotStickers.SelectionChanged += PivotStickers_SelectionChanged;
             pivotStickers.Height = 240;

@@ -110,8 +110,6 @@ namespace windows_client
 
         #region PROPERTIES
 
-        public static bool Is24HourTimeFormat { get; private set; }
-
         public static PageState PageStateVal
         {
             get
@@ -338,8 +336,6 @@ namespace windows_client
             }
 
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
-
-            Is24HourTimeFormat = System.Globalization.DateTimeFormatInfo.CurrentInfo.LongTimePattern.Contains("H") ? true : false;
         }
 
         // Code to execute when the application is launching (eg, from Start)
@@ -485,7 +481,7 @@ namespace windows_client
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
             // if not new install && current version is less than equal to version 1.8.0.0  and upgrade is done for wp8 device
-            if (!isNewInstall && Utils.compareVersion("2.2.0.2", _currentVersion) == 1 && Utils.IsWP8)
+            if (!isNewInstall && Utils.compareVersion("2.2.0.3", _currentVersion) == 1 && Utils.IsWP8)
             {
                 instantiateClasses(true);
                 RootFrame.Dispatcher.BeginInvoke(delegate

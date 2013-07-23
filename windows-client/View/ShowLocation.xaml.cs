@@ -16,6 +16,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using windows_client.Languages;
 using Windows.Foundation;
+using windows_client.utils;
+using System.Globalization;
 
 namespace windows_client.View
 {
@@ -31,6 +33,7 @@ namespace windows_client.View
         Boolean _isDirectionsShown = false;
         Boolean _isLocationEnabled = true;
         Boolean _isInitialLoad = true;
+        Boolean _isSameLocation = false;
 
         public ShowLocation()
         {
@@ -268,6 +271,19 @@ namespace windows_client.View
             {
                 MyRoute = e.Result;
                 MyMapRoute = new MapRoute(MyRoute);
+
+                if (MyRoute.Legs != null && MyRoute.Legs[0].Maneuvers != null && MyRoute.Legs[0].Maneuvers.Count == 2)
+                {
+                    _isSameLocation = true;
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        MyMap.SetView(_locationCoordinate, 16, MapAnimationKind.Parabolic);
+                        DrawMapMarkers();
+                    });
+
+                    return;
+                }
+
                 MyMap.AddRoute(MyMapRoute);
 
                 // Update route information and directions
@@ -279,10 +295,10 @@ namespace windows_client.View
                 if (MyRoute.LengthInMeters > 1000)
                 {
                     distance /= 1000;
-                    distanceDestination.Text = String.Format(AppResources.Kilometer_Abbreviation, distance.ToString("0.0"));
+                    distanceDestination.Text = String.Format(AppResources.Kilometer_Abbreviation, distance.ToString("0.0", CultureInfo.InvariantCulture));
                 }
                 else
-                    distanceDestination.Text = String.Format(AppResources.Meter_Abbreviation, distance.ToString("0.0"));
+                    distanceDestination.Text = String.Format(AppResources.Meter_Abbreviation, distance.ToString("0.0", CultureInfo.InvariantCulture));
 
                 List<Direction> routeInstructions = new List<Direction>();
                 
@@ -304,10 +320,10 @@ namespace windows_client.View
                             if (distance > 1000)
                             {
                                 distance = distance / 1000;
-                                direction.Distance = String.Format(AppResources.Kilometer_Abbreviation, distance.ToString("0.0"));
+                                direction.Distance = String.Format(AppResources.Kilometer_Abbreviation, distance.ToString("0.0", CultureInfo.InvariantCulture));
                             }
                             else
-                                direction.Distance = String.Format(AppResources.Meter_Abbreviation, distance.ToString("0.0"));
+                                direction.Distance = String.Format(AppResources.Meter_Abbreviation, distance.ToString("0.0", CultureInfo.InvariantCulture));
                             
                         }
 
@@ -350,7 +366,7 @@ namespace windows_client.View
             MapLayer mapLayer = new MapLayer();
 
             // Draw marker for current position
-            if (_myCoordinate != null && _isLocationEnabled)
+            if (_myCoordinate != null && _isLocationEnabled && !_isSameLocation)
                 DrawMapMarker(_myCoordinate, Colors.Orange, mapLayer, true);
 
             if (_locationCoordinate != null)
@@ -395,13 +411,13 @@ namespace windows_client.View
             else
             {
                 Ellipse ellipse = new Ellipse();
-                ellipse.Height = MyMap.ZoomLevel;
-                ellipse.Width = MyMap.ZoomLevel;
+                ellipse.Height = MyMap.ZoomLevel + 4;
+                ellipse.Width = MyMap.ZoomLevel + 4;
                 ellipse.Fill = new SolidColorBrush(Colors.White);
                 ellipse.Stroke = new SolidColorBrush(color);
                 overlay.Content = ellipse;
                 overlay.GeoCoordinate = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);
-                overlay.PositionOrigin = new System.Windows.Point(0.0, 0.0);
+                overlay.PositionOrigin = new System.Windows.Point(0.5, 0.5);
             }
 
             mapLayer.Add(overlay);
@@ -450,14 +466,6 @@ namespace windows_client.View
     {
         public string Instruction { get; set; }
         
-        public string InstructionKindText
-        {
-            get
-            {
-                return InstructionKind.ToString(System.Globalization.CultureInfo.CurrentCulture);
-            }
-        }
-
         public RouteManeuverInstructionKind InstructionKind { get; set; }
 
         public BitmapImage DirectionImage
@@ -472,6 +480,59 @@ namespace windows_client.View
 
         BitmapImage InstructionKindToImage()
         {
+            switch (InstructionKind)
+            {
+                case RouteManeuverInstructionKind.End: 
+                    return DirectionImageUtils.Instance.InstructionKindEnd;
+                case RouteManeuverInstructionKind.FreewayContinueLeft:
+                    return DirectionImageUtils.Instance.InstructionKindFreewayContinueLeft;
+                case RouteManeuverInstructionKind.FreewayContinueRight:
+                    return DirectionImageUtils.Instance.InstructionKindFreewayContinueRight;
+                case RouteManeuverInstructionKind.FreewayEnterLeft:
+                    return DirectionImageUtils.Instance.InstructionKindFreewayEnterLeft;
+                case RouteManeuverInstructionKind.FreewayEnterRight:
+                    return DirectionImageUtils.Instance.InstructionKindFreewayEnterRight;
+                case RouteManeuverInstructionKind.FreewayLeaveLeft:
+                    return DirectionImageUtils.Instance.InstructionKindFreewayLeaveLeft;
+                case RouteManeuverInstructionKind.FreewayLeaveRight:
+                    return DirectionImageUtils.Instance.InstructionKindFreewayLeaveRight;
+                case RouteManeuverInstructionKind.GoStraight:
+                    return DirectionImageUtils.Instance.InstructionKindGoStraight;
+                case RouteManeuverInstructionKind.Start:
+                    return DirectionImageUtils.Instance.InstructionKindStart;
+                case RouteManeuverInstructionKind.Stopover: 
+                    return DirectionImageUtils.Instance.InstructionKindStopover;
+                case RouteManeuverInstructionKind.StopoverResume:
+                    return DirectionImageUtils.Instance.InstructionKindStopoverResume;
+                case RouteManeuverInstructionKind.TakeFerry:
+                    return DirectionImageUtils.Instance.InstructionKindTakeFerry;
+                case RouteManeuverInstructionKind.TrafficCircleLeft:
+                    return DirectionImageUtils.Instance.InstructionKindTrafficCircleLeft;
+                case RouteManeuverInstructionKind.TrafficCircleRight:
+                    return DirectionImageUtils.Instance.InstructionKindTrafficCircleRight;
+                case RouteManeuverInstructionKind.TurnHardLeft:
+                    return DirectionImageUtils.Instance.InstructionKindTurnHardLeft;
+                case RouteManeuverInstructionKind.TurnHardRight:
+                    return DirectionImageUtils.Instance.InstructionKindTurnHardRight;
+                case RouteManeuverInstructionKind.TurnKeepLeft:
+                    return DirectionImageUtils.Instance.InstructionKindTurnKeepLeft;
+                case RouteManeuverInstructionKind.TurnKeepRight:
+                    return DirectionImageUtils.Instance.InstructionKindTurnKeepRight;
+                case RouteManeuverInstructionKind.TurnLeft:
+                    return DirectionImageUtils.Instance.InstructionKindTurnLeft;
+                case RouteManeuverInstructionKind.TurnLightLeft:
+                    return DirectionImageUtils.Instance.InstructionKindTurnLightLeft;
+                case RouteManeuverInstructionKind.TurnLightRight:
+                    return DirectionImageUtils.Instance.InstructionKindTurnLightRight;
+                case RouteManeuverInstructionKind.TurnRight:
+                    return DirectionImageUtils.Instance.InstructionKindTurnRight;
+                case RouteManeuverInstructionKind.Undefined:
+                    return DirectionImageUtils.Instance.InstructionKindUndefined;
+                case RouteManeuverInstructionKind.UTurnLeft:
+                    return DirectionImageUtils.Instance.InstructionKindUTurnLeft;
+                case RouteManeuverInstructionKind.UTurnRight: 
+                    return DirectionImageUtils.Instance.InstructionKindUTurnRight;
+            }
             return new BitmapImage();
         }
 
