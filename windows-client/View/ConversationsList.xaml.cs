@@ -113,7 +113,7 @@ namespace windows_client.View
             this.llsConversations.SelectedItem = null;
             this.favourites.SelectedIndex = -1;
             this.hikeContactListBox.SelectedIndex = -1;
-            this.statusLLS.SelectedItem = -1;
+            this.statusLLS.SelectedIndex = -1;
 
             App.IS_TOMBSTONED = false;
             App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
