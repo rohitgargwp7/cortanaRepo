@@ -50,6 +50,7 @@ namespace windows_client.View
         Place _myPlace;
         Boolean _isMapTapped = false;
         Boolean _isLocationEnabled = true;
+        Boolean _isDefaultLocationCall = true;
 
         private void BuildApplicationBar()
         {
@@ -255,8 +256,11 @@ namespace windows_client.View
             {
                 Geoposition currentPosition = await locationTask;
 
-                if (_isMapTapped)
+                if (_isMapTapped && _isDefaultLocationCall)
+                {
+                    _isDefaultLocationCall = false;
                     return;
+                }
 
                 var latitutde = Math.Round(currentPosition.Coordinate.Latitude, 6);
                 var longitute = Math.Round(currentPosition.Coordinate.Longitude, 6);
