@@ -635,8 +635,10 @@
     <Content Include="View\images\moods\22Sleepy.png" />
     <Content Include="View\images\moods\23Hungover.png" />
     <Content Include="View\images\moods_status_icon.png" />
+    <Content Include="View\images\mute_icon_main_b.png" />
     <Content Include="View\images\mute_icon_main_g.png" />
     <Content Include="View\images\mute_icon_main_l.png" />
+    <Content Include="View\images\mute_icon_main_white.png" />
     <Content Include="View\images\MyLocation.png" />
     <Content Include="View\images\notification_read.png" />
     <Content Include="View\images\notification_unread.png" />

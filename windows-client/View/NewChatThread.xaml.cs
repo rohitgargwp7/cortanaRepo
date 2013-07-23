@@ -4259,6 +4259,8 @@ namespace windows_client.View
 
                 AddNewMessageToUI(convMessage, false);
 
+                ScrollToBottom();
+
                 object[] vals = new object[3];
                 vals[0] = convMessage;
                 vals[1] = locationBytes;

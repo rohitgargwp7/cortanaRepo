@@ -380,7 +380,15 @@ namespace windows_client.View
         private byte[] captureThumbnail()
         {
             byte[] thumbnailBytes = null;
-            WriteableBitmap screenshot = new WriteableBitmap(MyMap, new TranslateTransform());
+
+            var point = MyMap.ConvertGeoCoordinateToViewportPoint(_selectedCoordinate);
+            point.X -= HikeConstants.LOCATION_THUMBNAIL_MAX_WIDTH / 2;
+            point.Y -= HikeConstants.LOCATION_THUMBNAIL_MAX_HEIGHT / 2;
+
+            var screenshot = new WriteableBitmap(MyMap, new TranslateTransform());
+
+            screenshot = screenshot.Crop((int)point.X, (int)point.Y, HikeConstants.LOCATION_THUMBNAIL_MAX_WIDTH, HikeConstants.LOCATION_THUMBNAIL_MAX_HEIGHT);
+            screenshot.Invalidate();
 
             using (MemoryStream ms = new MemoryStream())
             {
