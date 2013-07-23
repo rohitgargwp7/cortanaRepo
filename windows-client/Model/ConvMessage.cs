@@ -269,6 +269,11 @@ namespace windows_client.Model
                     NotifyPropertyChanged("BubbleBackGroundColor");
                     NotifyPropertyChanged("TimeStampForeGround");
                     NotifyPropertyChanged("MessageTextForeGround");
+                    if (_messageStatus == State.SENT_CONFIRMED)
+                    {
+                        SdrImageVisibility = Visibility.Visible;
+                        NotifyPropertyChanged("SdrImageVisibility");
+                    }
                 }
             }
         }

@@ -2766,7 +2766,7 @@ namespace windows_client.View
             if (convMessage != null && convMessage.IsSent && convMessage.MessageStatus == ConvMessage.State.SENT_UNCONFIRMED)
             {
                 convMessage.SdrImageVisibility = Visibility.Collapsed;
-                scheduler.Schedule(convMessage.UpdateVisibilitySdrImage, TimeSpan.FromSeconds(1));
+                scheduler.Schedule(convMessage.UpdateVisibilitySdrImage, TimeSpan.FromSeconds(5));
             }
         }
 
