@@ -90,7 +90,7 @@ namespace windows_client.View
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (_geolocator == null) 
+            if (_geolocator == null)
                 _geolocator = new Geolocator();
 
             if (_geolocator.LocationStatus == PositionStatus.Disabled)
@@ -134,8 +134,8 @@ namespace windows_client.View
                 });
 
                 return;
-            } 
-            
+            }
+
             if (App.IS_TOMBSTONED)
             {
                 MyMap.ZoomLevel = (double)PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL];
@@ -150,9 +150,11 @@ namespace windows_client.View
 
             if (e.NavigationMode == NavigationMode.New)
                 GetCurrentCoordinate();
-            else
+            else if (MyRoute == null)
                 GetDirections();
-           
+            else
+                DrawMapMarkers();
+
             base.OnNavigatedTo(e);
         }
 
@@ -434,7 +436,6 @@ namespace windows_client.View
             LayoutRoot.RowDefinitions[1].Height = new GridLength(2.5, GridUnitType.Star);
             _isMapBig = false;
             DirectionGrid.Visibility = Visibility.Visible;
-            DrawMapMarkers();
         }
 
         Boolean _isMapBig = true;
