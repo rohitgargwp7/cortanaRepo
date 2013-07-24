@@ -346,7 +346,10 @@ namespace windows_client.View
             JObject metadata = new JObject();
             JArray filesData = new JArray();
             JObject singleFileInfo = new JObject();
-            singleFileInfo[HikeConstants.FILE_NAME] = _selectedPlace == null ? (_selectedCoordinate == _myCoordinate ? AppResources.My_Location_Text : AppResources.Location_Txt) : _selectedPlace.title;
+
+            var title = _selectedPlace == null ? String.Empty : _selectedPlace.title.Contains(AppResources.Location_Txt) ? String.Empty : _selectedPlace.title;
+
+            singleFileInfo[HikeConstants.FILE_NAME] = title;
             singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = "hikemap/location";
             singleFileInfo[HikeConstants.LATITUDE] = _selectedCoordinate.Latitude;
             singleFileInfo[HikeConstants.LONGITUDE] = _selectedCoordinate.Longitude;

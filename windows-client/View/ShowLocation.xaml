@@ -48,7 +48,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <maps:Map x:Name="MyMap" Tap="MyMap_Tap" ZoomLevelChanged="ZoomLevelChanged"/>
+        <maps:Map x:Name="MyMap" LandmarksEnabled="True" Tap="MyMap_Tap" ZoomLevelChanged="ZoomLevelChanged"/>
         <Grid x:Name="DirectionGrid" ManipulationStarted="DirectionGrid_ManipulationStarted" Grid.Row="1" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

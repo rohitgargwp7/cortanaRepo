@@ -433,8 +433,9 @@ namespace windows_client.View
         private void ShowDirections()
         {
             _isDirectionsShown = true;
-            LayoutRoot.RowDefinitions[0].Height = new GridLength(3, GridUnitType.Star);
-            LayoutRoot.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
+            LayoutRoot.RowDefinitions[0].Height = new GridLength(1.5, GridUnitType.Star);
+            LayoutRoot.RowDefinitions[1].Height = new GridLength(2.5, GridUnitType.Star);
+            _isMapBig = false;
             DirectionGrid.Visibility = Visibility.Visible;
             DrawMapMarkers();
         }
@@ -445,8 +446,8 @@ namespace windows_client.View
         {
             if (_isMapBig)
             {
-                LayoutRoot.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
-                LayoutRoot.RowDefinitions[1].Height = new GridLength(3, GridUnitType.Star);
+                LayoutRoot.RowDefinitions[0].Height = new GridLength(1.5, GridUnitType.Star);
+                LayoutRoot.RowDefinitions[1].Height = new GridLength(2.5, GridUnitType.Star);
                 _isMapBig = !_isMapBig;
             }
         }
@@ -455,8 +456,8 @@ namespace windows_client.View
         {
             if (!_isMapBig)
             {
-                LayoutRoot.RowDefinitions[0].Height = new GridLength(3, GridUnitType.Star);
-                LayoutRoot.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
+                LayoutRoot.RowDefinitions[0].Height = new GridLength(2.5, GridUnitType.Star);
+                LayoutRoot.RowDefinitions[1].Height = new GridLength(1.5, GridUnitType.Star);
                 _isMapBig = !_isMapBig;
             }
         }

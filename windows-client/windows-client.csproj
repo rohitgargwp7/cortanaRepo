@@ -676,7 +676,6 @@
     <Content Include="View\images\tutorial_welcome.png" />
     <Content Include="View\images\twitter_status.png" />
     <Content Include="View\images\twitter_status_disabled.png" />
-    <Content Include="View\images\unmutedicon.png" />
     <Content Include="View\images\unmute_icon_main_g.png" />
     <Content Include="View\images\unmute_icon_main_l.png" />
     <Content Include="View\images\user_invite.png" />
