@@ -51,7 +51,7 @@ namespace windows_client.View
         Boolean _isMapTapped = false;
         Boolean _isLocationEnabled = true;
         Boolean _isDefaultLocationCall = true;
-        String cgen = HikeConstants.NokiaHere.CGEN_GPS;
+        String _cgen = HikeConstants.NokiaHere.CGEN_GPS;
 
         private void BuildApplicationBar()
         {
@@ -74,7 +74,7 @@ namespace windows_client.View
         void GetPlaces()
         {
             ShowProgressIndicator();
-            string url = string.Format("{0}?at={1},{2};cgen={3}&app_id={4}&app_code={5}&tf=plain&pretty=true", _nokiaPlacesUrl, _selectedCoordinate.Latitude.ToString("0.000000", CultureInfo.InvariantCulture), _selectedCoordinate.Longitude.ToString("0.000000", CultureInfo.InvariantCulture), cgen, _nokiaPlacesAppID, _nokiaPlacesAppCode);
+            string url = string.Format("{0}?at={1},{2};cgen={3}&app_id={4}&app_code={5}&tf=plain&pretty=true", _nokiaPlacesUrl, _selectedCoordinate.Latitude.ToString("0.000000", CultureInfo.InvariantCulture), _selectedCoordinate.Longitude.ToString("0.000000", CultureInfo.InvariantCulture), _cgen, _nokiaPlacesAppID, _nokiaPlacesAppCode);
             AccountUtils.createNokiaPlacesGetRequest(url, new AccountUtils.postResponseFunction(PlacesResult_Callback));
         }
 
@@ -271,7 +271,7 @@ namespace windows_client.View
                 
                 _selectedCoordinate = newCoordinate;
 
-                cgen = HikeConstants.NokiaHere.CGEN_GPS;
+                _cgen = HikeConstants.NokiaHere.CGEN_GPS;
 
                 if (_myCoordinate != newCoordinate || _isMapTapped || _places == null)
                 {
@@ -379,7 +379,7 @@ namespace windows_client.View
         private void map_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             _isMapTapped = true;
-            cgen = HikeConstants.NokiaHere.CGEN_MAPS;
+            _cgen = HikeConstants.NokiaHere.CGEN_MAP;
             System.Windows.Point p = e.GetPosition(this.MyMap);
             GeoCoordinate geo = new GeoCoordinate();
             geo = MyMap.ConvertViewportPointToGeoCoordinate(p);
@@ -475,7 +475,7 @@ namespace windows_client.View
         void Search()
         {
             ShowProgressIndicator();
-            string url = string.Format("{0}?q={1}&at={2},{3};cgen={4}&app_id={5}&app_code={6}&tf=plain&pretty=true", _nokiaSeacrhUrl, HttpUtility.UrlEncode(_searchString), _selectedCoordinate.Latitude.ToString("0.000000", CultureInfo.InvariantCulture), _selectedCoordinate.Longitude.ToString("0.000000", CultureInfo.InvariantCulture), cgen, _nokiaPlacesAppID, _nokiaPlacesAppCode);
+            string url = string.Format("{0}?q={1}&at={2},{3};cgen={4}&app_id={5}&app_code={6}&tf=plain&pretty=true", _nokiaSeacrhUrl, HttpUtility.UrlEncode(_searchString), _selectedCoordinate.Latitude.ToString("0.000000", CultureInfo.InvariantCulture), _selectedCoordinate.Longitude.ToString("0.000000", CultureInfo.InvariantCulture), _cgen, _nokiaPlacesAppID, _nokiaPlacesAppCode);
             AccountUtils.createNokiaPlacesGetRequest(url, new AccountUtils.postResponseFunction(PlacesResult_Callback));
         }
 
