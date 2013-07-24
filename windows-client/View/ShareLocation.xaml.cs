@@ -51,7 +51,7 @@ namespace windows_client.View
         Boolean _isMapTapped = false;
         Boolean _isLocationEnabled = true;
         Boolean _isDefaultLocationCall = true;
-        String cgen = "gps";
+        String cgen = HikeConstants.NokiaHere.CGEN_GPS;
 
         private void BuildApplicationBar()
         {
@@ -271,7 +271,7 @@ namespace windows_client.View
                 
                 _selectedCoordinate = newCoordinate;
 
-                cgen = "gps";
+                cgen = HikeConstants.NokiaHere.CGEN_GPS;
 
                 if (_myCoordinate != newCoordinate || _isMapTapped || _places == null)
                 {
@@ -379,7 +379,7 @@ namespace windows_client.View
         private void map_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             _isMapTapped = true;
-            cgen = "map";
+            cgen = HikeConstants.NokiaHere.CGEN_MAPS;
             System.Windows.Point p = e.GetPosition(this.MyMap);
             GeoCoordinate geo = new GeoCoordinate();
             geo = MyMap.ConvertViewportPointToGeoCoordinate(p);
