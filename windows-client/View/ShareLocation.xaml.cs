@@ -567,6 +567,8 @@ namespace windows_client.View
 
             if (App.IS_TOMBSTONED)
             {
+                _isDefaultLocationCall = false;
+
                 _selectedCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] as GeoCoordinate;
                 _searchString = PhoneApplicationService.Current.State[HikeConstants.LOCATION_SEARCH] as String;
                 _isPlacesSearch = (bool)PhoneApplicationService.Current.State[HikeConstants.PLACES_SEARCH];
