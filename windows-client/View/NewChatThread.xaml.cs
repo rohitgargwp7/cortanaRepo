@@ -4695,7 +4695,7 @@ namespace windows_client.View
         }
 
         #region Orientation Handling
-        PageOrientation _currentOrientation ;
+        PageOrientation _currentOrientation;
         private void PhoneApplicationPage_OrientationChanged(object sender, OrientationChangedEventArgs e)
         {
             _currentOrientation = this.Orientation;
@@ -4754,7 +4754,7 @@ namespace windows_client.View
         private void vScrollBar1_ValueChanged(Object sender, EventArgs e)
         {
             vScrollBar = sender as ScrollBar;
-            if (vScrollBar != null && vScrollBar.Maximum < 100000 && _currentOrientation==this.Orientation)
+            if (vScrollBar != null && vScrollBar.Maximum < 100000 && _currentOrientation == this.Orientation)
             {
                 if ((vScrollBar.Maximum - vScrollBar.Value) < 100)
                 {
@@ -4795,7 +4795,7 @@ namespace windows_client.View
                     if (increaseUnreadCounter)
                         _unreadMessageCounter += 1;
                     JumpToBottomGrid.Visibility = Visibility.Visible;
-                    txtJumpToBttom.Text = _unreadMessageCounter > 0 ? string.Format("{0} new message", _unreadMessageCounter) : "Jump to latest";
+                    txtJumpToBttom.Text = _unreadMessageCounter > 0 ? (_unreadMessageCounter == 1 ? AppResources.ChatThread_1NewMessage_txt : string.Format(AppResources.ChatThread_More_NewMessages_txt, _unreadMessageCounter)) : AppResources.ChatThread_JumpToLatest;
                 }
                 else if (increaseUnreadCounter)
                     ScrollToBottom();

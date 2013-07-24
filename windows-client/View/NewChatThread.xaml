@@ -757,7 +757,7 @@
                 <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                     <Image MaxHeight="20" Source="images/downArrow.png" VerticalAlignment="Center" />
-                    <TextBlock Name="txtJumpToBttom" Text="Jump to bottom"  Margin="10" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Name="txtJumpToBttom" Margin="10" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </StackPanel>
             </Grid>
         </Grid>
