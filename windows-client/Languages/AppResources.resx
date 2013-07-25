@@ -1894,6 +1894,12 @@ Get hike: http://get.hike.in</value>
   <data name="ViewFullMessage_Txt" xml:space="preserve">
     <value>View full message</value>
   </data>
+  <data name="File_Not_Exist_Caption" xml:space="preserve">
+    <value>No file</value>
+  </data>
+  <data name="File_Not_Exist_Message" xml:space="preserve">
+    <value>File no longer exists </value>
+  </data>
   <data name="ChatThread_1NewMessage_txt" xml:space="preserve">
     <value>1 new message</value>
   </data>
@@ -1903,5 +1909,13 @@ Get hike: http://get.hike.in</value>
   <data name="ChatThread_More_NewMessages_txt" xml:space="preserve">
     <value>{0} new messages</value>
     <comment>{0} would be replaced by number</comment>
+  </data>
+  <data name="SelectUser_Header_AddParticipant_Txt" xml:space="preserve">
+    <value>ADD PARTICIPANTS</value>
+    <comment>max length(16)</comment>
+  </data>
+  <data name="SelectUser_Title_AddParticipant_Txt" xml:space="preserve">
+    <value>to group</value>
+    <comment>max length(8)</comment>
   </data>
 </root>

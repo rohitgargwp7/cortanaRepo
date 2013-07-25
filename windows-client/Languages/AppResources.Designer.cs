@@ -1356,6 +1356,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No file.
+        /// </summary>
+        public static string File_Not_Exist_Caption {
+            get {
+                return ResourceManager.GetString("File_Not_Exist_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File no longer exists .
+        /// </summary>
+        public static string File_Not_Exist_Message {
+            get {
+                return ResourceManager.GetString("File_Not_Exist_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sent you a {0}. To view go to .
         /// </summary>
         public static string FILES_MESSAGE_PREFIX {
@@ -3381,6 +3399,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ADD PARTICIPANTS.
+        /// </summary>
+        public static string SelectUser_Header_AddParticipant_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_Header_AddParticipant_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CHAT.
         /// </summary>
         public static string SelectUser_Header_Txt {
@@ -3503,6 +3530,15 @@ namespace windows_client.Languages {
         public static string SelectUser_TapMsg_Txt {
             get {
                 return ResourceManager.GetString("SelectUser_TapMsg_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to group.
+        /// </summary>
+        public static string SelectUser_Title_AddParticipant_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_Title_AddParticipant_Txt", resourceCulture);
             }
         }
         
