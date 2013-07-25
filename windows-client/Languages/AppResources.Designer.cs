@@ -3399,6 +3399,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ADD PARTICIPANTS.
+        /// </summary>
+        public static string SelectUser_Header_AddParticipant_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_Header_AddParticipant_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CHAT.
         /// </summary>
         public static string SelectUser_Header_Txt {
@@ -3521,6 +3530,15 @@ namespace windows_client.Languages {
         public static string SelectUser_TapMsg_Txt {
             get {
                 return ResourceManager.GetString("SelectUser_TapMsg_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to group.
+        /// </summary>
+        public static string SelectUser_Title_AddParticipant_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_Title_AddParticipant_Txt", resourceCulture);
             }
         }
         
