@@ -33,6 +33,7 @@ namespace windows_client.View
         Boolean _isDirectionsShown = false;
         Boolean _isLocationEnabled = true;
         Boolean _isInitialLoad = true;
+        Boolean _isSameLocation = false;
 
         public ShowLocation()
         {
@@ -270,6 +271,19 @@ namespace windows_client.View
             {
                 MyRoute = e.Result;
                 MyMapRoute = new MapRoute(MyRoute);
+
+                if (MyRoute.Legs != null && MyRoute.Legs[0].Maneuvers != null && MyRoute.Legs[0].Maneuvers.Count == 2)
+                {
+                    _isSameLocation = true;
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        MyMap.SetView(_locationCoordinate, 16, MapAnimationKind.Parabolic);
+                        DrawMapMarkers();
+                    });
+
+                    return;
+                }
+
                 MyMap.AddRoute(MyMapRoute);
 
                 // Update route information and directions
@@ -352,7 +366,7 @@ namespace windows_client.View
             MapLayer mapLayer = new MapLayer();
 
             // Draw marker for current position
-            if (_myCoordinate != null && _isLocationEnabled)
+            if (_myCoordinate != null && _isLocationEnabled && !_isSameLocation)
                 DrawMapMarker(_myCoordinate, Colors.Orange, mapLayer, true);
 
             if (_locationCoordinate != null)

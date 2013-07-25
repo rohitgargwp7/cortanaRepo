@@ -527,6 +527,7 @@
     <Content Include="View\images\deleted_grey_icon.png" />
     <Content Include="View\images\deleted_white_icon.png" />
     <Content Include="View\images\delete_account_white.png" />
+    <Content Include="View\images\downArrow.png" />
     <Content Include="View\images\emoticons\auto4.png" />
     <Content Include="View\images\emoticons\batti4.png" />
     <Content Include="View\images\emoticons\best4.png" />

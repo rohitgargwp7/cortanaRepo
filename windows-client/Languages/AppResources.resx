@@ -1894,10 +1894,21 @@ Get hike: http://get.hike.in</value>
   <data name="ViewFullMessage_Txt" xml:space="preserve">
     <value>View full message</value>
   </data>
+
   <data name="File_Not_Exist_Caption" xml:space="preserve">
     <value>No file</value>
   </data>
   <data name="File_Not_Exist_Message" xml:space="preserve">
     <value>File no longer exists </value>
+ </data>
+  <data name="ChatThread_1NewMessage_txt" xml:space="preserve">
+    <value>1 new message</value>
+  </data>
+  <data name="ChatThread_JumpToLatest" xml:space="preserve">
+    <value>Jump to latest</value>
+  </data>
+  <data name="ChatThread_More_NewMessages_txt" xml:space="preserve">
+    <value>{0} new messages</value>
+    <comment>{0} would be replaced by number</comment>
   </data>
 </root>

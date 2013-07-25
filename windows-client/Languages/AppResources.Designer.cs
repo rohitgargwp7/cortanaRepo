@@ -313,11 +313,38 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1 new message.
+        /// </summary>
+        public static string ChatThread_1NewMessage_txt {
+            get {
+                return ResourceManager.GetString("ChatThread_1NewMessage_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This group chat is muted.
         /// </summary>
         public static string ChatThread_GCMute {
             get {
                 return ResourceManager.GetString("ChatThread_GCMute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jump to latest.
+        /// </summary>
+        public static string ChatThread_JumpToLatest {
+            get {
+                return ResourceManager.GetString("ChatThread_JumpToLatest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} new messages.
+        /// </summary>
+        public static string ChatThread_More_NewMessages_txt {
+            get {
+                return ResourceManager.GetString("ChatThread_More_NewMessages_txt", resourceCulture);
             }
         }
         
