@@ -90,7 +90,7 @@ namespace windows_client.View
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (_geolocator == null) 
+            if (_geolocator == null)
                 _geolocator = new Geolocator();
 
             if (_geolocator.LocationStatus == PositionStatus.Disabled)
@@ -134,8 +134,8 @@ namespace windows_client.View
                 });
 
                 return;
-            } 
-            
+            }
+
             if (App.IS_TOMBSTONED)
             {
                 MyMap.ZoomLevel = (double)PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL];
@@ -150,9 +150,11 @@ namespace windows_client.View
 
             if (e.NavigationMode == NavigationMode.New)
                 GetCurrentCoordinate();
-            else
+            else if (MyRoute == null)
                 GetDirections();
-           
+            else
+                DrawMapMarkers();
+
             base.OnNavigatedTo(e);
         }
 
@@ -169,7 +171,7 @@ namespace windows_client.View
             _geolocator.MovementThreshold = 5;
             _geolocator.DesiredAccuracy = PositionAccuracy.High;
 
-            IAsyncOperation<Geoposition> locationTask = _geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(10), TimeSpan.FromSeconds(5));
+            IAsyncOperation<Geoposition> locationTask = _geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(10), TimeSpan.FromSeconds(2));
 
             try
             {
@@ -377,10 +379,7 @@ namespace windows_client.View
             if (_isDirectionsShown && MyRoute != null && MyRoute.LengthInMeters > 0 && _isLocationEnabled)
             {
                 for (int i = 1; i < MyRoute.Legs[0].Maneuvers.Count - 1; i++)
-                {
-                    if (MyRoute.Legs[0].Maneuvers[i].StartGeoCoordinate != _myCoordinate || MyRoute.Legs[0].Maneuvers[i].StartGeoCoordinate != _locationCoordinate)
-                        DrawMapMarker(MyRoute.Legs[0].Maneuvers[i].StartGeoCoordinate, (Color)Application.Current.Resources["PhoneAccentColor"], mapLayer, false);
-                }
+                    DrawMapMarker(MyRoute.Legs[0].Maneuvers[i].StartGeoCoordinate, (Color)Application.Current.Resources["PhoneAccentColor"], mapLayer, false);
             }
 
             MyMap.Layers.Add(mapLayer);
@@ -433,10 +432,10 @@ namespace windows_client.View
         private void ShowDirections()
         {
             _isDirectionsShown = true;
-            LayoutRoot.RowDefinitions[0].Height = new GridLength(3, GridUnitType.Star);
-            LayoutRoot.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
+            LayoutRoot.RowDefinitions[0].Height = new GridLength(1.5, GridUnitType.Star);
+            LayoutRoot.RowDefinitions[1].Height = new GridLength(2.5, GridUnitType.Star);
+            _isMapBig = false;
             DirectionGrid.Visibility = Visibility.Visible;
-            DrawMapMarkers();
         }
 
         Boolean _isMapBig = true;
@@ -445,8 +444,8 @@ namespace windows_client.View
         {
             if (_isMapBig)
             {
-                LayoutRoot.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
-                LayoutRoot.RowDefinitions[1].Height = new GridLength(3, GridUnitType.Star);
+                LayoutRoot.RowDefinitions[0].Height = new GridLength(1.5, GridUnitType.Star);
+                LayoutRoot.RowDefinitions[1].Height = new GridLength(2.5, GridUnitType.Star);
                 _isMapBig = !_isMapBig;
             }
         }
@@ -455,8 +454,8 @@ namespace windows_client.View
         {
             if (!_isMapBig)
             {
-                LayoutRoot.RowDefinitions[0].Height = new GridLength(3, GridUnitType.Star);
-                LayoutRoot.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
+                LayoutRoot.RowDefinitions[0].Height = new GridLength(2.5, GridUnitType.Star);
+                LayoutRoot.RowDefinitions[1].Height = new GridLength(1.5, GridUnitType.Star);
                 _isMapBig = !_isMapBig;
             }
         }

@@ -4265,8 +4265,15 @@ namespace windows_client.View
                 locationMessage = fileName;
 
                 if (!String.IsNullOrEmpty(vicinity))
-                    locationMessage += ", " + vicinity;
+                {
+                    if (!String.IsNullOrEmpty(locationMessage))
+                        locationMessage += "\n" + vicinity;
+                    else
+                        locationMessage = vicinity;
+                }
 
+                if (String.IsNullOrEmpty(fileName))
+                    fileName = AppResources.Location_Txt;
 
                 ConvMessage convMessage = new ConvMessage(locationMessage, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation)
                 {

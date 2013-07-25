@@ -505,6 +505,11 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility DispMessageVisibility
+        {
+            get { return String.IsNullOrEmpty(DispMessage) ? Visibility.Collapsed : Visibility.Visible; }
+        }
+
         public BitmapImage SdrImage
         {
             get

@@ -255,9 +255,9 @@
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
                                                 <Image Grid.Row="0" MaxWidth="300" MaxHeight="160" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
-                                                <Grid MaxHeight="100" MaxWidth="300" VerticalAlignment="Bottom" Margin="12,0">
+                                                <Grid MaxHeight="100" MaxWidth="300" VerticalAlignment="Bottom" Margin="12,0" Visibility="{Binding DispMessageVisibility}">
                                                     <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                                                    <TextBlock Text="{Binding DispMessage}" Margin="5" TextWrapping="Wrap" Foreground="White" FontSize="18" />
+                                                    <TextBlock Text="{Binding DispMessage}" Margin="10,5" TextWrapping="Wrap" Foreground="White" FontSize="18" />
                                                 </Grid>
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>
@@ -448,7 +448,6 @@
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="14" />
                                         </Grid.RowDefinitions>
-
                                         <Grid Grid.Row="0" HorizontalAlignment="Right">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
@@ -460,7 +459,6 @@
                                             </Grid.ColumnDefinitions>
                                             <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}"/>
                                             <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
-
                                             <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Grid.Row="0" Grid.Column="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" />
                                             <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,24,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                         </Grid>
@@ -501,16 +499,15 @@
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
                                                 <Image Grid.Row="0" MaxWidth="300" MaxHeight="160" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
-                                                <Grid MaxHeight="100" MaxWidth="300" VerticalAlignment="Bottom" Margin="12,0">
+                                                <Grid MaxHeight="100" MaxWidth="300" VerticalAlignment="Bottom" Margin="12,0" Visibility="{Binding DispMessageVisibility}">
                                                     <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                                                    <TextBlock Text="{Binding DispMessage}" Margin="5" TextWrapping="Wrap" Foreground="White" FontSize="18" />
+                                                    <TextBlock Text="{Binding DispMessage}" Margin="10,5" TextWrapping="Wrap" Foreground="White" FontSize="18" />
                                                 </Grid>
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>
                                             <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                         </Grid>
                                         <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
-
                                     </Grid>
                                 </DataTemplate>
                             </view:ChatThreadTemplateSelector.DtSentBubbleLocation>
@@ -548,12 +545,10 @@
                                                 <Image Grid.Row="0" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
                                                 <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="0" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center"/>
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
-
                                             </Grid>
                                             <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                         </Grid>
                                         <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
-
                                     </Grid>
                                 </DataTemplate>
                             </view:ChatThreadTemplateSelector.DtSentBubbleFile>

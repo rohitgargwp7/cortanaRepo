@@ -404,6 +404,8 @@ namespace windows_client
             public static readonly string ITEMS = "items";
             public static readonly string PLACE_TYPE = "urn:nlp-types:place";
             public static readonly string POSITION = "position";
+            public static readonly string CGEN_GPS = "gps";
+            public static readonly string CGEN_MAP = "map";
         }
     }
 }

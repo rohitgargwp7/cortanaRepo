@@ -1258,7 +1258,7 @@ namespace windows_client.utils
                 if (muteIconForConversationView == null)
                 {
                     if (Utils.isDarkTheme())
-                        muteIconForConversationView = new BitmapImage(new Uri("/View/images/mute_icon_main_l.png", UriKind.Relative));
+                        muteIconForConversationView = new BitmapImage(new Uri("/View/images/mute_icon_main_white.png", UriKind.Relative));
                     else
                         muteIconForConversationView = new BitmapImage(new Uri("/View/images/mute_icon_main_b.png", UriKind.Relative));
                 }
