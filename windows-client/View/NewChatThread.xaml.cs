@@ -4724,12 +4724,11 @@ namespace windows_client.View
 
         private void llsMessages_ItemRealized(object sender, ItemRealizationEventArgs e)
         {
-            if (isMessageLoaded && llsMessages.ItemsSource != null && llsMessages.ItemsSource.Count > 0)
+            if (isMessageLoaded && llsMessages.ItemsSource != null && llsMessages.ItemsSource.Count > 0 && hasMoreMessages)
             {
                 if (e.ItemKind == LongListSelectorItemKind.Item)
                 {
-                    ConvMessage convMessage = e.Container.Content as ConvMessage;
-                    if (convMessage.Equals(llsMessages.ItemsSource[0]) && hasMoreMessages)
+                    if ((e.Container.Content as ConvMessage).Equals(llsMessages.ItemsSource[0]))
                     {
                         BackgroundWorker bw = new BackgroundWorker();
                         bw.DoWork += (s1, ev1) =>
@@ -4749,6 +4748,8 @@ namespace windows_client.View
                 }
             }
         }
+    
+        #region Jump To Latest
 
         ScrollBar vScrollBar = null;
         private void vScrollBar1_ValueChanged(Object sender, EventArgs e)
@@ -4801,7 +4802,9 @@ namespace windows_client.View
                     ScrollToBottom();
             }
         }
-
+        
+        #endregion
+        
         #region Stickers
 
 
@@ -5729,7 +5732,6 @@ namespace windows_client.View
             }
         }
 
-
         void _forceSMSTimer_Tick(object sender, EventArgs e)
         {
             _forceSMSTimer.Tick -= _forceSMSTimer_Tick;
@@ -5940,9 +5942,7 @@ namespace windows_client.View
                     FileAttachmentMessage_Tap(sender, e); // normal flow for recieved files
             }
         }
-
-
-
+  
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector
