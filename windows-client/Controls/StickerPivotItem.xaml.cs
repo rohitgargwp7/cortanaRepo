@@ -19,17 +19,26 @@ namespace windows_client.Controls
     {
         private int _pivotIndex;
         private string _category;
-        public StickerPivotItem(EventHandler<System.Windows.Input.GestureEventArgs> stickerTap,
-            ObservableCollection<Sticker> listStickers, int pivotIndex, string category)
+        public StickerPivotItem(ObservableCollection<Sticker> listStickers, int pivotIndex, string category)
         {
             InitializeComponent();
-            if (stickerTap != null)
-            {
-                llsStickerCategory.Tap += stickerTap;
-            }
+            llsStickerCategory.Tap += Stickers_Tap;
             llsStickerCategory.ItemsSource = listStickers;
             _pivotIndex = pivotIndex;
             _category = category;
+        }
+
+        private void Stickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ListBox llsStickerCategory = (sender as ListBox);
+            Sticker sticker = llsStickerCategory.SelectedItem as Sticker;
+            llsStickerCategory.SelectedItem = null;
+            if (sticker == null)
+                return;
+            if (App.newChatThreadPage != null)
+            {
+                App.newChatThreadPage.SendSticker(sticker);
+            }
         }
 
         //call from ui thread

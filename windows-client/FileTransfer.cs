@@ -101,12 +101,12 @@ namespace windows_client
                         // removed by the system.
                         ConvMessage convMessage;
                         requestIdConvMsgMap.TryGetValue(transfer.RequestId, out convMessage);
-                        
+
                         if (convMessage != null)
                             convMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
-                        
+
                         RemoveTransferRequest(transfer.RequestId);
-                        
+
                         //RemoveTransferRequest(transfer.RequestId);
                         // In this example, the downloaded file is moved into the root
                         // Isolated Storage directory
@@ -116,13 +116,13 @@ namespace windows_client
                             {
                                 string destinationPath = HikeConstants.FILES_BYTE_LOCATION + transfer.Tag;
                                 string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));
-                             
+
                                 if (isoStore.FileExists(destinationPath))
                                     isoStore.DeleteFile(destinationPath);
 
                                 if (!isoStore.DirectoryExists(destinationDirectory))
                                     isoStore.CreateDirectory(destinationDirectory);
-                                
+
                                 isoStore.MoveFile(transfer.DownloadLocation.OriginalString, destinationPath);
                                 isoStore.DeleteFile(transfer.DownloadLocation.OriginalString);
 
@@ -150,13 +150,32 @@ namespace windows_client
                     }
                     else
                     {
+                        ConvMessage convMessage;
+                        requestIdConvMsgMap.TryGetValue(transfer.RequestId, out convMessage);
+
+                        if (convMessage != null)
+                            convMessage.SetAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
                         try
                         {
+                            //case file doesn't exists on server
+                            if (transfer.StatusCode == 400)
+                            {
+
+                                var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
+                                if (currentPage != null)
+                                {
+                                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                                        {
+                                            MessageBox.Show(AppResources.File_Not_Exist_Message, AppResources.File_Not_Exist_Caption, MessageBoxButton.OK);
+                                        });
+                                }
+                            }
                             RemoveTransferRequest(transfer.RequestId);
                             // This is where you can handle whatever error is indicated by the
                             // StatusCode and then remove the transfer from the queue. 
                             if (transfer.TransferError != null)
                             {
+                                Debug.WriteLine("Error occured in file transfer,Exception:", transfer.TransferError.Message);
                                 // Handle TransferError if one exists.
                             }
                         }

@@ -92,7 +92,7 @@ namespace windows_client.View
         private long lastTypingNotificationShownTime;
 
         private HikePubSub mPubSub;
-        private IScheduler scheduler = Scheduler.NewThread;
+        public IScheduler scheduler = Scheduler.NewThread;
         private ConvMessage convTypingNotification;
         ContactInfo contactInfo = null; // this will be used if someone adds an unknown number to addressbook
         private byte[] avatar;
@@ -109,7 +109,7 @@ namespace windows_client.View
         private CameraCaptureTask cameraCaptureTask;
         private BingMapsTask bingMapsTask = null;
         private object statusObject = null;
-
+        private int _unreadMessageCounter = 0;
 
         private LastSeenHelper _lastSeenHelper;
         DispatcherTimer _forceSMSTimer;
@@ -251,6 +251,7 @@ namespace windows_client.View
                 WalkieTalkieDeletedBorder.Opacity = 1;
                 WalkieTalkieGridOverlayLayer.Opacity = 1;
             }
+            _currentOrientation = this.Orientation;
         }
 
         void CompositionTarget_Rendering(object sender, EventArgs e)
@@ -402,7 +403,7 @@ namespace windows_client.View
                 loadMessages(INITIAL_FETCH_COUNT);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    ScrollToBottom();
+                    //ScrollToBottom();
                     StartForceSMSTimer(false);
                 });
                 st.Stop();
@@ -1483,7 +1484,8 @@ namespace windows_client.View
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    AddMessageToOcMessages(cm, true);
+
+                    AddMessageToOcMessages(cm, true, false, true);
                 });
             }
 
@@ -1593,7 +1595,7 @@ namespace windows_client.View
                             convMessage.MetaDataString = metaDataString;
                         }
 
-                        AddMessageToOcMessages(convMessage, false);
+                        AddMessageToOcMessages(convMessage, false, false);
                         object[] vals = new object[3];
                         vals[0] = convMessage;
                         vals[1] = sourceFilePath;
@@ -2253,7 +2255,7 @@ namespace windows_client.View
             mediaElement.Stop();
         }
 
-        private void AddNewMessageToUI(ConvMessage convMessage, bool insertAtTop)
+        private void AddNewMessageToUI(ConvMessage convMessage, bool insertAtTop, bool isReceived = false)
         {
             if (isTypingNotificationActive)
             {
@@ -2261,7 +2263,7 @@ namespace windows_client.View
                 isReshowTypingNotification = true;
             }
 
-            AddMessageToOcMessages(convMessage, insertAtTop);
+            AddMessageToOcMessages(convMessage, insertAtTop, isReceived);
 
             if (isReshowTypingNotification)
             {
@@ -2274,7 +2276,8 @@ namespace windows_client.View
       * If readFromDB is true & message state is SENT_UNCONFIRMED, then trying image is set else 
       * it is scheduled
       */
-        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop)
+
+        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived, bool readFromDb = false)
         {
             if (_isSendAllAsSMSVisible && ocMessages != null && convMessage.IsSent)
             {
@@ -2357,6 +2360,8 @@ namespace windows_client.View
                             }
                         }
                     }
+                    if (!readFromDb)
+                        ScheduleMsg(chatBubble);
                     chatBubble.IsSms = !isOnHike;
                     chatBubble.CurrentOrientation = this.Orientation;
                     this.ocMessages.Insert(insertPosition, chatBubble);
@@ -2656,7 +2661,7 @@ namespace windows_client.View
                 }
                 #endregion
 
-                if (!insertAtTop)
+                if (!insertAtTop && !isReceived)
                     ScrollToBottom();
 
             }
@@ -2758,6 +2763,17 @@ namespace windows_client.View
                 Debug.WriteLine("NewChatThread :: inviteUserBtn_Click : Exception Occored:{0}", ex.StackTrace);
             }
         }
+
+        private void ScheduleMsg(ConvMessage convMessage)
+        {
+            if (convMessage != null && convMessage.IsSent && convMessage.MessageStatus == ConvMessage.State.SENT_UNCONFIRMED)
+            {
+                convMessage.SdrImageVisibility = Visibility.Collapsed;
+                scheduler.Schedule(convMessage.UpdateVisibilitySdrImage, TimeSpan.FromSeconds(5));
+            }
+        }
+
+
         #endregion
 
         #region PAGE EVENTS
@@ -3641,7 +3657,7 @@ namespace windows_client.View
                     this.ocMessages.Add(convTypingNotification);
                 }
                 isTypingNotificationActive = true;
-                ScrollToBottom();
+                //ScrollToBottom();
             });
             lastTypingNotificationShownTime = TimeUtils.getCurrentTimeStamp();
             scheduler.Schedule(autoHideTypingNotification, TimeSpan.FromSeconds(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE));
@@ -3734,12 +3750,17 @@ namespace windows_client.View
                         else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
                             userImage.Source = App.ViewModel.ConvMap[convMessage.Msisdn].AvatarImage;
 
-                        AddNewMessageToUI(convMessage, false);
+                        AddNewMessageToUI(convMessage, false, true);
+                        ShowJumpToBottom(true);
+
                         if (vals.Length == 3)
                         {
                             ConvMessage cm = (ConvMessage)vals[2];
                             if (cm != null)
-                                AddNewMessageToUI(cm, false);
+                            {
+                                AddNewMessageToUI(cm, false, true);
+                                ShowJumpToBottom(true);
+                            }
                         }
                     });
                 }
@@ -4681,9 +4702,10 @@ namespace windows_client.View
         }
 
         #region Orientation Handling
-
+        PageOrientation _currentOrientation;
         private void PhoneApplicationPage_OrientationChanged(object sender, OrientationChangedEventArgs e)
         {
+            _currentOrientation = this.Orientation;
             for (int i = 0; i < ocMessages.Count; i++)
             {
                 ConvMessage convMessage = ocMessages[i];
@@ -4729,10 +4751,67 @@ namespace windows_client.View
                             });
                         };
                     }
+
+                }
+            }
+        }
+    
+        #region Jump To Latest
+
+        ScrollBar vScrollBar = null;
+        private void vScrollBar1_ValueChanged(Object sender, EventArgs e)
+        {
+            vScrollBar = sender as ScrollBar;
+            if (vScrollBar != null && vScrollBar.Maximum < 100000 && _currentOrientation == this.Orientation)
+            {
+                if ((vScrollBar.Maximum - vScrollBar.Value) < 100)
+                {
+                    JumpToBottomGrid.Visibility = Visibility.Collapsed;
+                    _unreadMessageCounter = 0;
                 }
             }
         }
 
+        private void JumpToBottom_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ScrollToBottom();
+            JumpToBottomGrid.Visibility = Visibility.Collapsed;
+            _unreadMessageCounter = 0;
+        }
+
+        private void llsMessages_ItemUnRealized(object sender, ItemRealizationEventArgs e)
+        {
+            if (isMessageLoaded && llsMessages.ItemsSource != null && llsMessages.ItemsSource.Count > 0)
+            {
+                if (e.ItemKind == LongListSelectorItemKind.Item)
+                {
+                    ConvMessage convMessage = e.Container.Content as ConvMessage;
+                    if (convMessage.Equals(llsMessages.ItemsSource[llsMessages.ItemsSource.Count - 1]))
+                    {
+                        ShowJumpToBottom(false);
+                    }
+                }
+            }
+        }
+
+        private void ShowJumpToBottom(bool increaseUnreadCounter)
+        {
+            if (vScrollBar != null && (ocMessages != null && ocMessages.Count > 6))
+            {
+                if ((vScrollBar.Maximum - vScrollBar.Value) > 300)
+                {
+                    if (increaseUnreadCounter)
+                        _unreadMessageCounter += 1;
+                    JumpToBottomGrid.Visibility = Visibility.Visible;
+                    txtJumpToBttom.Text = _unreadMessageCounter > 0 ? (_unreadMessageCounter == 1 ? AppResources.ChatThread_1NewMessage_txt : string.Format(AppResources.ChatThread_More_NewMessages_txt, _unreadMessageCounter)) : AppResources.ChatThread_JumpToLatest;
+                }
+                else if (increaseUnreadCounter)
+                    ScrollToBottom();
+            }
+        }
+        
+        #endregion
+        
         #region Stickers
 
 
@@ -4741,21 +4820,14 @@ namespace windows_client.View
         Thickness zeroThickness = new Thickness(0, 0, 0, 0);
         Thickness newCategoryThickness = new Thickness(0, 1, 0, 0);
 
-
-        private void Stickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        public void SendSticker(Sticker sticker)
         {
-            ListBox llsStickerCategory = (sender as ListBox);
-            Sticker sticker = llsStickerCategory.SelectedItem as Sticker;
-            llsStickerCategory.SelectedItem = null;
-            if (sticker == null)
-                return;
-
             ConvMessage conv = new ConvMessage(AppResources.Sticker_Txt, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
             conv.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
             conv.StickerObj = new Sticker(sticker.Category, sticker.Id, null);
             conv.MetaDataString = string.Format("{{{0}:'{1}',{2}:'{3}'}}", HikeConstants.STICKER_ID, sticker.Id, HikeConstants.CATEGORY_ID, sticker.Category);
             //Stickers_tap is binded to pivot and cached so to update latest object this is done
-            App.newChatThreadPage.AddNewMessageToUI(conv, false);
+            AddNewMessageToUI(conv, false);
 
             mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
         }
@@ -5249,7 +5321,7 @@ namespace windows_client.View
         }
         private void CreateStickerPivot()
         {
-            StickerPivotHelper.Instance.InitialiseStickerPivot(Stickers_Tap);
+            StickerPivotHelper.Instance.InitialiseStickerPivot();
             pivotStickers = StickerPivotHelper.Instance.StickerPivot;
             pivotStickers.SelectionChanged += PivotStickers_SelectionChanged;
             pivotStickers.Height = 240;
@@ -5667,7 +5739,6 @@ namespace windows_client.View
             }
         }
 
-
         void _forceSMSTimer_Tick(object sender, EventArgs e)
         {
             _forceSMSTimer.Tick -= _forceSMSTimer_Tick;
@@ -5878,6 +5949,7 @@ namespace windows_client.View
                     FileAttachmentMessage_Tap(sender, e); // normal flow for recieved files
             }
         }
+  
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector

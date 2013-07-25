@@ -269,6 +269,11 @@ namespace windows_client.Model
                     NotifyPropertyChanged("BubbleBackGroundColor");
                     NotifyPropertyChanged("TimeStampForeGround");
                     NotifyPropertyChanged("MessageTextForeGround");
+                    if (_messageStatus == State.SENT_CONFIRMED)
+                    {
+                        SdrImageVisibility = Visibility.Visible;
+                        NotifyPropertyChanged("SdrImageVisibility");
+                    }
                 }
             }
         }
@@ -410,7 +415,7 @@ namespace windows_client.Model
         {
             get
             {
-                return _isSms || MessageStatus >= State.FORCE_SMS_SENT_CONFIRMED ;
+                return _isSms || MessageStatus >= State.FORCE_SMS_SENT_CONFIRMED;
             }
             set
             {
@@ -531,6 +536,11 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility SdrImageVisibility
+        {
+            get;
+            set;
+        }
         private PageOrientation _currentOrientation;
         public PageOrientation CurrentOrientation
         {
@@ -544,7 +554,7 @@ namespace windows_client.Model
                 NotifyPropertyChanged("MessageBubbleWidth");
             }
         }
-        
+
         private bool imageDownloadFailed = false;
         public BitmapImage MessageImage
         {
@@ -616,7 +626,7 @@ namespace windows_client.Model
                     else
                         return UI_Utils.Instance.PlayIcon;
                 }
-                
+
                 return null;
             }
         }
@@ -712,6 +722,8 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("PlayIconVisibility");
                     NotifyPropertyChanging("PlayIconImage");
+                    SdrImageVisibility = Visibility.Visible;
+                    NotifyPropertyChanged("SdrImageVisibility");
                 }
                 NotifyPropertyChanged("ProgressBarVisibility");
                 NotifyPropertyChanged("ProgressBarValue");
@@ -1004,7 +1016,7 @@ namespace windows_client.Model
 
         public Visibility SendAsSMSVisibility
         {
-            get 
+            get
             {
                 if (IsSent && !IsSms && MessageStatus == State.SENT_CONFIRMED && App.newChatThreadPage != null && App.newChatThreadPage.IsSMSOptionValid)
                     return Visibility.Visible;
@@ -1013,13 +1025,13 @@ namespace windows_client.Model
             }
         }
 
-        
+
 
         public ConvMessage(string message, string msisdn, long timestamp, State msgState, PageOrientation currentOrientation)
             : this(message, msisdn, timestamp, msgState, -1, -1, currentOrientation)
         {
         }
-        
+
         public ConvMessage(string message, string msisdn, long timestamp, State msgState)
             : this(message, msisdn, timestamp, msgState, -1, -1, PageOrientation.Portrait)
         {
@@ -1037,10 +1049,10 @@ namespace windows_client.Model
                         msgState == State.SENT_CONFIRMED ||
                         msgState == State.SENT_DELIVERED ||
                         msgState == State.SENT_DELIVERED_READ ||
-                        msgState == State.SENT_FAILED||
-                        msgState== State.FORCE_SMS_SENT_CONFIRMED||
-                        msgState== State.FORCE_SMS_SENT_DELIVERED||
-                        msgState== State.FORCE_SMS_SENT_DELIVERED_READ);
+                        msgState == State.SENT_FAILED ||
+                        msgState == State.FORCE_SMS_SENT_CONFIRMED ||
+                        msgState == State.FORCE_SMS_SENT_DELIVERED ||
+                        msgState == State.FORCE_SMS_SENT_DELIVERED_READ);
             MessageStatus = msgState;
         }
 
@@ -1247,10 +1259,10 @@ namespace windows_client.Model
         {
             if (StickerObj != null)
                 return String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Sticker_Txt) + HikeConstants.STICKER_URL + StickerObj.Category + "/" + StickerObj.Id.Substring(0, StickerObj.Id.IndexOf("_"));
-            
+
             string message = Message;
-            
-            if (FileAttachment == null) 
+
+            if (FileAttachment == null)
                 return message;
 
             if (FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
@@ -1344,7 +1356,7 @@ namespace windows_client.Model
                         byte[] base64Decoded = null;
                         if (thumbnail != null)
                             base64Decoded = System.Convert.FromBase64String(thumbnail.ToString());
-                        
+
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
                             this.FileAttachment = new Attachment(fileName == null ? AppResources.Location_Txt : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
@@ -1582,8 +1594,18 @@ namespace windows_client.Model
             NotifyPropertyChanged("SdrImage");
             NotifyPropertyChanged("PlayIconVisibility");
             NotifyPropertyChanged("PlayIconImage");
+            SdrImageVisibility = attachmentState != Attachment.AttachmentState.STARTED ? Visibility.Visible : Visibility.Collapsed;
+            NotifyPropertyChanged("SdrImageVisibility");
         }
 
+        public void UpdateVisibilitySdrImage()
+        {
+            if (_fileAttachment == null)
+            {
+                SdrImageVisibility = Visibility.Visible;
+                NotifyPropertyChanged("SdrImageVisibility");
+            }
+        }
         public ConvMessage(ParticipantInfoState participantInfoState, JObject jsonObj, long timeStamp = 0)
         {
             string grpId;
