@@ -590,9 +590,6 @@ namespace windows_client.View
                     GetCurrentCoordinate();
             }
 
-            if (!_isLocationEnabled)
-                return;
-
             App.appSettings.TryGetValue(HikeConstants.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
 
             if (App.IS_TOMBSTONED)
@@ -603,22 +600,17 @@ namespace windows_client.View
                 _searchString = PhoneApplicationService.Current.State[HikeConstants.LOCATION_SEARCH] as String;
                 _resultString = (String)PhoneApplicationService.Current.State[HikeConstants.LOCATION_PLACE_SEARCH_RESULT];
                 _selectedIndex = (Int32)PhoneApplicationService.Current.State[HikeConstants.LOCATION_SELECTED_INDEX];
-                
+
                 MyMap.ZoomLevel = (double)PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL];
 
-                if (_customCoordinate == null)
-                    _selectedCoordinate = _myCoordinate;
-                else
-                    _selectedCoordinate = _customCoordinate;
+                _selectedCoordinate = _customCoordinate == null ? _myCoordinate : _customCoordinate;
 
-                if (_myCoordinate == null)
+                if (_myCoordinate == null && _isLocationEnabled)
                     GetCurrentCoordinate();
-                else
+                else if (_selectedCoordinate != null)
                 {
                     shareIconButton.IsEnabled = true;
-
                     DrawMapMarkers();
-
                     SearchTextBox.Text = _searchString;
 
                     if (String.IsNullOrEmpty(_resultString))
@@ -635,7 +627,7 @@ namespace windows_client.View
                     }
                 }
             }
-            else if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New)
+            else if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New && _isLocationEnabled)
             {
                 GetCurrentCoordinate(); // get current coordinate and load last catched coordinate if its not null
 
