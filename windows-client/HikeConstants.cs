@@ -64,8 +64,7 @@ namespace windows_client
         public static readonly string LONGITUDE = "long";
         public static readonly string ZOOM_LEVEL = "zoom";
         public static readonly string LOCATION_ADDRESS = "add";
-        public static readonly string PLACES_SEARCH = "placeSearch";
-
+        
         public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
         public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
         public static readonly string FILES_THUMBNAILS = FILE_TRANSFER_LOCATION + "/Thumbnails";
@@ -260,10 +259,12 @@ namespace windows_client
         public static string SOCIAL = "Social_Request";
         public static string SHOW_GROUP_CHAT_OVERLAY = "sgcol";
         public static string PLAYER_TIMER = "playerTimer";
-        public static string LOCATION_COORDINATE = "locationCoordinate";
+        public static string LOCATION_MAP_COORDINATE = "locationMapCoordinate";
         public static string LOCATION_DEVICE_COORDINATE = "locationDeviceCoordinate";
         public static string LOCATION_SEARCH = "locationSearch";
         public static string LOCATION_ZOOM_LEVEL = "locationZoomLevel";
+        public static string LOCATION_SELECTED_INDEX = "locationSelectedPlace";
+        public static string LOCATION_PLACE_SEARCH_RESULT = "locationPlaceSearchResult";
 
         /* NAVIGATION CONSTANTS*/
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";

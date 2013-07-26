@@ -42,7 +42,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:PhoneTextBox x:Name="SearchTextBox" Hint="search" GotFocus="SearchTextBox_GotFocus" LostFocus="SearchTextBox_LostFocus_1" ActionIcon="/View/images/search_icon.png" ActionIconTapped="PhoneTextBox_ActionIconTapped"/>
+            <toolkit:PhoneTextBox x:Name="SearchTextBox" Hint="search" GotFocus="SearchTextBox_GotFocus" LostFocus="SearchTextBox_LostFocus_1" ActionIcon="/View/images/search_icon.png" ActionIconTapped="SearchAction_Tap"/>
             <ListBox x:Name="PlacesList" Grid.Row="1" SelectionChanged="PlacesList_SelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate>

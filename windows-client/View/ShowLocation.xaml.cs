@@ -52,16 +52,16 @@ namespace windows_client.View
         {
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Back)
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_COORDINATE);
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_SEARCH);
-                PhoneApplicationService.Current.State.Remove(HikeConstants.ZOOM_LEVEL);
+                State.Remove(HikeConstants.LOCATION_MAP_COORDINATE);
+                State.Remove(HikeConstants.LOCATION_SEARCH);
+                State.Remove(HikeConstants.ZOOM_LEVEL);
             }
             else
             {
                 if (MyMap != null)
-                    PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
+                    State[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
                 else
-                    PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = 16;
+                    State[HikeConstants.ZOOM_LEVEL] = 16;
             }
 
             if (_myCoordinate != null)
@@ -116,7 +116,7 @@ namespace windows_client.View
             else
                 _isLocationEnabled = true;
 
-            _locationCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] as GeoCoordinate;
+            _locationCoordinate = State[HikeConstants.LOCATION_MAP_COORDINATE] as GeoCoordinate;
             App.appSettings.TryGetValue(HikeConstants.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
 
             if (!_isLocationEnabled)
@@ -138,7 +138,7 @@ namespace windows_client.View
 
             if (App.IS_TOMBSTONED)
             {
-                MyMap.ZoomLevel = (double)PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL];
+                MyMap.ZoomLevel = (double)State[HikeConstants.ZOOM_LEVEL];
 
                 if (_myCoordinate == null)
                     GetCurrentCoordinate();
