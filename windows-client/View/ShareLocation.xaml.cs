@@ -381,7 +381,7 @@ namespace windows_client.View
             object[] locationDetails = new object[2];
             locationDetails[0] = metadata;
             locationDetails[1] = thumbnailBytes;
-            PhoneApplicationService.Current.State[HikeConstants.SHARED_LOCATION] = locationDetails;
+            State[HikeConstants.SHARED_LOCATION] = locationDetails;
             MyMap = null;
             NavigationService.GoBack();
         }
@@ -596,12 +596,12 @@ namespace windows_client.View
             {
                 _isDefaultLocationCall = false;
 
-                _customCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_MAP_COORDINATE] as GeoCoordinate;
-                _searchString = PhoneApplicationService.Current.State[HikeConstants.LOCATION_SEARCH] as String;
-                _resultString = (String)PhoneApplicationService.Current.State[HikeConstants.LOCATION_PLACE_SEARCH_RESULT];
-                _selectedIndex = (Int32)PhoneApplicationService.Current.State[HikeConstants.LOCATION_SELECTED_INDEX];
+                _customCoordinate = State[HikeConstants.LOCATION_MAP_COORDINATE] as GeoCoordinate;
+                _searchString = State[HikeConstants.LOCATION_SEARCH] as String;
+                _resultString = (String)State[HikeConstants.LOCATION_PLACE_SEARCH_RESULT];
+                _selectedIndex = (Int32)State[HikeConstants.LOCATION_SELECTED_INDEX];
 
-                MyMap.ZoomLevel = (double)PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL];
+                MyMap.ZoomLevel = (double)State[HikeConstants.ZOOM_LEVEL];
 
                 _selectedCoordinate = _customCoordinate == null ? _myCoordinate : _customCoordinate;
 
@@ -650,24 +650,24 @@ namespace windows_client.View
         {
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Back)
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_MAP_COORDINATE);
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_SEARCH);
-                PhoneApplicationService.Current.State.Remove(HikeConstants.ZOOM_LEVEL);
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_PLACE_SEARCH_RESULT);
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_SELECTED_INDEX);
+                State.Remove(HikeConstants.LOCATION_MAP_COORDINATE);
+                State.Remove(HikeConstants.LOCATION_SEARCH);
+                State.Remove(HikeConstants.ZOOM_LEVEL);
+                State.Remove(HikeConstants.LOCATION_PLACE_SEARCH_RESULT);
+                State.Remove(HikeConstants.LOCATION_SELECTED_INDEX);
             }
             else
             {
-                PhoneApplicationService.Current.State[HikeConstants.LOCATION_MAP_COORDINATE] = _customCoordinate;
-                PhoneApplicationService.Current.State[HikeConstants.LOCATION_SEARCH] = _searchString;
+                State[HikeConstants.LOCATION_MAP_COORDINATE] = _customCoordinate;
+                State[HikeConstants.LOCATION_SEARCH] = _searchString;
 
                 if (MyMap != null)
-                    PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
+                    State[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
                 else
-                    PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = 16;
+                    State[HikeConstants.ZOOM_LEVEL] = 16;
 
-                PhoneApplicationService.Current.State[HikeConstants.LOCATION_PLACE_SEARCH_RESULT] = _resultString;
-                PhoneApplicationService.Current.State[HikeConstants.LOCATION_SELECTED_INDEX] = _selectedIndex;
+                State[HikeConstants.LOCATION_PLACE_SEARCH_RESULT] = _resultString;
+                State[HikeConstants.LOCATION_SELECTED_INDEX] = _selectedIndex;
             }
 
             if (_myCoordinate != null)
