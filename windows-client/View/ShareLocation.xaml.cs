@@ -381,7 +381,7 @@ namespace windows_client.View
             object[] locationDetails = new object[2];
             locationDetails[0] = metadata;
             locationDetails[1] = thumbnailBytes;
-            State[HikeConstants.SHARED_LOCATION] = locationDetails;
+            PhoneApplicationService.Current.State[HikeConstants.SHARED_LOCATION] = locationDetails;
             MyMap = null;
             NavigationService.GoBack();
         }
@@ -418,7 +418,11 @@ namespace windows_client.View
 
             var screenshot = new WriteableBitmap(MyMap, new TranslateTransform());
 
-            screenshot = screenshot.Crop((int)point.X, (int)point.Y, HikeConstants.LOCATION_THUMBNAIL_MAX_WIDTH, HikeConstants.LOCATION_THUMBNAIL_MAX_HEIGHT);
+            var newScreenshot = screenshot.Crop((int)point.X, (int)point.Y, HikeConstants.LOCATION_THUMBNAIL_MAX_WIDTH, HikeConstants.LOCATION_THUMBNAIL_MAX_HEIGHT);
+
+            if (newScreenshot.Pixels.Length != 0)
+                screenshot = newScreenshot;
+
             screenshot.Invalidate();
 
             using (MemoryStream ms = new MemoryStream())
