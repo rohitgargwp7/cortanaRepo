@@ -27,7 +27,6 @@ namespace windows_client
 
         #region Hike Specific Constants
 
-        public static readonly string CURRENT_VERSION_KEY = "currentVersion";
         public static readonly string LAUNCH_STATE = "app_launch_state";
         public static readonly string PAGE_STATE = "page_State";
         public static readonly string ACCOUNT_NAME = "accountName";
@@ -378,7 +377,7 @@ namespace windows_client
                 if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
                     isNewInstall = false;
 
-                _currentVersion = (string)PhoneApplicationService.Current.State[CURRENT_VERSION_KEY];
+                appSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out _currentVersion);
                 instantiateClasses(false);
             }
             else
@@ -402,7 +401,6 @@ namespace windows_client
                 App.AnalyticsInstance.saveObject();
 
             PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
-            PhoneApplicationService.Current.State[CURRENT_VERSION_KEY] = _currentVersion;
 
             if (IS_VIEWMODEL_LOADED)
             {
