@@ -2186,7 +2186,7 @@ namespace windows_client.View
                     double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
                     double longitude = Convert.ToDouble(locationJSON[HikeConstants.LONGITUDE].ToString());
 
-                    PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] = new GeoCoordinate(latitude, longitude);
+                    PhoneApplicationService.Current.State[HikeConstants.LOCATION_MAP_COORDINATE] = new GeoCoordinate(latitude, longitude);
 
                     this.NavigationService.Navigate(new Uri("/View/ShowLocation.xaml", UriKind.Relative));
 

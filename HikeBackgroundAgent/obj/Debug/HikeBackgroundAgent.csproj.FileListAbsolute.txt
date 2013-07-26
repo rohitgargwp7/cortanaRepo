@@ -1,0 +1,7 @@
+C:\Users\milan\Desktop\windows-hike-client\HikeBackgroundAgent\Bin\Debug\HikeBackgroundAgent.dll
+C:\Users\milan\Desktop\windows-hike-client\HikeBackgroundAgent\Bin\Debug\HikeBackgroundAgent.pdb
+C:\Users\milan\Desktop\windows-hike-client\HikeBackgroundAgent\Bin\Debug\Newtonsoft.Json.dll
+C:\Users\milan\Desktop\windows-hike-client\HikeBackgroundAgent\Bin\Debug\System.Runtime.Serialization.dll
+C:\Users\milan\Desktop\windows-hike-client\HikeBackgroundAgent\obj\Debug\HikeBackgroundAgent.csprojResolveAssemblyReference.cache
+C:\Users\milan\Desktop\windows-hike-client\HikeBackgroundAgent\obj\Debug\HikeBackgroundAgent.dll
+C:\Users\milan\Desktop\windows-hike-client\HikeBackgroundAgent\obj\Debug\HikeBackgroundAgent.pdb

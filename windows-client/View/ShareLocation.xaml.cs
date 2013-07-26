@@ -35,11 +35,7 @@ namespace windows_client.View
         private GeoCoordinate _myCoordinate = null;
         private String _myPlaceVicinity = String.Empty;
         private GeoCoordinate _selectedCoordinate = null;
-
-        /// <summary>
-        /// True when route is being searched, otherwise false
-        /// </summary>
-        private bool _isPlacesSearch = false;
+        private GeoCoordinate _customCoordinate = null;
 
         private string _nokiaPlacesUrl = "http://places.nlp.nokia.com/places/v1/discover/explore";
         private string _nokiaSeacrhUrl = "http://places.nlp.nokia.com/places/v1/discover/search";
@@ -52,6 +48,8 @@ namespace windows_client.View
         Boolean _isLocationEnabled = true;
         Boolean _isDefaultLocationCall = true;
         String _cgen = HikeConstants.NokiaHere.CGEN_GPS;
+        String _resultString = String.Empty;
+        Int32 _selectedIndex = 0;
 
         private void BuildApplicationBar()
         {
@@ -82,17 +80,20 @@ namespace windows_client.View
         {
             if (MyMap == null)
                 return;
-            
+
+            _resultString = obj.ToString(Newtonsoft.Json.Formatting.None);
+
+            PopulatePlaces(obj);
+        }
+
+        private void PopulatePlaces(JObject obj, int selectedIndex = 0)
+        {
             _places = this.ParsePlaces(obj);
 
-            Deployment.Current.Dispatcher.BeginInvoke(new Action(delegate
+            Deployment.Current.Dispatcher.BeginInvoke(new Action<int>(delegate(int index)
             {
                 if (MyMap == null)
                     return;
-
-                PlacesGrid.Visibility = Visibility.Visible;
-                DrawMapMarkers();
-                DrawMapMarkers();
 
                 if (_selectedPlace == null)
                 {
@@ -126,13 +127,19 @@ namespace windows_client.View
                         _places.Insert(0, _selectedPlace);
                 }
 
-                _selectedPlace = _places[0];
+                _selectedIndex = index;
+                _selectedPlace = _places[index];
                 PlacesList.ItemsSource = _places;
-                HideProgressIndicator();
-                PlacesList.SelectedItem = _places[0];
+                PlacesList.SelectedItem = _places[index];
+                
                 UpdateLayout();
                 PlacesList.ScrollIntoView(PlacesList.SelectedItem);
-            }));
+                UpdateLayout();
+
+                HideProgressIndicator();
+                PlacesGrid.Visibility = Visibility.Visible;
+                DrawMapMarkers();
+            }), selectedIndex);
         }
 
         private List<Place> ParsePlaces(JObject json)
@@ -330,8 +337,11 @@ namespace windows_client.View
             if (_isFetchingCurrentLocation)
                 return;
 
-            _progressIndicator.IsVisible = false;
-            SystemTray.SetProgressIndicator(this, _progressIndicator);
+            if (_progressIndicator != null)
+            {
+                _progressIndicator.IsVisible = false;
+                SystemTray.SetProgressIndicator(this, _progressIndicator);
+            }
         }
 
         public ShareLocation()
@@ -384,7 +394,7 @@ namespace windows_client.View
             GeoCoordinate geo = new GeoCoordinate();
             geo = MyMap.ConvertViewportPointToGeoCoordinate(p);
             MyMap.SetView(geo, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
-            _selectedCoordinate = geo;
+            _selectedCoordinate = _customCoordinate = geo;
             _selectedPlace = null;
             _myPlace = null;
             shareIconButton.IsEnabled = true;
@@ -423,18 +433,24 @@ namespace windows_client.View
 
         private void PlacesList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            var place = (sender as ListBox).SelectedItem as Place;
-
-            if (place != null)
+            var listbox = sender as ListBox;
+            if (listbox != null)
             {
-                this.DataContext = place;
-                _selectedPlace = place;
-                _selectedCoordinate = place.position;
+                var place = listbox.SelectedItem as Place;
 
-                MyMap.SetView(_selectedCoordinate, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
+                if (place != null)
+                {
+                    this.DataContext = place;
+                    _selectedPlace = place;
+                    _selectedCoordinate = place.position;
 
-                DrawMapMarkers();
-                shareIconButton.IsEnabled = true;
+                    _selectedIndex = listbox.SelectedIndex;
+
+                    MyMap.SetView(_selectedCoordinate, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
+
+                    DrawMapMarkers();
+                    shareIconButton.IsEnabled = true;
+                }
             }
         }
 
@@ -451,7 +467,7 @@ namespace windows_client.View
 
         String _searchString = "";
 
-        private void PhoneTextBox_ActionIconTapped(object sender, EventArgs e)
+        private void SearchAction_Tap(object sender, EventArgs e)
         {
             var searchString = SearchTextBox.Text.Trim();
 
@@ -459,7 +475,7 @@ namespace windows_client.View
                 return;
 
             _searchString = searchString;
-            _isPlacesSearch = true;
+            _resultString = String.Empty;
 
             this.Focus();
 
@@ -497,10 +513,10 @@ namespace windows_client.View
                 return;
             }
 
+            _customCoordinate = null;
             shareIconButton.IsEnabled = false;
             _selectedPlace = null;
             _myPlace = null;
-            _isPlacesSearch = false;
             PlacesGrid.Visibility = Visibility.Collapsed;
             GetCurrentCoordinate();
         }
@@ -522,8 +538,8 @@ namespace windows_client.View
                 {
                     shareIconButton.IsEnabled = false;
                     _myPlace = null;
-                    _isPlacesSearch = true;
                     _searchString = SearchTextBox.Text.Trim();
+                    _resultString = String.Empty;
 
                     if (String.IsNullOrEmpty(_searchString))
                         GetPlaces();
@@ -583,13 +599,19 @@ namespace windows_client.View
             {
                 _isDefaultLocationCall = false;
 
-                _selectedCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] as GeoCoordinate;
+                _customCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_MAP_COORDINATE] as GeoCoordinate;
                 _searchString = PhoneApplicationService.Current.State[HikeConstants.LOCATION_SEARCH] as String;
-                _isPlacesSearch = (bool)PhoneApplicationService.Current.State[HikeConstants.PLACES_SEARCH];
-
+                _resultString = (String)PhoneApplicationService.Current.State[HikeConstants.LOCATION_PLACE_SEARCH_RESULT];
+                _selectedIndex = (Int32)PhoneApplicationService.Current.State[HikeConstants.LOCATION_SELECTED_INDEX];
+                
                 MyMap.ZoomLevel = (double)PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL];
 
-                if (_selectedCoordinate == null && _myCoordinate == null)
+                if (_customCoordinate == null)
+                    _selectedCoordinate = _myCoordinate;
+                else
+                    _selectedCoordinate = _customCoordinate;
+
+                if (_myCoordinate == null)
                     GetCurrentCoordinate();
                 else
                 {
@@ -597,14 +619,19 @@ namespace windows_client.View
 
                     DrawMapMarkers();
 
-                    if (_isPlacesSearch)
-                    {
-                        SearchTextBox.Text = _searchString;
+                    SearchTextBox.Text = _searchString;
 
+                    if (String.IsNullOrEmpty(_resultString))
+                    {
                         if (String.IsNullOrEmpty(_searchString))
                             GetPlaces();
                         else
                             Search();
+                    }
+                    else
+                    {
+                        ShowProgressIndicator();
+                        PopulatePlaces(JObject.Parse(_resultString), _selectedIndex);
                     }
                 }
             }
@@ -631,14 +658,15 @@ namespace windows_client.View
         {
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Back)
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_COORDINATE);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_MAP_COORDINATE);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_SEARCH);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.ZOOM_LEVEL);
-                PhoneApplicationService.Current.State.Remove(HikeConstants.PLACES_SEARCH);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_PLACE_SEARCH_RESULT);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_SELECTED_INDEX);
             }
             else
             {
-                PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] = _selectedCoordinate;
+                PhoneApplicationService.Current.State[HikeConstants.LOCATION_MAP_COORDINATE] = _customCoordinate;
                 PhoneApplicationService.Current.State[HikeConstants.LOCATION_SEARCH] = _searchString;
 
                 if (MyMap != null)
@@ -646,7 +674,8 @@ namespace windows_client.View
                 else
                     PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = 16;
 
-                PhoneApplicationService.Current.State[HikeConstants.PLACES_SEARCH] = _isPlacesSearch;
+                PhoneApplicationService.Current.State[HikeConstants.LOCATION_PLACE_SEARCH_RESULT] = _resultString;
+                PhoneApplicationService.Current.State[HikeConstants.LOCATION_SELECTED_INDEX] = _selectedIndex;
             }
 
             if (_myCoordinate != null)

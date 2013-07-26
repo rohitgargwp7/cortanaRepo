@@ -52,7 +52,7 @@ namespace windows_client.View
         {
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Back)
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_COORDINATE);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_MAP_COORDINATE);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_SEARCH);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.ZOOM_LEVEL);
             }
@@ -116,7 +116,7 @@ namespace windows_client.View
             else
                 _isLocationEnabled = true;
 
-            _locationCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] as GeoCoordinate;
+            _locationCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_MAP_COORDINATE] as GeoCoordinate;
             App.appSettings.TryGetValue(HikeConstants.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
 
             if (!_isLocationEnabled)
