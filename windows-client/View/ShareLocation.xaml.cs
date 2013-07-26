@@ -81,7 +81,7 @@ namespace windows_client.View
             if (MyMap == null)
                 return;
 
-            _resultString = obj.ToString(Newtonsoft.Json.Formatting.None);
+            _resultString = obj == null ? String.Empty : obj.ToString(Newtonsoft.Json.Formatting.None);
 
             PopulatePlaces(obj);
         }
