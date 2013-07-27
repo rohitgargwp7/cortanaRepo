@@ -37,31 +37,34 @@
                 <Image Source="\view\images\places_icon.png" Margin="15" MaxHeight="20" MaxWidth="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
         </Grid>
-        <Grid Grid.Row="1" MaxHeight="350" Visibility="Collapsed" x:Name="PlacesGrid" >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <toolkit:PhoneTextBox x:Name="SearchTextBox" Hint="search" GotFocus="SearchTextBox_GotFocus" LostFocus="SearchTextBox_LostFocus_1" ActionIcon="/View/images/search_icon.png" ActionIconTapped="SearchAction_Tap"/>
-            <ListBox x:Name="PlacesList" Grid.Row="1" SelectionChanged="PlacesList_SelectionChanged">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="12,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                <Image MaxHeight="50" Source="{Binding PlaceImage}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Grid Grid.Row="1" Height="420" Visibility="Collapsed" x:Name="PlacesGrid" >
+            <ProgressBar x:Name="loadingPlaces" Background="Transparent" IsIndeterminate="False" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+            <Grid Visibility="Collapsed" x:Name="placesListGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <toolkit:PhoneTextBox x:Name="SearchTextBox" Hint="search" GotFocus="SearchTextBox_GotFocus" LostFocus="SearchTextBox_LostFocus_1" ActionIcon="/View/images/search_icon.png" ActionIconTapped="SearchAction_Tap"/>
+                <ListBox x:Name="PlacesList" Grid.Row="1" SelectionChanged="PlacesList_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="12,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <Image MaxHeight="50" Source="{Binding PlaceImage}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                                <StackPanel Grid.Column="1" Margin="15,0,0,0">
+                                    <TextBlock Text="{Binding title}" FontSize="{StaticResource PhoneFontSizeLarge}" TextWrapping="Wrap" />
+                                    <TextBlock Text="{Binding vicinity}" Foreground="{StaticResource PhoneSubtleBrush}" FontSize="18" TextWrapping="Wrap" Visibility="{Binding VicinityVisibility}"/>
+                                </StackPanel>
                             </Grid>
-                            <StackPanel Grid.Column="1" Margin="15,0,0,0">
-                                <TextBlock Text="{Binding title}" FontSize="{StaticResource PhoneFontSizeLarge}" TextWrapping="Wrap" />
-                                <TextBlock Text="{Binding vicinity}" Foreground="{StaticResource PhoneSubtleBrush}" FontSize="18" TextWrapping="Wrap" Visibility="{Binding VicinityVisibility}"/>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>
