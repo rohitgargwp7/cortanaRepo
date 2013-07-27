@@ -399,7 +399,7 @@ namespace windows_client.View
                 // whenever CT is opened , mark last msg as read if received read
                 if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && App.ViewModel.ConvMap[mContactNumber].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
                 {
-                    ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber);
+                    //ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber);
 
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
