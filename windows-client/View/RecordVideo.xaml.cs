@@ -442,16 +442,6 @@ namespace windows_client.View
 
         private byte[] thumbnail = null;
 
-        void captureSource_CaptureImageCompleted(object sender, CaptureImageCompletedEventArgs e)
-        {
-            using (var msLargeImage = new MemoryStream())
-            {
-                e.Result.SaveJpeg(msLargeImage, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH,
-                    HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT, 0, 60);
-                thumbnail = msLargeImage.ToArray();
-            }
-        }
-
         public async void InitializeVideoRecorder()
         {
             try
