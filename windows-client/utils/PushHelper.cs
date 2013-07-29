@@ -108,7 +108,6 @@ namespace windows_client.utils
                     pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
                     pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
                     pushChannel.Open();
-                    
                 }
                 else
                 {
