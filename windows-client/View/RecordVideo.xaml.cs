@@ -512,6 +512,7 @@ namespace windows_client.View
                     if (storageFile != null)
                     {
                         videoStream = await storageFile.OpenAsync(FileAccessMode.ReadWrite);
+                        await videoCaptureDevice.FocusAsync();
                         await videoCaptureDevice.StartRecordingToStreamAsync(videoStream);
                     }
                 }
