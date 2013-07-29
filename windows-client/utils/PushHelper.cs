@@ -108,9 +108,7 @@ namespace windows_client.utils
                     pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
                     pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
                     pushChannel.Open();
-                    // Bind this new channel for toast events.
-                    pushChannel.BindToShellToast();
-                    pushChannel.BindToShellTile();
+                    
                 }
                 else
                 {
@@ -118,14 +116,18 @@ namespace windows_client.utils
                     pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
                     pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
                 }
+             
+                // Bind this new channel for toast events.
+                if(!pushChannel.IsShellTileBound)
+                    pushChannel.BindToShellTile();
+
+                if (!pushChannel.IsShellToastBound)
+                pushChannel.BindToShellToast();
+
                 if (pushChannel.ChannelUri != null)
-                {
                     LatestPushToken = pushChannel.ChannelUri.ToString();
-                }
                 else
-                {
                     LatestPushToken = null;
-                }
             }
             catch (InvalidOperationException ioe)
             {
