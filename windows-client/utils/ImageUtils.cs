@@ -1432,6 +1432,7 @@ namespace windows_client.utils
                 return null;
             }
         }
+
         public BitmapImage createImageFromBytes(byte[] imagebytes)
         {
             if (imagebytes == null || imagebytes.Length == 0)
