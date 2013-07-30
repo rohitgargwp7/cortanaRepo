@@ -247,9 +247,16 @@ namespace windows_client.View
             ++runningSeconds;
             TimeSpan ts = new TimeSpan(0, 0, maxPlayingTime - runningSeconds);
             txtDebug.Text = ts.ToString("mm\\:ss");
-            
-            if (videoStream != null && currentAppState == ButtonState.Recording)
-                txtSize.Text = ConvertToStorageSizeString(videoStream.Size);
+
+            try
+            {
+                if (videoStream != null)
+                    txtSize.Text = ConvertToStorageSizeString(videoStream.Size);
+            }
+            catch
+            {
+                txtSize.Text = String.Empty;
+            }
 
             if (runningSeconds == maxPlayingTime)
             {
@@ -263,15 +270,15 @@ namespace windows_client.View
 
             string[] suffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
             int i = 0;
-            decimal dValue = (decimal)value;
+            double dValue = (double)value;
 
             while (Math.Round(dValue / 1024) >= 1)
             {
-                dValue /= 1024;
+                dValue = (double)dValue / (double)1024;
                 i++;
             }
 
-            return string.Format("{0:n1} {1}", dValue, suffixes[i]);
+            return string.Format("{0,2:n1} {1}", dValue, suffixes[i]);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -475,35 +482,32 @@ namespace windows_client.View
 
         void videoCaptureDevice_PreviewFrameAvailable(ICameraCaptureDevice sender, object args)
         {
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    if (runningSeconds > 0 && thumbnail == null)
+            if (runningSeconds >= 0 && thumbnail == null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        int frameWidth = (int)this.videoCaptureDevice.PreviewResolution.Width;
-                        int frameHeight = (int)this.videoCaptureDevice.PreviewResolution.Height;
+                        if (runningSeconds > 0 && thumbnail == null)
+                        {
+                            int frameWidth = (int)this.videoCaptureDevice.PreviewResolution.Width;
+                            int frameHeight = (int)this.videoCaptureDevice.PreviewResolution.Height;
 
-                        var argbArray = new int[frameWidth * frameHeight];
-                        this.videoCaptureDevice.GetPreviewBufferArgb(argbArray);
+                            var argbArray = new int[frameWidth * frameHeight];
+                            this.videoCaptureDevice.GetPreviewBufferArgb(argbArray);
 
-                        var wb = new WriteableBitmap(frameWidth, frameHeight);
-                        argbArray.CopyTo(wb.Pixels, 0);
-                        MemoryStream stream = new MemoryStream();
-                        wb.SaveJpeg(stream, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT, 0, 60);
-                        thumbnail = stream.ToArray();
-                    }
-                });
+                            var wb = new WriteableBitmap(frameWidth, frameHeight);
+                            argbArray.CopyTo(wb.Pixels, 0);
+                            MemoryStream stream = new MemoryStream();
+                            wb.SaveJpeg(stream, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT, 0, 60);
+                            thumbnail = stream.ToArray();
+                        }
+                    });
+            }
         }
 
         private async void StartVideoRecording()
         {
             try
             {
-                txtDebug.Opacity = 1;
-                runningSeconds = -1;
-                maxPlayingTime = maxVideoRecordTime;
-                progressTimer.Start();
-                updateProgress();
-
                 try
                 {
                     StorageFolder localFolder = ApplicationData.Current.LocalFolder;
@@ -520,8 +524,13 @@ namespace windows_client.View
                 {
                 }
 
-                // Set the button states and the message.
                 UpdateUI(ButtonState.Recording);
+
+                txtDebug.Opacity = 1;
+                runningSeconds = -1;
+                maxPlayingTime = maxVideoRecordTime;
+                progressTimer.Start();
+                updateProgress();
             }
 
             // If recording fails, display an error.
@@ -540,6 +549,15 @@ namespace windows_client.View
         {
             try
             {
+                if (currentAppState == ButtonState.Recording)
+                {
+                    await videoCaptureDevice.StopRecordingAsync();
+                    videoStream.AsStream().Dispose();
+                }
+
+                UpdateUI(ButtonState.NoChange);
+                StartVideoPreview();
+
                 stopIconButton.IsEnabled = false;
                 addOrRemoveAppBarButton(stopIconButton, false);
                 addOrRemoveAppBarButton(sendIconButton, true);
@@ -548,14 +566,6 @@ namespace windows_client.View
                 runningSeconds = -1;
                 progressTimer.Stop();
                 updateProgress();
-
-                if (currentAppState == ButtonState.Recording)
-                {
-                    await videoCaptureDevice.StopRecordingAsync();
-                    videoStream.AsStream().Dispose();
-                    UpdateUI(ButtonState.NoChange);
-                    StartVideoPreview();
-                }
             }
             // If stop fails, display an error.
             catch (Exception e)
