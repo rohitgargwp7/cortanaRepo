@@ -1161,7 +1161,7 @@ namespace windows_client.View
                 if (GroupManager.Instance.GroupCache != null && GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
                 {
                     showFreeSMS = (from groupParticipant in GroupManager.Instance.GroupCache[mContactNumber]
-                                   where groupParticipant.Msisdn.Contains("+91")
+                                   where groupParticipant.Msisdn.Contains(HikeConstants.INDIA_COUNTRY_CODE)
                                    select groupParticipant).Count() == 0 ? false : true;
                 }
             }
