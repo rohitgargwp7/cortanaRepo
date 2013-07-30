@@ -52,8 +52,7 @@ namespace windows_client.View
         {
             base.OnRemovedFromJournal(e);
 
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.LOCATION_MAP_COORDINATE))
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_MAP_COORDINATE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_MAP_COORDINATE);
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
