@@ -399,7 +399,7 @@ namespace windows_client.View
                 // whenever CT is opened , mark last msg as read if received read
                 if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && App.ViewModel.ConvMap[mContactNumber].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
                 {
-                    ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber);
+                    //ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber);
 
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -461,6 +461,8 @@ namespace windows_client.View
 
             cameraCaptureTask = new CameraCaptureTask();
             cameraCaptureTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
+
+            IsSMSOptionValid = IsSMSOptionAvalable();
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -1087,8 +1089,6 @@ namespace windows_client.View
             }
             else
                 chatThreadMainPage.ApplicationBar = appBar;
-
-            IsSMSOptionValid = IsSMSOptionAvalable();
         }
 
         private void UpdateUiForHikeUser()
@@ -1158,10 +1158,12 @@ namespace windows_client.View
             {
                 GroupManager.Instance.LoadGroupParticipants(mContactNumber);
 
-                showFreeSMS = (from groupParticipant in GroupManager.Instance.GroupCache[mContactNumber]
-                               where groupParticipant.Msisdn.Contains("+91")
-                               select groupParticipant).Count() == 0 ? false : true;
-
+                if (GroupManager.Instance.GroupCache != null && GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
+                {
+                    showFreeSMS = (from groupParticipant in GroupManager.Instance.GroupCache[mContactNumber]
+                                   where groupParticipant.Msisdn.Contains(HikeConstants.INDIA_COUNTRY_CODE)
+                                   select groupParticipant).Count() == 0 ? false : true;
+                }
             }
             else if (!mContactNumber.Contains(HikeConstants.INDIA_COUNTRY_CODE)) //Indian receiver
                 showFreeSMS = false;
