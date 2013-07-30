@@ -117,11 +117,11 @@ namespace windows_client.utils
                 }
              
                 // Bind this new channel for toast events.
-                if(!pushChannel.IsShellTileBound)
+                if (!pushChannel.IsShellTileBound)
                     pushChannel.BindToShellTile();
 
                 if (!pushChannel.IsShellToastBound)
-                pushChannel.BindToShellToast();
+                    pushChannel.BindToShellToast();
 
                 if (pushChannel.ChannelUri != null)
                     LatestPushToken = pushChannel.ChannelUri.ToString();

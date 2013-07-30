@@ -721,7 +721,6 @@
     <Content Include="View\images\unlink_account_black.png" />
     <Content Include="View\images\unlink_account_white.png" />
     <Content Include="View\images\Walkie_Talkie_White_small.png" />
-    <Resource Include="hi.png" />
     <Content Include="View\images\add_users.png" />
     <Content Include="View\images\appbar.add.rest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
