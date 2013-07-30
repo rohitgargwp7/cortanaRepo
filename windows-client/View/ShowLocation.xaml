@@ -48,7 +48,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <maps:Map x:Name="MyMap" Tap="MyMap_Tap" ZoomLevelChanged="ZoomLevelChanged"/>
+        <maps:Map x:Name="MyMap" LandmarksEnabled="True" Tap="MyMap_Tap" ZoomLevelChanged="ZoomLevelChanged"/>
         <Grid x:Name="DirectionGrid" ManipulationStarted="DirectionGrid_ManipulationStarted" Grid.Row="1" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -68,7 +68,7 @@
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="False">
-            <shell:ApplicationBarIconButton Click="Direction_Click" IconUri="view/images/route.png" Text="directions"/>
+            <shell:ApplicationBarIconButton Click="Direction_Click" IconUri="view/images/icon_direction.png" Text="directions"/>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

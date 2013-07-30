@@ -167,8 +167,13 @@ namespace windows_client
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            progressTimer.Stop();
-            progressTimer = null;
+
+            if (progressTimer != null)
+            {
+                progressTimer.Stop();
+                progressTimer = null;
+            }
+
             PhoneApplicationService.Current.State[CallMeTimer] = timerValue;
         }
 

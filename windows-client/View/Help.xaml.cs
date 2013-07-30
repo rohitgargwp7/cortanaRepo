@@ -58,7 +58,7 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.CONTACT_US);
             EmailComposeTask contactUsMail = new EmailComposeTask();
             contactUsMail.To = "support@hike.in";
-            contactUsMail.Subject = "Feedback on WP7";
+            contactUsMail.Subject = AppResources.Help_EmailSubject;
             string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
             StringBuilder emailBodyText = new StringBuilder();
             emailBodyText.Append("\n\n\n\n\n").Append(AppResources.Help_EmailHikeVersion).Append(Utils.getAppVersion()).Append(

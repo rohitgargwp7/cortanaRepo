@@ -22,7 +22,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Image Source="{Binding UserImage}" Margin="0,0,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" VerticalAlignment="Top" MaxHeight="69" ></Image>
+        <Image MaxHeight="69" MaxWidth="69" Source="{Binding UserImage}" Margin="0,0,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" VerticalAlignment="Top"></Image>
         <TextBlock Text="{Binding UserName}" FontSize="30" Margin="21,-10,0,0" Grid.Column="1" Grid.Row="0" FontFamily="Segoe WP Semibold"/>
         <TextBlock TextWrapping="Wrap" FontSize="20" Grid.Column="1" Grid.Row="1" Margin="21,0,0,0" Text="{Binding Path= LocalizedResources.Conversations_AddedYouToFav_Txt_WP8FrndStatus, Source={StaticResource LocalizedStrings}}"/>
         <TextBlock x:Name="seeUpdatesTxtBlk" TextWrapping="Wrap" FontSize="18" Foreground="#797979" Text="{Binding Path= LocalizedResources.Profile_DoTheSame, Source={StaticResource LocalizedStrings}}"  Grid.Column="1" Grid.Row="2" MaxWidth="320" Margin="21,0,5,0"/>

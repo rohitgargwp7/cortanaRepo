@@ -376,6 +376,8 @@ namespace windows_client
             {
                 if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
                     isNewInstall = false;
+
+                appSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out _currentVersion);
                 instantiateClasses(false);
             }
             else
@@ -394,8 +396,12 @@ namespace windows_client
         {
             NetworkManager.turnOffNetworkManager = true;
             sendAppBgStatusToServer();
-            App.AnalyticsInstance.saveObject();
+            
+            if (App.AnalyticsInstance != null)
+                App.AnalyticsInstance.saveObject();
+
             PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
+
             if (IS_VIEWMODEL_LOADED)
             {
                 int convs = 0;
@@ -412,7 +418,9 @@ namespace windows_client
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
-            App.AnalyticsInstance.saveObject(); //check for null
+            if (App.AnalyticsInstance != null)
+                App.AnalyticsInstance.saveObject(); //check for null
+            
             sendAppBgStatusToServer();
             //appDeinitialize();
         }
@@ -580,8 +588,9 @@ namespace windows_client
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
+            if (App.AnalyticsInstance != null)
+                App.AnalyticsInstance.saveObject();
 
-            App.AnalyticsInstance.saveObject();
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 // An unhandled exception has occurred; break into the debugger

@@ -92,6 +92,7 @@ namespace windows_client.utils
         private BitmapImage trollActive;
         private BitmapImage expressionsActive;
         private BitmapImage muteIcon;
+        private BitmapImage muteIconForConversationView;
         private BitmapImage unmuteIcon;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
@@ -1242,11 +1243,27 @@ namespace windows_client.utils
                 if (muteIcon == null)
                 {
                     if (Utils.isDarkTheme())
-                        muteIcon = new BitmapImage(new Uri("/View/images/mute_icon_main.png", UriKind.Relative));
+                        muteIcon = new BitmapImage(new Uri("/View/images/mute_icon_main_l.png", UriKind.Relative));
                     else
-                        muteIcon = new BitmapImage(new Uri("/View/images/mute_icon_main.png", UriKind.Relative));
+                        muteIcon = new BitmapImage(new Uri("/View/images/mute_icon_main_g.png", UriKind.Relative));
                 }
                 return muteIcon;
+            }
+        }
+
+        public BitmapImage MuteIconForConversationView
+        {
+            get
+            {
+                if (muteIconForConversationView == null)
+                {
+                    if (Utils.isDarkTheme())
+                        muteIconForConversationView = new BitmapImage(new Uri("/View/images/mute_icon_main_white.png", UriKind.Relative));
+                    else
+                        muteIconForConversationView = new BitmapImage(new Uri("/View/images/mute_icon_main_b.png", UriKind.Relative));
+                }
+
+                return muteIconForConversationView;
             }
         }
 
@@ -1257,9 +1274,9 @@ namespace windows_client.utils
                 if (unmuteIcon == null)
                 {
                     if (Utils.isDarkTheme())
-                        unmuteIcon = new BitmapImage(new Uri("/View/images/unmutedicon.png", UriKind.Relative));
+                        unmuteIcon = new BitmapImage(new Uri("/View/images/unmute_icon_main_l.png", UriKind.Relative));
                     else
-                        unmuteIcon = new BitmapImage(new Uri("/View/images/unmutedicon.png", UriKind.Relative));
+                        unmuteIcon = new BitmapImage(new Uri("/View/images/unmute_icon_main_g.png", UriKind.Relative));
                 }
                 return unmuteIcon;
             }

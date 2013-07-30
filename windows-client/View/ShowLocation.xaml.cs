@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using windows_client.Languages;
 using Windows.Foundation;
 using windows_client.utils;
+using System.Globalization;
 
 namespace windows_client.View
 {
@@ -32,6 +33,7 @@ namespace windows_client.View
         Boolean _isDirectionsShown = false;
         Boolean _isLocationEnabled = true;
         Boolean _isInitialLoad = true;
+        Boolean _isSameLocation = false;
 
         public ShowLocation()
         {
@@ -46,20 +48,26 @@ namespace windows_client.View
             Microsoft.Phone.Maps.MapsSettings.ApplicationContext.AuthenticationToken = HikeConstants.MICROSOFT_MAP_SERVICE_AUTHENTICATION_TOKEN;
         }
 
+        protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
+        {
+            base.OnRemovedFromJournal(e);
+
+            PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_MAP_COORDINATE);
+        }
+
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
         {
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Back)
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_COORDINATE);
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_SEARCH);
-                PhoneApplicationService.Current.State.Remove(HikeConstants.ZOOM_LEVEL);
+                State.Remove(HikeConstants.LOCATION_SEARCH);
+                State.Remove(HikeConstants.ZOOM_LEVEL);
             }
             else
             {
                 if (MyMap != null)
-                    PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
+                    State[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
                 else
-                    PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = 16;
+                    State[HikeConstants.ZOOM_LEVEL] = 16;
             }
 
             if (_myCoordinate != null)
@@ -88,7 +96,7 @@ namespace windows_client.View
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (_geolocator == null) 
+            if (_geolocator == null)
                 _geolocator = new Geolocator();
 
             if (_geolocator.LocationStatus == PositionStatus.Disabled)
@@ -114,7 +122,7 @@ namespace windows_client.View
             else
                 _isLocationEnabled = true;
 
-            _locationCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] as GeoCoordinate;
+            _locationCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_MAP_COORDINATE] as GeoCoordinate;
             App.appSettings.TryGetValue(HikeConstants.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
 
             if (!_isLocationEnabled)
@@ -132,11 +140,11 @@ namespace windows_client.View
                 });
 
                 return;
-            } 
-            
+            }
+
             if (App.IS_TOMBSTONED)
             {
-                MyMap.ZoomLevel = (double)PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL];
+                MyMap.ZoomLevel = (double)State[HikeConstants.ZOOM_LEVEL];
 
                 if (_myCoordinate == null)
                     GetCurrentCoordinate();
@@ -148,9 +156,11 @@ namespace windows_client.View
 
             if (e.NavigationMode == NavigationMode.New)
                 GetCurrentCoordinate();
-            else
+            else if (MyRoute == null)
                 GetDirections();
-           
+            else
+                DrawMapMarkers();
+
             base.OnNavigatedTo(e);
         }
 
@@ -167,7 +177,7 @@ namespace windows_client.View
             _geolocator.MovementThreshold = 5;
             _geolocator.DesiredAccuracy = PositionAccuracy.High;
 
-            IAsyncOperation<Geoposition> locationTask = _geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(10), TimeSpan.FromSeconds(5));
+            IAsyncOperation<Geoposition> locationTask = _geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(10), TimeSpan.FromSeconds(2));
 
             try
             {
@@ -269,6 +279,19 @@ namespace windows_client.View
             {
                 MyRoute = e.Result;
                 MyMapRoute = new MapRoute(MyRoute);
+
+                if (MyRoute.Legs != null && MyRoute.Legs[0].Maneuvers != null && MyRoute.Legs[0].Maneuvers.Count == 2)
+                {
+                    _isSameLocation = true;
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        MyMap.SetView(_locationCoordinate, 16, MapAnimationKind.Parabolic);
+                        DrawMapMarkers();
+                    });
+
+                    return;
+                }
+
                 MyMap.AddRoute(MyMapRoute);
 
                 // Update route information and directions
@@ -280,10 +303,10 @@ namespace windows_client.View
                 if (MyRoute.LengthInMeters > 1000)
                 {
                     distance /= 1000;
-                    distanceDestination.Text = String.Format(AppResources.Kilometer_Abbreviation, distance.ToString("0.0"));
+                    distanceDestination.Text = String.Format(AppResources.Kilometer_Abbreviation, distance.ToString("0.0", CultureInfo.InvariantCulture));
                 }
                 else
-                    distanceDestination.Text = String.Format(AppResources.Meter_Abbreviation, distance.ToString("0.0"));
+                    distanceDestination.Text = String.Format(AppResources.Meter_Abbreviation, distance.ToString("0.0", CultureInfo.InvariantCulture));
 
                 List<Direction> routeInstructions = new List<Direction>();
                 
@@ -305,10 +328,10 @@ namespace windows_client.View
                             if (distance > 1000)
                             {
                                 distance = distance / 1000;
-                                direction.Distance = String.Format(AppResources.Kilometer_Abbreviation, distance.ToString("0.0"));
+                                direction.Distance = String.Format(AppResources.Kilometer_Abbreviation, distance.ToString("0.0", CultureInfo.InvariantCulture));
                             }
                             else
-                                direction.Distance = String.Format(AppResources.Meter_Abbreviation, distance.ToString("0.0"));
+                                direction.Distance = String.Format(AppResources.Meter_Abbreviation, distance.ToString("0.0", CultureInfo.InvariantCulture));
                             
                         }
 
@@ -351,7 +374,7 @@ namespace windows_client.View
             MapLayer mapLayer = new MapLayer();
 
             // Draw marker for current position
-            if (_myCoordinate != null && _isLocationEnabled)
+            if (_myCoordinate != null && _isLocationEnabled && !_isSameLocation)
                 DrawMapMarker(_myCoordinate, Colors.Orange, mapLayer, true);
 
             if (_locationCoordinate != null)
@@ -362,10 +385,7 @@ namespace windows_client.View
             if (_isDirectionsShown && MyRoute != null && MyRoute.LengthInMeters > 0 && _isLocationEnabled)
             {
                 for (int i = 1; i < MyRoute.Legs[0].Maneuvers.Count - 1; i++)
-                {
-                    if (MyRoute.Legs[0].Maneuvers[i].StartGeoCoordinate != _myCoordinate || MyRoute.Legs[0].Maneuvers[i].StartGeoCoordinate != _locationCoordinate)
-                        DrawMapMarker(MyRoute.Legs[0].Maneuvers[i].StartGeoCoordinate, (Color)Application.Current.Resources["PhoneAccentColor"], mapLayer, false);
-                }
+                    DrawMapMarker(MyRoute.Legs[0].Maneuvers[i].StartGeoCoordinate, (Color)Application.Current.Resources["PhoneAccentColor"], mapLayer, false);
             }
 
             MyMap.Layers.Add(mapLayer);
@@ -418,10 +438,10 @@ namespace windows_client.View
         private void ShowDirections()
         {
             _isDirectionsShown = true;
-            LayoutRoot.RowDefinitions[0].Height = new GridLength(3, GridUnitType.Star);
-            LayoutRoot.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
+            LayoutRoot.RowDefinitions[0].Height = new GridLength(1.5, GridUnitType.Star);
+            LayoutRoot.RowDefinitions[1].Height = new GridLength(2.5, GridUnitType.Star);
+            _isMapBig = false;
             DirectionGrid.Visibility = Visibility.Visible;
-            DrawMapMarkers();
         }
 
         Boolean _isMapBig = true;
@@ -430,8 +450,8 @@ namespace windows_client.View
         {
             if (_isMapBig)
             {
-                LayoutRoot.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
-                LayoutRoot.RowDefinitions[1].Height = new GridLength(3, GridUnitType.Star);
+                LayoutRoot.RowDefinitions[0].Height = new GridLength(1.5, GridUnitType.Star);
+                LayoutRoot.RowDefinitions[1].Height = new GridLength(2.5, GridUnitType.Star);
                 _isMapBig = !_isMapBig;
             }
         }
@@ -440,8 +460,8 @@ namespace windows_client.View
         {
             if (!_isMapBig)
             {
-                LayoutRoot.RowDefinitions[0].Height = new GridLength(3, GridUnitType.Star);
-                LayoutRoot.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
+                LayoutRoot.RowDefinitions[0].Height = new GridLength(2.5, GridUnitType.Star);
+                LayoutRoot.RowDefinitions[1].Height = new GridLength(1.5, GridUnitType.Star);
                 _isMapBig = !_isMapBig;
             }
         }

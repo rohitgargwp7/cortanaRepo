@@ -232,9 +232,11 @@ namespace windows_client.ViewModel
                     {
                         Geoposition currentPosition = await locationTask;
 
-                        var newCoordinate = new GeoCoordinate(currentPosition.Coordinate.Latitude, currentPosition.Coordinate.Longitude);
+                        var latitutde = Math.Round(currentPosition.Coordinate.Latitude, 6);
+                        var longitute = Math.Round(currentPosition.Coordinate.Longitude, 6);
+                        var newCoordinate = new GeoCoordinate(latitutde, longitute);
+                        
                         App.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, newCoordinate);
-
                     }
                     catch (Exception ex)
                     {
@@ -453,7 +455,7 @@ namespace windows_client.ViewModel
             isCurrentShown = (currentlyShowing & 0x02) > 0;
             if (!isShownVal || isCurrentShown)
                 DictInAppTip.Add(1, new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 130, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
-            
+
             isShownVal = (marked & 0x04) > 0;
             isCurrentShown = (currentlyShowing & 0x04) > 0;
             if (!isShownVal || isCurrentShown)
@@ -516,6 +518,9 @@ namespace windows_client.ViewModel
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 3);
                 else if (index == 3)
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 2);
+
+                if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE) && index == 1)
+                    tip.TipMargin = new Thickness(10, 0, 110, 0);
 
                 if (tip.IsTop)
                 {
