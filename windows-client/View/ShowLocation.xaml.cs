@@ -48,11 +48,17 @@ namespace windows_client.View
             Microsoft.Phone.Maps.MapsSettings.ApplicationContext.AuthenticationToken = HikeConstants.MICROSOFT_MAP_SERVICE_AUTHENTICATION_TOKEN;
         }
 
+        protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
+        {
+            base.OnRemovedFromJournal(e);
+
+            PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_MAP_COORDINATE);
+        }
+
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
         {
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Back)
             {
-                State.Remove(HikeConstants.LOCATION_MAP_COORDINATE);
                 State.Remove(HikeConstants.LOCATION_SEARCH);
                 State.Remove(HikeConstants.ZOOM_LEVEL);
             }
@@ -116,7 +122,7 @@ namespace windows_client.View
             else
                 _isLocationEnabled = true;
 
-            _locationCoordinate = State[HikeConstants.LOCATION_MAP_COORDINATE] as GeoCoordinate;
+            _locationCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_MAP_COORDINATE] as GeoCoordinate;
             App.appSettings.TryGetValue(HikeConstants.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
 
             if (!_isLocationEnabled)
