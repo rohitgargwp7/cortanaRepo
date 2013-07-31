@@ -1852,14 +1852,6 @@ Get hike: http://get.hike.in</value>
   <data name="Location_Heading" xml:space="preserve">
     <value>Location</value>
   </data>
-  <data name="Kilometer_Abbreviation" xml:space="preserve">
-    <value>{0} km</value>
-    <comment>kilometer</comment>
-  </data>
-  <data name="Meter_Abbreviation" xml:space="preserve">
-    <value>{0} m</value>
-    <comment>meter</comment>
-  </data>
   <data name="Settings_LocationToggleSwitchHeader" xml:space="preserve">
     <value>Use location</value>
   </data>
