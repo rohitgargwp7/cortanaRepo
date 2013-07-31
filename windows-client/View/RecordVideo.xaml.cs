@@ -133,7 +133,7 @@ namespace windows_client.View
             doneIconButton.Text = AppResources.OK;
             doneIconButton.Click += doneIconButton_Click;
             doneIconButton.IsEnabled = true;
-
+            
             recordVideo.ApplicationBar = appBar;
         }
 
@@ -185,14 +185,19 @@ namespace windows_client.View
         {
             videoCaptureDevice.Dispose();
             videoCaptureDevice = isPrimaryCam ? await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Back, selectedResolution) : await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Front, selectedResolution);
+            videoCaptureDevice.PreviewFrameAvailable += videoCaptureDevice_PreviewFrameAvailable;
 
             if (isPrimaryCam)
             {
-                playerTransform.ScaleX = 1;
+                viewfinderRectangle.Height = 800;
+                VideoPlayer.Width = 800;
                 viewfinderTransform.ScaleX = 1;
+                playerTransform.ScaleX = 1;
             }
             else
             {
+                viewfinderRectangle.Height = 640;
+                VideoPlayer.Width = 640;
                 playerTransform.ScaleX = -1;
                 viewfinderTransform.ScaleX = -1;
             }
@@ -251,30 +256,28 @@ namespace windows_client.View
             try
             {
                 if (videoStream != null)
-                    txtSize.Text = ConvertToStorageSizeString(videoStream.Size);
+                    txtSize.Text = ConvertToStorageSizeString(videoStream.AsStream().Length);
             }
             catch
             {
                 txtSize.Text = String.Empty;
             }
 
-            if (runningSeconds == maxPlayingTime)
-            {
+            if (runningSeconds == maxPlayingTime && currentAppState == ButtonState.Recording)
                 StopVideoRecording();
-            }
         }
 
-        string ConvertToStorageSizeString(ulong size)
+        string ConvertToStorageSizeString(long size)
         {
-            var value = Convert.ToInt64(size);
-
             string[] suffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
             int i = 0;
-            double dValue = (double)value;
+            double dValue = (double)size;
 
             while (Math.Round(dValue / 1024) >= 1)
             {
-                dValue = (double)dValue / (double)1024;
+                Debug.WriteLine("Size: " + dValue);
+
+                dValue /= 1024;
                 i++;
             }
 
@@ -497,6 +500,10 @@ namespace windows_client.View
                             var wb = new WriteableBitmap(frameWidth, frameHeight);
                             argbArray.CopyTo(wb.Pixels, 0);
                             MemoryStream stream = new MemoryStream();
+
+                            wb = isPrimaryCam ? wb.Rotate(90) : wb.Rotate(270);
+                            wb.Invalidate();
+
                             wb.SaveJpeg(stream, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT, 0, 60);
                             thumbnail = stream.ToArray();
                         }
@@ -531,6 +538,8 @@ namespace windows_client.View
                 maxPlayingTime = maxVideoRecordTime;
                 progressTimer.Start();
                 updateProgress();
+
+                videoRecorderBrush.SetSource(videoCaptureDevice);
             }
 
             // If recording fails, display an error.
@@ -555,9 +564,6 @@ namespace windows_client.View
                     videoStream.AsStream().Dispose();
                 }
 
-                UpdateUI(ButtonState.NoChange);
-                StartVideoPreview();
-
                 stopIconButton.IsEnabled = false;
                 addOrRemoveAppBarButton(stopIconButton, false);
                 addOrRemoveAppBarButton(sendIconButton, true);
@@ -566,6 +572,9 @@ namespace windows_client.View
                 runningSeconds = -1;
                 progressTimer.Stop();
                 updateProgress();
+
+                UpdateUI(ButtonState.NoChange);
+                StartVideoPreview();
             }
             // If stop fails, display an error.
             catch (Exception e)
@@ -603,8 +612,6 @@ namespace windows_client.View
                 recordIconButton.IsEnabled = false;
                 addOrRemoveAppBarButton(recordIconButton, false);
                 addOrRemoveAppBarButton(sendIconButton, false);
-                //captureSource.CaptureImageAsync();
-                progressTimer.Start();
                 StartVideoRecording();
             }
             catch (Exception ex)
@@ -733,13 +740,7 @@ namespace windows_client.View
         {
             // Remove the playback objects.
             DisposeVideoPlayer();
-            StartVideoPreview();
-        }
-
-        protected override void OnOrientationChanged(OrientationChangedEventArgs e)
-        {
-            if (e.Orientation == PageOrientation.LandscapeLeft)
-                base.OnOrientationChanged(e);
+            StopVideoRecording();
         }
 
         private void cameraList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)

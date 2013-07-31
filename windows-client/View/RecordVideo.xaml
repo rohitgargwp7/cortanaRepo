@@ -20,24 +20,22 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Landscape" Orientation="LandscapeLeft"
+    SupportedOrientations="Portrait" Orientation="Portrait"
     shell:SystemTray.IsVisible="False" Name="recordVideo">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         
         <!--Camera viewfinder >-->
-        <Rectangle 
-            x:Name="viewfinderRectangle"
-            Width="640" 
-            Height="480"
-            HorizontalAlignment="Left" 
-            Margin="80,0,0,0">
+        <Rectangle Height="800" Width="480" 
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+            x:Name="viewfinderRectangle">
             <Rectangle.Fill>
-                <VideoBrush x:Name="videoRecorderBrush" AlignmentX="Left" AlignmentY="Top" Stretch="UniformToFill">
+                <VideoBrush x:Name="videoRecorderBrush" Stretch="Fill">
                     <VideoBrush.RelativeTransform>
-                        <CompositeTransform x:Name="viewfinderTransform" ScaleX="1"
-                                            CenterX="0.5" CenterY="0.5"/>
+                        <CompositeTransform x:Name="viewfinderTransform"
+                                            Rotation="90" CenterX="0.5" CenterY="0.5"/>
                     </VideoBrush.RelativeTransform>
                 </VideoBrush>
             </Rectangle.Fill>
@@ -45,34 +43,31 @@
 
         <MediaElement 
             x:Name="VideoPlayer" 
-            AutoPlay="True" 
-            RenderTransformOrigin="0.5, 0.5" 
-            VerticalAlignment="Center" 
-            HorizontalAlignment="Left" 
-            Stretch="Fill" Height="480" Width="640"
-            Margin="80,0,0,0">
+            AutoPlay="True"
+            VerticalAlignment="Stretch" 
+            HorizontalAlignment="Stretch" 
+            Stretch="Fill">
             <MediaElement.RenderTransform>
                 <TransformGroup>
-                    <CompositeTransform x:Name="playerTransform" ScaleX="1"
-                                            CenterX="0.5" CenterY="0.5" />
+                    <CompositeTransform x:Name="playerTransform" CenterX="0.5" CenterY="0.5" />
                 </TransformGroup>
             </MediaElement.RenderTransform>
         </MediaElement>
 
         <!--Used for debugging >-->
-        <StackPanel Orientation="Horizontal" Margin="12" VerticalAlignment="Bottom">
+        <StackPanel Orientation="Horizontal" Margin="12,0,12,0" VerticalAlignment="Bottom">
             <TextBlock 
             HorizontalAlignment="Left" 
             VerticalAlignment="Bottom"
             Name="txtDebug" FontWeight="Thin"
-            Text="00.00" Foreground="White" Margin="80,0,0,0"
+            Text="00.00" Foreground="White" Margin="0,80,0,0"
             FontSize="100" />
 
             <TextBlock 
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Name="txtSize" Foreground="White"
-            Margin="90,0,0,15"
+            Margin="90,80,0,15"
             FontSize="24"/>
         </StackPanel>
 
