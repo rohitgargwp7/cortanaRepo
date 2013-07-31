@@ -68,20 +68,15 @@ namespace windows_client.View
             DrawMapMarkers();
         }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             _locationCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_MAP_COORDINATE] as GeoCoordinate;
 
             if (App.IS_TOMBSTONED)
-            {
                 MyMap.ZoomLevel = (double)State[HikeConstants.ZOOM_LEVEL];
 
-                return;
-            }
-            else if (e.NavigationMode == NavigationMode.New)
-            {
+            if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
                 MyMap.SetView(_locationCoordinate, 16, MapAnimationKind.Parabolic);
-            }
 
             DrawMapMarkers();
 
