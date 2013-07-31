@@ -1820,7 +1820,7 @@ Get hike: http://get.hike.in</value>
     <comment>verb(length 12)</comment>
   </data>
   <data name="Send_All_As_SMS" xml:space="preserve">
-    <value>{0} is offline, tap to send as sms</value>
+    <value>{0} is offline, tap to send as hike sms</value>
   </data>
   <data name="H2HOfline_0SMS_Message" xml:space="preserve">
     <value>Your free SMS balance is zero. You can invite friends to join hike and earn more free SMS</value>
@@ -1829,7 +1829,7 @@ Get hike: http://get.hike.in</value>
     <value>Pending messages will be sent as free hike SMS</value>
   </data>
   <data name="H2HOfline_Confirmation_Message_Heading" xml:space="preserve">
-    <value>Send as SMS</value>
+    <value>Send as hike SMS</value>
   </data>
   <data name="On_Dnd_Txt" xml:space="preserve">
     <value>on DND</value>
@@ -1844,7 +1844,7 @@ Get hike: http://get.hike.in</value>
     <value>My Location</value>
   </data>
   <data name="Send_All_As_SMS_Group" xml:space="preserve">
-    <value>Tap to send as SMS</value>
+    <value>Tap to send as hike sms</value>
   </data>
   <data name="StatusNotToggle_Caption_Txt" xml:space="preserve">
     <value>Status Update Notifications</value>

@@ -2206,17 +2206,10 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State[HikeConstants.LOCATION_MAP_COORDINATE] = new GeoCoordinate(latitude, longitude);
 
                     this.NavigationService.Navigate(new Uri("/View/ShowLocation.xaml", UriKind.Relative));
-
-                    //if (this.bingMapsTask == null)
-                    //    bingMapsTask = new BingMapsTask();
-                    //double zoomLevel = Convert.ToDouble(locationJSON[HikeConstants.ZOOM_LEVEL].ToString());
-                    //bingMapsTask.Center = new GeoCoordinate(latitude, longitude);
-                    //bingMapsTask.ZoomLevel = zoomLevel;
-                    //bingMapsTask.Show();
                 }
                 catch (Exception ex) //Code should never reach here
                 {
-                    Debug.WriteLine("NewChatTHread :: DisplayAttachment :: Exception while parsing lacation parameters" + ex.StackTrace);
+                    Debug.WriteLine("NewChatTHread :: DisplayAttachment :: Exception while parsing location parameters" + ex.StackTrace);
                 }
                 return;
             }
@@ -2228,6 +2221,7 @@ namespace windows_client.View
                 sct.Show();
             }
         }
+
 
         void mediaElement_CurrentStateChanged(object sender, RoutedEventArgs e)
         {
