@@ -487,9 +487,7 @@ namespace windows_client.View
 
         private void SearchAction_Tap(object sender, EventArgs e)
         {
-            var searchString = SearchTextBox.Text.Trim();
-
-            SearchNearBy(searchString);
+            SearchNearBy(SearchTextBox.Text.Trim());
         }
 
         private void SearchNearBy(string searchString)
@@ -708,11 +706,7 @@ namespace windows_client.View
         private void SearchTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Enter)
-            {
-                var searchString = SearchTextBox.Text.Trim();
-
-                SearchNearBy(searchString);
-            }
+                SearchNearBy(SearchTextBox.Text.Trim());
         }
     }
 
