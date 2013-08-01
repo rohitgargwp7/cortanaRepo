@@ -134,7 +134,7 @@ namespace windows_client.View
                 }
 
                 _selectedIndex = index;
-                _selectedPlace = _places[index];
+                _lastSelectedPlace = _selectedPlace = _places[index];
                 PlacesList.ItemsSource = _places;
                 PlacesList.SelectedItem = _places[index];
                 
@@ -489,6 +489,11 @@ namespace windows_client.View
         {
             var searchString = SearchTextBox.Text.Trim();
 
+            SearchNearBy(searchString);
+        }
+
+        private void SearchNearBy(string searchString)
+        {
             if (_searchString == searchString && _selectedPlace == _lastSelectedPlace) // avoid duplicated search calls for same place
                 return;
 
@@ -698,6 +703,16 @@ namespace windows_client.View
         private void SearchTextBox_LostFocus_1(object sender, RoutedEventArgs e)
         {
             shareIconButton.IsEnabled = true;
+        }
+
+        private void SearchTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                var searchString = SearchTextBox.Text.Trim();
+
+                SearchNearBy(searchString);
+            }
         }
     }
 
