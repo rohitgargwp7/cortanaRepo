@@ -574,7 +574,10 @@ namespace windows_client
                 // A navigation has failed; break into the debugger
                 System.Diagnostics.Debugger.Break();
             }
-            App.AnalyticsInstance.saveObject();
+
+            if (App.AnalyticsInstance != null)
+                App.AnalyticsInstance.saveObject();
+
             if (IS_VIEWMODEL_LOADED)
             {
                 int convs = 0;

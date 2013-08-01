@@ -1797,7 +1797,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Send as SMS.
+        ///   Looks up a localized string similar to Send as hike SMS.
         /// </summary>
         public static string H2HOfline_Confirmation_Message_Heading {
             get {
@@ -2202,15 +2202,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} km.
-        /// </summary>
-        public static string Kilometer_Abbreviation {
-            get {
-                return ResourceManager.GetString("Kilometer_Abbreviation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to last seen.
         /// </summary>
         public static string Last_Seen {
@@ -2324,15 +2315,6 @@ namespace windows_client.Languages {
         public static string MessagingHikeFriendsFree_Txt {
             get {
                 return ResourceManager.GetString("MessagingHikeFriendsFree_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} m.
-        /// </summary>
-        public static string Meter_Abbreviation {
-            get {
-                return ResourceManager.GetString("Meter_Abbreviation", resourceCulture);
             }
         }
         
@@ -3588,7 +3570,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} is offline, tap to send as sms.
+        ///   Looks up a localized string similar to {0} is offline, tap to send as hike sms.
         /// </summary>
         public static string Send_All_As_SMS {
             get {
@@ -3597,7 +3579,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap to send as SMS.
+        ///   Looks up a localized string similar to Tap to send as hike sms.
         /// </summary>
         public static string Send_All_As_SMS_Group {
             get {
