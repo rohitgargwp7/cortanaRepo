@@ -1895,10 +1895,10 @@ Get hike: http://get.hike.in</value>
     <value>View full message</value>
   </data>
   <data name="File_Not_Exist_Caption" xml:space="preserve">
-    <value>No file</value>
+    <value>Download Failed</value>
   </data>
   <data name="File_Not_Exist_Message" xml:space="preserve">
-    <value>File no longer exists </value>
+    <value>This file no longer exists on the server</value>
   </data>
   <data name="ChatThread_1NewMessage_txt" xml:space="preserve">
     <value>1 new message</value>

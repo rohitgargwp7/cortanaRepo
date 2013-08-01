@@ -5238,6 +5238,7 @@ namespace windows_client.View
                         downloadDialogueImage.Source = UI_Utils.Instance.DoggyOverlay;
                         btnDownload.Content = AppResources.Installed_Txt;
                         btnDownload.IsHitTestVisible = false;
+                        btnFree.IsHitTestVisible = false;
                         break;
                     case StickerHelper.CATEGORY_KITTY:
                         downloadDialogueImage.Source = UI_Utils.Instance.KittyOverlay;
@@ -5263,6 +5264,7 @@ namespace windows_client.View
                 if (btnDownload.IsHitTestVisible == false)
                 {
                     btnDownload.IsHitTestVisible = true;
+                    btnFree.IsHitTestVisible = true;
                     btnDownload.Content = AppResources.Download_txt;
                     App.appSettings.Remove(HikeConstants.AppSettings.SHOW_DOGGY_OVERLAY);
                 }
