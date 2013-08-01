@@ -461,6 +461,8 @@ namespace windows_client.View
 
             cameraCaptureTask = new CameraCaptureTask();
             cameraCaptureTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
+
+            IsSMSOptionValid = IsSMSOptionAvalable();
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -1087,8 +1089,6 @@ namespace windows_client.View
             }
             else
                 chatThreadMainPage.ApplicationBar = appBar;
-
-            IsSMSOptionValid = IsSMSOptionAvalable();
         }
 
         private void UpdateUiForHikeUser()
@@ -1158,10 +1158,12 @@ namespace windows_client.View
             {
                 GroupManager.Instance.LoadGroupParticipants(mContactNumber);
 
-                showFreeSMS = (from groupParticipant in GroupManager.Instance.GroupCache[mContactNumber]
-                               where groupParticipant.Msisdn.Contains("+91")
-                               select groupParticipant).Count() == 0 ? false : true;
-
+                if (GroupManager.Instance.GroupCache != null && GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
+                {
+                    showFreeSMS = (from groupParticipant in GroupManager.Instance.GroupCache[mContactNumber]
+                                   where groupParticipant.Msisdn.Contains(HikeConstants.INDIA_COUNTRY_CODE)
+                                   select groupParticipant).Count() == 0 ? false : true;
+                }
             }
             else if (!mContactNumber.Contains(HikeConstants.INDIA_COUNTRY_CODE)) //Indian receiver
                 showFreeSMS = false;
@@ -2204,17 +2206,10 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State[HikeConstants.LOCATION_MAP_COORDINATE] = new GeoCoordinate(latitude, longitude);
 
                     this.NavigationService.Navigate(new Uri("/View/ShowLocation.xaml", UriKind.Relative));
-
-                    //if (this.bingMapsTask == null)
-                    //    bingMapsTask = new BingMapsTask();
-                    //double zoomLevel = Convert.ToDouble(locationJSON[HikeConstants.ZOOM_LEVEL].ToString());
-                    //bingMapsTask.Center = new GeoCoordinate(latitude, longitude);
-                    //bingMapsTask.ZoomLevel = zoomLevel;
-                    //bingMapsTask.Show();
                 }
                 catch (Exception ex) //Code should never reach here
                 {
-                    Debug.WriteLine("NewChatTHread :: DisplayAttachment :: Exception while parsing lacation parameters" + ex.StackTrace);
+                    Debug.WriteLine("NewChatTHread :: DisplayAttachment :: Exception while parsing location parameters" + ex.StackTrace);
                 }
                 return;
             }
@@ -2226,6 +2221,7 @@ namespace windows_client.View
                 sct.Show();
             }
         }
+
 
         void mediaElement_CurrentStateChanged(object sender, RoutedEventArgs e)
         {
@@ -5236,6 +5232,7 @@ namespace windows_client.View
                         downloadDialogueImage.Source = UI_Utils.Instance.DoggyOverlay;
                         btnDownload.Content = AppResources.Installed_Txt;
                         btnDownload.IsHitTestVisible = false;
+                        btnFree.IsHitTestVisible = false;
                         break;
                     case StickerHelper.CATEGORY_KITTY:
                         downloadDialogueImage.Source = UI_Utils.Instance.KittyOverlay;
@@ -5261,6 +5258,7 @@ namespace windows_client.View
                 if (btnDownload.IsHitTestVisible == false)
                 {
                     btnDownload.IsHitTestVisible = true;
+                    btnFree.IsHitTestVisible = true;
                     btnDownload.Content = AppResources.Download_txt;
                     App.appSettings.Remove(HikeConstants.AppSettings.SHOW_DOGGY_OVERLAY);
                 }

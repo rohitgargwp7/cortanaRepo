@@ -182,11 +182,6 @@ namespace windows_client.View
                     #endregion
                     #region NO ACTION OR UNFRIENDED
                     default:
-                        //because if previous state was friends then in address book has not been fetched yet
-                        if (previousStatus == FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                        {
-                            isInAddressBook = CheckUserInAddressBook();
-                        }
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
                             ShowAddAsFriends();
@@ -235,17 +230,13 @@ namespace windows_client.View
                     if (msisdn != recMsisdn)
                         return;
                     timeOfJoin = FriendsTableUtils.GetFriendOnHIke(msisdn);
-                    isInAddressBook = CheckUserInAddressBook();
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (timeOfJoin == 0)
-                        {
                             AccountUtils.GetOnhikeDate(msisdn, new AccountUtils.postResponseFunction(GetHikeStatus_Callback));
-                        }
                         else
-                        {
                             txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, TimeUtils.GetOnHikeSinceDisplay(timeOfJoin));
-                        }
+                       
                         ShowAddAsFriends();
                     });
                 }
@@ -354,6 +345,13 @@ namespace windows_client.View
                     return;
                 }
 
+                BackgroundWorker bw = new BackgroundWorker();
+                bw.DoWork += (ss, ee) =>
+                {
+                    isInAddressBook = CheckUserInAddressBook();
+                };
+                bw.RunWorkerAsync();
+
                 if (!isOnHike)//sms user
                     ShowNonHikeUser();
                 else
@@ -391,9 +389,6 @@ namespace windows_client.View
                 BackgroundWorker worker = new BackgroundWorker();
                 worker.DoWork += delegate
                     {
-                        if (!isOnHike || friendStatus == FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                            isInAddressBook = CheckUserInAddressBook();
-
                         if (!isInAddressBook)
                         {
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -912,50 +907,34 @@ namespace windows_client.View
 
             if (friendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
             {
-                BackgroundWorker bw = new BackgroundWorker();
-                isInAddressBook = false;
-                bw.DoWork += (ss, ee) =>
+                switch (friendStatus)
                 {
-                    isInAddressBook = CheckUserInAddressBook();
-                };
-                bw.RunWorkerAsync();
-                bw.RunWorkerCompleted += (ss, ee) =>
-                {
-                    switch (friendStatus)
-                    {
-                        #region REQUEST RECIEVED
-                        case FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED:
-                            ShowRequestRecievedPanel();
-                            //if (isInAddressBook)
-                            LoadStatuses();
-                            //else
-                            //    ShowAddToContacts();
-                            break;
-                        #endregion
-                        #region UNFRIENDED_BY_YOU OR IGNORED
-                        case FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU:
-                        case FriendsTableUtils.FriendStatusEnum.IGNORED:
-                            //if (isInAddressBook)
-                            LoadStatuses();
-                            //else
-                            //    ShowAddToContacts();
-                            spAddFriend.Visibility = Visibility.Visible;
-                            gridAddFriendStrip.Visibility = Visibility.Visible;
-                            break;
-                        #endregion
-                        #region REQUEST SENT
-                        case FriendsTableUtils.FriendStatusEnum.REQUEST_SENT:
-                            ShowRequestSent();
-                            break;
-                        #endregion
-                        #region NO ACTION OR UNFRIENDED
-                        default:
-                            ShowAddAsFriends();
-                            break;
+                    #region REQUEST RECIEVED
+                    case FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED:
+                        ShowRequestRecievedPanel();
+                        LoadStatuses();
+                        break;
+                    #endregion
+                    #region UNFRIENDED_BY_YOU OR IGNORED
+                    case FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU:
+                    case FriendsTableUtils.FriendStatusEnum.IGNORED:
+                        LoadStatuses();
+                        spAddFriend.Visibility = Visibility.Visible;
+                        gridAddFriendStrip.Visibility = Visibility.Visible;
+                        break;
+                    #endregion
+                    #region REQUEST SENT
+                    case FriendsTableUtils.FriendStatusEnum.REQUEST_SENT:
+                        ShowRequestSent();
+                        break;
+                    #endregion
+                    #region NO ACTION OR UNFRIENDED
+                    default:
+                        ShowAddAsFriends();
+                        break;
 
-                        #endregion
-                    }
-                };
+                    #endregion
+                }
             }
             else
                 LoadStatuses();
