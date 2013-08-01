@@ -1356,7 +1356,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No file.
+        ///   Looks up a localized string similar to Download Failed.
         /// </summary>
         public static string File_Not_Exist_Caption {
             get {
@@ -1365,7 +1365,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File no longer exists .
+        ///   Looks up a localized string similar to This file no longer exists on the server.
         /// </summary>
         public static string File_Not_Exist_Message {
             get {
