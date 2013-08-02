@@ -179,6 +179,8 @@ namespace windows_client.View
             {
                 isGroupChat = true;
                 TAP_MSG = AppResources.SelectUser_TapMsg_Grp_Txt;
+                txtChat.Text = AppResources.SelectUser_Header_AddParticipant_Txt;
+                txtTitle.Text = AppResources.SelectUser_Title_AddParticipant_Txt;
             }
 
             /* Case when this page is called from create group button.*/
@@ -186,6 +188,7 @@ namespace windows_client.View
             {
                 isGroupChat = (bool)PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP];
                 TAP_MSG = AppResources.SelectUser_TapMsg_Grp_Txt;
+                txtChat.Text = AppResources.GrpChat_Txt.ToUpper();
             }
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_BLOCKED_LIST))
@@ -200,8 +203,6 @@ namespace windows_client.View
                 txtChat.Text = AppResources.Block_Txt.ToUpper();
                 txtTitle.Text = AppResources.Blocklist_user_txt;
             }
-            if (isGroupChat)
-                txtChat.Text = AppResources.GrpChat_Txt.ToUpper();
 
             if (frmBlockedList) //  this is to show block button
                 contactsListBox.ItemTemplate = this.blockTemplate;

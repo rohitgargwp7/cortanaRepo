@@ -146,8 +146,14 @@
     </Compile>
     <Compile Include="Controls\MyRichTextBox.cs" />
     <Compile Include="Controls\ProgressIndicator.cs" />
+    <Compile Include="Controls\StatusUpdate\DefaultStatusUpdateUC.xaml.cs">
+      <DependentUpon>DefaultStatusUpdateUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\StatusUpdate\FriendRequestStatus.xaml.cs">
       <DependentUpon>FriendRequestStatus.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StatusUpdate\ProTipUC.xaml.cs">
+      <DependentUpon>ProTipUC.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\StatusUpdate\TextStatusUpdate.xaml.cs">
       <DependentUpon>TextStatusUpdate.xaml</DependentUpon>
@@ -322,9 +328,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\StatusUpdate\DefaultStatusUpdateUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\StatusUpdate\FriendRequestStatus.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\StatusUpdate\ProTipUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\StatusUpdate\TextStatusUpdate.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -513,6 +527,7 @@
     <Content Include="View\images\deleted_grey_icon.png" />
     <Content Include="View\images\deleted_white_icon.png" />
     <Content Include="View\images\delete_account_white.png" />
+    <Content Include="View\images\downArrow.png" />
     <Content Include="View\images\emoticons\auto4.png" />
     <Content Include="View\images\emoticons\batti4.png" />
     <Content Include="View\images\emoticons\best4.png" />
@@ -538,7 +553,7 @@
     <Content Include="View\images\emoticons\tandoori4.png" />
     <Content Include="View\images\emoticons\thulla4.png" />
     <Content Include="View\images\icon_direction.png" />
-    <Content Include="View\images\indianemoticon.jpg" />
+    <Content Include="View\images\indianflag.png" />
     <Content Include="View\images\moods\24Music.png" />
     <Content Include="View\images\moods\25PartyingHard.png" />
     <Content Include="View\images\moods\26Singing.png" />
@@ -621,8 +636,10 @@
     <Content Include="View\images\moods\22Sleepy.png" />
     <Content Include="View\images\moods\23Hungover.png" />
     <Content Include="View\images\moods_status_icon.png" />
+    <Content Include="View\images\mute_icon_main_b.png" />
     <Content Include="View\images\mute_icon_main_g.png" />
     <Content Include="View\images\mute_icon_main_l.png" />
+    <Content Include="View\images\mute_icon_main_white.png" />
     <Content Include="View\images\MyLocation.png" />
     <Content Include="View\images\notification_read.png" />
     <Content Include="View\images\notification_unread.png" />
@@ -674,7 +691,6 @@
     <Content Include="View\images\tutorial_welcome.png" />
     <Content Include="View\images\twitter_status.png" />
     <Content Include="View\images\twitter_status_disabled.png" />
-    <Content Include="View\images\unmutedicon.png" />
     <Content Include="View\images\unmute_icon_main_g.png" />
     <Content Include="View\images\unmute_icon_main_l.png" />
     <Content Include="View\images\user_invite.png" />
@@ -704,7 +720,7 @@
     <Content Include="View\images\tw_icon.png" />
     <Content Include="View\images\unlink_account_black.png" />
     <Content Include="View\images\unlink_account_white.png" />
-    <Resource Include="hi.png" />
+    <Content Include="View\images\Walkie_Talkie_White_small.png" />
     <Content Include="View\images\add_users.png" />
     <Content Include="View\images\appbar.add.rest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

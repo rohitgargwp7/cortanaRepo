@@ -9,7 +9,7 @@
     <CurrentDeployID>30F105C9-681E-420b-A277-7C086EAD8A4E</CurrentDeployID>
   </PropertyGroup>
   <PropertyGroup>
-    <ProjectView>ShowAllFiles</ProjectView>
+    <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
@@ -17,7 +17,7 @@
         <SilverlightMobileCSProjectFlavor>
           <FullDeploy>False</FullDeploy>
           <DebuggerType>Managed</DebuggerType>
-          <DebuggerAgentType>Managed</DebuggerAgentType>
+          <DebuggerAgentType>Native</DebuggerAgentType>
           <Tombstone>False</Tombstone>
         </SilverlightMobileCSProjectFlavor>
       </FlavorProperties>

@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Windows.Controls;
 using Windows.Foundation;
 using System.Web;
+using System.Net.NetworkInformation;
 using System.Globalization;
 
 namespace windows_client.View
@@ -35,11 +36,7 @@ namespace windows_client.View
         private GeoCoordinate _myCoordinate = null;
         private String _myPlaceVicinity = String.Empty;
         private GeoCoordinate _selectedCoordinate = null;
-
-        /// <summary>
-        /// True when route is being searched, otherwise false
-        /// </summary>
-        private bool _isPlacesSearch = false;
+        private GeoCoordinate _customCoordinate = null;
 
         private string _nokiaPlacesUrl = "http://places.nlp.nokia.com/places/v1/discover/explore";
         private string _nokiaSeacrhUrl = "http://places.nlp.nokia.com/places/v1/discover/search";
@@ -50,6 +47,10 @@ namespace windows_client.View
         Place _myPlace;
         Boolean _isMapTapped = false;
         Boolean _isLocationEnabled = true;
+        Boolean _isDefaultLocationCall = true;
+        String _cgen = HikeConstants.NokiaHere.CGEN_GPS;
+        String _resultString = String.Empty;
+        Int32 _selectedIndex = 0;
 
         private void BuildApplicationBar()
         {
@@ -71,8 +72,13 @@ namespace windows_client.View
 
         void GetPlaces()
         {
-            ShowProgressIndicator();
-            string url = string.Format("{0}?at={1},{2}&app_id={3}&app_code={4}&tf=plain&pretty=true", _nokiaPlacesUrl, _selectedCoordinate.Latitude.ToString("0.000000", CultureInfo.InvariantCulture), _selectedCoordinate.Longitude.ToString("0.000000", CultureInfo.InvariantCulture), _nokiaPlacesAppID, _nokiaPlacesAppCode);
+            if (!NetworkInterface.GetIsNetworkAvailable())
+                return;
+
+            placesListGrid.Visibility = Visibility.Collapsed;
+            loadingPlaces.IsIndeterminate = true;
+
+            string url = string.Format("{0}?at={1},{2};cgen={3}&app_id={4}&app_code={5}&tf=plain&pretty=true", _nokiaPlacesUrl, _selectedCoordinate.Latitude.ToString("0.000000", CultureInfo.InvariantCulture), _selectedCoordinate.Longitude.ToString("0.000000", CultureInfo.InvariantCulture), _cgen, _nokiaPlacesAppID, _nokiaPlacesAppCode);
             AccountUtils.createNokiaPlacesGetRequest(url, new AccountUtils.postResponseFunction(PlacesResult_Callback));
         }
 
@@ -80,17 +86,20 @@ namespace windows_client.View
         {
             if (MyMap == null)
                 return;
-            
+
+            _resultString = obj == null ? String.Empty : obj.ToString(Newtonsoft.Json.Formatting.None);
+
+            PopulatePlaces(obj);
+        }
+
+        private void PopulatePlaces(JObject obj, int selectedIndex = 0)
+        {
             _places = this.ParsePlaces(obj);
 
-            Deployment.Current.Dispatcher.BeginInvoke(new Action(delegate
+            Deployment.Current.Dispatcher.BeginInvoke(new Action<int>(delegate(int index)
             {
                 if (MyMap == null)
                     return;
-
-                PlacesGrid.Visibility = Visibility.Visible;
-                DrawMapMarkers();
-                DrawMapMarkers();
 
                 if (_selectedPlace == null)
                 {
@@ -124,13 +133,19 @@ namespace windows_client.View
                         _places.Insert(0, _selectedPlace);
                 }
 
-                _selectedPlace = _places[0];
+                _selectedIndex = index;
+                _lastSelectedPlace = _selectedPlace = _places[index];
                 PlacesList.ItemsSource = _places;
-                HideProgressIndicator();
-                PlacesList.SelectedItem = _places[0];
+                PlacesList.SelectedItem = _places[index];
+                
                 UpdateLayout();
                 PlacesList.ScrollIntoView(PlacesList.SelectedItem);
-            }));
+                UpdateLayout();
+
+                placesListGrid.Visibility = Visibility.Visible;
+                loadingPlaces.IsIndeterminate = false;
+                DrawMapMarkers();
+            }), selectedIndex);
         }
 
         private List<Place> ParsePlaces(JObject json)
@@ -242,6 +257,8 @@ namespace windows_client.View
             _isFetchingCurrentLocation = true;
 
             ShowProgressIndicator();
+            placesListGrid.Visibility = Visibility.Collapsed;
+            loadingPlaces.IsIndeterminate = true;
 
             GeoCoordinate newCoordinate = null;
 
@@ -255,14 +272,25 @@ namespace windows_client.View
             {
                 Geoposition currentPosition = await locationTask;
 
-                if (_isMapTapped)
+                if (_isMapTapped && _isDefaultLocationCall)
+                {
+                    _isFetchingCurrentLocation = false;
+                    _isDefaultLocationCall = false;
+                    HideProgressIndicator();
+                    placesListGrid.Visibility = Visibility.Visible;
+                    loadingPlaces.IsIndeterminate = false;
                     return;
+                }
 
                 var latitutde = Math.Round(currentPosition.Coordinate.Latitude, 6);
                 var longitute = Math.Round(currentPosition.Coordinate.Longitude, 6);
                 newCoordinate = new GeoCoordinate(latitutde, longitute);
-                
+
                 _selectedCoordinate = newCoordinate;
+
+                _cgen = HikeConstants.NokiaHere.CGEN_GPS;
+                _isFetchingCurrentLocation = false;
+                HideProgressIndicator();
 
                 if (_myCoordinate != newCoordinate || _isMapTapped || _places == null)
                 {
@@ -271,8 +299,11 @@ namespace windows_client.View
                     GetPlaces();
                 }
                 else
-                    HideProgressIndicator();
-                
+                {
+                    placesListGrid.Visibility = Visibility.Visible;
+                    loadingPlaces.IsIndeterminate = false;
+                }
+
                 Dispatcher.BeginInvoke(() =>
                 {
                     shareIconButton.IsEnabled = true;
@@ -318,8 +349,11 @@ namespace windows_client.View
             if (_isFetchingCurrentLocation)
                 return;
 
-            _progressIndicator.IsVisible = false;
-            SystemTray.SetProgressIndicator(this, _progressIndicator);
+            if (_progressIndicator != null)
+            {
+                _progressIndicator.IsVisible = false;
+                SystemTray.SetProgressIndicator(this, _progressIndicator);
+            }
         }
 
         public ShareLocation()
@@ -342,7 +376,10 @@ namespace windows_client.View
             JObject metadata = new JObject();
             JArray filesData = new JArray();
             JObject singleFileInfo = new JObject();
-            singleFileInfo[HikeConstants.FILE_NAME] = _selectedPlace == null ? (_selectedCoordinate == _myCoordinate ? AppResources.My_Location_Text : AppResources.Location_Txt) : _selectedPlace.title;
+
+            var title = _selectedPlace == null ? String.Empty : _selectedPlace.title.Contains(AppResources.Location_Txt) ? String.Empty : _selectedPlace.title;
+
+            singleFileInfo[HikeConstants.FILE_NAME] = title;
             singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = "hikemap/location";
             singleFileInfo[HikeConstants.LATITUDE] = _selectedCoordinate.Latitude;
             singleFileInfo[HikeConstants.LONGITUDE] = _selectedCoordinate.Longitude;
@@ -364,23 +401,42 @@ namespace windows_client.View
         private void map_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             _isMapTapped = true;
+            _cgen = HikeConstants.NokiaHere.CGEN_MAP;
             System.Windows.Point p = e.GetPosition(this.MyMap);
             GeoCoordinate geo = new GeoCoordinate();
             geo = MyMap.ConvertViewportPointToGeoCoordinate(p);
             MyMap.SetView(geo, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
-            _selectedCoordinate = geo;
+            _selectedCoordinate = _customCoordinate = geo;
             _selectedPlace = null;
             _myPlace = null;
             shareIconButton.IsEnabled = true;
-            _isPlacesSearch = false;
-            PlacesGrid.Visibility = Visibility.Collapsed;
+
+            PlacesGrid.Visibility = NetworkInterface.GetIsNetworkAvailable() ? PlacesGrid.Visibility = Visibility.Visible : PlacesGrid.Visibility = Visibility.Collapsed;
+
+            if (String.IsNullOrEmpty(_searchString))
+                GetPlaces();
+            else
+                Search();
+            
             DrawMapMarkers();
         }
 
         private byte[] captureThumbnail()
         {
             byte[] thumbnailBytes = null;
-            WriteableBitmap screenshot = new WriteableBitmap(MyMap, new TranslateTransform());
+
+            var point = MyMap.ConvertGeoCoordinateToViewportPoint(_selectedCoordinate);
+            point.X -= HikeConstants.LOCATION_THUMBNAIL_MAX_WIDTH / 2;
+            point.Y -= HikeConstants.LOCATION_THUMBNAIL_MAX_HEIGHT / 2;
+
+            var screenshot = new WriteableBitmap(MyMap, new TranslateTransform());
+
+            var newScreenshot = screenshot.Crop((int)point.X, (int)point.Y, HikeConstants.LOCATION_THUMBNAIL_MAX_WIDTH, HikeConstants.LOCATION_THUMBNAIL_MAX_HEIGHT);
+
+            if (newScreenshot.Pixels.Length != 0)
+                screenshot = newScreenshot;
+
+            screenshot.Invalidate();
 
             using (MemoryStream ms = new MemoryStream())
             {
@@ -394,18 +450,24 @@ namespace windows_client.View
 
         private void PlacesList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            var place = (sender as ListBox).SelectedItem as Place;
-
-            if (place != null)
+            var listbox = sender as ListBox;
+            if (listbox != null)
             {
-                this.DataContext = place;
-                _selectedPlace = place;
-                _selectedCoordinate = place.position;
+                var place = listbox.SelectedItem as Place;
 
-                MyMap.SetView(_selectedCoordinate, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
+                if (place != null)
+                {
+                    this.DataContext = place;
+                    _selectedPlace = place;
+                    _selectedCoordinate = place.position;
 
-                DrawMapMarkers();
-                shareIconButton.IsEnabled = true;
+                    _selectedIndex = listbox.SelectedIndex;
+
+                    MyMap.SetView(_selectedCoordinate, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
+
+                    DrawMapMarkers();
+                    shareIconButton.IsEnabled = true;
+                }
             }
         }
 
@@ -421,16 +483,21 @@ namespace windows_client.View
         }
 
         String _searchString = "";
+        Place _lastSelectedPlace = null;
 
-        private void PhoneTextBox_ActionIconTapped(object sender, EventArgs e)
+        private void SearchAction_Tap(object sender, EventArgs e)
         {
-            var searchString = SearchTextBox.Text.Trim();
+            SearchNearBy(SearchTextBox.Text.Trim());
+        }
 
-            if (_searchString == searchString) // avoid duplicated search calls
+        private void SearchNearBy(string searchString)
+        {
+            if (_searchString == searchString && _selectedPlace == _lastSelectedPlace) // avoid duplicated search calls for same place
                 return;
 
+            _lastSelectedPlace = _selectedPlace;
             _searchString = searchString;
-            _isPlacesSearch = true;
+            _resultString = String.Empty;
 
             this.Focus();
 
@@ -445,8 +512,16 @@ namespace windows_client.View
 
         void Search()
         {
-            ShowProgressIndicator();
-            string url = string.Format("{0}?q={1}&at={2},{3}&app_id={4}&app_code={5}&tf=plain&pretty=true", _nokiaSeacrhUrl, HttpUtility.UrlEncode(_searchString), _selectedCoordinate.Latitude.ToString("0.000000", CultureInfo.InvariantCulture), _selectedCoordinate.Longitude.ToString("0.000000", CultureInfo.InvariantCulture), _nokiaPlacesAppID, _nokiaPlacesAppCode);
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
+                return;
+            }
+
+            placesListGrid.Visibility = Visibility.Collapsed;
+            loadingPlaces.IsIndeterminate = true;
+
+            string url = string.Format("{0}?q={1}&at={2},{3};cgen={4}&app_id={5}&app_code={6}&tf=plain&pretty=true", _nokiaSeacrhUrl, HttpUtility.UrlEncode(_searchString), _selectedCoordinate.Latitude.ToString("0.000000", CultureInfo.InvariantCulture), _selectedCoordinate.Longitude.ToString("0.000000", CultureInfo.InvariantCulture), _cgen, _nokiaPlacesAppID, _nokiaPlacesAppCode);
             AccountUtils.createNokiaPlacesGetRequest(url, new AccountUtils.postResponseFunction(PlacesResult_Callback));
         }
 
@@ -468,11 +543,13 @@ namespace windows_client.View
                 return;
             }
 
+            _customCoordinate = null;
             shareIconButton.IsEnabled = false;
             _selectedPlace = null;
             _myPlace = null;
-            _isPlacesSearch = false;
-            PlacesGrid.Visibility = Visibility.Collapsed;
+
+            PlacesGrid.Visibility = NetworkInterface.GetIsNetworkAvailable() ? PlacesGrid.Visibility = Visibility.Visible : PlacesGrid.Visibility = Visibility.Collapsed;
+
             GetCurrentCoordinate();
         }
 
@@ -487,29 +564,7 @@ namespace windows_client.View
             if (shareIconButton.IsEnabled == false)
                 return;
 
-            if (PlacesGrid.Visibility == Visibility.Collapsed)
-            {
-                if (_selectedPlace == null || _selectedPlace != _places[0]) // avoid duplicate places call
-                {
-                    shareIconButton.IsEnabled = false;
-                    _myPlace = null;
-                    _isPlacesSearch = true;
-                    _searchString = SearchTextBox.Text.Trim();
-
-                    if (String.IsNullOrEmpty(_searchString))
-                        GetPlaces();
-                    else
-                        Search();
-                }
-                else
-                {
-                    PlacesGrid.Visibility = Visibility.Visible;
-                    UpdateLayout();
-                    PlacesList.ScrollIntoView(_places[0]);
-                }
-            }
-            else
-                PlacesGrid.Visibility = Visibility.Collapsed;
+            PlacesGrid.Visibility = PlacesGrid.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
         }
 
         protected override async void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -545,39 +600,46 @@ namespace windows_client.View
                     GetCurrentCoordinate();
             }
 
-            if (!_isLocationEnabled)
-                return;
-
             App.appSettings.TryGetValue(HikeConstants.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
 
             if (App.IS_TOMBSTONED)
             {
-                _selectedCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] as GeoCoordinate;
-                _searchString = PhoneApplicationService.Current.State[HikeConstants.LOCATION_SEARCH] as String;
-                _isPlacesSearch = (bool)PhoneApplicationService.Current.State[HikeConstants.PLACES_SEARCH];
+                _isDefaultLocationCall = false;
 
-                MyMap.ZoomLevel = (double)PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL];
+                _customCoordinate = State[HikeConstants.LOCATION_MAP_COORDINATE] as GeoCoordinate;
+                _searchString = State[HikeConstants.LOCATION_SEARCH] as String;
+                _resultString = (String)State[HikeConstants.LOCATION_PLACE_SEARCH_RESULT];
+                _selectedIndex = (Int32)State[HikeConstants.LOCATION_SELECTED_INDEX];
 
-                if (_selectedCoordinate == null && _myCoordinate == null)
+                MyMap.ZoomLevel = (double)State[HikeConstants.ZOOM_LEVEL];
+
+                _selectedCoordinate = _customCoordinate == null ? _myCoordinate : _customCoordinate;
+                PlacesGrid.Visibility = NetworkInterface.GetIsNetworkAvailable() ? PlacesGrid.Visibility = Visibility.Visible : PlacesGrid.Visibility = Visibility.Collapsed;
+
+                if (_myCoordinate == null && _isLocationEnabled)
                     GetCurrentCoordinate();
-                else
+                else if (_selectedCoordinate != null)
                 {
                     shareIconButton.IsEnabled = true;
-
                     DrawMapMarkers();
+                    SearchTextBox.Text = _searchString;
 
-                    if (_isPlacesSearch)
+                    if (String.IsNullOrEmpty(_resultString))
                     {
-                        SearchTextBox.Text = _searchString;
-
                         if (String.IsNullOrEmpty(_searchString))
                             GetPlaces();
                         else
                             Search();
                     }
+                    else
+                    {
+                        placesListGrid.Visibility = Visibility.Collapsed;
+                        loadingPlaces.IsIndeterminate = true;
+                        PopulatePlaces(JObject.Parse(_resultString), _selectedIndex);
+                    }
                 }
             }
-            else if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New)
+            else if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New && _isLocationEnabled)
             {
                 GetCurrentCoordinate(); // get current coordinate and load last catched coordinate if its not null
 
@@ -593,6 +655,11 @@ namespace windows_client.View
                 }
             }
 
+            if (NetworkInterface.GetIsNetworkAvailable())
+                PlacesGrid.Visibility = Visibility.Visible;
+            else
+                MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
+
             base.OnNavigatedTo(e);
         }
 
@@ -600,22 +667,24 @@ namespace windows_client.View
         {
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Back)
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_COORDINATE);
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_SEARCH);
-                PhoneApplicationService.Current.State.Remove(HikeConstants.ZOOM_LEVEL);
-                PhoneApplicationService.Current.State.Remove(HikeConstants.PLACES_SEARCH);
+                State.Remove(HikeConstants.LOCATION_MAP_COORDINATE);
+                State.Remove(HikeConstants.LOCATION_SEARCH);
+                State.Remove(HikeConstants.ZOOM_LEVEL);
+                State.Remove(HikeConstants.LOCATION_PLACE_SEARCH_RESULT);
+                State.Remove(HikeConstants.LOCATION_SELECTED_INDEX);
             }
             else
             {
-                PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] = _selectedCoordinate;
-                PhoneApplicationService.Current.State[HikeConstants.LOCATION_SEARCH] = _searchString;
+                State[HikeConstants.LOCATION_MAP_COORDINATE] = _customCoordinate;
+                State[HikeConstants.LOCATION_SEARCH] = _searchString;
 
                 if (MyMap != null)
-                    PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
+                    State[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
                 else
-                    PhoneApplicationService.Current.State[HikeConstants.ZOOM_LEVEL] = 16;
+                    State[HikeConstants.ZOOM_LEVEL] = 16;
 
-                PhoneApplicationService.Current.State[HikeConstants.PLACES_SEARCH] = _isPlacesSearch;
+                State[HikeConstants.LOCATION_PLACE_SEARCH_RESULT] = _resultString;
+                State[HikeConstants.LOCATION_SELECTED_INDEX] = _selectedIndex;
             }
 
             if (_myCoordinate != null)
@@ -632,6 +701,12 @@ namespace windows_client.View
         private void SearchTextBox_LostFocus_1(object sender, RoutedEventArgs e)
         {
             shareIconButton.IsEnabled = true;
+        }
+
+        private void SearchTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+                SearchNearBy(SearchTextBox.Text.Trim());
         }
     }
 

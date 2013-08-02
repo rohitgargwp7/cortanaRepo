@@ -1820,7 +1820,7 @@ Get hike: http://get.hike.in</value>
     <comment>verb(length 12)</comment>
   </data>
   <data name="Send_All_As_SMS" xml:space="preserve">
-    <value>{0} is offline, tap to send as sms</value>
+    <value>{0} is offline, tap to send as hike sms</value>
   </data>
   <data name="H2HOfline_0SMS_Message" xml:space="preserve">
     <value>Your free SMS balance is zero. You can invite friends to join hike and earn more free SMS</value>
@@ -1829,7 +1829,7 @@ Get hike: http://get.hike.in</value>
     <value>Pending messages will be sent as free hike SMS</value>
   </data>
   <data name="H2HOfline_Confirmation_Message_Heading" xml:space="preserve">
-    <value>Send as SMS</value>
+    <value>Send as hike SMS</value>
   </data>
   <data name="On_Dnd_Txt" xml:space="preserve">
     <value>on DND</value>
@@ -1844,21 +1844,13 @@ Get hike: http://get.hike.in</value>
     <value>My Location</value>
   </data>
   <data name="Send_All_As_SMS_Group" xml:space="preserve">
-    <value>Tap to send as SMS</value>
+    <value>Tap to send as hike sms</value>
   </data>
   <data name="StatusNotToggle_Caption_Txt" xml:space="preserve">
     <value>Status Update Notifications</value>
   </data>
   <data name="Location_Heading" xml:space="preserve">
     <value>Location</value>
-  </data>
-  <data name="Kilometer_Abbreviation" xml:space="preserve">
-    <value>{0} km</value>
-    <comment>kilometer</comment>
-  </data>
-  <data name="Meter_Abbreviation" xml:space="preserve">
-    <value>{0} m</value>
-    <comment>meter</comment>
   </data>
   <data name="Settings_LocationToggleSwitchHeader" xml:space="preserve">
     <value>Use location</value>
@@ -1896,5 +1888,29 @@ Get hike: http://get.hike.in</value>
   </data>
   <data name="In_App_Tip_7" xml:space="preserve">
     <value>Now you can send messages to people who are offline via Free Hike SMS. Isn't that great!</value>
+  </data>
+  <data name="File_Not_Exist_Caption" xml:space="preserve">
+    <value>Download Failed</value>
+  </data>
+  <data name="File_Not_Exist_Message" xml:space="preserve">
+    <value>This file no longer exists on the server</value>
+  </data>
+  <data name="ChatThread_1NewMessage_txt" xml:space="preserve">
+    <value>1 new message</value>
+  </data>
+  <data name="ChatThread_JumpToLatest" xml:space="preserve">
+    <value>Jump to latest</value>
+  </data>
+  <data name="ChatThread_More_NewMessages_txt" xml:space="preserve">
+    <value>{0} new messages</value>
+    <comment>{0} would be replaced by number</comment>
+  </data>
+  <data name="SelectUser_Header_AddParticipant_Txt" xml:space="preserve">
+    <value>ADD PARTICIPANTS</value>
+    <comment>max length(16)</comment>
+  </data>
+  <data name="SelectUser_Title_AddParticipant_Txt" xml:space="preserve">
+    <value>to group</value>
+    <comment>max length(8)</comment>
   </data>
 </root>
