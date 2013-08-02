@@ -110,8 +110,6 @@ namespace windows_client
 
         #region PROPERTIES
 
-        public static bool Is24HourTimeFormat { get; private set; }
-
         public static PageState PageStateVal
         {
             get
@@ -340,9 +338,6 @@ namespace windows_client
 
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
             RootFrame.Navigated += RootFrame_Navigated;
-            
-
-            Is24HourTimeFormat = System.Globalization.DateTimeFormatInfo.CurrentInfo.LongTimePattern.Contains("H") ? true : false;
         }
 
         void RootFrame_Navigated(object sender, NavigationEventArgs e)
@@ -392,6 +387,8 @@ namespace windows_client
 
                 if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
                     isNewInstall = false;
+
+                appSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out _currentVersion);
                 instantiateClasses(false);
             }
             else
@@ -410,8 +407,12 @@ namespace windows_client
         {
             NetworkManager.turnOffNetworkManager = true;
             sendAppBgStatusToServer();
-            App.AnalyticsInstance.saveObject();
+            
+            if (App.AnalyticsInstance != null)
+                App.AnalyticsInstance.saveObject();
+
             PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
+
             if (IS_VIEWMODEL_LOADED)
             {
                 int convs = 0;
@@ -428,7 +429,9 @@ namespace windows_client
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
-            App.AnalyticsInstance.saveObject(); //check for null
+            if (App.AnalyticsInstance != null)
+                App.AnalyticsInstance.saveObject(); //check for null
+            
             sendAppBgStatusToServer();
             //appDeinitialize();
         }
@@ -476,19 +479,13 @@ namespace windows_client
             }
         }
 
-        Boolean wasRelaunched;
         void RootFrame_CheckForFastResume(object sender, NavigatingCancelEventArgs e)
         {
             RootFrame.Navigating -= RootFrame_CheckForFastResume;
-
-            APP_LAUNCH_STATE = LaunchState.FAST_RESUME;
             var targetPage = e.Uri.ToString();
 
             if (e.NavigationMode == NavigationMode.New)
             {
-                // This block will run if the previous navigation was a relaunch
-                wasRelaunched = false;
-
                 if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
                 {
                     APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
@@ -543,7 +540,7 @@ namespace windows_client
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
             // if not new install && current version is less than equal to version 1.8.0.0  and upgrade is done for wp8 device
-            if (!isNewInstall && Utils.compareVersion("2.2.0.2", _currentVersion) == 1 && Utils.IsWP8)
+            if (!isNewInstall && Utils.compareVersion("2.2.0.3", _currentVersion) == 1 && Utils.IsWP8)
             {
                 instantiateClasses(true);
                 RootFrame.Dispatcher.BeginInvoke(delegate
@@ -628,7 +625,10 @@ namespace windows_client
                 // A navigation has failed; break into the debugger
                 System.Diagnostics.Debugger.Break();
             }
-            App.AnalyticsInstance.saveObject();
+
+            if (App.AnalyticsInstance != null)
+                App.AnalyticsInstance.saveObject();
+
             if (IS_VIEWMODEL_LOADED)
             {
                 int convs = 0;
@@ -642,8 +642,9 @@ namespace windows_client
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
+            if (App.AnalyticsInstance != null)
+                App.AnalyticsInstance.saveObject();
 
-            App.AnalyticsInstance.saveObject();
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 // An unhandled exception has occurred; break into the debugger

@@ -15,60 +15,13 @@
     shell:SystemTray.IsVisible="True"
     shell:SystemTray.Opacity="0">
     
-    <phone:PhoneApplicationPage.Resources>
-        <DataTemplate x:Key="RouteListTemplate">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid Visibility="{Binding DistanceVisibility}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Border BorderBrush="{StaticResource PhoneSubtleBrush}" BorderThickness="0,1,0,0"/>
-                    <TextBlock Grid.Column="1" Margin="5,-15,0,5"  Text="{Binding Distance}" Foreground="{StaticResource PhoneSubtleBrush}" FontSize="{StaticResource PhoneFontSizeNormal}"/>
-                </Grid>
-                <Grid Margin="0,10,0,20" Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Image Source="{Binding DirectionImage}"/>
-                    <TextBlock Grid.Column="1" Text="{Binding Instruction}" FontSize="{StaticResource PhoneFontSizeMedium}" TextWrapping="Wrap" Margin="5"/>
-                </Grid>
-            </Grid>
-        </DataTemplate>
-    </phone:PhoneApplicationPage.Resources>
-    
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <maps:Map x:Name="MyMap" Tap="MyMap_Tap" ZoomLevelChanged="ZoomLevelChanged"/>
-        <Grid x:Name="DirectionGrid" ManipulationStarted="DirectionGrid_ManipulationStarted" Grid.Row="1" Visibility="Collapsed">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid Margin="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock x:Name="timeDestination" HorizontalAlignment="Left" Style="{StaticResource PhoneTextLargeStyle}" FontWeight="SemiBold"/>
-                <TextBlock Grid.Column="1" x:Name="distanceDestination" HorizontalAlignment="Right" Style="{StaticResource PhoneTextLargeStyle}" FontWeight="SemiBold"/>
-            </Grid>
-            <phone:LongListSelector x:Name="directionList" Grid.Row="1" Margin="10,0,10,0" Background="Transparent" ItemTemplate="{StaticResource RouteListTemplate}" LayoutMode="List" 
-            IsGroupingEnabled="False" SelectionChanged="RouteManeuverSelected"/>
-        </Grid>
+        <maps:Map x:Name="MyMap" LandmarksEnabled="True" ZoomLevelChanged="ZoomLevelChanged"/>
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="False">
-            <shell:ApplicationBarIconButton Click="Direction_Click" IconUri="view/images/route.png" Text="directions"/>
+        <shell:ApplicationBar IsVisible="True">
+            <shell:ApplicationBarIconButton Click="Direction_Click" IconUri="view/images/icon_direction.png" Text="directions"/>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

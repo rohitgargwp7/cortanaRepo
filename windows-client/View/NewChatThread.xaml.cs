@@ -92,7 +92,7 @@ namespace windows_client.View
         private long lastTypingNotificationShownTime;
 
         private HikePubSub mPubSub;
-        private IScheduler scheduler = Scheduler.NewThread;
+        public IScheduler scheduler = Scheduler.NewThread;
         private ConvMessage convTypingNotification;
         ContactInfo contactInfo = null; // this will be used if someone adds an unknown number to addressbook
         private byte[] avatar;
@@ -100,7 +100,7 @@ namespace windows_client.View
         private ApplicationBar appBar;
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
-        ApplicationBarMenuItem addUserMenuItem;
+        public ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarMenuItem infoMenuItem;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
@@ -109,11 +109,9 @@ namespace windows_client.View
         private CameraCaptureTask cameraCaptureTask;
         private BingMapsTask bingMapsTask = null;
         private object statusObject = null;
-
+        private int _unreadMessageCounter = 0;
 
         private LastSeenHelper _lastSeenHelper;
-        DispatcherTimer _forceSMSTimer;
-        Boolean _isShownOnUI = false;
         Boolean _isSendAllAsSMSVisible = false;
         //        private ObservableCollection<MyChatBubble> chatThreadPageCollection = new ObservableCollection<MyChatBubble>();
         private Dictionary<long, ConvMessage> msgMap = new Dictionary<long, ConvMessage>(); // this holds msgId -> sent message bubble mapping
@@ -172,7 +170,13 @@ namespace windows_client.View
                 return SmileyParser.Instance._emoticonImagesForList2;
             }
         }
-
+        private BitmapImage[] imagePathsForList3
+        {
+            get
+            {
+                return SmileyParser.Instance._emoticonImagesForList3;
+            }
+        }
 
         public Dictionary<long, ConvMessage> OutgoingMsgsMap      /* This map will contain only outgoing messages */
         {
@@ -205,7 +209,7 @@ namespace windows_client.View
             }
         }
 
-        ConvMessage lastUnDeliveredMessage = null, tap2SendAsSMSMessage = null;
+        ConvMessage _lastUnDeliveredMessage = null, _tap2SendAsSMSMessage = null;
 
         private Dictionary<string, BitmapImage> dictStickerCache;
 
@@ -245,27 +249,31 @@ namespace windows_client.View
                 WalkieTalkieDeletedBorder.Opacity = 1;
                 WalkieTalkieGridOverlayLayer.Opacity = 1;
             }
+            _currentOrientation = this.Orientation;
+        }
 
-            CompositionTarget.Rendering += (sender, args) =>
+        void CompositionTarget_Rendering(object sender, EventArgs e)
+        {
+            if (currentAudioMessage == null || !currentAudioMessage.IsPlaying)
+                return;
+
+            if (mediaElement != null && mediaElement.Source != null)
             {
-                if (mediaElement != null && mediaElement.Source != null)
+                var pos = mediaElement.Position.TotalSeconds;
+                var dur = mediaElement.NaturalDuration.TimeSpan.TotalSeconds;
+
+                if (currentAudioMessage != null && dur != 0)
                 {
-                    var pos = mediaElement.Position.TotalSeconds;
-                    var dur = mediaElement.NaturalDuration.TimeSpan.TotalSeconds;
+                    if (pos == dur)
+                        currentAudioMessage.PlayProgressBarValue = 0;
+                    else
+                        currentAudioMessage.PlayProgressBarValue = pos * 100 / dur;
 
-                    if (currentAudioMessage != null && dur != 0)
-                    {
-                        if (pos == dur)
-                            currentAudioMessage.PlayProgressBarValue = 0;
-                        else
-                            currentAudioMessage.PlayProgressBarValue = pos * 100 / dur;
+                    string durationText = String.IsNullOrEmpty(currentAudioMessage.DurationText) ? String.Empty : currentAudioMessage.DurationText;
 
-                        string durationText = String.IsNullOrEmpty(currentAudioMessage.DurationText) ? String.Empty : currentAudioMessage.DurationText;
-
-                        currentAudioMessage.PlayTimeText = pos == dur || pos == 0 ? durationText : mediaElement.NaturalDuration.TimeSpan.Subtract(mediaElement.Position).ToString("mm\\:ss");
-                    }
+                    currentAudioMessage.PlayTimeText = pos == dur || pos == 0 ? durationText : mediaElement.NaturalDuration.TimeSpan.Subtract(mediaElement.Position).ToString("mm\\:ss");
                 }
-            };
+            }
         }
 
         void LastSeenResponseReceived(object sender, LastSeenEventArgs e)
@@ -383,20 +391,29 @@ namespace windows_client.View
                 this.State.Remove(HikeConstants.GROUP_CHAT);
                 isGC = true;
             }
-            // whenever CT is opened , mark last msg as read if received read
-            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && App.ViewModel.ConvMap[mContactNumber].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
-                App.ViewModel.ConvMap[mContactNumber].MessageStatus = ConvMessage.State.RECEIVED_READ;
+
             this.llsMessages.ItemsSource = ocMessages;
 
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
+                // whenever CT is opened , mark last msg as read if received read
+                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && App.ViewModel.ConvMap[mContactNumber].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
+                {
+                    //ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber);
+
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        App.ViewModel.ConvMap[mContactNumber].MessageStatus = ConvMessage.State.RECEIVED_READ;
+                    });
+                }
+
                 Stopwatch st = Stopwatch.StartNew();
                 attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
                 loadMessages(INITIAL_FETCH_COUNT);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    ScrollToBottom();
+                    //ScrollToBottom();
                     StartForceSMSTimer(false);
                 });
                 st.Stop();
@@ -423,6 +440,20 @@ namespace windows_client.View
             emotList0.ItemsSource = imagePathsForList0;
             emotList1.ItemsSource = imagePathsForList1;
             emotList2.ItemsSource = imagePathsForList2;
+            emotList3.ItemsSource = imagePathsForList3;
+
+            if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))
+            {
+                ColumnDefinition col = new ColumnDefinition();
+                gridEmoticonLabels.ColumnDefinitions.Add(col);
+                stickerTab.SetValue(Grid.ColumnProperty, 4);
+                btnBackKey.SetValue(Grid.ColumnProperty, 5);
+                emotHeaderRect3.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                emoticonPivot.Items.RemoveAt(3);
+            }
 
             bw.RunWorkerAsync();
             photoChooserTask = new PhotoChooserTask();
@@ -431,6 +462,8 @@ namespace windows_client.View
 
             cameraCaptureTask = new CameraCaptureTask();
             cameraCaptureTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
+
+            IsSMSOptionValid = IsSMSOptionAvalable();
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -628,6 +661,7 @@ namespace windows_client.View
                         currentAudioMessage = null;
                     }
 
+                    CompositionTarget.Rendering -= CompositionTarget_Rendering;
                     mediaElement.Stop();
                     mediaElement.Source = null;
                 }
@@ -643,21 +677,9 @@ namespace windows_client.View
 
                         currentAudioMessage.IsStopped = false;
                         currentAudioMessage.IsPlaying = false;
-                        //currentAudioMessage.PlayProgressBarValue = 0;
-                        //currentAudioMessage = null;
                     }
                 }
             }
-
-            //if (_recorderState == RecorderState.RECORDING)
-            //{
-            //    if (_stream != null)
-            //    {
-            //        byte[] audioBytes = _stream.ToArray();
-            //        if (audioBytes != null && audioBytes.Length > 0)
-            //            PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED] = _stream.ToArray();
-            //    }
-            //}
 
             if (_dt != null)
                 _dt.Stop();
@@ -666,6 +688,8 @@ namespace windows_client.View
                 this.State["sendMsgTxtbox.Text"] = sendMsgTxtbox.Text;
             else
                 this.State.Remove("sendMsgTxtbox.Text");
+
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
 
             App.IS_TOMBSTONED = false;
         }
@@ -679,6 +703,7 @@ namespace windows_client.View
 
                 if (mediaElement != null)
                 {
+                    CompositionTarget.Rendering -= CompositionTarget_Rendering;
                     mediaElement.Stop();
 
                     if (currentAudioMessage != null)
@@ -736,6 +761,12 @@ namespace windows_client.View
             if (mediaElement != null)
                 mediaElement.Stop();
 
+            if (mediaElement != null)
+            {
+                CompositionTarget.Rendering -= CompositionTarget_Rendering;
+                mediaElement.Stop();
+            } 
+            
             if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
             {
                 Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
@@ -826,7 +857,7 @@ namespace windows_client.View
                     GroupManager.Instance.LoadGroupParticipants(obj.Msisdn);
                     isGroupChat = true;
                     BlockTxtBlk.Text = AppResources.SelectUser_BlockedGroupMsg_Txt;
-                    gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
+                    gi = GroupTableUtils.getGroupInfoForId(obj.Msisdn);
                     if (gi != null)
                         groupOwner = gi.GroupOwner;
                     if (gi != null && !gi.GroupAlive)
@@ -1054,8 +1085,6 @@ namespace windows_client.View
             }
             else
                 chatThreadMainPage.ApplicationBar = appBar;
-
-            IsSMSOptionValid = IsSMSOptionAvalable();
         }
 
         private void UpdateUiForHikeUser()
@@ -1065,6 +1094,12 @@ namespace windows_client.View
                 ContactInfo cinfo = (ContactInfo)statusObject;
                 cinfo.OnHike = true;
             }
+            else if (statusObject is ConversationListObject)
+            {
+                ConversationListObject co = (ConversationListObject)statusObject;
+                co.IsOnhike = true;
+            }
+
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 if (!isGroupChat)
@@ -1119,12 +1154,14 @@ namespace windows_client.View
             {
                 GroupManager.Instance.LoadGroupParticipants(mContactNumber);
 
-                showFreeSMS = (from groupParticipant in GroupManager.Instance.GroupCache[mContactNumber]
-                               where groupParticipant.Msisdn.Contains("+91")
-                               select groupParticipant).Count() == 0 ? false : true;
-
+                if (GroupManager.Instance.GroupCache != null && GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
+                {
+                    showFreeSMS = (from groupParticipant in GroupManager.Instance.GroupCache[mContactNumber]
+                                   where groupParticipant.Msisdn.Contains(HikeConstants.INDIA_COUNTRY_CODE)
+                                   select groupParticipant).Count() == 0 ? false : true;
+                }
             }
-            else if (!mContactNumber.Contains("+91")) //Indian receiver
+            else if (!mContactNumber.Contains(HikeConstants.INDIA_COUNTRY_CODE)) //Indian receiver
                 showFreeSMS = false;
 
             return showFreeSMS;
@@ -1418,7 +1455,6 @@ namespace windows_client.View
                 if (count % 5 == 0)
                     Thread.Sleep(5);
                 messagesList[i].IsSms = !isOnHike;
-
                 #region PERCEPTION FIX ZONE
 
                 // perception fix is only used for msgs of normal type in which SDR applies
@@ -1455,7 +1491,8 @@ namespace windows_client.View
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    AddMessageToOcMessages(cm, true);
+
+                    AddMessageToOcMessages(cm, true, false, true);
                 });
             }
 
@@ -1565,7 +1602,7 @@ namespace windows_client.View
                             convMessage.MetaDataString = metaDataString;
                         }
 
-                        AddMessageToOcMessages(convMessage, false);
+                        AddMessageToOcMessages(convMessage, false, false);
                         object[] vals = new object[3];
                         vals[0] = convMessage;
                         vals[1] = sourceFilePath;
@@ -1628,11 +1665,17 @@ namespace windows_client.View
 
         private void updateLastMsgColor(string msisdn)
         {
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
             {
-                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
-                    App.ViewModel.ConvMap[msisdn].MessageStatus = ConvMessage.State.RECEIVED_READ; // this is to notify ConvList.
-            });
+                //save conv object to save unreadcounter. Currently gives exception in the case when reading a chat thread and new messages
+                // come on other chat thread.
+                //ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[msisdn], msisdn);
+
+                Deployment.Current.Dispatcher.BeginInvoke(new Action<String>(delegate(string number)
+                {
+                    App.ViewModel.ConvMap[number].MessageStatus = ConvMessage.State.RECEIVED_READ; // this is to notify ConvList.
+                }), msisdn);
+            }
         }
 
         private void initBlockUnblockState()
@@ -1958,6 +2001,9 @@ namespace windows_client.View
                                 }
                                 else
                                 {
+                                    CompositionTarget.Rendering -= CompositionTarget_Rendering;
+                                    CompositionTarget.Rendering += CompositionTarget_Rendering;
+
                                     currentAudioMessage.IsPlaying = true;
                                     currentAudioMessage.IsStopped = false;
                                     mediaElement.Play();
@@ -1967,6 +2013,9 @@ namespace windows_client.View
                             {
                                 if (mediaElement.NaturalDuration.TimeSpan.TotalMilliseconds > 0)
                                 {
+                                    CompositionTarget.Rendering -= CompositionTarget_Rendering;
+                                    CompositionTarget.Rendering += CompositionTarget_Rendering;
+
                                     currentAudioMessage = convMessage;
                                     currentAudioMessage.IsPlaying = true;
                                     currentAudioMessage.IsStopped = false;
@@ -2035,6 +2084,9 @@ namespace windows_client.View
                                     }
                                 }
 
+                                CompositionTarget.Rendering -= CompositionTarget_Rendering;
+                                CompositionTarget.Rendering += CompositionTarget_Rendering;
+
                                 mediaElement.Play();
                                 currentAudioMessage.IsStopped = false;
                                 currentAudioMessage.IsPlaying = true;
@@ -2075,6 +2127,9 @@ namespace windows_client.View
                                         }
                                     }
                                 }
+
+                                CompositionTarget.Rendering -= CompositionTarget_Rendering;
+                                CompositionTarget.Rendering += CompositionTarget_Rendering;
 
                                 mediaElement.Play();
 
@@ -2128,6 +2183,9 @@ namespace windows_client.View
                             currentAudioMessage.PlayProgressBarValue = 0;
                         }
 
+                        CompositionTarget.Rendering -= CompositionTarget_Rendering;
+                        CompositionTarget.Rendering += CompositionTarget_Rendering;
+
                         mediaElement.Play();
                     }
                     catch (Exception ex) //Code should never reach here
@@ -2156,20 +2214,13 @@ namespace windows_client.View
                     double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
                     double longitude = Convert.ToDouble(locationJSON[HikeConstants.LONGITUDE].ToString());
 
-                    PhoneApplicationService.Current.State[HikeConstants.LOCATION_COORDINATE] = new GeoCoordinate(latitude, longitude);
+                    PhoneApplicationService.Current.State[HikeConstants.LOCATION_MAP_COORDINATE] = new GeoCoordinate(latitude, longitude);
 
                     this.NavigationService.Navigate(new Uri("/View/ShowLocation.xaml", UriKind.Relative));
-
-                    //if (this.bingMapsTask == null)
-                    //    bingMapsTask = new BingMapsTask();
-                    //double zoomLevel = Convert.ToDouble(locationJSON[HikeConstants.ZOOM_LEVEL].ToString());
-                    //bingMapsTask.Center = new GeoCoordinate(latitude, longitude);
-                    //bingMapsTask.ZoomLevel = zoomLevel;
-                    //bingMapsTask.Show();
                 }
                 catch (Exception ex) //Code should never reach here
                 {
-                    Debug.WriteLine("NewChatTHread :: DisplayAttachment :: Exception while parsing lacation parameters" + ex.StackTrace);
+                    Debug.WriteLine("NewChatTHread :: DisplayAttachment :: Exception while parsing location parameters" + ex.StackTrace);
                 }
                 return;
             }
@@ -2181,6 +2232,7 @@ namespace windows_client.View
                 sct.Show();
             }
         }
+
 
         void mediaElement_CurrentStateChanged(object sender, RoutedEventArgs e)
         {
@@ -2208,6 +2260,7 @@ namespace windows_client.View
                 currentAudioMessage = null;
             }
 
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
             mediaElement.Stop();
         }
 
@@ -2222,10 +2275,11 @@ namespace windows_client.View
                 currentAudioMessage = null;
             }
 
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
             mediaElement.Stop();
         }
 
-        private void AddNewMessageToUI(ConvMessage convMessage, bool insertAtTop)
+        private void AddNewMessageToUI(ConvMessage convMessage, bool insertAtTop, bool isReceived = false)
         {
             if (isTypingNotificationActive)
             {
@@ -2233,7 +2287,7 @@ namespace windows_client.View
                 isReshowTypingNotification = true;
             }
 
-            AddMessageToOcMessages(convMessage, insertAtTop);
+            AddMessageToOcMessages(convMessage, insertAtTop, isReceived);
 
             if (isReshowTypingNotification)
             {
@@ -2246,11 +2300,12 @@ namespace windows_client.View
       * If readFromDB is true & message state is SENT_UNCONFIRMED, then trying image is set else 
       * it is scheduled
       */
-        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop)
+
+        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived, bool readFromDb = false)
         {
             if (_isSendAllAsSMSVisible && ocMessages != null && convMessage.IsSent)
             {
-                ocMessages.Remove(tap2SendAsSMSMessage);
+                ocMessages.Remove(_tap2SendAsSMSMessage);
                 _isSendAllAsSMSVisible = false;
             }
 
@@ -2329,7 +2384,10 @@ namespace windows_client.View
                             }
                         }
                     }
+                    if (!readFromDb)
+                        ScheduleMsg(chatBubble);
                     chatBubble.IsSms = !isOnHike;
+                    chatBubble.CurrentOrientation = this.Orientation;
                     this.ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
@@ -2627,7 +2685,7 @@ namespace windows_client.View
                 }
                 #endregion
 
-                if (!insertAtTop)
+                if (!insertAtTop && !isReceived)
                     ScrollToBottom();
 
             }
@@ -2729,6 +2787,17 @@ namespace windows_client.View
                 Debug.WriteLine("NewChatThread :: inviteUserBtn_Click : Exception Occored:{0}", ex.StackTrace);
             }
         }
+
+        private void ScheduleMsg(ConvMessage convMessage)
+        {
+            if (convMessage != null && convMessage.IsSent && convMessage.MessageStatus == ConvMessage.State.SENT_UNCONFIRMED)
+            {
+                convMessage.SdrImageVisibility = Visibility.Collapsed;
+                scheduler.Schedule(convMessage.UpdateVisibilitySdrImage, TimeSpan.FromSeconds(5));
+            }
+        }
+
+
         #endregion
 
         #region PAGE EVENTS
@@ -3061,6 +3130,7 @@ namespace windows_client.View
 
             if (currentAudioMessage != null && msg == currentAudioMessage && msg.IsPlaying)
             {
+                CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 currentAudioMessage = null;
                 mediaElement.Stop();
             }
@@ -3071,9 +3141,9 @@ namespace windows_client.View
             bool delConv = false;
             this.ocMessages.Remove(msg);
 
-            if (_isSendAllAsSMSVisible && lastUnDeliveredMessage == msg)
+            if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage == msg)
             {
-                ocMessages.Remove(tap2SendAsSMSMessage);
+                ocMessages.Remove(_tap2SendAsSMSMessage);
                 _isSendAllAsSMSVisible = false;
                 ShowForceSMSOnUI();
             }
@@ -3176,9 +3246,9 @@ namespace windows_client.View
 
                 SendForceSMS(convMessage);
 
-                if (_isSendAllAsSMSVisible && lastUnDeliveredMessage == convMessage)
+                if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage == convMessage)
                 {
-                    ocMessages.Remove(tap2SendAsSMSMessage);
+                    ocMessages.Remove(_tap2SendAsSMSMessage);
                     _isSendAllAsSMSVisible = false;
                     ShowForceSMSOnUI();
                 }
@@ -3376,7 +3446,14 @@ namespace windows_client.View
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             //emoticonPanel.Visibility = Visibility.Collapsed;
         }
-
+        private void emotList3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            recordGrid.Visibility = Visibility.Collapsed;
+            sendMsgTxtbox.Visibility = Visibility.Visible;
+            int index = emotList3.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size + SmileyParser.Instance.emoticon2Size;
+            sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
+            //emoticonPanel.Visibility = Visibility.Collapsed;
+        }
         #endregion
 
         #region HELPER FUNCTIONS
@@ -3605,7 +3682,7 @@ namespace windows_client.View
                     this.ocMessages.Add(convTypingNotification);
                 }
                 isTypingNotificationActive = true;
-                ScrollToBottom();
+                //ScrollToBottom();
             });
             lastTypingNotificationShownTime = TimeUtils.getCurrentTimeStamp();
             scheduler.Schedule(autoHideTypingNotification, TimeSpan.FromSeconds(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE));
@@ -3698,12 +3775,17 @@ namespace windows_client.View
                         else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
                             userImage.Source = App.ViewModel.ConvMap[convMessage.Msisdn].AvatarImage;
 
-                        AddNewMessageToUI(convMessage, false);
+                        AddNewMessageToUI(convMessage, false, true);
+                        ShowJumpToBottom(true);
+
                         if (vals.Length == 3)
                         {
                             ConvMessage cm = (ConvMessage)vals[2];
                             if (cm != null)
-                                AddNewMessageToUI(cm, false);
+                            {
+                                AddNewMessageToUI(cm, false, true);
+                                ShowJumpToBottom(true);
+                            }
                         }
                     });
                 }
@@ -3784,11 +3866,11 @@ namespace windows_client.View
                             msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
                     }
 
-                    if (_isSendAllAsSMSVisible && ocMessages != null && msg == lastUnDeliveredMessage)
+                    if (_isSendAllAsSMSVisible && ocMessages != null && msg == _lastUnDeliveredMessage)
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            ocMessages.Remove(tap2SendAsSMSMessage);
+                            ocMessages.Remove(_tap2SendAsSMSMessage);
                             _isSendAllAsSMSVisible = false;
                             ShowForceSMSOnUI();
                         });
@@ -3874,11 +3956,11 @@ namespace windows_client.View
                 }
                 #endregion
 
-                if (_isSendAllAsSMSVisible && lastUnDeliveredMessage.MessageStatus != ConvMessage.State.SENT_CONFIRMED)
+                if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage.MessageStatus != ConvMessage.State.SENT_CONFIRMED)
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        ocMessages.Remove(tap2SendAsSMSMessage);
+                        ocMessages.Remove(_tap2SendAsSMSMessage);
                         _isSendAllAsSMSVisible = false;
                         ShowForceSMSOnUI();
                     });
@@ -4205,10 +4287,18 @@ namespace windows_client.View
                 string locationMessage = String.Empty;
                 string fileName = fileData[HikeConstants.FILE_NAME].ToString();
 
-                if (!String.IsNullOrEmpty(vicinity))
-                    fileName += ", " + vicinity;
-
                 locationMessage = fileName;
+
+                if (!String.IsNullOrEmpty(vicinity))
+                {
+                    if (!String.IsNullOrEmpty(locationMessage))
+                        locationMessage += "\n" + vicinity;
+                    else
+                        locationMessage = vicinity;
+                }
+
+                if (String.IsNullOrEmpty(fileName))
+                    fileName = AppResources.Location_Txt;
 
                 ConvMessage convMessage = new ConvMessage(locationMessage, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation)
                 {
@@ -4221,6 +4311,8 @@ namespace windows_client.View
                 convMessage.FileAttachment.ContentType = "hikemap/location";
 
                 AddNewMessageToUI(convMessage, false);
+
+                ScrollToBottom();
 
                 object[] vals = new object[3];
                 vals[0] = convMessage;
@@ -4355,6 +4447,7 @@ namespace windows_client.View
             emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
             emoticonPivot.SelectedIndex = 0;
         }
 
@@ -4363,6 +4456,7 @@ namespace windows_client.View
             emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.TappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
             emoticonPivot.SelectedIndex = 1;
 
         }
@@ -4372,9 +4466,17 @@ namespace windows_client.View
             emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.TappedCategoryColor;
+            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
             emoticonPivot.SelectedIndex = 2;
         }
-
+        private void emotHeaderRect3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect3.Background = UI_Utils.Instance.TappedCategoryColor;
+            emoticonPivot.SelectedIndex = 3;
+        }
         private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             switch (emoticonPivot.SelectedIndex)
@@ -4383,16 +4485,25 @@ namespace windows_client.View
                     emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
                     break;
                 case 1:
                     emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.TappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
                     break;
                 case 2:
                     emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.TappedCategoryColor;
+                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    break;
+                case 3:
+                    emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect3.Background = UI_Utils.Instance.TappedCategoryColor;
                     break;
             }
         }
@@ -4616,9 +4727,10 @@ namespace windows_client.View
         }
 
         #region Orientation Handling
-
+        PageOrientation _currentOrientation;
         private void PhoneApplicationPage_OrientationChanged(object sender, OrientationChangedEventArgs e)
         {
+            _currentOrientation = this.Orientation;
             for (int i = 0; i < ocMessages.Count; i++)
             {
                 ConvMessage convMessage = ocMessages[i];
@@ -4664,10 +4776,67 @@ namespace windows_client.View
                             });
                         };
                     }
+
+                }
+            }
+        }
+    
+        #region Jump To Latest
+
+        ScrollBar vScrollBar = null;
+        private void vScrollBar1_ValueChanged(Object sender, EventArgs e)
+        {
+            vScrollBar = sender as ScrollBar;
+            if (vScrollBar != null && vScrollBar.Maximum < 100000 && _currentOrientation == this.Orientation)
+            {
+                if ((vScrollBar.Maximum - vScrollBar.Value) < 100)
+                {
+                    JumpToBottomGrid.Visibility = Visibility.Collapsed;
+                    _unreadMessageCounter = 0;
                 }
             }
         }
 
+        private void JumpToBottom_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ScrollToBottom();
+            JumpToBottomGrid.Visibility = Visibility.Collapsed;
+            _unreadMessageCounter = 0;
+        }
+
+        private void llsMessages_ItemUnRealized(object sender, ItemRealizationEventArgs e)
+        {
+            if (isMessageLoaded && llsMessages.ItemsSource != null && llsMessages.ItemsSource.Count > 0)
+            {
+                if (e.ItemKind == LongListSelectorItemKind.Item)
+                {
+                    ConvMessage convMessage = e.Container.Content as ConvMessage;
+                    if (convMessage.Equals(llsMessages.ItemsSource[llsMessages.ItemsSource.Count - 1]))
+                    {
+                        ShowJumpToBottom(false);
+                    }
+                }
+            }
+        }
+
+        private void ShowJumpToBottom(bool increaseUnreadCounter)
+        {
+            if (vScrollBar != null && (ocMessages != null && ocMessages.Count > 6))
+            {
+                if ((vScrollBar.Maximum - vScrollBar.Value) > 300)
+                {
+                    if (increaseUnreadCounter)
+                        _unreadMessageCounter += 1;
+                    JumpToBottomGrid.Visibility = Visibility.Visible;
+                    txtJumpToBttom.Text = _unreadMessageCounter > 0 ? (_unreadMessageCounter == 1 ? AppResources.ChatThread_1NewMessage_txt : string.Format(AppResources.ChatThread_More_NewMessages_txt, _unreadMessageCounter)) : AppResources.ChatThread_JumpToLatest;
+                }
+                else if (increaseUnreadCounter)
+                    ScrollToBottom();
+            }
+        }
+        
+        #endregion
+        
         #region Stickers
 
 
@@ -4676,21 +4845,14 @@ namespace windows_client.View
         Thickness zeroThickness = new Thickness(0, 0, 0, 0);
         Thickness newCategoryThickness = new Thickness(0, 1, 0, 0);
 
-
-        private void Stickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        public void SendSticker(Sticker sticker)
         {
-            ListBox llsStickerCategory = (sender as ListBox);
-            Sticker sticker = llsStickerCategory.SelectedItem as Sticker;
-            llsStickerCategory.SelectedItem = null;
-            if (sticker == null)
-                return;
-
             ConvMessage conv = new ConvMessage(AppResources.Sticker_Txt, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
             conv.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
             conv.StickerObj = new Sticker(sticker.Category, sticker.Id, null);
             conv.MetaDataString = string.Format("{{{0}:'{1}',{2}:'{3}'}}", HikeConstants.STICKER_ID, sticker.Id, HikeConstants.CATEGORY_ID, sticker.Category);
             //Stickers_tap is binded to pivot and cached so to update latest object this is done
-            App.newChatThreadPage.AddNewMessageToUI(conv, false);
+            AddNewMessageToUI(conv, false);
 
             mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
         }
@@ -5084,6 +5246,7 @@ namespace windows_client.View
                         downloadDialogueImage.Source = UI_Utils.Instance.DoggyOverlay;
                         btnDownload.Content = AppResources.Installed_Txt;
                         btnDownload.IsHitTestVisible = false;
+                        btnFree.IsHitTestVisible = false;
                         break;
                     case StickerHelper.CATEGORY_KITTY:
                         downloadDialogueImage.Source = UI_Utils.Instance.KittyOverlay;
@@ -5109,6 +5272,7 @@ namespace windows_client.View
                 if (btnDownload.IsHitTestVisible == false)
                 {
                     btnDownload.IsHitTestVisible = true;
+                    btnFree.IsHitTestVisible = true;
                     btnDownload.Content = AppResources.Download_txt;
                     App.appSettings.Remove(HikeConstants.AppSettings.SHOW_DOGGY_OVERLAY);
                 }
@@ -5184,7 +5348,7 @@ namespace windows_client.View
         }
         private void CreateStickerPivot()
         {
-            StickerPivotHelper.Instance.InitialiseStickerPivot(Stickers_Tap);
+            StickerPivotHelper.Instance.InitialiseStickerPivot();
             pivotStickers = StickerPivotHelper.Instance.StickerPivot;
             pivotStickers.SelectionChanged += PivotStickers_SelectionChanged;
             pivotStickers.Height = 240;
@@ -5556,11 +5720,11 @@ namespace windows_client.View
 
             try
             {
-                lastUnDeliveredMessage = (from message in ocMessages
+                _lastUnDeliveredMessage = (from message in ocMessages
                                           where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
                                           select message).Last();
 
-                if (lastUnDeliveredMessage != null)
+                if (_lastUnDeliveredMessage != null)
                 {
                     TimeSpan ts;
 
@@ -5570,7 +5734,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        long ticks = lastUnDeliveredMessage.Timestamp * 10000000;
+                        long ticks = _lastUnDeliveredMessage.Timestamp * 10000000;
                         ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
                         DateTime receivedTime = new DateTime(ticks);
                         receivedTime = receivedTime.ToLocalTime();
@@ -5579,19 +5743,7 @@ namespace windows_client.View
                     }
 
                     if (ts.TotalSeconds > 0 || isNewTimer)
-                    {
-                        if (_forceSMSTimer == null)
-                            _forceSMSTimer = new DispatcherTimer();
-                        else
-                            _forceSMSTimer.Stop();
-
-                        _forceSMSTimer.Interval = ts;
-
-                        _forceSMSTimer.Tick -= _forceSMSTimer_Tick;
-                        _forceSMSTimer.Tick += _forceSMSTimer_Tick;
-
-                        _forceSMSTimer.Start();
-                    }
+                        scheduler.Schedule(ShowForceSMSOnUI, ts);
                     else
                         ShowForceSMSOnUI();
                 }
@@ -5599,24 +5751,6 @@ namespace windows_client.View
             catch
             {
                 return;
-            }
-        }
-
-
-        void _forceSMSTimer_Tick(object sender, EventArgs e)
-        {
-            _forceSMSTimer.Tick -= _forceSMSTimer_Tick;
-
-            if (!_isShownOnUI)
-            {
-                _isShownOnUI = true;
-
-                _forceSMSTimer.Stop();
-
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        ShowForceSMSOnUI();
-                    });
             }
         }
 
@@ -5625,44 +5759,44 @@ namespace windows_client.View
             if (_isSendAllAsSMSVisible)
                 return;
 
-            lastUnDeliveredMessage = null;
+            _lastUnDeliveredMessage = null;
 
             try
             {
-                lastUnDeliveredMessage = (from message in ocMessages
+                _lastUnDeliveredMessage = (from message in ocMessages
                                           where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
                                           select message).Last();
             }
             catch
             {
-                _isShownOnUI = false;
                 return;
             }
 
-            if (lastUnDeliveredMessage != null)
+            if (_lastUnDeliveredMessage != null)
             {
-                if (tap2SendAsSMSMessage == null)
+                if (_tap2SendAsSMSMessage == null)
                 {
-                    tap2SendAsSMSMessage = new ConvMessage();
-                    tap2SendAsSMSMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION;
-                    tap2SendAsSMSMessage.NotificationType = ConvMessage.MessageType.FORCE_SMS;
+                    _tap2SendAsSMSMessage = new ConvMessage();
+                    _tap2SendAsSMSMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION;
+                    _tap2SendAsSMSMessage.NotificationType = ConvMessage.MessageType.FORCE_SMS;
 
                     if (isGroupChat)
-                        tap2SendAsSMSMessage.Message = AppResources.Send_All_As_SMS_Group;
+                        _tap2SendAsSMSMessage.Message = AppResources.Send_All_As_SMS_Group;
                     else
-                        tap2SendAsSMSMessage.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
+                        _tap2SendAsSMSMessage.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
                 }
 
-                var indexToInsert = ocMessages.IndexOf(lastUnDeliveredMessage) + 1;
-                this.ocMessages.Insert(indexToInsert, tap2SendAsSMSMessage);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        var indexToInsert = ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
+                        this.ocMessages.Insert(indexToInsert, _tap2SendAsSMSMessage);
 
-                if (indexToInsert == ocMessages.Count - 1)
-                    ScrollToBottom();
+                        if (indexToInsert == ocMessages.Count - 1)
+                            ScrollToBottom();
 
-                _isSendAllAsSMSVisible = true;
+                        _isSendAllAsSMSVisible = true;
+                    });
             }
-
-            _isShownOnUI = false;
         }
 
         void SendForceSMS(ConvMessage message = null)
@@ -5789,12 +5923,10 @@ namespace windows_client.View
 
                             if (result == MessageBoxResult.OK)
                             {
-                                _isShownOnUI = false;
-
                                 SendForceSMS();
 
-                                if (lastUnDeliveredMessage != null)
-                                    ocMessages.Remove(tap2SendAsSMSMessage);
+                                if (_lastUnDeliveredMessage != null)
+                                    ocMessages.Remove(_tap2SendAsSMSMessage);
                             }
                             //    else
                             //        FileAttachmentMessage_Tap(sender, e);
@@ -5813,6 +5945,7 @@ namespace windows_client.View
                     FileAttachmentMessage_Tap(sender, e); // normal flow for recieved files
             }
         }
+  
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector

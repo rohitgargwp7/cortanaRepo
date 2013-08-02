@@ -10,25 +10,21 @@
     <Language code="hi-IN" />
     <Language code="hi" />
   </Languages>
-  <App xmlns="" ProductID="{d3fe1cb5-8328-4a7b-8932-caabc1d22288}" Title="Hike" IsBeta="true" RuntimeType="Silverlight" Version="2.2.0.2" Genre="apps.normal" Author="windows_client author" Description="Messaging Application" Publisher="windows_client" PublisherID="{d9c2d577-1f1d-4f5c-8082-4fd8cbe41ad6}">
+  <App xmlns="" ProductID="{d3fe1cb5-8328-4a7b-8932-caabc1d22288}" Title="Hike" IsBeta="true" RuntimeType="Silverlight" Version="2.2.0.3" Genre="apps.normal" Author="windows_client author" Description="Messaging Application" Publisher="windows_client" PublisherID="{d9c2d577-1f1d-4f5c-8082-4fd8cbe41ad6}">
     <IconPath IsRelative="true" IsResource="false">Application_IconImage_62x62.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_IDENTITY_DEVICE" />
-      <Capability Name="ID_CAP_IDENTITY_USER" />
       <Capability Name="ID_CAP_LOCATION" />
       <Capability Name="ID_CAP_MICROPHONE" />
       <Capability Name="ID_CAP_NETWORKING" />
       <Capability Name="ID_CAP_PHONEDIALER" />
       <Capability Name="ID_CAP_PUSH_NOTIFICATION" />
-      <Capability Name="ID_CAP_SENSORS" />
-      <Capability Name="ID_CAP_WEBBROWSERCOMPONENT" />
       <Capability Name="ID_CAP_ISV_CAMERA" />
       <Capability Name="ID_CAP_CONTACTS" />
-      <Capability Name="ID_CAP_APPOINTMENTS" />
-      <Capability Name="ID_CAP_MEDIALIB_AUDIO" />
       <Capability Name="ID_CAP_MEDIALIB_PHOTO" />
       <Capability Name="ID_CAP_MEDIALIB_PLAYBACK" />
       <Capability Name="ID_CAP_MAP" />
+      <Capability Name="ID_CAP_WEBBROWSERCOMPONENT" />
     </Capabilities>
     <Tasks>
       <DefaultTask Name="_default" NavigationPage="View/NewSelectUserPage.xaml" ActivationPolicy="Resume"/>

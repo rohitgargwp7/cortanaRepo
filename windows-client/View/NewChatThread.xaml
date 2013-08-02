@@ -27,8 +27,22 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="phone:LongListSelector">
                         <Grid Background="{TemplateBinding Background}" d:DesignWidth="480" d:DesignHeight="800">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="ScrollStates">
+                                    <VisualStateGroup.Transitions>
+                                        <VisualTransition GeneratedDuration="00:00:00.5"/>
+                                    </VisualStateGroup.Transitions>
+                                    <VisualState x:Name="Scrolling">
+                                        <Storyboard>
+                                            <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="VerticalScrollBar"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="NotScrolling"/>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
                             <Grid Margin="0">
                                 <ViewportControl x:Name="ViewportControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom"/>
+                                <ScrollBar x:Name="VerticalScrollBar" Opacity="0" Margin="2 0 2 0" Orientation="Vertical" HorizontalAlignment="Right" Width="5"  ValueChanged="vScrollBar1_ValueChanged"  />
                             </Grid>
                         </Grid>
                     </ControlTemplate>
@@ -76,669 +90,672 @@
                     </Grid.ColumnDefinitions>
                     <Image Name="userImage" Height="55" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     <StackPanel Margin="18,-2,0,0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-                        <TextBlock x:Name="userName" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="50" VerticalAlignment="Top" Margin="0,-10,0,0"/>
+                        <TextBlock x:Name="userName"  FontFamily="Segoe WP SemiLight" FontSize="50" VerticalAlignment="Top" Margin="0,-10,0,0"/>
                         <StackPanel Margin="2,-5,0,0" Orientation="Horizontal" VerticalAlignment="Top" x:Name="lastSeenPannel" Visibility="Collapsed">
                             <Image x:Name="onlineStatus" MaxHeight="15" MaxWidth="15" Margin="0,0,5,0" Visibility="Collapsed"/>
                             <TextBlock x:Name="lastSeenTxt" Text="" FontSize="18"/>
                         </StackPanel>
                     </StackPanel>
-                 </Grid>
+                </Grid>
             </StackPanel>
         </StackPanel>
 
-        <!--(-15) margin to hide vertical scroll bar  -->
-        <phone:LongListSelector Name="llsMessages" ItemRealized="llsMessages_ItemRealized" SelectionChanged="ChatMessageSelected" Grid.Row="1" DoubleTap="MessageList_DoubleTap" HorizontalContentAlignment="Stretch">
-            <phone:LongListSelector.ItemTemplate>
-                <DataTemplate>
-                    <view:ChatThreadTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
-                        <view:ChatThreadTemplateSelector.DtInAppTip>
-                            <DataTemplate>
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24,5,24,5" HorizontalAlignment="Stretch" Tap="TipDismiss_Tap">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="14"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <Path x:Name="topBubblePointer" Opacity="0.95" Data="M0,0 L1,1 L-1,1" HorizontalAlignment="Left" Fill="{StaticResource PhoneForegroundBrush}" Stretch="Fill" UseLayoutRounding="False" Width="16" Margin="20,0,0,-1"/>
-                                    <Grid Grid.Row="1" HorizontalAlignment="Stretch">
-                                        <Border Background="{StaticResource PhoneForegroundBrush}" Opacity="0.95"/>
-                                        <Grid VerticalAlignment="Center" Margin="15" HorizontalAlignment="Stretch">
+        <Grid Grid.Row="1">
+
+            <phone:LongListSelector Name="llsMessages" ItemUnrealized="llsMessages_ItemUnRealized" ItemRealized="llsMessages_ItemRealized" SelectionChanged="ChatMessageSelected" Grid.Row="1" DoubleTap="MessageList_DoubleTap" HorizontalContentAlignment="Stretch" >
+                <phone:LongListSelector.ItemTemplate>
+                    <DataTemplate>
+                        <view:ChatThreadTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
+                            <view:ChatThreadTemplateSelector.DtInAppTip>
+                                <DataTemplate>
+                                    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24,5,24,5" HorizontalAlignment="Stretch" Tap="TipDismiss_Tap">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="14"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Path x:Name="topBubblePointer" Opacity="0.95" Data="M0,0 L1,1 L-1,1" HorizontalAlignment="Left" Fill="{StaticResource PhoneForegroundBrush}" Stretch="Fill" UseLayoutRounding="False" Width="16" Margin="20,0,0,-1"/>
+                                        <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+                                            <Border Background="{StaticResource PhoneForegroundBrush}" Opacity="0.95"/>
+                                            <Grid VerticalAlignment="Center" Margin="15" HorizontalAlignment="Stretch">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock x:Name="tipText" Margin="0,3,5,0" Text="{Binding DispMessage}" TextWrapping="Wrap"  Foreground="{StaticResource PhoneBackgroundBrush}"/>
+                                                <Image Grid.Column="1" MaxHeight="35" Margin="0,0,10,0" x:Name="closeButtonImage" Source="{Binding CloseImage}" Stretch="Uniform" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtInAppTip>
+                            <view:ChatThreadTemplateSelector.DtForceSMSNotification>
+                                <DataTemplate>
+                                    <Grid HorizontalAlignment="Right" Margin="0,-8,24,5" >
+                                        <TextBlock x:Name="UserName" FontSize="16" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtForceSMSNotification>
+                            <view:ChatThreadTemplateSelector.DtNotificationBubble>
+                                <DataTemplate x:Name="dtNotificationBubble">
+                                    <Border x:Name="border" BorderThickness="1" Background="Transparent" Margin="24,5,24,5" BorderBrush="#cdcdcd" HorizontalAlignment="Stretch" >
+                                        <Grid HorizontalAlignment="Center" Margin="12 3">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image x:Name="NotificationImage" MaxHeight="20" VerticalAlignment="Center" HorizontalAlignment="Right" Source="{Binding NotificationImage}"></Image>
+                                            <TextBlock x:Name="UserName" Height="Auto"  Margin="10 0 0 0" Grid.Column="1" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
+                        Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtNotificationBubble>
+                            <view:ChatThreadTemplateSelector.DtTypingNotificationBubble>
+                                <DataTemplate x:Name="dtTypingNotificationBubble" >
+                                    <Grid HorizontalAlignment="Left" Margin="24 10 0 10">
+                                        <Image Source="/View/images/typing.png" Height="20" Width="40" HorizontalAlignment="Left"></Image>
+                                    </Grid>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtTypingNotificationBubble>
+                            <view:ChatThreadTemplateSelector.DtRecievedBubbleText>
+                                <DataTemplate x:Name="dtRecievedBubbleText" >
+                                    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24 0 0 14"  HorizontalAlignment="Left">
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Copy"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="14" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
+                                        <Grid Grid.Row="1">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Rectangle Grid.RowSpan="3" Fill="{Binding BubbleBackGroundColor}" />
+                                            <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
+                                            <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Grid.Row="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" />
+                                            <TextBlock Grid.Row="2" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="0,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                        </Grid>
+                                    </Grid>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtRecievedBubbleText>
+                            <view:ChatThreadTemplateSelector.DtRecievedBubbleFile>
+                                <DataTemplate x:Name="dtRecievedBubbleFile">
+                                    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24 0 0 14" HorizontalAlignment="Left">
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="14" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <!--to maintain width-->
+                                        <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
+                                        <Grid Grid.Row="1" HorizontalAlignment="Left">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Rectangle Grid.RowSpan="2" Fill="{Binding BubbleBackGroundColor}" />
+                                            <Grid x:Name="attachment" Grid.Row="0"  >
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
+                                                <Image Grid.Row="1" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
+                                                <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="1" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center"/>
+                                                <ProgressBar Grid.Row="2" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
+                                            </Grid>
+                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                        </Grid>
+                                    </Grid>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtRecievedBubbleFile>
+                            <view:ChatThreadTemplateSelector.DtRecievedBubbleLocation>
+                                <DataTemplate x:Name="dtRecievedBubbleLocation" >
+                                    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24 0 0 14" HorizontalAlignment="Left">
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="14" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <!--to maintain width-->
+                                        <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
+                                        <Grid Grid.Row="1" HorizontalAlignment="Left">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Rectangle Grid.RowSpan="2" Fill="{Binding BubbleBackGroundColor}" />
+                                            <Grid x:Name="attachment" Grid.Row="0"  >
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <Image Grid.Row="0" MaxWidth="300" MaxHeight="160" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
+                                                <Grid MaxHeight="100" MaxWidth="300" VerticalAlignment="Bottom" Margin="12,0" Visibility="{Binding DispMessageVisibility}">
+                                                    <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                                                    <TextBlock Text="{Binding DispMessage}" Margin="10,5" TextWrapping="Wrap" Foreground="White" FontSize="18" />
+                                                </Grid>
+                                                <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
+                                            </Grid>
+                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                        </Grid>
+                                    </Grid>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtRecievedBubbleLocation>
+                            <view:ChatThreadTemplateSelector.DtRecievedBubbleAudioFile>
+                                <DataTemplate x:Name="dtRecievedBubbleAudioFile" >
+                                    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24 0 0 14" HorizontalAlignment="Left">
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="14" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
+                                        <Grid Grid.Row="1" HorizontalAlignment="Left">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Rectangle Grid.RowSpan="2" Fill="{Binding BubbleBackGroundColor}" />
+                                            <Grid x:Name="attachment" Grid.Row="0"  >
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
+                                                <Grid Grid.Row="1" Margin="10">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" MinWidth="43"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border Margin="0" Background="Black" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
+                                                    <Image Stretch="Uniform" x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
+                                                    <Grid Grid.Column="1">
+                                                        <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
+                                                            <Image Margin="10,0,0,0" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="/View/images/Mic_icon_grey_small.png"/>
+                                                            <TextBlock Margin="10,0,0,0" Text="{Binding PlayTimeText}" Foreground="White" FontSize="24" VerticalAlignment="Center" TextAlignment="Left"/>
+                                                        </StackPanel>
+                                                        <ProgressBar Style="{StaticResource PlayProgressBarStyle}" x:Name="playProgress" Value="{Binding PlayProgressBarValue}" Width="180" Height="45" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100"/>
+                                                    </Grid>
+                                                </Grid>
+                                                <ProgressBar Grid.Row="2" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
+                                            </Grid>
+                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                        </Grid>
+                                    </Grid>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtRecievedBubbleAudioFile>
+                            <view:ChatThreadTemplateSelector.DtRecievedBubbleNudge>
+                                <DataTemplate x:Name="dtRecievedBubbleNudge" >
+                                    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24 0 0 14" HorizontalAlignment="Left">
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="14" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{StaticResource PhoneAccentBrush}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
+
+                                        <Grid Grid.Row="1">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Rectangle Grid.RowSpan="2" Fill="{StaticResource PhoneAccentBrush}" />
+                                            <Image Grid.Row="0" Width="46" Height="35" Margin="12,12,12,10" HorizontalAlignment="Left" Source="/View/images/nudge_received.png"/>
+                                        </Grid>
+                                    </Grid>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtRecievedBubbleNudge>
+                            <view:ChatThreadTemplateSelector.DtRecievedBubbleContact>
+                                <DataTemplate x:Name="dtRecievedBubbleContact" >
+                                    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24 0 0 14" HorizontalAlignment="Left">
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="14" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
+                                        <Grid Grid.Row="1" HorizontalAlignment="Left">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Rectangle Grid.RowSpan="3" Fill="{Binding BubbleBackGroundColor}" />
+                                            <Grid x:Name="attachment" Grid.Row="0"  >
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
+                                                <Image Grid.Row="1" Width="35" Height="25" Margin="12,12,12,0" HorizontalAlignment="Left" Source="{Binding MessageImage}" />
+                                                <TextBlock Grid.Row="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" Grid.Column="1" Margin="0,8,5,0" TextWrapping="Wrap" MinWidth="150" MaxWidth="330" Foreground="{Binding MessageTextForeGround}"/>
+                                                <ProgressBar Grid.Row="2"  x:Name="downloadProgress" Margin="0,5,0,0" Grid.ColumnSpan="2" Height="10" Background="Transparent" Foreground="#333333" Minimum="0" Maximum="100"></ProgressBar>
+                                            </Grid>
+                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                        </Grid>
+                                    </Grid>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtRecievedBubbleContact>
+                            <view:ChatThreadTemplateSelector.DtRecievedSticker>
+                                <DataTemplate x:Name="dtRecievedSticker">
+                                    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24 5 0 5"  HorizontalAlignment="Left">
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <Grid Visibility="{Binding IsStickerVisible}">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding TimeStampForeGround}" />
+                                            <Image Grid.Row="1" HorizontalAlignment="Left" Source="{Binding MessageImage}" Grid.Column="0" />
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                        </Grid>
+                                        <Grid Visibility="{Binding IsStickerLoading}">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock  Grid.Row="0" Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding TimeStampForeGround}" />
+                                            <ProgressBar Grid.Row="1" Foreground="#1ba1e2" IsIndeterminate="True" IsEnabled="True" Width="200" HorizontalAlignment="Stretch" Margin="0 20 0 30"/>
+                                            <TextBlock Grid.Row="2" Text="{Binding Path=LocalizedResources.DownloadingSticker_txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}" TextAlignment="Left" />
+                                        </Grid>
+                                        <Grid Visibility="{Binding IsHttpFailed}">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock  Grid.Row="0" Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding TimeStampForeGround}" />
+                                            <Image Grid.Row="1" Source="/View/images/download_failed_bubble.png" MaxHeight="30" Margin="0 30 40 0"/>
+                                            <TextBlock Grid.Row="2" Text="{Binding Path=LocalizedResources.StickerDownloadFailed, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                            <TextBlock Grid.Row="3" Text="{Binding Path=LocalizedResources.TapHereToRetyTxt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                        </Grid>
+                                    </Grid>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtRecievedSticker>
+                            <view:ChatThreadTemplateSelector.DtSentBubbleText>
+                                <DataTemplate x:Name="dtSentBubbleText" >
+                                    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right">
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Copy"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="14" />
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" HorizontalAlignment="Right">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="40"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}"/>
+                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
+                                            <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Grid.Row="0" Grid.Column="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" />
+                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,24,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                        </Grid>
+                                        <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
+
+                                    </Grid>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtSentBubbleText>
+                            <view:ChatThreadTemplateSelector.DtSentBubbleLocation>
+                                <DataTemplate x:Name="DtSentBubbleLocation" >
+                                    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right"   >
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="14" />
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" HorizontalAlignment="Right">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="40"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}" />
+                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
+                                            <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" >
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <Image Grid.Row="0" MaxWidth="300" MaxHeight="160" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
+                                                <Grid MaxHeight="100" MaxWidth="300" VerticalAlignment="Bottom" Margin="12,0" Visibility="{Binding DispMessageVisibility}">
+                                                    <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                                                    <TextBlock Text="{Binding DispMessage}" Margin="10,5" TextWrapping="Wrap" Foreground="White" FontSize="18" />
+                                                </Grid>
+                                                <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
+                                            </Grid>
+                                            <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                        </Grid>
+                                        <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
+                                    </Grid>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtSentBubbleLocation>
+                            <view:ChatThreadTemplateSelector.DtSentBubbleFile>
+                                <DataTemplate x:Name="dtSentBubbleFile" >
+                                    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right">
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="14" />
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" HorizontalAlignment="Right">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="40"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}" />
+                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
+                                            <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" >
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <Image Grid.Row="0" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
+                                                <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="0" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center"/>
+                                                <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
+                                            </Grid>
+                                            <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                        </Grid>
+                                        <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
+                                    </Grid>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtSentBubbleFile>
+                            <view:ChatThreadTemplateSelector.DtSentBubbleAudioFile>
+                                <DataTemplate x:Name="dtSentBubbleAudioFile" >
+                                    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right">
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="14" />
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" HorizontalAlignment="Right">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="40"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}" />
+                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
+                                            <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" Margin="10">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" MinWidth="43"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border Margin="0" Background="Black" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
+                                                    <Image Stretch="Uniform" x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" HorizontalAlignment="Center" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
+                                                    <Grid Grid.Column="1">
+                                                        <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
+                                                            <Image Margin="10,0,0,0" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="/View/images/Mic_icon_grey_small.png"/>
+                                                            <TextBlock Margin="10,0,0,0" Text="{Binding PlayTimeText}" Foreground="White" FontSize="24" VerticalAlignment="Center" TextAlignment="Left"/>
+                                                        </StackPanel>
+                                                        <ProgressBar Style="{StaticResource PlayProgressBarStyle}" x:Name="playProgress" Value="{Binding PlayProgressBarValue}" Width="180" Height="45" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100"/>
+                                                    </Grid>
+                                                </Grid>
+                                                <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
+                                            </Grid>
+                                            <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                        </Grid>
+                                        <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
+                                    </Grid>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtSentBubbleAudioFile>
+                            <view:ChatThreadTemplateSelector.DtSentBubbleNudge>
+                                <DataTemplate x:Name="dtSentBubbleNudge" >
+                                    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right">
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="14" />
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" HorizontalAlignment="Right">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="40"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{StaticResource PhoneAccentBrush}"  />
+                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
+                                            <Image Grid.Row="0" Grid.Column="1"  Width="46" Height="35" Margin="12,12,12,10" HorizontalAlignment="Right" Source="/View/images/nudge_sent.png"/>
+                                        </Grid>
+                                        <Path Grid.Column="1" Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{StaticResource PhoneAccentBrush}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtSentBubbleNudge>
+                            <view:ChatThreadTemplateSelector.DtSentBubbleContact>
+                                <DataTemplate x:Name="dtSentBubbleContact" >
+                                    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right">
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="14" />
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" HorizontalAlignment="Right">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="40"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Rectangle Grid.RowSpan="2" Grid.Column="2"  Fill="{Binding BubbleBackGroundColor}" />
+                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
+                                            <Grid x:Name="attachment" Grid.Row="0"  Grid.Column="1">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Image Width="35" Height="25" Margin="12,12,12,0" HorizontalAlignment="Left" Source="{Binding MessageImage}" />
+                                                <TextBlock Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" Grid.Column="1" Margin="0,8,5,0" TextWrapping="Wrap" MinWidth="150" MaxWidth="330" Foreground="{Binding MessageTextForeGround}"/>
+                                                <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
+
+                                            </Grid>
+                                            <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                        </Grid>
+                                        <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
+                                    </Grid>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtSentBubbleContact>
+                            <view:ChatThreadTemplateSelector.DtSentSticker>
+                                <DataTemplate x:Name="dtSentSticker">
+                                    <Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Right" Margin="0 5 24 5">
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <Grid Visibility="{Binding IsStickerVisible}">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock x:Name="tipText" Margin="0,3,5,0" Text="{Binding DispMessage}" TextWrapping="Wrap"  Foreground="{StaticResource PhoneBackgroundBrush}"/>
-                                            <Image Grid.Column="1" MaxHeight="35" Margin="0,0,10,0" x:Name="closeButtonImage" Source="{Binding CloseImage}" Stretch="Uniform" VerticalAlignment="Center"/>
+                                            <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Width="30" Grid.Column="0" HorizontalAlignment="Right" Grid.RowSpan="2"></Image>
+                                            <Image HorizontalAlignment="Right" Source="{Binding MessageImage}" Grid.Row="0" Grid.Column="1" />
+                                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                         </Grid>
-                                    </Grid>
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtInAppTip>
-                        <view:ChatThreadTemplateSelector.DtForceSMSNotification>
-                            <DataTemplate>
-                                <Grid HorizontalAlignment="Right" Margin="0,-8,24,5" >
-                                    <TextBlock x:Name="UserName" FontSize="16" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtForceSMSNotification>
-                        <view:ChatThreadTemplateSelector.DtNotificationBubble>
-                            <DataTemplate x:Name="dtNotificationBubble">
-                                <Border x:Name="border" BorderThickness="1" Background="Transparent" Margin="24,5,24,5" BorderBrush="#cdcdcd" HorizontalAlignment="Stretch" >
-                                    <Grid HorizontalAlignment="Center" Margin="12 3">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                            <Image x:Name="NotificationImage" MaxHeight="20" VerticalAlignment="Center" HorizontalAlignment="Right" Source="{Binding NotificationImage}"></Image>
-                                        <TextBlock x:Name="UserName" Height="Auto"  Margin="10 0 0 0" Grid.Column="1" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
-                        Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtNotificationBubble>
-                        <view:ChatThreadTemplateSelector.DtTypingNotificationBubble>
-                            <DataTemplate x:Name="dtTypingNotificationBubble" >
-                                <Grid HorizontalAlignment="Left" Margin="24 10 0 10">
-                                    <Image Source="/View/images/typing.png" Height="20" Width="40" HorizontalAlignment="Left"></Image>
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtTypingNotificationBubble>
-                        <view:ChatThreadTemplateSelector.DtRecievedBubbleText>
-                            <DataTemplate x:Name="dtRecievedBubbleText" >
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24 0 0 14"  HorizontalAlignment="Left">
-                                    <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Copy"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
-                                        </toolkit:ContextMenu>
-                                    </toolkit:ContextMenuService.ContextMenu>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="14" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
-                                    <Grid Grid.Row="1">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Rectangle Grid.RowSpan="3" Fill="{Binding BubbleBackGroundColor}" />
-                                        <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
-                                        <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Grid.Row="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" />
-                                        <TextBlock Grid.Row="2" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="0,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
-                                    </Grid>
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtRecievedBubbleText>
-                        <view:ChatThreadTemplateSelector.DtRecievedBubbleFile>
-                            <DataTemplate x:Name="dtRecievedBubbleFile">
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24 0 0 14" HorizontalAlignment="Left">
-                                    <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
-                                        </toolkit:ContextMenu>
-                                    </toolkit:ContextMenuService.ContextMenu>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="14" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <!--to maintain width-->
-                                    <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
-                                    <Grid Grid.Row="1" HorizontalAlignment="Left">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Rectangle Grid.RowSpan="2" Fill="{Binding BubbleBackGroundColor}" />
-                                        <Grid x:Name="attachment" Grid.Row="0"  >
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
-                                            <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
-                                            <Image Grid.Row="1" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
-                                            <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="1" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center"/>
-                                            <ProgressBar Grid.Row="2" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
-                                        </Grid>
-                                        <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
-                                    </Grid>
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtRecievedBubbleFile>
-                        <view:ChatThreadTemplateSelector.DtRecievedBubbleLocation>
-                            <DataTemplate x:Name="dtRecievedBubbleLocation" >
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24 0 0 14" HorizontalAlignment="Left">
-                                    <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
-                                        </toolkit:ContextMenu>
-                                    </toolkit:ContextMenuService.ContextMenu>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="14" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <!--to maintain width-->
-                                    <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
-                                    <Grid Grid.Row="1" HorizontalAlignment="Left">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Rectangle Grid.RowSpan="2" Fill="{Binding BubbleBackGroundColor}" />
-                                        <Grid x:Name="attachment" Grid.Row="0"  >
+                                        <Grid Visibility="{Binding IsStickerLoading}">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
-                                            <Image Grid.Row="0" MaxWidth="300" MaxHeight="160" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
-                                            <Grid MaxHeight="100" MaxWidth="300" VerticalAlignment="Bottom" Margin="12,0">
-                                                <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                                                <TextBlock Text="{Binding DispMessage}" Margin="5" TextWrapping="Wrap" Foreground="White" FontSize="18" />
-                                            </Grid>
-                                            <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
+                                            <TextBlock Grid.RowSpan="2" Width="250"></TextBlock>
+                                            <ProgressBar Foreground="#1ba1e2" IsIndeterminate="True" IsEnabled="True" Width="150" HorizontalAlignment="Stretch" Margin="0 20 0 10"/>
+                                            <TextBlock Grid.Row="1" Text="{Binding Path=LocalizedResources.DownloadingSticker_txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}" TextAlignment="Center" />
                                         </Grid>
-                                        <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                     </Grid>
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtRecievedBubbleLocation>
-                        <view:ChatThreadTemplateSelector.DtRecievedBubbleAudioFile>
-                            <DataTemplate x:Name="dtRecievedBubbleAudioFile" >
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24 0 0 14" HorizontalAlignment="Left">
-                                    <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
-                                        </toolkit:ContextMenu>
-                                    </toolkit:ContextMenuService.ContextMenu>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="14" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
-                                    <Grid Grid.Row="1" HorizontalAlignment="Left">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Rectangle Grid.RowSpan="2" Fill="{Binding BubbleBackGroundColor}" />
-                                        <Grid x:Name="attachment" Grid.Row="0"  >
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
-                                            <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
-                                            <Grid Grid.Row="1" Margin="10">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" MinWidth="43"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Border Margin="0" Background="Black" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
-                                                <Image Stretch="None" x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
-                                                <Grid Grid.Column="1">
-                                                    <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
-                                                        <Image Margin="10,0,0,0" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="/View/images/Mic_icon_grey_small.png"/>
-                                                        <TextBlock Margin="10,0,0,0" Text="{Binding PlayTimeText}" Foreground="White" FontSize="24" VerticalAlignment="Center" TextAlignment="Left"/>
-                                                    </StackPanel>
-                                                    <ProgressBar Style="{StaticResource PlayProgressBarStyle}" x:Name="playProgress" Value="{Binding PlayProgressBarValue}" Width="180" Height="45" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100"/>
-                                                </Grid>
-                                            </Grid>
-                                            <ProgressBar Grid.Row="2" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
-                                        </Grid>
-                                        <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
-                                    </Grid>
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtRecievedBubbleAudioFile>
-                        <view:ChatThreadTemplateSelector.DtRecievedBubbleNudge>
-                            <DataTemplate x:Name="dtRecievedBubbleNudge" >
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24 0 0 14" HorizontalAlignment="Left">
-                                    <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
-                                        </toolkit:ContextMenu>
-                                    </toolkit:ContextMenuService.ContextMenu>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="14" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{StaticResource PhoneAccentBrush}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
-
-                                    <Grid Grid.Row="1">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Rectangle Grid.RowSpan="2" Fill="{StaticResource PhoneAccentBrush}" />
-                                        <Image Grid.Row="0" Width="46" Height="35" Margin="12,12,12,10" HorizontalAlignment="Left" Source="/View/images/nudge_received.png"/>
-                                    </Grid>
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtRecievedBubbleNudge>
-                        <view:ChatThreadTemplateSelector.DtRecievedBubbleContact>
-                            <DataTemplate x:Name="dtRecievedBubbleContact" >
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24 0 0 14" HorizontalAlignment="Left">
-                                    <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
-                                        </toolkit:ContextMenu>
-                                    </toolkit:ContextMenuService.ContextMenu>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="14" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
-                                    <Grid Grid.Row="1" HorizontalAlignment="Left">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Rectangle Grid.RowSpan="3" Fill="{Binding BubbleBackGroundColor}" />
-                                        <Grid x:Name="attachment" Grid.Row="0"  >
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
-                                            <Image Grid.Row="1" Width="35" Height="25" Margin="12,12,12,0" HorizontalAlignment="Left" Source="{Binding MessageImage}" />
-                                            <TextBlock Grid.Row="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" Grid.Column="1" Margin="0,8,5,0" TextWrapping="Wrap" MinWidth="150" MaxWidth="330" Foreground="{Binding MessageTextForeGround}"/>
-                                            <ProgressBar Grid.Row="2"  x:Name="downloadProgress" Margin="0,5,0,0" Grid.ColumnSpan="2" Height="10" Background="Transparent" Foreground="#333333" Minimum="0" Maximum="100"></ProgressBar>
-                                        </Grid>
-                                        <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
-                                    </Grid>
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtRecievedBubbleContact>
-                        <view:ChatThreadTemplateSelector.DtRecievedSticker>
-                            <DataTemplate x:Name="dtRecievedSticker">
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24 5 0 5"  HorizontalAlignment="Left">
-                                    <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
-                                        </toolkit:ContextMenu>
-                                    </toolkit:ContextMenuService.ContextMenu>
-                                    <Grid Visibility="{Binding IsStickerVisible}">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding TimeStampForeGround}" />
-                                        <Image Grid.Row="1" HorizontalAlignment="Left" Source="{Binding MessageImage}" Grid.Column="0" />
-                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
-                                    </Grid>
-                                    <Grid Visibility="{Binding IsStickerLoading}">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <TextBlock  Grid.Row="0" Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding TimeStampForeGround}" />
-                                        <ProgressBar Grid.Row="1" Foreground="#1ba1e2" IsIndeterminate="True" IsEnabled="True" Width="200" HorizontalAlignment="Stretch" Margin="0 20 0 30"/>
-                                        <TextBlock Grid.Row="2" Text="{Binding Path=LocalizedResources.DownloadingSticker_txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}" TextAlignment="Left" />
-                                    </Grid>
-                                    <Grid Visibility="{Binding IsHttpFailed}">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <TextBlock  Grid.Row="0" Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding TimeStampForeGround}" />
-                                        <Image Grid.Row="1" Source="/View/images/download_failed_bubble.png" MaxHeight="30" Margin="0 30 40 0"/>
-                                        <TextBlock Grid.Row="2" Text="{Binding Path=LocalizedResources.StickerDownloadFailed, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
-                                        <TextBlock Grid.Row="3" Text="{Binding Path=LocalizedResources.TapHereToRetyTxt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
-                                    </Grid>
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtRecievedSticker>
-                        <view:ChatThreadTemplateSelector.DtSentBubbleText>
-                            <DataTemplate x:Name="dtSentBubbleText" >
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right">
-                                    <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Copy"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
-                                        </toolkit:ContextMenu>
-                                    </toolkit:ContextMenuService.ContextMenu>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="14" />
-                                    </Grid.RowDefinitions>
-
-                                    <Grid Grid.Row="0" HorizontalAlignment="Right">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="40"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}"/>
-                                        <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
-
-                                        <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Grid.Row="0" Grid.Column="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" />
-                                        <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,24,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
-                                    </Grid>
-                                    <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
-
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtSentBubbleText>
-                        <view:ChatThreadTemplateSelector.DtSentBubbleLocation>
-                            <DataTemplate x:Name="DtSentBubbleLocation" >
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right"   >
-                                    <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
-                                        </toolkit:ContextMenu>
-                                    </toolkit:ContextMenuService.ContextMenu>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="14" />
-                                    </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0" HorizontalAlignment="Right">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="40"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}" />
-                                        <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
-                                        <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" >
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
-                                            <Image Grid.Row="0" MaxWidth="300" MaxHeight="160" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
-                                            <Grid MaxHeight="100" MaxWidth="300" VerticalAlignment="Bottom" Margin="12,0">
-                                                <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                                                <TextBlock Text="{Binding DispMessage}" Margin="5" TextWrapping="Wrap" Foreground="White" FontSize="18" />
-                                            </Grid>
-                                            <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
-                                        </Grid>
-                                        <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
-                                    </Grid>
-                                    <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
-
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtSentBubbleLocation>
-                        <view:ChatThreadTemplateSelector.DtSentBubbleFile>
-                            <DataTemplate x:Name="dtSentBubbleFile" >
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right">
-                                    <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
-                                        </toolkit:ContextMenu>
-                                    </toolkit:ContextMenuService.ContextMenu>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="14" />
-                                    </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0" HorizontalAlignment="Right">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="40"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}" />
-                                        <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
-                                        <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" >
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
-                                            <Image Grid.Row="0" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
-                                            <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="0" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center"/>
-                                            <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
-
-                                        </Grid>
-                                        <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
-                                    </Grid>
-                                    <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
-
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtSentBubbleFile>
-                        <view:ChatThreadTemplateSelector.DtSentBubbleAudioFile>
-                            <DataTemplate x:Name="dtSentBubbleAudioFile" >
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right">
-                                    <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
-                                        </toolkit:ContextMenu>
-                                    </toolkit:ContextMenuService.ContextMenu>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="14" />
-                                    </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0" HorizontalAlignment="Right">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="40"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}" />
-                                        <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
-                                        <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" Margin="10">
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtSentSticker>
+                            <view:ChatThreadTemplateSelector.DtStatusUpdateBubble>
+                                <DataTemplate x:Name="dtStatusUpdateBubble">
+                                    <Grid x:Name="LayoutRoot"  Margin="0,5,0,5"  Background="{Binding BubbleBackGroundColor}" HorizontalAlignment="Stretch">
+                                        <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" MinWidth="43"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Border Margin="0" Background="Black" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
-                                                <Image Stretch="None" x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                <Grid Grid.Column="1">
-                                                    <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
-                                                        <Image Margin="10,0,0,0" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="/View/images/Mic_icon_grey_small.png"/>
-                                                        <TextBlock Margin="10,0,0,0" Text="{Binding PlayTimeText}" Foreground="White" FontSize="24" VerticalAlignment="Center" TextAlignment="Left"/>
-                                                    </StackPanel>
-                                                    <ProgressBar Style="{StaticResource PlayProgressBarStyle}" x:Name="playProgress" Value="{Binding PlayProgressBarValue}" Width="180" Height="45" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100"/>
-                                                </Grid>
-                                            </Grid>
-                                            <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
-                                        </Grid>
-                                        <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
-                                    </Grid>
-                                    <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtSentBubbleAudioFile>
-                        <view:ChatThreadTemplateSelector.DtSentBubbleNudge>
-                            <DataTemplate x:Name="dtSentBubbleNudge" >
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right">
-                                    <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
-                                        </toolkit:ContextMenu>
-                                    </toolkit:ContextMenuService.ContextMenu>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="14" />
-                                    </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0" HorizontalAlignment="Right">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="40"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{StaticResource PhoneAccentBrush}"  />
-                                        <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
-                                        <Image Grid.Row="0" Grid.Column="1"  Width="46" Height="35" Margin="12,12,12,10" HorizontalAlignment="Right" Source="/View/images/nudge_sent.png"/>
-                                    </Grid>
-                                    <Path Grid.Column="1" Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{StaticResource PhoneAccentBrush}"/>
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtSentBubbleNudge>
-                        <view:ChatThreadTemplateSelector.DtSentBubbleContact>
-                            <DataTemplate x:Name="dtSentBubbleContact" >
-                                <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0 12 24 10" HorizontalAlignment="Right">
-                                    <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
-                                        </toolkit:ContextMenu>
-                                    </toolkit:ContextMenuService.ContextMenu>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="14" />
-                                    </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0" HorizontalAlignment="Right">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="40"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Rectangle Grid.RowSpan="2" Grid.Column="2"  Fill="{Binding BubbleBackGroundColor}" />
-                                        <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
-                                        <Grid x:Name="attachment" Grid.Row="0"  Grid.Column="1">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <Image Width="35" Height="25" Margin="12,12,12,0" HorizontalAlignment="Left" Source="{Binding MessageImage}" />
-                                            <TextBlock Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" Grid.Column="1" Margin="0,8,5,0" TextWrapping="Wrap" MinWidth="150" MaxWidth="330" Foreground="{Binding MessageTextForeGround}"/>
-                                            <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
 
+                                            <Image x:Name="statusTypeImage" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" MaxHeight="35" Margin="20,10,0,0" VerticalAlignment="Top" Source="{Binding StatusUpdateImage}"/>
+                                            <TextBlock x:Name="statusMessageTxtBlk" Grid.Row="1" Grid.Column="1" Margin="12,10,0,0" FontSize="21" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight"/>
+                                            <TextBlock x:Name="statusTimestampTxtBlk" Grid.Row="2" Grid.Column="1"  Margin="12,12,0,10" FontSize="15" Foreground="{Binding TimeStampForeGround}"  Text="{Binding TimeStampStr}" />
                                         </Grid>
-                                        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                     </Grid>
-                                    <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtSentBubbleContact>
-                        <view:ChatThreadTemplateSelector.DtSentSticker>
-                            <DataTemplate x:Name="dtSentSticker">
-                                <Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Right" Margin="0 5 24 5">
-                                    <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
-                                        </toolkit:ContextMenu>
-                                    </toolkit:ContextMenuService.ContextMenu>
-                                    <Grid Visibility="{Binding IsStickerVisible}">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Image x:Name="SDRImage" Source="{Binding SdrImage}" Margin="0,0,10,0" Width="30" Grid.Column="0" HorizontalAlignment="Right" Grid.RowSpan="2"></Image>
-                                        <Image HorizontalAlignment="Right" Source="{Binding MessageImage}" Grid.Row="0" Grid.Column="1" />
-                                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
-                                    </Grid>
-                                    <Grid Visibility="{Binding IsStickerLoading}">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <TextBlock Grid.RowSpan="2" Width="250"></TextBlock>
-                                        <ProgressBar Foreground="#1ba1e2" IsIndeterminate="True" IsEnabled="True" Width="150" HorizontalAlignment="Stretch" Margin="0 20 0 10"/>
-                                        <TextBlock Grid.Row="1" Text="{Binding Path=LocalizedResources.DownloadingSticker_txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}" TextAlignment="Center" />
-                                    </Grid>
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtSentSticker>
-                        <view:ChatThreadTemplateSelector.DtStatusUpdateBubble>
-                            <DataTemplate x:Name="dtStatusUpdateBubble">
-                                <Grid x:Name="LayoutRoot"  Margin="0,5,0,5"  Background="{Binding BubbleBackGroundColor}" HorizontalAlignment="Stretch">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Image x:Name="statusTypeImage" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" MaxHeight="35" Margin="20,10,0,0" VerticalAlignment="Top" Source="{Binding StatusUpdateImage}"/>
-                                        <TextBlock x:Name="statusMessageTxtBlk" Grid.Row="1" Grid.Column="1" Margin="12,10,0,0" FontSize="21" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight"/>
-                                        <TextBlock x:Name="statusTimestampTxtBlk" Grid.Row="2" Grid.Column="1"  Margin="12,12,0,10" FontSize="15" Foreground="{Binding TimeStampForeGround}"  Text="{Binding TimeStampStr}" />
-                                    </Grid>
-                                </Grid>
-                            </DataTemplate>
-                        </view:ChatThreadTemplateSelector.DtStatusUpdateBubble>
-                    </view:ChatThreadTemplateSelector>
-                </DataTemplate>
-            </phone:LongListSelector.ItemTemplate>
-        </phone:LongListSelector>
+                                </DataTemplate>
+                            </view:ChatThreadTemplateSelector.DtStatusUpdateBubble>
+                        </view:ChatThreadTemplateSelector>
+                    </DataTemplate>
+                </phone:LongListSelector.ItemTemplate>
+            </phone:LongListSelector>
+            <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" x:Name="JumpToBottomGrid" Tap="JumpToBottom_Tapped" Background="Black" Canvas.ZIndex="3" Height="50" Visibility="Collapsed" Opacity="0.9">
+                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                    <Image MaxHeight="20" Source="images/downArrow.png" VerticalAlignment="Center" />
+                    <TextBlock Name="txtJumpToBttom" Margin="10" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
 
         <StackPanel x:Name="bottomPanel" Height="Auto" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Bottom" Background="Transparent">
             <StackPanel x:Name="smscounter" Margin="0,5,0,0" Visibility="Collapsed" >
                 <TextBlock x:Name="smsCounterTxtBlk"  Margin="20,0,0,0"></TextBlock>
             </StackPanel>
-            <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <Grid Background="#eeeeec">
                 <ScrollViewer Name="svMessage" MaxHeight="150" Background="#eeeeec" >
                     <StackPanel Background="#eeeeec">
@@ -756,7 +773,7 @@
                 <Grid x:Name="recordGrid" HorizontalAlignment="Stretch" Visibility="Collapsed" Background="#eeeeec" Margin="0,-4,0,0">
                     <Grid Margin="5" x:Name="recordButtonGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ManipulationStarted="Hold_To_Record" ManipulationCompleted="recordButton_ManipulationCompleted">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" >
-                            <Image Stretch="Uniform" Margin="10,0" MaxHeight="30" x:Name="walkieTalkieImage" Source="/View/images/walkie_talkie_Grey_small.png" VerticalAlignment="Center"/>
+                            <Image Stretch="Uniform" Margin="0,0,10,0" MaxHeight="30" x:Name="walkieTalkieImage" Source="/View/images/walkie_talkie_Grey_small.png" VerticalAlignment="Center"/>
                             <TextBlock x:Name="recordButton" Foreground="#686868" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24" Text=""/>
                         </StackPanel>
                     </Grid>
@@ -780,13 +797,6 @@
                     <controls:Pivot Name="emoticonPivot" Grid.Row="0" SelectionChanged="emoticonPivot_SelectionChanged" Foreground="Black" Height="240">
                         <controls:PivotItem Margin="0,8,0,0">
                             <Grid x:Name="emotGrid0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-
                                 <ListBox Height="230" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList0_Tap">
                                     <ListBox.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -795,7 +805,6 @@
                                     </ListBox.ItemsPanel>
 
                                     <ListBox.ItemTemplate>
-
                                         <DataTemplate>
                                             <Image Margin="5,5,5,5" Height="40" Width="40" Source="{Binding}">
                                             </Image>
@@ -807,12 +816,6 @@
 
                         <controls:PivotItem Margin="0,8,0,0">
                             <Grid x:Name="emotGrid1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
 
                                 <ListBox Height="230" Name="emotList1" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList1_Tap">
                                     <ListBox.ItemsPanel>
@@ -822,7 +825,6 @@
                                     </ListBox.ItemsPanel>
 
                                     <ListBox.ItemTemplate>
-
                                         <DataTemplate>
                                             <Image Margin="5,5,5,5" Height="40" Width="40" Source="{Binding}">
                                             </Image>
@@ -834,13 +836,6 @@
 
                         <controls:PivotItem Margin="0,8,0,0">
                             <Grid x:Name="emotGrid2">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-
                                 <ListBox Height="230" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList2_Tap">
                                     <ListBox.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -858,37 +853,52 @@
                                 </ListBox>
                             </Grid>
                         </controls:PivotItem>
+                        <controls:PivotItem Margin="0,8,0,0" Name="indianEmoticonPivot">
+                            <Grid x:Name="emotGrid3">
+
+                                <ListBox Height="230" Name="emotList3" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList3_Tap">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <toolkit:WrapPanel ItemHeight="65" ItemWidth="65"/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+
+                                    <ListBox.ItemTemplate>
+
+                                        <DataTemplate>
+                                            <Image Margin="5,5,5,5" Height="45" Width="45" Source="{Binding}">
+                                            </Image>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </controls:PivotItem>
                     </controls:Pivot>
-                    <Grid Height="52" Grid.Row="1" VerticalAlignment="Bottom" Margin="5 15 5 5" >
+                    <Grid Height="52" Grid.Row="1" VerticalAlignment="Bottom" Margin="5 15 5 5" Name="gridEmoticonLabels">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <StackPanel Name="emotHeaderRect0" Grid.Column="0" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect0_Tap">
-                            <Image Source="images\emoticons\emo_im_01_bigsmile.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </StackPanel>
-                        <Rectangle Width="2" Grid.Column="1" />
-                        <StackPanel Name="emotHeaderRect1" Grid.Column="2" Background="#1ba1e2"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect1_Tap" >
-                            <Image Source="images\emoticons\emo_im_102_scorn.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"  VerticalAlignment="Center"/>
-                        </StackPanel>
-                        <Rectangle Width="2" Grid.Column="3" />
-                        <StackPanel Name="emotHeaderRect2"  Grid.Column="4" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect2_Tap">
-                            <Image Source="images\emoticons\emo_im_111_grin.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                        <Rectangle Width="2" Grid.Column="5" />
-                        <StackPanel Name="stickerTab"  Grid.Column="6" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="StickersTab_Tap">
-                            <Image Source="images\expressions.png" Height="30" Margin="0 10 0 0" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                        <Rectangle Width="2" Grid.Column="7" />
-                        <Button Style="{StaticResource ButtonWithNoPaddingStyle}" Margin="0" BorderThickness="0"  Grid.Column="8" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="OnEmoticonBackKeyPress" >
-                            <Image Source="images\emoticon_back_key.png"   Height="20" HorizontalAlignment="Center"/>
+                        <Border Name="emotHeaderRect0" Grid.Column="0" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect0_Tap">
+                            <Image Source="images\emoticons\emo_im_01_bigsmile.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border Name="emotHeaderRect1" Grid.Column="1" Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect1_Tap" >
+                            <Image Source="images\emoticons\emo_im_102_scorn.png" Height="30" HorizontalAlignment="Center"  VerticalAlignment="Center"/>
+                        </Border>
+                        <Border Name="emotHeaderRect2"  Grid.Column="2" Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect2_Tap">
+                            <Image Source="images\emoticons\emo_im_111_grin.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border Name="emotHeaderRect3" Visibility="Collapsed"  Grid.Column="3"  Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect3_Tap">
+                            <Image Source="images\indianflag.png" Height="26" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border Name="stickerTab"  Grid.Column="3" Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="StickersTab_Tap">
+                            <Image Source="images\expressions.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Button Name="btnBackKey" Style="{StaticResource ButtonWithNoPaddingStyle}" Margin="2,0,0,0" BorderThickness="0"  Grid.Column="4" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="OnEmoticonBackKeyPress" >
+                            <Image Source="images\emoticon_back_key.png"  Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button>
                     </Grid>
                 </Grid>
@@ -942,42 +952,42 @@
                 <Grid Grid.Column="0" Grid.Row="0" Margin="0,0,1,0" Background="#292929" Tap="clickPhoto_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Margin="0,5,0,0" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_camera_icon.png" Height="35" HorizontalAlignment="Center"/>
-                        <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Camera_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock >
+                        <TextBlock Margin="5,20,5,0" Text="{Binding Path= LocalizedResources.Attachment_Camera_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Grid>
 
                 <Grid Grid.Column="1" Grid.Row="0" Margin="0,0,1,0" Background="#292929" Tap="sendImage_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_photo_icon.png" Height="40" HorizontalAlignment="Center"/>
-                        <TextBlock  Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Photo_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock >
+                        <TextBlock  Margin="5,20,5,0" Text="{Binding Path= LocalizedResources.Attachment_Photo_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Grid>
 
                 <Grid Grid.Column="2" Grid.Row="0" Background="#292929" Tap="sendVideo_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Margin="0,5,0,0" Orientation="Vertical"  VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_video_icon.png" Height="30" HorizontalAlignment="Center"/>
-                        <TextBlock Margin="0,25,0,0" Text="{Binding Path= LocalizedResources.Attachment_Video_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
+                        <TextBlock Margin="5,25,5,0" Text="{Binding Path= LocalizedResources.Attachment_Video_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Grid>
 
                 <Grid Grid.Column="0" Grid.Row="1" Margin="0,1,1,0" Background="#292929" Tap="sendAudio_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_audio_icon.png" Height="40" HorizontalAlignment="Center"/>
-                        <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Audio_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
+                        <TextBlock Margin="5,20,5,0" Text="{Binding Path= LocalizedResources.Attachment_Audio_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Grid>
 
                 <Grid Grid.Column="1" Grid.Row="1" Margin="0,1,1,0" Background="#292929" Tap="shareLocation_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_location_icon.png" Height="40" HorizontalAlignment="Center"/>
-                        <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachment_Location_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" ></TextBlock >
+                        <TextBlock Margin="5,20,5,0" Text="{Binding Path= LocalizedResources.Attachment_Location_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Grid>
 
                 <Grid Grid.Column="2" Grid.Row="1" Margin="0,1,1,0" Background="#292929" Tap="sendContact_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel Margin="0,5,0,0" Name="spContactTransfer" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Image Source="images\menu_contact_icon.png" Height="35" HorizontalAlignment="Center"/>
-                        <TextBlock Margin="0,20,0,0" Text="{Binding Path= LocalizedResources.Attachement_Contact_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap"></TextBlock >
+                        <TextBlock Margin="5,20,5,0" Text="{Binding Path= LocalizedResources.Attachement_Contact_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Grid>
             </Grid>
@@ -996,12 +1006,12 @@
             <TextBlock Name="BlockTxtBlk" HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.SelectUser_BlockMsg_Txt, Source={StaticResource LocalizedStrings}}" Foreground="#FFFFFF" FontSize="30"></TextBlock>
             <Button Height="75" Name="btnBlockUnblock" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"></Button>
         </StackPanel>
-        <Grid Canvas.ZIndex="1"   x:Name="gridDownloadStickers" Visibility="Collapsed"  Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Center" Margin="0 0 0 0" Tap="overlayRectangle_Tap_1">
+        <Grid Canvas.ZIndex="1"   x:Name="gridDownloadStickers" Visibility="Collapsed" Width="340" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Center" Margin="0 0 0 0" Tap="overlayRectangle_Tap_1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid Height="450" Width="340" Margin="0" >
+            <Grid Height="450" VerticalAlignment="Stretch" Margin="0" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
@@ -1012,11 +1022,11 @@
                 </Grid.ColumnDefinitions>
                 <Image Name="downloadDialogueImage" Grid.ColumnSpan="2" Grid.RowSpan="2" Width="368" ></Image>
                 <Button Name="btnDownload" Width="150" Foreground="White" Grid.Row="2" Grid.Column="2" Content="{Binding Path= LocalizedResources.Download_txt, Source={StaticResource LocalizedStrings}}" VerticalContentAlignment="Center" VerticalAlignment="Bottom" FontFamily="Segoe WP Regular" FontSize="18" Height="70" BorderBrush="#3d3d3d" Background="#3d3d3d" Tap="downloadStickers_Tap" Margin="10 0 0 10"></Button>
-                <Button Background="#7aa700" Grid.Row="2" Foreground="White" Grid.Column="2" Width="70" Height="50" Content="{Binding Path= LocalizedResources.Free_txt, Source={StaticResource LocalizedStrings}}" Padding="0" VerticalAlignment="Bottom" FontFamily="Segoe WP Regular" FontSize="12" BorderThickness="0" Margin="105 0 0 45"  />
+                <Button Name="btnFree" Background="#7aa700" Grid.Row="2" Foreground="White" Grid.Column="2" Width="70" Height="50" Content="{Binding Path= LocalizedResources.Free_txt, Source={StaticResource LocalizedStrings}}" Padding="0" VerticalAlignment="Bottom" FontFamily="Segoe WP Regular" FontSize="12" BorderThickness="0" Margin="105 0 0 45" Tap="downloadStickers_Tap" />
             </Grid>
-            <StackPanel Grid.Row="1" Height="30" Width="340" Background="#2c2c2c" VerticalAlignment="Center" HorizontalAlignment="Center" >
-                <TextBlock FontFamily="Segoe WP SemiLight" Foreground="#878787" FontSize="16" Text="{Binding Path= LocalizedResources.InternetChargesMayApply_txt, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            </StackPanel>
+            <Grid Grid.Row="1" Background="#2c2c2c" Height="30" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+                <TextBlock FontFamily="Segoe WP SemiLight" Foreground="#878787" FontSize="16" Text="{Binding Path= LocalizedResources.InternetChargesMayApply_txt, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" />
+            </Grid>
         </Grid>
         <Rectangle x:Name="overlayForNudge" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="3" Fill="#ffffff" ></Rectangle>
         <Grid x:Name="nudgeTuteGrid" Visibility="Collapsed" Grid.Row="1" Width="375" VerticalAlignment="Center"  Background="Black">

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -146,8 +146,14 @@
     </Compile>
     <Compile Include="Controls\MyRichTextBox.cs" />
     <Compile Include="Controls\ProgressIndicator.cs" />
+    <Compile Include="Controls\StatusUpdate\DefaultStatusUpdateUC.xaml.cs">
+      <DependentUpon>DefaultStatusUpdateUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\StatusUpdate\FriendRequestStatus.xaml.cs">
       <DependentUpon>FriendRequestStatus.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StatusUpdate\ProTipUC.xaml.cs">
+      <DependentUpon>ProTipUC.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\StatusUpdate\TextStatusUpdate.xaml.cs">
       <DependentUpon>TextStatusUpdate.xaml</DependentUpon>
@@ -244,11 +250,9 @@
     <Compile Include="View\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
     </Compile>
-
-    <Compile Include="View\NewChatThread.xaml.cs" >
-
+    <Compile Include="View\NewChatThread.xaml.cs">
       <DependentUpon>NewChatThread.xaml</DependentUpon>
-</Compile>
+    </Compile>
     <Compile Include="View\PostStatus.xaml.cs">
       <DependentUpon>PostStatus.xaml</DependentUpon>
     </Compile>
@@ -324,9 +328,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\StatusUpdate\DefaultStatusUpdateUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\StatusUpdate\FriendRequestStatus.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\StatusUpdate\ProTipUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\StatusUpdate\TextStatusUpdate.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -374,8 +386,7 @@
     </Page>
     <Page Include="View\NewChatThread.xaml">
       <SubType>Designer</SubType>
-<Generator>MSBuild:Compile</Generator>
-
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\PostStatus.xaml">
       <SubType>Designer</SubType>
@@ -516,6 +527,33 @@
     <Content Include="View\images\deleted_grey_icon.png" />
     <Content Include="View\images\deleted_white_icon.png" />
     <Content Include="View\images\delete_account_white.png" />
+    <Content Include="View\images\downArrow.png" />
+    <Content Include="View\images\emoticons\auto4.png" />
+    <Content Include="View\images\emoticons\batti4.png" />
+    <Content Include="View\images\emoticons\best4.png" />
+    <Content Include="View\images\emoticons\biscuit4.png" />
+    <Content Include="View\images\emoticons\chai4.png" />
+    <Content Include="View\images\emoticons\Chips4.png" />
+    <Content Include="View\images\emoticons\cupid4.png" />
+    <Content Include="View\images\emoticons\dd4.png" />
+    <Content Include="View\images\emoticons\hero4.png" />
+    <Content Include="View\images\emoticons\icecream4.png" />
+    <Content Include="View\images\emoticons\jalebi4.png" />
+    <Content Include="View\images\emoticons\love4.png" />
+    <Content Include="View\images\emoticons\metro4.png" />
+    <Content Include="View\images\emoticons\nariyal4.png" />
+    <Content Include="View\images\emoticons\neta4.png" />
+    <Content Include="View\images\emoticons\nimbu4.png" />
+    <Content Include="View\images\emoticons\noodles4.png" />
+    <Content Include="View\images\emoticons\Old4.png" />
+    <Content Include="View\images\emoticons\paisa4.png" />
+    <Content Include="View\images\emoticons\patakha4.png" />
+    <Content Include="View\images\emoticons\samosa4.png" />
+    <Content Include="View\images\emoticons\shakti4.png" />
+    <Content Include="View\images\emoticons\tandoori4.png" />
+    <Content Include="View\images\emoticons\thulla4.png" />
+    <Content Include="View\images\icon_direction.png" />
+    <Content Include="View\images\indianflag.png" />
     <Content Include="View\images\moods\24Music.png" />
     <Content Include="View\images\moods\25PartyingHard.png" />
     <Content Include="View\images\moods\26Singing.png" />
@@ -524,7 +562,6 @@
     <Content Include="View\images\moods\28WorkingOut.png" />
     <Content Include="View\images\moods\29Cooking.png" />
     <Content Include="View\images\moods\30BeautySaloon.png" />
-    <Content Include="View\images\route.png" />
     <Content Include="View\images\doggy_icon.png" />
     <Content Include="View\images\doggy_i_icon.png" />
     <Content Include="View\images\doggy_overlay.png" />
@@ -599,17 +636,22 @@
     <Content Include="View\images\moods\22Sleepy.png" />
     <Content Include="View\images\moods\23Hungover.png" />
     <Content Include="View\images\moods_status_icon.png" />
+    <Content Include="View\images\mute_icon_main_b.png" />
+    <Content Include="View\images\mute_icon_main_g.png" />
+    <Content Include="View\images\mute_icon_main_l.png" />
+    <Content Include="View\images\mute_icon_main_white.png" />
     <Content Include="View\images\MyLocation.png" />
     <Content Include="View\images\notification_read.png" />
     <Content Include="View\images\notification_unread.png" />
     <Content Include="View\images\pause_icon.png" />
-    <Content Include="View\images\places.png" />
+    <Content Include="View\images\places_icon.png" />
     <Content Include="View\images\profile_header_stock.png" />
     <Content Include="View\images\profile_header_stock_dark.png" />
     <Content Include="View\images\refresh_bar_arrow.png" />
     <Content Include="View\images\remove_wt_icon.png" />
     <Content Include="View\images\rf_icon.png" />
     <Content Include="View\images\rf_i_icon.png" />
+    <Content Include="View\images\search_icon.png" />
     <Content Include="View\images\settings_icon_dark.png" />
     <Content Include="View\images\settings_icon_white.png" />
     <Content Include="View\images\close_white.png" />
@@ -649,7 +691,8 @@
     <Content Include="View\images\tutorial_welcome.png" />
     <Content Include="View\images\twitter_status.png" />
     <Content Include="View\images\twitter_status_disabled.png" />
-    <Content Include="View\images\unmutedicon.png" />
+    <Content Include="View\images\unmute_icon_main_g.png" />
+    <Content Include="View\images\unmute_icon_main_l.png" />
     <Content Include="View\images\user_invite.png" />
     <Content Include="View\images\user_invite_white.png" />
     <Content Include="View\images\user_lock.png" />
@@ -677,7 +720,7 @@
     <Content Include="View\images\tw_icon.png" />
     <Content Include="View\images\unlink_account_black.png" />
     <Content Include="View\images\unlink_account_white.png" />
-    <Resource Include="hi.png" />
+    <Content Include="View\images\Walkie_Talkie_White_small.png" />
     <Content Include="View\images\add_users.png" />
     <Content Include="View\images\appbar.add.rest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
