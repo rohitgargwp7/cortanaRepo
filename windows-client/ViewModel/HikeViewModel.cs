@@ -449,7 +449,7 @@ namespace windows_client.ViewModel
             bool isShownVal = (marked & 0x01) > 0;
             bool isCurrentShown = (currentlyShowing & 0x01) > 0;
             if (!isShownVal || isCurrentShown)
-                DictInAppTip.Add(0, new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(0, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
+                DictInAppTip.Add(0, new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(0, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 0)});
             
             isShownVal = (marked & 0x02) > 0;
             isCurrentShown = (currentlyShowing & 0x02) > 0;
@@ -479,7 +479,7 @@ namespace windows_client.ViewModel
             isShownVal = (marked & 0x40) > 0;
             isCurrentShown = (currentlyShowing & 0x40) > 0;
             if (!isShownVal || isCurrentShown)
-                DictInAppTip.Add(6, new HikeToolTip() { Tip = AppResources.In_App_Tip_7, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = true, TipMargin = new Thickness(350, 0, 0, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
+                DictInAppTip.Add(6, new HikeToolTip() { Tip = AppResources.In_App_Tip_7, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = true, TipMargin = new Thickness(400, 0, 0, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
         }
 
         /// <summary>

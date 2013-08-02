@@ -15,6 +15,14 @@ namespace windows_client.Model
         public Thickness FullTipMargin { get; set; }
         public bool IsShown { get; set; }
         public bool IsCurrentlyShown { get; set; }
+        public HorizontalAlignment TopTipHorizontalAlignment { get; set; }
+        public HorizontalAlignment BottomTipHorizontalAlignment { get; set; }
+
+        public HikeToolTip()
+        {
+            TopTipHorizontalAlignment = HorizontalAlignment.Left;
+            BottomTipHorizontalAlignment = HorizontalAlignment.Right;
+        }
 
         public void TriggerUIUpdateOnDismissed()
         {

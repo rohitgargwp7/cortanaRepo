@@ -672,18 +672,21 @@ namespace windows_client
             #endregion
             #region IN APP TIPS
 
-            if (isNewInstall) //upgrade logic for inapp tips, will change with every build
-            {
-                App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
-                App.appSettings[App.TIP_MARKED_KEY] = (byte)0; // to keep a track of shown keys
-                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0); // to keep a track of current showing keys
-            }
-            else if (Utils.compareVersion(_currentVersion, "2.2.0.0") < 0)
-            {
-                App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
-                App.appSettings[App.TIP_MARKED_KEY] = (byte)0x18;
-                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0x18);
-            }
+            App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0x18);
+
+
+            //if (isNewInstall) //upgrade logic for inapp tips, will change with every build
+            //{
+            //    App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
+            //    App.appSettings[App.TIP_MARKED_KEY] = (byte)0; // to keep a track of shown keys
+            //    App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0); // to keep a track of current showing keys
+            //}
+            //else if (Utils.compareVersion(_currentVersion, "2.2.0.0") < 0)
+            //{
+            //    App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
+            //    App.appSettings[App.TIP_MARKED_KEY] = (byte)0x18;
+            //    App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0x18);
+            //}
 
             #endregion
             #region STCIKERS
