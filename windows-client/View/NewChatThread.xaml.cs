@@ -727,7 +727,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("RecordMedia.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("NewChatThread.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
                 }
                 gridStickers.Children.Remove(pivotStickers);
 
@@ -758,16 +758,18 @@ namespace windows_client.View
                 return;
             }
 
-            if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
-            {
-                Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
-                NavigationService.Navigate(nUri);
-            }
-
             if (mediaElement != null)
             {
                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 mediaElement.Stop();
+            } 
+            
+            if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
+            {
+                Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                NavigationService.Navigate(nUri);
+                e.Cancel = true;
+                return;
             }
 
             base.OnBackKeyPress(e);
