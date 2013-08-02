@@ -108,8 +108,7 @@ namespace windows_client.View
             if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
                 TotalUnreadStatuses = 0;
 
-            if(IsReset)
-                App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
+            App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
         }
 
         bool IsReset;
@@ -119,12 +118,7 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
 
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Reset)
-            {
-                IsReset = true;
                 return;
-            }
-            else
-                IsReset = false;
 
             if (launchPagePivot.SelectedIndex == 3)
             {

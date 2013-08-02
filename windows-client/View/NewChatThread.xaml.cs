@@ -759,9 +759,6 @@ namespace windows_client.View
             }
 
             if (mediaElement != null)
-                mediaElement.Stop();
-
-            if (mediaElement != null)
             {
                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 mediaElement.Stop();
