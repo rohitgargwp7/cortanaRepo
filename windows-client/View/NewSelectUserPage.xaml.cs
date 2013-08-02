@@ -283,9 +283,6 @@ namespace windows_client.View
                 e.Cancel = true;
             }
 
-            if (PhoneApplicationService.Current.State.ContainsKey("SharePicker"))
-                PhoneApplicationService.Current.State.Remove("SharePicker");
-
             base.OnBackKeyPress(e);
         }
 
