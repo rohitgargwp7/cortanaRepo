@@ -258,6 +258,14 @@ namespace windows_client.View
                 queryStrings.Clear();
                 txtChat.Text = AppResources.Share_With_Txt;
             }
+
+            if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
+            {
+                while (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
+
+                App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
+            }
         }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
@@ -274,6 +282,7 @@ namespace windows_client.View
                 }
                 e.Cancel = true;
             }
+
             base.OnBackKeyPress(e);
         }
 
