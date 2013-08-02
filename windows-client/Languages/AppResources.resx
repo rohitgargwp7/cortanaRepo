@@ -1887,10 +1887,10 @@ Get hike: http://get.hike.in</value>
     <value>View full message</value>
   </data>
   <data name="File_Not_Exist_Caption" xml:space="preserve">
-    <value>Download Failed</value>
+    <value>File Expired</value>
   </data>
   <data name="File_Not_Exist_Message" xml:space="preserve">
-    <value>This file no longer exists on the server</value>
+    <value>This file no longer exists on the server. You may ask your friend to re-send the file.</value>
   </data>
   <data name="ChatThread_1NewMessage_txt" xml:space="preserve">
     <value>1 new message</value>
