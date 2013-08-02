@@ -107,18 +107,11 @@ namespace windows_client.View
             base.OnNavigatedFrom(e);
             if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
                 TotalUnreadStatuses = 0;
-
-            App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
         }
-
-        bool IsReset;
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Reset)
-                return;
 
             if (launchPagePivot.SelectedIndex == 3)
             {
