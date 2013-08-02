@@ -377,13 +377,14 @@ namespace windows_client.View
             JArray filesData = new JArray();
             JObject singleFileInfo = new JObject();
 
-            var title = _selectedPlace == null ? String.Empty : _selectedPlace.title.Contains(AppResources.Location_Txt) ? String.Empty : _selectedPlace.title;
+            var title = _selectedPlace == null || _selectedPlace.title.Contains(AppResources.Location_Txt) || _selectedPlace.title.Contains(AppResources.My_Location_Text) ? String.Empty : _selectedPlace.title;
 
-            singleFileInfo[HikeConstants.FILE_NAME] = title;
+            singleFileInfo[HikeConstants.FILE_NAME] = AppResources.Location_Txt;
             singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = "hikemap/location";
             singleFileInfo[HikeConstants.LATITUDE] = _selectedCoordinate.Latitude;
             singleFileInfo[HikeConstants.LONGITUDE] = _selectedCoordinate.Longitude;
             singleFileInfo[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
+            singleFileInfo[HikeConstants.LOCATION_TITLE] = title;
             singleFileInfo[HikeConstants.LOCATION_ADDRESS] = _selectedPlace == null || _selectedPlace.vicinity == null ? String.Empty : _selectedPlace.vicinity;
 
             filesData.Add(singleFileInfo.ToObject<JToken>());
