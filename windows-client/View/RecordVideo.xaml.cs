@@ -29,6 +29,7 @@ using System.Diagnostics;
 using Microsoft.Devices;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using windows_client.DbUtils;
 
 namespace windows_client.View
 {
@@ -55,7 +56,6 @@ namespace windows_client.View
         private ButtonState currentAppState;
 
         bool isPrimaryCam = true;
-        private ApplicationBar appBar;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton doneIconButton = null;
         ApplicationBarIconButton recordIconButton = null;
@@ -84,11 +84,6 @@ namespace windows_client.View
 
         private void InitAppBar()
         {
-            appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Default;
-            appBar.IsVisible = true;
-            appBar.IsMenuEnabled = true;
-
             //add icon for send
             sendIconButton = new ApplicationBarIconButton();
             sendIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
@@ -119,22 +114,18 @@ namespace windows_client.View
             recordIconButton.Text = AppResources.Record_Txt;
             recordIconButton.Click += new EventHandler(StartRecording_Click);
             recordIconButton.IsEnabled = true;
-            appBar.Buttons.Add(recordIconButton);
 
             settingIconButton = new ApplicationBarIconButton();
             settingIconButton.IconUri = new Uri("/View/images/icon_editprofile.png", UriKind.Relative);
             settingIconButton.Text = AppResources.Settings;
             settingIconButton.Click += settingsButton_Click;
             settingIconButton.IsEnabled = true;
-            appBar.Buttons.Add(settingIconButton);
 
             doneIconButton = new ApplicationBarIconButton();
             doneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
             doneIconButton.Text = AppResources.OK;
             doneIconButton.Click += doneIconButton_Click;
             doneIconButton.IsEnabled = true;
-            
-            recordVideo.ApplicationBar = appBar;
         }
 
         private void SetResolutions()
@@ -185,19 +176,22 @@ namespace windows_client.View
         {
             videoCaptureDevice.Dispose();
             videoCaptureDevice = isPrimaryCam ? await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Back, selectedResolution) : await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Front, selectedResolution);
-            videoCaptureDevice.PreviewFrameAvailable += videoCaptureDevice_PreviewFrameAvailable;
 
             if (isPrimaryCam)
             {
                 viewfinderRectangle.Height = 800;
-                VideoPlayer.Width = 800;
+                VideoPlayer.Height = 1600;
+                VideoPlayer.Width = 960;
+                VideoPlayer.Margin = new Thickness(-1000, -960, 0, 0);
                 viewfinderTransform.ScaleX = 1;
                 playerTransform.ScaleX = 1;
             }
             else
             {
                 viewfinderRectangle.Height = 640;
+                VideoPlayer.Height = 960;
                 VideoPlayer.Width = 640;
+                VideoPlayer.Margin = new Thickness(-1440, -1480, 0, 0);
                 playerTransform.ScaleX = -1;
                 viewfinderTransform.ScaleX = -1;
             }
@@ -232,13 +226,13 @@ namespace windows_client.View
         {
             if (isAdd)
             {
-                if (!this.appBar.Buttons.Contains(iconButton) && this.appBar.Buttons.Count < 4)
-                    this.appBar.Buttons.Add(iconButton);
+                if (!ApplicationBar.Buttons.Contains(iconButton) && ApplicationBar.Buttons.Count < 4)
+                    ApplicationBar.Buttons.Add(iconButton);
             }
             else
             {
-                if (this.appBar.Buttons.Contains(iconButton))
-                    this.appBar.Buttons.Remove(iconButton);
+                if (ApplicationBar.Buttons.Contains(iconButton))
+                    ApplicationBar.Buttons.Remove(iconButton);
             }
         }
 
@@ -252,16 +246,6 @@ namespace windows_client.View
             ++runningSeconds;
             TimeSpan ts = new TimeSpan(0, 0, maxPlayingTime - runningSeconds);
             txtDebug.Text = ts.ToString("mm\\:ss");
-
-            try
-            {
-                if (videoStream != null)
-                    txtSize.Text = ConvertToStorageSizeString(videoStream.AsStream().Length);
-            }
-            catch
-            {
-                txtSize.Text = String.Empty;
-            }
 
             if (runningSeconds == maxPlayingTime && currentAppState == ButtonState.Recording)
                 StopVideoRecording();
@@ -287,8 +271,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            // Initialize the video recorder.
+            
             InitializeVideoRecorder();
         }
 
@@ -317,13 +300,6 @@ namespace windows_client.View
                 {
                     // When the camera is not supported by the device.
                     case ButtonState.CameraNotSupported:
-                        recordIconButton.IsEnabled = false;
-                        settingIconButton.IsEnabled = false;
-                        stopIconButton.IsEnabled = false;
-                        playIconButton.IsEnabled = false;
-                        pauseIconButton.IsEnabled = false;
-                        doneIconButton.IsEnabled = false;
-
                         addOrRemoveAppBarButton(doneIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, false);
                         addOrRemoveAppBarButton(settingIconButton, false);
@@ -335,13 +311,6 @@ namespace windows_client.View
 
                     // First launch of the application, so no video is available.
                     case ButtonState.Initialized:
-                        recordIconButton.IsEnabled = true;
-                        settingIconButton.IsEnabled = true;
-                        stopIconButton.IsEnabled = false;
-                        playIconButton.IsEnabled = false;
-                        pauseIconButton.IsEnabled = false;
-                        doneIconButton.IsEnabled = false;
-
                         addOrRemoveAppBarButton(doneIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, false);
                         addOrRemoveAppBarButton(playIconButton, false);
@@ -353,13 +322,6 @@ namespace windows_client.View
 
                     // Ready to record, so video is available for viewing.
                     case ButtonState.Ready:
-                        recordIconButton.IsEnabled = true;
-                        settingIconButton.IsEnabled = true;
-                        stopIconButton.IsEnabled = false;
-                        playIconButton.IsEnabled = true;
-                        pauseIconButton.IsEnabled = false;
-                        doneIconButton.IsEnabled = false;
-
                         addOrRemoveAppBarButton(doneIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);
@@ -371,13 +333,6 @@ namespace windows_client.View
 
                     // Video recording is in progress.
                     case ButtonState.Recording:
-                        recordIconButton.IsEnabled = false;
-                        settingIconButton.IsEnabled = false;
-                        stopIconButton.IsEnabled = true;
-                        playIconButton.IsEnabled = false;
-                        pauseIconButton.IsEnabled = false;
-                        doneIconButton.IsEnabled = false;
-
                         addOrRemoveAppBarButton(doneIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, false);
                         addOrRemoveAppBarButton(settingIconButton, false);
@@ -389,13 +344,6 @@ namespace windows_client.View
 
                     // Video playback is in progress.
                     case ButtonState.Playback:
-                        recordIconButton.IsEnabled = false;
-                        settingIconButton.IsEnabled = false;
-                        stopIconButton.IsEnabled = true;
-                        playIconButton.IsEnabled = false;
-                        pauseIconButton.IsEnabled = true;
-                        doneIconButton.IsEnabled = false;
-
                         addOrRemoveAppBarButton(doneIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, false);
                         addOrRemoveAppBarButton(settingIconButton, false);
@@ -407,13 +355,6 @@ namespace windows_client.View
 
                     // Video playback has been paused.
                     case ButtonState.Paused:
-                        recordIconButton.IsEnabled = false;
-                        settingIconButton.IsEnabled = false;
-                        stopIconButton.IsEnabled = true;
-                        playIconButton.IsEnabled = true;
-                        pauseIconButton.IsEnabled = false;
-                        doneIconButton.IsEnabled = false;
-
                         addOrRemoveAppBarButton(doneIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);
@@ -424,13 +365,6 @@ namespace windows_client.View
                         break;
 
                     case ButtonState.SettingMenu:
-                        recordIconButton.IsEnabled = false;
-                        settingIconButton.IsEnabled = false;
-                        stopIconButton.IsEnabled = false;
-                        playIconButton.IsEnabled = false;
-                        pauseIconButton.IsEnabled = false;
-                        doneIconButton.IsEnabled = true;
-
                         addOrRemoveAppBarButton(sendIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, false);
                         addOrRemoveAppBarButton(settingIconButton, false);
@@ -442,10 +376,7 @@ namespace windows_client.View
                     default:
                         break;
                 }
-
-                // Display a message.
-
-                // Note the current application state.
+                
                 currentAppState = currentButtonState;
             });
         }
@@ -460,21 +391,13 @@ namespace windows_client.View
                 {
                     videoCaptureDevice = isPrimaryCam ? await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Back, selectedResolution) : await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Front, selectedResolution);
 
-                    videoCaptureDevice.PreviewFrameAvailable += videoCaptureDevice_PreviewFrameAvailable;
-                    // Initialize the camera if it exists on the device.
                     if (videoCaptureDevice != null)
                     {
-                        // Create the VideoBrush for the viewfinder.
                         videoRecorderBrush.SetSource(videoCaptureDevice);
-
-                        // Set the button state and the message.
                         UpdateUI(ButtonState.Initialized);
                     }
                     else
-                    {
-                        // Disable buttons when the camera is not supported by the device.
                         UpdateUI(ButtonState.CameraNotSupported);
-                    }
                 }
             }
             catch
@@ -506,6 +429,8 @@ namespace windows_client.View
 
                             wb.SaveJpeg(stream, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT, 0, 60);
                             thumbnail = stream.ToArray();
+
+                            videoCaptureDevice.PreviewFrameAvailable -= videoCaptureDevice_PreviewFrameAvailable;
                         }
                     });
             }
@@ -515,24 +440,23 @@ namespace windows_client.View
         {
             try
             {
-                try
+                thumbnail = null;
+                videoCaptureDevice.PreviewFrameAvailable += videoCaptureDevice_PreviewFrameAvailable;
+
+                StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+                StorageFile storageFile = await localFolder.CreateFileAsync(isoVideoFileName, CreationCollisionOption.ReplaceExisting);
+                path = storageFile.Path;
+                if (storageFile != null)
                 {
-                    StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-                    StorageFile storageFile = await localFolder.CreateFileAsync(isoVideoFileName, CreationCollisionOption.ReplaceExisting);
-                    path = storageFile.Path;
-                    if (storageFile != null)
-                    {
-                        videoStream = await storageFile.OpenAsync(FileAccessMode.ReadWrite);
+                    videoStream = await storageFile.OpenAsync(FileAccessMode.ReadWrite);
+
+                    if (isPrimaryCam)
                         await videoCaptureDevice.FocusAsync();
-                        await videoCaptureDevice.StartRecordingToStreamAsync(videoStream);
-                    }
-                }
-                catch (FileNotFoundException)
-                {
+
+                    await videoCaptureDevice.StartRecordingToStreamAsync(videoStream);
                 }
 
                 UpdateUI(ButtonState.Recording);
-
                 txtDebug.Opacity = 1;
                 runningSeconds = -1;
                 maxPlayingTime = maxVideoRecordTime;
@@ -541,15 +465,9 @@ namespace windows_client.View
 
                 videoRecorderBrush.SetSource(videoCaptureDevice);
             }
-
-            // If recording fails, display an error.
             catch (Exception e)
             {
                 Debug.WriteLine("RecoedVideo.xaml :: StartVideoRecording, Exception : " + e.StackTrace);
-                this.Dispatcher.BeginInvoke(delegate()
-                {
-                    txtDebug.Text = "ERROR: " + e.Message.ToString();
-                });
             }
         }
 
@@ -558,33 +476,39 @@ namespace windows_client.View
         {
             try
             {
+                videoCaptureDevice.PreviewFrameAvailable -= videoCaptureDevice_PreviewFrameAvailable;
+                
                 if (currentAppState == ButtonState.Recording)
                 {
                     await videoCaptureDevice.StopRecordingAsync();
                     videoStream.AsStream().Dispose();
                 }
-
-                stopIconButton.IsEnabled = false;
-                addOrRemoveAppBarButton(stopIconButton, false);
-                addOrRemoveAppBarButton(sendIconButton, true);
-                txtDebug.Opacity = 0;
-                maxPlayingTime = runningSeconds;
-                runningSeconds = -1;
-                progressTimer.Stop();
-                updateProgress();
-
-                UpdateUI(ButtonState.NoChange);
-                StartVideoPreview();
             }
-            // If stop fails, display an error.
             catch (Exception e)
             {
                 Debug.WriteLine("RecoedVideo.xaml :: StopVideoRecording, Exception : " + e.StackTrace);
-                this.Dispatcher.BeginInvoke(delegate()
-                {
-                    txtDebug.Text = "ERROR: " + e.Message.ToString();
-                });
             }
+
+            addOrRemoveAppBarButton(sendIconButton, true);
+            txtDebug.Opacity = 0;
+            maxPlayingTime = runningSeconds;
+            runningSeconds = -1;
+            progressTimer.Stop();
+            updateProgress();
+
+            try
+            {
+                Byte[] fileBytes = null;
+                MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.TEMP_VIDEO_NAME, out fileBytes);
+
+                txtSize.Text = ConvertToStorageSizeString(fileBytes.Length);
+            }
+            catch
+            {
+                txtSize.Text = String.Empty;
+            }
+
+            StartVideoPreview();
         }
 
         private void StartVideoPreview()
@@ -592,25 +516,23 @@ namespace windows_client.View
             try
             {
                 videoRecorderBrush.SetSource(videoCaptureDevice);
-
                 viewfinderRectangle.Fill = videoRecorderBrush;
-
                 UpdateUI(ButtonState.Ready);
             }
-            // If preview fails, display an error.
             catch (Exception e)
             {
             }
         }
 
-        // Start the video recording.
         private void StartRecording_Click(object sender, EventArgs e)
         {
             try
             {
-                // Avoid duplicate taps.
-                recordIconButton.IsEnabled = false;
+                txtSize.Text = String.Empty;
+
                 addOrRemoveAppBarButton(recordIconButton, false);
+                addOrRemoveAppBarButton(settingIconButton, false);
+                addOrRemoveAppBarButton(playIconButton, false);
                 addOrRemoveAppBarButton(sendIconButton, false);
                 StartVideoRecording();
             }
@@ -620,86 +542,53 @@ namespace windows_client.View
             }
         }
 
-        // Handle stop requests.
         private void StopPlaybackRecording_Click(object sender, EventArgs e)
         {
-            // Avoid duplicate taps.
+            addOrRemoveAppBarButton(stopIconButton, false);
+
             txtDebug.Opacity = 0;
             progressTimer.Stop();
             updateProgress();
 
-            // Stop during video recording.
             if (currentAppState == ButtonState.Recording)
-            {
                 StopVideoRecording();
-                // Set the button state and the message.
-                UpdateUI(ButtonState.NoChange);
-            }
-
-            // Stop during video playback.
             else
             {
                 runningSeconds = -1;
-                // Remove playback objects.
                 DisposeVideoPlayer();
                 StartVideoPreview();
-                // Set the button state and the message.
-                UpdateUI(ButtonState.NoChange);
             }
         }
 
-        // Start video playback.
         private void StartPlayback_Click(object sender, EventArgs e)
         {
             txtDebug.Opacity = 1;
+            VideoPlayer.Visibility = Visibility.Visible;
             progressTimer.Start();
-
-            // Avoid duplicate taps.
-            playIconButton.IsEnabled = false;
             addOrRemoveAppBarButton(playIconButton, false);
-            // Start video playback when the file stream exists.
 
             if (isoVideoFile != null && VideoPlayer.Source != null)
-            {
                 VideoPlayer.Play();
-            }
-            // Start the video for the first time.
             else
             {
-                // Remove VideoBrush from the tree.
                 viewfinderRectangle.Fill = null;
-
-                // Create the file stream and attach it to the MediaElement.
                 isoVideoFile = new IsolatedStorageFileStream(isoVideoFileName, FileMode.Open, FileAccess.Read, IsolatedStorageFile.GetUserStoreForApplication());
-
                 VideoPlayer.SetSource(isoVideoFile);
-
-                // Add an event handler for the end of playback.
                 VideoPlayer.MediaEnded += new RoutedEventHandler(VideoPlayerMediaEnded);
-
-                // Start video playback.
                 VideoPlayer.Play();
             }
 
-            // Set the button state and the message.
             UpdateUI(ButtonState.Playback);
         }
 
-        // Pause video playback.
         private void PausePlayback_Click(object sender, EventArgs e)
         {
             progressTimer.Stop();
-            // Avoid duplicate taps.
-            pauseIconButton.IsEnabled = false;
             addOrRemoveAppBarButton(pauseIconButton, false);
-
-            // If mediaElement exists, pause playback.
+            
             if (VideoPlayer != null)
-            {
                 VideoPlayer.Pause();
-            }
-
-            // Set the button state and the message.
+        
             UpdateUI(ButtonState.Paused);
         }
 
@@ -707,13 +596,9 @@ namespace windows_client.View
         {
             if (VideoPlayer != null)
             {
-                // Stop the VideoPlayer MediaElement.
+                VideoPlayer.Visibility = Visibility.Collapsed;
                 VideoPlayer.Stop();
-
-                // Remove playback objects.
                 VideoPlayer.Source = null;
-
-                // Remove the event handler.
                 VideoPlayer.MediaEnded -= VideoPlayerMediaEnded;
             }
         }
@@ -726,19 +611,8 @@ namespace windows_client.View
             videoCaptureDevice = null;
         }
 
-        // If recording fails, display an error message.
-        private void OnCaptureFailed(object sender, ExceptionRoutedEventArgs e)
-        {
-            this.Dispatcher.BeginInvoke(delegate()
-            {
-                txtDebug.Text = "ERROR: " + e.ErrorException.Message.ToString();
-            });
-        }
-
-        // Display the viewfinder when playback ends.
         public void VideoPlayerMediaEnded(object sender, RoutedEventArgs e)
         {
-            // Remove the playback objects.
             DisposeVideoPlayer();
             StopVideoRecording();
         }

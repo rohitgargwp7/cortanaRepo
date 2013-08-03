@@ -42,34 +42,30 @@
         </Rectangle>
 
         <MediaElement 
-            x:Name="VideoPlayer" 
-            AutoPlay="True"
-            VerticalAlignment="Stretch" 
-            HorizontalAlignment="Stretch" 
-            Stretch="Fill">
+            x:Name="VideoPlayer" Width="960" Height="1600" Margin="-1000,-960,0,0">
             <MediaElement.RenderTransform>
                 <TransformGroup>
-                    <CompositeTransform x:Name="playerTransform" CenterX="0.5" CenterY="0.5" />
+                    <CompositeTransform x:Name="playerTransform" Rotation="90" CenterX="480" CenterY="800" />
                 </TransformGroup>
             </MediaElement.RenderTransform>
         </MediaElement>
 
         <!--Used for debugging >-->
-        <StackPanel Orientation="Horizontal" Margin="12,0,12,0" VerticalAlignment="Bottom">
+        <Grid Margin="12,0,12,20" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
             <TextBlock 
             HorizontalAlignment="Left" 
             VerticalAlignment="Bottom"
             Name="txtDebug" FontWeight="Thin"
-            Text="00.00" Foreground="White" Margin="0,80,0,0"
-            FontSize="100" />
+            Text="00.00" Foreground="White"
+            FontSize="72" />
 
             <TextBlock 
-            HorizontalAlignment="Right"
+            HorizontalAlignment="Right" TextAlignment="Right"
             VerticalAlignment="Bottom"
             Name="txtSize" Foreground="White"
-            Margin="90,80,0,15"
+            Margin="0,0,0,15"
             FontSize="24"/>
-        </StackPanel>
+        </Grid>
 
         <Grid x:Name="SettingsGrid" Canvas.ZIndex="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Collapsed">
             <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource PhoneBackgroundBrush}"/>
@@ -85,4 +81,8 @@
             </StackPanel>
         </Grid>
     </Grid>
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True">
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>
