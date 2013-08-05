@@ -4537,7 +4537,6 @@ namespace windows_client.View
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-
             if (mUserIsBlocked)
                 return;
             emoticonPanel.Visibility = Visibility.Collapsed;

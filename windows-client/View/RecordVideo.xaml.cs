@@ -72,6 +72,7 @@ namespace windows_client.View
 
             SetCameraDevices();
             SetResolutions();
+            SetUIFromResolution();
 
             progressTimer = new DispatcherTimer();
             progressTimer.Interval = TimeSpan.FromSeconds(1);
@@ -136,12 +137,18 @@ namespace windows_client.View
 
                 if (res != null)
                 {
-                    resolutions = res.ToList();
+                    resolutions = res.Where(r => ((r.Height == 1080 && r.Width == 1920) || (r.Height == 720 && r.Width == 1280) || (r.Height == 480 && r.Width == 640) || (r.Height == 240 && r.Width == 320))).ToList();
 
                     if (resolutions != null && resolutions.Count > 0)
                     {
-                        selectedResolution = resolutions.First();
-
+                        try
+                        {
+                            selectedResolution = resolutions.Where(r => r.Height == 480).First();
+                        }
+                        catch
+                        {
+                            selectedResolution = resolutions.First();
+                        }
 
                         resolutionList.ItemsSource = resolutions;
                         resolutionList.SelectedItem = selectedResolution;
@@ -164,11 +171,16 @@ namespace windows_client.View
             {
                 isPrimaryCam = cameraLocations.First().ToString().Contains("Back") ? true : false;
 
-                foreach (var cam in cameraLocations)
-                    camList.Add(cam.ToString());
+                if (cameraLocations.Count > 1)
+                {
+                    foreach (var cam in cameraLocations)
+                        camList.Add(cam.ToString());
 
-                cameraList.ItemsSource = camList;
-                cameraList.SelectedItem = camList.First();
+                    cameraList.ItemsSource = camList;
+                    cameraList.SelectedItem = camList.First();
+                }
+                else
+                    cameraGrid.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -177,37 +189,30 @@ namespace windows_client.View
             videoCaptureDevice.Dispose();
             videoCaptureDevice = isPrimaryCam ? await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Back, selectedResolution) : await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Front, selectedResolution);
 
-            if (isPrimaryCam)
-            {
-                viewfinderRectangle.Height = 800;
-                VideoPlayer.Height = 1600;
-                VideoPlayer.Width = 960;
-                VideoPlayer.Margin = new Thickness(-1000, -960, 0, 0);
-                viewfinderTransform.ScaleX = 1;
-                playerTransform.ScaleX = 1;
-            }
-            else
-            {
-                viewfinderRectangle.Height = 640;
-                VideoPlayer.Height = 960;
-                VideoPlayer.Width = 640;
-                VideoPlayer.Margin = new Thickness(-1440, -1480, 0, 0);
-                playerTransform.ScaleX = -1;
-                viewfinderTransform.ScaleX = -1;
-            }
+            SetUIFromResolution();
 
             videoRecorderBrush.SetSource(videoCaptureDevice);
 
             SettingsGrid.Visibility = Visibility.Collapsed;
+
             if (runningSeconds <= 0 && String.IsNullOrEmpty(txtSize.Text))
-            {
                 UpdateUI(ButtonState.Initialized);
-            }
             else
             {
                 addOrRemoveAppBarButton(sendIconButton, true);
                 UpdateUI(ButtonState.Ready);
             }
+        }
+
+        private void SetUIFromResolution()
+        {
+            viewfinderRectangle.Height = selectedResolution.Height > 480 ? 800 : 640;
+
+            VideoPlayer.Height = isPrimaryCam ? 1600 : 960;
+            VideoPlayer.Width = isPrimaryCam ? 960 : 640;
+            VideoPlayer.Margin = isPrimaryCam ? new Thickness(-1000, -960, 0, 0) : new Thickness(-1440, -1480, 0, 0);
+            viewfinderTransform.ScaleX = isPrimaryCam ? 1 : -1;
+            playerTransform.ScaleX = isPrimaryCam ? 1 : -1;
         }
 
         void settingsButton_Click(object sender, EventArgs e)
@@ -268,11 +273,24 @@ namespace windows_client.View
             return string.Format("{0,2:n1} {1}", dValue, suffixes[i]);
         }
 
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            if (SettingsGrid.Visibility == Visibility.Visible)
+            {
+                SettingsGrid.Visibility = Visibility.Collapsed;
+                e.Cancel = true;
+                return;
+            }
+
+            base.OnBackKeyPress(e);
+        }
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            
-            InitializeVideoRecorder();
+
+            if (SettingsGrid.Visibility != Visibility.Visible)
+                InitializeVideoRecorder();
         }
 
         protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)

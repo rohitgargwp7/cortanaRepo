@@ -1910,4 +1910,13 @@ Get hike: http://get.hike.in</value>
     <value>to group</value>
     <comment>max length(8)</comment>
   </data>
+  <data name="Camera_Label" xml:space="preserve">
+    <value>Camera:</value>
+  </data>
+  <data name="Reolution_Label" xml:space="preserve">
+    <value>Resolution:</value>
+  </data>
+  <data name="Video_Settings" xml:space="preserve">
+    <value>video settings</value>
+  </data>
 </root>
