@@ -249,15 +249,21 @@
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
                                             <Rectangle Grid.RowSpan="2" Fill="{Binding BubbleBackGroundColor}" />
-                                            <Grid x:Name="attachment" Grid.Row="0"  >
+                                            <Grid x:Name="attachment" Grid.Row="0" MaxWidth="400" Margin="12,12,12,0">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
-                                                <Image Grid.Row="0" MaxWidth="300" MaxHeight="160" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
-                                                <Grid MaxHeight="100" MaxWidth="300" VerticalAlignment="Bottom" Margin="12,0" Visibility="{Binding DispMessageVisibility}">
-                                                    <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                                                    <TextBlock Text="{Binding DispMessage}" Margin="10,5" TextWrapping="Wrap" Foreground="White" FontSize="18" />
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Image MaxWidth="160" MaxHeight="160" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
+                                                    <StackPanel MaxHeight="160" MaxWidth="200" Margin="12,0,0,0" Grid.Column="1" Visibility="{Binding LocationAddressVisibility}" VerticalAlignment="Top">
+                                                        <TextBlock Text="{Binding PlaceName}" Visibility="{Binding PlaceNameVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" FontWeight="SemiBold" />
+                                                        <TextBlock Text="{Binding Address}" Visibility="{Binding AddressVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" TextTrimming="WordEllipsis" />
+                                                    </StackPanel>
                                                 </Grid>
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>
@@ -493,15 +499,21 @@
                                             </Grid.ColumnDefinitions>
                                             <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}" />
                                             <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
-                                            <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" >
+                                            <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" MaxWidth="400" Margin="12,12,12,0">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
-                                                <Image Grid.Row="0" MaxWidth="300" MaxHeight="160" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
-                                                <Grid MaxHeight="100" MaxWidth="300" VerticalAlignment="Bottom" Margin="12,0" Visibility="{Binding DispMessageVisibility}">
-                                                    <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                                                    <TextBlock Text="{Binding DispMessage}" Margin="10,5" TextWrapping="Wrap" Foreground="White" FontSize="18" />
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Image Grid.Column="1" MaxWidth="160" MaxHeight="160" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
+                                                    <StackPanel MaxHeight="160" MaxWidth="200" Margin="0,0,12,0" Visibility="{Binding LocationAddressVisibility}" VerticalAlignment="Top">
+                                                        <TextBlock Text="{Binding PlaceName}" Visibility="{Binding PlaceNameVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" FontWeight="SemiBold" />
+                                                        <TextBlock Text="{Binding Address}" Visibility="{Binding AddressVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" TextTrimming="WordEllipsis" />
+                                                    </StackPanel>
                                                 </Grid>
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>

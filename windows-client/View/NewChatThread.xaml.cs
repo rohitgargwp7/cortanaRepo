@@ -727,7 +727,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("RecordMedia.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("NewChatThread.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
                 }
                 gridStickers.Children.Remove(pivotStickers);
 
@@ -758,16 +758,18 @@ namespace windows_client.View
                 return;
             }
 
-            if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
-            {
-                Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
-                NavigationService.Navigate(nUri);
-            }
-
             if (mediaElement != null)
             {
                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 mediaElement.Stop();
+            } 
+            
+            if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
+            {
+                Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                NavigationService.Navigate(nUri);
+                e.Cancel = true;
+                return;
             }
 
             base.OnBackKeyPress(e);
@@ -1588,7 +1590,7 @@ namespace windows_client.View
                             convMessage.Message = AppResources.Video_Txt;
                         else if (contentType.Contains(HikeConstants.LOCATION))
                         {
-                            convMessage.Message = (string)attachmentData[5];
+                            convMessage.Message = AppResources.Location_Txt;
                             convMessage.MetaDataString = metaDataString;
                         }
                         else if (contentType.Contains(HikeConstants.CT_CONTACT))
@@ -4278,19 +4280,12 @@ namespace windows_client.View
 
                 byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
 
-                var vicinity = fileData[HikeConstants.LOCATION_ADDRESS].ToString();
-                string locationMessage = String.Empty;
-                string fileName = fileData[HikeConstants.FILE_NAME].ToString();
+                var place = (String)fileData[HikeConstants.LOCATION_TITLE];
+                var vicinity = (String)fileData[HikeConstants.LOCATION_ADDRESS];
+                var locationMessage = String.Empty;
+                var fileName = (String)fileData[HikeConstants.FILE_NAME];
 
                 locationMessage = fileName;
-
-                if (!String.IsNullOrEmpty(vicinity))
-                {
-                    if (!String.IsNullOrEmpty(locationMessage))
-                        locationMessage += "\n" + vicinity;
-                    else
-                        locationMessage = vicinity;
-                }
 
                 if (String.IsNullOrEmpty(fileName))
                     fileName = AppResources.Location_Txt;
