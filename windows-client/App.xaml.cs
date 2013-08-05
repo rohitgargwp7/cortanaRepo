@@ -283,7 +283,8 @@ namespace windows_client
         {
             NORMAL_LAUNCH, // user clicks the app from menu
             PUSH_NOTIFICATION_LAUNCH,   // app is alunched after push notification is clicked
-            SHARE_PICKER_LAUNCH  // app is alunched after share is clicked
+            SHARE_PICKER_LAUNCH,  // app is alunched after share is clicked
+            FAST_RESUME
         }
 
         #endregion
@@ -336,6 +337,15 @@ namespace windows_client
             }
 
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
+            RootFrame.Navigated += RootFrame_Navigated;
+        }
+
+        void RootFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            if (e.NavigationMode == NavigationMode.Reset)
+            {
+                RootFrame.Navigating += RootFrame_CheckForFastResume;
+            }
         }
 
         // Code to execute when the application is launching (eg, from Start)
@@ -363,17 +373,18 @@ namespace windows_client
         {
             _isAppLaunched = false; // this means app is activated, could be tombstone or dormant state
             _isTombstoneLaunch = !e.IsApplicationInstancePreserved; //e.IsApplicationInstancePreserved  --> if this is true its dormant else tombstoned
-            try
-            {
-                _appLaunchState = (LaunchState)PhoneApplicationService.Current.State[LAUNCH_STATE];
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("App :: Application_Activated : Setting launch state , Exception : " + ex.StackTrace);
-            }
-
+            
             if (_isTombstoneLaunch)
             {
+                try
+                {
+                    _appLaunchState = (LaunchState)PhoneApplicationService.Current.State[LAUNCH_STATE];
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("App :: Application_Activated : Setting launch state , Exception : " + ex.StackTrace);
+                }
+
                 if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
                     isNewInstall = false;
 
@@ -468,6 +479,46 @@ namespace windows_client
             }
         }
 
+        void RootFrame_CheckForFastResume(object sender, NavigatingCancelEventArgs e)
+        {
+            RootFrame.Navigating -= RootFrame_CheckForFastResume;
+            var targetPage = e.Uri.ToString();
+
+            if (e.NavigationMode == NavigationMode.New)
+            {
+                if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
+                {
+                    APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
+                    string param = Utils.GetParamFromUri(targetPage);
+                    e.Cancel = true;
+                    RootFrame.Dispatcher.BeginInvoke(delegate
+                    {
+                        RootFrame.Navigate(new Uri("/View/NewChatThread.xaml?" + param, UriKind.Relative));
+                    });
+                }
+                else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
+                {
+                    APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
+                    PhoneApplicationService.Current.State["IsStatusPush"] = true;
+                }
+                else if (targetPage != null && targetPage.Contains("NewSelectUserPage.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
+                {
+                    APP_LAUNCH_STATE = LaunchState.SHARE_PICKER_LAUNCH;
+
+                    int idx = targetPage.IndexOf("?") + 1;
+                    string param = targetPage.Substring(idx);
+                    e.Cancel = true;
+                    
+                    RootFrame.Dispatcher.BeginInvoke(delegate
+                    {
+                        RootFrame.Navigate(new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative));
+                    });
+                }
+                else if (targetPage.Contains("/View/NewSelectUserPage.xaml"))
+                    e.Cancel = true;
+            }
+        }
+
         void RootFrame_Navigating(object sender, NavigatingCancelEventArgs e)
         {
             RootFrame.Navigating -= RootFrame_Navigating;
@@ -489,7 +540,7 @@ namespace windows_client
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
             // if not new install && current version is less than equal to version 1.8.0.0  and upgrade is done for wp8 device
-            if (!isNewInstall && Utils.compareVersion("2.2.0.3", _currentVersion) == 1 && Utils.IsWP8)
+            if (!isNewInstall && Utils.compareVersion("2.2.0.4", _currentVersion) == 1 && Utils.IsWP8)
             {
                 instantiateClasses(true);
                 RootFrame.Dispatcher.BeginInvoke(delegate
@@ -574,7 +625,10 @@ namespace windows_client
                 // A navigation has failed; break into the debugger
                 System.Diagnostics.Debugger.Break();
             }
-            App.AnalyticsInstance.saveObject();
+
+            if (App.AnalyticsInstance != null)
+                App.AnalyticsInstance.saveObject();
+
             if (IS_VIEWMODEL_LOADED)
             {
                 int convs = 0;
@@ -658,7 +712,7 @@ namespace windows_client
         {
             #region LAST SEEN BYTE TO BOOL FIX
 
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.2.0.3") < 0)
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.2.0.4") < 0)
             {
                 try
                 {

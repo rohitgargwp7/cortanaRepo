@@ -258,6 +258,14 @@ namespace windows_client.View
                 queryStrings.Clear();
                 txtChat.Text = AppResources.Share_With_Txt;
             }
+
+            if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
+            {
+                while (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
+
+                App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
+            }
         }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
@@ -274,6 +282,7 @@ namespace windows_client.View
                 }
                 e.Cancel = true;
             }
+
             base.OnBackKeyPress(e);
         }
 
@@ -1208,9 +1217,14 @@ namespace windows_client.View
             ContactInfo ci = btn.DataContext as ContactInfo;
             if (ci == null)
                 return;
-            if (btn.Content.Equals(AppResources.Block_Txt)) // block request
+            if (!ci.IsFav) // block request
             {
-                btn.Content = AppResources.UnBlock_Txt;
+                ci.IsFav = true;
+                if (ci.Name == ci.Msisdn)
+                {
+                    ci.Msisdn = Utils.NormalizeNumber(ci.Msisdn);
+                    ci.Name = ci.Msisdn;
+                }
                 App.ViewModel.BlockedHashset.Add(ci.Msisdn);
                 if (App.ViewModel.FavList != null)
                 {
@@ -1230,7 +1244,7 @@ namespace windows_client.View
             }
             else // unblock request
             {
-                btn.Content = AppResources.Block_Txt;
+                ci.IsFav = false;
                 if (ci.Msisdn == string.Empty)
                     ci.Msisdn = ci.Name;
                 App.ViewModel.BlockedHashset.Remove(ci.Msisdn);
