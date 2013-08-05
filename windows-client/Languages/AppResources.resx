@@ -881,7 +881,7 @@ Get hike: http://get.hike.in</value>
     <comment>General Text</comment>
   </data>
   <data name="ShareLocation_LocationServiceNotEnabled_Txt" xml:space="preserve">
-    <value>Location Service is not enabled on the device. Would you like to enable it?</value>
+    <value>Location Service is disabled on your device. Please turn ON the location in your phone settings.</value>
     <comment>cs</comment>
   </data>
   <data name="ShareLocation_LocationServiceWorking_Txt" xml:space="preserve">
@@ -1849,14 +1849,14 @@ Get hike: http://get.hike.in</value>
   <data name="StatusNotToggle_Caption_Txt" xml:space="preserve">
     <value>Status Update Notifications</value>
   </data>
-  <data name="Location_Heading" xml:space="preserve">
-    <value>Location</value>
+  <data name="Location_Unavailable_Heading" xml:space="preserve">
+    <value>Location Unavailable</value>
   </data>
   <data name="Settings_LocationToggleSwitchHeader" xml:space="preserve">
-    <value>Use location</value>
+    <value>Use location service</value>
   </data>
   <data name="ShareLocation_LocationSettingsNotEnabled_Txt" xml:space="preserve">
-    <value>Location service setting is not enabled. Would you like to enable it?</value>
+    <value>Hike Location Setting is disabled. Would you like to turn it ON?</value>
   </data>
   <data name="ViewMessage_Title_txt" xml:space="preserve">
     <value>message</value>
@@ -1909,5 +1909,8 @@ Get hike: http://get.hike.in</value>
   <data name="SelectUser_Title_AddParticipant_Txt" xml:space="preserve">
     <value>to group</value>
     <comment>max length(8)</comment>
+  </data>
+  <data name="Location_Disabled_Heading" xml:space="preserve">
+    <value>Location Disabled</value>
   </data>
 </root>
