@@ -2210,6 +2210,9 @@ namespace windows_client.View
             if (ProTipHelper.CurrentProTip != null)
                 index = 1;
 
+            if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC && FreshStatusUpdates != null && FreshStatusUpdates.Count > 0)
+                App.ViewModel.StatusList.RemoveAt(index);
+
             // this fix will solve the possible crash , suggested by nitesh
             int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count + index : index;
             for (int i = 0; i < (FreshStatusUpdates != null ? FreshStatusUpdates.Count : 0); i++)

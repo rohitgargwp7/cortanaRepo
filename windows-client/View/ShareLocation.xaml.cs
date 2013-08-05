@@ -597,7 +597,7 @@ namespace windows_client.View
             {
                 _isLocationEnabled = true;
 
-                if (e.NavigationMode != System.Windows.Navigation.NavigationMode.New && _myCoordinate == null && !App.IS_TOMBSTONED)
+                if (e.NavigationMode != System.Windows.Navigation.NavigationMode.New && (_myCoordinate == null || _places == null) && !App.IS_TOMBSTONED)
                     GetCurrentCoordinate();
             }
 
@@ -656,10 +656,13 @@ namespace windows_client.View
                 }
             }
 
-            if (NetworkInterface.GetIsNetworkAvailable())
-                PlacesGrid.Visibility = Visibility.Visible;
-            else
-                MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
+            if (_isLocationEnabled)
+            {
+                if (NetworkInterface.GetIsNetworkAvailable())
+                    PlacesGrid.Visibility = Visibility.Visible;
+                else
+                    MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
+            }
 
             base.OnNavigatedTo(e);
         }
