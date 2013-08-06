@@ -1365,7 +1365,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download Failed.
+        ///   Looks up a localized string similar to File Expired.
         /// </summary>
         public static string File_Not_Exist_Caption {
             get {
@@ -1374,7 +1374,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This file no longer exists on the server.
+        ///   Looks up a localized string similar to This file no longer exists on the server. You may ask your friend to re-send the file..
         /// </summary>
         public static string File_Not_Exist_Message {
             get {

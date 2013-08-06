@@ -30,7 +30,6 @@ namespace windows_client.Model
         private string _phoneNo;
         private bool _hasCustomPhoto;//used to show group chat in select user page
         private bool _onHike;
-        private bool _isInvited;
         private byte[] _avatar;
         private bool _isFav;
         private bool _isCloseFriendNux;//for Nux , this will also be used in equals function , if true we will compare msisdns only in equals function
@@ -172,6 +171,7 @@ namespace windows_client.Model
             }
         }
 
+        //used for block unblock also
         public bool IsFav
         {
             get
@@ -191,12 +191,23 @@ namespace windows_client.Model
                             currentPage.CheckBox_Tap(this);
                         }
                     }
+                    else
+                        NotifyPropertyChanged("BlockUnblockText");
                 }
             }
         }   // this is used in inviteUsers page , when you show hike users
 
 
+        public string BlockUnblockText
+        {
+            get
+            {
+                if (_isFav)
+                    return AppResources.UnBlock_Txt;
+                return AppResources.Block_Txt;
 
+            }
+        }
         public bool IsEnabled
         {
             get
