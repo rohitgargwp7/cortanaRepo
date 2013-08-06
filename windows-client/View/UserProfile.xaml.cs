@@ -1319,6 +1319,7 @@ namespace windows_client.View
             {
                 statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
             }
+
             Dispatcher.BeginInvoke(() =>
             {
                 nameToShow = contactInfo.Name;
@@ -1364,29 +1365,29 @@ namespace windows_client.View
                     if (App.newChatThreadPage.ApplicationBar.MenuItems != null && App.newChatThreadPage.ApplicationBar.MenuItems.Contains(App.newChatThreadPage.addUserMenuItem))
                         App.newChatThreadPage.ApplicationBar.MenuItems.Remove(App.newChatThreadPage.addUserMenuItem);
                 }
-
-                GroupManager.Instance.LoadGroupCache();
-
-                if (GroupManager.Instance.GroupCache != null)
-                {
-                    foreach (string key in GroupManager.Instance.GroupCache.Keys)
-                    {
-                        bool shouldSave = false;
-                        List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
-                        for (int i = 0; i < l.Count; i++)
-                        {
-                            if (l[i].Msisdn == msisdn)
-                            {
-                                l[i].Name = nameToShow;
-                                shouldSave = true;
-                            }
-                        }
-
-                        if (shouldSave)
-                            GroupManager.Instance.SaveGroupCache(key);
-                    }
-                }
             });
+            
+            GroupManager.Instance.LoadGroupCache();
+
+            if (GroupManager.Instance.GroupCache != null)
+            {
+                foreach (string key in GroupManager.Instance.GroupCache.Keys)
+                {
+                    bool shouldSave = false;
+                    List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                    for (int i = 0; i < l.Count; i++)
+                    {
+                        if (l[i].Msisdn == msisdn)
+                        {
+                            l[i].Name = nameToShow;
+                            shouldSave = true;
+                        }
+                    }
+
+                    if (shouldSave)
+                        GroupManager.Instance.SaveGroupCache(key);
+                }
+            }
         }
         #endregion
 
