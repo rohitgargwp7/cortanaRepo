@@ -82,26 +82,18 @@ namespace windows_client.View
 
             progress.Show(LayoutRoot, AppResources.Privacy_UnlinkAccountProgress);
             canGoBack = false;
+
             AccountUtils.unlinkAccount(new AccountUtils.postResponseFunction(unlinkAccountResponse_Callback));
+
+            if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
+                LogOutFb();
+
+            DeleteLocalStorage();
         }
 
         private void unlinkAccountResponse_Callback(JObject obj)
         {
-            if (obj == null || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
-            {
-                Debug.WriteLine("Unlink Account", "Could not unlink account !!");
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    MessageBoxResult result = MessageBox.Show(AppResources.Privacy_UnlinkErrMsgBxText, AppResources.Privacy_UnlinkErrMsgBxCaptn, MessageBoxButton.OKCancel);
-                    progress.Hide(LayoutRoot);
-                    progress = null;
-                    canGoBack = true;
-                });
-                return;
-            }
-            if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
-                LogOutFb();
-            DeleteLocalStorage();
+            
         }
 
         private void Delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -160,7 +152,6 @@ namespace windows_client.View
                     pushChannel.UnbindToShellToast();
                 pushChannel.Close();
             }
-
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
