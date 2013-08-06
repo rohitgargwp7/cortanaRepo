@@ -59,7 +59,6 @@ namespace windows_client.View
         ApplicationBarIconButton doneIconButton = null;
         ApplicationBarIconButton recordIconButton = null;
         ApplicationBarIconButton settingIconButton = null;
-        ApplicationBarIconButton playIconButton = null;
         ApplicationBarIconButton pauseIconButton = null;
         ApplicationBarIconButton stopIconButton = null;
         private int runningSeconds = -1;
@@ -89,43 +88,31 @@ namespace windows_client.View
             sendIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
             sendIconButton.Text = AppResources.Send_Txt;
             sendIconButton.Click += new EventHandler(send_Click);
-            sendIconButton.IsEnabled = true;
-
-            playIconButton = new ApplicationBarIconButton();
-            playIconButton.IconUri = new Uri("/View/images/appbar_icon_play.png", UriKind.Relative);
-            playIconButton.Text = AppResources.Play_Txt;
-            playIconButton.Click += new EventHandler(StartPlayback_Click);
-            playIconButton.IsEnabled = true;
 
             pauseIconButton = new ApplicationBarIconButton();
             pauseIconButton.IconUri = new Uri("/View/images/icon_pause.png", UriKind.Relative);
             pauseIconButton.Text = AppResources.Pause_Txt;
             pauseIconButton.Click += new EventHandler(PausePlayback_Click);
-            pauseIconButton.IsEnabled = true;
 
             stopIconButton = new ApplicationBarIconButton();
             stopIconButton.IconUri = new Uri("/View/images/icon_stop_appbar.png", UriKind.Relative);
             stopIconButton.Text = AppResources.Stop_Txt;
             stopIconButton.Click += new EventHandler(StopPlaybackRecording_Click);
-            stopIconButton.IsEnabled = true;
 
             recordIconButton = new ApplicationBarIconButton();
             recordIconButton.IconUri = new Uri("/View/images/icon_record_appbar.png", UriKind.Relative);
             recordIconButton.Text = AppResources.Record_Txt;
             recordIconButton.Click += new EventHandler(StartRecording_Click);
-            recordIconButton.IsEnabled = true;
 
             settingIconButton = new ApplicationBarIconButton();
             settingIconButton.IconUri = new Uri("/View/images/icon_editprofile.png", UriKind.Relative);
             settingIconButton.Text = AppResources.Settings;
             settingIconButton.Click += settingsButton_Click;
-            settingIconButton.IsEnabled = true;
 
             doneIconButton = new ApplicationBarIconButton();
             doneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
             doneIconButton.Text = AppResources.OK;
             doneIconButton.Click += doneIconButton_Click;
-            doneIconButton.IsEnabled = true;
         }
 
         private void SetResolutions()
@@ -187,6 +174,11 @@ namespace windows_client.View
 
         async void doneIconButton_Click(object sender, EventArgs e)
         {
+            await UpdateRecordingSettings();
+        }
+
+        private async System.Threading.Tasks.Task UpdateRecordingSettings()
+        {
             videoCaptureDevice.Dispose();
             videoCaptureDevice = isPrimaryCam ? await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Back, selectedResolution) : await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Front, selectedResolution);
 
@@ -201,6 +193,7 @@ namespace windows_client.View
             else
             {
                 addOrRemoveAppBarButton(sendIconButton, true);
+                previewGrid.Visibility = Visibility.Visible;
                 UpdateUI(ButtonState.Ready);
             }
         }
@@ -219,6 +212,7 @@ namespace windows_client.View
         void settingsButton_Click(object sender, EventArgs e)
         {
             UpdateUI(ButtonState.SettingMenu);
+            previewGrid.Visibility = Visibility.Collapsed;
             SettingsGrid.Visibility = Visibility.Visible;
         }
 
@@ -278,7 +272,7 @@ namespace windows_client.View
         {
             if (SettingsGrid.Visibility == Visibility.Visible)
             {
-                SettingsGrid.Visibility = Visibility.Collapsed;
+                UpdateRecordingSettings();
                 e.Cancel = true;
                 return;
             }
@@ -323,7 +317,6 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(recordIconButton, false);
                         addOrRemoveAppBarButton(settingIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, false);
-                        addOrRemoveAppBarButton(playIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);
 
                         break;
@@ -332,7 +325,6 @@ namespace windows_client.View
                     case ButtonState.Initialized:
                         addOrRemoveAppBarButton(doneIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, false);
-                        addOrRemoveAppBarButton(playIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, true);
                         addOrRemoveAppBarButton(settingIconButton, true);
@@ -346,7 +338,6 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, true);
                         addOrRemoveAppBarButton(settingIconButton, true);
-                        addOrRemoveAppBarButton(playIconButton, true);
 
                         break;
 
@@ -355,7 +346,6 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(doneIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, false);
                         addOrRemoveAppBarButton(settingIconButton, false);
-                        addOrRemoveAppBarButton(playIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, true);
 
@@ -366,7 +356,6 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(doneIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, false);
                         addOrRemoveAppBarButton(settingIconButton, false);
-                        addOrRemoveAppBarButton(playIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, true);
                         addOrRemoveAppBarButton(stopIconButton, true);
 
@@ -379,7 +368,6 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(settingIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, true);
-                        addOrRemoveAppBarButton(playIconButton, true);
 
                         break;
 
@@ -388,9 +376,9 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(recordIconButton, false);
                         addOrRemoveAppBarButton(settingIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, false);
-                        addOrRemoveAppBarButton(playIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(doneIconButton, true);
+
                         break;
                     default:
                         break;
@@ -445,6 +433,7 @@ namespace windows_client.View
 
                             wb = isPrimaryCam ? wb.Rotate(90) : wb.Rotate(270);
                             wb.Invalidate();
+                            snapshotThumbnail.Source = wb;
 
                             var ratio = (double) frameHeight / frameWidth;
                             if (frameWidth > frameHeight)
@@ -548,6 +537,8 @@ namespace windows_client.View
         {
             try
             {
+                previewGrid.Visibility = Visibility.Visible;
+                viewfinderRectangle.Visibility = Visibility.Collapsed;
                 videoRecorderBrush.SetSource(videoCaptureDevice);
                 viewfinderRectangle.Fill = videoRecorderBrush;
                 UpdateUI(ButtonState.Ready);
@@ -561,11 +552,12 @@ namespace windows_client.View
         {
             try
             {
+                viewfinderRectangle.Visibility = Visibility.Visible;
+                previewGrid.Visibility = Visibility.Collapsed;
                 txtSize.Text = String.Empty;
 
                 addOrRemoveAppBarButton(recordIconButton, false);
                 addOrRemoveAppBarButton(settingIconButton, false);
-                addOrRemoveAppBarButton(playIconButton, false);
                 addOrRemoveAppBarButton(sendIconButton, false);
                 StartVideoRecording();
             }
@@ -595,10 +587,14 @@ namespace windows_client.View
 
         private void StartPlayback_Click(object sender, EventArgs e)
         {
+            PlayVideo();
+        }
+
+        private void PlayVideo()
+        {
             txtDebug.Opacity = 1;
+            previewGrid.Visibility = Visibility.Collapsed;
             VideoPlayer.Visibility = Visibility.Visible;
-            progressTimer.Start();
-            addOrRemoveAppBarButton(playIconButton, false);
 
             if (isoVideoFile != null && VideoPlayer.Source != null)
                 VideoPlayer.Play();
@@ -610,6 +606,8 @@ namespace windows_client.View
                 VideoPlayer.MediaEnded += new RoutedEventHandler(VideoPlayerMediaEnded);
                 VideoPlayer.Play();
             }
+
+            progressTimer.Start();
 
             UpdateUI(ButtonState.Playback);
         }
@@ -686,6 +684,11 @@ namespace windows_client.View
             var list = sender as ListBox;
             if (list != null && list.SelectedItem != null)
                 selectedResolution = (Windows.Foundation.Size) list.SelectedItem;
+        }
+
+        private void StartPlayback_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PlayVideo();
         }
     }
 }

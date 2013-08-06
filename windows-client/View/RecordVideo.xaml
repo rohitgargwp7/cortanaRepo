@@ -29,6 +29,11 @@
             </Rectangle.Fill>
         </Rectangle>
 
+        <Grid x:Name="previewGrid" Background="Black" Canvas.ZIndex="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Visibility="Collapsed" Tap="StartPlayback_Tap">
+            <Image x:Name="snapshotThumbnail" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Stretch="Uniform" Opacity="0.75"/>
+            <Image x:Name="playIcon" Canvas.ZIndex="1" Source="/View/images/MediaPlayIcon.png" Stretch="Uniform" MaxHeight="150"/>
+        </Grid>
+        
         <MediaElement 
             x:Name="VideoPlayer" Width="960" Height="1600" Margin="-1000,-960,0,0">
             <MediaElement.RenderTransform>
@@ -58,21 +63,27 @@
         <Grid x:Name="SettingsGrid" Canvas.ZIndex="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Collapsed">
             <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource PhoneBackgroundBrush}"/>
             <StackPanel Orientation="Vertical" Margin="0,0,0,0">
-                <TextBlock Text="{Binding Path= LocalizedResources.Video_Settings, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="68" Margin="12,20,12,0"/>
+                <TextBlock Text="{Binding Path= LocalizedResources.Video_Settings, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="68" Margin="24,20,12,0"/>
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="12">
                     <StackPanel x:Name="resolutionGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,20,0,0">
                         <TextBlock x:Name="resolutionLabel" Margin="0,0,0,5" Foreground="{StaticResource PhoneSubtleBrush}" Text="{Binding Path= LocalizedResources.Reolution_Label, Source={StaticResource LocalizedStrings}}"/>
                         <ListBox MaxHeight="250" FontSize="32" x:Name="resolutionList" HorizontalAlignment="Stretch" SelectionChanged="resolutionList_SelectionChanged">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Height}"/>
+                                    <TextBlock Text="{Binding Height}" Margin="0,5"/>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
                     </StackPanel>
                     <StackPanel x:Name="cameraGrid" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,30,0">
                         <TextBlock x:Name="cameraLabel" Margin="0,0,0,5" Foreground="{StaticResource PhoneSubtleBrush}" Text="{Binding Path= LocalizedResources.Camera_Label, Source={StaticResource LocalizedStrings}}"/>
-                        <ListBox x:Name="cameraList" FontSize="32" HorizontalAlignment="Stretch" SelectionChanged="cameraList_SelectionChanged"/>
+                        <ListBox x:Name="cameraList" FontSize="32" HorizontalAlignment="Stretch" SelectionChanged="cameraList_SelectionChanged">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" Margin="0,5"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </StackPanel>
                 </Grid>
             </StackPanel>
