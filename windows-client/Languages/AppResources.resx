@@ -1917,7 +1917,7 @@ Get hike: http://get.hike.in</value>
     <value>Camera:</value>
   </data>
   <data name="In_App_Tip_7" xml:space="preserve">
-    <value>Now you can send messages to people who are offline via Free Hike SMS. Isn't that great!</value>
+    <value>You can now send messages to your hike contacts who are Offline! Long Press the message to send as a Hike SMS</value>
   </data>
   <data name="Reolution_Label" xml:space="preserve">
     <value>Resolution:</value>

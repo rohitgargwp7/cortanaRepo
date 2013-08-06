@@ -2103,7 +2103,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Now you can send messages to people who are offline via Free Hike SMS. Isn&apos;t that great!.
+        ///   Looks up a localized string similar to You can now send messages to your hike contacts who are Offline! Long Press the message to send as a Hike SMS.
         /// </summary>
         public static string In_App_Tip_7 {
             get {
