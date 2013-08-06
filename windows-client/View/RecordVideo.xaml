@@ -79,7 +79,6 @@
         </Grid>
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True">
-        </shell:ApplicationBar>
+        <shell:ApplicationBar IsVisible="True"/>
     </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

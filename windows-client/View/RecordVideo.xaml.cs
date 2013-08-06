@@ -38,7 +38,6 @@ namespace windows_client.View
         // Source and device for capturing video.
         AudioVideoCaptureDevice videoCaptureDevice;
         IRandomAccessStream videoStream;
-
         List<Windows.Foundation.Size> resolutions;
         Windows.Foundation.Size selectedResolution;
         
@@ -133,6 +132,7 @@ namespace windows_client.View
         {
             try
             {
+                resolutionGrid.Visibility = Visibility.Visible;
                 var res = isPrimaryCam ? AudioVideoCaptureDevice.GetAvailableCaptureResolutions(CameraSensorLocation.Back) : AudioVideoCaptureDevice.GetAvailableCaptureResolutions(CameraSensorLocation.Front);
 
                 if (res != null)
@@ -157,6 +157,7 @@ namespace windows_client.View
             }
             catch
             {
+                resolutionGrid.Visibility = Visibility.Collapsed;
                 //resolutions are empty
             }
         }
@@ -169,7 +170,7 @@ namespace windows_client.View
 
             if (cameraLocations != null && cameraLocations.Count > 0)
             {
-                isPrimaryCam = cameraLocations.First().ToString().Contains("Back") ? true : false;
+                isPrimaryCam = cameraLocations.First() == CameraSensorLocation.Back ? true : false;
 
                 if (cameraLocations.Count > 1)
                 {
@@ -444,6 +445,20 @@ namespace windows_client.View
 
                             wb = isPrimaryCam ? wb.Rotate(90) : wb.Rotate(270);
                             wb.Invalidate();
+
+                            var ratio = (double) frameHeight / frameWidth;
+                            if (frameWidth > frameHeight)
+                            {
+                                var newWidth = (Int32)(HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT / ratio);
+                                wb = wb.Resize(newWidth, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT, WriteableBitmapExtensions.Interpolation.NearestNeighbor);
+                                wb = wb.Crop(0, 0, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT);
+                            }
+                            else
+                            {
+                                var newHeight = (Int32)(HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH * ratio);
+                                wb = wb.Resize(HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, newHeight, WriteableBitmapExtensions.Interpolation.NearestNeighbor);
+                                wb = wb.Crop(0, 0, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT);
+                            }
 
                             wb.SaveJpeg(stream, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT, 0, 60);
                             thumbnail = stream.ToArray();
