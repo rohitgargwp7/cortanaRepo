@@ -251,6 +251,8 @@ namespace windows_client.View
         }
 
         #endregion
+        
+        GroupParticipant _groupParticipant;
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -286,19 +288,19 @@ namespace windows_client.View
                 #region USER INFO FROM GROUP CHAT
                 else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE, out o))
                 {
-                    GroupParticipant gp = o as GroupParticipant;
-                    msisdn = gp.Msisdn;
-                    nameToShow = gp.Name;
+                    _groupParticipant = o as GroupParticipant;
+                    msisdn = _groupParticipant.Msisdn;
+                    nameToShow = _groupParticipant.Name;
 
-                    if (App.MSISDN == gp.Msisdn) // represents self page
+                    if (App.MSISDN == _groupParticipant.Msisdn) // represents self page
                     {
                         InitSelfProfile();
                     }
                     else
                     {
                         InitAppBar();
-                        profileImage = UI_Utils.Instance.GetBitmapImage(gp.Msisdn);
-                        isOnHike = gp.IsOnHike;
+                        profileImage = UI_Utils.Instance.GetBitmapImage(_groupParticipant.Msisdn);
+                        isOnHike = _groupParticipant.IsOnHike;
                         InitChatIconBtn();
                     }
                 }
@@ -352,13 +354,15 @@ namespace windows_client.View
                     isInAddressBook = CheckUserInAddressBook();
                 };
                 bw.RunWorkerAsync();
+                bw.RunWorkerCompleted += delegate
+                {
+                    LoadCallCopyOptions();
+                };
 
                 if (!isOnHike)//sms user
                     ShowNonHikeUser();
                 else
                     InitHikeUserProfile();
-
-                LoadCallCopyOptions();
             }
 
             // this is done to update profile name , as soon as it gets updated
@@ -387,19 +391,8 @@ namespace windows_client.View
                 appBar.Buttons.Add(callIconButton);
                 UserProfilePage.ApplicationBar = appBar;
 
-                BackgroundWorker worker = new BackgroundWorker();
-                worker.DoWork += delegate
-                    {
-                        if (!isInAddressBook)
-                        {
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                ShowAddToContacts();
-                            });
-                        }
-                    };
-
-                worker.RunWorkerAsync();
+                if (!isInAddressBook)
+                    ShowAddToContacts();
             }
 
             if (msisdn == txtUserName.Text)
@@ -1320,38 +1313,38 @@ namespace windows_client.View
                 statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
             }
 
+            nameToShow = contactInfo.Name;
+
             Dispatcher.BeginInvoke(() =>
             {
-                nameToShow = contactInfo.Name;
                 txtUserName.Text = nameToShow;
                 firstName = Utils.GetFirstName(nameToShow);
                 txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, firstName);
                 isOnHike = contactInfo.OnHike;
 
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
-                {
                     App.ViewModel.ConvMap[msisdn].ContactName = contactInfo.Name;
-                }
                 else
                 {
                     ConversationListObject co = App.ViewModel.GetFav(msisdn);
                     if (co != null)
                         co.ContactName = contactInfo.Name;
                 }
-                if (App.newChatThreadPage != null)
+
+                if (App.newChatThreadPage != null && _groupParticipant == null)
                     App.newChatThreadPage.userName.Text = nameToShow;
+
                 MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
 
                 if (friendStatus < FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
-                {
-                    addToFavBtn.Visibility = Visibility.Collapsed;
-                    txtSmsUserNameBlk2.Text = firstName;
-                }
+                    txtSmsUserNameBlk1.Text = firstName;
                 else
                 {
+                    addToFavBtn.Visibility = Visibility.Collapsed;
                     CreateStatusUi(statusMessagesFromDB);
                     isStatusLoaded = true;
                 }
+
                 isInAddressBook = true;
 
                 if (ApplicationBar.Buttons.Contains(addToContactsAppBarButton))
@@ -1360,11 +1353,8 @@ namespace windows_client.View
                 if (txtMsisdn.Visibility == Visibility.Collapsed && txtMsisdn.Text != txtUserName.Text)
                     txtMsisdn.Visibility = Visibility.Visible;
 
-                if (App.newChatThreadPage != null)
-                {
-                    if (App.newChatThreadPage.ApplicationBar.MenuItems != null && App.newChatThreadPage.ApplicationBar.MenuItems.Contains(App.newChatThreadPage.addUserMenuItem))
-                        App.newChatThreadPage.ApplicationBar.MenuItems.Remove(App.newChatThreadPage.addUserMenuItem);
-                }
+                if (App.newChatThreadPage != null && App.newChatThreadPage.ApplicationBar.MenuItems != null && App.newChatThreadPage.ApplicationBar.MenuItems.Contains(App.newChatThreadPage.addUserMenuItem))
+                    App.newChatThreadPage.ApplicationBar.MenuItems.Remove(App.newChatThreadPage.addUserMenuItem);
             });
             
             GroupManager.Instance.LoadGroupCache();
