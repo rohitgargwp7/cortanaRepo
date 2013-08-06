@@ -268,6 +268,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Camera:.
+        /// </summary>
+        public static string Camera_Label {
+            get {
+                return ResourceManager.GetString("Camera_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to cancel.
         /// </summary>
         public static string Cancel_Txt {
@@ -2094,6 +2103,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Now you can send messages to people who are offline via Free Hike SMS. Isn&apos;t that great!.
+        /// </summary>
+        public static string In_App_Tip_7 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Installed.
         /// </summary>
         public static string Installed_Txt {
@@ -3282,6 +3300,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Resolution:.
+        /// </summary>
+        public static string Reolution_Label {
+            get {
+                return ResourceManager.GetString("Reolution_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to save.
         /// </summary>
         public static string Save_AppBar_Btn {
@@ -4349,6 +4376,15 @@ namespace windows_client.Languages {
         public static string UserProfile_AddToContacts_Btn {
             get {
                 return ResourceManager.GetString("UserProfile_AddToContacts_Btn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to video settings.
+        /// </summary>
+        public static string Video_Settings {
+            get {
+                return ResourceManager.GetString("Video_Settings", resourceCulture);
             }
         }
         

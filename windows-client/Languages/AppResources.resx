@@ -1913,4 +1913,16 @@ Get hike: http://get.hike.in</value>
   <data name="Location_Disabled_Heading" xml:space="preserve">
     <value>Location Disabled</value>
   </data>
+  <data name="Camera_Label" xml:space="preserve">
+    <value>Camera:</value>
+  </data>
+  <data name="In_App_Tip_7" xml:space="preserve">
+    <value>Now you can send messages to people who are offline via Free Hike SMS. Isn't that great!</value>
+  </data>
+  <data name="Reolution_Label" xml:space="preserve">
+    <value>Resolution:</value>
+  </data>
+  <data name="Video_Settings" xml:space="preserve">
+    <value>video settings</value>
+  </data>
 </root>
