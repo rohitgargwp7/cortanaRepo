@@ -5748,44 +5748,46 @@ namespace windows_client.View
             if (_isSendAllAsSMSVisible)
                 return;
 
-            _lastUnDeliveredMessage = null;
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                 {
+                     _lastUnDeliveredMessage = null;
 
-            try
-            {
-                _lastUnDeliveredMessage = (from message in ocMessages
-                                          where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
-                                          select message).Last();
-            }
-            catch
-            {
-                return;
-            }
+                     try
+                     {
+                         _lastUnDeliveredMessage = (from message in ocMessages
+                                                    where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
+                                                    select message).Last();
+                     }
+                     catch
+                     {
+                         return;
+                     }
 
-            if (_lastUnDeliveredMessage != null)
-            {
-                if (_tap2SendAsSMSMessage == null)
-                {
-                    _tap2SendAsSMSMessage = new ConvMessage();
-                    _tap2SendAsSMSMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION;
-                    _tap2SendAsSMSMessage.NotificationType = ConvMessage.MessageType.FORCE_SMS;
+                     if (_lastUnDeliveredMessage != null)
+                     {
 
-                    if (isGroupChat)
-                        _tap2SendAsSMSMessage.Message = AppResources.Send_All_As_SMS_Group;
-                    else
-                        _tap2SendAsSMSMessage.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
-                }
+                         if (_tap2SendAsSMSMessage == null)
+                         {
+                             _tap2SendAsSMSMessage = new ConvMessage();
+                             _tap2SendAsSMSMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION;
+                             _tap2SendAsSMSMessage.NotificationType = ConvMessage.MessageType.FORCE_SMS;
 
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        var indexToInsert = ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
-                        this.ocMessages.Insert(indexToInsert, _tap2SendAsSMSMessage);
+                             if (isGroupChat)
+                                 _tap2SendAsSMSMessage.Message = AppResources.Send_All_As_SMS_Group;
+                             else
+                                 _tap2SendAsSMSMessage.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
+                         }
 
-                        if (indexToInsert == ocMessages.Count - 1)
-                            ScrollToBottom();
 
-                        _isSendAllAsSMSVisible = true;
-                    });
-            }
+                         var indexToInsert = ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
+                         this.ocMessages.Insert(indexToInsert, _tap2SendAsSMSMessage);
+
+                         if (indexToInsert == ocMessages.Count - 1)
+                             ScrollToBottom();
+
+                         _isSendAllAsSMSVisible = true;
+                     }
+                 });
         }
 
         void SendForceSMS(ConvMessage message = null)
