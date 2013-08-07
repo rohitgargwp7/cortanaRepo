@@ -84,7 +84,7 @@ namespace windows_client
         public static readonly int ATTACHMENT_THUMBNAIL_MAX_WIDTH = 180;
         public static readonly int ATTACHMENT_MAX_HEIGHT = 800;
         public static readonly int ATTACHMENT_MAX_WIDTH = 800;
-        public static readonly int MAX_EMOTICON_SUPPORTED = 20;
+        public static readonly int MAX_EMOTICON_SUPPORTED = 50;
         public static readonly int VIBRATE_DURATION = 700;
         public static readonly int MAX_AUDIO_RECORDTIME_SUPPORTED = 360; // 6 minutes
         public static readonly int RECURSIVE_PING_INTERVAL = 270;//seconds
@@ -325,6 +325,13 @@ namespace windows_client
         public static readonly string LASTSEEN = "ls";
         public static readonly string LASTSEENONOFF = "lastseen";
         public static readonly string JUSTOPENED = "justOpened";
+
+        public static readonly string VIDEO_SIZE = "videoSize";
+        public static readonly string VIDEO_THUMBNAIL = "videoThumbnail";
+        public static readonly string MAX_VIDEO_PLAYING_TIME = "maxPlayingTime";
+        public static readonly string IS_PRIMARY_CAM = "isPrimaryCam";
+        public static readonly string VIDEO_RESOLUTION = "videoResolution";
+        public static readonly string VIDEO_FRAME_BYTES = "videoFrameBytes";
 
         public static class Extras
         {

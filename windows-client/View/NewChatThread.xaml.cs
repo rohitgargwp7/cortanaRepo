@@ -107,7 +107,6 @@ namespace windows_client.View
         ApplicationBarIconButton fileTransferIconButton = null;
         private PhotoChooserTask photoChooserTask;
         private CameraCaptureTask cameraCaptureTask;
-        private BingMapsTask bingMapsTask = null;
         private object statusObject = null;
         private int _unreadMessageCounter = 0;
 
@@ -627,8 +626,10 @@ namespace windows_client.View
                     isFirstLaunch = false;
                 }
                 else //removing here because it may be case that user pressed back without selecting any user
+                {
                     PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
-
+                    this.UpdateLayout();
+                }
                 /* This is called only when you add more participants to group */
                 if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
                 {
@@ -782,8 +783,8 @@ namespace windows_client.View
             {
                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 mediaElement.Stop();
-            } 
-            
+            }
+
             if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
             {
                 Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
@@ -2828,7 +2829,7 @@ namespace windows_client.View
 
             //done as scrollviewer applied to textbox doesn't update its position on char enter
             svMessage.UpdateLayout();
-            svMessage.ScrollToVerticalOffset(sendMsgTxtbox.GetRectFromCharacterIndex(sendMsgTxtbox.SelectionStart).Top - 30.0);
+            svMessage.ScrollToVerticalOffset(sendMsgTxtbox.GetRectFromCharacterIndex(sendMsgTxtbox.SelectionStart > 0 ? sendMsgTxtbox.SelectionStart : sendMsgTxtbox.Text.Length).Top - 30.0);
 
             string msgText = sendMsgTxtbox.Text.Trim();
             if (String.IsNullOrEmpty(msgText))
@@ -2950,31 +2951,7 @@ namespace windows_client.View
         private static bool abc = true;
         private static bool isReleaseMode = true;
 
-        private void adjustAspectRatio(int width, int height, bool isThumbnail, out int adjustedWidth, out int adjustedHeight)
-        {
-            int maxHeight, maxWidth;
-            if (isThumbnail)
-            {
-                maxHeight = HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT;
-                maxWidth = HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH;
-            }
-            else
-            {
-                maxHeight = HikeConstants.ATTACHMENT_MAX_HEIGHT;
-                maxWidth = HikeConstants.ATTACHMENT_MAX_WIDTH;
-            }
-
-            if (height > width)
-            {
-                adjustedHeight = maxHeight;
-                adjustedWidth = (width * adjustedHeight) / height;
-            }
-            else
-            {
-                adjustedWidth = maxWidth;
-                adjustedHeight = (height * adjustedWidth) / width;
-            }
-        }
+        
 
         private void SendImage(BitmapImage image, string fileName)
         {
@@ -2989,8 +2966,8 @@ namespace windows_client.View
 
                 WriteableBitmap writeableBitmap = new WriteableBitmap(image);
                 int thumbnailWidth, thumbnailHeight, imageWidth, imageHeight;
-                adjustAspectRatio(image.PixelWidth, image.PixelHeight, true, out thumbnailWidth, out thumbnailHeight);
-                adjustAspectRatio(image.PixelWidth, image.PixelHeight, false, out imageWidth, out imageHeight);
+                Utils.AdjustAspectRatio(image.PixelWidth, image.PixelHeight, true, out thumbnailWidth, out thumbnailHeight);
+                Utils.AdjustAspectRatio(image.PixelWidth, image.PixelHeight, false, out imageWidth, out imageHeight);
 
                 using (var msSmallImage = new MemoryStream())
                 {
@@ -4289,6 +4266,7 @@ namespace windows_client.View
         private void groupChatEnd()
         {
             isGroupAlive = false;
+            WalkieTalkieMicIcon.IsHitTestVisible = false;
             sendMsgTxtbox.IsHitTestVisible = false;
             appBar.IsMenuEnabled = false;
             sendIconButton.IsEnabled = enableSendMsgButton = false;
@@ -4582,7 +4560,10 @@ namespace windows_client.View
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-
+            if (isGroupChat)
+                return;
+            if (isGroupChat && !isGroupAlive)
+                return;
             if (mUserIsBlocked)
                 return;
             emoticonPanel.Visibility = Visibility.Collapsed;
@@ -4815,7 +4796,7 @@ namespace windows_client.View
                 }
             }
         }
-    
+
         #region Jump To Latest
 
         ScrollBar vScrollBar = null;
@@ -4869,9 +4850,9 @@ namespace windows_client.View
                     ScrollToBottom();
             }
         }
-        
+
         #endregion
-        
+
         #region Stickers
 
 
@@ -5985,7 +5966,7 @@ namespace windows_client.View
                     FileAttachmentMessage_Tap(sender, e); // normal flow for recieved files
             }
         }
-  
+
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector

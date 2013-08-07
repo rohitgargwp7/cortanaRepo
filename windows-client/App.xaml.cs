@@ -423,6 +423,7 @@ namespace windows_client
             }
 
             App.mMqttManager.IsLastSeenPacketSent = false;
+            App.mMqttManager.disconnectFromBroker(false);
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
