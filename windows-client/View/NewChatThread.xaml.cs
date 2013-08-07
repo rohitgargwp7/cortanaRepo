@@ -4164,6 +4164,7 @@ namespace windows_client.View
 
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
+                                lastSeenTxt.Text = String.Empty;
                                 userName.FontSize = 50;
                                 lastSeenPannel.Visibility = Visibility.Collapsed;
                             });
