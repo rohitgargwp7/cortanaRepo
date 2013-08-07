@@ -268,6 +268,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Camera:.
+        /// </summary>
+        public static string Camera_Label {
+            get {
+                return ResourceManager.GetString("Camera_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to cancel.
         /// </summary>
         public static string Cancel_Txt {
@@ -2094,6 +2103,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can now send messages to your hike contacts who are Offline! Long Press the message to send as a Hike SMS.
+        /// </summary>
+        public static string In_App_Tip_7 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Installed.
         /// </summary>
         public static string Installed_Txt {
@@ -2229,11 +2247,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Location.
+        ///   Looks up a localized string similar to Location Disabled.
         /// </summary>
-        public static string Location_Heading {
+        public static string Location_Disabled_Heading {
             get {
-                return ResourceManager.GetString("Location_Heading", resourceCulture);
+                return ResourceManager.GetString("Location_Disabled_Heading", resourceCulture);
             }
         }
         
@@ -2243,6 +2261,15 @@ namespace windows_client.Languages {
         public static string Location_Txt {
             get {
                 return ResourceManager.GetString("Location_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location Unavailable.
+        /// </summary>
+        public static string Location_Unavailable_Heading {
+            get {
+                return ResourceManager.GetString("Location_Unavailable_Heading", resourceCulture);
             }
         }
         
@@ -3273,6 +3300,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Resolution:.
+        /// </summary>
+        public static string Reolution_Label {
+            get {
+                return ResourceManager.GetString("Reolution_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to save.
         /// </summary>
         public static string Save_AppBar_Btn {
@@ -3642,7 +3678,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use location.
+        ///   Looks up a localized string similar to Use location service.
         /// </summary>
         public static string Settings_LocationToggleSwitchHeader {
             get {
@@ -3804,7 +3840,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Location Service is not enabled on the device. Would you like to enable it?.
+        ///   Looks up a localized string similar to Location Service is disabled on your device. Please turn ON the location in your phone settings..
         /// </summary>
         public static string ShareLocation_LocationServiceNotEnabled_Txt {
             get {
@@ -3822,7 +3858,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Location service setting is not enabled. Would you like to enable it?.
+        ///   Looks up a localized string similar to Hike Location Setting is disabled. Would you like to turn it ON?.
         /// </summary>
         public static string ShareLocation_LocationSettingsNotEnabled_Txt {
             get {
@@ -4340,6 +4376,15 @@ namespace windows_client.Languages {
         public static string UserProfile_AddToContacts_Btn {
             get {
                 return ResourceManager.GetString("UserProfile_AddToContacts_Btn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to video settings.
+        /// </summary>
+        public static string Video_Settings {
+            get {
+                return ResourceManager.GetString("Video_Settings", resourceCulture);
             }
         }
         
