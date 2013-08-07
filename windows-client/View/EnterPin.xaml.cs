@@ -220,6 +220,8 @@ namespace windows_client
                     obj = null;
                 }
             }
+
+            txtBxEnterPin.Focus();
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
