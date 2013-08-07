@@ -746,7 +746,7 @@
 
                                             <Image x:Name="statusTypeImage" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" MaxHeight="35" Margin="20,10,0,0" VerticalAlignment="Top" Source="{Binding StatusUpdateImage}"/>
                                             <TextBlock x:Name="statusMessageTxtBlk" Grid.Row="1" Grid.Column="1" Margin="12,10,0,0" FontSize="21" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight"/>
-                                            <TextBlock x:Name="statusTimestampTxtBlk" Grid.Row="2" Grid.Column="1"  Margin="12,12,0,10" FontSize="15" Foreground="{Binding TimeStampForeGround}"  Text="{Binding TimeStampStr}" />
+                                            <TextBlock x:Name="statusTimestampTxtBlk" Grid.Row="2" Grid.Column="1"  Margin="12,0,0,10" FontSize="15" Foreground="{Binding TimeStampForeGround}"  Text="{Binding TimeStampStr}" />
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
