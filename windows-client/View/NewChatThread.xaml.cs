@@ -107,7 +107,6 @@ namespace windows_client.View
         ApplicationBarIconButton fileTransferIconButton = null;
         private PhotoChooserTask photoChooserTask;
         private CameraCaptureTask cameraCaptureTask;
-        private BingMapsTask bingMapsTask = null;
         private object statusObject = null;
         private int _unreadMessageCounter = 0;
 
@@ -2930,31 +2929,7 @@ namespace windows_client.View
         private static bool abc = true;
         private static bool isReleaseMode = true;
 
-        private void adjustAspectRatio(int width, int height, bool isThumbnail, out int adjustedWidth, out int adjustedHeight)
-        {
-            int maxHeight, maxWidth;
-            if (isThumbnail)
-            {
-                maxHeight = HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT;
-                maxWidth = HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH;
-            }
-            else
-            {
-                maxHeight = HikeConstants.ATTACHMENT_MAX_HEIGHT;
-                maxWidth = HikeConstants.ATTACHMENT_MAX_WIDTH;
-            }
-
-            if (height > width)
-            {
-                adjustedHeight = maxHeight;
-                adjustedWidth = (width * adjustedHeight) / height;
-            }
-            else
-            {
-                adjustedWidth = maxWidth;
-                adjustedHeight = (height * adjustedWidth) / width;
-            }
-        }
+        
 
         private void SendImage(BitmapImage image, string fileName)
         {
@@ -2969,8 +2944,8 @@ namespace windows_client.View
 
                 WriteableBitmap writeableBitmap = new WriteableBitmap(image);
                 int thumbnailWidth, thumbnailHeight, imageWidth, imageHeight;
-                adjustAspectRatio(image.PixelWidth, image.PixelHeight, true, out thumbnailWidth, out thumbnailHeight);
-                adjustAspectRatio(image.PixelWidth, image.PixelHeight, false, out imageWidth, out imageHeight);
+                Utils.AdjustAspectRatio(image.PixelWidth, image.PixelHeight, true, out thumbnailWidth, out thumbnailHeight);
+                Utils.AdjustAspectRatio(image.PixelWidth, image.PixelHeight, false, out imageWidth, out imageHeight);
 
                 using (var msSmallImage = new MemoryStream())
                 {

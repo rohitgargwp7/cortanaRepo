@@ -435,21 +435,10 @@ namespace windows_client.View
                             wb.Invalidate();
                             snapshotThumbnail.Source = wb;
 
-                            var ratio = (double) frameHeight / frameWidth;
-                            if (frameWidth > frameHeight)
-                            {
-                                var newWidth = (Int32)(HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT / ratio);
-                                wb = wb.Resize(newWidth, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT, WriteableBitmapExtensions.Interpolation.NearestNeighbor);
-                                wb = wb.Crop(0, 0, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT);
-                            }
-                            else
-                            {
-                                var newHeight = (Int32)(HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH * ratio);
-                                wb = wb.Resize(HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, newHeight, WriteableBitmapExtensions.Interpolation.NearestNeighbor);
-                                wb = wb.Crop(0, 0, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT);
-                            }
+                            int imageWidth, imageHeight;
+                            utils.Utils.AdjustAspectRatio(frameHeight,frameWidth, true, out imageWidth, out imageHeight);
 
-                            wb.SaveJpeg(stream, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT, 0, 60);
+                            wb.SaveJpeg(stream, imageWidth, imageHeight, 0, 60);
                             thumbnail = stream.ToArray();
 
                             videoCaptureDevice.PreviewFrameAvailable -= videoCaptureDevice_PreviewFrameAvailable;

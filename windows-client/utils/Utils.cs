@@ -180,6 +180,31 @@ namespace windows_client.utils
             }
         }
 
+        public static void AdjustAspectRatio(int width, int height, bool isThumbnail, out int adjustedWidth, out int adjustedHeight)
+        {
+            int maxHeight, maxWidth;
+            if (isThumbnail)
+            {
+                maxHeight = HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT;
+                maxWidth = HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH;
+            }
+            else
+            {
+                maxHeight = HikeConstants.ATTACHMENT_MAX_HEIGHT;
+                maxWidth = HikeConstants.ATTACHMENT_MAX_WIDTH;
+            }
+
+            if (height > width)
+            {
+                adjustedHeight = maxHeight;
+                adjustedWidth = (width * adjustedHeight) / height;
+            }
+            else
+            {
+                adjustedWidth = maxWidth;
+                adjustedHeight = (height * adjustedWidth) / width;
+            }
+        }
 
         public static string getAppVersion()
         {
