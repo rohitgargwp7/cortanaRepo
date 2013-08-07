@@ -243,7 +243,7 @@ namespace windows_client.View
             TimeSpan ts = new TimeSpan(0, 0, maxPlayingTime - runningSeconds);
             txtDebug.Text = ts.ToString("mm\\:ss");
 
-            if (runningSeconds > 0 && currentAppState == ButtonState.Recording)
+            if (runningSeconds > 0 && currentAppState == ButtonState.Recording && !stopIconButton.IsEnabled)
                 stopIconButton.IsEnabled = true;
 
             if (runningSeconds == maxPlayingTime && currentAppState == ButtonState.Recording)
