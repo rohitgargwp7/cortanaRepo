@@ -996,19 +996,19 @@ namespace windows_client.View
 
             #region LAST SEEN TIMER
 
-            BackgroundWorker _worker = new BackgroundWorker();
-
             if (!App.appSettings.Contains(App.LAST_SEEN_SEETING))
             {
+                BackgroundWorker _worker = new BackgroundWorker();
+                
                 _worker.DoWork += (ss, ee) =>
                 {
                     var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
                     if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
                         _lastSeenHelper.requestLastSeen(mContactNumber);
                 };
+               
+                _worker.RunWorkerAsync();
             }
-
-            _worker.RunWorkerAsync();
 
             #endregion
 
