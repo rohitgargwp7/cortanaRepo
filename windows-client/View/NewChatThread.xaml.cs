@@ -295,6 +295,18 @@ namespace windows_client.View
                     {
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, TimeUtils.getCurrentTimeStamp());
                         _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
+
+                        if (_isSendAllAsSMSVisible)
+                        {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                if (_isSendAllAsSMSVisible)
+                                {
+                                    ocMessages.Remove(_tap2SendAsSMSMessage);
+                                    _isSendAllAsSMSVisible = false;
+                                }
+                            });
+                        }
                     }
                     else
                     {
@@ -318,21 +330,8 @@ namespace windows_client.View
                 if (_lastUpdatedLastSeenTimeStamp != 0)
                     UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
             }
-
-            if (e == null || e.TimeStamp != 0)
-                StartForceSMSTimer(false);
-            else if (_isSendAllAsSMSVisible)
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    if (_isSendAllAsSMSVisible)
-                    {
-                        ocMessages.Remove(_tap2SendAsSMSMessage);
-                        _isSendAllAsSMSVisible = false;
-                    }
-                });
-            }
         }
+
         private void ManagePageStateObjects()
         {
             //or condition for case of tombstoning
