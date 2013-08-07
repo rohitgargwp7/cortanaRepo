@@ -294,6 +294,18 @@ namespace windows_client.View
                     {
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, TimeUtils.getCurrentTimeStamp());
                         _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
+
+                        if (_isSendAllAsSMSVisible)
+                        {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                if (_isSendAllAsSMSVisible)
+                                {
+                                    ocMessages.Remove(_tap2SendAsSMSMessage);
+                                    _isSendAllAsSMSVisible = false;
+                                }
+                            });
+                        }
                     }
                     else
                     {
@@ -410,14 +422,22 @@ namespace windows_client.View
                 Stopwatch st = Stopwatch.StartNew();
                 attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
                 loadMessages(INITIAL_FETCH_COUNT);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    //ScrollToBottom();
-                    StartForceSMSTimer(false);
-                });
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
+
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    var worker = new BackgroundWorker();
+
+                    worker.DoWork += (se, ee) =>
+                    {
+                        StartForceSMSTimer(false);
+                    };
+
+                    worker.RunWorkerAsync();
+                });
+
                 if (isGC)
                 {
                     ConvMessage groupCreateCM = new ConvMessage(groupCreateJson, true, false);
@@ -980,14 +1000,14 @@ namespace windows_client.View
             if (!App.appSettings.Contains(App.LAST_SEEN_SEETING))
             {
                 BackgroundWorker _worker = new BackgroundWorker();
-
+                
                 _worker.DoWork += (ss, ee) =>
                 {
                     var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
                     if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
                         _lastSeenHelper.requestLastSeen(mContactNumber);
                 };
-
+               
                 _worker.RunWorkerAsync();
             }
 
@@ -3806,9 +3826,19 @@ namespace windows_client.View
                         }
 
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            StartForceSMSTimer(true);
-                        });
+                            {
+                                if (lastSeenTxt.Text != AppResources.Online)
+                                {
+                                    var worker = new BackgroundWorker();
+                                 
+                                    worker.DoWork += (s, e) =>
+                                    {
+                                        StartForceSMSTimer(true);
+                                    };
+                                    
+                                    worker.RunWorkerAsync();
+                                }
+                            });
                     }
                 }
                 catch (Exception ex)
@@ -4111,8 +4141,23 @@ namespace windows_client.View
 
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
+                                lastSeenTxt.Text = String.Empty;
                                 userName.FontSize = 50;
                                 lastSeenPannel.Visibility = Visibility.Collapsed;
+                            });
+                        }
+
+                        if (lastSeen != 0 && !_isSendAllAsSMSVisible)
+                            StartForceSMSTimer(false);
+                        else if (lastSeen == 0 && _isSendAllAsSMSVisible)
+                        {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                if (_isSendAllAsSMSVisible)
+                                {
+                                    ocMessages.Remove(_tap2SendAsSMSMessage);
+                                    _isSendAllAsSMSVisible = false;
+                                }
                             });
                         }
                     }
@@ -5691,18 +5736,18 @@ namespace windows_client.View
 
             try
             {
-                _lastUnDeliveredMessage = (from message in ocMessages
-                                           where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
-                                           select message).Last();
+                var msgList = (from message in ocMessages
+                               where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
+                               select message);
+
+                 _lastUnDeliveredMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
 
                 if (_lastUnDeliveredMessage != null)
                 {
                     TimeSpan ts;
 
                     if (isNewTimer)
-                    {
                         ts = TimeSpan.FromSeconds(20);
-                    }
                     else
                     {
                         long ticks = _lastUnDeliveredMessage.Timestamp * 10000000;
@@ -5732,6 +5777,9 @@ namespace windows_client.View
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                  {
+                     if (lastSeenTxt.Text == AppResources.Online)
+                         return;
+
                      _lastUnDeliveredMessage = null;
 
                      try

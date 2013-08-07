@@ -395,7 +395,8 @@ namespace windows_client.View
             locationDetails[0] = metadata;
             locationDetails[1] = thumbnailBytes;
             PhoneApplicationService.Current.State[HikeConstants.SHARED_LOCATION] = locationDetails;
-            MyMap = null;
+            LayoutRoot.Visibility = Visibility.Collapsed;
+            ApplicationBar.IsVisible = false;
             NavigationService.GoBack();
         }
 

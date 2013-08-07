@@ -434,12 +434,11 @@ namespace windows_client.ViewModel
         /// <summary>
         /// Load In App Hardcoded Tooltips
         /// </summary>
-        void LoadToolTips()
+        public void LoadToolTips()
         {
             byte marked, currentlyShowing;
             App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked); //initilaized in upgrade logic
             App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentlyShowing); //initilaized in upgrade logic
-
 
             if (marked == 63 && currentlyShowing == 0)//0x3f
                 return;

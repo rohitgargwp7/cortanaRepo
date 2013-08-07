@@ -312,6 +312,8 @@ namespace windows_client
                     }
                 }
             }
+
+            txtBxEnterName.Focus();
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)

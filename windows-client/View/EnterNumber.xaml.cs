@@ -457,7 +457,8 @@ namespace windows_client
 
             txtEnterPhone.Hint = AppResources.EnterNumber_Ph_Hint_TxtBox;
             txtEnterCountry.Foreground = UI_Utils.Instance.Black;
-            
+
+            txtEnterPhone.Focus();
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
