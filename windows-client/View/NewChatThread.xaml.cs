@@ -764,8 +764,8 @@ namespace windows_client.View
             {
                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 mediaElement.Stop();
-            } 
-            
+            }
+
             if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
             {
                 Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
@@ -2810,7 +2810,7 @@ namespace windows_client.View
 
             //done as scrollviewer applied to textbox doesn't update its position on char enter
             svMessage.UpdateLayout();
-            svMessage.ScrollToVerticalOffset(sendMsgTxtbox.GetRectFromCharacterIndex(sendMsgTxtbox.SelectionStart).Top - 30.0);
+            svMessage.ScrollToVerticalOffset(sendMsgTxtbox.GetRectFromCharacterIndex(sendMsgTxtbox.SelectionStart > 0 ? sendMsgTxtbox.SelectionStart : sendMsgTxtbox.Text.Length).Top - 30.0);
 
             string msgText = sendMsgTxtbox.Text.Trim();
             if (String.IsNullOrEmpty(msgText))
@@ -4776,7 +4776,7 @@ namespace windows_client.View
                 }
             }
         }
-    
+
         #region Jump To Latest
 
         ScrollBar vScrollBar = null;
@@ -4830,9 +4830,9 @@ namespace windows_client.View
                     ScrollToBottom();
             }
         }
-        
+
         #endregion
-        
+
         #region Stickers
 
 
@@ -5717,8 +5717,8 @@ namespace windows_client.View
             try
             {
                 _lastUnDeliveredMessage = (from message in ocMessages
-                                          where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
-                                          select message).Last();
+                                           where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
+                                           select message).Last();
 
                 if (_lastUnDeliveredMessage != null)
                 {
@@ -5760,8 +5760,8 @@ namespace windows_client.View
             try
             {
                 _lastUnDeliveredMessage = (from message in ocMessages
-                                          where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
-                                          select message).Last();
+                                           where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
+                                           select message).Last();
             }
             catch
             {
@@ -5941,7 +5941,7 @@ namespace windows_client.View
                     FileAttachmentMessage_Tap(sender, e); // normal flow for recieved files
             }
         }
-  
+
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector
