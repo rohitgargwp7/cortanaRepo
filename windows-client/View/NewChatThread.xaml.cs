@@ -319,7 +319,7 @@ namespace windows_client.View
                     }
 
                     if (_lastUpdatedLastSeenTimeStamp != 0)
-                        UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(actualTimeStamp), true); //show last seen tip if not show
+                        UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(actualTimeStamp), true); //show last seen tip if not shown
                 }
             }
             else
