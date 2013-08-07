@@ -5231,7 +5231,7 @@ namespace windows_client.View
 
         public void ShowDownloadOverlay(bool show)
         {
-            sendIconButton.IsEnabled = !show;
+            sendIconButton.IsEnabled = show ? sendMsgTxtbox.Text.Length > 0 : false;
             emoticonsIconButton.IsEnabled = !show;
             fileTransferIconButton.IsEnabled = !show;
             if (show)
