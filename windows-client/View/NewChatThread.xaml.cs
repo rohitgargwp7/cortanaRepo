@@ -5754,9 +5754,9 @@ namespace windows_client.View
 
             try
             {
-                 var msgList= (from message in ocMessages
-                                           where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
-                                           select message);
+                var msgList = (from message in ocMessages
+                               where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
+                               select message);
 
                  _lastUnDeliveredMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
 
@@ -5795,6 +5795,9 @@ namespace windows_client.View
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                  {
+                     if (lastSeenTxt.Text == AppResources.Online)
+                         return;
+
                      _lastUnDeliveredMessage = null;
 
                      try
