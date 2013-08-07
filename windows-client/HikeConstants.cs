@@ -326,6 +326,13 @@ namespace windows_client
         public static readonly string LASTSEENONOFF = "lastseen";
         public static readonly string JUSTOPENED = "justOpened";
 
+        public static readonly string VIDEO_SIZE = "videoSize";
+        public static readonly string VIDEO_THUMBNAIL = "videoThumbnail";
+        public static readonly string MAX_VIDEO_PLAYING_TIME = "maxPlayingTime";
+        public static readonly string IS_PRIMARY_CAM = "isPrimaryCam";
+        public static readonly string VIDEO_RESOLUTION = "videoResolution";
+        public static readonly string VIDEO_FRAME_BYTES = "videoFrameBytes";
+
         public static class Extras
         {
             public static readonly string ANIMATED_ONCE = "animatedOnce";
