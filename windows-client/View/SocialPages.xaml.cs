@@ -104,6 +104,8 @@ namespace windows_client.View
 
         private void Browser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
+            HideProgressIndicator();
+
             #region TWITTER
             if (socialNetwork == HikeConstants.TWITTER)
             {
@@ -282,6 +284,8 @@ namespace windows_client.View
 
         private void Browser_Navigating(object sender, NavigatingEventArgs e)
         {
+            ShowProgressIndicator();
+
             string uri = e.Uri.AbsoluteUri.ToString();
             if (socialNetwork == HikeConstants.TWITTER && uri.Contains(Social.TwitterSettings.OAuthTokenKey) && uri.Contains(Social.TwitterSettings.OAuthVerifierKey))
             {
@@ -359,6 +363,34 @@ namespace windows_client.View
             base.OnBackKeyPress(e);
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();
+        }
+
+        private void BrowserControl_NavigationFailed(object sender, NavigationFailedEventArgs e)
+        {
+            HideProgressIndicator();
+        }
+
+        private ProgressIndicator _progressIndicator = null;
+
+        private void ShowProgressIndicator()
+        {
+            if (_progressIndicator == null)
+            {
+                _progressIndicator = new ProgressIndicator();
+                _progressIndicator.IsIndeterminate = true;
+            }
+
+            _progressIndicator.IsVisible = true;
+            SystemTray.SetProgressIndicator(this, _progressIndicator);
+        }
+
+        private void HideProgressIndicator()
+        {
+            if (_progressIndicator != null)
+            {
+                _progressIndicator.IsVisible = false;
+                SystemTray.SetProgressIndicator(this, _progressIndicator);
+            }
         }
     }
 }

@@ -128,10 +128,16 @@ namespace windows_client.DbUtils
             DeleteFavourites();
             DeletePendingRequests();
             ProTipHelper.Instance.ClearProTips();
-            App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, 2); // reset value of protip count for next new user
+            App.appSettings[App.PRO_TIP_COUNT] = 2; // reset value of protip count for next new user
             #endregion
             #region DELETE CATEGORIES
             StickerCategory.DeleteAllCategories();
+            #endregion
+            #region RESET IN APP TIPS
+            App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
+            App.appSettings[App.TIP_MARKED_KEY] = (byte)0; 
+            App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0); // to keep a track of current showing keys
+            App.ViewModel.LoadToolTips();
             #endregion
         }
 

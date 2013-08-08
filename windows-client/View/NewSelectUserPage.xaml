@@ -90,7 +90,7 @@
                         <TextBlock Text="{Binding PhoneNoKindText}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
                     </StackPanel>
                 </StackPanel>
-                <Button Content="{Binding Path= LocalizedResources.Block_Txt, Source={StaticResource LocalizedStrings}}" 
+                <Button Content="{Binding BlockUnblockText}" 
                         Background="#e9ecee" Foreground="#595959" 
                         Height="65" MinWidth="120" FontSize="20" Grid.Column="1" 
                         HorizontalAlignment="Right" 

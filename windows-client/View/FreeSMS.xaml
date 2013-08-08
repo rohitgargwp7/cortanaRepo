@@ -141,7 +141,7 @@
                     </Grid.ColumnDefinitions>
                     <Image Source="images\fb_icon.png" Margin="15,0,0,0" Width="14" VerticalAlignment="Center" Grid.Column="0"></Image>
                     <TextBlock x:Name="fbConnStatus" FontFamily="Segoe WP Semibold" FontSize="18"  Text="{Binding Path= LocalizedResources.FreeSMS_fbConnStatus_TxtBlk, Source={StaticResource LocalizedStrings}}" Grid.Column="1" Margin="11,0,0,0" VerticalAlignment="Center" MinWidth="100"></TextBlock>
-                    <Image x:Name="fbConnImage" Visibility="Collapsed" Source="images\connected_tick.png" Width="16" Margin="10,0,0,0" VerticalAlignment="Center" Grid.Column="2"></Image>
+                    <Image x:Name="fbConnImage" Visibility="Collapsed" Source="images\connected_tick.png" Width="16" Margin="10,0" VerticalAlignment="Center" Grid.Column="2"></Image>
                 </Grid>
 
                 <Grid x:Name="twitter" Background="#f4f4f4" Grid.Column="1" Height="50" Tap="twitter_Tap" Margin="15,0,0,0" MinWidth="100">
@@ -152,7 +152,7 @@
                     </Grid.ColumnDefinitions>
                     <Image Source="images\tw_icon.png" Margin="15,0,0,0" Width="29" VerticalAlignment="Center" Grid.Column="0"></Image>
                     <TextBlock x:Name="twConnStatus" FontFamily="Segoe WP Semibold" FontSize="18" Text="{Binding Path= LocalizedResources.FreeSMS_twConnStatus_TxtBlk, Source={StaticResource LocalizedStrings}}" Margin="11,0,0,0" Grid.Column="1" VerticalAlignment="Center" MinWidth="100"></TextBlock>
-                    <Image x:Name="twConnImage" Visibility="Collapsed" Source="images\connected_tick.png" Width="16" Margin="10,0,0,0" VerticalAlignment="Center" Grid.Column="2"></Image>
+                    <Image x:Name="twConnImage" Visibility="Collapsed" Source="images\connected_tick.png" Width="16" Margin="10,0" VerticalAlignment="Center" Grid.Column="2"></Image>
                 </Grid>
             </Grid>
 

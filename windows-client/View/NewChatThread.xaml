@@ -101,8 +101,7 @@
         </StackPanel>
 
         <Grid Grid.Row="1">
-            <!--(-15) margin to hide vertical scroll bar  -->
-            <phone:LongListSelector Name="llsMessages" ItemRealized="llsMessages_ItemRealized" SelectionChanged="ChatMessageSelected" Grid.Row="1" DoubleTap="MessageList_DoubleTap" HorizontalContentAlignment="Stretch">
+            <phone:LongListSelector Name="llsMessages" ItemUnrealized="llsMessages_ItemUnRealized" ItemRealized="llsMessages_ItemRealized" SelectionChanged="ChatMessageSelected" Grid.Row="1" DoubleTap="MessageList_DoubleTap" HorizontalContentAlignment="Stretch" Margin="0 0 0 5" >
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <view:ChatThreadTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
@@ -160,7 +159,7 @@
                             <view:ChatThreadTemplateSelector.DtNotificationBubble>
                                 <DataTemplate x:Name="dtNotificationBubble">
                                     <Border x:Name="border" BorderThickness="1" Background="Transparent" Margin="24,5,24,5" BorderBrush="#cdcdcd" HorizontalAlignment="Stretch" >
-                                        <Grid HorizontalAlignment="Center" Margin="12 3">
+                                        <Grid HorizontalAlignment="Left" Margin="12 3">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
@@ -241,7 +240,7 @@
                                                 </Grid.RowDefinitions>
                                                 <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
                                                 <Image Grid.Row="1" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
-                                                <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="1" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center"/>
+                                                <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="1" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
                                                 <ProgressBar Grid.Row="2" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>
                                             <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
@@ -271,15 +270,21 @@
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
                                             <Rectangle Grid.RowSpan="2" Fill="{Binding BubbleBackGroundColor}" />
-                                            <Grid x:Name="attachment" Grid.Row="0"  >
+                                            <Grid x:Name="attachment" Grid.Row="0" MaxWidth="400" Margin="12,12,12,0">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
-                                                <Image Grid.Row="0" MaxWidth="300" MaxHeight="160" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
-                                                <Grid MaxHeight="100" MaxWidth="300" VerticalAlignment="Bottom" Margin="12,0" Visibility="{Binding DispMessageVisibility}">
-                                                    <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                                                    <TextBlock Text="{Binding DispMessage}" Margin="10,5" TextWrapping="Wrap" Foreground="White" FontSize="18" />
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Image MaxWidth="160" MaxHeight="160" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
+                                                    <StackPanel MaxHeight="160" MaxWidth="200" Margin="12,0,0,0" Grid.Column="1" Visibility="{Binding LocationAddressVisibility}" VerticalAlignment="Top">
+                                                        <TextBlock Text="{Binding PlaceName}" Visibility="{Binding PlaceNameVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" FontWeight="SemiBold" />
+                                                        <TextBlock Text="{Binding Address}" Visibility="{Binding AddressVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" TextTrimming="WordEllipsis" />
+                                                    </StackPanel>
                                                 </Grid>
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>
@@ -515,15 +520,21 @@
                                             </Grid.ColumnDefinitions>
                                             <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}" />
                                             <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
-                                            <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" >
+                                            <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" MaxWidth="400" Margin="12,12,12,0">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
-                                                <Image Grid.Row="0" MaxWidth="300" MaxHeight="160" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
-                                                <Grid MaxHeight="100" MaxWidth="300" VerticalAlignment="Bottom" Margin="12,0" Visibility="{Binding DispMessageVisibility}">
-                                                    <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                                                    <TextBlock Text="{Binding DispMessage}" Margin="10,5" TextWrapping="Wrap" Foreground="White" FontSize="18" />
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Image Grid.Column="1" MaxWidth="160" MaxHeight="160" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
+                                                    <StackPanel MaxHeight="160" MaxWidth="200" Margin="0,0,12,0" Visibility="{Binding LocationAddressVisibility}" VerticalAlignment="Top">
+                                                        <TextBlock Text="{Binding PlaceName}" Visibility="{Binding PlaceNameVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" FontWeight="SemiBold" />
+                                                        <TextBlock Text="{Binding Address}" Visibility="{Binding AddressVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" TextTrimming="WordEllipsis" />
+                                                    </StackPanel>
                                                 </Grid>
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>
@@ -565,7 +576,7 @@
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
                                                 <Image Grid.Row="0" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
-                                                <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="0" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center"/>
+                                                <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="0" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>
                                             <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
@@ -756,7 +767,7 @@
 
                                             <Image x:Name="statusTypeImage" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" MaxHeight="35" Margin="20,10,0,0" VerticalAlignment="Top" Source="{Binding StatusUpdateImage}"/>
                                             <TextBlock x:Name="statusMessageTxtBlk" Grid.Row="1" Grid.Column="1" Margin="12,10,0,0" FontSize="21" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight"/>
-                                            <TextBlock x:Name="statusTimestampTxtBlk" Grid.Row="2" Grid.Column="1"  Margin="12,12,0,10" FontSize="15" Foreground="{Binding TimeStampForeGround}"  Text="{Binding TimeStampStr}" />
+                                            <TextBlock x:Name="statusTimestampTxtBlk" Grid.Row="2" Grid.Column="1"  Margin="12,0,0,10" FontSize="15" Foreground="{Binding TimeStampForeGround}"  Text="{Binding TimeStampStr}" />
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
@@ -908,13 +919,13 @@
                             <Image Source="images\emoticons\emo_im_01_bigsmile.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <Border Name="emotHeaderRect1" Grid.Column="1" Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect1_Tap" >
-                            <Image Source="images\emoticons\emo_im_102_scorn.png" Height="30" HorizontalAlignment="Center"  VerticalAlignment="Center"/>
+                            <Image Source="images\emoticons\emo_im_81_exciting.png" Height="30" HorizontalAlignment="Center"  VerticalAlignment="Center"/>
                         </Border>
                         <Border Name="emotHeaderRect2"  Grid.Column="2" Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect2_Tap">
-                            <Image Source="images\emoticons\emo_im_111_grin.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Source="images\emoticons\emo_im_111_grin.png" Height="30" Margin="0 4 0 0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <Border Name="emotHeaderRect3" Visibility="Collapsed"  Grid.Column="3"  Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect3_Tap">
-                            <Image Source="images\indianflag.png" Height="26" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Source="images\emoticons\tiranga4.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <Border Name="stickerTab"  Grid.Column="3" Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Tap="StickersTab_Tap">
                             <Image Source="images\expressions.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>

@@ -28,7 +28,7 @@ namespace windows_client
         public readonly int emoticon0Size = 80;
         public readonly int emoticon1Size = 30;
         public readonly int emoticon2Size = 39;
-        public readonly int emoticon3Size = 24;
+        public readonly int emoticon3Size = 25;
 
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static volatile SmileyParser instance = null;
@@ -205,30 +205,31 @@ namespace windows_client
             "(brains2)",  // 149 brains 
             "(sleeping2)",  // 150 sleeping 
 
-             "(auto4)",
-            "(batti4)",
-            "(best4)",
-            "(metro4)",
-            "(biscuit4)",
-            "(chai4)",
-            "(Chips4)",
-            "(samosa4)",
-            "(noodles4)",
-            "(jalebi4)",
-            "(icecream4)",
-            "(nariyal4)",
-            "(Old4)",
-            "(paisa4)",
-            "(hero4)",
-            "(neta4)",
-            "(thulla4)",
-            "(nimbu4)",
-            "(patakha4)",
-            "(love4)",
-            "(cupid4)",
-            "(shakti4)",
-            "(tandoori4)",
-            "(dd4)",
+            "(auto)",
+            "(batti)",
+            "(best)",
+            "(metro)",
+            "(biscuit)",
+            "(chai)",
+            "(chips)",
+            "(samosa)",
+            "(noodles)",
+            "(jalebi)",
+            "(icecream)",
+            "(nariyal)",
+            "(rum)",
+            "(paisa)",
+            "(tiranga)",
+            "(hero)",
+            "(neta)",
+            "(police)",
+            "(nimbu)",
+            "(patakha)",
+            "(love)",
+            "(cupid)",
+            "(shaktiman)",
+            "(tandoori)",
+            "(dd)",
 
       };
         //regex for emoticons, email, url and phone number
@@ -528,6 +529,7 @@ namespace windows_client
             "/View/images/emoticons/nariyal4.png",
             "/View/images/emoticons/Old4.png",
             "/View/images/emoticons/paisa4.png",
+            "/View/images/emoticons/tiranga4.png",
             "/View/images/emoticons/hero4.png",
             "/View/images/emoticons/neta4.png",
             "/View/images/emoticons/thulla4.png",

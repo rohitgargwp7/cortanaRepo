@@ -663,6 +663,54 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility LocationAddressVisibility
+        {
+            get
+            {
+                return String.IsNullOrEmpty(Address) && String.IsNullOrEmpty(PlaceName) ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        public Visibility AddressVisibility
+        {
+            get
+            {
+                return String.IsNullOrEmpty(Address) ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        public Visibility PlaceNameVisibility
+        {
+            get
+            {
+                return String.IsNullOrEmpty(PlaceName) ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        string _address;
+        public String Address
+        {
+            get
+            {
+                if(_address == null)
+                    _address= getAddressFromMetaData();
+
+                return _address;
+            }
+        }
+
+        string _placeName;
+        public String PlaceName
+        {
+            get
+            {
+                if (_placeName == null)
+                    _placeName = getPlaceNameFromMetaData();
+
+                return _placeName;
+            }
+        }
+
         public String DurationText
         {
             get
@@ -907,6 +955,58 @@ namespace windows_client.Model
             set
             {
                 _groupMemeberName = value;
+            }
+        }
+
+        string getPlaceNameFromMetaData()
+        {
+            if (String.IsNullOrEmpty(this.MetaDataString))
+                return String.Empty;
+
+            try
+            {
+                if (IsSent)
+                {
+                    var metadataObject = JObject.Parse(MetaDataString);
+                    JArray files = metadataObject[HikeConstants.FILES_DATA].ToObject<JArray>();
+                    JObject fileObject = files[0].ToObject<JObject>();
+                    return (String)fileObject[HikeConstants.LOCATION_TITLE];
+                }
+                else
+                {
+                    var metadataObject = JObject.Parse(MetaDataString);
+                    return (String)metadataObject[HikeConstants.LOCATION_TITLE];
+                }
+            }
+            catch
+            {
+                return String.Empty;
+            }
+        }
+
+        string getAddressFromMetaData()
+        {
+            if (String.IsNullOrEmpty(this.MetaDataString))
+                return String.Empty;
+
+            try
+            {
+                if (IsSent)
+                {
+                    var metadataObject = JObject.Parse(MetaDataString);
+                    JArray files = metadataObject[HikeConstants.FILES_DATA].ToObject<JArray>();
+                    JObject fileObject = files[0].ToObject<JObject>();
+                    return (String)fileObject[HikeConstants.LOCATION_ADDRESS];
+                }
+                else
+                {
+                    var metadataObject = JObject.Parse(MetaDataString);
+                    return (String)metadataObject[HikeConstants.LOCATION_ADDRESS];
+                }
+            }
+            catch
+            {
+                return String.Empty;
             }
         }
 
@@ -1337,10 +1437,10 @@ namespace windows_client.Model
                 {
                     metadataObject = JObject.FromObject(metadataToken);
                     JToken filesToken = null;
-                    isFileTransfer = metadataObject.TryGetValue("files", out filesToken);
+                    isFileTransfer = metadataObject.TryGetValue(HikeConstants.FILES_DATA, out filesToken);
                     if (isFileTransfer)
                     {
-                        JArray files = metadataObject["files"].ToObject<JArray>();
+                        JArray files = metadataObject[HikeConstants.FILES_DATA].ToObject<JArray>();
                         JObject fileObject = files[0].ToObject<JObject>();
 
                         JToken fileName;
@@ -1368,9 +1468,9 @@ namespace windows_client.Model
                             locationFile[HikeConstants.LONGITUDE] = fileObject[HikeConstants.LONGITUDE];
                             locationFile[HikeConstants.ZOOM_LEVEL] = fileObject[HikeConstants.ZOOM_LEVEL];
                             locationFile[HikeConstants.LOCATION_ADDRESS] = fileObject[HikeConstants.LOCATION_ADDRESS];
-                            this.MetaDataString = locationFile.ToString(Newtonsoft.Json.Formatting.None);
+                            locationFile[HikeConstants.LOCATION_TITLE] = fileObject[HikeConstants.LOCATION_TITLE];
 
-                            messageText = fileObject[HikeConstants.LOCATION_ADDRESS].ToString();
+                            this.MetaDataString = locationFile.ToString(Newtonsoft.Json.Formatting.None);
                         }
                         else
                         {
@@ -1421,12 +1521,7 @@ namespace windows_client.Model
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
                             messageText = AppResources.Video_Txt;
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                        {
-                            if (String.IsNullOrEmpty(messageText))
-                                messageText = this.FileAttachment.FileName;
-                            else
-                                messageText = this.FileAttachment.FileName + ", " + messageText;
-                        }
+                            messageText = AppResources.Location_Txt;
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                             messageText = AppResources.ContactTransfer_Text;
                         this._message = messageText;

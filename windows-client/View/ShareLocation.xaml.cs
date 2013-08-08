@@ -377,13 +377,14 @@ namespace windows_client.View
             JArray filesData = new JArray();
             JObject singleFileInfo = new JObject();
 
-            var title = _selectedPlace == null ? String.Empty : _selectedPlace.title.Contains(AppResources.Location_Txt) ? String.Empty : _selectedPlace.title;
+            var title = _selectedPlace == null || _selectedPlace.title.Contains(AppResources.Location_Txt) || _selectedPlace.title.Contains(AppResources.My_Location_Text) ? String.Empty : _selectedPlace.title;
 
-            singleFileInfo[HikeConstants.FILE_NAME] = title;
+            singleFileInfo[HikeConstants.FILE_NAME] = AppResources.Location_Txt;
             singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = "hikemap/location";
             singleFileInfo[HikeConstants.LATITUDE] = _selectedCoordinate.Latitude;
             singleFileInfo[HikeConstants.LONGITUDE] = _selectedCoordinate.Longitude;
             singleFileInfo[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
+            singleFileInfo[HikeConstants.LOCATION_TITLE] = title;
             singleFileInfo[HikeConstants.LOCATION_ADDRESS] = _selectedPlace == null || _selectedPlace.vicinity == null ? String.Empty : _selectedPlace.vicinity;
 
             filesData.Add(singleFileInfo.ToObject<JToken>());
@@ -394,7 +395,8 @@ namespace windows_client.View
             locationDetails[0] = metadata;
             locationDetails[1] = thumbnailBytes;
             PhoneApplicationService.Current.State[HikeConstants.SHARED_LOCATION] = locationDetails;
-            MyMap = null;
+            LayoutRoot.Visibility = Visibility.Collapsed;
+            ApplicationBar.IsVisible = false;
             NavigationService.GoBack();
         }
 
@@ -574,7 +576,7 @@ namespace windows_client.View
 
             if (_geolocator.LocationStatus == PositionStatus.Disabled)
             {
-                var result = MessageBox.Show(AppResources.ShareLocation_LocationServiceNotEnabled_Txt, AppResources.Location_Heading, MessageBoxButton.OKCancel);
+                var result = MessageBox.Show(AppResources.ShareLocation_LocationServiceNotEnabled_Txt, AppResources.Location_Unavailable_Heading, MessageBoxButton.OKCancel);
 
                 if(result == MessageBoxResult.OK)
                     await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-location:"));
@@ -583,20 +585,23 @@ namespace windows_client.View
             }
             else if (App.appSettings.TryGetValue<bool>(App.USE_LOCATION_SETTING, out _isLocationEnabled))
             {
-                var result = MessageBox.Show(AppResources.ShareLocation_LocationSettingsNotEnabled_Txt, AppResources.Location_Heading, MessageBoxButton.OKCancel);
+                var result = MessageBox.Show(AppResources.ShareLocation_LocationSettingsNotEnabled_Txt, AppResources.Location_Disabled_Heading, MessageBoxButton.OKCancel);
 
                 if (result == MessageBoxResult.OK)
                 {
                     App.appSettings.Remove(App.USE_LOCATION_SETTING);
                     App.appSettings.Save();
                     _isLocationEnabled = true;
+
+                    if (e.NavigationMode != System.Windows.Navigation.NavigationMode.New && (_myCoordinate == null || _places == null) && !App.IS_TOMBSTONED)
+                        GetCurrentCoordinate();
                 }
             }
             else
             {
                 _isLocationEnabled = true;
 
-                if (e.NavigationMode != System.Windows.Navigation.NavigationMode.New && _myCoordinate == null && !App.IS_TOMBSTONED)
+                if (e.NavigationMode != System.Windows.Navigation.NavigationMode.New && (_myCoordinate == null || _places == null) && !App.IS_TOMBSTONED)
                     GetCurrentCoordinate();
             }
 
@@ -655,10 +660,13 @@ namespace windows_client.View
                 }
             }
 
-            if (NetworkInterface.GetIsNetworkAvailable())
-                PlacesGrid.Visibility = Visibility.Visible;
-            else
-                MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
+            if (_isLocationEnabled)
+            {
+                if (NetworkInterface.GetIsNetworkAvailable())
+                    PlacesGrid.Visibility = Visibility.Visible;
+                else
+                    MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
+            }
 
             base.OnNavigatedTo(e);
         }

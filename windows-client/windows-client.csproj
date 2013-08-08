@@ -553,7 +553,8 @@
     <Content Include="View\images\emoticons\tandoori4.png" />
     <Content Include="View\images\emoticons\thulla4.png" />
     <Content Include="View\images\icon_direction.png" />
-    <Content Include="View\images\indianflag.png" />
+    <Content Include="View\images\emoticons\tiranga4.png" />
+    <Content Include="View\images\MediaPlayIcon.png" />
     <Content Include="View\images\moods\24Music.png" />
     <Content Include="View\images\moods\25PartyingHard.png" />
     <Content Include="View\images\moods\26Singing.png" />

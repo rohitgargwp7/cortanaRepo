@@ -127,16 +127,18 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
-
-                        <TextBlock x:Name="circleOfFriendsTitleTxtBlck" Visibility="Collapsed" Grid.Row="0" FontSize="24" Margin="0,0,0,10" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}"/>
-
+                        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
+                            <TextBlock FontSize="24"  FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}"/>
+                            <TextBlock x:Name="cofCounter" FontSize="24" Visibility="Collapsed" FontFamily="Segoe WP Semibold" Text="(0)" />
+                        </StackPanel>
                         <StackPanel x:Name="emptyListPlaceholderFiends" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center" Visibility="Collapsed">
                             <Image Source="images/favorites_heart.png" Height="90"></Image>
                             <TextBlock Name="addContactsTxtBlk"  Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                         </StackPanel>
-
-                        <ListBox x:Name="favourites" ItemsSource="{Binding Source={StaticResource favCollectionViewKey}}" 
-                                 Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" 
+                        <Grid x:Name="cofProgressBar" Visibility="Collapsed" Grid.Row="1" Height="200" VerticalAlignment="Stretch">
+                            <ProgressBar Height="5"  VerticalContentAlignment="Bottom" IsIndeterminate="True" IsEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Center"></ProgressBar>
+                        </Grid>
+                        <ListBox x:Name="favourites" ItemsSource="{Binding Source={StaticResource favCollectionViewKey}}" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" 
                                  Grid.Row="1" Tap="favourites_Tap">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
@@ -153,14 +155,18 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
 
-                        <TextBlock x:Name="contactOnHikeTitleTxtBlck" Margin="0,35,0,15" Visibility="Collapsed" Grid.Row="2" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}"/>
-
+                        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0,35,0,15">
+                            <TextBlock FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}"/>
+                            <TextBlock x:Name="cohCounter" FontSize="24" Visibility="Collapsed" FontFamily="Segoe WP Semibold" Text="(0)" />
+                        </StackPanel>
                         <StackPanel x:Name="emptyListPlaceholderHikeContacts" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="3" HorizontalAlignment="Center" Visibility="Collapsed" >
                             <Image Source="images/hike_users.png" Height="90"></Image>
                             <TextBlock Text="{Binding Path= LocalizedResources.Conversations_InviteFriendsHike_Txt, Source={StaticResource LocalizedStrings}}" Width="270" Margin="0,0,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                             <Button Content="{Binding Path= LocalizedResources.Conversations_InviteFriend_Btn, Source={StaticResource LocalizedStrings}}"  FontSize="18" Height="70" Width="160"  Background="#e9ecee" BorderThickness="0" Foreground="#595959" HorizontalAlignment="Center" Tap="InviteBtn_Tap"/>
                         </StackPanel>
-
+                        <Grid x:Name="cohProgressBar" Visibility="Collapsed" Grid.Row="3" Height="200" VerticalAlignment="Stretch">
+                            <ProgressBar Height="5"  VerticalContentAlignment="Bottom" IsIndeterminate="True" IsEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Center"></ProgressBar>
+                        </Grid>
                         <ListBox x:Name="hikeContactListBox" HorizontalAlignment="Stretch" ItemsSource="{Binding Source={StaticResource contactsCollectionViewKey}}" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="3" >
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">

@@ -107,7 +107,6 @@ namespace windows_client.View
         ApplicationBarIconButton fileTransferIconButton = null;
         private PhotoChooserTask photoChooserTask;
         private CameraCaptureTask cameraCaptureTask;
-        private BingMapsTask bingMapsTask = null;
         private object statusObject = null;
         private int _unreadMessageCounter = 0;
 
@@ -295,6 +294,18 @@ namespace windows_client.View
                     {
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, TimeUtils.getCurrentTimeStamp());
                         _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
+
+                        if (_isSendAllAsSMSVisible)
+                        {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                if (_isSendAllAsSMSVisible)
+                                {
+                                    ocMessages.Remove(_tap2SendAsSMSMessage);
+                                    _isSendAllAsSMSVisible = false;
+                                }
+                            });
+                        }
                     }
                     else
                     {
@@ -411,14 +422,22 @@ namespace windows_client.View
                 Stopwatch st = Stopwatch.StartNew();
                 attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
                 loadMessages(INITIAL_FETCH_COUNT);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    //ScrollToBottom();
-                    StartForceSMSTimer(false);
-                });
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
+
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    var worker = new BackgroundWorker();
+
+                    worker.DoWork += (se, ee) =>
+                    {
+                        StartForceSMSTimer(false);
+                    };
+
+                    worker.RunWorkerAsync();
+                });
+
                 if (isGC)
                 {
                     ConvMessage groupCreateCM = new ConvMessage(groupCreateJson, true, false);
@@ -607,8 +626,10 @@ namespace windows_client.View
                     isFirstLaunch = false;
                 }
                 else //removing here because it may be case that user pressed back without selecting any user
+                {
                     PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
-
+                    this.UpdateLayout();
+                }
                 /* This is called only when you add more participants to group */
                 if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
                 {
@@ -762,8 +783,8 @@ namespace windows_client.View
             {
                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 mediaElement.Stop();
-            } 
-            
+            }
+
             if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
             {
                 Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
@@ -979,14 +1000,14 @@ namespace windows_client.View
             if (!App.appSettings.Contains(App.LAST_SEEN_SEETING))
             {
                 BackgroundWorker _worker = new BackgroundWorker();
-
+                
                 _worker.DoWork += (ss, ee) =>
                 {
                     var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
                     if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
                         _lastSeenHelper.requestLastSeen(mContactNumber);
                 };
-
+               
                 _worker.RunWorkerAsync();
             }
 
@@ -1590,7 +1611,7 @@ namespace windows_client.View
                             convMessage.Message = AppResources.Video_Txt;
                         else if (contentType.Contains(HikeConstants.LOCATION))
                         {
-                            convMessage.Message = (string)attachmentData[5];
+                            convMessage.Message = AppResources.Location_Txt;
                             convMessage.MetaDataString = metaDataString;
                         }
                         else if (contentType.Contains(HikeConstants.CT_CONTACT))
@@ -2808,7 +2829,7 @@ namespace windows_client.View
 
             //done as scrollviewer applied to textbox doesn't update its position on char enter
             svMessage.UpdateLayout();
-            svMessage.ScrollToVerticalOffset(sendMsgTxtbox.GetRectFromCharacterIndex(sendMsgTxtbox.SelectionStart).Top - 30.0);
+            svMessage.ScrollToVerticalOffset(sendMsgTxtbox.GetRectFromCharacterIndex(sendMsgTxtbox.SelectionStart > 0 ? sendMsgTxtbox.SelectionStart : sendMsgTxtbox.Text.Length).Top - 30.0);
 
             string msgText = sendMsgTxtbox.Text.Trim();
             if (String.IsNullOrEmpty(msgText))
@@ -2930,31 +2951,7 @@ namespace windows_client.View
         private static bool abc = true;
         private static bool isReleaseMode = true;
 
-        private void adjustAspectRatio(int width, int height, bool isThumbnail, out int adjustedWidth, out int adjustedHeight)
-        {
-            int maxHeight, maxWidth;
-            if (isThumbnail)
-            {
-                maxHeight = HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT;
-                maxWidth = HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH;
-            }
-            else
-            {
-                maxHeight = HikeConstants.ATTACHMENT_MAX_HEIGHT;
-                maxWidth = HikeConstants.ATTACHMENT_MAX_WIDTH;
-            }
-
-            if (height > width)
-            {
-                adjustedHeight = maxHeight;
-                adjustedWidth = (width * adjustedHeight) / height;
-            }
-            else
-            {
-                adjustedWidth = maxWidth;
-                adjustedHeight = (height * adjustedWidth) / width;
-            }
-        }
+        
 
         private void SendImage(BitmapImage image, string fileName)
         {
@@ -2969,8 +2966,8 @@ namespace windows_client.View
 
                 WriteableBitmap writeableBitmap = new WriteableBitmap(image);
                 int thumbnailWidth, thumbnailHeight, imageWidth, imageHeight;
-                adjustAspectRatio(image.PixelWidth, image.PixelHeight, true, out thumbnailWidth, out thumbnailHeight);
-                adjustAspectRatio(image.PixelWidth, image.PixelHeight, false, out imageWidth, out imageHeight);
+                Utils.AdjustAspectRatio(image.PixelWidth, image.PixelHeight, true, out thumbnailWidth, out thumbnailHeight);
+                Utils.AdjustAspectRatio(image.PixelWidth, image.PixelHeight, false, out imageWidth, out imageHeight);
 
                 using (var msSmallImage = new MemoryStream())
                 {
@@ -3836,9 +3833,19 @@ namespace windows_client.View
                         }
 
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            StartForceSMSTimer(true);
-                        });
+                            {
+                                if (lastSeenTxt.Text != AppResources.Online)
+                                {
+                                    var worker = new BackgroundWorker();
+                                 
+                                    worker.DoWork += (s, e) =>
+                                    {
+                                        StartForceSMSTimer(true);
+                                    };
+                                    
+                                    worker.RunWorkerAsync();
+                                }
+                            });
                     }
                 }
                 catch (Exception ex)
@@ -4141,8 +4148,23 @@ namespace windows_client.View
 
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
+                                lastSeenTxt.Text = String.Empty;
                                 userName.FontSize = 50;
                                 lastSeenPannel.Visibility = Visibility.Collapsed;
+                            });
+                        }
+
+                        if (lastSeen != 0 && !_isSendAllAsSMSVisible)
+                            StartForceSMSTimer(false);
+                        else if (lastSeen == 0 && _isSendAllAsSMSVisible)
+                        {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                if (_isSendAllAsSMSVisible)
+                                {
+                                    ocMessages.Remove(_tap2SendAsSMSMessage);
+                                    _isSendAllAsSMSVisible = false;
+                                }
                             });
                         }
                     }
@@ -4251,6 +4273,7 @@ namespace windows_client.View
         private void groupChatEnd()
         {
             isGroupAlive = false;
+            WalkieTalkieMicIcon.IsHitTestVisible = false;
             sendMsgTxtbox.IsHitTestVisible = false;
             appBar.IsMenuEnabled = false;
             sendIconButton.IsEnabled = enableSendMsgButton = false;
@@ -4287,19 +4310,12 @@ namespace windows_client.View
 
                 byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
 
-                var vicinity = fileData[HikeConstants.LOCATION_ADDRESS].ToString();
-                string locationMessage = String.Empty;
-                string fileName = fileData[HikeConstants.FILE_NAME].ToString();
+                var place = (String)fileData[HikeConstants.LOCATION_TITLE];
+                var vicinity = (String)fileData[HikeConstants.LOCATION_ADDRESS];
+                var locationMessage = String.Empty;
+                var fileName = (String)fileData[HikeConstants.FILE_NAME];
 
                 locationMessage = fileName;
-
-                if (!String.IsNullOrEmpty(vicinity))
-                {
-                    if (!String.IsNullOrEmpty(locationMessage))
-                        locationMessage += "\n" + vicinity;
-                    else
-                        locationMessage = vicinity;
-                }
 
                 if (String.IsNullOrEmpty(fileName))
                     fileName = AppResources.Location_Txt;
@@ -4551,7 +4567,10 @@ namespace windows_client.View
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-
+            if (isGroupChat)
+                return;
+            if (isGroupChat && !isGroupAlive)
+                return;
             if (mUserIsBlocked)
                 return;
             emoticonPanel.Visibility = Visibility.Collapsed;
@@ -4784,7 +4803,7 @@ namespace windows_client.View
                 }
             }
         }
-    
+
         #region Jump To Latest
 
         ScrollBar vScrollBar = null;
@@ -4838,9 +4857,9 @@ namespace windows_client.View
                     ScrollToBottom();
             }
         }
-        
+
         #endregion
-        
+
         #region Stickers
 
 
@@ -5239,7 +5258,7 @@ namespace windows_client.View
 
         public void ShowDownloadOverlay(bool show)
         {
-            sendIconButton.IsEnabled = !show;
+            sendIconButton.IsEnabled = show ? sendMsgTxtbox.Text.Length > 0 : false;
             emoticonsIconButton.IsEnabled = !show;
             fileTransferIconButton.IsEnabled = !show;
             if (show)
@@ -5724,18 +5743,18 @@ namespace windows_client.View
 
             try
             {
-                _lastUnDeliveredMessage = (from message in ocMessages
-                                          where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
-                                          select message).Last();
+                var msgList = (from message in ocMessages
+                               where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
+                               select message);
+
+                 _lastUnDeliveredMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
 
                 if (_lastUnDeliveredMessage != null)
                 {
                     TimeSpan ts;
 
                     if (isNewTimer)
-                    {
                         ts = TimeSpan.FromSeconds(20);
-                    }
                     else
                     {
                         long ticks = _lastUnDeliveredMessage.Timestamp * 10000000;
@@ -5763,79 +5782,83 @@ namespace windows_client.View
             if (_isSendAllAsSMSVisible)
                 return;
 
-            _lastUnDeliveredMessage = null;
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                 {
+                     if (lastSeenTxt.Text == AppResources.Online || _isSendAllAsSMSVisible)
+                         return;
 
-            try
-            {
-                _lastUnDeliveredMessage = (from message in ocMessages
-                                          where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
-                                          select message).Last();
-            }
-            catch
-            {
-                return;
-            }
+                     _lastUnDeliveredMessage = null;
 
-            if (_lastUnDeliveredMessage != null)
-            {
-                var indexToInsert = ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
+                     try
+                     {
+                         var msgList = (from message in ocMessages
+                                        where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
+                                        select message);
 
-                Deployment.Current.Dispatcher.BeginInvoke(new Action<Int32>(delegate(Int32 index)
-                {
-                    if (App.ViewModel.DictInAppTip != null)
-                    {
-                        HikeToolTip tip;
-                        App.ViewModel.DictInAppTip.TryGetValue(6, out tip);
+                         _lastUnDeliveredMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
+                     }
+                     catch
+                     {
+                         return;
+                     }
 
-                        if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-                        {
-                            _toolTipMessage = new ConvMessage();
-                            _toolTipMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP;
-                            _toolTipMessage.Message = tip.Tip;
-                            this.ocMessages.Insert(indexToInsert, _toolTipMessage);
-                            _isStatusUpdateToolTipShown = true;
+                     if (_lastUnDeliveredMessage != null)
+                     {
+                         var indexToInsert = ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
 
-                            tip.IsShown = true;
-                            tip.IsCurrentlyShown = true;
+                         if (App.ViewModel.DictInAppTip != null)
+                         {
+                             HikeToolTip tip;
+                             App.ViewModel.DictInAppTip.TryGetValue(6, out tip);
 
-                            byte marked;
-                            App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
-                            marked |= (byte)(1 << 4);
-                            App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
+                             if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                             {
+                                 _toolTipMessage = new ConvMessage();
+                                 _toolTipMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP;
+                                 _toolTipMessage.Message = tip.Tip;
+                                 this.ocMessages.Insert(indexToInsert, _toolTipMessage);
+                                 _isStatusUpdateToolTipShown = true;
 
-                            byte currentShown;
-                            App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                            currentShown |= (byte)(1 << 4);
-                            App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
+                                 tip.IsShown = true;
+                                 tip.IsCurrentlyShown = true;
 
-                            if (indexToInsert == ocMessages.Count - 1)
-                                ScrollToBottom();
+                                 byte marked;
+                                 App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
+                                 marked |= (byte)(1 << 4);
+                                 App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
 
-                            return;
-                        }
-                    }
+                                 byte currentShown;
+                                 App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
+                                 currentShown |= (byte)(1 << 4);
+                                 App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
 
-                    if (_tap2SendAsSMSMessage == null)
-                    {
-                        _tap2SendAsSMSMessage = new ConvMessage();
-                        _tap2SendAsSMSMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION;
-                        _tap2SendAsSMSMessage.NotificationType = ConvMessage.MessageType.FORCE_SMS;
+                                 if (indexToInsert == ocMessages.Count - 1)
+                                     ScrollToBottom();
 
-                        if (isGroupChat)
-                            _tap2SendAsSMSMessage.Message = AppResources.Send_All_As_SMS_Group;
-                        else
-                            _tap2SendAsSMSMessage.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
-                    }
+                                 return;
+                             }
+                         }
 
+                         if (_tap2SendAsSMSMessage == null)
+                         {
+                             _tap2SendAsSMSMessage = new ConvMessage();
+                             _tap2SendAsSMSMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION;
+                             _tap2SendAsSMSMessage.NotificationType = ConvMessage.MessageType.FORCE_SMS;
 
-                    this.ocMessages.Insert(index, _tap2SendAsSMSMessage);
+                             if (isGroupChat)
+                                 _tap2SendAsSMSMessage.Message = AppResources.Send_All_As_SMS_Group;
+                             else
+                                 _tap2SendAsSMSMessage.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
+                         }
 
-                    if (index == ocMessages.Count - 1)
-                        ScrollToBottom();
+                         this.ocMessages.Insert(indexToInsert, _tap2SendAsSMSMessage);
+                         
+                         if (indexToInsert == ocMessages.Count - 1)
+                             ScrollToBottom();
 
-                    _isSendAllAsSMSVisible = true;
-                }), indexToInsert);
-            }
+                         _isSendAllAsSMSVisible = true;
+                     }
+                 });
         }
 
         void SendForceSMS(ConvMessage message = null)
@@ -6000,7 +6023,7 @@ namespace windows_client.View
                     FileAttachmentMessage_Tap(sender, e); // normal flow for recieved files
             }
         }
-  
+
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector

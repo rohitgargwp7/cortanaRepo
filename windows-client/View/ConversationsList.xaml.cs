@@ -54,7 +54,7 @@ namespace windows_client.View
             get;
             set;
         }
-        
+
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
         #endregion
         #region Page Based Functions
@@ -131,7 +131,7 @@ namespace windows_client.View
 
             if (Utils.isCriticalUpdatePending())
                 showCriticalUpdateMessage();
-            
+
             if (firstLoad)
             {
                 shellProgress.IsVisible = true;
@@ -192,7 +192,7 @@ namespace windows_client.View
             isStatusUpdatesMute = App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue) && statusSettingsValue == 0;
             imgToggleStatus.Source = isStatusUpdatesMute ? UI_Utils.Instance.MuteIcon : UI_Utils.Instance.UnmuteIcon;
 
-            if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush") )
+            if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 launchPagePivot.SelectedIndex = 3;
         }
 
@@ -718,7 +718,8 @@ namespace windows_client.View
                 {
                     _isFavListBound = true;
                     BackgroundWorker favBw = new BackgroundWorker();
-                    shellProgress.IsVisible = true;
+                    cofProgressBar.Visibility = Visibility.Visible;
+                    cohProgressBar.Visibility = Visibility.Visible;
                     favBw.DoWork += (sf, ef) =>
                     {
                         for (int i = 0; i < App.ViewModel.FavList.Count; i++)
@@ -755,13 +756,16 @@ namespace windows_client.View
                     favBw.RunWorkerAsync();
                     favBw.RunWorkerCompleted += (sf, ef) =>
                     {
-                        shellProgress.IsVisible = false;
+                        cofProgressBar.Visibility = Visibility.Collapsed;
+                        cohProgressBar.Visibility = Visibility.Collapsed;
                         contactsCollectionView.Source = hikeContactList;
                         favCollectionView.Source = App.ViewModel.FavList; // this is done to sort in view
                         favourites.SelectedIndex = -1;
                         hikeContactListBox.SelectedIndex = -1;
-                        circleOfFriendsTitleTxtBlck.Visibility = System.Windows.Visibility.Visible;
-                        contactOnHikeTitleTxtBlck.Visibility = System.Windows.Visibility.Visible;
+                        cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
+                        cofCounter.Visibility = Visibility.Visible;
+                        cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
+                        cohCounter.Visibility = Visibility.Visible;
                         if (App.ViewModel.FavList.Count > 0)
                         {
                             emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
@@ -817,7 +821,7 @@ namespace windows_client.View
                     statusBw.RunWorkerCompleted += (ss, ee) =>
                     {
                         shellProgress.IsVisible = false;
-                        
+
                         foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
                         {
                             FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click, statusBubblePhoto_Tap);
@@ -831,20 +835,20 @@ namespace windows_client.View
                                 // if this user is blocked dont show his/her statuses
                                 if (App.ViewModel.BlockedHashset.Contains(statusMessagesFromDB[i].Msisdn))
                                     continue;
-                                
+
                                 if (i < TotalUnreadStatuses)
                                     statusMessagesFromDB[i].IsUnread = true;
-                                
+
                                 StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], true,
                                     statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap);
-                                
+
                                 if (statusUpdate != null)
                                     App.ViewModel.StatusList.Add(statusUpdate);
                             }
                         }
-                        
+
                         this.statusLLS.ItemsSource = App.ViewModel.StatusList;
-                        
+
                         if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
                         {
                             string firstName = Utils.GetFirstName(accountName.Text);
@@ -853,14 +857,14 @@ namespace windows_client.View
 
                         RefreshBarCount = 0;
                         UnreadFriendRequests = 0;
-                        
+
                         if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                         {
                             NetworkManager.turnOffNetworkManager = false;
                             Utils.RequestServerEpochTime();
                             PhoneApplicationService.Current.State.Remove("IsStatusPush");
                         }
-                        
+
                         isStatusMessagesLoaded = true;
                     };
                     if (appSettings.Contains(App.SHOW_STATUS_UPDATES_TUTORIAL))
@@ -893,7 +897,8 @@ namespace windows_client.View
             if (obj == null)
             {
                 Debug.WriteLine("ConversationsList :: OnEventReceived : Object received is null");
-                return;
+                if (type != HikePubSub.ADD_REMOVE_FAV )
+                    return;
             }
 
             #region MESSAGE_RECEIVED
@@ -959,6 +964,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
                     if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                     {
                         emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
@@ -1140,7 +1146,7 @@ namespace windows_client.View
 
                                     if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC)
                                         App.ViewModel.StatusList.RemoveAt(index);
-                                    
+
                                     App.ViewModel.StatusList.Insert(count + index, statusUpdate);
                                 }
                             }
@@ -1227,6 +1233,8 @@ namespace windows_client.View
                         {
                             c.IsUsedAtMiscPlaces = true;
                             hikeContactList.Add(c);
+                            cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
+
                         }
 
                         if (hikeContactList.Count > 0)
@@ -1250,6 +1258,7 @@ namespace windows_client.View
                             ContactInfo c = obj as ContactInfo;
                             c.IsUsedAtMiscPlaces = true;
                             hikeContactList.Remove(c);
+                            cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                         }
                         if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                         {
@@ -1276,6 +1285,7 @@ namespace windows_client.View
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 hikeContactList.Remove(c);
+                                cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                             });
                         }
                     }
@@ -1288,6 +1298,7 @@ namespace windows_client.View
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 hikeContactList.Remove(c);
+                                cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                             });
                         }
                     }
@@ -1365,6 +1376,7 @@ namespace windows_client.View
                                 emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
                                 hikeContactListBox.Visibility = Visibility.Collapsed;
                             }
+                            cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                         });
                     }
                     //if conatct is removed from circle of friends then show no friends placehoder
@@ -1403,7 +1415,10 @@ namespace windows_client.View
                 {
                     c.IsUsedAtMiscPlaces = true;
                     if (c.Msisdn != App.MSISDN)
+                    {
                         hikeContactList.Add(c);
+                        cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
+                    }
                     if (emptyListPlaceholderHikeContacts.Visibility == Visibility.Visible)
                     {
                         emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
@@ -1493,6 +1508,7 @@ namespace windows_client.View
                     return;
                 convObj.IsFav = false;
                 App.ViewModel.FavList.Remove(convObj);
+                cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
                 JObject data = new JObject();
                 data["id"] = convObj.Msisdn;
                 JObject obj = new JObject();
@@ -1525,7 +1541,10 @@ namespace windows_client.View
                     c.Avatar = convObj.Avatar;
                     c.IsUsedAtMiscPlaces = true;
                     if (c.Msisdn != App.MSISDN)
+                    {
                         hikeContactList.Add(c);
+                        cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
+                    }
                 }
                 if (hikeContactList.Count > 0)
                 {
@@ -1544,8 +1563,10 @@ namespace windows_client.View
                     c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                 c.IsUsedAtMiscPlaces = true;
                 hikeContactList.Remove(c);
+                cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                 FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
                 App.ViewModel.FavList.Insert(0, convObj);
+                cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
                 if (App.ViewModel.IsPending(convObj.Msisdn))
                 {
                     App.ViewModel.PendingRequests.Remove(convObj.Msisdn);
@@ -1915,6 +1936,7 @@ namespace windows_client.View
             {
                 convObj.IsFav = false;
                 App.ViewModel.FavList.Remove(convObj);
+                cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
                 JObject data = new JObject();
                 data["id"] = convObj.Msisdn;
                 JObject obj = new JObject();
@@ -1940,7 +1962,10 @@ namespace windows_client.View
                     c.Avatar = convObj.Avatar;
                     c.IsUsedAtMiscPlaces = true;
                     if (c.Msisdn != App.MSISDN)
+                    {
                         hikeContactList.Add(c);
+                        cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
+                    }
                 }
             }
             if (App.ViewModel.FavList.Count == 0)
@@ -1983,6 +2008,7 @@ namespace windows_client.View
                 {
                     contactInfo.IsUsedAtMiscPlaces = true;
                     hikeContactList.Remove(contactInfo);
+                    cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                     return;
                 }
 
@@ -2004,7 +2030,9 @@ namespace windows_client.View
                 }
                 contactInfo.IsUsedAtMiscPlaces = true;
                 hikeContactList.Remove(contactInfo);
+                cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                 App.ViewModel.FavList.Add(cObj);
+                cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.SaveFavourites(cObj);
                 int count = 0;
@@ -2210,6 +2238,9 @@ namespace windows_client.View
             if (ProTipHelper.CurrentProTip != null)
                 index = 1;
 
+            if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC && FreshStatusUpdates != null && FreshStatusUpdates.Count > 0)
+                App.ViewModel.StatusList.RemoveAt(index);
+
             // this fix will solve the possible crash , suggested by nitesh
             int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count + index : index;
             for (int i = 0; i < (FreshStatusUpdates != null ? FreshStatusUpdates.Count : 0); i++)
@@ -2230,7 +2261,7 @@ namespace windows_client.View
                 if (App.ViewModel.StatusList.Count > pendingCount)
                     statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount]);
             }
-            
+
             RefreshBarCount = 0;
         }
         private void postStatusBtn_Click(object sender, EventArgs e)
@@ -2283,11 +2314,13 @@ namespace windows_client.View
                     cn = App.ViewModel.ContactsCache[fObj.Msisdn];
                     cn.IsUsedAtMiscPlaces = true;
                     hikeContactList.Remove(cn);
+                    cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                 }
             }
 
             App.ViewModel.FavList.Insert(0, cObj);
             App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
+            cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
             JObject data = new JObject();
             data["id"] = fObj.Msisdn;
             JObject obj = new JObject();
@@ -2330,7 +2363,7 @@ namespace windows_client.View
             if (launchPagePivot.SelectedIndex != 3)
             {
                 launchPagePivot.SelectedIndex = 3;
-                
+
                 int index = 0;
                 if (ProTipHelper.CurrentProTip != null)
                     index = 1;
