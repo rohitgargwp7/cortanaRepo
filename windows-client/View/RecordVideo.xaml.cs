@@ -105,9 +105,9 @@ namespace windows_client.View
         String getTitleFromSize(double height)
         {
             if (height == 1080)
-                return "HD 1080";
+                return "1080p";
             else if (height == 720)
-                return "HD 720";
+                return "720p";
             else if (height == 480)
                 return "VGA";
             else if (height == 240)
