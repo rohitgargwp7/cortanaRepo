@@ -1148,6 +1148,7 @@ namespace windows_client.View
             MiscDBUtil.SaveFavourites(cObj);
             MiscDBUtil.SavePendingRequests();
             int count = 0;
+            App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
             App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
 
