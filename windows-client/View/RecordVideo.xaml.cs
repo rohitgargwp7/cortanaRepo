@@ -104,16 +104,19 @@ namespace windows_client.View
 
         String getTitleFromSize(double height)
         {
-            if (height == 1080)
-                return "1080p";
-            else if (height == 720)
-                return "720p";
-            else if (height == 480)
-                return "VGA";
-            else if (height == 240)
-                return "QVGA";
-            else
-                return String.Empty;
+            if (height == 1080 || height == 720 || height == 480 || height == 240)
+                return height.ToString();
+
+            //if (height == 1080)
+            //    return "1080p";
+            //else if (height == 720)
+            //    return "720p";
+            //else if (height == 480)
+            //    return "VGA";
+            //else if (height == 240)
+            //    return "QVGA";
+                
+            return String.Empty;
         }
 
         private void SetResolutions(bool initSelectedResolution = true)
