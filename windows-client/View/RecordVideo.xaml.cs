@@ -27,8 +27,8 @@ namespace windows_client.View
         // Source and device for capturing video.
         AudioVideoCaptureDevice videoCaptureDevice;
         IRandomAccessStream videoStream;
-        List<Windows.Foundation.Size> resolutions;
-        Windows.Foundation.Size selectedResolution;
+        List<Resolution> resolutions;
+        Resolution selectedResolution;
 
         IsolatedStorageFileStream isoVideoFile;
         // File details for storing the recording.        
@@ -102,7 +102,24 @@ namespace windows_client.View
             doneIconButton.Click += doneIconButton_Click;
         }
 
-        private void SetResolutions()
+        String getTitleFromSize(double height)
+        {
+            if (height == 1080 || height == 720 || height == 480 || height == 240)
+                return height.ToString();
+
+            //if (height == 1080)
+            //    return "1080p";
+            //else if (height == 720)
+            //    return "720p";
+            //else if (height == 480)
+            //    return "VGA";
+            //else if (height == 240)
+            //    return "QVGA";
+                
+            return String.Empty;
+        }
+
+        private void SetResolutions(bool initSelectedResolution = true)
         {
             try
             {
@@ -111,26 +128,35 @@ namespace windows_client.View
 
                 if (res != null && res.Count > 0)
                 {
-                    resolutions = res.Where(r => (r.Height == 1080 || r.Height == 720 || (r.Height == 480 && r.Width == 640) || r.Height == 240)).ToList();
+                    var resList = res.Where(r => (r.Height == 1080 || r.Height == 720 || (r.Height == 480 && r.Width == 640) || r.Height == 240)).ToList();
 
-                    if (resolutions != null && resolutions.Count > 0)
+                    if (resList != null && resList.Count > 0)
                     {
-                        try
-                        {
-                            selectedResolution = resolutions.Where(r => r.Height == 480).First();
-                        }
-                        catch
-                        {
-                            selectedResolution = resolutions.First();
-                        }
+                        resolutions = new List<Resolution>();
+
+                        foreach (var resolution in resList)
+                            resolutions.Add(new Resolution() { Size = resolution, Title = getTitleFromSize(resolution.Height) });
 
                         resolutionList.ItemsSource = resolutions;
-                        resolutionList.SelectedItem = selectedResolution;
+
+                        if (initSelectedResolution)
+                        {
+                            try
+                            {
+                                selectedResolution = resolutions.Where(r => r.Size.Height == 480).First();
+                            }
+                            catch
+                            {
+                                selectedResolution = resolutions.First();
+                            }
+
+                            resolutionList.SelectedItem = selectedResolution;
+                        }
                     }
                     else
                     {
                         resolutionGrid.Visibility = Visibility.Collapsed;
-                        selectedResolution = res.First();
+                        selectedResolution = new Resolution() { Size = res.First(), Title = String.Empty };
                     }
                 }
                 else
@@ -143,7 +169,7 @@ namespace windows_client.View
             }
         }
 
-        private void SetCameraDevices()
+        private void SetCameraDevices(bool initPrimaryCam = true)
         {
             var camList = new List<string>();
 
@@ -151,7 +177,8 @@ namespace windows_client.View
 
             if (cameraLocations != null && cameraLocations.Count > 0)
             {
-                isPrimaryCam = cameraLocations.First() == CameraSensorLocation.Back ? true : false;
+                if (initPrimaryCam)
+                    isPrimaryCam = cameraLocations.First() == CameraSensorLocation.Back ? true : false;
 
                 if (cameraLocations.Count > 1)
                 {
@@ -159,7 +186,7 @@ namespace windows_client.View
                         camList.Add(cam.ToString());
 
                     cameraList.ItemsSource = camList;
-                    cameraList.SelectedItem = camList.First();
+                    cameraList.SelectedItem = isPrimaryCam ? camList.First() : camList.Last();
                 }
                 else
                     cameraGrid.Visibility = Visibility.Collapsed;
@@ -176,7 +203,7 @@ namespace windows_client.View
         private async System.Threading.Tasks.Task UpdateRecordingSettings()
         {
             videoCaptureDevice.Dispose();
-            videoCaptureDevice = isPrimaryCam ? await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Back, selectedResolution) : await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Front, selectedResolution);
+            videoCaptureDevice = isPrimaryCam ? await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Back, selectedResolution.Size) : await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Front, selectedResolution.Size);
 
             SetUIFromResolution();
 
@@ -196,7 +223,7 @@ namespace windows_client.View
 
         private void SetUIFromResolution()
         {
-            viewfinderRectangle.Height = selectedResolution.Height > 480 ? 800 : 640;
+            viewfinderRectangle.Height = selectedResolution.Size.Height > 480 ? 800 : 640;
 
             VideoPlayer.Height = isPrimaryCam ? 1600 : 960;
             VideoPlayer.Width = isPrimaryCam ? 960 : 640;
@@ -283,7 +310,7 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-            if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
+            if (e.NavigationMode == NavigationMode.New)
             {
                 SetCameraDevices();
                 SetResolutions();
@@ -304,18 +331,33 @@ namespace windows_client.View
                     isPrimaryCam = (bool)obj;
                 
                 if (State.TryGetValue(HikeConstants.VIDEO_RESOLUTION, out obj))
-                    selectedResolution = (Windows.Foundation.Size)obj;
+                    selectedResolution = (Resolution)obj;
                 
                 if (State.TryGetValue(HikeConstants.VIDEO_THUMBNAIL, out obj))
                     thumbnail = (byte[])obj;
+
+                SetCameraDevices(false);
+                SetResolutions(false);
+
+                try
+                {
+                    resolutionList.SelectedItem = resolutions.Where(r => r.Title == selectedResolution.Title).First();
+                }
+                catch
+                {
+                    selectedResolution = resolutions.First();
+                    resolutionList.SelectedItem = selectedResolution;
+                } 
                 
-                resolutionList.SelectedItem = selectedResolution;
+                videoCaptureDevice = isPrimaryCam ? await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Back, selectedResolution.Size) : await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Front, selectedResolution.Size);
+                videoRecorderBrush.SetSource(videoCaptureDevice);
+                SetUIFromResolution();
 
                 if (thumbnail != null)
                 {
                     if (State.TryGetValue(HikeConstants.VIDEO_FRAME_BYTES, out obj))
                         _snapshotByte = (byte[])obj;
-                    
+
                     var ms = new MemoryStream(_snapshotByte);
                     var bmi = new BitmapImage();
                     bmi.SetSource(ms);
@@ -327,9 +369,9 @@ namespace windows_client.View
                     addOrRemoveAppBarButton(sendIconButton, true);
                     UpdateUI(ButtonState.Ready);
                     StartVideoPreview();
-                } 
-
-                SetUIFromResolution();
+                }
+                else
+                    UpdateUI(ButtonState.Initialized);
             }
         }
 
@@ -452,7 +494,7 @@ namespace windows_client.View
             {
                 if (videoCaptureDevice == null)
                 {
-                    videoCaptureDevice = isPrimaryCam ? await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Back, selectedResolution) : await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Front, selectedResolution);
+                    videoCaptureDevice = isPrimaryCam ? await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Back, selectedResolution.Size) : await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Front, selectedResolution.Size);
 
                     if (videoCaptureDevice != null)
                     {
@@ -515,6 +557,13 @@ namespace windows_client.View
             try
             {
                 thumbnail = null;
+
+                if (videoCaptureDevice == null)
+                {
+                    videoCaptureDevice = isPrimaryCam ? await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Back, selectedResolution.Size) : await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Front, selectedResolution.Size);
+                    videoRecorderBrush.SetSource(videoCaptureDevice);
+                }
+
                 videoCaptureDevice.PreviewFrameAvailable += videoCaptureDevice_PreviewFrameAvailable;
 
                 StorageFolder localFolder = ApplicationData.Current.LocalFolder;
@@ -740,12 +789,18 @@ namespace windows_client.View
 
             var list = sender as ListBox;
             if (list != null && list.SelectedItem != null)
-                selectedResolution = (Windows.Foundation.Size) list.SelectedItem;
+                selectedResolution = (Resolution) list.SelectedItem;
         }
 
         private void StartPlayback_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             PlayVideo();
         }
+    }
+
+    public class Resolution
+    {
+        public Windows.Foundation.Size Size { get; set; }
+        public String Title { get; set; }
     }
 }

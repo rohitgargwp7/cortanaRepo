@@ -44,7 +44,7 @@
         </MediaElement>
 
         <!--Used for debugging >-->
-        <Grid Margin="12,0,12,20" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
+        <Grid Margin="12,0,12,20" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Canvas.ZIndex="3">
             <TextBlock 
             HorizontalAlignment="Left" 
             VerticalAlignment="Bottom"
@@ -70,7 +70,7 @@
                         <ListBox MaxHeight="250" FontSize="32" x:Name="resolutionList" HorizontalAlignment="Stretch" SelectionChanged="resolutionList_SelectionChanged">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Height}" Margin="0,5"/>
+                                    <TextBlock Text="{Binding Title}" Margin="0,5"/>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
