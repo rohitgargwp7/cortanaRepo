@@ -5817,7 +5817,7 @@ namespace windows_client.View
                                  _h2hofflineToolTip = new ConvMessage();
                                  _h2hofflineToolTip.GrpParticipantState = ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP;
                                  _h2hofflineToolTip.Message = tip.Tip;
-                                 this.ocMessages.Insert(indexToInsert, _toolTipMessage);
+                                 this.ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
                                  _isStatusUpdateToolTipShown = true;
 
                                  tip.IsShown = true;
@@ -5980,12 +5980,10 @@ namespace windows_client.View
                 {
                     if (_isSendAllAsSMSVisible)
                     {
-                        if (_toolTipMessage != null)
+                        if (_h2hofflineToolTip != null)
                         {
-                            this.ocMessages.Remove(_toolTipMessage);
-
-                            if (_toolTipMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
-                                App.ViewModel.HideToolTip(null, 6);
+                            this.ocMessages.Remove(_h2hofflineToolTip);
+                            App.ViewModel.HideToolTip(null, 6);
                         }
 
                         if (mCredits > 0)
