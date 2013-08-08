@@ -44,7 +44,7 @@
         </MediaElement>
 
         <!--Used for debugging >-->
-        <Grid Margin="12,0,12,20" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
+        <Grid Margin="12,0,12,20" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Canvas.ZIndex="3">
             <TextBlock 
             HorizontalAlignment="Left" 
             VerticalAlignment="Bottom"
