@@ -554,6 +554,13 @@ namespace windows_client.View
             try
             {
                 thumbnail = null;
+
+                if (videoCaptureDevice == null)
+                {
+                    videoCaptureDevice = isPrimaryCam ? await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Back, selectedResolution.Size) : await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Front, selectedResolution.Size);
+                    videoRecorderBrush.SetSource(videoCaptureDevice);
+                }
+
                 videoCaptureDevice.PreviewFrameAvailable += videoCaptureDevice_PreviewFrameAvailable;
 
                 StorageFolder localFolder = ApplicationData.Current.LocalFolder;
