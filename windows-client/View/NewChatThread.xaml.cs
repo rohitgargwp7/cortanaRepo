@@ -1000,14 +1000,14 @@ namespace windows_client.View
             if (!App.appSettings.Contains(App.LAST_SEEN_SEETING))
             {
                 BackgroundWorker _worker = new BackgroundWorker();
-                
+
                 _worker.DoWork += (ss, ee) =>
                 {
                     var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
                     if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
                         _lastSeenHelper.requestLastSeen(mContactNumber);
                 };
-               
+
                 _worker.RunWorkerAsync();
             }
 
@@ -2951,7 +2951,7 @@ namespace windows_client.View
         private static bool abc = true;
         private static bool isReleaseMode = true;
 
-        
+
 
         private void SendImage(BitmapImage image, string fileName)
         {
@@ -3830,12 +3830,12 @@ namespace windows_client.View
                                 if (lastSeenTxt.Text != AppResources.Online)
                                 {
                                     var worker = new BackgroundWorker();
-                                 
+
                                     worker.DoWork += (s, e) =>
                                     {
                                         StartForceSMSTimer(true);
                                     };
-                                    
+
                                     worker.RunWorkerAsync();
                                 }
                             });
@@ -4942,15 +4942,10 @@ namespace windows_client.View
             imgTroll.Source = UI_Utils.Instance.TrollInactive;
 
             stickerPivot.ShowStickers();
-            if (stickerCategory.HasMoreStickers)
-            {
-                downloadStickers_Tap(null, null);
-            }
-            if (stickerCategory.HasNewMessages)
-            {
-                stCategory1.BorderThickness = zeroThickness;
-                StickerCategory.UpdateHasMoreMessages(_selectedCategory, stickerCategory.HasNewMessages, false);
-            }
+
+            if (stickerCategory.ShowDownloadMessage)
+                stickerCategory.SetDownloadMessage(false);
+
             if (App.appSettings.Contains(HikeConstants.AppSettings.SHOW_DOGGY_OVERLAY))
             {
                 ShowDownloadOverlay(true);
@@ -4975,12 +4970,6 @@ namespace windows_client.View
             imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
             imgTroll.Source = UI_Utils.Instance.TrollInactive;
 
-            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
-            if (stickerCategory.HasNewMessages)
-            {
-                stCategory2.BorderThickness = zeroThickness;
-                StickerCategory.UpdateHasMoreMessages(_selectedCategory, stickerCategory.HasNewMessages, false);
-            }
             CategoryTap(StickerHelper.CATEGORY_KITTY);
         }
 
@@ -5001,12 +4990,6 @@ namespace windows_client.View
             imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
             imgTroll.Source = UI_Utils.Instance.TrollInactive;
 
-            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
-            if (stickerCategory.HasNewMessages)
-            {
-                stCategory3.BorderThickness = zeroThickness;
-                StickerCategory.UpdateHasMoreMessages(_selectedCategory, stickerCategory.HasNewMessages, false);
-            }
             CategoryTap(StickerHelper.CATEGORY_EXPRESSIONS);
         }
 
@@ -5027,14 +5010,7 @@ namespace windows_client.View
             imgBolly.Source = UI_Utils.Instance.BollywoodActive;
             imgTroll.Source = UI_Utils.Instance.TrollInactive;
 
-            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
-            if (stickerCategory.HasNewMessages)
-            {
-                stCategory4.BorderThickness = zeroThickness;
-                StickerCategory.UpdateHasMoreMessages(_selectedCategory, stickerCategory.HasNewMessages, false);
-            }
             CategoryTap(StickerHelper.CATEGORY_BOLLYWOOD);
-
         }
 
         private void Category5_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -5054,12 +5030,6 @@ namespace windows_client.View
             imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
             imgTroll.Source = UI_Utils.Instance.TrollActive;
 
-            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
-            if (stickerCategory.HasNewMessages)
-            {
-                stCategory5.BorderThickness = zeroThickness;
-                StickerCategory.UpdateHasMoreMessages(_selectedCategory, stickerCategory.HasNewMessages, false);
-            }
             CategoryTap(StickerHelper.CATEGORY_TROLL);
         }
 
@@ -5069,6 +5039,11 @@ namespace windows_client.View
             pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
 
             StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
+
+            if (stickerCategory.ShowDownloadMessage || (stickerCategory.HasNewStickers && !stickerCategory.HasMoreStickers))
+            {
+                HideNewStickerUI(stickerCategory, true);
+            }
 
             if (stickerCategory.ShowDownloadMessage)
             {
@@ -5090,6 +5065,61 @@ namespace windows_client.View
             else
             {
                 stickerPivot.ShowStickers();
+            }
+        }
+
+        private void HideNewStickerUI(StickerCategory stickerCategory, bool updateFile)
+        {
+            if (stickerCategory != null)
+            {
+                switch (stickerCategory.Category)
+                {
+                    case StickerHelper.CATEGORY_DOGGY:
+                        stCategory1.BorderThickness = zeroThickness;
+                        break;
+                    case StickerHelper.CATEGORY_KITTY:
+                        stCategory2.BorderThickness = zeroThickness;
+                        break;
+                    case StickerHelper.CATEGORY_EXPRESSIONS:
+                        stCategory3.BorderThickness = zeroThickness;
+                        break;
+                    case StickerHelper.CATEGORY_BOLLYWOOD:
+                        stCategory4.BorderThickness = zeroThickness;
+                        break;
+                    case StickerHelper.CATEGORY_TROLL:
+                        stCategory5.BorderThickness = zeroThickness;
+                        break;
+                }
+                if (updateFile)
+                {
+                    //use bw
+                    StickerCategory.UpdateHasMoreMessages(_selectedCategory, stickerCategory.HasMoreStickers, false);
+                }
+            }
+        }
+
+        private void ShowNewStickerUi(StickerCategory stickerCategory)
+        {
+            if (stickerCategory != null)
+            {
+                switch (stickerCategory.Category)
+                {
+                    case StickerHelper.CATEGORY_DOGGY:
+                        stCategory1.BorderThickness = newCategoryThickness;
+                        break;
+                    case StickerHelper.CATEGORY_KITTY:
+                        stCategory2.BorderThickness = newCategoryThickness;
+                        break;
+                    case StickerHelper.CATEGORY_EXPRESSIONS:
+                        stCategory3.BorderThickness = newCategoryThickness;
+                        break;
+                    case StickerHelper.CATEGORY_BOLLYWOOD:
+                        stCategory4.BorderThickness = newCategoryThickness;
+                        break;
+                    case StickerHelper.CATEGORY_TROLL:
+                        stCategory5.BorderThickness = newCategoryThickness;
+                        break;
+                }
             }
         }
 
@@ -5210,6 +5240,16 @@ namespace windows_client.View
                         listLowResStickersBytes.Add(new KeyValuePair<string, byte[]>(stickerId, lowResImageBytes));
                         stickerCategory.ListStickers.Add(new Sticker(category, stickerId, UI_Utils.Instance.createImageFromBytes(lowResImageBytes)));
                     }
+                    if (convMessage != null)
+                    {
+                        stickerCategory.HasNewStickers = true;
+                        ShowNewStickerUi(stickerCategory);
+                    }
+                    else
+                    {
+                        stickerCategory.HasNewStickers = false;
+                        HideNewStickerUI(stickerCategory, false);
+                    }
                     stickerCategory.WriteLowResToFile(listLowResStickersBytes, hasMoreStickers);
 
                     if (stickerCategory != null)
@@ -5323,30 +5363,31 @@ namespace windows_client.View
             //done thos way to maintain order of insertion
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
             {
-                if (stickerCategory.HasNewMessages)
-                    stCategory1.BorderThickness = newCategoryThickness;
+                if (stickerCategory.HasNewStickers)
+                    ShowNewStickerUi(stickerCategory);
             }
 
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
             {
                 stCategory2.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewMessages)
-                    stCategory2.BorderThickness = newCategoryThickness;
+                if (stickerCategory.HasNewStickers)
+                    ShowNewStickerUi(stickerCategory);
             }
 
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
             {
                 stCategory3.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewMessages)
-                    stCategory3.BorderThickness = newCategoryThickness;
+                if (stickerCategory.HasNewStickers)
+                    ShowNewStickerUi(stickerCategory);
+
             }
 
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null
                 && Utils.IsBollywoodVisible)
             {
                 stCategory4.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewMessages)
-                    stCategory4.BorderThickness = newCategoryThickness;
+                if (stickerCategory.HasNewStickers)
+                    ShowNewStickerUi(stickerCategory);
                 ColumnDefinition colDef = new ColumnDefinition();
                 gridStickerPivot.ColumnDefinitions.Add(colDef);
                 stCategory5.SetValue(Grid.ColumnProperty, 5);
@@ -5357,8 +5398,8 @@ namespace windows_client.View
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
             {
                 stCategory5.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewMessages)
-                    stCategory5.BorderThickness = newCategoryThickness;
+                if (stickerCategory.HasNewStickers)
+                    ShowNewStickerUi(stickerCategory);
             }
 
         }
@@ -5740,7 +5781,7 @@ namespace windows_client.View
                                where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
                                select message);
 
-                 _lastUnDeliveredMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
+                _lastUnDeliveredMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
 
                 if (_lastUnDeliveredMessage != null)
                 {
