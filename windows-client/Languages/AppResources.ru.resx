@@ -389,10 +389,6 @@
     <value>принять</value>
     <comment>accept button in appbar</comment>
   </data>
-  <data name="Messaging_Made_Personal_Txt" xml:space="preserve">
-    <value>Обмен сообщениями снова стал личным делом</value>
-    <comment>This is text below hike logo on welcome screen.</comment>
-  </data>
   <data name="WelcomePage_PushMsg_TxtBlk" xml:space="preserve">
     <value>Push-уведомления включены по умолчанию</value>
     <comment>Push Notification msg</comment>
@@ -875,7 +871,7 @@ hike включает уморительные смайлы и позволяе�
     <value>Доступно обновление</value>
   </data>
   <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
-    <value>Обновите hike, чтобы обогатить возможности своего общения</value>
+    <value>Обновите версию hike, чтобы открыть для себя удивительные новые способы обмена сообщениями</value>
   </data>
   <data name="Owner_Txt" xml:space="preserve">
     <value>владелец</value>
@@ -885,7 +881,7 @@ hike включает уморительные смайлы и позволяе�
     <comment>General Text</comment>
   </data>
   <data name="ShareLocation_LocationServiceNotEnabled_Txt" xml:space="preserve">
-    <value>Служба поиска местоположения недоступна на этом устройстве.</value>
+    <value>Служба геолокации отключена на вашем устройстве. Включите ее в настройках телефона.</value>
     <comment>cs</comment>
   </data>
   <data name="ShareLocation_LocationServiceWorking_Txt" xml:space="preserve">
@@ -907,10 +903,6 @@ hike включает уморительные смайлы и позволяе�
   <data name="SocialPages_UnableToRetrieveToken_Txt" xml:space="preserve">
     <value>Не удается получить токен.</value>
     <comment>cs</comment>
-  </data>
-  <data name="Social_Invite_Txt" xml:space="preserve">
-    <value>Я использую @hikeapp 2.0 с обновлениями статуса и настроениями. Это что-то вроде BBM, но гораздо лучше! Загрузи hike с http://get.hike.in #gethike</value>
-    <comment>This is used in case of Facebook and Twitter</comment>
   </data>
   <data name="Social_Txt" xml:space="preserve">
     <value>Социальные сети</value>
@@ -1024,7 +1016,7 @@ hike включает уморительные смайлы и позволяе�
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailSubject" xml:space="preserve">
-    <value>Отзыв на WP7</value>
+    <value>Отзыв о WP8</value>
     <comment>email compose task subject (cs)</comment>
   </data>
   <data name="Help_FAQsTitle" xml:space="preserve">
@@ -1248,7 +1240,7 @@ hike включает уморительные смайлы и позволяе�
     <value>Обновить список контактов</value>
   </data>
   <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>Добавил(а) вас в свой круг друзей</value>
+    <value>Добавил(а) вас в круг друзей</value>
     <comment>for friend requests in wp8</comment>
   </data>
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
@@ -1353,13 +1345,13 @@ hike включает уморительные смайлы и позволяе�
     <value>без hike с помощью бесплатных SMS</value>
   </data>
   <data name="MessagingHikeFriendsFree_Txt" xml:space="preserve">
-    <value>Бесплатный и неограниченный чат с друзьями по hike.</value>
+    <value>Бесплатный и неограниченный чат с друзьями по hike. #hikeerror &amp;</value>
   </data>
   <data name="ReadyToHike_Txt" xml:space="preserve">
     <value>Готов(а) общаться по hike...</value>
   </data>
   <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
-    <value>Поделиться в Facebook и Твиттере</value>
+    <value>Поделиться в Facebook и Твиттере #hikeerror &amp;</value>
   </data>
   <data name="FB_Connect_Txt" xml:space="preserve">
     <value>Подключиться с Facebook</value>
@@ -1409,7 +1401,7 @@ hike включает уморительные смайлы и позволяе�
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>{0} добавил(а) вас в свой круг друзей</value>
+    <value>{0} добавил(а) вас в круг друзей</value>
     <comment>{0} will be replaced by username</comment>
   </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
@@ -1597,7 +1589,7 @@ hike включает уморительные смайлы и позволяе�
     <value>Не удается удалить ваш статус.</value>
   </data>
   <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
-    <value>Добавить в контакты</value>
+    <value>добавить контакт</value>
   </data>
   <data name="SettingsSubtitle_Account_Txt" xml:space="preserve">
     <value>Аккаунт</value>
@@ -1656,7 +1648,7 @@ hike включает уморительные смайлы и позволяе�
     <comment>Long press to start audio recording</comment>
   </data>
   <data name="Release_To_Send" xml:space="preserve">
-    <value>Отпуст., чтобы отпр.</value>
+    <value>Отпуст. для отпр.</value>
     <comment>Release to send recorded data</comment>
   </data>
   <data name="BlockList_Text" xml:space="preserve">
@@ -1667,10 +1659,10 @@ hike включает уморительные смайлы и позволяе�
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>Показать последнего раза в сети</value>
+    <value>Показывать, когда был(а) в последний раз в сети</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
-    <value>В последний раз в сети:</value>
+    <value>посл. раз в сети</value>
   </data>
   <data name="Online" xml:space="preserve">
     <value>в сети</value>
@@ -1682,10 +1674,10 @@ hike включает уморительные смайлы и позволяе�
     <value>Настройки</value>
   </data>
   <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
-    <value>Настройки вашего аккаунта</value>
+    <value>Настройки аккаунта</value>
   </data>
   <data name="Drag_Here_To_Delete" xml:space="preserve">
-    <value>Перетащ., чтобы удал</value>
+    <value>Перетащ. для удаления</value>
     <comment>Drag to a specified area to delete ongoing recording</comment>
   </data>
   <data name="Message_Cancelled" xml:space="preserve">
@@ -1697,7 +1689,7 @@ hike включает уморительные смайлы и позволяе�
     <comment>Message is too short to be sent</comment>
   </data>
   <data name="In_App_Tip_1" xml:space="preserve">
-    <value>Нажмите здесь для выбора стикеров и смайликов :)</value>
+    <value>Нажмите здесь для выбора стикеров и эмотиконов :)</value>
   </data>
   <data name="In_App_Tip_2" xml:space="preserve">
     <value>Новые стикеры!</value>
@@ -1706,7 +1698,7 @@ hike включает уморительные смайлы и позволяе�
     <value>Нажмите здесь, чтобы использовать уоки-токи в hike!</value>
   </data>
   <data name="In_App_Tip_4" xml:space="preserve">
-    <value>Нажмите здесь, чтобы прикрепить смайлик :)</value>
+    <value>Нажмите здесь, чтобы добавить индикатор насроения :)</value>
   </data>
   <data name="In_App_Tip_5" xml:space="preserve">
     <value>Обновление статуса, опубликованное пользователем {0}</value>
@@ -1737,7 +1729,7 @@ hike включает уморительные смайлы и позволяе�
     <value>Приглашение отправлено</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
-    <value>{0} снова в hike. Поприветствуйте :)</value>
+    <value>{0} снова в hike. Поздоровайтесь :)</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="StickersTut_TxtBlk1" xml:space="preserve">
@@ -1749,7 +1741,7 @@ hike включает уморительные смайлы и позволяе�
     <comment>StickersTut_TxtBlk1-&gt;StickersTut_TxtBlk2(50)</comment>
   </data>
   <data name="WelcomeTut_TxtBlk1" xml:space="preserve">
-    <value>Теперь можно публиковать</value>
+    <value>Теперь вы можете публиковать</value>
     <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
@@ -1757,14 +1749,14 @@ hike включает уморительные смайлы и позволяе�
     <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
-    <value>Теперь вы сможете видеть обновления статуса пользователя {0}.</value>
+    <value>Теперь вы можете видеть обновления статуса пользователя {0}.</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendUserProfile_Txt" xml:space="preserve">
-    <value>Теперь вы сможете видеть обновления статуса друг друга.</value>
+    <value>Теперь вы можете видеть обновления статуса друг друга.</value>
   </data>
   <data name="In_App_Tip_6" xml:space="preserve">
-    <value>Только ваши друзья будут видеть, когда вы в последний раз были в сети.</value>
+    <value>Только ваши друзья могут видеть, когда вы в последний раз были в сети.</value>
   </data>
   <data name="DownloadingSticker_txt" xml:space="preserve">
     <value>загрузка стикера</value>
@@ -1778,7 +1770,7 @@ hike включает уморительные смайлы и позволяе�
     <comment>length-4 fixed</comment>
   </data>
   <data name="InternetChargesMayApply_txt" xml:space="preserve">
-    <value>*Возможна плата за мобиль. Интернет</value>
+    <value>*Возможна плата за моб. Интернет</value>
   </data>
   <data name="StickerDownloadFailed" xml:space="preserve">
     <value>Не удалось загруз. стикер.</value>
@@ -1792,32 +1784,145 @@ hike включает уморительные смайлы и позволяе�
   <data name="Please_Retry_Later" xml:space="preserve">
     <value>Повторите попытку позже</value>
   </data>
+  <data name="Installed_Txt" xml:space="preserve">
+    <value>Установлено</value>
+  </data>
   <data name="sms_invite_message_1" xml:space="preserve">
-    <value>Привет! Я использую приложение для чата hike с множеством стикеров и смайликов. Его можно загрузить с http://hike.in/</value>
+    <value>Привет! Я использую приложение для чата hike с множеством стикеров и эмотиконов. Его можно загрузить с сайта http://hike.in/</value>
   </data>
   <data name="sms_invite_message_2" xml:space="preserve">
-    <value>Привет! Я использую приложение для чата hike, позволяющее показывать свой сетевой статус только друзьям. Загрузить можно с http://hike.in/</value>
+    <value>Привет! Я использую приложение для чата hike, которое позволяет показывать сетевой статус только друзьям. Загрузить можно с http://hike.in/</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="sms_invite_message_3" xml:space="preserve">
     <value>Привет! Я использую приложение для чата hike, позволяющее отправлять голосовые сообщения. Его можно загрузить с http://hike.in/</value>
   </data>
-  <data name="Button_Retry_Txt" xml:space="preserve">
-    <value>Повторить</value>
+  <data name="Last_Seen_Today_At" xml:space="preserve">
+    <value>посл. раз в сети сегодня</value>
   </data>
-  <data name="DownloadFailed_Txt" xml:space="preserve">
-    <value>Ой! Не удалось загрузить</value>
+  <data name="Last_Seen_Yesterday_At" xml:space="preserve">
+    <value>посл.раз в сети вчера</value>
   </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
     <value>Удобный бесплатный чат для повседневного общения</value>
   </data>
-  <data name="Last_Seen_Today_At" xml:space="preserve">
-    <value>В последний раз в сети: сегодня в</value>
+  <data name="Button_Retry_Txt" xml:space="preserve">
+    <value>Повторить</value>
   </data>
-  <data name="Last_Seen_Yesterday_At" xml:space="preserve">
-    <value>В последний раз в сети: вчера в</value>
+  <data name="DownloadFailed_Txt" xml:space="preserve">
+    <value>Ошибка загрузки</value>
   </data>
-  <data name="Installed_Txt" xml:space="preserve">
-    <value>установлены</value>
+  <data name="Send_As_Sms" xml:space="preserve">
+    <value>отправить как hike sms</value>
+  </data>
+  <data name="SelectUser_Forward_To_Txt" xml:space="preserve">
+    <value>Переадресация:</value>
+    <comment>verb(length 12)</comment>
+  </data>
+  <data name="Send_All_As_SMS" xml:space="preserve">
+    <value>{0} не в сети, нажмите здесь для отправки как hike sms</value>
+  </data>
+  <data name="H2HOfline_0SMS_Message" xml:space="preserve">
+    <value>У вас осталось 0 бесплатных SMS. Вы можете пригласить друзей в hike, чтобы получить дополнительные SMS</value>
+  </data>
+  <data name="H2HOfline_Confirmation_Message" xml:space="preserve">
+    <value>Необработанные сообщения будут отправлены как hike SMS</value>
+  </data>
+  <data name="H2HOfline_Confirmation_Message_Heading" xml:space="preserve">
+    <value>Отправить как hike SMS</value>
+  </data>
+  <data name="On_Dnd_Txt" xml:space="preserve">
+    <value>в DND</value>
+  </data>
+  <data name="Mute_Success_Txt" xml:space="preserve">
+    <value>Уведомления об обновлении статуса выключены</value>
+  </data>
+  <data name="Unmute_Success_Txt" xml:space="preserve">
+    <value>Уведомления об обновлении статуса включены</value>
+  </data>
+  <data name="My_Location_Text" xml:space="preserve">
+    <value>Мое местоположение</value>
+  </data>
+  <data name="Send_All_As_SMS_Group" xml:space="preserve">
+    <value>Нажмите здесь, чтобы отправить как hike sms</value>
+  </data>
+  <data name="StatusNotToggle_Caption_Txt" xml:space="preserve">
+    <value>Уведомления об обновлении статуса</value>
+  </data>
+  <data name="Location_Unavailable_Heading" xml:space="preserve">
+    <value>Местоположение недоступно</value>
+  </data>
+  <data name="Settings_LocationToggleSwitchHeader" xml:space="preserve">
+    <value>Использовать службы поиска</value>
+  </data>
+  <data name="ShareLocation_LocationSettingsNotEnabled_Txt" xml:space="preserve">
+    <value>Службы поиска Hike отключены. Включить их?</value>
+  </data>
+  <data name="ViewMessage_Title_txt" xml:space="preserve">
+    <value>сообщение</value>
+    <comment>page heading(view one single message)</comment>
+  </data>
+  <data name="Mood_BeautySaloon" xml:space="preserve">
+    <value>Салон красоты</value>
+  </data>
+  <data name="Mood_Cooking" xml:space="preserve">
+    <value>Готовлю</value>
+  </data>
+  <data name="Mood_Eating" xml:space="preserve">
+    <value>Ем</value>
+  </data>
+  <data name="Mood_Music" xml:space="preserve">
+    <value>Слушаю музыку</value>
+  </data>
+  <data name="Mood_PartyingHard" xml:space="preserve">
+    <value>Отрываюсь на вечеринке</value>
+  </data>
+  <data name="Mood_Singing" xml:space="preserve">
+    <value>Пою</value>
+  </data>
+  <data name="Mood_WorkingOut" xml:space="preserve">
+    <value>Тренируюсь</value>
+  </data>
+  <data name="ViewFullMessage_Txt" xml:space="preserve">
+    <value>Полное сообщение</value>
+  </data>
+  <data name="File_Not_Exist_Caption" xml:space="preserve">
+    <value>Истек срок хранения файла</value>
+  </data>
+  <data name="File_Not_Exist_Message" xml:space="preserve">
+    <value>Этот файла больше нет на сервере. Вы можете попросить друга отправить его повторно.</value>
+  </data>
+  <data name="ChatThread_1NewMessage_txt" xml:space="preserve">
+    <value>1 новое сообщение</value>
+  </data>
+  <data name="ChatThread_JumpToLatest" xml:space="preserve">
+    <value>Последнее</value>
+  </data>
+  <data name="ChatThread_More_NewMessages_txt" xml:space="preserve">
+    <value>{0} новых сообщений</value>
+    <comment>{0} would be replaced by number</comment>
+  </data>
+  <data name="SelectUser_Header_AddParticipant_Txt" xml:space="preserve">
+    <value>ДОБАВИТЬ УЧАСТНИКОВ</value>
+    <comment>max length(16)</comment>
+  </data>
+  <data name="SelectUser_Title_AddParticipant_Txt" xml:space="preserve">
+    <value>в группу</value>
+    <comment>max length(8)</comment>
+  </data>
+  <data name="Location_Disabled_Heading" xml:space="preserve">
+    <value>Геолокация отключена</value>
+  </data>
+  <data name="Camera_Label" xml:space="preserve">
+    <value>Камера:</value>
+  </data>
+  <data name="In_App_Tip_7" xml:space="preserve">
+    <value>Теперь можно отправлять сообщения контактам hike, не находящимся в сети! Нажмите и удерживайте сообщение, чтобы отправить его как Hike SMS</value>
+  </data>
+  <data name="Reolution_Label" xml:space="preserve">
+    <value>Разрешение:</value>
+  </data>
+  <data name="Video_Settings" xml:space="preserve">
+    <value>параметры видео</value>
   </data>
 </root>
