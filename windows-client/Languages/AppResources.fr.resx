@@ -302,7 +302,7 @@
     <comment>Page title msg (xaml file)</comment>
   </data>
   <data name="EnterPin_SMSError_TxtBlk" xml:space="preserve">
-    <value>Tu n'as pas reçu de SMS ?</value>
+    <value>Tu n'as reçu aucun SMS ?</value>
     <comment>Did not receive sms (xaml)</comment>
   </data>
   <data name="EnterPin_Taphere_TxtBlk" xml:space="preserve">
@@ -310,7 +310,7 @@
     <comment>xaml</comment>
   </data>
   <data name="EnterPin_WrongNumMsg_TxtBlk" xml:space="preserve">
-    <value>Tu as saisi un mauvais numéro ?</value>
+    <value>Erreur de numéro ?</value>
     <comment>xaml</comment>
   </data>
   <data name="GrpChat_Txt" xml:space="preserve">
@@ -388,10 +388,6 @@
   <data name="WelcomePage_Accept_AppBar" xml:space="preserve">
     <value>accepter</value>
     <comment>accept button in appbar</comment>
-  </data>
-  <data name="Messaging_Made_Personal_Txt" xml:space="preserve">
-    <value>Et la messagerie redevient personnelle</value>
-    <comment>This is text below hike logo on welcome screen.</comment>
   </data>
   <data name="WelcomePage_PushMsg_TxtBlk" xml:space="preserve">
     <value>Alertes push activées par défaut</value>
@@ -875,7 +871,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>Mise à j. disponible</value>
   </data>
   <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
-    <value>Mettez hike à jour pour découvrir des façons inédites d’envoyer des messages</value>
+    <value>Passe à la nouvelle version de hike et découvre de nouvelles façons d'envoyer des messages</value>
   </data>
   <data name="Owner_Txt" xml:space="preserve">
     <value>Propriétaire</value>
@@ -885,7 +881,7 @@ Télécharge hike : http://get.hike.in</value>
     <comment>General Text</comment>
   </data>
   <data name="ShareLocation_LocationServiceNotEnabled_Txt" xml:space="preserve">
-    <value>Service de localisation non activé sur l'appareil.</value>
+    <value>Le service de localisation est désactivé sur ton appareil. Active-le dans les réglages de ton téléphone.</value>
     <comment>cs</comment>
   </data>
   <data name="ShareLocation_LocationServiceWorking_Txt" xml:space="preserve">
@@ -907,10 +903,6 @@ Télécharge hike : http://get.hike.in</value>
   <data name="SocialPages_UnableToRetrieveToken_Txt" xml:space="preserve">
     <value>Impossible de récupérer l'identifiant de demande.</value>
     <comment>cs</comment>
-  </data>
-  <data name="Social_Invite_Txt" xml:space="preserve">
-    <value>J'utilise @hikeapp 2.0 avec mises à jour de statut et humeurs. C'est comme BBM mais en mieux ! Télécharge hike sur http://get.hike.in #gethike</value>
-    <comment>This is used in case of Facebook and Twitter</comment>
   </data>
   <data name="Social_Txt" xml:space="preserve">
     <value>Social</value>
@@ -1024,7 +1016,7 @@ Télécharge hike : http://get.hike.in</value>
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailSubject" xml:space="preserve">
-    <value>Commentaire sur WP7</value>
+    <value>Commentaires sur WP8</value>
     <comment>email compose task subject (cs)</comment>
   </data>
   <data name="Help_FAQsTitle" xml:space="preserve">
@@ -1176,7 +1168,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>Hiker</value>
   </data>
   <data name="Nudge_Exclamation" xml:space="preserve">
-    <value>Hike !</value>
+    <value>Hiker !</value>
   </data>
   <data name="Nudge_Tute" xml:space="preserve">
     <value>Touche vite deux fois n'importe où sur le tchat pour hiker ton ami.</value>
@@ -1248,7 +1240,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>Actualiser liste de contacts</value>
   </data>
   <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>Vous a ajouté à son cercle d'amis</value>
+    <value>T'a ajouté(e) à son cercle d'amis</value>
     <comment>for friend requests in wp8</comment>
   </data>
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
@@ -1320,7 +1312,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>État système</value>
   </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
-    <value>Infos de contact</value>
+    <value>Infos contact</value>
   </data>
   <data name="Attachment_Audio_Txt" xml:space="preserve">
     <value>Envoyer audio</value>
@@ -1353,13 +1345,13 @@ Télécharge hike : http://get.hike.in</value>
     <value>sur hike grâce à des SMS hike gratuits</value>
   </data>
   <data name="MessagingHikeFriendsFree_Txt" xml:space="preserve">
-    <value>Écris à tes amis hike, c'est gratuit et illimité.</value>
+    <value>Écris à tes amis hike, c'est gratuit &amp; illimité.</value>
   </data>
   <data name="ReadyToHike_Txt" xml:space="preserve">
     <value>Prépare-toi pour hike...</value>
   </data>
   <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
-    <value>Partager sur Facebook et Twitter</value>
+    <value>Partager sur Facebook &amp; Twitter</value>
   </data>
   <data name="FB_Connect_Txt" xml:space="preserve">
     <value>Se connecter par Facebook</value>
@@ -1409,7 +1401,7 @@ Télécharge hike : http://get.hike.in</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>{0} vous a ajouté à son cercle d'amis</value>
+    <value>{0} t'a ajouté(e) à son cercle d'amis</value>
     <comment>{0} will be replaced by username</comment>
   </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
@@ -1454,7 +1446,7 @@ Télécharge hike : http://get.hike.in</value>
     <comment>Used in add to block functionality, {0} will be replaced by block/unblock</comment>
   </data>
   <data name="Conversations_BtnUpdateStatus_Txt" xml:space="preserve">
-    <value>Statut mise à j.</value>
+    <value>Statut mise à jour</value>
   </data>
   <data name="Conversations_EmptyStatus_AskPostStatus_Txt" xml:space="preserve">
     <value>Il semble que tu n'aies pas encore publié de mise à jour de statut.</value>
@@ -1474,7 +1466,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>Publier une mise à jour de statut</value>
   </data>
   <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
-    <value>Alerte de mises à jour de statuts</value>
+    <value>Alerte de mise à jour du statut</value>
   </data>
   <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
     <value>Toutes les heures</value>
@@ -1597,7 +1589,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>Impossible de supprimer ton statut.</value>
   </data>
   <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
-    <value>Ajout aux contacts</value>
+    <value>ajouter contact</value>
   </data>
   <data name="SettingsSubtitle_Account_Txt" xml:space="preserve">
     <value>Compte</value>
@@ -1682,7 +1674,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>Préférences</value>
   </data>
   <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
-    <value>Préférences de votre compte</value>
+    <value>Préférences de ton compte</value>
   </data>
   <data name="Drag_Here_To_Delete" xml:space="preserve">
     <value>Tirer ici pour supp.</value>
@@ -1737,11 +1729,11 @@ Télécharge hike : http://get.hike.in</value>
     <value>Invitation envoyée</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
-    <value>{0} revient sur hike. Dites-lui bonjour :)</value>
+    <value>{0} revient sur hike. Dis-lui bonjour :)</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="StickersTut_TxtBlk1" xml:space="preserve">
-    <value>Exprimez-vous encore mieux avec</value>
+    <value>Exprime-toi encore mieux avec</value>
     <comment>continued string -&gt;StickersTut_TxtBlk2(50)</comment>
   </data>
   <data name="StickersTut_TxtBlk2" xml:space="preserve">
@@ -1749,22 +1741,22 @@ Télécharge hike : http://get.hike.in</value>
     <comment>StickersTut_TxtBlk1-&gt;StickersTut_TxtBlk2(50)</comment>
   </data>
   <data name="WelcomeTut_TxtBlk1" xml:space="preserve">
-    <value>Partagez désormais les mises à jour de votre</value>
+    <value>Partage désormais les mises à jour de ton</value>
     <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
-    <value>statut avec votre cercle d'amis.</value>
+    <value>statut avec ton cercle d'amis.</value>
     <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
-    <value>Vous pourrez voir ici les mises à jour de {0}.</value>
+    <value>Tu pourras voir ici les mises à jour de {0}.</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendUserProfile_Txt" xml:space="preserve">
     <value>Vous pourrez voir vos mises à jour respectives</value>
   </data>
   <data name="In_App_Tip_6" xml:space="preserve">
-    <value>Seul votre cercle d'amis pourra savoir à quand remonter votre dernière connexion</value>
+    <value>Seul ton cercle d'amis pourra savoir à quand remonte ta dernière connexion</value>
   </data>
   <data name="DownloadingSticker_txt" xml:space="preserve">
     <value>chargement sticker...</value>
@@ -1790,7 +1782,10 @@ Télécharge hike : http://get.hike.in</value>
     <value>Impossible d'envoyer l'invitation.</value>
   </data>
   <data name="Please_Retry_Later" xml:space="preserve">
-    <value>Réessayez plus tard</value>
+    <value>Réessaie plus tard</value>
+  </data>
+  <data name="Installed_Txt" xml:space="preserve">
+    <value>Installé</value>
   </data>
   <data name="sms_invite_message_1" xml:space="preserve">
     <value>Salut ! J'utilise hike, qui propose de superbes stickers et émoticônes que je voudrais partager avec toi. Pour l'obtenir : http://hike.in/</value>
@@ -1802,22 +1797,132 @@ Télécharge hike : http://get.hike.in</value>
   <data name="sms_invite_message_3" xml:space="preserve">
     <value>Salut ! J'utilise hike, qui propose un walkie-talkie grâce auquel je t'envoie des messages vocaux gratuits. Pour l'obtenir : http://hike.in/</value>
   </data>
-  <data name="Button_Retry_Txt" xml:space="preserve">
-    <value>Réessayer</value>
-  </data>
-  <data name="DownloadFailed_Txt" xml:space="preserve">
-    <value>Oups ! Le téléchargement a échoué</value>
-  </data>
-  <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
-    <value>Une messagerie fun et gratuite</value>
-  </data>
   <data name="Last_Seen_Today_At" xml:space="preserve">
-    <value>dernière connexion aujour’dhui à</value>
+    <value>dernière connexion aujourd'hui à</value>
   </data>
   <data name="Last_Seen_Yesterday_At" xml:space="preserve">
     <value>dernière connexion hier à</value>
   </data>
-  <data name="Installed_Txt" xml:space="preserve">
-    <value>installé</value>
+  <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
+    <value>Une messagerie fun et gratuite</value>
+  </data>
+  <data name="Button_Retry_Txt" xml:space="preserve">
+    <value>Réessayer</value>
+  </data>
+  <data name="DownloadFailed_Txt" xml:space="preserve">
+    <value>Oups ! Le téléchargement a échoué</value>
+  </data>
+  <data name="Send_As_Sms" xml:space="preserve">
+    <value>envoyer comme sms hike</value>
+  </data>
+  <data name="SelectUser_Forward_To_Txt" xml:space="preserve">
+    <value>Transférer</value>
+    <comment>verb(length 12)</comment>
+  </data>
+  <data name="Send_All_As_SMS" xml:space="preserve">
+    <value>{0} hors ligne, touche pour envoyer comme sms hike</value>
+  </data>
+  <data name="H2HOfline_0SMS_Message" xml:space="preserve">
+    <value>Tu n'as plus de SMS gratuits. Invite tes amis à rejoindre hike et gagne des SMS gratuits.</value>
+  </data>
+  <data name="H2HOfline_Confirmation_Message" xml:space="preserve">
+    <value>Les messages en attente seront envoyés sous forme de SMS hike gratuits.</value>
+  </data>
+  <data name="H2HOfline_Confirmation_Message_Heading" xml:space="preserve">
+    <value>Envoyer comme SMS hike</value>
+  </data>
+  <data name="On_Dnd_Txt" xml:space="preserve">
+    <value>sur DND</value>
+  </data>
+  <data name="Mute_Success_Txt" xml:space="preserve">
+    <value>Les alertes de mise à jour du statut sont désactivées</value>
+  </data>
+  <data name="Unmute_Success_Txt" xml:space="preserve">
+    <value>Les alertes de mise à jour du statut sont activées</value>
+  </data>
+  <data name="My_Location_Text" xml:space="preserve">
+    <value>Ma position</value>
+  </data>
+  <data name="Send_All_As_SMS_Group" xml:space="preserve">
+    <value>Touche pour envoyer comme sms hike</value>
+  </data>
+  <data name="StatusNotToggle_Caption_Txt" xml:space="preserve">
+    <value>Alertes de mise à jour du statut</value>
+  </data>
+  <data name="Location_Unavailable_Heading" xml:space="preserve">
+    <value>Position indisponible</value>
+  </data>
+  <data name="Settings_LocationToggleSwitchHeader" xml:space="preserve">
+    <value>Utilise service de localisation</value>
+  </data>
+  <data name="ShareLocation_LocationSettingsNotEnabled_Txt" xml:space="preserve">
+    <value>La localisation hike est désactivée. Veux-tu l'activer ?</value>
+  </data>
+  <data name="ViewMessage_Title_txt" xml:space="preserve">
+    <value>message</value>
+    <comment>page heading(view one single message)</comment>
+  </data>
+  <data name="Mood_BeautySaloon" xml:space="preserve">
+    <value>Salon de beauté</value>
+  </data>
+  <data name="Mood_Cooking" xml:space="preserve">
+    <value>Cuisine</value>
+  </data>
+  <data name="Mood_Eating" xml:space="preserve">
+    <value>Mange</value>
+  </data>
+  <data name="Mood_Music" xml:space="preserve">
+    <value>Musique</value>
+  </data>
+  <data name="Mood_PartyingHard" xml:space="preserve">
+    <value>Fait la fête</value>
+  </data>
+  <data name="Mood_Singing" xml:space="preserve">
+    <value>Chante</value>
+  </data>
+  <data name="Mood_WorkingOut" xml:space="preserve">
+    <value>Fait du sport</value>
+  </data>
+  <data name="ViewFullMessage_Txt" xml:space="preserve">
+    <value>Voir message complet</value>
+  </data>
+  <data name="File_Not_Exist_Caption" xml:space="preserve">
+    <value>Expiration du fichier</value>
+  </data>
+  <data name="File_Not_Exist_Message" xml:space="preserve">
+    <value>Ce fichier n'existe plus sur le serveur. Demande à ton ami de renvoyer le fichier.</value>
+  </data>
+  <data name="ChatThread_1NewMessage_txt" xml:space="preserve">
+    <value>1 nouveau message</value>
+  </data>
+  <data name="ChatThread_JumpToLatest" xml:space="preserve">
+    <value>Aller au dernier</value>
+  </data>
+  <data name="ChatThread_More_NewMessages_txt" xml:space="preserve">
+    <value>{0} nouveaux messages</value>
+    <comment>{0} would be replaced by number</comment>
+  </data>
+  <data name="SelectUser_Header_AddParticipant_Txt" xml:space="preserve">
+    <value>AJOUTER PARTICIPANTS</value>
+    <comment>max length(16)</comment>
+  </data>
+  <data name="SelectUser_Title_AddParticipant_Txt" xml:space="preserve">
+    <value>au groupe</value>
+    <comment>max length(8)</comment>
+  </data>
+  <data name="Location_Disabled_Heading" xml:space="preserve">
+    <value>Localisation désactivée</value>
+  </data>
+  <data name="Camera_Label" xml:space="preserve">
+    <value>Caméra :</value>
+  </data>
+  <data name="In_App_Tip_7" xml:space="preserve">
+    <value>Tu peux envoyer des messages à tes contacts hike qui ne sont pas en ligne ! Appuie longuement sur le message pour l'envoyer sous forme de SMS hike.</value>
+  </data>
+  <data name="Reolution_Label" xml:space="preserve">
+    <value>Résolution :</value>
+  </data>
+  <data name="Video_Settings" xml:space="preserve">
+    <value>paramètres vidéo</value>
   </data>
 </root>
