@@ -755,8 +755,8 @@
                     </DataTemplate>
                 </phone:LongListSelector.ItemTemplate>
             </phone:LongListSelector>
-            <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" x:Name="JumpToBottomGrid" Tap="JumpToBottom_Tapped" Background="Black" Canvas.ZIndex="3" Height="50" Visibility="Collapsed" Opacity="0.9">
-                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="{StaticResource PhoneBackgroundBrush}" Opacity="0.9" x:Name="JumpToBottomGrid" Tap="JumpToBottom_Tapped" Canvas.ZIndex="3" Height="50" Visibility="Collapsed">
+                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource PhoneSubtleBrush}"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                     <Image MaxHeight="20" Source="images/downArrow.png" VerticalAlignment="Center" />
                     <TextBlock Name="txtJumpToBttom" Margin="10" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
