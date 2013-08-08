@@ -69,7 +69,7 @@ namespace windows_client.View
 
         bool afterMute = true;
         bool _isStatusUpdateToolTipShown = false;
-        ConvMessage _statusToolTipMessage,_h2hofflineToolTip;
+        ConvMessage _toolTipMessage,_h2hofflineToolTip;
         private bool _isMute = false;
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
@@ -2670,10 +2670,10 @@ namespace windows_client.View
 
                         if (!_isStatusUpdateToolTipShown && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
                         {
-                            _statusToolTipMessage = new ConvMessage();
-                            _statusToolTipMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.IN_APP_TIP;
-                            _statusToolTipMessage.Message = String.Format(AppResources.In_App_Tip_5, mContactName);
-                            this.ocMessages.Insert(insertPosition, _statusToolTipMessage);
+                            _toolTipMessage = new ConvMessage();
+                            _toolTipMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.IN_APP_TIP;
+                            _toolTipMessage.Message = String.Format(AppResources.In_App_Tip_5, mContactName);
+                            this.ocMessages.Insert(insertPosition, _toolTipMessage);
                             insertPosition++;
                             _isStatusUpdateToolTipShown = true;
 
@@ -5817,7 +5817,7 @@ namespace windows_client.View
                                  _h2hofflineToolTip = new ConvMessage();
                                  _h2hofflineToolTip.GrpParticipantState = ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP;
                                  _h2hofflineToolTip.Message = tip.Tip;
-                                 this.ocMessages.Insert(indexToInsert, _statusToolTipMessage);
+                                 this.ocMessages.Insert(indexToInsert, _toolTipMessage);
                                  _isStatusUpdateToolTipShown = true;
 
                                  tip.IsShown = true;
@@ -5946,12 +5946,10 @@ namespace windows_client.View
 
         private void TipDismiss_Tap(object sender, System.Windows.Input.GestureEventArgs e) // invoked for status update tooltip #4
         {
-            if (_statusToolTipMessage != null)
-            {
-                this.ocMessages.Remove(_statusToolTipMessage);
-                App.ViewModel.HideToolTip(null, 4);
-                _statusToolTipMessage = null;
-            }
+            if (_toolTipMessage != null)
+                this.ocMessages.Remove(_toolTipMessage);
+               
+            App.ViewModel.HideToolTip(null, 4);
         }
 
         void UpdateLastSeenOnUI(string status, bool showTip = false)
@@ -5982,11 +5980,11 @@ namespace windows_client.View
                 {
                     if (_isSendAllAsSMSVisible)
                     {
-                        if (_statusToolTipMessage != null)
+                        if (_toolTipMessage != null)
                         {
-                            this.ocMessages.Remove(_statusToolTipMessage);
+                            this.ocMessages.Remove(_toolTipMessage);
 
-                            if (_statusToolTipMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
+                            if (_toolTipMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
                                 App.ViewModel.HideToolTip(null, 6);
                         }
 
