@@ -1047,11 +1047,7 @@ namespace windows_client.View
                     }
 
                     if (App.ViewModel.ContactsCache.ContainsKey(dCn.Msisdn))
-                    {
-                        var cinfo = UsersTableUtils.getContactInfoFromMSISDN(dCn.Msisdn);
-                        cinfo.Name = null;
-                        App.ViewModel.ContactsCache[dCn.Msisdn] = cinfo;
-                    }
+                        App.ViewModel.ContactsCache[dCn.Msisdn].Name = null;
                 }
             }
             if (stopContactScanning)
