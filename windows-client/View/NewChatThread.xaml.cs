@@ -69,7 +69,7 @@ namespace windows_client.View
 
         bool afterMute = true;
         bool _isStatusUpdateToolTipShown = false;
-        ConvMessage _toolTipMessage;
+        ConvMessage _statusToolTipMessage,_h2hofflineToolTip;
         private bool _isMute = false;
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
@@ -2670,10 +2670,10 @@ namespace windows_client.View
 
                         if (!_isStatusUpdateToolTipShown && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
                         {
-                            _toolTipMessage = new ConvMessage();
-                            _toolTipMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.IN_APP_TIP;
-                            _toolTipMessage.Message = String.Format(AppResources.In_App_Tip_5, mContactName);
-                            this.ocMessages.Insert(insertPosition, _toolTipMessage);
+                            _statusToolTipMessage = new ConvMessage();
+                            _statusToolTipMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.IN_APP_TIP;
+                            _statusToolTipMessage.Message = String.Format(AppResources.In_App_Tip_5, mContactName);
+                            this.ocMessages.Insert(insertPosition, _statusToolTipMessage);
                             insertPosition++;
                             _isStatusUpdateToolTipShown = true;
 
@@ -3250,11 +3250,12 @@ namespace windows_client.View
             else
                 MessageBox.Show(AppResources.H2HOfline_0SMS_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OK);
 
-            if (_toolTipMessage != null && _toolTipMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
+            if (_h2hofflineToolTip != null && _h2hofflineToolTip.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
             {
-                this.ocMessages.Remove(_toolTipMessage);
+                this.ocMessages.Remove(_h2hofflineToolTip);
                 App.ViewModel.HideToolTip(null, 6);
                 ShowForceSMSOnUI();
+                _h2hofflineToolTip = null;
             }
         }
 
@@ -5813,10 +5814,10 @@ namespace windows_client.View
 
                              if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
                              {
-                                 _toolTipMessage = new ConvMessage();
-                                 _toolTipMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP;
-                                 _toolTipMessage.Message = tip.Tip;
-                                 this.ocMessages.Insert(indexToInsert, _toolTipMessage);
+                                 _h2hofflineToolTip = new ConvMessage();
+                                 _h2hofflineToolTip.GrpParticipantState = ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP;
+                                 _h2hofflineToolTip.Message = tip.Tip;
+                                 this.ocMessages.Insert(indexToInsert, _statusToolTipMessage);
                                  _isStatusUpdateToolTipShown = true;
 
                                  tip.IsShown = true;
@@ -5945,17 +5946,11 @@ namespace windows_client.View
 
         private void TipDismiss_Tap(object sender, System.Windows.Input.GestureEventArgs e) // invoked for status update tooltip #4
         {
-            if (_toolTipMessage != null)
+            if (_statusToolTipMessage != null)
             {
-                this.ocMessages.Remove(_toolTipMessage);
-
-                if (_toolTipMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
-                {
-                    App.ViewModel.HideToolTip(null, 6);
-                    ShowForceSMSOnUI();
-                }
-                else
-                    App.ViewModel.HideToolTip(null, 4);
+                this.ocMessages.Remove(_statusToolTipMessage);
+                App.ViewModel.HideToolTip(null, 4);
+                _statusToolTipMessage = null;
             }
         }
 
@@ -5987,11 +5982,11 @@ namespace windows_client.View
                 {
                     if (_isSendAllAsSMSVisible)
                     {
-                        if (_toolTipMessage != null)
+                        if (_statusToolTipMessage != null)
                         {
-                            this.ocMessages.Remove(_toolTipMessage);
+                            this.ocMessages.Remove(_statusToolTipMessage);
 
-                            if (_toolTipMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
+                            if (_statusToolTipMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
                                 App.ViewModel.HideToolTip(null, 6);
                         }
 
@@ -6024,6 +6019,15 @@ namespace windows_client.View
             }
         }
 
+        private void H2hOfflineToolTip_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (_h2hofflineToolTip != null)
+            {
+                App.ViewModel.HideToolTip(null, 6);
+                ShowForceSMSOnUI();
+                _h2hofflineToolTip = null;
+            }
+        }
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector

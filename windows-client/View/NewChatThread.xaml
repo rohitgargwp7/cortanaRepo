@@ -107,7 +107,7 @@
                         <view:ChatThreadTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
                             <view:ChatThreadTemplateSelector.DtH2HOfflineInAppTip>
                                 <DataTemplate>
-                                    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24,-5,24,5" HorizontalAlignment="Stretch" Tap="TipDismiss_Tap">
+                                    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="24,-5,24,5" HorizontalAlignment="Stretch" Tap="H2hOfflineToolTip_Tapped">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="14"/>
                                             <RowDefinition Height="Auto"/>
