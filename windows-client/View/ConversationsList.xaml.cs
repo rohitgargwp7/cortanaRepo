@@ -718,7 +718,8 @@ namespace windows_client.View
                 {
                     _isFavListBound = true;
                     BackgroundWorker favBw = new BackgroundWorker();
-                    shellProgress.IsVisible = true;
+                    cofProgressBar.Visibility = Visibility.Visible;
+                    cohProgressBar.Visibility = Visibility.Visible;
                     favBw.DoWork += (sf, ef) =>
                     {
                         for (int i = 0; i < App.ViewModel.FavList.Count; i++)
@@ -755,16 +756,15 @@ namespace windows_client.View
                     favBw.RunWorkerAsync();
                     favBw.RunWorkerCompleted += (sf, ef) =>
                     {
-                        shellProgress.IsVisible = false;
+                        cofProgressBar.Visibility = Visibility.Collapsed;
+                        cohProgressBar.Visibility = Visibility.Collapsed;
                         contactsCollectionView.Source = hikeContactList;
                         favCollectionView.Source = App.ViewModel.FavList; // this is done to sort in view
                         favourites.SelectedIndex = -1;
                         hikeContactListBox.SelectedIndex = -1;
-                        circleOfFriendsTitleTxtBlck.Visibility = Visibility.Visible;
-                        cofCounter.Text = string.Format("({0})", App.ViewModel.FavList.Count);
+                        cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
                         cofCounter.Visibility = Visibility.Visible;
-                        contactOnHikeTitleTxtBlck.Visibility = Visibility.Visible;
-                        cohCounter.Text = string.Format("({0})", hikeContactList.Count);
+                        cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                         cohCounter.Visibility = Visibility.Visible;
                         if (App.ViewModel.FavList.Count > 0)
                         {
@@ -964,7 +964,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    cofCounter.Text = string.Format("({0})", App.ViewModel.FavList.Count);
+                    cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
                     if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                     {
                         emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
@@ -1233,7 +1233,7 @@ namespace windows_client.View
                         {
                             c.IsUsedAtMiscPlaces = true;
                             hikeContactList.Add(c);
-                            cohCounter.Text = string.Format("({0})", hikeContactList.Count);
+                            cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
 
                         }
 
@@ -1258,7 +1258,7 @@ namespace windows_client.View
                             ContactInfo c = obj as ContactInfo;
                             c.IsUsedAtMiscPlaces = true;
                             hikeContactList.Remove(c);
-                            cohCounter.Text = string.Format("({0})", hikeContactList.Count);
+                            cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                         }
                         if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                         {
@@ -1285,7 +1285,7 @@ namespace windows_client.View
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 hikeContactList.Remove(c);
-                                cohCounter.Text = string.Format("({0})", hikeContactList.Count);
+                                cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                             });
                         }
                     }
@@ -1298,7 +1298,7 @@ namespace windows_client.View
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 hikeContactList.Remove(c);
-                                cohCounter.Text = string.Format("({0})", hikeContactList.Count);
+                                cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                             });
                         }
                     }
@@ -1376,7 +1376,7 @@ namespace windows_client.View
                                 emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
                                 hikeContactListBox.Visibility = Visibility.Collapsed;
                             }
-                            cohCounter.Text = string.Format("({0})", hikeContactList.Count);
+                            cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                         });
                     }
                     //if conatct is removed from circle of friends then show no friends placehoder
@@ -1417,7 +1417,7 @@ namespace windows_client.View
                     if (c.Msisdn != App.MSISDN)
                     {
                         hikeContactList.Add(c);
-                        cohCounter.Text = string.Format("({0})", hikeContactList.Count);
+                        cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                     }
                     if (emptyListPlaceholderHikeContacts.Visibility == Visibility.Visible)
                     {
@@ -1508,7 +1508,7 @@ namespace windows_client.View
                     return;
                 convObj.IsFav = false;
                 App.ViewModel.FavList.Remove(convObj);
-                cofCounter.Text = string.Format("({0})", App.ViewModel.FavList.Count);
+                cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
                 JObject data = new JObject();
                 data["id"] = convObj.Msisdn;
                 JObject obj = new JObject();
@@ -1543,7 +1543,7 @@ namespace windows_client.View
                     if (c.Msisdn != App.MSISDN)
                     {
                         hikeContactList.Add(c);
-                        cohCounter.Text = string.Format("({0})", hikeContactList.Count);
+                        cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                     }
                 }
                 if (hikeContactList.Count > 0)
@@ -1563,10 +1563,10 @@ namespace windows_client.View
                     c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                 c.IsUsedAtMiscPlaces = true;
                 hikeContactList.Remove(c);
-                cohCounter.Text = string.Format("({0})", hikeContactList.Count);
+                cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                 FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
                 App.ViewModel.FavList.Insert(0, convObj);
-                cofCounter.Text = string.Format("({0})", App.ViewModel.FavList.Count);
+                cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
                 if (App.ViewModel.IsPending(convObj.Msisdn))
                 {
                     App.ViewModel.PendingRequests.Remove(convObj.Msisdn);
@@ -1936,7 +1936,7 @@ namespace windows_client.View
             {
                 convObj.IsFav = false;
                 App.ViewModel.FavList.Remove(convObj);
-                cofCounter.Text = string.Format("({0})", App.ViewModel.FavList.Count);
+                cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
                 JObject data = new JObject();
                 data["id"] = convObj.Msisdn;
                 JObject obj = new JObject();
@@ -1964,7 +1964,7 @@ namespace windows_client.View
                     if (c.Msisdn != App.MSISDN)
                     {
                         hikeContactList.Add(c);
-                        cohCounter.Text = string.Format("({0})", hikeContactList.Count);
+                        cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                     }
                 }
             }
@@ -2008,7 +2008,7 @@ namespace windows_client.View
                 {
                     contactInfo.IsUsedAtMiscPlaces = true;
                     hikeContactList.Remove(contactInfo);
-                    cohCounter.Text = string.Format("({0})", hikeContactList.Count);
+                    cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                     return;
                 }
 
@@ -2030,9 +2030,9 @@ namespace windows_client.View
                 }
                 contactInfo.IsUsedAtMiscPlaces = true;
                 hikeContactList.Remove(contactInfo);
-                cohCounter.Text = string.Format("({0})", hikeContactList.Count);
+                cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                 App.ViewModel.FavList.Add(cObj);
-                cofCounter.Text = string.Format("({0})", App.ViewModel.FavList.Count);
+                cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.SaveFavourites(cObj);
                 int count = 0;
@@ -2314,13 +2314,13 @@ namespace windows_client.View
                     cn = App.ViewModel.ContactsCache[fObj.Msisdn];
                     cn.IsUsedAtMiscPlaces = true;
                     hikeContactList.Remove(cn);
-                    cohCounter.Text = string.Format("({0})", hikeContactList.Count);
+                    cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                 }
             }
 
             App.ViewModel.FavList.Insert(0, cObj);
             App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
-            cofCounter.Text = string.Format("({0})", App.ViewModel.FavList.Count);
+            cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
             JObject data = new JObject();
             data["id"] = fObj.Msisdn;
             JObject obj = new JObject();
