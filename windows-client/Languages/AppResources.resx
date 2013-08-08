@@ -1886,6 +1886,9 @@ Get hike: http://get.hike.in</value>
   <data name="ViewFullMessage_Txt" xml:space="preserve">
     <value>View full message</value>
   </data>
+  <data name="In_App_Tip_7" xml:space="preserve">
+    <value>You can now send messages to your hike contacts who are Offline! Long Press the message to send as a Hike SMS</value>
+  </data>
   <data name="File_Not_Exist_Caption" xml:space="preserve">
     <value>File Expired</value>
   </data>
@@ -1915,9 +1918,6 @@ Get hike: http://get.hike.in</value>
   </data>
   <data name="Camera_Label" xml:space="preserve">
     <value>Camera:</value>
-  </data>
-  <data name="In_App_Tip_7" xml:space="preserve">
-    <value>You can now send messages to your hike contacts who are Offline! Long Press the message to send as a Hike SMS</value>
   </data>
   <data name="Reolution_Label" xml:space="preserve">
     <value>Resolution:</value>

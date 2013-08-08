@@ -69,7 +69,7 @@ namespace windows_client.View
 
         bool afterMute = true;
         bool _isStatusUpdateToolTipShown = false;
-        ConvMessage _toolTipMessage;
+        ConvMessage _toolTipMessage,_h2hofflineToolTip;
         private bool _isMute = false;
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
@@ -3249,6 +3249,14 @@ namespace windows_client.View
             }
             else
                 MessageBox.Show(AppResources.H2HOfline_0SMS_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OK);
+
+            if (_h2hofflineToolTip != null && _h2hofflineToolTip.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
+            {
+                this.ocMessages.Remove(_h2hofflineToolTip);
+                App.ViewModel.HideToolTip(null, 6);
+                ShowForceSMSOnUI();
+                _h2hofflineToolTip = null;
+            }
         }
 
         #endregion
@@ -5777,16 +5785,18 @@ namespace windows_client.View
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                  {
-                     if (lastSeenTxt.Text == AppResources.Online)
+                     if (lastSeenTxt.Text == AppResources.Online || _isSendAllAsSMSVisible)
                          return;
 
                      _lastUnDeliveredMessage = null;
 
                      try
                      {
-                         _lastUnDeliveredMessage = (from message in ocMessages
-                                                    where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
-                                                    select message).Last();
+                         var msgList = (from message in ocMessages
+                                        where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
+                                        select message);
+
+                         _lastUnDeliveredMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
                      }
                      catch
                      {
@@ -5795,6 +5805,40 @@ namespace windows_client.View
 
                      if (_lastUnDeliveredMessage != null)
                      {
+                         var indexToInsert = ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
+
+                         if (App.ViewModel.DictInAppTip != null)
+                         {
+                             HikeToolTip tip;
+                             App.ViewModel.DictInAppTip.TryGetValue(6, out tip);
+
+                             if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                             {
+                                 _h2hofflineToolTip = new ConvMessage();
+                                 _h2hofflineToolTip.GrpParticipantState = ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP;
+                                 _h2hofflineToolTip.Message = tip.Tip;
+                                 this.ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
+                                 _isStatusUpdateToolTipShown = true;
+
+                                 tip.IsShown = true;
+                                 tip.IsCurrentlyShown = true;
+
+                                 byte marked;
+                                 App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
+                                 marked |= (byte)(1 << 6);
+                                 App.appSettings[App.TIP_MARKED_KEY] = marked;
+
+                                 byte currentShown;
+                                 App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
+                                 currentShown |= (byte)(1 << 6);
+                                 App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
+
+                                 if (indexToInsert == ocMessages.Count - 1)
+                                     ScrollToBottom();
+
+                                 return;
+                             }
+                         }
 
                          if (_tap2SendAsSMSMessage == null)
                          {
@@ -5808,10 +5852,8 @@ namespace windows_client.View
                                  _tap2SendAsSMSMessage.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
                          }
 
-
-                         var indexToInsert = ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
                          this.ocMessages.Insert(indexToInsert, _tap2SendAsSMSMessage);
-
+                         
                          if (indexToInsert == ocMessages.Count - 1)
                              ScrollToBottom();
 
@@ -5906,7 +5948,7 @@ namespace windows_client.View
         {
             if (_toolTipMessage != null)
                 this.ocMessages.Remove(_toolTipMessage);
-
+               
             App.ViewModel.HideToolTip(null, 4);
         }
 
@@ -5938,6 +5980,14 @@ namespace windows_client.View
                 {
                     if (_isSendAllAsSMSVisible)
                     {
+                        if (_h2hofflineToolTip != null)
+                        {
+                            this.ocMessages.Remove(_h2hofflineToolTip);
+                            App.ViewModel.HideToolTip(null, 6);
+                            ShowForceSMSOnUI();
+                            _h2hofflineToolTip = null;
+                        }
+
                         if (mCredits > 0)
                         {
                             var result = MessageBox.Show(AppResources.H2HOfline_Confirmation_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OKCancel);
@@ -5967,6 +6017,16 @@ namespace windows_client.View
             }
         }
 
+        private void H2hOfflineToolTip_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (_h2hofflineToolTip != null)
+            {
+                this.ocMessages.Remove(_h2hofflineToolTip);
+                App.ViewModel.HideToolTip(null, 6);
+                ShowForceSMSOnUI();
+                _h2hofflineToolTip = null;
+            }
+        }
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector
@@ -5974,6 +6034,12 @@ namespace windows_client.View
         #region Properties
 
         public DataTemplate DtInAppTip
+        {
+            get;
+            set;
+        }
+
+        public DataTemplate DtH2HOfflineInAppTip
         {
             get;
             set;
@@ -6133,6 +6199,8 @@ namespace windows_client.View
                 }
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.IN_APP_TIP)
                     return DtInAppTip;
+                else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
+                    return DtH2HOfflineInAppTip;
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
                     return DtForceSMSNotification;
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
