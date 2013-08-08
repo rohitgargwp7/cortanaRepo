@@ -1045,6 +1045,9 @@ namespace windows_client.View
                         if (obj != null)
                             obj.ContactName = null;
                     }
+
+                    if (App.ViewModel.ContactsCache.ContainsKey(dCn.Msisdn))
+                        App.ViewModel.ContactsCache[dCn.Msisdn].Name = null;
                 }
             }
             if (stopContactScanning)

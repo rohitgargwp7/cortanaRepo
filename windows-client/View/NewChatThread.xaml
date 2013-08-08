@@ -755,8 +755,8 @@
                     </DataTemplate>
                 </phone:LongListSelector.ItemTemplate>
             </phone:LongListSelector>
-            <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" x:Name="JumpToBottomGrid" Tap="JumpToBottom_Tapped" Background="Black" Canvas.ZIndex="3" Height="50" Visibility="Collapsed" Opacity="0.9">
-                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="{StaticResource PhoneBackgroundBrush}" Opacity="0.9" x:Name="JumpToBottomGrid" Tap="JumpToBottom_Tapped" Canvas.ZIndex="3" Height="50" Visibility="Collapsed">
+                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource PhoneSubtleBrush}"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                     <Image MaxHeight="20" Source="images/downArrow.png" VerticalAlignment="Center" />
                     <TextBlock Name="txtJumpToBttom" Margin="10" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -769,19 +769,17 @@
                 <TextBlock x:Name="smsCounterTxtBlk"  Margin="20,0,0,0"></TextBlock>
             </StackPanel>
             <Grid Background="#eeeeec">
-                <ScrollViewer Name="svMessage" MaxHeight="150" Background="#eeeeec" >
-                    <StackPanel Background="#eeeeec">
-                        <Grid Background="#eeeeec">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <toolkit:PhoneTextBox  TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Chat" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
+                <Grid Background="#eeeeec">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ScrollViewer Name="svMessage" MaxHeight="150" Background="#eeeeec" >
+                        <toolkit:PhoneTextBox  TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Chat" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
                                                 MinHeight="68" MaxHeight="2048" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto"  />
-                            <Image  x:Name="WalkieTalkieMicIcon" Grid.Column="1" Source="/View/images/Mic_icon_black_small.png" Tap="Record_ActionIconTapped" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="Uniform" Margin="0,0,15,17" MaxHeight="30"/>
-                        </Grid>
-                    </StackPanel>
-                </ScrollViewer>
+                    </ScrollViewer>
+                    <Image  x:Name="WalkieTalkieMicIcon" Grid.Column="1" Source="/View/images/Mic_icon_black_small.png" Tap="Record_ActionIconTapped" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="Uniform" Margin="0,0,15,17" MaxHeight="30"/>
+                </Grid>
                 <Grid x:Name="recordGrid" HorizontalAlignment="Stretch" Visibility="Collapsed" Background="#eeeeec" Margin="0,-4,0,0">
                     <Grid Margin="5" x:Name="recordButtonGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ManipulationStarted="Hold_To_Record" ManipulationCompleted="recordButton_ManipulationCompleted">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" >
