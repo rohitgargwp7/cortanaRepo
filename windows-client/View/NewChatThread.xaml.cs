@@ -5984,6 +5984,8 @@ namespace windows_client.View
                         {
                             this.ocMessages.Remove(_h2hofflineToolTip);
                             App.ViewModel.HideToolTip(null, 6);
+                            ShowForceSMSOnUI();
+                            _h2hofflineToolTip = null;
                         }
 
                         if (mCredits > 0)
