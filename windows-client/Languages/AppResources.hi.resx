@@ -389,10 +389,6 @@
     <value>स्वीकार करें |</value>
     <comment>accept button in appbar</comment>
   </data>
-  <data name="Messaging_Made_Personal_Txt" xml:space="preserve">
-    <value>मैसेजिंग ने फिर से निजी बनाया</value>
-    <comment>This is text below hike logo on welcome screen.</comment>
-  </data>
   <data name="WelcomePage_PushMsg_TxtBlk" xml:space="preserve">
     <value>पुश नोटिफिकेशन डिफ़ॉल्ट रूप से चालू !</value>
     <comment>Push Notification msg</comment>
@@ -867,7 +863,7 @@
     <value>अपडेट उपलब्ध</value>
   </data>
   <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
-    <value>हाइक का नया वर्ज़न आ गया है। क्या आप इस एप को अपडेट करना चाहेगे?</value>
+    <value>संदेश के शानदार नए तरीकों को ढूंढ़ने के लिए hike  के नए संस्करण में अपडेट करें</value>
   </data>
   <data name="Owner_Txt" xml:space="preserve">
     <value>मालिक</value>
@@ -877,7 +873,7 @@
     <comment>General Text</comment>
   </data>
   <data name="ShareLocation_LocationServiceNotEnabled_Txt" xml:space="preserve">
-    <value>लोकेशन सेवा इस यंत्र पर सक्रिय नहीं है !</value>
+    <value>आपके डिवाइस में लोकेशन सेवा डिसेबल है। कृपया अपने फोन सेटिंग में लोकेशन को ऑन करें। </value>
     <comment>cs</comment>
   </data>
   <data name="ShareLocation_LocationServiceWorking_Txt" xml:space="preserve">
@@ -899,10 +895,6 @@
   <data name="SocialPages_UnableToRetrieveToken_Txt" xml:space="preserve">
     <value>अनुरोध टोकन प्राप्त करने में असमर्थ !</value>
     <comment>cs</comment>
-  </data>
-  <data name="Social_Invite_Txt" xml:space="preserve">
-    <value> मैं&amp; स्थिति मिजाज़ सूचनाओं के साथ @hikeapp 2.0 उपयोग कर रहा हूँ | यह BBM जैसा है पर उससे बहुत अधिक बेहतर| http://get.hike.in #gethike से hike  को प्राप्त करें|</value>
-    <comment>This is used in case of Facebook and Twitter</comment>
   </data>
   <data name="Social_Txt" xml:space="preserve">
     <value>सामाजिक</value>
@@ -1016,7 +1008,7 @@
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailSubject" xml:space="preserve">
-    <value>WP7 पर प्रतिक्रिया</value>
+    <value>WP8 के बारे में फीडबैक</value>
     <comment>email compose task subject (cs)</comment>
   </data>
   <data name="Help_FAQsTitle" xml:space="preserve">
@@ -1240,7 +1232,7 @@
     <value>ताज़ा संपर्क सूची</value>
   </data>
   <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>आपको दोस्तों की मंडली में जोड़ा</value>
+    <value>आपको मित्र मंडली में जोड़ा</value>
     <comment>for friend requests in wp8</comment>
   </data>
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
@@ -1275,7 +1267,7 @@
     <value>  मस्ती को याद कर रहे हैं।</value>
   </data>
   <data name="OnSms_Txt" xml:space="preserve">
-    <value>SMS पर</value>
+    <value>एसएमएस पर</value>
   </data>
   <data name="MyProfileheader_Txt" xml:space="preserve">
     <value>मेरा प्रोफ़ाइल</value>
@@ -1401,7 +1393,7 @@
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>{0} ने आपको दोस्तों की मंडली में जोड़ा</value>
+    <value>{0} ने आपको मित्र मंडली में जोड़ा</value>
     <comment>{0} will be replaced by username</comment>
   </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
@@ -1466,7 +1458,7 @@
     <value>एक स्टेटस अपडेट को पोस्ट करे !</value>
   </data>
   <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
-    <value>स्टेटस अपडेट नोटिफिकेशन</value>
+    <value>स्टेटस अपडेट्स नोटिफिकेशन</value>
   </data>
   <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
     <value>हर घंटे</value>
@@ -1589,7 +1581,7 @@
     <value>अपनी स्थिति को हटाने में असमर्थ!</value>
   </data>
   <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
-    <value>संपर्कों में जोड़ें</value>
+    <value>संपर्क जोड़ें</value>
   </data>
   <data name="SettingsSubtitle_Account_Txt" xml:space="preserve">
     <value>खाता</value>
@@ -1648,7 +1640,7 @@
     <comment>Long press to start audio recording</comment>
   </data>
   <data name="Release_To_Send" xml:space="preserve">
-    <value>भेजने हेतु मुक्तकरें</value>
+    <value>भेजने हेतु मुक्त करें</value>
     <comment>Release to send recorded data</comment>
   </data>
   <data name="BlockList_Text" xml:space="preserve">
@@ -1659,7 +1651,7 @@
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>ऑनलाइनटाइमस्टाम्प देखें/दिखाएं</value>
+    <value>लास्ट सीन दिखाएं</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
     <value>लास्ट सीन</value>
@@ -1677,11 +1669,11 @@
     <value>आपकी खाता प्राथमिकताएं</value>
   </data>
   <data name="Drag_Here_To_Delete" xml:space="preserve">
-    <value>डिलीट हेतु ड्रैगकरें</value>
+    <value>डिलीट हेतु ड्रैग करें</value>
     <comment>Drag to a specified area to delete ongoing recording</comment>
   </data>
   <data name="Message_Cancelled" xml:space="preserve">
-    <value>संदेश निरस्त</value>
+    <value>संदेश रद्द किया</value>
     <comment>Notify user that recording has been deleted</comment>
   </data>
   <data name="Message_Too_Short" xml:space="preserve">
@@ -1689,22 +1681,22 @@
     <comment>Message is too short to be sent</comment>
   </data>
   <data name="In_App_Tip_1" xml:space="preserve">
-    <value>स्टिकर और इमोशिकॉन साझा करने हेतु टैप करें</value>
+    <value>स्टिकर और इमोटिकॉन साझा करने हेतु टैप करें</value>
   </data>
   <data name="In_App_Tip_2" xml:space="preserve">
     <value>नए स्टिकर!</value>
   </data>
   <data name="In_App_Tip_3" xml:space="preserve">
-    <value>hike का नया वॉकीटॉकी इस्तेमाल करने हेतु टैप करें</value>
+    <value>hike का नया वॉकी टॉकी इस्तेमाल करने हेतु यहाँ टैप करें</value>
   </data>
   <data name="In_App_Tip_4" xml:space="preserve">
-    <value>शानदार मूड :) संलग्न करने के लिए टैप करें</value>
+    <value>शानदार मूड :) संलग्न करने के लिए यहाँ टैप करें</value>
   </data>
   <data name="In_App_Tip_5" xml:space="preserve">
     <value>यह {0} द्वारा पोस्ट किया गया स्टेटस अपडेट है</value>
   </data>
   <data name="No_Stickers_Downloaded_Txt" xml:space="preserve">
-    <value>इस श्रेणी में कोई स्टिकर डाउनलोड नहीं किया गया</value>
+    <value>इस श्रेणी में कोई स्टिकर डाउनलोड नहीं किए गए हैं</value>
     <comment>General text</comment>
   </data>
   <data name="Sticker_Txt" xml:space="preserve">
@@ -1729,7 +1721,7 @@
     <value>आमंत्रण सफलतापूर्वक भेजा गया</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
-    <value>{0} hike  पर वापस आ गया है। उसे hi:) बोलें</value>
+    <value>{0} hike  पर वापस आ गया है। उसे नमस्ते :) बोलें</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="StickersTut_TxtBlk1" xml:space="preserve">
@@ -1745,18 +1737,18 @@
     <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
-    <value>आपके दोस्तों की मंडली</value>
+    <value>आपके मित्र मंडली</value>
     <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
-    <value>अब आप यहाँ {0} के अपडेट देखने में सक्षम होंगे।</value>
+    <value>अब आप यहाँ {0} के अपडेट देख सकेंगे।</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendUserProfile_Txt" xml:space="preserve">
-    <value>अब आप एक-दूसरे के अपडेट देखने में सक्षम होंगे</value>
+    <value>अब आप एक-दूसरे के अपडेट देख सकेंगे</value>
   </data>
   <data name="In_App_Tip_6" xml:space="preserve">
-    <value>केवल आपके दोस्तों की मंडली देख पाएगी कि अंतिम बार आप कब दिखे थे</value>
+    <value>केवल आपके मित्र मंडली देख पाएगी कि अंतिम बार आप कब दिखे थे</value>
   </data>
   <data name="DownloadingSticker_txt" xml:space="preserve">
     <value>स्टिकर लोड हो रहा है</value>
@@ -1784,14 +1776,145 @@
   <data name="Please_Retry_Later" xml:space="preserve">
     <value>कृपया बाद में कोशिश करें</value>
   </data>
+  <data name="Installed_Txt" xml:space="preserve">
+    <value>स्थापित</value>
+  </data>
   <data name="sms_invite_message_1" xml:space="preserve">
-    <value>मैं hike  इस्तेमाल कर रहा हूँ और इसमें वे सभी स्टिकर और इमोशिकॉन हैं जिसे मैं तुम्हारे साथ साझा करना चाहता हूँ। अब http://hike.in/ पर पाएं</value>
+    <value>मैं hike इस्तेमाल कर रहा हूँ और इसमें वे सभी स्टिकर और इमोटिकॉन हैं जिन्हें मैं तुम्हारे साथ साझा करना चाहता हूँ। अब http://hike.in/ पर पाएं</value>
   </data>
   <data name="sms_invite_message_2" xml:space="preserve">
-    <value>मैं hike  इस्तेमाल कर रहा हूँ जो सबको नहीं बल्कि केवल हमारे द्वारा चुने दोस्तों को 'लास्ट सीन' स्थिति दिखाता है। अभी http://hike.in/ पर पाएं</value>
+    <value>मैं hike इस्तेमाल कर रहा हूँ जो सबको नहीं बल्कि केवल हमारे द्वारा चुने दोस्तों को 'लास्ट सीन' स्थिति दिखाता है। अभी http://hike.in/ पर पाएं</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="sms_invite_message_3" xml:space="preserve">
-    <value>मैं hike  इस्तेमाल कर रहा हूँ, यह मजेदार वॉकीटॉकी के साथ आता है जिससे मुफ्त वॉयस मैसेज भेज सकते हैं। अभी इसे http://hike.in/ से पाएं</value>
+    <value>मैं hike इस्तेमाल कर रहा हूँ; यह मजेदार वॉकी-टॉकी के साथ आता है जिससे मुफ्त वॉयस मैसेज भेज सकते हैं। इसे अभी http://hike.in/ से पाएं</value>
+  </data>
+  <data name="Last_Seen_Today_At" xml:space="preserve">
+    <value>बजे आज अंतिम बार दिखे</value>
+  </data>
+  <data name="Last_Seen_Yesterday_At" xml:space="preserve">
+    <value>बजे कल अंतिम बार दिखे</value>
+  </data>
+  <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
+    <value>जीवन भर के लिए, आनंद और मुफ्त संदेश |  </value>
+  </data>
+  <data name="Button_Retry_Txt" xml:space="preserve">
+    <value>फिर से कोशिश करें</value>
+  </data>
+  <data name="DownloadFailed_Txt" xml:space="preserve">
+    <value>ओफ्फ! डाउनलोड विफल</value>
+  </data>
+  <data name="Send_As_Sms" xml:space="preserve">
+    <value>hike एसएमएस के रूप में भेजें</value>
+  </data>
+  <data name="SelectUser_Forward_To_Txt" xml:space="preserve">
+    <value>को भेजें</value>
+    <comment>verb(length 12)</comment>
+  </data>
+  <data name="Send_All_As_SMS" xml:space="preserve">
+    <value>{0}ऑफलाइन है, hike एसएमएस भेजने के लिए टैप करें</value>
+  </data>
+  <data name="H2HOfline_0SMS_Message" xml:space="preserve">
+    <value>आपकी मुफ्त एसएमएस सीमा खत्म हो गई है। आप दोस्तों को hike से जुड़ने के लिए आमंत्रित करके और अधिक मुफ्त एसएमएस अर्जित कर सकते हैं।</value>
+  </data>
+  <data name="H2HOfline_Confirmation_Message" xml:space="preserve">
+    <value>लंबित संदेशों को मुफ्त hike एसएमएस के रूप में भेजा जाएगा</value>
+  </data>
+  <data name="H2HOfline_Confirmation_Message_Heading" xml:space="preserve">
+    <value>hike एसएमएस के रूप में भेजें</value>
+  </data>
+  <data name="On_Dnd_Txt" xml:space="preserve">
+    <value>डीएनडी पर</value>
+  </data>
+  <data name="Mute_Success_Txt" xml:space="preserve">
+    <value>स्टेटस अपडेट नोटिफिकेशन ऑफ हैं</value>
+  </data>
+  <data name="Unmute_Success_Txt" xml:space="preserve">
+    <value>स्टेटस अपडेट नोटिफिकेशन ऑन हैं</value>
+  </data>
+  <data name="My_Location_Text" xml:space="preserve">
+    <value>मेरी लोकेशन</value>
+  </data>
+  <data name="Send_All_As_SMS_Group" xml:space="preserve">
+    <value>hike एसएमएस के रूप में भेजने के लिए टैप करें</value>
+  </data>
+  <data name="StatusNotToggle_Caption_Txt" xml:space="preserve">
+    <value>स्टेटस अपडेट नोटिफिकेशन</value>
+  </data>
+  <data name="Location_Unavailable_Heading" xml:space="preserve">
+    <value>लोकेशन अनुपलब्ध</value>
+  </data>
+  <data name="Settings_LocationToggleSwitchHeader" xml:space="preserve">
+    <value>लोकेशन सेवा का इस्तेमाल करें</value>
+  </data>
+  <data name="ShareLocation_LocationSettingsNotEnabled_Txt" xml:space="preserve">
+    <value>Hike लोकेशन सेटिंग डिसेबल है। क्या आप इसे ऑन करना चाहेंगे?</value>
+  </data>
+  <data name="ViewMessage_Title_txt" xml:space="preserve">
+    <value>संदेश</value>
+    <comment>page heading(view one single message)</comment>
+  </data>
+  <data name="Mood_BeautySaloon" xml:space="preserve">
+    <value>ब्यूटी सैलून</value>
+  </data>
+  <data name="Mood_Cooking" xml:space="preserve">
+    <value>कुकिंग</value>
+  </data>
+  <data name="Mood_Eating" xml:space="preserve">
+    <value>भोजन</value>
+  </data>
+  <data name="Mood_Music" xml:space="preserve">
+    <value>संगीत</value>
+  </data>
+  <data name="Mood_PartyingHard" xml:space="preserve">
+    <value>जोरदार पार्टी</value>
+  </data>
+  <data name="Mood_Singing" xml:space="preserve">
+    <value>गायन</value>
+  </data>
+  <data name="Mood_WorkingOut" xml:space="preserve">
+    <value>वर्किंग आउट</value>
+  </data>
+  <data name="ViewFullMessage_Txt" xml:space="preserve">
+    <value>पूरा संदेश देखें</value>
+  </data>
+  <data name="File_Not_Exist_Caption" xml:space="preserve">
+    <value>फाइल की अवधि समाप्त</value>
+  </data>
+  <data name="File_Not_Exist_Message" xml:space="preserve">
+    <value>यह फाइल सर्वर में अब नहीं है। आप अपने दोस्त को फिर से फाइल भेजने के लिए कह सकते हैं।</value>
+  </data>
+  <data name="ChatThread_1NewMessage_txt" xml:space="preserve">
+    <value>1 नया संदेश</value>
+  </data>
+  <data name="ChatThread_JumpToLatest" xml:space="preserve">
+    <value>नवीनतम पर जाएं</value>
+  </data>
+  <data name="ChatThread_More_NewMessages_txt" xml:space="preserve">
+    <value>{0} नए संदेश</value>
+    <comment>{0} would be replaced by number</comment>
+  </data>
+  <data name="SelectUser_Header_AddParticipant_Txt" xml:space="preserve">
+    <value>प्रतिभागी जोड़ें</value>
+    <comment>max length(16)</comment>
+  </data>
+  <data name="SelectUser_Title_AddParticipant_Txt" xml:space="preserve">
+    <value>समूह को</value>
+    <comment>max length(8)</comment>
+  </data>
+  <data name="Location_Disabled_Heading" xml:space="preserve">
+    <value>लोकेशन डिसेबल है</value>
+  </data>
+  <data name="Camera_Label" xml:space="preserve">
+    <value>कैमरा:</value>
+  </data>
+  <data name="In_App_Tip_7" xml:space="preserve">
+    <value>अब आप अपने hike  संपर्क के उन लोगों को संदेश भेज सकते हैं जो ऑफलाइन हैं! Hike एसएमएस के रूप में संदेशों को भेजने के लिए देर तक दबाएं</value>
+  </data>
+  <data name="Reolution_Label" xml:space="preserve">
+    <value>रिज़ोल्यूशन:</value>
+  </data>
+  <data name="Video_Settings" xml:space="preserve">
+    <value>वीडियो सेटिंग</value>
   </data>
 </root>
