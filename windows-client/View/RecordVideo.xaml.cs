@@ -220,6 +220,8 @@ namespace windows_client.View
             if (isSettingsUpdating)
                 return;
 
+            previewGrid.IsHitTestVisible = true;
+
             isSettingsUpdating = true;
 
             videoCaptureDevice.Dispose();
@@ -259,7 +261,7 @@ namespace windows_client.View
         void settingsButton_Click(object sender, EventArgs e)
         {
             UpdateUI(ButtonState.SettingMenu);
-            previewGrid.Visibility = Visibility.Collapsed;
+            previewGrid.IsHitTestVisible = false;
             SettingsGrid.Visibility = Visibility.Visible;
         }
 
