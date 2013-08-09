@@ -63,7 +63,7 @@
         <Grid x:Name="SettingsGrid" Canvas.ZIndex="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Collapsed">
             <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" IsHitTestVisible="False"/>
             <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{StaticResource PhoneBackgroundBrush}">
-                <TextBlock Text="{Binding Path= LocalizedResources.Video_Settings, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="24" Margin="12"/>
+                <TextBlock Text="{Binding Path= LocalizedResources.Video_Settings, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="32" Margin="12"/>
                 <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel x:Name="cameraGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,20,12,12">
                         <TextBlock x:Name="cameraLabel" Foreground="{StaticResource PhoneSubtleBrush}" Text="{Binding Path= LocalizedResources.Camera_Label, Source={StaticResource LocalizedStrings}}"/>
