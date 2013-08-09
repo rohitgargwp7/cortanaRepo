@@ -181,9 +181,7 @@ namespace windows_client.ViewModel
             }
             RegisterListeners();
 
-            LoadToolTipsList();
             LoadToolTipsDict();
-
             LoadCurrentLocation();
         }
 
@@ -203,9 +201,7 @@ namespace windows_client.ViewModel
             }
             RegisterListeners();
 
-            LoadToolTipsList();
             LoadToolTipsDict();
-
             LoadCurrentLocation();
         }
 
@@ -462,13 +458,6 @@ namespace windows_client.ViewModel
 
         void LoadToolTipsList()
         {
-            byte marked, currentlyShowing;
-            App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked); //initilaized in upgrade logic
-            App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentlyShowing); //initilaized in upgrade logic
-
-            if (marked == 127 && currentlyShowing == 0)//0x7f
-                return;
-
             _toolTipsList = new List<HikeToolTip>();
 
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
@@ -491,6 +480,9 @@ namespace windows_client.ViewModel
 
             if (marked == 127 && currentlyShowing == 0)//0x7f
                 return;
+
+            if (_toolTipsList == null) 
+                LoadToolTipsList();
 
             DictInAppTip = new Dictionary<int, HikeToolTip>();
             bool isShownVal, isCurrentShown;
