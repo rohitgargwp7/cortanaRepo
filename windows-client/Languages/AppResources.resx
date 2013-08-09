@@ -1925,4 +1925,20 @@ Get hike: http://get.hike.in</value>
   <data name="Video_Settings" xml:space="preserve">
     <value>video settings</value>
   </data>
+  <data name="Video_High_Quality_Txt" xml:space="preserve">
+    <value>High Quality (720p)</value>
+    <comment>(720p) is constant, Max limit 40</comment>
+  </data>
+  <data name="Video_Low_Quality_Txt" xml:space="preserve">
+    <value>Low Quality (QVGA)</value>
+    <comment>(QVGA) is constant, Max limit 40</comment>
+  </data>
+  <data name="Video_Standard_Quality_Txt" xml:space="preserve">
+    <value>Standard Quality (VGA) (default)</value>
+    <comment>(VGA) is constant, Max limit 40</comment>
+  </data>
+  <data name="Video_Very_High_Quality_Txt" xml:space="preserve">
+    <value>Very High Quality (1080p)</value>
+    <comment>(1080p) is constant, Max limit 40</comment>
+  </data>
 </root>

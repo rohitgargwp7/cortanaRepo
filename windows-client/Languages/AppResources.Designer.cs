@@ -4380,6 +4380,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to High Quality (720p).
+        /// </summary>
+        public static string Video_High_Quality_Txt {
+            get {
+                return ResourceManager.GetString("Video_High_Quality_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low Quality (QVGA).
+        /// </summary>
+        public static string Video_Low_Quality_Txt {
+            get {
+                return ResourceManager.GetString("Video_Low_Quality_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to video settings.
         /// </summary>
         public static string Video_Settings {
@@ -4389,11 +4407,29 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Standard Quality (VGA) (default).
+        /// </summary>
+        public static string Video_Standard_Quality_Txt {
+            get {
+                return ResourceManager.GetString("Video_Standard_Quality_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Video.
         /// </summary>
         public static string Video_Txt {
             get {
                 return ResourceManager.GetString("Video_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Very High Quality (1080p).
+        /// </summary>
+        public static string Video_Very_High_Quality_Txt {
+            get {
+                return ResourceManager.GetString("Video_Very_High_Quality_Txt", resourceCulture);
             }
         }
         

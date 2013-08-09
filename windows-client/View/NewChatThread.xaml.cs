@@ -3255,7 +3255,7 @@ namespace windows_client.View
             else
                 MessageBox.Show(AppResources.H2HOfline_0SMS_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OK);
 
-            if (_h2hofflineToolTip != null && _h2hofflineToolTip.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
+            if (_h2hofflineToolTip != null)
             {
                 this.ocMessages.Remove(_h2hofflineToolTip);
                 App.ViewModel.HideToolTip(null, 6);
