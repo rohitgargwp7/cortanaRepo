@@ -1074,7 +1074,6 @@ namespace windows_client.View
             {
                 if (App.ViewModel.DictInAppTip != null)
                 {
-
                     HikeToolTip tip;
 
                     if (chatThreadCount == 0)

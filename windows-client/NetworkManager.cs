@@ -1457,9 +1457,11 @@ namespace windows_client
                     //do same for category as well as subcategory
                     if (subType == HikeConstants.ADD_STICKER || subType == HikeConstants.ADD_CATEGORY)
                     {
-                        //TODO:milan show in app tip
                         string category = (string)jsonData[HikeConstants.CATEGORY_ID];
                         StickerCategory.UpdateHasMoreMessages(category, true, true);
+
+                        //reset in app tip for "New Stickers"
+                        App.ViewModel.ResetInAppTip(1);
                     }
                     else if (subType == HikeConstants.REMOVE_STICKER)
                     {
