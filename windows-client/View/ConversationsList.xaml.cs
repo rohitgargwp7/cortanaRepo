@@ -449,6 +449,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
             mPubSub.addListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
             mPubSub.addListener(HikePubSub.PRO_TIPS_REC, this);
+            mPubSub.addListener(HikePubSub.CONTACT_ADDED, this);
         }
 
         private void removeListeners()
@@ -473,6 +474,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
                 mPubSub.removeListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
                 mPubSub.removeListener(HikePubSub.PRO_TIPS_REC, this);
+                mPubSub.removeListener(HikePubSub.CONTACT_ADDED, this);
             }
             catch (Exception ex)
             {
@@ -897,7 +899,7 @@ namespace windows_client.View
             if (obj == null)
             {
                 Debug.WriteLine("ConversationsList :: OnEventReceived : Object received is null");
-                if (type != HikePubSub.ADD_REMOVE_FAV )
+                if (type != HikePubSub.ADD_REMOVE_FAV)
                     return;
             }
 
@@ -1477,6 +1479,29 @@ namespace windows_client.View
                         emptyScreenTip.Opacity = 1;
                     }
                 });
+            }
+            #endregion
+            #region CONTACT ADDED
+            else if (HikePubSub.CONTACT_ADDED == type)
+            {
+                if (obj is ContactInfo)
+                {
+                    ContactInfo cinfo = obj as ContactInfo;
+                    if (cinfo.OnHike && !App.ViewModel.Isfavourite(cinfo.Msisdn))
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            hikeContactList.Add(cinfo);
+                            cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
+                            if (hikeContactListBox.Visibility == Visibility.Collapsed)
+                            {
+                                emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
+                                hikeContactListBox.Visibility = Visibility.Visible;
+                            }
+                        });
+                    }
+
+                }
             }
             #endregion
         }

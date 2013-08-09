@@ -1308,6 +1308,7 @@ namespace windows_client.View
                 }
             }
             UsersTableUtils.addContact(contactInfo);
+             App.HikePubSubInstance.publish(HikePubSub.CONTACT_ADDED, contactInfo);
             List<StatusMessage> statusMessagesFromDB = null;
             if (friendStatus >= FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
             {

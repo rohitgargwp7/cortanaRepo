@@ -55,7 +55,6 @@ namespace windows_client.View
         private readonly string RELEASE_TO_SEND = AppResources.Release_To_Send;
         private readonly string MESSAGE_TOO_SHORT = AppResources.Message_Too_Short;
         private readonly string MESSAGE_CANCELLED = AppResources.Message_Cancelled;
-        private PageOrientation pageOrientation = PageOrientation.Portrait;
 
         private const int maxFileSize = 15728640;//in bytes
         private const int maxSmsCharLength = 140;
@@ -67,7 +66,6 @@ namespace windows_client.View
         private bool enableSendMsgButton = false;
         private long _lastUpdatedLastSeenTimeStamp = 0;
 
-        bool afterMute = true;
         bool _isStatusUpdateToolTipShown = false;
         ConvMessage _toolTipMessage, _h2hofflineToolTip;
         private bool _isMute = false;
@@ -1835,7 +1833,6 @@ namespace windows_client.View
                 ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
                 muteGroupMenuItem.Text = AppResources.SelectUser_MuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                afterMute = true;
             }
             else // GC is unmute , request to mute
             {
@@ -1845,7 +1842,6 @@ namespace windows_client.View
                 ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
                 muteGroupMenuItem.Text = AppResources.SelectUser_UnMuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                afterMute = false;
             }
         }
 
@@ -4731,6 +4727,7 @@ namespace windows_client.View
                 }
             }
             UsersTableUtils.addContact(contactInfo);
+            mPubSub.publish(HikePubSub.CONTACT_ADDED, contactInfo);
             Dispatcher.BeginInvoke(() =>
             {
                 userName.Text = contactInfo.Name;

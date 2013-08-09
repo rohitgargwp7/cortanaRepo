@@ -555,14 +555,6 @@
     <Content Include="View\images\icon_direction.png" />
     <Content Include="View\images\emoticons\tiranga4.png" />
     <Content Include="View\images\MediaPlayIcon.png" />
-    <Content Include="View\images\moods\24Music.png" />
-    <Content Include="View\images\moods\25PartyingHard.png" />
-    <Content Include="View\images\moods\26Singing.png" />
-    <Content Include="View\images\moods\27Eating.png" />
-    <Content Include="View\images\moods\27Hogging.png" />
-    <Content Include="View\images\moods\28WorkingOut.png" />
-    <Content Include="View\images\moods\29Cooking.png" />
-    <Content Include="View\images\moods\30BeautySaloon.png" />
     <Content Include="View\images\doggy_icon.png" />
     <Content Include="View\images\doggy_i_icon.png" />
     <Content Include="View\images\doggy_overlay.png" />
