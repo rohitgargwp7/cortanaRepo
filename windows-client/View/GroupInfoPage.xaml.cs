@@ -762,6 +762,8 @@ namespace windows_client.View
                 }
             }
             UsersTableUtils.addContact(contactInfo);
+            mPubSub.publish(HikePubSub.CONTACT_ADDED, contactInfo);
+
             Dispatcher.BeginInvoke(() =>
             {
                 gp_obj.Name = contactInfo.Name;
