@@ -181,7 +181,8 @@ namespace windows_client.ViewModel
             }
             RegisterListeners();
 
-            LoadToolTips();
+            LoadToolTipsList();
+            LoadToolTipsDict();
 
             LoadCurrentLocation();
         }
@@ -202,7 +203,8 @@ namespace windows_client.ViewModel
             }
             RegisterListeners();
 
-            LoadToolTips();
+            LoadToolTipsList();
+            LoadToolTipsDict();
 
             LoadCurrentLocation();
         }
@@ -235,7 +237,7 @@ namespace windows_client.ViewModel
                         var latitutde = Math.Round(currentPosition.Coordinate.Latitude, 6);
                         var longitute = Math.Round(currentPosition.Coordinate.Longitude, 6);
                         var newCoordinate = new GeoCoordinate(latitutde, longitute);
-                        
+
                         App.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, newCoordinate);
                     }
                     catch (Exception ex)
@@ -260,7 +262,7 @@ namespace windows_client.ViewModel
                 getCoordinateWorker.RunWorkerAsync();
             }
         }
-        
+
         public bool Isfavourite(string mContactNumber)
         {
             if (_favList.Count == 0)
@@ -429,12 +431,47 @@ namespace windows_client.ViewModel
             }
         }
 
+        List<HikeToolTip> _toolTipsList = new List<HikeToolTip>();
         public Dictionary<int, HikeToolTip> DictInAppTip;
+
+        public void ResetInAppTip(int index)
+        {
+            //should not reset tips 0 & 2 as chat thread count logic is involved
+
+            if (DictInAppTip == null)
+                DictInAppTip = new Dictionary<int, HikeToolTip>();
+
+            byte marked;
+            App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
+            marked &= (byte)~(1 << index);
+            App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
+
+            byte currentShown;
+            App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
+            currentShown &= (byte)~(1 << index);
+            App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
+
+            _toolTipsList[index].IsShown = false;
+            _toolTipsList[index].IsCurrentlyShown = false;
+
+            DictInAppTip[index] = _toolTipsList[index];
+        }
+
+        void LoadToolTipsList()
+        {
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 130, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 30, 0), FullTipMargin = new Thickness(10, 0, 10, 55) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 60, 10, 0) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_7, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
+        }
 
         /// <summary>
         /// Load In App Hardcoded Tooltips
         /// </summary>
-        public void LoadToolTips()
+        public void LoadToolTipsDict()
         {
             byte marked, currentlyShowing;
             App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked); //initilaized in upgrade logic
@@ -444,41 +481,20 @@ namespace windows_client.ViewModel
                 return;
 
             DictInAppTip = new Dictionary<int, HikeToolTip>();
+            bool isShownVal, isCurrentShown;
+            int powerOfTwo = 1;
 
-            bool isShownVal = (marked & 0x01) > 0;
-            bool isCurrentShown = (currentlyShowing & 0x01) > 0;
-            if (!isShownVal || isCurrentShown)
-                DictInAppTip.Add(0, new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(0, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 0)});
-            
-            isShownVal = (marked & 0x02) > 0;
-            isCurrentShown = (currentlyShowing & 0x02) > 0;
-            if (!isShownVal || isCurrentShown)
-                DictInAppTip.Add(1, new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 130, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
+            for (int index = 0; index < _toolTipsList.Count; index++)
+            {
+                powerOfTwo = 1 << index;
+                isShownVal = (marked & powerOfTwo) > 0;
+                isCurrentShown = (currentlyShowing & powerOfTwo) > 0;
+                _toolTipsList[index].IsShown = isShownVal;
+                _toolTipsList[index].IsCurrentlyShown = isCurrentShown;
 
-            isShownVal = (marked & 0x04) > 0;
-            isCurrentShown = (currentlyShowing & 0x04) > 0;
-            if (!isShownVal || isCurrentShown)
-                DictInAppTip.Add(2, new HikeToolTip() { Tip = AppResources.In_App_Tip_3, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
-            
-            isShownVal = (marked & 0x08) > 0;
-            isCurrentShown = (currentlyShowing & 0x08) > 0;
-            if (!isShownVal || isCurrentShown)
-                DictInAppTip.Add(3, new HikeToolTip() { Tip = AppResources.In_App_Tip_4, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = false, TipMargin = new Thickness(10, 0, 30, 0), FullTipMargin = new Thickness(10, 0, 10, 55) });
-            
-            isShownVal = (marked & 0x10) > 0;
-            isCurrentShown = (currentlyShowing & 0x10) > 0;
-            if (!isShownVal || isCurrentShown)
-                DictInAppTip.Add(4, new HikeToolTip() { Tip = AppResources.In_App_Tip_5, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
-            
-            isShownVal = (marked & 0x20) > 0;
-            isCurrentShown = (currentlyShowing & 0x20) > 0;
-            if (!isShownVal || isCurrentShown)
-                DictInAppTip.Add(5, new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 60, 10, 0) });
-            
-            isShownVal = (marked & 0x40) > 0;
-            isCurrentShown = (currentlyShowing & 0x40) > 0;
-            if (!isShownVal || isCurrentShown)
-                DictInAppTip.Add(6, new HikeToolTip() { Tip = AppResources.In_App_Tip_7, IsShown = isShownVal, IsCurrentlyShown = isCurrentShown, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
+                if (!isShownVal || isCurrentShown)
+                    DictInAppTip[index] = _toolTipsList[index];
+            }
         }
 
         /// <summary>
@@ -518,7 +534,7 @@ namespace windows_client.ViewModel
                 Canvas.SetZIndex(inAppTipUC, 3);
                 inAppTipUC.Visibility = Visibility.Visible;
 
-                if (index == 0 || index == 1 || index == 2 || index==5)
+                if (index == 0 || index == 1 || index == 2 || index == 5)
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 3);
                 else if (index == 3)
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 2);
