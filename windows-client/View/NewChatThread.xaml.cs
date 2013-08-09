@@ -4837,7 +4837,7 @@ namespace windows_client.View
         private void vScrollBar1_ValueChanged(Object sender, EventArgs e)
         {
             vScrollBar = sender as ScrollBar;
-            if (vScrollBar != null && vScrollBar.Maximum < 100000 && _currentOrientation == this.Orientation)
+            if (vScrollBar != null && vScrollBar.Maximum < 1000000 && _currentOrientation == this.Orientation)
             {
                 if ((vScrollBar.Maximum - vScrollBar.Value) < 100)
                 {
@@ -4871,7 +4871,7 @@ namespace windows_client.View
 
         private void ShowJumpToBottom(bool increaseUnreadCounter)
         {
-            if (vScrollBar != null && (ocMessages != null && ocMessages.Count > 6))
+            if (vScrollBar != null && (ocMessages != null && ocMessages.Count > 6) && vScrollBar.Maximum < 1000000)
             {
                 if ((vScrollBar.Maximum - vScrollBar.Value) > 300)
                 {
