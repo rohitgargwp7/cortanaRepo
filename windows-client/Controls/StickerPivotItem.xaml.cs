@@ -122,7 +122,7 @@ namespace windows_client.Controls
             if (e.NewState.Name == "CompressionBottom")
             {
                 StickerCategory stickerCategory;
-                if (App.newChatThreadPage != null && (stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_category)) != null && stickerCategory.HasMoreStickers && !stickerCategory.ShowDownloadMessage && !stickerCategory.IsDownLoading)
+                if (App.newChatThreadPage != null && (stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_category)) != null && stickerCategory.HasMoreStickers && !stickerCategory.IsDownLoading)
                 {
                     if (llsStickerCategory.ItemsSource != null && llsStickerCategory.Items.Count > 0)
                     {

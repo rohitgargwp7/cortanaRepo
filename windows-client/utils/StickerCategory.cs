@@ -24,7 +24,7 @@ namespace windows_client.utils
         private string _category;
         private bool _hasMoreStickers = true;
         private bool _showDownloadMessage = true;
-        private bool _hasNewMessages = false;
+        private bool _hasNewStickers = false;
         private ObservableCollection<Sticker> _listStickers;
         private bool _isDownLoading;
         private static object readWriteLock = new object();
@@ -73,11 +73,15 @@ namespace windows_client.utils
             }
         }
 
-        public bool HasNewMessages
+        public bool HasNewStickers
         {
             get
             {
-                return _hasNewMessages;
+                return _hasNewStickers;
+            }
+            set
+            {
+                _hasNewStickers = value;
             }
         }
 
@@ -124,7 +128,7 @@ namespace windows_client.utils
                                         {
                                             _hasMoreStickers = reader.ReadBoolean();
                                             _showDownloadMessage = reader.ReadBoolean();
-                                            _hasNewMessages = reader.ReadBoolean();
+                                            _hasNewStickers = reader.ReadBoolean();
                                         }
                                         else
                                         {
@@ -265,7 +269,7 @@ namespace windows_client.utils
                                     _hasMoreStickers = hasMoreStickers;
                                     writer.Write(_hasMoreStickers);
                                     writer.Write(_showDownloadMessage);
-                                    writer.Write(_hasNewMessages);
+                                    writer.Write(_hasNewStickers);
                                     writer.Flush();
                                     writer.Close();
                                 }
@@ -309,6 +313,7 @@ namespace windows_client.utils
                                 this._showDownloadMessage = showDownloadMessage;
                                 writer.Write(_hasMoreStickers);
                                 writer.Write(showDownloadMessage);
+                                writer.Write(_hasNewStickers);
                                 writer.Flush();
                                 writer.Close();
                             }
@@ -427,7 +432,7 @@ namespace windows_client.utils
                                                     {
                                                         stickerCategory._hasMoreStickers = reader.ReadBoolean();
                                                         stickerCategory._showDownloadMessage = reader.ReadBoolean();
-                                                        stickerCategory._hasNewMessages = reader.ReadBoolean();
+                                                        stickerCategory._hasNewStickers = reader.ReadBoolean();
                                                         hasMetaData = true;
                                                     }
                                                     else
@@ -600,7 +605,7 @@ namespace windows_client.utils
             {
                 StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
                 stickerCategory._hasMoreStickers = hasMoreStickers;
-                stickerCategory._hasNewMessages = hasNewMessages;
+                stickerCategory._hasNewStickers = hasNewMessages;
             }
             lock (readWriteLock)
             {
@@ -642,6 +647,7 @@ namespace windows_client.utils
                             }
                             using (BinaryWriter writer = new BinaryWriter(file))
                             {
+                                writer.Seek(0, SeekOrigin.Begin);
                                 writer.Write(hasMoreStickers);
                                 writer.Write(showDownloadMessage);
                                 writer.Write(hasNewMessages);
