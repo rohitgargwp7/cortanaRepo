@@ -69,7 +69,7 @@ namespace windows_client.View
 
         bool afterMute = true;
         bool _isStatusUpdateToolTipShown = false;
-        ConvMessage _toolTipMessage,_h2hofflineToolTip;
+        ConvMessage _toolTipMessage, _h2hofflineToolTip;
         private bool _isMute = false;
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
@@ -3783,7 +3783,8 @@ namespace windows_client.View
                             userImage.Source = App.ViewModel.ConvMap[convMessage.Msisdn].AvatarImage;
 
                         AddNewMessageToUI(convMessage, false, true);
-                        ShowJumpToBottom(true);
+                        if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                            ShowJumpToBottom(true);
 
                         if (vals.Length == 3)
                         {
@@ -3791,7 +3792,8 @@ namespace windows_client.View
                             if (cm != null)
                             {
                                 AddNewMessageToUI(cm, false, true);
-                                ShowJumpToBottom(true);
+                                if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                                    ShowJumpToBottom(true);
                             }
                         }
                     });
@@ -5899,7 +5901,7 @@ namespace windows_client.View
                          }
 
                          this.ocMessages.Insert(indexToInsert, _tap2SendAsSMSMessage);
-                         
+
                          if (indexToInsert == ocMessages.Count - 1)
                              ScrollToBottom();
 
@@ -5994,7 +5996,7 @@ namespace windows_client.View
         {
             if (_toolTipMessage != null)
                 this.ocMessages.Remove(_toolTipMessage);
-               
+
             App.ViewModel.HideToolTip(null, 4);
         }
 
