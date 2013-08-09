@@ -248,6 +248,12 @@ namespace windows_client.View
                 WalkieTalkieDeletedBorder.Opacity = 1;
                 WalkieTalkieGridOverlayLayer.Opacity = 1;
             }
+            else
+            {
+                JumpToBottomGrid.Opacity = 0.85;
+                jumpToBottomBorder.Background = UI_Utils.Instance.BlackBorderBrush;
+            }
+
             _currentOrientation = this.Orientation;
         }
 
