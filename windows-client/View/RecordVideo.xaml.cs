@@ -320,6 +320,8 @@ namespace windows_client.View
             return string.Format("{0,2:n1} {1}", dValue, suffixes[i]);
         }
 
+        Boolean _isGoingBack = false;
+
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
             if (SettingsGrid.Visibility == Visibility.Visible)
@@ -328,6 +330,8 @@ namespace windows_client.View
                 e.Cancel = true;
                 return;
             }
+
+            _isGoingBack = true;
 
             base.OnBackKeyPress(e);
         }
@@ -412,12 +416,15 @@ namespace windows_client.View
             if (currentAppState == ButtonState.Recording)
                 await StopVideoRecording();
 
-            State[HikeConstants.VIDEO_SIZE] = txtSize.Text;
-            State[HikeConstants.VIDEO_THUMBNAIL] = thumbnail;
-            State[HikeConstants.MAX_VIDEO_PLAYING_TIME] = maxPlayingTime;
-            State[HikeConstants.IS_PRIMARY_CAM] = isPrimaryCam;
-            State[HikeConstants.VIDEO_RESOLUTION] = selectedResolution;
-            State[HikeConstants.VIDEO_FRAME_BYTES] = _snapshotByte;
+            if (!_isGoingBack)
+            {
+                State[HikeConstants.VIDEO_SIZE] = txtSize.Text;
+                State[HikeConstants.VIDEO_THUMBNAIL] = thumbnail;
+                State[HikeConstants.MAX_VIDEO_PLAYING_TIME] = maxPlayingTime;
+                State[HikeConstants.IS_PRIMARY_CAM] = isPrimaryCam;
+                State[HikeConstants.VIDEO_RESOLUTION] = selectedResolution;
+                State[HikeConstants.VIDEO_FRAME_BYTES] = _snapshotByte;
+            }
 
             // Dispose of camera and media objects.
             DisposeVideoPlayer();
