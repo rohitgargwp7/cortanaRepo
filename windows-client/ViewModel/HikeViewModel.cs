@@ -431,7 +431,7 @@ namespace windows_client.ViewModel
             }
         }
 
-        List<HikeToolTip> _toolTipsList = new List<HikeToolTip>();
+        List<HikeToolTip> _toolTipsList;
         public Dictionary<int, HikeToolTip> DictInAppTip;
 
         public void ResetInAppTip(int index)
@@ -444,12 +444,15 @@ namespace windows_client.ViewModel
             byte marked;
             App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
             marked &= (byte)~(1 << index);
-            App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
+            App.appSettings[App.TIP_MARKED_KEY] = marked;
 
             byte currentShown;
             App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
             currentShown &= (byte)~(1 << index);
             App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
+
+            if (_toolTipsList == null)
+                LoadToolTipsList();
 
             _toolTipsList[index].IsShown = false;
             _toolTipsList[index].IsCurrentlyShown = false;
@@ -459,6 +462,15 @@ namespace windows_client.ViewModel
 
         void LoadToolTipsList()
         {
+            byte marked, currentlyShowing;
+            App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked); //initilaized in upgrade logic
+            App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentlyShowing); //initilaized in upgrade logic
+
+            if (marked == 127 && currentlyShowing == 0)//0x7f
+                return;
+
+            _toolTipsList = new List<HikeToolTip>();
+
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 130, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
@@ -477,7 +489,7 @@ namespace windows_client.ViewModel
             App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked); //initilaized in upgrade logic
             App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentlyShowing); //initilaized in upgrade logic
 
-            if (marked == 63 && currentlyShowing == 0)//0x3f
+            if (marked == 127 && currentlyShowing == 0)//0x7f
                 return;
 
             DictInAppTip = new Dictionary<int, HikeToolTip>();
