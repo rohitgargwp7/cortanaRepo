@@ -767,10 +767,7 @@ namespace windows_client.View
             Dispatcher.BeginInvoke(() =>
             {
                 gp_obj.Name = contactInfo.Name;
-                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(gp_obj.Name, gp_obj.Msisdn, groupId);
-                gp.Name = gp_obj.Name;
-                GroupManager.Instance.GetParticipantList(groupId).Sort();
-                GroupManager.Instance.SaveGroupCache(groupId);
+              
                 // if default grp name is not set , then only update grp 
                 if (gi.GroupName == null)
                 {
@@ -802,6 +799,28 @@ namespace windows_client.View
                     MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
                 }
             });
+
+            GroupManager.Instance.LoadGroupCache();
+
+            if (GroupManager.Instance.GroupCache != null)
+            {
+                foreach (string key in GroupManager.Instance.GroupCache.Keys)
+                {
+                    bool shouldSave = false;
+                    List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                    for (int i = 0; i < l.Count; i++)
+                    {
+                        if (l[i].Msisdn == contactInfo.Msisdn)
+                        {
+                            l[i].Name = contactInfo.Name;
+                            shouldSave = true;
+                        }
+                    }
+
+                    if (shouldSave)
+                        GroupManager.Instance.SaveGroupCache(key);
+                }
+            }
         }
 
         private void groupMember_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -856,7 +875,6 @@ namespace windows_client.View
             GroupParticipant gp_obj = selectedListBoxItem.DataContext as GroupParticipant;
             if (gp_obj == null)
                 return;
-
 
             // send 'gck' packet
             // remove from OC
