@@ -1145,6 +1145,28 @@ namespace windows_client.View
                 ToggleAlertOnNoSms(false);
 
             });
+
+            GroupManager.Instance.LoadGroupCache();
+
+            if (GroupManager.Instance.GroupCache != null)
+            {
+                foreach (string key in GroupManager.Instance.GroupCache.Keys)
+                {
+                    bool shouldSave = false;
+                    List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                    for (int i = 0; i < l.Count; i++)
+                    {
+                        if (l[i].Msisdn == mContactNumber)
+                        {
+                            l[i].IsOnHike = true;
+                            shouldSave = true;
+                        }
+                    }
+
+                    if (shouldSave)
+                        GroupManager.Instance.SaveGroupCache(key);
+                }
+            }
         }
 
         public void GetHikeStatus_Callback(JObject obj)
@@ -3251,7 +3273,7 @@ namespace windows_client.View
             else
                 MessageBox.Show(AppResources.H2HOfline_0SMS_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OK);
 
-            if (_h2hofflineToolTip != null && _h2hofflineToolTip.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
+            if (_h2hofflineToolTip != null)
             {
                 this.ocMessages.Remove(_h2hofflineToolTip);
                 App.ViewModel.HideToolTip(null, 6);
@@ -4752,6 +4774,28 @@ namespace windows_client.View
                     MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
                 }
             });
+
+            GroupManager.Instance.LoadGroupCache();
+
+            if (GroupManager.Instance.GroupCache != null)
+            {
+                foreach (string key in GroupManager.Instance.GroupCache.Keys)
+                {
+                    bool shouldSave = false;
+                    List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                    for (int i = 0; i < l.Count; i++)
+                    {
+                        if (l[i].Msisdn == contactInfo.Msisdn)
+                        {
+                            l[i].Name = contactInfo.Name;
+                            shouldSave = true;
+                        }
+                    }
+
+                    if (shouldSave)
+                        GroupManager.Instance.SaveGroupCache(key);
+                }
+            }
         }
 
         #region Orientation Handling
@@ -4815,7 +4859,7 @@ namespace windows_client.View
         private void vScrollBar1_ValueChanged(Object sender, EventArgs e)
         {
             vScrollBar = sender as ScrollBar;
-            if (vScrollBar != null && vScrollBar.Maximum < 100000 && _currentOrientation == this.Orientation)
+            if (vScrollBar != null && vScrollBar.Maximum < 1000000 && _currentOrientation == this.Orientation)
             {
                 if ((vScrollBar.Maximum - vScrollBar.Value) < 100)
                 {
@@ -4849,7 +4893,7 @@ namespace windows_client.View
 
         private void ShowJumpToBottom(bool increaseUnreadCounter)
         {
-            if (vScrollBar != null && (ocMessages != null && ocMessages.Count > 6))
+            if (vScrollBar != null && (ocMessages != null && ocMessages.Count > 6) && vScrollBar.Maximum < 1000000)
             {
                 if ((vScrollBar.Maximum - vScrollBar.Value) > 300)
                 {

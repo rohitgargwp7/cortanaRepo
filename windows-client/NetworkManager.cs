@@ -894,7 +894,10 @@ namespace windows_client
                         convMessage.Timestamp = TimeUtils.getCurrentTimeStamp();
                     }
                     else
+                    {
+                        GroupManager.Instance.SaveGroupCache(grpId);
                         return;
+                    }
                 }
                 #endregion
                 #region DUPLICATE GCJ

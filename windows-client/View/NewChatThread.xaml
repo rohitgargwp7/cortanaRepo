@@ -282,7 +282,7 @@
                                                     </Grid.ColumnDefinitions>
                                                     <Image MaxWidth="160" MaxHeight="160" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
                                                     <StackPanel MaxHeight="160" MaxWidth="200" Margin="12,0,0,0" Grid.Column="1" Visibility="{Binding LocationAddressVisibility}" VerticalAlignment="Top">
-                                                        <TextBlock Text="{Binding PlaceName}" Visibility="{Binding PlaceNameVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" FontWeight="SemiBold" />
+                                                        <TextBlock Text="{Binding PlaceName}" TextDecorations="Underline" Visibility="{Binding PlaceNameVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" FontWeight="SemiBold" />
                                                         <TextBlock Text="{Binding Address}" Visibility="{Binding AddressVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" TextTrimming="WordEllipsis" />
                                                     </StackPanel>
                                                 </Grid>
@@ -532,7 +532,7 @@
                                                     </Grid.ColumnDefinitions>
                                                     <Image Grid.Column="1" MaxWidth="160" MaxHeight="160" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
                                                     <StackPanel MaxHeight="160" MaxWidth="200" Margin="0,0,12,0" Visibility="{Binding LocationAddressVisibility}" VerticalAlignment="Top">
-                                                        <TextBlock Text="{Binding PlaceName}" Visibility="{Binding PlaceNameVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" FontWeight="SemiBold" />
+                                                        <TextBlock Text="{Binding PlaceName}" TextDecorations="Underline" Visibility="{Binding PlaceNameVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" FontWeight="SemiBold" />
                                                         <TextBlock Text="{Binding Address}" Visibility="{Binding AddressVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" TextTrimming="WordEllipsis" />
                                                     </StackPanel>
                                                 </Grid>

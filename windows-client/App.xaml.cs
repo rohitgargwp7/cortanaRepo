@@ -1131,7 +1131,8 @@ namespace windows_client
             obj.Add(HikeConstants.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
             obj.Add(HikeConstants.STATUS, "bg");
 
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            if (App.HikePubSubInstance != null)
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
     }
 }

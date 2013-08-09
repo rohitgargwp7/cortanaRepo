@@ -454,8 +454,8 @@ namespace windows_client.Misc
                 }
             }
         }
-       
-        public void RefreshGroupCache(ContactInfo cn,Dictionary<string,GroupInfo> allGrpsInfo)
+
+        public void RefreshGroupCache(ContactInfo cn, Dictionary<string, GroupInfo> allGrpsInfo)
         {
             if (allGrpsInfo == null || allGrpsInfo.Count == 0) // if no grp exists , do nothing
                 return;

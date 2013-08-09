@@ -51,6 +51,7 @@ namespace windows_client.View
         ApplicationBarIconButton settingIconButton = null;
         ApplicationBarIconButton pauseIconButton = null;
         ApplicationBarIconButton stopIconButton = null;
+        ApplicationBarIconButton playIconButton = null;
         private int runningSeconds = -1;
 
         public RecordVideo()
@@ -81,6 +82,11 @@ namespace windows_client.View
             pauseIconButton.Text = AppResources.Pause_Txt;
             pauseIconButton.Click += new EventHandler(PausePlayback_Click);
 
+            playIconButton = new ApplicationBarIconButton();
+            playIconButton.IconUri = new Uri("/View/images/appbar_icon_play.png", UriKind.Relative);
+            playIconButton.Text = AppResources.Play_Txt;
+            playIconButton.Click += playIconButton_Click;
+
             stopIconButton = new ApplicationBarIconButton();
             stopIconButton.IconUri = new Uri("/View/images/icon_stop_appbar.png", UriKind.Relative);
             stopIconButton.Text = AppResources.Stop_Txt;
@@ -102,19 +108,22 @@ namespace windows_client.View
             doneIconButton.Click += doneIconButton_Click;
         }
 
+        void playIconButton_Click(object sender, EventArgs e)
+        {
+            addOrRemoveAppBarButton(playIconButton, false);
+            PlayVideo();
+        }
+
         String getTitleFromSize(double height)
         {
-            if (height == 1080 || height == 720 || height == 480 || height == 240)
-                return height.ToString();
-
-            //if (height == 1080)
-            //    return "1080p";
-            //else if (height == 720)
-            //    return "720p";
-            //else if (height == 480)
-            //    return "VGA";
-            //else if (height == 240)
-            //    return "QVGA";
+            if (height == 1080)
+                return AppResources.Video_Very_High_Quality_Txt;
+            else if (height == 720)
+                return AppResources.Video_High_Quality_Txt;
+            else if (height == 480)
+                return AppResources.Video_Standard_Quality_Txt;
+            else if (height == 240)
+                return AppResources.Video_Low_Quality_Txt;
                 
             return String.Empty;
         }
@@ -197,11 +206,24 @@ namespace windows_client.View
 
         async void doneIconButton_Click(object sender, EventArgs e)
         {
+            addOrRemoveAppBarButton(doneIconButton, false);
+            resolutionList.IsEnabled = false;
+            cameraList.IsEnabled = false;
+
             await UpdateRecordingSettings();
         }
 
+        Boolean isSettingsUpdating = false;
+
         private async System.Threading.Tasks.Task UpdateRecordingSettings()
         {
+            if (isSettingsUpdating)
+                return;
+
+            previewGrid.IsHitTestVisible = true;
+
+            isSettingsUpdating = true;
+
             videoCaptureDevice.Dispose();
             videoCaptureDevice = isPrimaryCam ? await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Back, selectedResolution.Size) : await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Front, selectedResolution.Size);
 
@@ -210,6 +232,8 @@ namespace windows_client.View
             videoRecorderBrush.SetSource(videoCaptureDevice);
 
             SettingsGrid.Visibility = Visibility.Collapsed;
+            resolutionList.IsEnabled = true;
+            cameraList.IsEnabled = true;
 
             if (runningSeconds <= 0 && String.IsNullOrEmpty(txtSize.Text))
                 UpdateUI(ButtonState.Initialized);
@@ -219,6 +243,8 @@ namespace windows_client.View
                 previewGrid.Visibility = Visibility.Visible;
                 UpdateUI(ButtonState.Ready);
             }
+
+            isSettingsUpdating = false;
         }
 
         private void SetUIFromResolution()
@@ -235,7 +261,7 @@ namespace windows_client.View
         void settingsButton_Click(object sender, EventArgs e)
         {
             UpdateUI(ButtonState.SettingMenu);
-            previewGrid.Visibility = Visibility.Collapsed;
+            previewGrid.IsHitTestVisible = false;
             SettingsGrid.Visibility = Visibility.Visible;
         }
 
@@ -294,6 +320,8 @@ namespace windows_client.View
             return string.Format("{0,2:n1} {1}", dValue, suffixes[i]);
         }
 
+        Boolean _isGoingBack = false;
+
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
             if (SettingsGrid.Visibility == Visibility.Visible)
@@ -302,6 +330,8 @@ namespace windows_client.View
                 e.Cancel = true;
                 return;
             }
+
+            _isGoingBack = true;
 
             base.OnBackKeyPress(e);
         }
@@ -386,12 +416,15 @@ namespace windows_client.View
             if (currentAppState == ButtonState.Recording)
                 await StopVideoRecording();
 
-            State[HikeConstants.VIDEO_SIZE] = txtSize.Text;
-            State[HikeConstants.VIDEO_THUMBNAIL] = thumbnail;
-            State[HikeConstants.MAX_VIDEO_PLAYING_TIME] = maxPlayingTime;
-            State[HikeConstants.IS_PRIMARY_CAM] = isPrimaryCam;
-            State[HikeConstants.VIDEO_RESOLUTION] = selectedResolution;
-            State[HikeConstants.VIDEO_FRAME_BYTES] = _snapshotByte;
+            if (!_isGoingBack)
+            {
+                State[HikeConstants.VIDEO_SIZE] = txtSize.Text;
+                State[HikeConstants.VIDEO_THUMBNAIL] = thumbnail;
+                State[HikeConstants.MAX_VIDEO_PLAYING_TIME] = maxPlayingTime;
+                State[HikeConstants.IS_PRIMARY_CAM] = isPrimaryCam;
+                State[HikeConstants.VIDEO_RESOLUTION] = selectedResolution;
+                State[HikeConstants.VIDEO_FRAME_BYTES] = _snapshotByte;
+            }
 
             // Dispose of camera and media objects.
             DisposeVideoPlayer();
@@ -415,6 +448,7 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(settingIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);
+                        addOrRemoveAppBarButton(playIconButton, false);
 
                         break;
 
@@ -425,6 +459,7 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, true);
                         addOrRemoveAppBarButton(settingIconButton, true);
+                        addOrRemoveAppBarButton(playIconButton, false);
 
                         break;
 
@@ -435,6 +470,7 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, true);
                         addOrRemoveAppBarButton(settingIconButton, true);
+                        addOrRemoveAppBarButton(playIconButton, false);
 
                         break;
 
@@ -446,6 +482,7 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, true);
                         stopIconButton.IsEnabled = false;
+                        addOrRemoveAppBarButton(playIconButton, false);
 
                         break;
 
@@ -456,6 +493,7 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(settingIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, true);
                         addOrRemoveAppBarButton(stopIconButton, true);
+                        addOrRemoveAppBarButton(playIconButton, false);
 
                         break;
 
@@ -466,6 +504,7 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(settingIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, true);
+                        addOrRemoveAppBarButton(playIconButton, true);
 
                         break;
 
@@ -476,6 +515,7 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(stopIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(doneIconButton, true);
+                        addOrRemoveAppBarButton(playIconButton, false);
 
                         break;
                     default:
@@ -759,7 +799,7 @@ namespace windows_client.View
             if (SettingsGrid.Visibility == Visibility.Collapsed)
                 return;
 
-            var list = sender as ListBox;
+            var list = sender as ListPicker;
             if (list != null && list.SelectedItem != null)
             {
                 var devices = AudioVideoCaptureDevice.AvailableSensorLocations;
@@ -787,7 +827,7 @@ namespace windows_client.View
             if (SettingsGrid.Visibility == Visibility.Collapsed)
                 return;
 
-            var list = sender as ListBox;
+            var list = sender as ListPicker;
             if (list != null && list.SelectedItem != null)
                 selectedResolution = (Resolution) list.SelectedItem;
         }
