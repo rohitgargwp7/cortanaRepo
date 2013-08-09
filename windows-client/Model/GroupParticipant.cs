@@ -132,6 +132,7 @@ namespace windows_client.Model
                     _isOnHike = value;
                     NotifyPropertyChanged("IsOnHike");
                     NotifyPropertyChanged("SquareColor");
+                    NotifyPropertyChanged("GroupInfoBlockText");
                 }
             }
         }
