@@ -51,6 +51,7 @@ namespace windows_client.View
         ApplicationBarIconButton settingIconButton = null;
         ApplicationBarIconButton pauseIconButton = null;
         ApplicationBarIconButton stopIconButton = null;
+        ApplicationBarIconButton playIconButton = null;
         private int runningSeconds = -1;
 
         public RecordVideo()
@@ -81,6 +82,11 @@ namespace windows_client.View
             pauseIconButton.Text = AppResources.Pause_Txt;
             pauseIconButton.Click += new EventHandler(PausePlayback_Click);
 
+            playIconButton = new ApplicationBarIconButton();
+            playIconButton.IconUri = new Uri("/View/images/appbar_icon_play.png", UriKind.Relative);
+            playIconButton.Text = AppResources.Play_Txt;
+            playIconButton.Click += playIconButton_Click;
+
             stopIconButton = new ApplicationBarIconButton();
             stopIconButton.IconUri = new Uri("/View/images/icon_stop_appbar.png", UriKind.Relative);
             stopIconButton.Text = AppResources.Stop_Txt;
@@ -100,6 +106,12 @@ namespace windows_client.View
             doneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
             doneIconButton.Text = AppResources.OK;
             doneIconButton.Click += doneIconButton_Click;
+        }
+
+        void playIconButton_Click(object sender, EventArgs e)
+        {
+            addOrRemoveAppBarButton(playIconButton, false);
+            PlayVideo();
         }
 
         String getTitleFromSize(double height)
@@ -197,6 +209,9 @@ namespace windows_client.View
 
         async void doneIconButton_Click(object sender, EventArgs e)
         {
+            addOrRemoveAppBarButton(doneIconButton, false);
+            SettingsGrid.Visibility = Visibility.Collapsed;
+
             await UpdateRecordingSettings();
         }
 
@@ -415,6 +430,7 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(settingIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);
+                        addOrRemoveAppBarButton(playIconButton, false);
 
                         break;
 
@@ -425,6 +441,7 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, true);
                         addOrRemoveAppBarButton(settingIconButton, true);
+                        addOrRemoveAppBarButton(playIconButton, false);
 
                         break;
 
@@ -435,6 +452,7 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(recordIconButton, true);
                         addOrRemoveAppBarButton(settingIconButton, true);
+                        addOrRemoveAppBarButton(playIconButton, false);
 
                         break;
 
@@ -446,6 +464,7 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, true);
                         stopIconButton.IsEnabled = false;
+                        addOrRemoveAppBarButton(playIconButton, false);
 
                         break;
 
@@ -456,6 +475,7 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(settingIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, true);
                         addOrRemoveAppBarButton(stopIconButton, true);
+                        addOrRemoveAppBarButton(playIconButton, false);
 
                         break;
 
@@ -466,6 +486,7 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(settingIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, true);
+                        addOrRemoveAppBarButton(playIconButton, true);
 
                         break;
 
@@ -476,6 +497,7 @@ namespace windows_client.View
                         addOrRemoveAppBarButton(stopIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);
                         addOrRemoveAppBarButton(doneIconButton, true);
+                        addOrRemoveAppBarButton(playIconButton, false);
 
                         break;
                     default:
