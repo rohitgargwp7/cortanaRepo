@@ -800,27 +800,7 @@ namespace windows_client.View
                 }
             });
 
-            GroupManager.Instance.LoadGroupCache();
-
-            if (GroupManager.Instance.GroupCache != null)
-            {
-                foreach (string key in GroupManager.Instance.GroupCache.Keys)
-                {
-                    bool shouldSave = false;
-                    List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
-                    for (int i = 0; i < l.Count; i++)
-                    {
-                        if (l[i].Msisdn == contactInfo.Msisdn)
-                        {
-                            l[i].Name = contactInfo.Name;
-                            shouldSave = true;
-                        }
-                    }
-
-                    if (shouldSave)
-                        GroupManager.Instance.SaveGroupCache(key);
-                }
-            }
+            ContactUtils.UpdateGroupCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
         }
 
         private void groupMember_Tap(object sender, System.Windows.Input.GestureEventArgs e)
