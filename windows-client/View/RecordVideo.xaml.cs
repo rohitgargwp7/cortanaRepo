@@ -253,7 +253,7 @@ namespace windows_client.View
 
             VideoPlayer.Height = isPrimaryCam ? 1600 : 960;
             VideoPlayer.Width = isPrimaryCam ? 960 : 640;
-            VideoPlayer.Margin = isPrimaryCam ? new Thickness(-1000, -960, 0, 0) : new Thickness(-1440, -1480, 0, 0);
+            VideoPlayer.Margin = isPrimaryCam ? new Thickness(-1000, -960, 0, 0) : new Thickness(-1440, -1350, 0, 0);
             viewfinderTransform.ScaleX = isPrimaryCam ? 1 : -1;
             playerTransform.ScaleX = isPrimaryCam ? 1 : -1;
         }
