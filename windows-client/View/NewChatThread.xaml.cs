@@ -3892,10 +3892,7 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                          {
                              if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
-                             {
                                  this.ocMessages.Remove(_h2hofflineToolTip);
-                                 ShowForceSMSOnUI();
-                             }
                          });
 
                     if (_isSendAllAsSMSVisible && ocMessages != null && msg == _lastUnDeliveredMessage)
@@ -3991,10 +3988,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
-                    {
                         this.ocMessages.Remove(_h2hofflineToolTip);
-                        ShowForceSMSOnUI();
-                    }
                 });
 
                 if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage.MessageStatus != ConvMessage.State.SENT_CONFIRMED)

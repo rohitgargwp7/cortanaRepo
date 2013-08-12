@@ -134,7 +134,7 @@ namespace windows_client.View
                 {
                     try
                     {
-                        var list = _places.Where(p => p.title == _selectedPlace.title);
+                        var list = _places.Where(p => (p.position.Latitude == _selectedPlace.position.Latitude && p.position.Longitude == _selectedPlace.position.Longitude));
 
                         if (list == null || list.Count() == 0)
                             _places.Insert(0, _selectedPlace);
