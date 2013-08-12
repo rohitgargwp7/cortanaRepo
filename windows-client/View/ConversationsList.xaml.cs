@@ -720,7 +720,6 @@ namespace windows_client.View
                 {
                     _isFavListBound = true;
                     BackgroundWorker favBw = new BackgroundWorker();
-                    cofProgressBar.Visibility = Visibility.Visible;
                     cohProgressBar.Visibility = Visibility.Visible;
                     favBw.DoWork += (sf, ef) =>
                     {
@@ -758,15 +757,17 @@ namespace windows_client.View
                     favBw.RunWorkerAsync();
                     favBw.RunWorkerCompleted += (sf, ef) =>
                     {
-                        cofProgressBar.Visibility = Visibility.Collapsed;
+                        contactGrid.RowDefinitions[0].Height = GridLength.Auto;
                         cohProgressBar.Visibility = Visibility.Collapsed;
                         contactsCollectionView.Source = hikeContactList;
                         favCollectionView.Source = App.ViewModel.FavList; // this is done to sort in view
                         favourites.SelectedIndex = -1;
                         hikeContactListBox.SelectedIndex = -1;
                         cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
+                        txtCircleOfFriends.Visibility = Visibility.Visible;
                         cofCounter.Visibility = Visibility.Visible;
                         cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
+                        txtContactsOnHike.Visibility = Visibility.Visible;
                         cohCounter.Visibility = Visibility.Visible;
                         if (App.ViewModel.FavList.Count > 0)
                         {
