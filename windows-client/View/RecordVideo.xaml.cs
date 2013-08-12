@@ -322,16 +322,25 @@ namespace windows_client.View
 
         Boolean _isGoingBack = false;
 
-        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        protected async override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
             if (SettingsGrid.Visibility == Visibility.Visible)
             {
-                UpdateRecordingSettings();
+                await UpdateRecordingSettings();
+                e.Cancel = true;
+                return;
+            }
+
+            if (_isGoingBack)
+            {
                 e.Cancel = true;
                 return;
             }
 
             _isGoingBack = true;
+
+            if (currentAppState == ButtonState.Recording)
+                await StopVideoRecording();
 
             base.OnBackKeyPress(e);
         }

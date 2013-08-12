@@ -21,6 +21,7 @@ using Windows.Foundation;
 using System.Web;
 using System.Net.NetworkInformation;
 using System.Globalization;
+using System.Linq;
 
 namespace windows_client.View
 {
@@ -129,8 +130,19 @@ namespace windows_client.View
                 }
                 else
                 {
-                    if (!_places.Contains(_selectedPlace))
+                    try
+                    {
+                        var list = _places.Where(p => p.title == _selectedPlace.title);
+
+                        if (list == null || list.Count() == 0)
+                            _places.Insert(0, _selectedPlace);
+                        else
+                            index = _places.IndexOf(list.First());
+                    }
+                    catch
+                    {
                         _places.Insert(0, _selectedPlace);
+                    }
                 }
 
                 _selectedIndex = index;
