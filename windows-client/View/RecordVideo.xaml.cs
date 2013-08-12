@@ -251,9 +251,9 @@ namespace windows_client.View
         {
             viewfinderRectangle.Height = selectedResolution.Size.Height > 480 ? 800 : 640;
 
-            VideoPlayer.Height = isPrimaryCam ? 1600 : 960;
-            VideoPlayer.Width = isPrimaryCam ? 960 : 640;
-            VideoPlayer.Margin = isPrimaryCam ? new Thickness(-1000, -960, 0, 0) : new Thickness(-1440, -1350, 0, 0);
+            VideoPlayer.Height = isPrimaryCam || selectedResolution.Size.Height > 480 ? 1600 : 960;
+            VideoPlayer.Width = isPrimaryCam || selectedResolution.Size.Height > 480 ? 960 : 640;
+            VideoPlayer.Margin = isPrimaryCam || selectedResolution.Size.Height > 480 ? new Thickness(-1000, -960, 0, 0) : new Thickness(-1440, -1350, 0, 0);
             viewfinderTransform.ScaleX = isPrimaryCam ? 1 : -1;
             playerTransform.ScaleX = isPrimaryCam ? 1 : -1;
         }
@@ -326,7 +326,7 @@ namespace windows_client.View
         {
             if (SettingsGrid.Visibility == Visibility.Visible)
             {
-                await UpdateRecordingSettings();
+                UpdateRecordingSettings();
                 e.Cancel = true;
                 return;
             }
