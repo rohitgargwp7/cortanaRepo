@@ -46,7 +46,7 @@ namespace windows_client.View
         private List<Place> _places;
         Place _selectedPlace;
         Place _myPlace;
-        Boolean _isMapTapped = false;
+        Boolean _isMapTapped = false, _defaultSelection;
         Boolean _isLocationEnabled = true;
         Boolean _isDefaultLocationCall = true;
         String _cgen = HikeConstants.NokiaHere.CGEN_GPS;
@@ -127,6 +127,8 @@ namespace windows_client.View
 
                     if (!_places.Contains(_myPlace))
                         _places.Insert(0, _myPlace);
+
+                    _defaultSelection = true;
                 }
                 else
                 {
@@ -477,7 +479,10 @@ namespace windows_client.View
 
                     _selectedIndex = listbox.SelectedIndex;
 
-                    MyMap.SetView(_selectedCoordinate, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
+                    if (!_defaultSelection)
+                        MyMap.SetView(_selectedCoordinate, MyMap.ZoomLevel, MapAnimationKind.Parabolic);
+
+                    _defaultSelection = false;
 
                     DrawMapMarkers();
                     shareIconButton.IsEnabled = true;
