@@ -12,7 +12,6 @@ using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
 using Newtonsoft.Json.Linq;
-using Microsoft.Phone.Controls;
 using System.Net.NetworkInformation;
 using windows_client.Languages;
 using Microsoft.Phone.Data.Linq;
@@ -22,7 +21,6 @@ namespace windows_client.View
     public partial class UpgradePage : PhoneApplicationPage
     {
         Boolean _isContactsSyncComplete = false;
-        private static List<ContactInfo> listContactInfo;
         public UpgradePage()
         {
             InitializeComponent();

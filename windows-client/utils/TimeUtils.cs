@@ -35,7 +35,7 @@ namespace windows_client.utils
             messageTime = messageTime.ToLocalTime();
 
             if (span.Days < 1)
-                return messageTime.ToShortTimeString();
+                return messageTime.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
             else if (span.Days < 7)
                 return messageTime.ToString("ddd", CultureInfo.CurrentUICulture);
             else if (span.Days < 365)
@@ -55,13 +55,13 @@ namespace windows_client.utils
             messageTime = messageTime.ToLocalTime();
 
             if (span.Days < 1)
-                return messageTime.ToShortTimeString();
+                return messageTime.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
             else if (span.Days < 7)
-                return messageTime.ToString("ddd, ", CultureInfo.CurrentUICulture) + messageTime.ToShortTimeString();
+                return messageTime.ToString("ddd, ", CultureInfo.CurrentUICulture) + messageTime.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
             else if (span.Days < 365)
-                return String.Format("{0}, {1}", GetMonthDate(messageTime), messageTime.ToShortTimeString());
+                return String.Format("{0}, {1}", GetMonthDate(messageTime), messageTime.ToShortTimeString().Replace(" AM","a").Replace(" PM","p"));
             else
-                return String.Format("{0}, {1}", messageTime.ToShortDateString(), messageTime.ToShortTimeString());
+                return String.Format("{0}, {1}", messageTime.ToShortDateString(), messageTime.ToShortTimeString().Replace(" AM","a").Replace(" PM","p"));
         }
 
 
@@ -99,9 +99,9 @@ namespace windows_client.utils
             receivedTime = receivedTime.ToLocalTime();
 
             if (receivedTime.Date == DateTime.Now.Date) //today
-                return Languages.AppResources.Last_Seen_Today_At + " " + receivedTime.ToShortTimeString();
+                return Languages.AppResources.Last_Seen_Today_At + " " + receivedTime.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
             else if ((DateTime.Now.Date - receivedTime).Days == 1) // yesterday
-                return Languages.AppResources.Last_Seen_Yesterday_At + " " + receivedTime.ToShortTimeString();
+                return Languages.AppResources.Last_Seen_Yesterday_At + " " + receivedTime.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
             else if ((DateTime.Now.Date - receivedTime).Days < 7) // less than two weeks ago
                 return Languages.AppResources.Last_Seen + " " + GetMonthDateTime(receivedTime);
             else
@@ -116,27 +116,27 @@ namespace windows_client.utils
                 {
                     case 21:
                     case 31:
-                        return time.ToString("d\\s\\t MMM, ") + time.ToShortTimeString();
+                        return time.ToString("d\\s\\t MMM, ") + time.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
                     case 22:
-                        return time.ToString("d\\n\\d MMM, ") + time.ToShortTimeString();
+                        return time.ToString("d\\n\\d MMM, ") + time.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
                     case 23:
-                        return time.ToString("d\\r\\d MMM, ") + time.ToShortTimeString();
+                        return time.ToString("d\\r\\d MMM, ") + time.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
                     case 11:
                     case 12:
                     case 13:
-                        return time.ToString("d\\t\\h MMM, ") + time.ToShortTimeString();
+                        return time.ToString("d\\t\\h MMM, ") + time.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
                 }
 
                 switch (number % 10)
                 {
                     case 1:
-                        return time.ToString("d\\s\\t MMM, ") + time.ToShortTimeString();
+                        return time.ToString("d\\s\\t MMM, ") + time.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
                     case 2:
-                        return time.ToString("d\\n\\d MMM, ") + time.ToShortTimeString();
+                        return time.ToString("d\\n\\d MMM, ") + time.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
                     case 3:
-                        return time.ToString("d\\r\\d MMM, ") + time.ToShortTimeString();
+                        return time.ToString("d\\r\\d MMM, ") + time.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
                     default:
-                        return time.ToString("d\\t\\h MMM, ") + time.ToShortTimeString();
+                        return time.ToString("d\\t\\h MMM, ") + time.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
                 }
         }
 

@@ -1941,4 +1941,10 @@ Get hike: http://get.hike.in</value>
     <value>Very High Quality (1080p)</value>
     <comment>(1080p) is constant, Max limit 40</comment>
   </data>
+  <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
+    <value>Welcome to hike</value>
+  </data>
+  <data name="StickersTut_TxtBlk0" xml:space="preserve">
+    <value>Stickers are here!</value>
+  </data>
 </root>

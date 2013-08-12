@@ -13,6 +13,7 @@ using Microsoft.Phone.Controls;
 using System.Net.NetworkInformation;
 using windows_client.Languages;
 using System.IO;
+using windows_client.Misc;
 
 namespace windows_client.utils
 {
@@ -279,5 +280,54 @@ namespace windows_client.utils
             }
         }
 
+        public static void UpdateGroupCacheWithContactOnHike(string number, bool status)
+        {
+            GroupManager.Instance.LoadGroupCache();
+
+            if (GroupManager.Instance.GroupCache != null)
+            {
+                foreach (string key in GroupManager.Instance.GroupCache.Keys)
+                {
+                    bool shouldSave = false;
+                    List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                    for (int i = 0; i < l.Count; i++)
+                    {
+                        if (l[i].Msisdn == number)
+                        {
+                            l[i].IsOnHike = status;
+                            shouldSave = true;
+                        }
+                    }
+
+                    if (shouldSave)
+                        GroupManager.Instance.SaveGroupCache(key);
+                }
+            }
+        }
+
+        public static void UpdateGroupCacheWithContactName(string number, string name)
+        {
+            GroupManager.Instance.LoadGroupCache();
+
+            if (GroupManager.Instance.GroupCache != null)
+            {
+                foreach (string key in GroupManager.Instance.GroupCache.Keys)
+                {
+                    bool shouldSave = false;
+                    List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                    for (int i = 0; i < l.Count; i++)
+                    {
+                        if (l[i].Msisdn == number)
+                        {
+                            l[i].Name = name;
+                            shouldSave = true;
+                        }
+                    }
+
+                    if (shouldSave)
+                        GroupManager.Instance.SaveGroupCache(key);
+                }
+            }
+        }
     }
 }
