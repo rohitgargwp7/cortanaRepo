@@ -4065,6 +4065,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stickers are here!.
+        /// </summary>
+        public static string StickersTut_TxtBlk0 {
+            get {
+                return ResourceManager.GetString("StickersTut_TxtBlk0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Express yourself better with.
         /// </summary>
         public static string StickersTut_TxtBlk1 {
@@ -4565,6 +4574,15 @@ namespace windows_client.Languages {
         public static string WelcomePage_TnP_HlBtn {
             get {
                 return ResourceManager.GetString("WelcomePage_TnP_HlBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome to hike.
+        /// </summary>
+        public static string WelcomeTut_TxtBlk0 {
+            get {
+                return ResourceManager.GetString("WelcomeTut_TxtBlk0", resourceCulture);
             }
         }
         

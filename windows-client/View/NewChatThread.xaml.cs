@@ -1146,27 +1146,7 @@ namespace windows_client.View
 
             });
 
-            GroupManager.Instance.LoadGroupCache();
-
-            if (GroupManager.Instance.GroupCache != null)
-            {
-                foreach (string key in GroupManager.Instance.GroupCache.Keys)
-                {
-                    bool shouldSave = false;
-                    List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
-                    for (int i = 0; i < l.Count; i++)
-                    {
-                        if (l[i].Msisdn == mContactNumber)
-                        {
-                            l[i].IsOnHike = true;
-                            shouldSave = true;
-                        }
-                    }
-
-                    if (shouldSave)
-                        GroupManager.Instance.SaveGroupCache(key);
-                }
-            }
+            ContactUtils.UpdateGroupCacheWithContactOnHike(mContactNumber, true);
         }
 
         public void GetHikeStatus_Callback(JObject obj)
@@ -3158,6 +3138,13 @@ namespace windows_client.View
             bool delConv = false;
             this.ocMessages.Remove(msg);
 
+            if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip) && _lastUnDeliveredMessage == msg)
+            {
+                this.ocMessages.Remove(_h2hofflineToolTip);
+                App.ViewModel.HideToolTip(null, 6);
+                _h2hofflineToolTip = null;
+            } 
+            
             if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage == msg)
             {
                 ocMessages.Remove(_tap2SendAsSMSMessage);
@@ -3263,6 +3250,13 @@ namespace windows_client.View
 
                 SendForceSMS(convMessage);
 
+                if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip) && _lastUnDeliveredMessage == convMessage)
+                {
+                    this.ocMessages.Remove(_h2hofflineToolTip);
+                    App.ViewModel.HideToolTip(null, 6);
+                    _h2hofflineToolTip = null;
+                }
+            
                 if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage == convMessage)
                 {
                     ocMessages.Remove(_tap2SendAsSMSMessage);
@@ -3272,14 +3266,6 @@ namespace windows_client.View
             }
             else
                 MessageBox.Show(AppResources.H2HOfline_0SMS_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OK);
-
-            if (_h2hofflineToolTip != null)
-            {
-                this.ocMessages.Remove(_h2hofflineToolTip);
-                App.ViewModel.HideToolTip(null, 6);
-                ShowForceSMSOnUI();
-                _h2hofflineToolTip = null;
-            }
         }
 
         #endregion
@@ -3903,6 +3889,12 @@ namespace windows_client.View
                             msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
                     }
 
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                         {
+                             if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
+                                 this.ocMessages.Remove(_h2hofflineToolTip);
+                         });
+
                     if (_isSendAllAsSMSVisible && ocMessages != null && msg == _lastUnDeliveredMessage)
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -3992,6 +3984,12 @@ namespace windows_client.View
                     }
                 }
                 #endregion
+
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
+                        this.ocMessages.Remove(_h2hofflineToolTip);
+                });
 
                 if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage.MessageStatus != ConvMessage.State.SENT_CONFIRMED)
                 {
@@ -4775,27 +4773,7 @@ namespace windows_client.View
                 }
             });
 
-            GroupManager.Instance.LoadGroupCache();
-
-            if (GroupManager.Instance.GroupCache != null)
-            {
-                foreach (string key in GroupManager.Instance.GroupCache.Keys)
-                {
-                    bool shouldSave = false;
-                    List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
-                    for (int i = 0; i < l.Count; i++)
-                    {
-                        if (l[i].Msisdn == contactInfo.Msisdn)
-                        {
-                            l[i].Name = contactInfo.Name;
-                            shouldSave = true;
-                        }
-                    }
-
-                    if (shouldSave)
-                        GroupManager.Instance.SaveGroupCache(key);
-                }
-            }
+            ContactUtils.UpdateGroupCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
         }
 
         #region Orientation Handling
@@ -5901,7 +5879,7 @@ namespace windows_client.View
                              HikeToolTip tip;
                              App.ViewModel.DictInAppTip.TryGetValue(6, out tip);
 
-                             if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                             if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown) && _h2hofflineToolTip == null)
                              {
                                  _h2hofflineToolTip = new ConvMessage();
                                  _h2hofflineToolTip.GrpParticipantState = ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP;
@@ -5925,6 +5903,20 @@ namespace windows_client.View
                                  if (indexToInsert == ocMessages.Count - 1)
                                      ScrollToBottom();
 
+                                 return;
+                             }
+                         }
+
+                         if (_h2hofflineToolTip != null)
+                         {
+                             if (ocMessages.Contains(_h2hofflineToolTip))
+                             {
+                                 this.ocMessages.Remove(_h2hofflineToolTip);
+                                 _h2hofflineToolTip = null;
+                             }
+                             else
+                             {
+                                 this.ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
                                  return;
                              }
                          }
@@ -6069,12 +6061,12 @@ namespace windows_client.View
                 {
                     if (_isSendAllAsSMSVisible)
                     {
-                        if (_h2hofflineToolTip != null)
+                        if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
                         {
                             this.ocMessages.Remove(_h2hofflineToolTip);
                             App.ViewModel.HideToolTip(null, 6);
-                            ShowForceSMSOnUI();
                             _h2hofflineToolTip = null;
+                            ShowForceSMSOnUI();
                         }
 
                         if (mCredits > 0)
