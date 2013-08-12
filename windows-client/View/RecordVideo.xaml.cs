@@ -340,7 +340,12 @@ namespace windows_client.View
             _isGoingBack = true;
 
             if (currentAppState == ButtonState.Recording)
+            {
+                if (ApplicationBar != null)
+                    ApplicationBar.IsVisible = false;
+
                 await StopVideoRecording();
+            }
 
             base.OnBackKeyPress(e);
         }
