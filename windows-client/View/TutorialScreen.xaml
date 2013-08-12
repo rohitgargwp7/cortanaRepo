@@ -15,7 +15,7 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="#ffffff">
-        <Grid Name="gridStatusUpdates" Visibility="Collapsed">
+        <Grid Name="gridStatusUpdates">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -28,7 +28,7 @@
             <TextBlock Text="{Binding Path= LocalizedResources.WelcomeTut_TxtBlk1, Source={StaticResource LocalizedStrings}}" Margin="0 40 0 0" TextWrapping="Wrap" FontFamily="Segoe WP Regular" FontSize="19" Foreground="#747474" HorizontalAlignment="Center" Grid.Row="2" />
             <TextBlock Text="{Binding Path= LocalizedResources.WelcomeTut_TxtBlk2, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontFamily="Segoe WP Regular" FontSize="20" Foreground="#747474" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="3" />
         </Grid>
-        <Grid Name="gridStickers">
+        <Grid Name="gridStickers" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
