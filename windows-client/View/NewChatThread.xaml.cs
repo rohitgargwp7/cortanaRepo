@@ -4964,7 +4964,6 @@ namespace windows_client.View
                 return;
             _selectedCategory = StickerHelper.CATEGORY_HUMANOID;
 
-            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID);
             StickerPivotItem stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[StickerHelper.CATEGORY_HUMANOID];
             pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
 
@@ -4982,13 +4981,7 @@ namespace windows_client.View
             imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
             imgTroll.Source = UI_Utils.Instance.TrollInactive;
 
-            stickerPivot.ShowStickers();
-
-
-            //if (App.appSettings.Contains(HikeConstants.AppSettings.SHOW_DOGGY_OVERLAY))
-            //{
-            //    ShowDownloadOverlay(true);
-            //}
+            CategoryTap(_selectedCategory);
         }
 
         private void Category1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -5015,15 +5008,7 @@ namespace windows_client.View
             imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
             imgTroll.Source = UI_Utils.Instance.TrollInactive;
 
-            stickerPivot.ShowStickers();
-
-            if (stickerCategory.ShowDownloadMessage)
-                stickerCategory.SetDownloadMessage(false);
-
-            if (App.appSettings.Contains(HikeConstants.AppSettings.SHOW_DOGGY_OVERLAY))
-            {
-                ShowDownloadOverlay(true);
-            }
+            CategoryTap(_selectedCategory);
         }
 
         private void Category2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -5382,6 +5367,12 @@ namespace windows_client.View
             {
                 switch (_selectedCategory)
                 {
+                    case StickerHelper.CATEGORY_HUMANOID:
+                        downloadDialogueImage.Source = UI_Utils.Instance.DoggyOverlay;
+                        btnDownload.Content = AppResources.Installed_Txt;
+                        btnDownload.IsHitTestVisible = false;
+                        btnFree.IsHitTestVisible = false;
+                        break;
                     case StickerHelper.CATEGORY_DOGGY:
                         downloadDialogueImage.Source = UI_Utils.Instance.DoggyOverlay;
                         btnDownload.Content = AppResources.Installed_Txt;
@@ -5414,7 +5405,9 @@ namespace windows_client.View
                     btnDownload.IsHitTestVisible = true;
                     btnFree.IsHitTestVisible = true;
                     btnDownload.Content = AppResources.Download_txt;
-                    App.appSettings.Remove(HikeConstants.AppSettings.SHOW_DOGGY_OVERLAY);
+                    StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
+                    if (stickerCategory.ShowDownloadMessage)
+                        stickerCategory.SetDownloadMessage(false);
                 }
                 overlayRectangle.Visibility = Visibility.Collapsed;
                 gridDownloadStickers.Visibility = Visibility.Collapsed;
