@@ -3138,11 +3138,12 @@ namespace windows_client.View
             bool delConv = false;
             this.ocMessages.Remove(msg);
 
-            if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip) && _lastUnDeliveredMessage == msg)
+            if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
             {
                 this.ocMessages.Remove(_h2hofflineToolTip);
                 App.ViewModel.HideToolTip(null, 6);
                 _h2hofflineToolTip = null;
+                ShowForceSMSOnUI();
             } 
             
             if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage == msg)
@@ -3250,11 +3251,12 @@ namespace windows_client.View
 
                 SendForceSMS(convMessage);
 
-                if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip) && _lastUnDeliveredMessage == convMessage)
+                if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
                 {
                     this.ocMessages.Remove(_h2hofflineToolTip);
                     App.ViewModel.HideToolTip(null, 6);
                     _h2hofflineToolTip = null;
+                    ShowForceSMSOnUI();
                 }
             
                 if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage == convMessage)
@@ -5909,16 +5911,10 @@ namespace windows_client.View
 
                          if (_h2hofflineToolTip != null)
                          {
-                             if (ocMessages.Contains(_h2hofflineToolTip))
-                             {
-                                 this.ocMessages.Remove(_h2hofflineToolTip);
-                                 _h2hofflineToolTip = null;
-                             }
-                             else
-                             {
+                             if (!ocMessages.Contains(_h2hofflineToolTip))
                                  this.ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
-                                 return;
-                             }
+
+                             return;
                          }
 
                          if (_tap2SendAsSMSMessage == null)
@@ -6104,8 +6100,8 @@ namespace windows_client.View
             {
                 this.ocMessages.Remove(_h2hofflineToolTip);
                 App.ViewModel.HideToolTip(null, 6);
-                ShowForceSMSOnUI();
                 _h2hofflineToolTip = null;
+                ShowForceSMSOnUI();
             }
         }
     }

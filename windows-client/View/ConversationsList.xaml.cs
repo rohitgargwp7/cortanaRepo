@@ -413,18 +413,6 @@ namespace windows_client.View
             App.MqttManagerInstance.connect();
         }
 
-        private void btnGetSelected_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            ConversationListObject convListObj = llsConversations.SelectedItem as ConversationListObject;
-            if (convListObj == null)
-                return;
-
-            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = convListObj;
-
-            string uri = "/View/NewChatThread.xaml";
-            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
-        }
-
         #endregion
 
         #region LISTENERS
@@ -2549,5 +2537,17 @@ namespace windows_client.View
         }
 
         #endregion
+
+        private void btnGetSelected_Tap(object sender, SelectionChangedEventArgs e)
+        {
+            ConversationListObject convListObj = llsConversations.SelectedItem as ConversationListObject;
+            if (convListObj == null)
+                return;
+
+            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = convListObj;
+
+            string uri = "/View/NewChatThread.xaml";
+            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+        }
     }
 }
