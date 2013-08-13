@@ -4917,7 +4917,7 @@ namespace windows_client.View
             gridStickers.Visibility = Visibility.Visible;
             if (!isStickersLoaded)
             {
-                Category1_Tap(sender, e);
+                Category0_Tap(sender, e);
                 isStickersLoaded = true;
             }
         }
@@ -4930,6 +4930,9 @@ namespace windows_client.View
             {
                 switch (category)
                 {
+                    case StickerHelper.CATEGORY_HUMANOID:
+                        Category0_Tap(null, null);
+                        break;
                     case StickerHelper.CATEGORY_DOGGY:
                         Category1_Tap(null, null);
                         break;
@@ -4955,6 +4958,39 @@ namespace windows_client.View
             gridStickers.Visibility = Visibility.Collapsed;
         }
 
+        private void Category0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (_selectedCategory == StickerHelper.CATEGORY_HUMANOID)
+                return;
+            _selectedCategory = StickerHelper.CATEGORY_HUMANOID;
+
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID);
+            StickerPivotItem stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[StickerHelper.CATEGORY_HUMANOID];
+            pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
+
+            stCategory0.Background = UI_Utils.Instance.TappedCategoryColor;
+            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+
+            imghumanoid.Source = UI_Utils.Instance.HumanoidActive;
+            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
+            imgKitty.Source = UI_Utils.Instance.KittyInactive;
+            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
+            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
+            imgTroll.Source = UI_Utils.Instance.TrollInactive;
+
+            stickerPivot.ShowStickers();
+
+
+            //if (App.appSettings.Contains(HikeConstants.AppSettings.SHOW_DOGGY_OVERLAY))
+            //{
+            //    ShowDownloadOverlay(true);
+            //}
+        }
+
         private void Category1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (_selectedCategory == StickerHelper.CATEGORY_DOGGY)
@@ -4965,12 +5001,14 @@ namespace windows_client.View
             StickerPivotItem stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[StickerHelper.CATEGORY_DOGGY];
             pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
 
+            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory1.Background = UI_Utils.Instance.TappedCategoryColor;
             stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
 
+            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
             imgDoggy.Source = UI_Utils.Instance.DoggyActive;
             imgKitty.Source = UI_Utils.Instance.KittyInactive;
             imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
@@ -4994,12 +5032,14 @@ namespace windows_client.View
                 return;
             _selectedCategory = StickerHelper.CATEGORY_KITTY;
 
+            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory2.Background = UI_Utils.Instance.TappedCategoryColor;
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
 
+            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
             imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
             imgKitty.Source = UI_Utils.Instance.KittyActive;
             imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
@@ -5014,12 +5054,14 @@ namespace windows_client.View
             if (_selectedCategory == StickerHelper.CATEGORY_EXPRESSIONS)
                 return;
             _selectedCategory = StickerHelper.CATEGORY_EXPRESSIONS;
+            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory3.Background = UI_Utils.Instance.TappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
 
+            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
             imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
             imgKitty.Source = UI_Utils.Instance.KittyInactive;
             imgExpressions.Source = UI_Utils.Instance.ExpressionsActive;
@@ -5034,12 +5076,14 @@ namespace windows_client.View
             if (_selectedCategory == StickerHelper.CATEGORY_BOLLYWOOD)
                 return;
             _selectedCategory = StickerHelper.CATEGORY_BOLLYWOOD;
+            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.TappedCategoryColor;
 
+            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
             imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
             imgKitty.Source = UI_Utils.Instance.KittyInactive;
             imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
@@ -5054,12 +5098,15 @@ namespace windows_client.View
             if (_selectedCategory == StickerHelper.CATEGORY_TROLL)
                 return;
             _selectedCategory = StickerHelper.CATEGORY_TROLL;
+            
+            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.TappedCategoryColor;
 
+            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
             imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
             imgKitty.Source = UI_Utils.Instance.KittyInactive;
             imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
@@ -5255,6 +5302,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     List<KeyValuePair<string, byte[]>> listLowResStickersBytes = new List<KeyValuePair<string, byte[]>>();
+                    listHighResStickersBytes = listHighResStickersBytes.OrderBy(x => x.Key).ToList();
                     foreach (KeyValuePair<string, Byte[]> keyValuePair in listHighResStickersBytes)
                     {
                         string stickerId = keyValuePair.Key;
@@ -5397,8 +5445,15 @@ namespace windows_client.View
         {
             StickerCategory stickerCategory;
             //done thos way to maintain order of insertion
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID)) != null)
+            {
+                if (stickerCategory.HasNewStickers)
+                    ShowNewStickerUi(stickerCategory);
+            }
+
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
             {
+                stCategory1.Visibility = Visibility.Visible;
                 if (stickerCategory.HasNewStickers)
                     ShowNewStickerUi(stickerCategory);
             }
@@ -5426,10 +5481,10 @@ namespace windows_client.View
                     ShowNewStickerUi(stickerCategory);
                 ColumnDefinition colDef = new ColumnDefinition();
                 gridStickerPivot.ColumnDefinitions.Add(colDef);
-                stCategory5.SetValue(Grid.ColumnProperty, 5);
+                stCategory5.SetValue(Grid.ColumnProperty, 6);
             }
             else
-                stCategory5.SetValue(Grid.ColumnProperty, 4);
+                stCategory5.SetValue(Grid.ColumnProperty, 5);
 
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
             {

@@ -657,6 +657,8 @@
     <Content Include="View\images\stickers\720p\006_urgh.png" />
     <Content Include="View\images\stickers\720p\007_confused.png" />
     <Content Include="View\images\stickers\720p\008_dreaming.png" />
+    <Content Include="View\images\humanoid_icon.png" />
+    <Content Include="View\images\humanoid_icon_inactive.png" />
     <Content Include="View\images\stickers\WVGA\001_hi.png" />
     <Content Include="View\images\stickers\WVGA\002_thumbsup.png" />
     <Content Include="View\images\stickers\WVGA\005_sorry.png" />
@@ -665,6 +667,16 @@
     <Content Include="View\images\stickers\WVGA\008_dreaming.png" />
     <Content Include="View\images\stickers\WVGA\004_devilsmile.png" />
     <Content Include="View\images\stickers\WVGA\003_drooling.png" />
+    <Content Include="View\images\stickers\WVGA\Humanoid\001_love1.png" />
+    <Content Include="View\images\stickers\WVGA\Humanoid\002_love2.png" />
+    <Content Include="View\images\stickers\WVGA\Humanoid\003_teasing.png" />
+    <Content Include="View\images\stickers\WVGA\Humanoid\004_rofl.png" />
+    <Content Include="View\images\stickers\WVGA\Humanoid\005_bored.png" />
+    <Content Include="View\images\stickers\WVGA\Humanoid\006_angry.png" />
+    <Content Include="View\images\stickers\WVGA\Humanoid\007_strangle.png" />
+    <Content Include="View\images\stickers\WVGA\Humanoid\008_shocked.png" />
+    <Content Include="View\images\stickers\WVGA\Humanoid\009_hurray.png" />
+    <Content Include="View\images\stickers\WVGA\Humanoid\010_yawning.png" />
     <Content Include="View\images\stickers\WXGA\001_hi.png" />
     <Content Include="View\images\stickers\WXGA\002_thumbsup.png" />
     <Content Include="View\images\stickers\WXGA\003_drooling.png" />

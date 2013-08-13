@@ -14,6 +14,7 @@ namespace windows_client.utils
 
     public class StickerHelper
     {
+        public const string CATEGORY_HUMANOID = "humanoid";
         public const string CATEGORY_DOGGY = "doggy";
         public const string CATEGORY_KITTY = "kitty";
         public const string CATEGORY_EXPRESSIONS = "expressions";
@@ -23,7 +24,22 @@ namespace windows_client.utils
         public const string _stickerWVGAPath = "/View/images/stickers/WVGA/{0}";
         public const string _sticker720path = "/View/images/stickers/720p/{0}";
         public const string _stickerWXGApath = "/View/images/stickers/WXGA/{0}";
-        public static string[] arrayDefaultStickers = new string[]
+        public static string[] arrayDefaultHumanoidStickers = new string[]
+        {
+            "Humanoid/001_love1.png",
+            "Humanoid/002_love2.png",
+            "Humanoid/003_teasing.png",
+            "Humanoid/004_rofl.png",
+            "Humanoid/005_bored.png",
+            "Humanoid/006_angry.png",
+            "Humanoid/007_strangle.png",
+            "Humanoid/008_shocked.png",
+            "Humanoid/009_hurray.png",
+            "Humanoid/010_yawning.png"
+        
+        };
+
+        public static string[] arrayDefaultDoggyStickers = new string[]
         {
             "001_hi.png",
             "002_thumbsup.png",
@@ -34,7 +50,6 @@ namespace windows_client.utils
             "007_confused.png",
             "008_dreaming.png"
         };
-
         private bool _isInitialised;
         private Dictionary<string, StickerCategory> _dictStickersCategories;
 
@@ -46,39 +61,11 @@ namespace windows_client.utils
                 if (!_isInitialised)
                 {
                     _dictStickersCategories = new Dictionary<string, StickerCategory>();
-                    StickerCategory category1Stickers = new StickerCategory(CATEGORY_DOGGY, false);
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            for (int i = 0; i < arrayDefaultStickers.Length; i++)
-                            {
-                                BitmapImage bitmap = new BitmapImage();
-                                bitmap.CreateOptions = BitmapCreateOptions.BackgroundCreation;
-                                string url;
-                                if (Utils.CurrentResolution == Utils.Resolutions.WXGA)
-                                    url = _stickerWXGApath;
-                                else if (Utils.CurrentResolution == Utils.Resolutions.WVGA)
-                                    url = _stickerWVGAPath;
-                                else
-                                    url = _sticker720path;
-
-                                bitmap.UriSource = new Uri(string.Format(url, arrayDefaultStickers[i]), UriKind.Relative);
-                                Sticker sticker = new Sticker(category1Stickers.Category, arrayDefaultStickers[i], bitmap);
-                                category1Stickers.ListStickers.Add(sticker);
-                            }
-                            category1Stickers.HasMoreStickers = false;
-                            if (_dictStickersCategories.ContainsKey(category1Stickers.Category))
-                            {
-                                StickerCategory stickerCategory = _dictStickersCategories[category1Stickers.Category];
-                                foreach (Sticker sticker in category1Stickers.ListStickers)
-                                {
-                                    stickerCategory.ListStickers.Add(sticker);
-                                }
-                                _dictStickersCategories[category1Stickers.Category] = stickerCategory;
-                            }
-                            else
-                                _dictStickersCategories[category1Stickers.Category] = category1Stickers;
-
-                        });
+                    
+                    InitialiseDefaultStickers(CATEGORY_HUMANOID, arrayDefaultHumanoidStickers);
+                    
+                    InitialiseDefaultStickers(CATEGORY_DOGGY, arrayDefaultDoggyStickers);
+                    
                     List<StickerCategory> listStickerCategories = StickerCategory.ReadAllStickerCategories();
                     foreach (StickerCategory sc in listStickerCategories)
                     {
@@ -100,6 +87,42 @@ namespace windows_client.utils
             {
                 Debug.WriteLine("StickerHelper::InitialiseStickers, Exception:" + ex.Message);
             }
+        }
+
+        private void InitialiseDefaultStickers(string category,string[] arrayDefaultStickers)
+        {
+            StickerCategory category1Stickers = new StickerCategory(category, true);
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                for (int i = 0; i < arrayDefaultStickers.Length; i++)
+                {
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.CreateOptions = BitmapCreateOptions.BackgroundCreation;
+                    string url;
+                    if (Utils.CurrentResolution == Utils.Resolutions.WXGA)
+                        url = _stickerWXGApath;
+                    else if (Utils.CurrentResolution == Utils.Resolutions.WVGA)
+                        url = _stickerWVGAPath;
+                    else
+                        url = _sticker720path;
+
+                    bitmap.UriSource = new Uri(string.Format(url, arrayDefaultStickers[i]), UriKind.Relative);
+                    Sticker sticker = new Sticker(category1Stickers.Category, arrayDefaultStickers[i], bitmap);
+                    category1Stickers.ListStickers.Add(sticker);
+                }
+                if (_dictStickersCategories.ContainsKey(category1Stickers.Category))
+                {
+                    StickerCategory stickerCategory = _dictStickersCategories[category1Stickers.Category];
+                    foreach (Sticker sticker in category1Stickers.ListStickers)
+                    {
+                        stickerCategory.ListStickers.Add(sticker);
+                    }
+                    _dictStickersCategories[category1Stickers.Category] = stickerCategory;
+                }
+                else
+                    _dictStickersCategories[category1Stickers.Category] = category1Stickers;
+
+            });
         }
 
         public StickerCategory GetStickersByCategory(string category)

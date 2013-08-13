@@ -52,6 +52,13 @@ namespace windows_client.utils
                 StickerCategory stickerCategory;
                 int pivotIndex = 0;
                 //done thos way to maintain order of insertion
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID)) != null)
+                {
+                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
+                    dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_HUMANOID;
+                    pivotIndex++;
+                }
+
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);

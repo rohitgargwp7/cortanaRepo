@@ -76,16 +76,19 @@ namespace windows_client.utils
         private BitmapImage userProfileStockImage;
         private BitmapImage loadingImage;
         private BitmapImage lastSeenClockImage;
+        private BitmapImage humanoidOverlay;
         private BitmapImage doggyOverlay;
         private BitmapImage kittyOverlay;
         private BitmapImage bollywoodOverlay;
         private BitmapImage trollOverlay;
         private BitmapImage expressionsOverlay;
+        private BitmapImage humanoidInactive;
         private BitmapImage doggyInactive;
         private BitmapImage kittyInactive;
         private BitmapImage bollywoodInactive;
         private BitmapImage trollInactive;
         private BitmapImage expressionsInactive;
+        private BitmapImage humanoidActive;
         private BitmapImage doggyActive;
         private BitmapImage kittyActive;
         private BitmapImage bollywoodActive;
@@ -1112,6 +1115,17 @@ namespace windows_client.utils
                 return expressionsOverlay;
             }
         }
+        public BitmapImage HumanoidInactive
+        {
+            get
+            {
+                if (humanoidInactive == null)
+                {
+                    humanoidInactive = new BitmapImage(new Uri("/View/images/humanoid_icon_inactive.png", UriKind.Relative));
+                }
+                return humanoidInactive;
+            }
+        }
 
         public BitmapImage DoggyInactive
         {
@@ -1168,7 +1182,17 @@ namespace windows_client.utils
                 return expressionsInactive;
             }
         }
-
+        public BitmapImage HumanoidActive
+        {
+            get
+            {
+                if (humanoidActive == null)
+                {
+                    humanoidActive = new BitmapImage(new Uri("/View/images/humanoid_icon.png", UriKind.Relative));
+                }
+                return humanoidActive;
+            }
+        }
         public BitmapImage DoggyActive
         {
             get
