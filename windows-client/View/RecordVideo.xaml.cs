@@ -344,7 +344,8 @@ namespace windows_client.View
                 if (ApplicationBar != null)
                     ApplicationBar.IsVisible = false;
 
-                await StopVideoRecording();
+                await videoCaptureDevice.StopRecordingAsync();
+                videoStream.AsStream().Dispose();
             }
 
             base.OnBackKeyPress(e);
@@ -560,8 +561,9 @@ namespace windows_client.View
                         UpdateUI(ButtonState.CameraNotSupported);
                 }
             }
-            catch
+            catch(Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
                 UpdateUI(ButtonState.CameraNotSupported);
             }
         }
