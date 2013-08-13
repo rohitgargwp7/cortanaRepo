@@ -299,6 +299,15 @@ namespace windows_client.View
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, TimeUtils.getCurrentTimeStamp());
                         _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
 
+                        if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
+                        {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                                {
+                                    if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
+                                        ocMessages.Remove(_h2hofflineToolTip);
+                                });
+                        }
+
                         if (_isSendAllAsSMSVisible)
                         {
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -4182,16 +4191,27 @@ namespace windows_client.View
 
                         if (lastSeen != 0 && !_isSendAllAsSMSVisible)
                             StartForceSMSTimer(false);
-                        else if (lastSeen == 0 && _isSendAllAsSMSVisible)
+                        else if (lastSeen == 0)
                         {
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            if (_isSendAllAsSMSVisible)
                             {
-                                if (_isSendAllAsSMSVisible)
+                                Deployment.Current.Dispatcher.BeginInvoke(() =>
                                 {
-                                    ocMessages.Remove(_tap2SendAsSMSMessage);
-                                    _isSendAllAsSMSVisible = false;
-                                }
-                            });
+                                    if (_isSendAllAsSMSVisible)
+                                    {
+                                        ocMessages.Remove(_tap2SendAsSMSMessage);
+                                        _isSendAllAsSMSVisible = false;
+                                    }
+                                });
+                            }
+                            else if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
+                            {
+                                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                                    {
+                                        if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
+                                            ocMessages.Remove(_h2hofflineToolTip);
+                                    });
+                            }
                         }
                     }
                 }
