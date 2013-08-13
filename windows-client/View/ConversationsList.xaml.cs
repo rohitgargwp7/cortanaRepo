@@ -2538,7 +2538,7 @@ namespace windows_client.View
 
         #endregion
 
-        private void btnGetSelected_Tap(object sender, SelectionChangedEventArgs e)
+        private void llsConversations_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ConversationListObject convListObj = llsConversations.SelectedItem as ConversationListObject;
             if (convListObj == null)
