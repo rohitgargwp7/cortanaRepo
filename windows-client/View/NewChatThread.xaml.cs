@@ -974,30 +974,7 @@ namespace windows_client.View
             }
             #endregion
 
-            if (!isOnHike)
-            {
-                BackgroundWorker worker = new BackgroundWorker();
-
-                worker.DoWork += (ss, ee) =>
-                {
-                    long timeOfJoin;
-                    FriendsTableUtils.GetFriendInfo(mContactNumber, out timeOfJoin);
-
-                    if (timeOfJoin == 0)
-                        AccountUtils.GetOnhikeDate(mContactNumber, new AccountUtils.postResponseFunction(GetHikeStatus_Callback));
-                    else
-                    {
-                        isOnHike = true;
-                        UpdateUiForHikeUser();
-                    }
-                };
-
-                worker.RunWorkerAsync();
-
-                spContactTransfer.IsHitTestVisible = false;
-                spContactTransfer.Opacity = 0.4;
-            }
-
+            mUserIsBlocked = groupOwner != null ? App.ViewModel.BlockedHashset.Contains(groupOwner) : App.ViewModel.BlockedHashset.Contains(mContactNumber);
             userName.Text = mContactName;
 
             // if hike bot msg disable appbar, textbox etc
@@ -1008,29 +985,8 @@ namespace windows_client.View
                 return;
             }
 
-            #region LAST SEEN TIMER
-
-            if (!App.appSettings.Contains(App.LAST_SEEN_SEETING))
-            {
-                BackgroundWorker _worker = new BackgroundWorker();
-
-                _worker.DoWork += (ss, ee) =>
-                {
-                    var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
-                    if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
-                        _lastSeenHelper.requestLastSeen(mContactNumber);
-                };
-
-                _worker.RunWorkerAsync();
-            }
-
-            #endregion
-
-            if (groupOwner != null)
-                mUserIsBlocked = App.ViewModel.BlockedHashset.Contains(groupOwner);
-            else
-                mUserIsBlocked = App.ViewModel.BlockedHashset.Contains(mContactNumber);
             initAppBar(isAddUser);
+
             if (!isOnHike)
             {
                 sendMsgTxtbox.Hint = hintText = ON_SMS_TEXT;
@@ -1038,13 +994,29 @@ namespace windows_client.View
                 appBar.MenuItems.Add(inviteMenuItem);
             }
             else
-            {
                 sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
-            }
+          
             if (isGroupChat)
                 sendMsgTxtbox.Hint = hintText = ON_GROUP_TEXT;
+         
             initBlockUnblockState();
+          
+            if (!mUserIsBlocked)
+            {
+                UpdateChatStatus();
 
+                if (mCredits > 0)
+                    ShowInAppTips();
+
+                GetOnHikeStatus();
+                GetUserLastSeen();
+            }
+            else
+                chatThreadMainPage.ApplicationBar = appBar;
+        }
+
+        private void UpdateChatStatus()
+        {
             if (isGroupChat && !isGroupAlive)
                 groupChatEnd();
             else
@@ -1073,7 +1045,37 @@ namespace windows_client.View
                     }
                 }
             }
+        }
 
+        private void GetOnHikeStatus()
+        {
+            if (!isOnHike)
+            {
+                BackgroundWorker worker = new BackgroundWorker();
+
+                worker.DoWork += (ss, ee) =>
+                {
+                    long timeOfJoin;
+                    FriendsTableUtils.GetFriendInfo(mContactNumber, out timeOfJoin);
+
+                    if (timeOfJoin == 0)
+                        AccountUtils.GetOnhikeDate(mContactNumber, new AccountUtils.postResponseFunction(GetHikeStatus_Callback));
+                    else
+                    {
+                        isOnHike = true;
+                        UpdateUiForHikeUser();
+                    }
+                };
+
+                worker.RunWorkerAsync();
+
+                spContactTransfer.IsHitTestVisible = false;
+                spContactTransfer.Opacity = 0.4;
+            }
+        }
+
+        private void ShowInAppTips()
+        {
             int chatThreadCount;
 
             var keyExist = App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out chatThreadCount); //initilaized in upgrade logic
@@ -1117,6 +1119,23 @@ namespace windows_client.View
                 chatThreadMainPage.ApplicationBar = appBar;
         }
 
+        private void GetUserLastSeen()
+        {
+            if (!App.appSettings.Contains(App.LAST_SEEN_SEETING))
+            {
+                BackgroundWorker _worker = new BackgroundWorker();
+
+                _worker.DoWork += (ss, ee) =>
+                {
+                    var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
+                    if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
+                        _lastSeenHelper.requestLastSeen(mContactNumber);
+                };
+
+                _worker.RunWorkerAsync();
+            }
+        }
+
         private void UpdateUiForHikeUser()
         {
             if (statusObject is ContactInfo)
@@ -1153,6 +1172,7 @@ namespace windows_client.View
                 showNoSmsLeftOverlay = false;
                 ToggleAlertOnNoSms(false);
 
+                ShowInAppTips();
             });
 
             ContactUtils.UpdateGroupCacheWithContactOnHike(mContactNumber, true);
@@ -1882,6 +1902,15 @@ namespace windows_client.View
                 mUserIsBlocked = false;
                 showOverlay(false);
                 appBar.IsMenuEnabled = true;
+
+                UpdateChatStatus();
+                GetOnHikeStatus();
+
+                // no need to call last seen as friend is removed on blocking
+                //GetUserLastSeen();
+
+                if (mCredits > 0)
+                    ShowInAppTips();
             }
         }
 
@@ -5828,7 +5857,7 @@ namespace windows_client.View
 
         void StartForceSMSTimer(bool isNewTimer)
         {
-            if (!isOnHike || !IsSMSOptionValid || _isSendAllAsSMSVisible)
+            if (!isOnHike || !IsSMSOptionValid || _isSendAllAsSMSVisible || mUserIsBlocked)
                 return;
 
             try
@@ -5869,7 +5898,7 @@ namespace windows_client.View
 
         void ShowForceSMSOnUI()
         {
-            if (_isSendAllAsSMSVisible)
+            if (_isSendAllAsSMSVisible || mUserIsBlocked)
                 return;
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
