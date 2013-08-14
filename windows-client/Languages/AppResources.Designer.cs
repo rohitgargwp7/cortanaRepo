@@ -718,7 +718,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure about removing this contact from friends?.
+        ///   Looks up a localized string similar to Are you sure about removing this contact from circle of friends?.
         /// </summary>
         public static string Conversations_RemFromFav_Confirm_Txt {
             get {
@@ -2967,7 +2967,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to delete your Hike account permanently?.
+        ///   Looks up a localized string similar to Are you sure you want to delete your hike account permanently?.
         /// </summary>
         public static string Privacy_DeleteAccounConfirmMsgBxText {
             get {
@@ -3030,7 +3030,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to unlink your Hike account from this device?.
+        ///   Looks up a localized string similar to Are you sure you want to unlink your hike account from this device?.
         /// </summary>
         public static string Privacy_UnlinkConfirmMsgBxText {
             get {
