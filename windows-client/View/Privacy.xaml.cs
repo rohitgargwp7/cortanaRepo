@@ -142,16 +142,7 @@ namespace windows_client.View
             App.appSettings[App.SHOW_STATUS_UPDATES_TUTORIAL] = true;
             App.WriteToIsoStorageSettings(App.SHOW_BASIC_TUTORIAL, true);
             MiscDBUtil.clearDatabase();
-
-            HttpNotificationChannel pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
-            if (pushChannel != null)
-            {
-                if (pushChannel.IsShellTileBound)
-                    pushChannel.UnbindToShellTile();
-                if (pushChannel.IsShellToastBound)
-                    pushChannel.UnbindToShellToast();
-                pushChannel.Close();
-            }
+            PushHelper.Instance.closePushnotifications();
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {

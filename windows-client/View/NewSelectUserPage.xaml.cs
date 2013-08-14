@@ -276,6 +276,7 @@ namespace windows_client.View
                 if (mbox == MessageBoxResult.OK)
                 {
                     stopContactScanning = true;
+                    contactsListBox.IsHitTestVisible = true;
                     progressIndicator.Hide(LayoutRoot);
                     enableAppBar();
                     canGoBack = true;
@@ -879,6 +880,9 @@ namespace windows_client.View
 
         private void refreshContacts_Click(object sender, EventArgs e)
         {
+            this.Focus();
+            contactsListBox.IsHitTestVisible = false;
+
             App.AnalyticsInstance.addEvent(Analytics.REFRESH_CONTACTS);
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
@@ -1085,6 +1089,7 @@ namespace windows_client.View
                     contactsListBox.ItemsSource = jumpList;
                 progressIndicator.Hide(LayoutRoot);
                 enableAppBar();
+                contactsListBox.IsHitTestVisible = true;
             });
             canGoBack = true;
         }
@@ -1093,6 +1098,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                contactsListBox.IsHitTestVisible = true;
                 progressIndicator.Hide(LayoutRoot);
                 enableAppBar();
             });
