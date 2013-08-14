@@ -3153,8 +3153,8 @@ namespace windows_client.View
                 App.ViewModel.HideToolTip(null, 6);
                 _h2hofflineToolTip = null;
                 ShowForceSMSOnUI();
-            } 
-            
+            }
+
             if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage == msg)
             {
                 ocMessages.Remove(_tap2SendAsSMSMessage);
@@ -3267,7 +3267,7 @@ namespace windows_client.View
                     _h2hofflineToolTip = null;
                     ShowForceSMSOnUI();
                 }
-            
+
                 if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage == convMessage)
                 {
                     ocMessages.Remove(_tap2SendAsSMSMessage);
@@ -4915,7 +4915,7 @@ namespace windows_client.View
         bool isStickersLoaded = false;
         private string _selectedCategory = string.Empty;
         Thickness zeroThickness = new Thickness(0, 0, 0, 0);
-        Thickness newCategoryThickness = new Thickness(0, 1, 0, 0);
+        Thickness newCategoryThickness = new Thickness(0, 5, 0, 0);
 
         public void SendSticker(Sticker sticker)
         {
@@ -5103,7 +5103,7 @@ namespace windows_client.View
             if (_selectedCategory == StickerHelper.CATEGORY_TROLL)
                 return;
             _selectedCategory = StickerHelper.CATEGORY_TROLL;
-            
+
             stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
@@ -5253,7 +5253,8 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            stickerPivot.ShowDownloadFailed();
+                            if (stickerCategory.HasNewStickers || (stickerCategory.Category != StickerHelper.CATEGORY_DOGGY && stickerCategory.Category != StickerHelper.CATEGORY_HUMANOID))
+                                stickerPivot.ShowDownloadFailed();
                             stickerPivot.ShowHidMoreProgreesBar(false);
                         });
                     }
