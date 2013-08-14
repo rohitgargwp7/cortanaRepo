@@ -1114,7 +1114,7 @@ hike включает уморительные смайлы и позволяе�
   <data name="Walkthrough_H2H_SwipeLeft" xml:space="preserve">
     <value>проведите пальцем влево</value>
   </data>
-  <data name="RecordAudio_AppBarCancelBtnTxt" xml:space="preserve">
+  <data name="ReRecord_Txt" xml:space="preserve">
     <value>перезаписать</value>
     <comment>app bar button</comment>
   </data>

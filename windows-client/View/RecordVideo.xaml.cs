@@ -469,6 +469,7 @@ namespace windows_client.View
 
                     // First launch of the application, so no video is available.
                     case ButtonState.Initialized:
+                        recordIconButton.Text = AppResources.Record_Txt;
                         addOrRemoveAppBarButton(doneIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);
@@ -480,6 +481,7 @@ namespace windows_client.View
 
                     // Ready to record, so video is available for viewing.
                     case ButtonState.Ready:
+                        recordIconButton.Text = AppResources.ReRecord_Txt;
                         addOrRemoveAppBarButton(doneIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);

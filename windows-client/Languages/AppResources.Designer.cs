@@ -3210,15 +3210,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to re-record.
-        /// </summary>
-        public static string RecordAudio_AppBarCancelBtnTxt {
-            get {
-                return ResourceManager.GetString("RecordAudio_AppBarCancelBtnTxt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to TAP TO PLAY.
         /// </summary>
         public static string RecordAudio_Play {
@@ -3305,6 +3296,15 @@ namespace windows_client.Languages {
         public static string Reolution_Label {
             get {
                 return ResourceManager.GetString("Reolution_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to re-record.
+        /// </summary>
+        public static string ReRecord_Txt {
+            get {
+                return ResourceManager.GetString("ReRecord_Txt", resourceCulture);
             }
         }
         
