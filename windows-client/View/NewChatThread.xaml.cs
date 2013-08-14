@@ -5389,7 +5389,7 @@ namespace windows_client.View
                 switch (_selectedCategory)
                 {
                     case StickerHelper.CATEGORY_HUMANOID:
-                        downloadDialogueImage.Source = UI_Utils.Instance.DoggyOverlay;
+                        downloadDialogueImage.Source = UI_Utils.Instance.HumanoidOverlay;
                         btnDownload.Content = AppResources.Installed_Txt;
                         btnDownload.IsHitTestVisible = false;
                         btnFree.IsHitTestVisible = false;

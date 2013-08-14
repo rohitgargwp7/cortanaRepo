@@ -1059,7 +1059,17 @@ namespace windows_client.utils
                 }
             }
         }
-
+        public BitmapImage HumanoidOverlay
+        {
+            get
+            {
+                if (humanoidOverlay == null)
+                {
+                    humanoidOverlay = new BitmapImage(new Uri("/View/images/humanoid_overlay.png", UriKind.Relative));
+                }
+                return humanoidOverlay;
+            }
+        }
         public BitmapImage DoggyOverlay
         {
             get

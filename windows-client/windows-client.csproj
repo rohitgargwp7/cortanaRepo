@@ -552,6 +552,7 @@
     <Content Include="View\images\emoticons\shakti4.png" />
     <Content Include="View\images\emoticons\tandoori4.png" />
     <Content Include="View\images\emoticons\thulla4.png" />
+    <Content Include="View\images\humanoid_overlay.png" />
     <Content Include="View\images\icon_direction.png" />
     <Content Include="View\images\emoticons\tiranga4.png" />
     <Content Include="View\images\MediaPlayIcon.png" />
