@@ -2562,6 +2562,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sick.
+        /// </summary>
+        public static string Mood_Sick {
+            get {
+                return ResourceManager.GetString("Mood_Sick", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Singing.
         /// </summary>
         public static string Mood_Singing {

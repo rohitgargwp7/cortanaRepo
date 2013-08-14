@@ -1947,4 +1947,7 @@ Get hike: http://get.hike.in</value>
   <data name="StickersTut_TxtBlk0" xml:space="preserve">
     <value>Stickers are here!</value>
   </data>
+  <data name="Mood_Sick" xml:space="preserve">
+    <value>Sick</value>
+  </data>
 </root>
