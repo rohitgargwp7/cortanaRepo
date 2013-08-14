@@ -1007,6 +1007,8 @@ namespace windows_client.View
 
                 if (mCredits > 0)
                     ShowInAppTips();
+                else
+                    chatThreadMainPage.ApplicationBar = appBar;
 
                 GetOnHikeStatus();
                 GetUserLastSeen();
@@ -1911,6 +1913,8 @@ namespace windows_client.View
 
                 if (mCredits > 0)
                     ShowInAppTips();
+                else if (ApplicationBar == null)
+                    chatThreadMainPage.ApplicationBar = appBar;
             }
         }
 
