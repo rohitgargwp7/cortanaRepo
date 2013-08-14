@@ -332,7 +332,8 @@ namespace windows_client.utils
             if (string.IsNullOrEmpty(stickerId) || string.IsNullOrEmpty(category))
                 return null;
 
-            if (category == StickerHelper.CATEGORY_DOGGY && StickerHelper.arrayDefaultStickers.Contains(stickerId))
+            if ((category == StickerHelper.CATEGORY_DOGGY && StickerHelper.arrayDefaultDoggyStickers.Contains(stickerId))
+                || (category == StickerHelper.CATEGORY_HUMANOID && StickerHelper.arrayDefaultHumanoidStickers.Contains(stickerId)))
             {
                 string url;
                 if (Utils.CurrentResolution == Utils.Resolutions.WXGA)
@@ -343,6 +344,7 @@ namespace windows_client.utils
                     url = StickerHelper._sticker720path;
                 return new BitmapImage(new Uri(string.Format(url, stickerId), UriKind.Relative));
             }
+            
             try
             {
                 lock (readWriteLock)
@@ -456,8 +458,6 @@ namespace windows_client.utils
                                         stickerCategory._listStickers.Add(new Sticker(category, keyValuePair.Key, UI_Utils.Instance.createImageFromBytes(keyValuePair.Value)));
                                     }
                                 });
-                                if (!hasMetaData && category == StickerHelper.CATEGORY_DOGGY)
-                                    stickerCategory._hasMoreStickers = false;
                                 listStickerCategory.Add(stickerCategory);
                             }
                     }
