@@ -1381,6 +1381,10 @@ namespace windows_client.View
                     }
                     #endregion
                 }
+                Dispatcher.BeginInvoke(() =>
+                {
+                    cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
+                });
             }
             #endregion
             #region UNBLOCK_USER
