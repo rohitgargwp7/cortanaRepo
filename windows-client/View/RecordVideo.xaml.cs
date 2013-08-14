@@ -19,6 +19,7 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using windows_client.DbUtils;
 using System.Threading.Tasks;
+using windows_client.Controls;
 
 namespace windows_client.View
 {
@@ -206,6 +207,8 @@ namespace windows_client.View
 
         async void doneIconButton_Click(object sender, EventArgs e)
         {
+            loadingIndicator.IsIndeterminate = true;
+
             addOrRemoveAppBarButton(doneIconButton, false);
             resolutionList.IsEnabled = false;
             cameraList.IsEnabled = false;
@@ -245,6 +248,8 @@ namespace windows_client.View
             }
 
             isSettingsUpdating = false;
+
+            loadingIndicator.IsIndeterminate = false;
         }
 
         private void SetUIFromResolution()
@@ -326,6 +331,11 @@ namespace windows_client.View
         {
             if (SettingsGrid.Visibility == Visibility.Visible)
             {
+                loadingIndicator.IsIndeterminate = true;
+                
+                addOrRemoveAppBarButton(doneIconButton, false);
+                resolutionList.IsEnabled = false;
+                cameraList.IsEnabled = false; 
                 UpdateRecordingSettings();
                 e.Cancel = true;
                 return;
@@ -469,6 +479,7 @@ namespace windows_client.View
 
                     // First launch of the application, so no video is available.
                     case ButtonState.Initialized:
+                        recordIconButton.Text = AppResources.Record_Txt;
                         addOrRemoveAppBarButton(doneIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);
@@ -480,6 +491,7 @@ namespace windows_client.View
 
                     // Ready to record, so video is available for viewing.
                     case ButtonState.Ready:
+                        recordIconButton.Text = AppResources.ReRecord_Txt;
                         addOrRemoveAppBarButton(doneIconButton, false);
                         addOrRemoveAppBarButton(stopIconButton, false);
                         addOrRemoveAppBarButton(pauseIconButton, false);

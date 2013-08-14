@@ -96,7 +96,7 @@ namespace windows_client.View
             //add icon for cancel
             cancelIconButton = new ApplicationBarIconButton();
             cancelIconButton.IconUri = new Uri("/View/images/icon_refresh.png", UriKind.Relative);
-            cancelIconButton.Text = AppResources.RecordAudio_AppBarCancelBtnTxt;
+            cancelIconButton.Text = AppResources.ReRecord_Txt;
             cancelIconButton.Click += new EventHandler(refresh_Click);
             cancelIconButton.IsEnabled = false;
             appBar.Buttons.Add(cancelIconButton);

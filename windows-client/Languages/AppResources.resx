@@ -1114,7 +1114,7 @@ Get hike: http://get.hike.in</value>
   <data name="Walkthrough_H2H_SwipeLeft" xml:space="preserve">
     <value>swipe left to continue</value>
   </data>
-  <data name="RecordAudio_AppBarCancelBtnTxt" xml:space="preserve">
+  <data name="ReRecord_Txt" xml:space="preserve">
     <value>re-record</value>
     <comment>app bar button</comment>
   </data>

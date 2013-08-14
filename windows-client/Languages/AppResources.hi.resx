@@ -1106,7 +1106,7 @@
   <data name="Walkthrough_H2H_SwipeLeft" xml:space="preserve">
     <value>आगे बढने के लियें बाएँ तरफ घुमाएं |</value>
   </data>
-  <data name="RecordAudio_AppBarCancelBtnTxt" xml:space="preserve">
+  <data name="ReRecord_Txt" xml:space="preserve">
     <value>फिर रिकॉर्ड करें |</value>
     <comment>app bar button</comment>
   </data>
