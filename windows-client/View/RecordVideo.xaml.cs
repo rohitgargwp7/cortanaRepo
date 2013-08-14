@@ -19,6 +19,7 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using windows_client.DbUtils;
 using System.Threading.Tasks;
+using windows_client.Controls;
 
 namespace windows_client.View
 {
@@ -206,6 +207,8 @@ namespace windows_client.View
 
         async void doneIconButton_Click(object sender, EventArgs e)
         {
+            loadingIndicator.IsIndeterminate = true;
+
             addOrRemoveAppBarButton(doneIconButton, false);
             resolutionList.IsEnabled = false;
             cameraList.IsEnabled = false;
@@ -245,6 +248,8 @@ namespace windows_client.View
             }
 
             isSettingsUpdating = false;
+
+            loadingIndicator.IsIndeterminate = false;
         }
 
         private void SetUIFromResolution()
@@ -326,6 +331,11 @@ namespace windows_client.View
         {
             if (SettingsGrid.Visibility == Visibility.Visible)
             {
+                loadingIndicator.IsIndeterminate = true;
+                
+                addOrRemoveAppBarButton(doneIconButton, false);
+                resolutionList.IsEnabled = false;
+                cameraList.IsEnabled = false; 
                 UpdateRecordingSettings();
                 e.Cancel = true;
                 return;
