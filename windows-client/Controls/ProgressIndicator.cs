@@ -21,13 +21,12 @@ namespace windows_client.Controls
 
         public ProgressIndicatorControl()
         {
-            overlayrectangle = new Rectangle() { IsHitTestVisible = true };
-            overlayrectangle.SetValue(Canvas.ZIndexProperty, 2);
+            overlayrectangle = new Rectangle();
             overlayrectangle.Fill = UI_Utils.Instance.Black;
             overlayrectangle.Visibility = Visibility.Collapsed;
             overlayrectangle.Opacity = 0.85;
 
-            spProgress = new StackPanel() { IsHitTestVisible = true };
+            spProgress = new StackPanel();
             spProgress.Visibility = Visibility.Collapsed;
 
             txtProgressText = new TextBlock();
@@ -64,7 +63,6 @@ namespace windows_client.Controls
             grid.Children.Add(overlayrectangle);
 
             spProgress.Visibility = Visibility.Visible;
-            spProgress.SetValue(Canvas.ZIndexProperty, 3);
             Grid.SetRow(spProgress, 0);
             Grid.SetRowSpan(spProgress, grid.RowDefinitions.Count);
             grid.Children.Add(spProgress);
