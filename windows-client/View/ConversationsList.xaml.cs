@@ -2484,12 +2484,20 @@ namespace windows_client.View
 
         private void dismissProTip_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            var list = App.ViewModel.StatusList.Where(i => i is ProTipUC);
+            bool isPresent = false;
 
-            if (list == null || list.Count() == 0)
+            foreach (var item in App.ViewModel.StatusList)
+            {
+                if (item is ProTipUC)
+                {
+                    App.ViewModel.StatusList.Remove(item);
+                    isPresent = true;
+                    break;
+                }
+            }
+
+            if (!isPresent)
                 return;
-
-            App.ViewModel.StatusList.Remove(list.First());
 
             ProTipCount = 0;
 
