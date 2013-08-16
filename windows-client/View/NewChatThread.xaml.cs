@@ -90,6 +90,7 @@ namespace windows_client.View
         private long lastTypingNotificationShownTime;
 
         private HikePubSub mPubSub;
+        DispatcherTimer _h2hOfflineTimer;
         public IScheduler scheduler = Scheduler.NewThread;
         private ConvMessage convTypingNotification;
         ContactInfo contactInfo = null; // this will be used if someone adds an unknown number to addressbook
@@ -5938,7 +5939,21 @@ namespace windows_client.View
                     }
 
                     if (ts.TotalSeconds > 0 || isNewTimer)
-                        scheduler.Schedule(ShowForceSMSOnUI, ts);
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(new Action<TimeSpan>(delegate(TimeSpan timeSpan)
+                            {
+                                if (_h2hOfflineTimer == null)
+                                {
+                                    _h2hOfflineTimer = new DispatcherTimer();
+                                    _h2hOfflineTimer.Tick -= h2hofflineTimer_Tick;
+                                    _h2hOfflineTimer.Tick += h2hofflineTimer_Tick;
+                                }
+
+                                _h2hOfflineTimer.Stop();
+                                _h2hOfflineTimer.Interval = timeSpan;
+                                _h2hOfflineTimer.Start();
+                            }), ts);
+                    }
                     else
                         ShowForceSMSOnUI();
                 }
@@ -5947,6 +5962,12 @@ namespace windows_client.View
             {
                 return;
             }
+        }
+
+        void h2hofflineTimer_Tick(object sender, EventArgs e)
+        {
+            _h2hOfflineTimer.Stop();
+            ShowForceSMSOnUI();
         }
 
         void ShowForceSMSOnUI()
