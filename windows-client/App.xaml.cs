@@ -889,6 +889,9 @@ namespace windows_client
                         WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
                         if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                             MqttDBUtils.MqttDbUpdateToLatestVersion();
+
+                        if (Utils.compareVersion(_currentVersion, "2.2.0.0") == 0) 
+                            App.ViewModel.ResetInAppTip(1);
                     }
                 }
                 st.Stop();
