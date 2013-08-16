@@ -2521,8 +2521,8 @@ namespace windows_client.View
                     }
                 };
             worker.RunWorkerAsync();
-            App.WriteToIsoStorageSettings(App.PRO_TIP_LAST_DISMISS_TIME, DateTime.Now);
 
+            App.WriteToIsoStorageSettings(App.PRO_TIP_LAST_DISMISS_TIME, DateTime.Now);
             ProTipHelper.Instance.StartTimer();
         }
 

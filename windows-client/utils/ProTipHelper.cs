@@ -517,7 +517,7 @@ namespace windows_client.utils
 
             Int64 time = 0;
             App.appSettings.TryGetValue(App.PRO_TIP_DISMISS_TIME, out time);
-            time = 10;
+            
             if (time > 0 && time > ts.TotalSeconds)
             {
                 if (proTipTimer == null)
