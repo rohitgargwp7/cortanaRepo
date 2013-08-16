@@ -1079,7 +1079,7 @@ namespace windows_client.View
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
+                   
                     if (sm.Msisdn == App.MSISDN || sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
                     {
                         if (sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
@@ -1107,7 +1107,7 @@ namespace windows_client.View
 
                                 if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC)
                                     App.ViewModel.StatusList.RemoveAt(index);
-
+                                int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
                                 App.ViewModel.StatusList.Insert(count + index, statusUpdate);
                             }
                         }
@@ -1137,7 +1137,7 @@ namespace windows_client.View
 
                                     if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC)
                                         App.ViewModel.StatusList.RemoveAt(index);
-
+                                    int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
                                     App.ViewModel.StatusList.Insert(count + index, statusUpdate);
                                 }
                             }
