@@ -80,8 +80,7 @@ namespace windows_client.utils
                     pivotIndex++;
                 }
 
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null
-                    && Utils.IsBollywoodVisible)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_BOLLYWOOD;
