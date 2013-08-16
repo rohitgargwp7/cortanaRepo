@@ -27,6 +27,7 @@ using windows_client.Controls;
 using windows_client.Controls.StatusUpdate;
 using Coding4Fun.Phone.Controls;
 using System.Windows.Media;
+using System.Linq;
 
 namespace windows_client.View
 {
@@ -2483,7 +2484,12 @@ namespace windows_client.View
 
         private void dismissProTip_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.ViewModel.StatusList.RemoveAt(0);
+            var list = App.ViewModel.StatusList.Where(i => i is ProTipUC);
+
+            if (list == null || list.Count() == 0)
+                return;
+
+            App.ViewModel.StatusList.Remove(list.First());
 
             ProTipCount = 0;
 
@@ -2515,6 +2521,7 @@ namespace windows_client.View
                     }
                 };
             worker.RunWorkerAsync();
+            App.WriteToIsoStorageSettings(App.PRO_TIP_LAST_DISMISS_TIME, DateTime.Now);
 
             ProTipHelper.Instance.StartTimer();
         }
