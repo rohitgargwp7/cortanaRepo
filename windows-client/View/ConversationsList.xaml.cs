@@ -2501,6 +2501,8 @@ namespace windows_client.View
 
             App.ViewModel.StatusList.RemoveAt(i);
 
+            App.WriteToIsoStorageSettings(App.PRO_TIP_LAST_DISMISS_TIME, DateTime.Now);
+
             ProTipCount = 0;
 
             JObject proTipAnalyticsJson = new JObject();
@@ -2532,7 +2534,6 @@ namespace windows_client.View
                 };
             worker.RunWorkerAsync();
 
-            App.WriteToIsoStorageSettings(App.PRO_TIP_LAST_DISMISS_TIME, DateTime.Now);
             ProTipHelper.Instance.StartTimer();
         }
 
