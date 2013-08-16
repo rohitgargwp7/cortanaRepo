@@ -10,7 +10,6 @@ namespace windows_client.utils
     class LastSeenHelper
     {
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
-        private static volatile LastSeenHelper instance = null;
         private readonly int maxRequestCount = 2;
         private int currentRequestCount = 0;
         private string cNumber;
@@ -88,6 +87,5 @@ namespace windows_client.utils
     {
         public long TimeStamp;
         public string ContactNumber;
-
     }
 }

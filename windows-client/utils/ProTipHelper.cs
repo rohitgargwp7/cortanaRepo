@@ -24,7 +24,7 @@ namespace windows_client.utils
         private static object readWriteLock = new object();
         
         private static volatile ProTipHelper instance = null;
-        private DispatcherTimer proTipTimer;
+        public DispatcherTimer proTipTimer;
         private static ProTip _currentProTip = null;
         
         public event EventHandler<EventArgs> ShowProTip;
@@ -88,7 +88,7 @@ namespace windows_client.utils
             ProTip currentProTip = null;
             App.appSettings.TryGetValue<ProTip>(App.PRO_TIP, out currentProTip);
 
-            if (currentProTip == null)
+            if (currentProTip == null && !proTipTimer.IsEnabled)
             {
                 if (_proTipsQueue.Count == 0)
                     currentProTip = new ProTip(id, header, body, imageUrl);
@@ -506,10 +506,19 @@ namespace windows_client.utils
 
         public void StartTimer()
         {
+            DateTime dt;
+            if (!App.appSettings.TryGetValue(App.PRO_TIP_LAST_DISMISS_TIME, out dt))
+            {
+                getNextProTip();
+                return;
+            }
+
+            TimeSpan ts = DateTime.Now.Subtract(dt);
+
             Int64 time = 0;
             App.appSettings.TryGetValue(App.PRO_TIP_DISMISS_TIME, out time);
-
-            if (time > 0)
+            
+            if (time > 0 && time > ts.TotalSeconds)
             {
                 if (proTipTimer == null)
                 {
@@ -518,10 +527,12 @@ namespace windows_client.utils
                     proTipTimer.Tick += proTipTimer_Tick;
                 }
 
-                proTipTimer.Interval = TimeSpan.FromSeconds(time); //time might have changed, hence reinitializing timer
+                proTipTimer.Interval = TimeSpan.FromSeconds(time - ts.TotalSeconds); //time might have changed, hence reinitializing timer
 
                 proTipTimer.Start();
             }
+            else
+                getNextProTip();
         }
 
         void proTipTimer_Tick(object sender, EventArgs e)

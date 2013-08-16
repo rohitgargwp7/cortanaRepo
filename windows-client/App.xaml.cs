@@ -59,6 +59,7 @@ namespace windows_client
         public static readonly string PRO_TIP = "proTip";
         public static readonly string PRO_TIP_COUNT = "proTipCount";
         public static readonly string PRO_TIP_DISMISS_TIME = "proTipDismissTime";
+        public static readonly string PRO_TIP_LAST_DISMISS_TIME = "proTipLastDismissTime";
 
         public static readonly string INVITED = "invited";
         public static readonly string INVITED_JOINED = "invitedJoined";
@@ -397,6 +398,9 @@ namespace windows_client
                     MqttManagerInstance.connect();
             }
 
+            if (ProTipHelper.Instance.proTipTimer != null)
+                ProTipHelper.Instance.proTipTimer.Start();
+
             NetworkManager.turnOffNetworkManager = false;
             App.mMqttManager.IsAppStarted = false;
         }
@@ -421,6 +425,9 @@ namespace windows_client
                     return;
                 ConversationTableUtils.saveConvObjectList();
             }
+
+            if (ProTipHelper.Instance.proTipTimer != null)
+                ProTipHelper.Instance.proTipTimer.Stop();
 
             App.mMqttManager.IsLastSeenPacketSent = false;
             App.mMqttManager.disconnectFromBroker(false);
@@ -882,6 +889,9 @@ namespace windows_client
                         WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
                         if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                             MqttDBUtils.MqttDbUpdateToLatestVersion();
+
+                        if (Utils.compareVersion(_currentVersion, "2.2.0.0") == 0) 
+                            App.ViewModel.ResetInAppTip(1);
                     }
                 }
                 st.Stop();

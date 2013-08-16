@@ -20,6 +20,7 @@ using windows_client.DbUtils;
 using windows_client.Controls;
 using Facebook;
 using windows_client.ViewModel;
+using System.Net.NetworkInformation;
 
 namespace windows_client.View
 {
@@ -74,6 +75,12 @@ namespace windows_client.View
 
         private void Unlink_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
+                return;
+            }
+
             MessageBoxResult result = MessageBox.Show(AppResources.Privacy_UnlinkConfirmMsgBxText, AppResources.Privacy_UnlinkAccountHeader, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
@@ -98,6 +105,12 @@ namespace windows_client.View
 
         private void Delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
+                return;
+            }
+
             MessageBoxResult result = MessageBox.Show(AppResources.Privacy_DeleteAccounConfirmMsgBxText, AppResources.Privacy_DeleteAccountHeader, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;

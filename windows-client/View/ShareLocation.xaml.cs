@@ -682,7 +682,7 @@ namespace windows_client.View
                 if (NetworkInterface.GetIsNetworkAvailable())
                     PlacesGrid.Visibility = Visibility.Visible;
                 else
-                    MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.No_Network_Txt);
             }
 
             base.OnNavigatedTo(e);

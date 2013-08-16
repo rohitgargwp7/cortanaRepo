@@ -81,7 +81,6 @@ namespace windows_client
             }
         }
 
-
         public void onMessage(string msg)
         {
             if (string.IsNullOrEmpty(msg))
