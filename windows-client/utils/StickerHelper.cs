@@ -148,6 +148,7 @@ namespace windows_client.utils
 
         public static void CreateDefaultCategories()
         {
+            StickerCategory.CreateCategory(CATEGORY_HUMANOID);
             StickerCategory.CreateCategory(CATEGORY_DOGGY);
             StickerCategory.CreateCategory(CATEGORY_KITTY);
             StickerCategory.CreateCategory(CATEGORY_EXPRESSIONS);
