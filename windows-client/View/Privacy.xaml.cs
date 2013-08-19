@@ -75,6 +75,9 @@ namespace windows_client.View
 
         private void Unlink_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!canGoBack)
+                return; 
+            
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
@@ -84,12 +87,12 @@ namespace windows_client.View
             MessageBoxResult result = MessageBox.Show(AppResources.Privacy_UnlinkConfirmMsgBxText, AppResources.Privacy_UnlinkAccountHeader, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
+
             if (progress == null)
                 progress = new ProgressIndicatorControl();
 
             progress.Show(LayoutRoot, AppResources.Privacy_UnlinkAccountProgress);
             canGoBack = false;
-
             AccountUtils.unlinkAccount(new AccountUtils.postResponseFunction(unlinkAccountResponse_Callback));
 
             if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
@@ -105,6 +108,9 @@ namespace windows_client.View
 
         private void Delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!canGoBack)
+                return; 
+            
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
@@ -114,6 +120,7 @@ namespace windows_client.View
             MessageBoxResult result = MessageBox.Show(AppResources.Privacy_DeleteAccounConfirmMsgBxText, AppResources.Privacy_DeleteAccountHeader, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
+
             if (progress == null)
             {
                 progress = new ProgressIndicatorControl();
@@ -130,7 +137,7 @@ namespace windows_client.View
                 Debug.WriteLine("Delete Account", "Could not delete account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBoxResult result = MessageBox.Show("hike couldn't delete your account. Please try again.", "Account not deleted", MessageBoxButton.OKCancel);
+                    MessageBoxResult result = MessageBox.Show(AppResources.Delete_Account_Failed, AppResources.Delete_Account_Heading, MessageBoxButton.OKCancel);
                     progress.Hide(LayoutRoot);
                     progress = null;
                     canGoBack = true;
