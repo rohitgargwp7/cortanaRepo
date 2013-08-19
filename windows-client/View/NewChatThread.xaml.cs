@@ -4398,7 +4398,7 @@ namespace windows_client.View
                 locationMessage = fileName;
 
                 if (String.IsNullOrEmpty(fileName))
-                    fileName = AppResources.Location_Txt;
+                    fileName = HikeConstants.LOCATION_FILENAME;
 
                 ConvMessage convMessage = new ConvMessage(locationMessage, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation)
                 {
@@ -4408,7 +4408,7 @@ namespace windows_client.View
                 };
 
                 convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED);
-                convMessage.FileAttachment.ContentType = "hikemap/location";
+                convMessage.FileAttachment.ContentType = HikeConstants.LOCATION_CONTENT_TYPE;
 
                 AddNewMessageToUI(convMessage, false);
 
