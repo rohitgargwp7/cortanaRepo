@@ -75,6 +75,9 @@ namespace windows_client.View
 
         private void Unlink_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!canGoBack)
+                return; 
+            
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
@@ -84,12 +87,12 @@ namespace windows_client.View
             MessageBoxResult result = MessageBox.Show(AppResources.Privacy_UnlinkConfirmMsgBxText, AppResources.Privacy_UnlinkAccountHeader, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
+
             if (progress == null)
                 progress = new ProgressIndicatorControl();
 
             progress.Show(LayoutRoot, AppResources.Privacy_UnlinkAccountProgress);
             canGoBack = false;
-
             AccountUtils.unlinkAccount(new AccountUtils.postResponseFunction(unlinkAccountResponse_Callback));
 
             if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
@@ -105,6 +108,9 @@ namespace windows_client.View
 
         private void Delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!canGoBack)
+                return; 
+            
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
@@ -114,6 +120,7 @@ namespace windows_client.View
             MessageBoxResult result = MessageBox.Show(AppResources.Privacy_DeleteAccounConfirmMsgBxText, AppResources.Privacy_DeleteAccountHeader, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
+
             if (progress == null)
             {
                 progress = new ProgressIndicatorControl();
