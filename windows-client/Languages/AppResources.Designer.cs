@@ -889,6 +889,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to hike couldn&apos;t delete your account. Please try again..
+        /// </summary>
+        public static string Delete_Account_Failed {
+            get {
+                return ResourceManager.GetString("Delete_Account_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account not deleted.
+        /// </summary>
+        public static string Delete_Account_Heading {
+            get {
+                return ResourceManager.GetString("Delete_Account_Heading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to delete.
         /// </summary>
         public static string Delete_Txt {

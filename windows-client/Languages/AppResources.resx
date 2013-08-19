@@ -1947,4 +1947,10 @@ Get hike: http://get.hike.in</value>
   <data name="StickersTut_TxtBlk0" xml:space="preserve">
     <value>Stickers are here!</value>
   </data>
+  <data name="Delete_Account_Failed" xml:space="preserve">
+    <value>hike couldn't delete your account. Please try again.</value>
+  </data>
+  <data name="Delete_Account_Heading" xml:space="preserve">
+    <value>Account not deleted</value>
+  </data>
 </root>
