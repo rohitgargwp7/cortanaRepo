@@ -223,6 +223,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to add.
+        /// </summary>
+        public static string Blocklist_AppBar_Add_Text {
+            get {
+                return ResourceManager.GetString("Blocklist_AppBar_Add_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to BLOCK LIST.
         /// </summary>
         public static string BlockList_Text {
@@ -3692,6 +3701,15 @@ namespace windows_client.Languages {
         public static string Settings_LocationToggleSwitchHeader {
             get {
                 return ResourceManager.GetString("Settings_LocationToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set Lock Screen Notifications.
+        /// </summary>
+        public static string Settings_LockScreenNotifications {
+            get {
+                return ResourceManager.GetString("Settings_LockScreenNotifications", resourceCulture);
             }
         }
         

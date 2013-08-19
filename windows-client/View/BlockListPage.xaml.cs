@@ -37,7 +37,7 @@ namespace windows_client.View
 
             ApplicationBarIconButton addIconButton = new ApplicationBarIconButton();
             addIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);//change
-            addIconButton.Text = "add";//todo:change
+            addIconButton.Text = AppResources.Blocklist_AppBar_Add_Text;
             addIconButton.Click += AddUsers_Tap;
             addIconButton.IsEnabled = true;
             appBar.Buttons.Add(addIconButton);
