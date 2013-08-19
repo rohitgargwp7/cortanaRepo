@@ -2580,6 +2580,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sick.
+        /// </summary>
+        public static string Mood_Sick {
+            get {
+                return ResourceManager.GetString("Mood_Sick", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Singing.
         /// </summary>
         public static string Mood_Singing {
@@ -3701,6 +3710,15 @@ namespace windows_client.Languages {
         public static string Settings_LocationToggleSwitchHeader {
             get {
                 return ResourceManager.GetString("Settings_LocationToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set Lock Screen Notifications.
+        /// </summary>
+        public static string Settings_LockScreenNotifications {
+            get {
+                return ResourceManager.GetString("Settings_LockScreenNotifications", resourceCulture);
             }
         }
         

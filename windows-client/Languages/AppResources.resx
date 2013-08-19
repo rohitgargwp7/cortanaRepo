@@ -1953,4 +1953,10 @@ Get hike: http://get.hike.in</value>
   <data name="Delete_Account_Heading" xml:space="preserve">
     <value>Account not deleted</value>
   </data>
+  <data name="Mood_Sick" xml:space="preserve">
+    <value>Sick</value>
+  </data>
+  <data name="Settings_LockScreenNotifications" xml:space="preserve">
+    <value>Set Lock Screen Notifications</value>
+  </data>
 </root>

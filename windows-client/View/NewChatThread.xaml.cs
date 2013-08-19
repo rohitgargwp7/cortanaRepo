@@ -475,19 +475,6 @@ namespace windows_client.View
             emotList2.ItemsSource = imagePathsForList2;
             emotList3.ItemsSource = imagePathsForList3;
 
-            if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))
-            {
-                ColumnDefinition col = new ColumnDefinition();
-                gridEmoticonLabels.ColumnDefinitions.Add(col);
-                stickerTab.SetValue(Grid.ColumnProperty, 4);
-                btnBackKey.SetValue(Grid.ColumnProperty, 5);
-                emotHeaderRect3.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                emoticonPivot.Items.RemoveAt(3);
-            }
-
             bw.RunWorkerAsync();
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = false;
@@ -996,12 +983,12 @@ namespace windows_client.View
             }
             else
                 sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
-          
+
             if (isGroupChat)
                 sendMsgTxtbox.Hint = hintText = ON_GROUP_TEXT;
-         
+
             initBlockUnblockState();
-          
+
             if (!mUserIsBlocked)
             {
                 UpdateChatStatus();
@@ -5518,18 +5505,12 @@ namespace windows_client.View
 
             }
 
-            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null
-                && Utils.IsBollywoodVisible)
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
             {
                 stCategory4.Visibility = Visibility.Visible;
                 if (stickerCategory.HasNewStickers)
                     ShowNewStickerUi(stickerCategory);
-                ColumnDefinition colDef = new ColumnDefinition();
-                gridStickerPivot.ColumnDefinitions.Add(colDef);
-                stCategory5.SetValue(Grid.ColumnProperty, 6);
             }
-            else
-                stCategory5.SetValue(Grid.ColumnProperty, 5);
 
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
             {

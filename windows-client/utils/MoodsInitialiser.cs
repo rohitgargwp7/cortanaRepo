@@ -13,7 +13,7 @@ namespace windows_client.utils
     {
         private static MoodsInitialiser instance = null;
         private BitmapImage[] moodImages;
-        public static readonly int totalMoodCount = 24;
+        public static readonly int totalMoodCount = 32;
 
         public static MoodsInitialiser Instance
         {
@@ -58,14 +58,16 @@ namespace windows_client.utils
             {"/View/images/moods/06Gaming.png",         AppResources.Mood_Gaming            ,                   "",	"",	""},
             {"/View/images/moods/02Coding.png",         AppResources.Mood_Coding            ,                   "",	"",	""},
             {"/View/images/moods/10Television.png",     AppResources.Mood_Watching_tv       ,                   "",	"",	""},
-            //{"/View/images/moods/24Music.png",          AppResources.Mood_Music           ,                   "",	"",	""},
-            //{"/View/images/moods/25PartyingHard.png",   AppResources.Mood_PartyingHard,                   "",	"",	""},
-            //{"/View/images/moods/26Singing.png",          AppResources.Mood_Singing      ,                   "",	"",	""},
-            //{"/View/images/moods/27Eating.png",           AppResources.Mood_Eating       ,                   "",	"",	""},
-            //{"/View/images/moods/28WorkingOut.png",        AppResources.Mood_WorkingOut,                   "",	"",	""},
-            //{"/View/images/moods/29Cooking.png",        AppResources.Mood_Cooking,                   "",	"",	""},
-            //{"/View/images/moods/30BeautySaloon.png",    AppResources.Mood_BeautySaloon,                   "",	"",	""}
-            };
+            {"/View/images/moods/24Music 3.png",         AppResources.Mood_Music           ,                   "",	"",	""},
+            {"/View/images/moods/25PartyingHard-alt 2.png",   AppResources.Mood_PartyingHard,                   "",	"",	""},
+            {"/View/images/moods/26Singing-alt 2.png",     AppResources.Mood_Singing      ,                   "",	"",	""},
+            {"/View/images/moods/27Hogging 2.png",       AppResources.Mood_Eating       ,                   "",	"",	""},
+            {"/View/images/moods/28WorkingOut 3.png",      AppResources.Mood_WorkingOut,                   "",	"",	""},
+            {"/View/images/moods/29Cooking-alt-3 2.png",   AppResources.Mood_Cooking,                   "",	"",	""},
+            {"/View/images/moods/31Saloon-alt 2.png",    AppResources.Mood_BeautySaloon,                   "",	"",	""},
+            {"/View/images/moods/32Sick-alt 2.png",  AppResources.Mood_Sick,                   "",	"",	""}
+        };
+
 
         public BitmapImage GetMoodImageForMoodId(int moodId)
         {
