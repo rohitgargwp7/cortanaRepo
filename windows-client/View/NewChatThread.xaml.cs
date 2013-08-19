@@ -4392,15 +4392,12 @@ namespace windows_client.View
 
                 var place = (String)fileData[HikeConstants.LOCATION_TITLE];
                 var vicinity = (String)fileData[HikeConstants.LOCATION_ADDRESS];
-                var locationMessage = String.Empty;
                 var fileName = (String)fileData[HikeConstants.FILE_NAME];
-
-                locationMessage = fileName;
 
                 if (String.IsNullOrEmpty(fileName))
                     fileName = HikeConstants.LOCATION_FILENAME;
 
-                ConvMessage convMessage = new ConvMessage(locationMessage, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation)
+                ConvMessage convMessage = new ConvMessage(AppResources.Location_Txt, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation)
                 {
                     IsSms = !isOnHike,
                     HasAttachment = true,
