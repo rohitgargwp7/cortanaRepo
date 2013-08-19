@@ -1950,9 +1950,6 @@ Get hike: http://get.hike.in</value>
   <data name="Mood_Sick" xml:space="preserve">
     <value>Sick</value>
   </data>
-  <data name="Blocklist_AppBar_Add_Text" xml:space="preserve">
-    <value>add</value>
-  </data>
   <data name="Settings_LockScreenNotifications" xml:space="preserve">
     <value>Set Lock Screen Notifications</value>
   </data>

@@ -223,15 +223,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to add.
-        /// </summary>
-        public static string Blocklist_AppBar_Add_Text {
-            get {
-                return ResourceManager.GetString("Blocklist_AppBar_Add_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to BLOCK LIST.
         /// </summary>
         public static string BlockList_Text {
