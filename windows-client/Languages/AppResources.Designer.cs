@@ -3696,6 +3696,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Set Lock Screen Notifications.
+        /// </summary>
+        public static string Settings_LockScreenNotifications {
+            get {
+                return ResourceManager.GetString("Settings_LockScreenNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your notifications preferences.
         /// </summary>
         public static string Settings_NotificationSettings_Txt {

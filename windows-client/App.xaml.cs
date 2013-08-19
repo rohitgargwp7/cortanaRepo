@@ -758,9 +758,10 @@ namespace windows_client
 
             #endregion
             #region STCIKERS
-            //todo:make it 2.2.0.0
-            if (isNewInstall || Utils.compareVersion("2.2.0.0", _currentVersion) == 1)
+            //todo:make it 2.2.2.0
+            if (isNewInstall || Utils.compareVersion("2.2.0.6", _currentVersion) == 1)
             {
+                StickerCategory.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
                 StickerHelper.CreateDefaultCategories();
             }
             #endregion
