@@ -65,6 +65,8 @@ namespace windows_client
         public static readonly string ZOOM_LEVEL = "zoom";
         public static readonly string LOCATION_ADDRESS = "add";
         public static readonly string LOCATION_TITLE = "title";
+        public static readonly string LOCATION_FILENAME = "Location";
+        public static readonly string LOCATION_CONTENT_TYPE = "hikemap/location";
         
         public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
         public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";

@@ -393,8 +393,8 @@ namespace windows_client.View
 
             var title = _selectedPlace == null || _selectedPlace.title.Contains(AppResources.Location_Txt) || _selectedPlace.title.Contains(AppResources.My_Location_Text) ? String.Empty : _selectedPlace.title;
 
-            singleFileInfo[HikeConstants.FILE_NAME] = AppResources.Location_Txt;
-            singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = "hikemap/location";
+            singleFileInfo[HikeConstants.FILE_NAME] = HikeConstants.LOCATION_FILENAME;
+            singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = HikeConstants.LOCATION_CONTENT_TYPE;
             singleFileInfo[HikeConstants.LATITUDE] = _selectedCoordinate.Latitude;
             singleFileInfo[HikeConstants.LONGITUDE] = _selectedCoordinate.Longitude;
             singleFileInfo[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
