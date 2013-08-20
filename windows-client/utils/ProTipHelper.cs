@@ -88,7 +88,7 @@ namespace windows_client.utils
             ProTip currentProTip = null;
             App.appSettings.TryGetValue<ProTip>(App.PRO_TIP, out currentProTip);
 
-            if (currentProTip == null && !proTipTimer.IsEnabled)
+            if (currentProTip == null && (proTipTimer == null || !proTipTimer.IsEnabled))
             {
                 if (_proTipsQueue.Count == 0)
                     currentProTip = new ProTip(id, header, body, imageUrl);

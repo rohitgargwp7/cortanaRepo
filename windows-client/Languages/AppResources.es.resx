@@ -202,7 +202,7 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>¿Seguro que quieres eliminar a este contacto de tus amigos?</value>
+    <value>¿Seguro que quieres quitar a este contacto de tu círculo de amigos?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
@@ -1916,5 +1916,26 @@
   </data>
   <data name="Video_Settings" xml:space="preserve">
     <value>ajustes de vídeo</value>
+  </data>
+  <data name="Mood_Sick" xml:space="preserve">
+    <value>Enfermo</value>
+  </data>
+  <data name="StickersTut_TxtBlk0" xml:space="preserve">
+    <value>¡Llegan las pegatinas!</value>
+  </data>
+  <data name="Video_High_Quality_Txt" xml:space="preserve">
+    <value>Calidad alta (720p)</value>
+  </data>
+  <data name="Video_Low_Quality_Txt" xml:space="preserve">
+    <value>Calidad baja (QVGA)</value>
+  </data>
+  <data name="Video_Standard_Quality_Txt" xml:space="preserve">
+    <value>Calidad normal (VGA) (predeterminado)</value>
+  </data>
+  <data name="Video_Very_High_Quality_Txt" xml:space="preserve">
+    <value>Calidad ultra (1080p)</value>
+  </data>
+  <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
+    <value>Bienvenido a hike</value>
   </data>
 </root>
