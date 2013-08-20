@@ -1505,13 +1505,13 @@ namespace windows_client.View
             {
                 if (obj is object[] && ((object[])obj).Length == 2)
                 {
-                    Object[] objAddress = (object[])obj;
-                    bool isAdd = (bool)objAddress[0];
-                    if (isAdd)
+                    Object[] objContacts = (object[])obj;
+                    bool isContactAdded = (bool)objContacts[0];
+                    if (isContactAdded)
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            List<ContactInfo> listAddedContacts = (List<ContactInfo>)objAddress[1];
+                            List<ContactInfo> listAddedContacts = (List<ContactInfo>)objContacts[1];
                             bool isNewUserAdded = false;
                             foreach (ContactInfo cinfo in listAddedContacts)
                             {
@@ -1536,7 +1536,7 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                        {
-                           List<ContactInfo> listDeletedContacts = (List<ContactInfo>)objAddress[1];
+                           List<ContactInfo> listDeletedContacts = (List<ContactInfo>)objContacts[1];
                            foreach (ContactInfo cinfo in listDeletedContacts)
                            {
                                hikeContactList.Remove(cinfo);
