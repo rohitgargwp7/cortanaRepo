@@ -1018,16 +1018,29 @@ namespace windows_client.View
 
             List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
             List<ContactInfo.DelContacts> hikeIds = null;
-
+            List<ContactInfo> deletedContacts = null;
             // Code to delete the removed contacts
             if (ContactUtils.hike_contactsMap != null && ContactUtils.hike_contactsMap.Count != 0)
             {
                 hikeIds = new List<ContactInfo.DelContacts>(ContactUtils.hike_contactsMap.Count);
+                deletedContacts = new List<ContactInfo>(ContactUtils.hike_contactsMap.Count);
                 // This loop deletes all those contacts which are removed.
+                Dictionary<string, GroupInfo> allGroupsInfo = null;
+                GroupManager.Instance.LoadGroupCache();
+                List<GroupInfo> gl = GroupTableUtils.GetAllGroups();
+                for (int i = 0; i < gl.Count; i++)
+                {
+                    if (allGroupsInfo == null)
+                        allGroupsInfo = new Dictionary<string, GroupInfo>();
+                    allGroupsInfo[gl[i].GroupId] = gl[i];
+                }
+
                 foreach (string id in ContactUtils.hike_contactsMap.Keys)
                 {
-                    ContactInfo.DelContacts dCn = new ContactInfo.DelContacts(id, ContactUtils.hike_contactsMap[id][0].Msisdn);
+                    ContactInfo cinfo=ContactUtils.hike_contactsMap[id][0];
+                    ContactInfo.DelContacts dCn = new ContactInfo.DelContacts(id, cinfo.Msisdn);
                     hikeIds.Add(dCn);
+                    deletedContacts.Add(cinfo);
                     if (App.ViewModel.ConvMap.ContainsKey(dCn.Msisdn)) // check convlist map to remove the 
                     {
                         try
@@ -1043,15 +1056,17 @@ namespace windows_client.View
                     else // if this contact is in favourite or pending and not in convMap update this also
                     {
                         ConversationListObject obj;
-                        obj = App.ViewModel.GetFav(id);
+                        obj = App.ViewModel.GetFav(cinfo.Msisdn);
                         if (obj == null) // this msisdn is not in favs , check in pending
-                            obj = App.ViewModel.GetPending(id);
+                            obj = App.ViewModel.GetPending(cinfo.Msisdn);
                         if (obj != null)
                             obj.ContactName = null;
                     }
 
                     if (App.ViewModel.ContactsCache.ContainsKey(dCn.Msisdn))
                         App.ViewModel.ContactsCache[dCn.Msisdn].Name = null;
+                    cinfo.Name = cinfo.Msisdn;
+                    GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo);
                 }
             }
             if (stopContactScanning)
@@ -1064,10 +1079,23 @@ namespace windows_client.View
                 /* Delete ids from hike user DB */
                 UsersTableUtils.deleteMultipleRows(hikeIds); // this will delete all rows in HikeUser DB that are not in Addressbook.
             }
+            
             if (updatedContacts != null && updatedContacts.Count > 0)
             {
                 UsersTableUtils.updateContacts(updatedContacts);
                 ConversationTableUtils.updateConversation(updatedContacts);
+                Object[] obj = new object[2];
+                obj[0] = true;//denotes updated/added contact
+                obj[1] = updatedContacts;
+                App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
+            }
+
+            if (deletedContacts != null && deletedContacts.Count > 0)
+            {
+                Object[] obj = new object[2];
+                obj[0] = false;//denotes deleted contact
+                obj[1] = deletedContacts;
+                App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
             }
 
             allContactsList = UsersTableUtils.getAllContactsByGroup();

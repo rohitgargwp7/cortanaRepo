@@ -439,6 +439,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
             mPubSub.addListener(HikePubSub.PRO_TIPS_REC, this);
             mPubSub.addListener(HikePubSub.CONTACT_ADDED, this);
+            mPubSub.addListener(HikePubSub.ADDRESSBOOK_UPDATED, this);
         }
 
         private void removeListeners()
@@ -464,6 +465,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
                 mPubSub.removeListener(HikePubSub.PRO_TIPS_REC, this);
                 mPubSub.removeListener(HikePubSub.CONTACT_ADDED, this);
+                mPubSub.removeListener(HikePubSub.ADDRESSBOOK_UPDATED, this);
             }
             catch (Exception ex)
             {
@@ -1080,7 +1082,7 @@ namespace windows_client.View
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                   
+
                     if (sm.Msisdn == App.MSISDN || sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
                     {
                         if (sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
@@ -1495,6 +1497,58 @@ namespace windows_client.View
                         });
                     }
 
+                }
+            }
+            #endregion
+            #region ADDRESSBOOK UPDATE
+            else if (type == HikePubSub.ADDRESSBOOK_UPDATED)
+            {
+                if (obj is object[] && ((object[])obj).Length == 2)
+                {
+                    Object[] objContacts = (object[])obj;
+                    bool isContactAdded = (bool)objContacts[0];
+                    if (isContactAdded)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(new Action<Object[]>(delegate(Object[] objCon)
+                        {
+                            List<ContactInfo> listAddedContacts = (List<ContactInfo>)objCon[1];
+                            bool isNewUserAdded = false;
+                            foreach (ContactInfo cinfo in listAddedContacts)
+                            {
+                                if (cinfo.OnHike && !App.ViewModel.Isfavourite(cinfo.Msisdn) && !App.ViewModel.ContactsCache.ContainsKey(cinfo.Msisdn))
+                                {
+                                    hikeContactList.Add(cinfo);
+                                    isNewUserAdded = true;
+                                }
+                            }
+                            if (isNewUserAdded)
+                            {
+                                cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
+                                if (hikeContactListBox.Visibility == Visibility.Collapsed)
+                                {
+                                    emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
+                                    hikeContactListBox.Visibility = Visibility.Visible;
+                                }
+                            }
+                        }), objContacts);
+                    }
+                    else
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(new Action<Object[]>(delegate(Object[] objCon)
+                       {
+                           List<ContactInfo> listDeletedContacts = (List<ContactInfo>)objCon[1];
+                           foreach (ContactInfo cinfo in listDeletedContacts)
+                           {
+                               hikeContactList.Remove(cinfo);
+                           }
+                           cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
+                           if (hikeContactList.Count == 0)
+                           {
+                               emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
+                               hikeContactListBox.Visibility = Visibility.Collapsed;
+                           }
+                       }), objContacts);
+                    }
                 }
             }
             #endregion
@@ -2491,7 +2545,7 @@ namespace windows_client.View
             bool isPresent = false;
             int i;
 
-            for ( i = 0; i < App.ViewModel.StatusList.Count;i++ )
+            for (i = 0; i < App.ViewModel.StatusList.Count; i++)
             {
                 if (App.ViewModel.StatusList[i] is ProTipUC)
                 {
