@@ -159,14 +159,15 @@
                             <view:ChatThreadTemplateSelector.DtNotificationBubble>
                                 <DataTemplate x:Name="dtNotificationBubble">
                                     <Border x:Name="border" BorderThickness="1" Background="Transparent" Margin="24,5,24,5" BorderBrush="#cdcdcd" HorizontalAlignment="Stretch" >
-                                        <Grid HorizontalAlignment="Left" Margin="12 3">
+                                        <Grid HorizontalAlignment="Stretch" Margin="12 3">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
-                                            <Image x:Name="NotificationImage" MaxHeight="20" VerticalAlignment="Center" HorizontalAlignment="Right" Source="{Binding NotificationImage}"></Image>
-                                            <TextBlock x:Name="UserName" Height="Auto"  Margin="10 0 0 0" Grid.Column="1" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
-                        Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                            <Image x:Name="NotificationImage" Height="20" Width="20" Grid.Column="0" VerticalAlignment="Center" Margin="10,0,10,0" HorizontalAlignment="Left" Source="{Binding NotificationImage}"></Image>
+                                            <TextBlock x:Name="UserName" Height="Auto" Grid.Column="1" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
+                          Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" Margin="3,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -442,7 +443,7 @@
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
                                             <TextBlock  Grid.Row="0" Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding TimeStampForeGround}" />
-                                            <ProgressBar Grid.Row="1" Foreground="#1ba1e2" IsIndeterminate="True" IsEnabled="True" Width="200" HorizontalAlignment="Stretch" Margin="0 20 0 30"/>
+                                            <ProgressBar Grid.Row="1" Foreground="#1ba1e2" IsIndeterminate="True" IsEnabled="True" HorizontalAlignment="Stretch" Margin="0 20 0 30"/>
                                             <TextBlock Grid.Row="2" Text="{Binding Path=LocalizedResources.DownloadingSticker_txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}" TextAlignment="Left" />
                                         </Grid>
                                         <Grid Visibility="{Binding IsHttpFailed}">
@@ -454,7 +455,7 @@
                                             </Grid.RowDefinitions>
                                             <TextBlock  Grid.Row="0" Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding TimeStampForeGround}" />
                                             <Image Grid.Row="1" Source="/View/images/download_failed_bubble.png" MaxHeight="30" Margin="0 30 40 0"/>
-                                            <TextBlock Grid.Row="2" Text="{Binding Path=LocalizedResources.StickerDownloadFailed, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                            <TextBlock Grid.Row="2" Text="{Binding Path=LocalizedResources.StickerDownloadFailed, Source={StaticResource LocalizedStrings}}"  HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                             <TextBlock Grid.Row="3" Text="{Binding Path=LocalizedResources.TapHereToRetyTxt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                         </Grid>
                                     </Grid>
