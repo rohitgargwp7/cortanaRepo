@@ -1512,18 +1512,23 @@ namespace windows_client.View
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
                             List<ContactInfo> listAddedContacts = (List<ContactInfo>)objAddress[1];
+                            bool isNewUserAdded = false;
                             foreach (ContactInfo cinfo in listAddedContacts)
                             {
                                 if (cinfo.OnHike && !App.ViewModel.Isfavourite(cinfo.Msisdn) && !App.ViewModel.ContactsCache.ContainsKey(cinfo.Msisdn))
                                 {
                                     hikeContactList.Add(cinfo);
+                                    isNewUserAdded = true;
                                 }
                             }
-                            cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
-                            if (hikeContactListBox.Visibility == Visibility.Collapsed)
+                            if (isNewUserAdded)
                             {
-                                emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
-                                hikeContactListBox.Visibility = Visibility.Visible;
+                                cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
+                                if (hikeContactListBox.Visibility == Visibility.Collapsed)
+                                {
+                                    emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
+                                    hikeContactListBox.Visibility = Visibility.Visible;
+                                }
                             }
                         });
                     }
