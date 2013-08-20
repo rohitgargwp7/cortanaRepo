@@ -52,5 +52,21 @@ namespace windows_client.Controls.StatusUpdate
         {
             this.UserImage = c.AvatarImage;
         }
+        public override bool Equals(object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (GetType() != obj.GetType())
+                return false;
+
+            StatusUpdateBox otherSb = (StatusUpdateBox)obj;
+            if (string.IsNullOrEmpty(this.serverId) || string.IsNullOrEmpty(otherSb.serverId))
+            {
+                return this.Msisdn.Equals(otherSb.Msisdn);
+            }
+            return this.serverId.Equals(otherSb.serverId);
+        }
     }
 }
