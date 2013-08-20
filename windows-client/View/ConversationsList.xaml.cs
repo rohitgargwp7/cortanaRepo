@@ -1509,9 +1509,9 @@ namespace windows_client.View
                     bool isContactAdded = (bool)objContacts[0];
                     if (isContactAdded)
                     {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        Deployment.Current.Dispatcher.BeginInvoke(new Action<Object[]>(delegate(Object[] objCon)
                         {
-                            List<ContactInfo> listAddedContacts = (List<ContactInfo>)objContacts[1];
+                            List<ContactInfo> listAddedContacts = (List<ContactInfo>)objCon[1];
                             bool isNewUserAdded = false;
                             foreach (ContactInfo cinfo in listAddedContacts)
                             {
@@ -1530,13 +1530,13 @@ namespace windows_client.View
                                     hikeContactListBox.Visibility = Visibility.Visible;
                                 }
                             }
-                        });
+                        }), objContacts);
                     }
                     else
                     {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        Deployment.Current.Dispatcher.BeginInvoke(new Action<Object[]>(delegate(Object[] objCon)
                        {
-                           List<ContactInfo> listDeletedContacts = (List<ContactInfo>)objContacts[1];
+                           List<ContactInfo> listDeletedContacts = (List<ContactInfo>)objCon[1];
                            foreach (ContactInfo cinfo in listDeletedContacts)
                            {
                                hikeContactList.Remove(cinfo);
@@ -1547,7 +1547,7 @@ namespace windows_client.View
                                emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
                                hikeContactListBox.Visibility = Visibility.Collapsed;
                            }
-                       });
+                       }), objContacts);
                     }
                 }
             }
