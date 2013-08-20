@@ -1917,4 +1917,22 @@
   <data name="Video_Settings" xml:space="preserve">
     <value>वीडियो सेटिंग</value>
   </data>
+  <data name="StickersTut_TxtBlk0" xml:space="preserve">
+    <value>स्टिकर यहाँ हैं!</value>
+  </data>
+  <data name="Video_High_Quality_Txt" xml:space="preserve">
+    <value>उच्च गुणवत्ता (720p)</value>
+  </data>
+  <data name="Video_Low_Quality_Txt" xml:space="preserve">
+    <value>निम्न गुणवत्ता (QVGA)</value>
+  </data>
+  <data name="Video_Standard_Quality_Txt" xml:space="preserve">
+    <value>मानक गुणवत्ता (VGA) (डिफॉल्ट)</value>
+  </data>
+  <data name="Video_Very_High_Quality_Txt" xml:space="preserve">
+    <value>अत्यंत उच्च गुणवत्ता (1080p)</value>
+  </data>
+  <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
+    <value>hike में आपका स्वागत है</value>
+  </data>
 </root>
