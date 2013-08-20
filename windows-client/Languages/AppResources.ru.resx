@@ -1928,4 +1928,16 @@ hike включает уморительные смайлы и позволяе�
   <data name="Mood_Sick" xml:space="preserve">
     <value>Болею</value>
   </data>
+  <data name="Video_High_Quality_Txt" xml:space="preserve">
+    <value>Высокое качество (720p)</value>
+  </data>
+  <data name="Video_Low_Quality_Txt" xml:space="preserve">
+    <value>Низкое качество (QVGA)</value>
+  </data>
+  <data name="Video_Standard_Quality_Txt" xml:space="preserve">
+    <value>Стандартное качество (VGA) (по умолчанию)</value>
+  </data>
+  <data name="Video_Very_High_Quality_Txt" xml:space="preserve">
+    <value>Лучшее качество (1080p)</value>
+  </data>
 </root>

@@ -1920,4 +1920,16 @@
   <data name="Mood_Sick" xml:space="preserve">
     <value>Krank</value>
   </data>
+  <data name="Video_High_Quality_Txt" xml:space="preserve">
+    <value>Hohe Qualität (720p)</value>
+  </data>
+  <data name="Video_Low_Quality_Txt" xml:space="preserve">
+    <value>Geringe Qualität (QVGA)</value>
+  </data>
+  <data name="Video_Standard_Quality_Txt" xml:space="preserve">
+    <value>Standard-Qualität (VGA) (voreingestellt)</value>
+  </data>
+  <data name="Video_Very_High_Quality_Txt" xml:space="preserve">
+    <value>Sehr hohe Qualität (1080p)</value>
+  </data>
 </root>

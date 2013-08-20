@@ -1928,4 +1928,16 @@ Télécharge hike : http://get.hike.in</value>
   <data name="Mood_Sick" xml:space="preserve">
     <value>Malade</value>
   </data>
+  <data name="Video_High_Quality_Txt" xml:space="preserve">
+    <value>Haute qualité (720p)</value>
+  </data>
+  <data name="Video_Low_Quality_Txt" xml:space="preserve">
+    <value>Qualité basse (QVGA)</value>
+  </data>
+  <data name="Video_Standard_Quality_Txt" xml:space="preserve">
+    <value>Qualité standard (VGA) (par défaut)</value>
+  </data>
+  <data name="Video_Very_High_Quality_Txt" xml:space="preserve">
+    <value>Très haute qualité (1080p)</value>
+  </data>
 </root>
