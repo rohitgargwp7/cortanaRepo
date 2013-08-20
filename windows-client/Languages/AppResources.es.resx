@@ -202,7 +202,7 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>¿Seguro que quieres eliminar a este contacto de tus amigos?</value>
+    <value>¿Seguro que quieres quitar a este contacto de tu círculo de amigos?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
@@ -1916,5 +1916,8 @@
   </data>
   <data name="Video_Settings" xml:space="preserve">
     <value>ajustes de vídeo</value>
+  </data>
+  <data name="Mood_Sick" xml:space="preserve">
+    <value>Enfermo</value>
   </data>
 </root>

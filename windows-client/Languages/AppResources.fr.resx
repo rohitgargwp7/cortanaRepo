@@ -202,7 +202,7 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Veux-tu vraiment retirer ce contact de tes amis ?</value>
+    <value>Veux-tu vraiment supprimer ce contact de ton cercle d'amis ?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
@@ -1088,7 +1088,7 @@ Télécharge hike : http://get.hike.in</value>
     <comment>xaml</comment>
   </data>
   <data name="Privacy_UnlinkConfirmMsgBxText" xml:space="preserve">
-    <value>Veux-tu vraiment désassocier ton compte hike de cet appareil ?</value>
+    <value>Veux-tu vraiment désassocier ton compte hike de cet appareil ?</value>
     <comment>cs. Message box while unlinking account</comment>
   </data>
   <data name="Privacy_UnlinkErrMsgBxCaptn" xml:space="preserve">
@@ -1924,5 +1924,8 @@ Télécharge hike : http://get.hike.in</value>
   </data>
   <data name="Video_Settings" xml:space="preserve">
     <value>paramètres vidéo</value>
+  </data>
+  <data name="Mood_Sick" xml:space="preserve">
+    <value>Malade</value>
   </data>
 </root>

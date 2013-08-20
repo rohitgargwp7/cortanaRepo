@@ -202,7 +202,7 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Quer mesmo remover este contato dos amigos?</value>
+    <value>Tem certeza de que quer remover esse contato do círculo de amigos?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
@@ -1087,7 +1087,7 @@ Obtenha o hike: http://get.hike.in</value>
     <comment>xaml</comment>
   </data>
   <data name="Privacy_UnlinkConfirmMsgBxText" xml:space="preserve">
-    <value>Quer mesmo desvincular sua conta hike deste dispositivo?</value>
+    <value>Tem certeza de que quer desvincular a conta do hike deste dispositivo?</value>
     <comment>cs. Message box while unlinking account</comment>
   </data>
   <data name="Privacy_UnlinkErrMsgBxCaptn" xml:space="preserve">
@@ -1924,5 +1924,8 @@ Mantenha pressionada a mensagem para enviar como sms do hike</value>
   </data>
   <data name="Video_Settings" xml:space="preserve">
     <value>configurações de vídeo</value>
+  </data>
+  <data name="Mood_Sick" xml:space="preserve">
+    <value>Doente</value>
   </data>
 </root>

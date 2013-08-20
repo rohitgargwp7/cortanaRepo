@@ -202,7 +202,7 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Действительно удалить этот контакт из друзей?</value>
+    <value>Вы действительно хотите удалить этот контакт из круга друзей?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
@@ -1088,7 +1088,7 @@ hike включает уморительные смайлы и позволяе�
     <comment>xaml</comment>
   </data>
   <data name="Privacy_UnlinkConfirmMsgBxText" xml:space="preserve">
-    <value>Действительно отвязать ваш аккаунт hike от этого устройства?</value>
+    <value>Вы действительно хотите отвязать аккаунт hike от этого устройства?</value>
     <comment>cs. Message box while unlinking account</comment>
   </data>
   <data name="Privacy_UnlinkErrMsgBxCaptn" xml:space="preserve">
@@ -1924,5 +1924,8 @@ hike включает уморительные смайлы и позволяе�
   </data>
   <data name="Video_Settings" xml:space="preserve">
     <value>параметры видео</value>
+  </data>
+  <data name="Mood_Sick" xml:space="preserve">
+    <value>Болею</value>
   </data>
 </root>
