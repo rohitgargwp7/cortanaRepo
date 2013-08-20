@@ -157,6 +157,7 @@ namespace windows_client
         public static readonly string PRO_TIPS_REC = "proTipRec";
 
         public static readonly string CONTACT_ADDED = "contact_added";
+        public static readonly string ADDRESSBOOK_UPDATED= "adbook_updated";
 
         private readonly Thread mThread;
 
