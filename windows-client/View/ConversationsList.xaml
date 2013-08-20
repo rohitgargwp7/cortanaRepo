@@ -187,7 +187,9 @@
                                         <Grid Grid.Column="1" HorizontalAlignment="Stretch" Tap="hikeContacts_Tap" Background="{StaticResource PhoneBackgroundBrush}" >
                                             <TextBlock Text="{Binding Name}" FontSize="37" Margin="10,0" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                         </Grid>
-                                        <Image Grid.Column="2" Name="addUserImage" Source="images\add_friend.png" Tap="addToFriends_Tap" Width="40" Height="40" HorizontalAlignment="Right"></Image>
+                                        <Grid Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tap="addToFriends_Tap" Background="{StaticResource PhoneBackgroundBrush}" >
+                                            <Image Name="addUserImage" Source="images\add_friend.png" Width="40" Height="40" HorizontalAlignment="Right"></Image>
+                                        </Grid>
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
