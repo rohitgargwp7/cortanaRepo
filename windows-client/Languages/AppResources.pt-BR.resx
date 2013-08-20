@@ -1928,6 +1928,9 @@ Mantenha pressionada a mensagem para enviar como sms do hike</value>
   <data name="Mood_Sick" xml:space="preserve">
     <value>Doente</value>
   </data>
+  <data name="StickersTut_TxtBlk0" xml:space="preserve">
+    <value>Os adesivos chegaram!</value>
+  </data>
   <data name="Video_High_Quality_Txt" xml:space="preserve">
     <value>Qualidade alta (720p)</value>
   </data>
@@ -1939,5 +1942,8 @@ Mantenha pressionada a mensagem para enviar como sms do hike</value>
   </data>
   <data name="Video_Very_High_Quality_Txt" xml:space="preserve">
     <value>Qualidade muito alta (1080p)</value>
+  </data>
+  <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
+    <value>Bem-vindo ao hike</value>
   </data>
 </root>

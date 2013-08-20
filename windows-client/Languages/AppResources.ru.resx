@@ -1928,6 +1928,9 @@ hike включает уморительные смайлы и позволяе�
   <data name="Mood_Sick" xml:space="preserve">
     <value>Болею</value>
   </data>
+  <data name="StickersTut_TxtBlk0" xml:space="preserve">
+    <value>Стикеры уже здесь!</value>
+  </data>
   <data name="Video_High_Quality_Txt" xml:space="preserve">
     <value>Высокое качество (720p)</value>
   </data>
@@ -1939,5 +1942,8 @@ hike включает уморительные смайлы и позволяе�
   </data>
   <data name="Video_Very_High_Quality_Txt" xml:space="preserve">
     <value>Лучшее качество (1080p)</value>
+  </data>
+  <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
+    <value>Приветствуем в hike!</value>
   </data>
 </root>

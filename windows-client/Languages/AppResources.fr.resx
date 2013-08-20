@@ -1928,6 +1928,9 @@ Télécharge hike : http://get.hike.in</value>
   <data name="Mood_Sick" xml:space="preserve">
     <value>Malade</value>
   </data>
+  <data name="StickersTut_TxtBlk0" xml:space="preserve">
+    <value>Les stickers sont là !</value>
+  </data>
   <data name="Video_High_Quality_Txt" xml:space="preserve">
     <value>Haute qualité (720p)</value>
   </data>
@@ -1939,5 +1942,8 @@ Télécharge hike : http://get.hike.in</value>
   </data>
   <data name="Video_Very_High_Quality_Txt" xml:space="preserve">
     <value>Très haute qualité (1080p)</value>
+  </data>
+  <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
+    <value>Bienvenue sur hike</value>
   </data>
 </root>

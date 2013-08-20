@@ -1920,6 +1920,9 @@
   <data name="Mood_Sick" xml:space="preserve">
     <value>Enfermo</value>
   </data>
+  <data name="StickersTut_TxtBlk0" xml:space="preserve">
+    <value>¡Llegan las pegatinas!</value>
+  </data>
   <data name="Video_High_Quality_Txt" xml:space="preserve">
     <value>Calidad alta (720p)</value>
   </data>
@@ -1931,5 +1934,8 @@
   </data>
   <data name="Video_Very_High_Quality_Txt" xml:space="preserve">
     <value>Calidad ultra (1080p)</value>
+  </data>
+  <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
+    <value>Bienvenido a hike</value>
   </data>
 </root>
