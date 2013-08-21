@@ -959,18 +959,19 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
-                    if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
+                    if (App.ViewModel.FavList.Count == 0 && emptyListPlaceholderFiends.Visibility == Visibility.Collapsed) // remove fav
                     {
-                        emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
-                        favourites.Visibility = System.Windows.Visibility.Visible;
-                        //addFavsPanel.Opacity = 1;
-                    }
-                    else if (App.ViewModel.FavList.Count == 0) // remove fav
-                    {
-                        emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
-                        favourites.Visibility = System.Windows.Visibility.Collapsed;
+                        emptyListPlaceholderFiends.Visibility = Visibility.Visible;
+                        favourites.Visibility = Visibility.Collapsed;
                         //addFavsPanel.Opacity = 0;
                     }
+                    else if (App.ViewModel.FavList.Count > 0 && emptyListPlaceholderFiends.Visibility == Visibility.Visible)
+                    {
+                        emptyListPlaceholderFiends.Visibility = Visibility.Collapsed;
+                        favourites.Visibility = Visibility.Visible;
+                        //addFavsPanel.Opacity = 1;
+                    }
+
                 });
             }
             #endregion
