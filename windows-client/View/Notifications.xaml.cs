@@ -239,7 +239,7 @@ namespace windows_client.View
 
         private void locationToggle_Checked(object sender, RoutedEventArgs e)
         {
-            this.lastSeenTimeStampToggle.Content = AppResources.On;
+            this.locationToggle.Content = AppResources.On;
             App.appSettings.Remove(App.USE_LOCATION_SETTING);
             App.appSettings.Save();
 
@@ -248,7 +248,7 @@ namespace windows_client.View
 
         private void locationToggle_Unchecked(object sender, RoutedEventArgs e)
         {
-            this.lastSeenTimeStampToggle.Content = AppResources.Off;
+            this.locationToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, false);
 
             App.appSettings.Remove(HikeConstants.LOCATION_DEVICE_COORDINATE);
