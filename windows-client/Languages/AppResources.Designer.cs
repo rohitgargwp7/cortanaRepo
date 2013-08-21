@@ -2238,7 +2238,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to last seen.
+        ///   Looks up a localized string similar to last seen {0}.
         /// </summary>
         public static string Last_Seen {
             get {
@@ -2247,7 +2247,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to last seen today at.
+        ///   Looks up a localized string similar to last seen today at {0}.
         /// </summary>
         public static string Last_Seen_Today_At {
             get {
@@ -2256,7 +2256,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to last seen yesterday at.
+        ///   Looks up a localized string similar to last seen yesterday at {0}.
         /// </summary>
         public static string Last_Seen_Yesterday_At {
             get {
