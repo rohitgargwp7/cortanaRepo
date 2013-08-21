@@ -776,7 +776,16 @@
     <value>हाइक का इस्तेमाल जारी रखने के लिए, अपडेट जरूरी है।</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>नमस्ते ! [NEWLINE][NEWLINE]I एक सरल और सुंदर संदेश सेवा का उपयोग शुरू करें जो बिलकुल मुफ्त है [NEWLINE][NEWLINE] hike  कुछ आनंददायक संदेशों के साथ उपलब्ध है | आप अपने नजदीकी मित्रों को स्थिति सूचना भेज सकते है | इसे BBM की तरह देखिए पर उससे बहुत बेहतर! [NEWLINE][NEWLINE]इसे अभी प्राप्त करें और पुराने साधारण संदेशों को अलविदा कहें [NEWLINE][NEWLINE] hike  को hike: http://get.hike.in से प्राप्त करें |</value>
+    <value>नमस्ते !
+
+एक सरल और सुंदर संदेश सेवा का उपयोग शुरू करें जो बिलकुल मुफ्त है
+
+hike  कुछ आनंददायक संदेशों के साथ उपलब्ध है | आप अपने नजदीकी मित्रों को स्थिति 
+सूचना भेज सकते है | इसे BBM की तरह देखिए पर उससे बहुत बेहतर! 
+
+इसे अभी प्राप्त करें और पुराने साधारण संदेशों को अलविदा कहें
+
+hike  को hike: http://get.hike.in से प्राप्त करें |</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
