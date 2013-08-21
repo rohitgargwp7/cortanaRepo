@@ -202,7 +202,7 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>क्या आप इस संपर्क को दोस्तों से वाकई हटाना चाहते हैं?</value>
+    <value>क्या आप वाकई इस संपर्क को दोस्तों की मंडली से निकालना चाहते हैं?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
@@ -1080,7 +1080,7 @@
     <comment>xaml</comment>
   </data>
   <data name="Privacy_UnlinkConfirmMsgBxText" xml:space="preserve">
-    <value>क्या आप इस यंत्र को को अपने hike  खाते से अनलिंक करना चाहते हैं?</value>
+    <value>क्या आप वाकई अपने hike खाता को इस डिवाइस से अनलिंक करना चाहते है?</value>
     <comment>cs. Message box while unlinking account</comment>
   </data>
   <data name="Privacy_UnlinkErrMsgBxCaptn" xml:space="preserve">
@@ -1934,5 +1934,8 @@
   </data>
   <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
     <value>hike में आपका स्वागत है</value>
+  </data>
+  <data name="Mood_Sick" xml:space="preserve">
+    <value>बीमार</value>
   </data>
 </root>
