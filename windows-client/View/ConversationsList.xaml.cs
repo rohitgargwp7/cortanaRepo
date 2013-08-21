@@ -1506,13 +1506,12 @@ namespace windows_client.View
             {
                 if (obj is object[] && ((object[])obj).Length == 2)
                 {
-                    Object[] objContacts = (object[])obj;
+                    Object[] objContacts = (Object[])obj;
                     bool isContactAdded = (bool)objContacts[0];
                     if (isContactAdded)
                     {
-                        Deployment.Current.Dispatcher.BeginInvoke(new Action<Object[]>(delegate(Object[] objCon)
+                        Deployment.Current.Dispatcher.BeginInvoke(new Action<List<ContactInfo>>(delegate(List<ContactInfo> listAddedContacts)
                         {
-                            List<ContactInfo> listAddedContacts = (List<ContactInfo>)objCon[1];
                             bool isNewUserAdded = false;
                             foreach (ContactInfo cinfo in listAddedContacts)
                             {
@@ -1531,13 +1530,12 @@ namespace windows_client.View
                                     hikeContactListBox.Visibility = Visibility.Visible;
                                 }
                             }
-                        }), objContacts);
+                        }), objContacts[1]);
                     }
                     else
                     {
-                        Deployment.Current.Dispatcher.BeginInvoke(new Action<Object[]>(delegate(Object[] objCon)
+                        Deployment.Current.Dispatcher.BeginInvoke(new Action<List<ContactInfo>>(delegate(List<ContactInfo> listDeletedContacts)
                        {
-                           List<ContactInfo> listDeletedContacts = (List<ContactInfo>)objCon[1];
                            foreach (ContactInfo cinfo in listDeletedContacts)
                            {
                                hikeContactList.Remove(cinfo);
@@ -1548,7 +1546,7 @@ namespace windows_client.View
                                emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
                                hikeContactListBox.Visibility = Visibility.Collapsed;
                            }
-                       }), objContacts);
+                       }), objContacts[1]);
                     }
                 }
             }
