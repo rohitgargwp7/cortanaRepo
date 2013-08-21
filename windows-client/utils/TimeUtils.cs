@@ -99,13 +99,13 @@ namespace windows_client.utils
             receivedTime = receivedTime.ToLocalTime();
 
             if (receivedTime.Date == DateTime.Now.Date) //today
-                return Languages.AppResources.Last_Seen_Today_At + " " + receivedTime.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
-            else if ((DateTime.Now.Date - receivedTime).Days == 1) // yesterday
-                return Languages.AppResources.Last_Seen_Yesterday_At + " " + receivedTime.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
+                return String.Format(Languages.AppResources.Last_Seen_Today_At, receivedTime.ToShortTimeString().Replace(" AM", "a").Replace(" PM", "p"));
+            else if ((DateTime.Now.Date - receivedTime).Days <= 1) // yesterday
+                return String.Format(Languages.AppResources.Last_Seen_Yesterday_At, receivedTime.ToShortTimeString().Replace(" AM", "a").Replace(" PM", "p"));
             else if ((DateTime.Now.Date - receivedTime).Days < 7) // less than two weeks ago
-                return Languages.AppResources.Last_Seen + " " + GetMonthDateTime(receivedTime);
+                return String.Format(Languages.AppResources.Last_Seen, GetMonthDateTime(receivedTime));
             else
-                return Languages.AppResources.Last_Seen + " " + AppResources.TimeUtils_A_While_Ago;
+                return String.Format(Languages.AppResources.Last_Seen, AppResources.TimeUtils_A_While_Ago);
         }
 
         static string GetMonthDateTime(DateTime time)

@@ -1654,7 +1654,7 @@
     <value>"Zuletzt online" anzeigen</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
-    <value>Zuletzt online</value>
+    <value>Zuletzt online {0}</value>
   </data>
   <data name="Online" xml:space="preserve">
     <value>online</value>
@@ -1790,10 +1790,10 @@
     <value>Hey, ich verwende hike mit einem coolen Walkie-Talkie, mit dem du Freunden gratis Sprachnachrichten senden kannst. Besuche http://hike.in/</value>
   </data>
   <data name="Last_Seen_Today_At" xml:space="preserve">
-    <value>Zuletzt online heute um</value>
+    <value>Zuletzt online heute um {0}</value>
   </data>
   <data name="Last_Seen_Yesterday_At" xml:space="preserve">
-    <value>Zuletzt online gestern um</value>
+    <value>Zuletzt online gestern um {0}</value>
   </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
     <value>Gratis Messaging mit Spaß, ein Leben lang</value>

@@ -776,7 +776,16 @@
     <value>हाइक का इस्तेमाल जारी रखने के लिए, अपडेट जरूरी है।</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>नमस्ते ! [NEWLINE][NEWLINE]I एक सरल और सुंदर संदेश सेवा का उपयोग शुरू करें जो बिलकुल मुफ्त है [NEWLINE][NEWLINE] hike  कुछ आनंददायक संदेशों के साथ उपलब्ध है | आप अपने नजदीकी मित्रों को स्थिति सूचना भेज सकते है | इसे BBM की तरह देखिए पर उससे बहुत बेहतर! [NEWLINE][NEWLINE]इसे अभी प्राप्त करें और पुराने साधारण संदेशों को अलविदा कहें [NEWLINE][NEWLINE] hike  को hike: http://get.hike.in से प्राप्त करें |</value>
+    <value>नमस्ते !
+
+एक सरल और सुंदर संदेश सेवा का उपयोग शुरू करें जो बिलकुल मुफ्त है
+
+hike  कुछ आनंददायक संदेशों के साथ उपलब्ध है | आप अपने नजदीकी मित्रों को स्थिति 
+सूचना भेज सकते है | इसे BBM की तरह देखिए पर उससे बहुत बेहतर! 
+
+इसे अभी प्राप्त करें और पुराने साधारण संदेशों को अलविदा कहें
+
+hike  को hike: http://get.hike.in से प्राप्त करें |</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -1654,7 +1663,7 @@
     <value>लास्ट सीन दिखाएं</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
-    <value>लास्ट सीन</value>
+    <value>लास्ट सीन {0}</value>
   </data>
   <data name="Online" xml:space="preserve">
     <value>ऑनलाइन</value>
@@ -1790,10 +1799,10 @@
     <value>मैं hike इस्तेमाल कर रहा हूँ; यह मजेदार वॉकी-टॉकी के साथ आता है जिससे मुफ्त वॉयस मैसेज भेज सकते हैं। इसे अभी http://hike.in/ से पाएं</value>
   </data>
   <data name="Last_Seen_Today_At" xml:space="preserve">
-    <value>बजे आज अंतिम बार दिखे</value>
+    <value>{0} बजे आज अंतिम बार दिखे</value>
   </data>
   <data name="Last_Seen_Yesterday_At" xml:space="preserve">
-    <value>बजे कल अंतिम बार दिखे</value>
+    <value>{0} बजे कल अंतिम बार दिखे</value>
   </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
     <value>जीवन भर के लिए, आनंद और मुफ्त संदेश |  </value>
