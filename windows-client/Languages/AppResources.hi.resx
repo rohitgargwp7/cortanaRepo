@@ -1947,4 +1947,13 @@ hike  को hike: http://get.hike.in से प्राप्त करें 
   <data name="Mood_Sick" xml:space="preserve">
     <value>बीमार</value>
   </data>
+  <data name="Delete_Account_Failed" xml:space="preserve">
+    <value>hike आपका खाता नहीं हटा सकती। पुन: प्रयास करें!</value>
+  </data>
+  <data name="Delete_Account_Heading" xml:space="preserve">
+    <value>खाता नहीं हटाया गया</value>
+  </data>
+  <data name="Settings_LockScreenNotifications" xml:space="preserve">
+    <value>लॉक स्क्रीन अधिसूचनाएँ सेट करें</value>
+  </data>
 </root>

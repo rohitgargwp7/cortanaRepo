@@ -3714,7 +3714,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Set Lock Screen Notifications.
+        ///   Looks up a localized string similar to set lock screen notifications.
         /// </summary>
         public static string Settings_LockScreenNotifications {
             get {

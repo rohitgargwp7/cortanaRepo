@@ -1946,4 +1946,13 @@ Mantenha pressionada a mensagem para enviar como sms do hike</value>
   <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
     <value>Bem-vindo ao hike</value>
   </data>
+  <data name="Delete_Account_Failed" xml:space="preserve">
+    <value>O hike não pôde excluir sua conta. Tente novamente.</value>
+  </data>
+  <data name="Delete_Account_Heading" xml:space="preserve">
+    <value>Conta não excluída</value>
+  </data>
+  <data name="Settings_LockScreenNotifications" xml:space="preserve">
+    <value>definir notificações de bloqueio de tela</value>
+  </data>
 </root>

@@ -1946,4 +1946,13 @@ Télécharge hike : http://get.hike.in</value>
   <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
     <value>Bienvenue sur hike</value>
   </data>
+  <data name="Delete_Account_Failed" xml:space="preserve">
+    <value>hike n'a pas pu supprimer ton compte. Réessaie.</value>
+  </data>
+  <data name="Delete_Account_Heading" xml:space="preserve">
+    <value>Compte non supprimé</value>
+  </data>
+  <data name="Settings_LockScreenNotifications" xml:space="preserve">
+    <value>régler les alertes de verrouillage d'écran</value>
+  </data>
 </root>

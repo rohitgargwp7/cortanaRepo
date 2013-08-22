@@ -1957,6 +1957,6 @@ Get hike: http://get.hike.in</value>
     <value>Sick</value>
   </data>
   <data name="Settings_LockScreenNotifications" xml:space="preserve">
-    <value>Set Lock Screen Notifications</value>
+    <value>set lock screen notifications</value>
   </data>
 </root>
