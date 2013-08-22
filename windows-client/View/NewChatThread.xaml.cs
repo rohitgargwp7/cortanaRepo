@@ -2262,8 +2262,8 @@ namespace windows_client.View
                         locationJSON = JObject.Parse(convMessage.MetaDataString);
                     }
 
-                    double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
-                    double longitude = Convert.ToDouble(locationJSON[HikeConstants.LONGITUDE].ToString());
+                    double latitude = double.Parse(locationJSON[HikeConstants.LATITUDE].ToString(), CultureInfo.InvariantCulture);
+                    double longitude = double.Parse(locationJSON[HikeConstants.LONGITUDE].ToString(), CultureInfo.InvariantCulture);
 
                     PhoneApplicationService.Current.State[HikeConstants.LOCATION_MAP_COORDINATE] = new GeoCoordinate(latitude, longitude);
 
