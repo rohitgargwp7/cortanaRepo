@@ -1938,4 +1938,13 @@
   <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
     <value>Willkommen bei hike</value>
   </data>
+  <data name="Delete_Account_Failed" xml:space="preserve">
+    <value>hike konnte dein Konto nicht löschen. Bitte versuch es noch mal.</value>
+  </data>
+  <data name="Delete_Account_Heading" xml:space="preserve">
+    <value>Konto nicht gelöscht</value>
+  </data>
+  <data name="Settings_LockScreenNotifications" xml:space="preserve">
+    <value>Benachrichtigungen bei gesperrtem Bildschirm</value>
+  </data>
 </root>
