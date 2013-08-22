@@ -430,7 +430,7 @@ namespace windows_client
                 ProTipHelper.Instance.proTipTimer.Stop();
 
             App.mMqttManager.IsLastSeenPacketSent = false;
-            App.mMqttManager.disconnectFromBroker(false);
+            App.mMqttManager.SoftDisconnect();
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
