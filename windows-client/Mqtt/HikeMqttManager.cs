@@ -141,6 +141,19 @@ namespace windows_client.Mqtt
             }
         }
 
+        public void SoftDisconnect()
+        {
+            try
+            {
+                mqttConnection.MqttListener = null;
+                mqttConnection = null;
+                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("HikeMqttManager ::  SoftDisconnect , Exception : " + ex.StackTrace);
+            }
+        }
 
         //synchronized
         //[MethodImpl(MethodImplOptions.Synchronized)]
@@ -423,8 +436,8 @@ namespace windows_client.Mqtt
             {
                 IsLastSeenPacketSent = true;
                 sendAppFGStatusToServer();
-            } 
-            
+            }
+
             if (packets == null)
                 return;
             Debug.WriteLine("MQTT MANAGER:: NUmber os unsent messages" + packets.Count);
@@ -504,7 +517,7 @@ namespace windows_client.Mqtt
             obj.Add(HikeConstants.STATUS, "fg");
             JObject data = new JObject();
 
-            if(IsAppStarted)
+            if (IsAppStarted)
                 data.Add(HikeConstants.JUSTOPENED, true);
             else
                 data.Add(HikeConstants.JUSTOPENED, false);

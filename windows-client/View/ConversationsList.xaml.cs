@@ -113,7 +113,6 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
             if (launchPagePivot.SelectedIndex == 3)
             {
                 TotalUnreadStatuses = 0;
