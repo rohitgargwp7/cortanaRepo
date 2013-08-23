@@ -3465,15 +3465,18 @@ namespace windows_client.View
 
         private void emotList0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (emotList0.SelectedIndex < 0)
+                return;
             recordGrid.Visibility = Visibility.Collapsed;
             sendMsgTxtbox.Visibility = Visibility.Visible;
             int index = emotList0.SelectedIndex;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
-            //emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void emotList1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (emotList1.SelectedIndex < 0)
+                return;
             recordGrid.Visibility = Visibility.Collapsed;
             sendMsgTxtbox.Visibility = Visibility.Visible;
             int index = emotList1.SelectedIndex + SmileyParser.Instance.emoticon0Size;
@@ -3483,6 +3486,8 @@ namespace windows_client.View
 
         private void emotList2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (emotList2.SelectedIndex < 0)
+                return;
             recordGrid.Visibility = Visibility.Collapsed;
             sendMsgTxtbox.Visibility = Visibility.Visible;
             int index = emotList2.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size;
@@ -3491,6 +3496,8 @@ namespace windows_client.View
         }
         private void emotList3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (emotList3.SelectedIndex < 0)
+                return;
             recordGrid.Visibility = Visibility.Collapsed;
             sendMsgTxtbox.Visibility = Visibility.Visible;
             int index = emotList3.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size + SmileyParser.Instance.emoticon2Size;
