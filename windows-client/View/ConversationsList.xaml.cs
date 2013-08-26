@@ -1374,12 +1374,15 @@ namespace windows_client.View
                         });
                     }
                     //if conatct is removed from circle of friends then show no friends placehoder
-                    if (App.ViewModel.FavList.Count == 0)
+                    if (favCollectionView.Source != null && App.ViewModel.FavList.Count == 0)
                     {
                         Dispatcher.BeginInvoke(() =>
                        {
-                           emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
-                           favourites.Visibility = System.Windows.Visibility.Collapsed;
+                           if (favCollectionView.Source != null && App.ViewModel.FavList.Count == 0)
+                           {
+                               emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
+                               favourites.Visibility = System.Windows.Visibility.Collapsed;
+                           }
                        });
                     }
                     #endregion
