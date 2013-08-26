@@ -69,14 +69,11 @@ namespace windows_client.Controls.StatusUpdate
             {
                 this.userProfileImage.Margin = UI_Utils.Instance.StatusImageMargin;
                 userProfileImage.Source = UI_Utils.Instance.ProfilePicStatusImage;
-                if (sm.MoodId > 0) //For profile pic update. Mood id won't be received. Kept this for future.
-                {
-                    this.userProfileImage.MaxHeight = 60;
-                }
-                else
-                {
+            
+                if (sm.MoodId < 1)
                     userNameTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
-                }
+
+                this.userProfileImage.MaxHeight = 40;
             }
         }
 
