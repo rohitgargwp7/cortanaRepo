@@ -1365,7 +1365,7 @@ namespace windows_client.View
                         Dispatcher.BeginInvoke(() =>
                         {
                             hikeContactList.Remove(c);
-                            if (hikeContactList.Count == 0)
+                            if (contactsCollectionView.Source != null && hikeContactList.Count == 0)
                             {
                                 emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
                                 hikeContactListBox.Visibility = Visibility.Collapsed;
