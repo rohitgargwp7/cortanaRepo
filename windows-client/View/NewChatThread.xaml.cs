@@ -2643,7 +2643,7 @@ namespace windows_client.View
                     string name = convMessage.Message.Substring(0, convMessage.Message.IndexOf(' '));
                     ConvMessage chatBubbleLeft = new ConvMessage(name + AppResources.USER_LEFT, this.Orientation, convMessage);
                     chatBubbleLeft.NotificationType = ConvMessage.MessageType.PARTICIPANT_LEFT;
-                    this.ocMessages.Insert(insertPosition, chatBubble);
+                    this.ocMessages.Insert(insertPosition, chatBubbleLeft);
                     insertPosition++;
                 }
                 #endregion
