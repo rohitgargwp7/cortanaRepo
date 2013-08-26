@@ -641,9 +641,6 @@ namespace windows_client.View
                 {
                     videoStream = await storageFile.OpenAsync(FileAccessMode.ReadWrite);
 
-                    if (isPrimaryCam)
-                        await videoCaptureDevice.FocusAsync();
-
                     await videoCaptureDevice.StartRecordingToStreamAsync(videoStream);
                 }
 
