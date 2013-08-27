@@ -1154,10 +1154,6 @@ Get hike: http://get.hike.in</value>
     <value>show sms contacts</value>
     <comment>Text used in app menu bar</comment>
   </data>
-  <data name="Favorites_TapToAdd" xml:space="preserve">
-    <value>Add contacts to your circle of friends.</value>
-    <comment>xaml (below heart image)</comment>
-  </data>
   <data name="Invited" xml:space="preserve">
     <value>Invited</value>
   </data>
@@ -1958,5 +1954,13 @@ Get hike: http://get.hike.in</value>
   </data>
   <data name="Settings_LockScreenNotifications" xml:space="preserve">
     <value>set lock screen notifications</value>
+  </data>
+  <data name="Camera_Back" xml:space="preserve">
+    <value>Back</value>
+    <comment>Back Camera</comment>
+  </data>
+  <data name="Camera_Front" xml:space="preserve">
+    <value>Front</value>
+    <comment>Front Camera</comment>
   </data>
 </root>

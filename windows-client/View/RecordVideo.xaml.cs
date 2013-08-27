@@ -193,7 +193,7 @@ namespace windows_client.View
                 if (cameraLocations.Count > 1)
                 {
                     foreach (var cam in cameraLocations)
-                        camList.Add(cam.ToString());
+                        camList.Add(getLocalStringFromCamera(cam.ToString()));
 
                     cameraList.ItemsSource = camList;
                     cameraList.SelectedItem = isPrimaryCam ? camList.First() : camList.Last();
@@ -203,6 +203,26 @@ namespace windows_client.View
             }
             else
                 cameraGrid.Visibility = Visibility.Collapsed;
+        }
+
+        string getLocalStringFromCamera(string cam)
+        {
+            if (cam.Equals(HikeConstants.CAMERA_FRONT, StringComparison.InvariantCultureIgnoreCase))
+                return AppResources.Camera_Front;
+            else if (cam.Equals(HikeConstants.CAMERA_BACK, StringComparison.InvariantCultureIgnoreCase))
+                return AppResources.Camera_Back;
+            else
+                return cam;
+        }
+
+        string getCamFromString(string cam)
+        {
+            if (cam.Equals(AppResources.Camera_Front, StringComparison.InvariantCultureIgnoreCase))
+                return HikeConstants.CAMERA_FRONT;
+            else if (cam.Equals(AppResources.Camera_Back, StringComparison.InvariantCultureIgnoreCase))
+                return HikeConstants.CAMERA_BACK;
+            else
+                return cam;
         }
 
         async void doneIconButton_Click(object sender, EventArgs e)
@@ -829,12 +849,14 @@ namespace windows_client.View
             {
                 var devices = AudioVideoCaptureDevice.AvailableSensorLocations;
                 var camName = list.SelectedItem as String;
-      
+
+                camName = getCamFromString(camName);
+
                 foreach (var device in devices)
                 {
                     if (device.ToString() == camName)
                     {
-                        if (camName.Contains("Back"))
+                        if (camName.Contains(HikeConstants.CAMERA_BACK))
                             isPrimaryCam = true;
                         else
                             isPrimaryCam = false;

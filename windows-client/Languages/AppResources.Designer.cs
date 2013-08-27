@@ -268,6 +268,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Back.
+        /// </summary>
+        public static string Camera_Back {
+            get {
+                return ResourceManager.GetString("Camera_Back", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Front.
+        /// </summary>
+        public static string Camera_Front {
+            get {
+                return ResourceManager.GetString("Camera_Front", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Camera:.
         /// </summary>
         public static string Camera_Label {
@@ -1352,15 +1370,6 @@ namespace windows_client.Languages {
         public static string Favorites_AddMore {
             get {
                 return ResourceManager.GetString("Favorites_AddMore", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add contacts to your circle of friends..
-        /// </summary>
-        public static string Favorites_TapToAdd {
-            get {
-                return ResourceManager.GetString("Favorites_TapToAdd", resourceCulture);
             }
         }
         
