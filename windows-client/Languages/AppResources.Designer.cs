@@ -826,7 +826,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to new.
+        ///   Looks up a localized string similar to rewards.
         /// </summary>
         public static string ConversationsList_New_Txt {
             get {
@@ -1139,7 +1139,7 @@ namespace windows_client.Languages {
         ///
         ///
         ///
-        ///Get it now and say good  [rest of string was truncated]&quot;;.
+        ///Get it now and s [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Email_Invite_Txt {
             get {
@@ -1454,29 +1454,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Earn an extra.
+        ///   Looks up a localized string similar to Earn free SMS for every friend who joins hike because of you.
         /// </summary>
-        public static string FreeSMS_EarnFreeSMS_TxtBlk1 {
+        public static string FreeSMS_EarnFreeSMS_TxtBlk {
             get {
-                return ResourceManager.GetString("FreeSMS_EarnFreeSMS_TxtBlk1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} free SMS.
-        /// </summary>
-        public static string FreeSMS_EarnFreeSMS_TxtBlk2 {
-            get {
-                return ResourceManager.GetString("FreeSMS_EarnFreeSMS_TxtBlk2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to per month for every friend that joins through you..
-        /// </summary>
-        public static string FreeSMS_EarnFreeSMS_TxtBlk3 {
-            get {
-                return ResourceManager.GetString("FreeSMS_EarnFreeSMS_TxtBlk3", resourceCulture);
+                return ResourceManager.GetString("FreeSMS_EarnFreeSMS_TxtBlk", resourceCulture);
             }
         }
         

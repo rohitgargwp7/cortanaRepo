@@ -1188,7 +1188,7 @@ Descarga hike: http://get.hike.in</value>
     <comment>General text</comment>
   </data>
   <data name="ConversationsList_New_Txt" xml:space="preserve">
-    <value>novedades</value>
+    <value>Rewards</value>
     <comment>Rewards Text</comment>
   </data>
   <data name="Tap_To_Invite_Txt" xml:space="preserve">
@@ -1962,5 +1962,8 @@ Descarga hike: http://get.hike.in</value>
   </data>
   <data name="Camera_Front" xml:space="preserve">
     <value>Delantera</value>
+  </data>
+  <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
+    <value>Gana SMS gratis por cada amigo que se una a través de ti hike</value>
   </data>
 </root>

@@ -162,13 +162,7 @@
                     <TextBlock FontSize="22" FontFamily="Segoe WP Semibold" HorizontalAlignment="Center" 
                                Text="{Binding Path= LocalizedResources.FreeSMS_InviteSMS_TxtBlk, Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
-                <TextBlock FontSize="18" TextWrapping="Wrap" Margin="0,15,0,0" HorizontalAlignment="Center" TextAlignment="Center" Width="400">
-                    <TextBlock.Inlines>
-                        <Run Text="{Binding Path= LocalizedResources.FreeSMS_EarnFreeSMS_TxtBlk1, Source={StaticResource LocalizedStrings}}"/>
-                        <Run x:Name="earnSMSRun" Text="{Binding Path= LocalizedResources.FreeSMS_EarnFreeSMS_TxtBlk2, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP Semibold"/>
-                        <Run Text="{Binding Path= LocalizedResources.FreeSMS_EarnFreeSMS_TxtBlk3, Source={StaticResource LocalizedStrings}}"/>
-                    </TextBlock.Inlines>
-                </TextBlock>
+                <TextBlock FontSize="18" TextWrapping="Wrap" Margin="0,15,0,0" HorizontalAlignment="Center" TextAlignment="Center" Width="400" Text="{Binding Path= LocalizedResources.FreeSMS_EarnFreeSMS_TxtBlk, Source={StaticResource LocalizedStrings}}"/>
 
             </StackPanel>
             <Button Name="inviteNow" Grid.Row="3" Margin="0,15,0,0" Content="{Binding Path= LocalizedResources.FreeSMS_InviteNow_Btn, Source={StaticResource LocalizedStrings}}" Height="68" FontSize="18" FontFamily="Segoe WP Semibold" Tap="InviteBtn_Tap" HorizontalAlignment="Center"/>
