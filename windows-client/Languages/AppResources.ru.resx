@@ -1188,7 +1188,7 @@ hike включает смешные стикеры и эмотиконы. Вы 
     <comment>General text</comment>
   </data>
   <data name="ConversationsList_New_Txt" xml:space="preserve">
-    <value>новое</value>
+    <value>вознаграждать</value>
     <comment>Rewards Text</comment>
   </data>
   <data name="Tap_To_Invite_Txt" xml:space="preserve">
@@ -1962,5 +1962,8 @@ hike включает смешные стикеры и эмотиконы. Вы 
   </data>
   <data name="Camera_Front" xml:space="preserve">
     <value>Передняя</value>
+  </data>
+  <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
+    <value>Заработать бесплатные SMS за каждого друга, который присоединяется Заработать бесплатные SMS за каждого друга, который присоединяется Заработать бесплатные SMS за каждого друга, который присоединяется hike из-за тебя</value>
   </data>
 </root>

@@ -1188,7 +1188,7 @@ Obtenha o hike: http://get.hike.in</value>
     <comment>General text</comment>
   </data>
   <data name="ConversationsList_New_Txt" xml:space="preserve">
-    <value>novo</value>
+    <value>recompensas</value>
     <comment>Rewards Text</comment>
   </data>
   <data name="Tap_To_Invite_Txt" xml:space="preserve">
@@ -1963,5 +1963,8 @@ Mantenha pressionada a mensagem para enviar como sms do hike</value>
   </data>
   <data name="Camera_Front" xml:space="preserve">
     <value>Frente</value>
+  </data>
+  <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
+    <value>Ganhe SMS grátis para cada amigo que se junta hike por causa de você</value>
   </data>
 </root>
