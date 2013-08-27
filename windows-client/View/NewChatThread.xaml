@@ -355,7 +355,7 @@
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
                                             <RowDefinition Height="14" />
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
