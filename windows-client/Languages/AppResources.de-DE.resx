@@ -1806,7 +1806,7 @@ Hol dir hike: http://get.hike.in</value>
     <value>Zuletzt online gestern um {0}</value>
   </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
-    <value>Keep close friends close</value>
+    <value>Behalte enge Freunde in deiner Nähe</value>
   </data>
   <data name="Button_Retry_Txt" xml:space="preserve">
     <value>Erneut versuchen</value>
