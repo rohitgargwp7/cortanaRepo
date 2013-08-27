@@ -1374,7 +1374,7 @@ namespace windows_client.View
                         Dispatcher.BeginInvoke(() =>
                         {
                             hikeContactList.Remove(c);
-                            if (!isContactListLoaded && hikeContactList.Count == 0)
+                            if (isContactListLoaded && hikeContactList.Count == 0)
                             {
                                 emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
                                 hikeContactListBox.Visibility = Visibility.Collapsed;
@@ -1634,7 +1634,7 @@ namespace windows_client.View
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                     c.Avatar = convObj.Avatar;
                     c.IsUsedAtMiscPlaces = true;
-                    if (c.Msisdn != App.MSISDN && !isContactListLoaded)
+                    if (c.Msisdn != App.MSISDN && isContactListLoaded)
                     {
                         hikeContactList.Add(c);
                         cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
