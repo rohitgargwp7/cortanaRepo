@@ -202,15 +202,15 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Are you sure about removing this contact from circle of friends?</value>
+    <value>Do you really want to remove {0} from your friend list?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>remove from circle of friends</value>
+    <value>remove from your friend list</value>
     <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>You don't have anyone in your circle of friends.</value>
+    <value>Your friend list is empty</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -598,7 +598,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>add to circle of friends</value>
+    <value>add as a friend</value>
     <comment>fix length(24)</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
@@ -778,11 +778,23 @@
   <data name="Email_Invite_Txt" xml:space="preserve">
     <value>Hi!
 
+
+
 I started using hike, a simple beautiful messaging app that's absolutely free.
 
-hike comes with some hilarious emoticons. You can also post Status Updates to your close circle of friends! Think of it like BBM but much, much better!
+
+
+hike lets you send free messages to your friends and family! With hike, you can message friends that are on hike and also those who aren't on hike! You'll never have to use another messaging app again. Better yet, it's absolutely FREE!
+
+
+
+hike comes with some hilarious stickers and emoticons. You can also post Status Updates to your friends! Think of it like BBM but much, much better!
+
+
 
 Get it now and say good bye to plain boring SMS.
+
+
 
 Get hike: http://get.hike.in</value>
     <comment>Email Invite Text</comment>
@@ -1236,7 +1248,7 @@ Get hike: http://get.hike.in</value>
     <value>Refresh Contact List</value>
   </data>
   <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>Added you to Circle of Friends</value>
+    <value>Added you as a friend</value>
     <comment>for friend requests in wp8</comment>
   </data>
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
@@ -1397,7 +1409,7 @@ Get hike: http://get.hike.in</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>{0} added you to Circle of Friends</value>
+    <value>{0} added you as a friend</value>
     <comment>{0} will be replaced by username</comment>
   </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
@@ -1422,7 +1434,7 @@ Get hike: http://get.hike.in</value>
     <value>is not in your address book.</value>
   </data>
   <data name="Conversations_Circle_Of_friends_txt" xml:space="preserve">
-    <value>CIRCLE OF FRIENDS</value>
+    <value>FRIENDS</value>
   </data>
   <data name="Conversations_Contacts_on_hike" xml:space="preserve">
     <value>CONTACTS ON HIKE</value>
@@ -1475,7 +1487,7 @@ Get hike: http://get.hike.in</value>
     <value>Immediate</value>
   </data>
   <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
-    <value>Only your 'Circle of friends' can see your status updates</value>
+    <value>Only your 'friends' can see your status update</value>
   </data>
   <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
     <value>Tap on this icon to post a new status</value>
@@ -1501,7 +1513,7 @@ Get hike: http://get.hike.in</value>
     <value>View friends</value>
   </data>
   <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
-    <value>You can see updates from your circle of friends here.</value>
+    <value>You can see updates from your friends here</value>
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
     <value>Invite your friends to hike</value>
@@ -1612,7 +1624,7 @@ Get hike: http://get.hike.in</value>
     <value>Invite Friends</value>
   </data>
   <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
-    <value>Tap on + to add a contact to your circle of friends.</value>
+    <value>Tap on + to add a contact as your friend</value>
   </data>
   <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
     <value>What's up, {0}?</value>
@@ -1721,8 +1733,8 @@ Get hike: http://get.hike.in</value>
     <value>today</value>
     <comment>General Text</comment>
   </data>
-  <data name="Invite_Sent_Successfully" xml:space="preserve">
-    <value>Invite sent successfully</value>
+  <data name="Invite_Posted_Successfully" xml:space="preserve">
+    <value>Invite posted successfully</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
     <value>{0} is back on hike. Say hi :)</value>
@@ -1741,7 +1753,7 @@ Get hike: http://get.hike.in</value>
     <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
-    <value>your circle of friends.</value>
+    <value>your friends.</value>
     <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
@@ -1752,7 +1764,7 @@ Get hike: http://get.hike.in</value>
     <value>You will now be able to see updates from each other</value>
   </data>
   <data name="In_App_Tip_6" xml:space="preserve">
-    <value>Only your Circle of Friends can see when you were last seen</value>
+    <value>Only your friends can see when you were last seen</value>
   </data>
   <data name="DownloadingSticker_txt" xml:space="preserve">
     <value>loading sticker</value>

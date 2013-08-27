@@ -1717,7 +1717,7 @@
     <value>hoy</value>
     <comment>General Text</comment>
   </data>
-  <data name="Invite_Sent_Successfully" xml:space="preserve">
+  <data name="Invite_Posted_Successfully" xml:space="preserve">
     <value>Invitación enviada</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
@@ -1946,5 +1946,11 @@
   </data>
   <data name="Settings_LockScreenNotifications" xml:space="preserve">
     <value>configurar notificaciones en pantalla de bloqueo</value>
+  </data>
+  <data name="Camera_Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Camera_Front" xml:space="preserve">
+    <value>Front</value>
   </data>
 </root>

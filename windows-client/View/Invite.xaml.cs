@@ -249,7 +249,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBoxResult result = MessageBox.Show(AppResources.Invite_Sent_Successfully, title,MessageBoxButton.OK);
+                    MessageBoxResult result = MessageBox.Show(AppResources.Invite_Posted_Successfully, title,MessageBoxButton.OK);
                 });
             }
         }

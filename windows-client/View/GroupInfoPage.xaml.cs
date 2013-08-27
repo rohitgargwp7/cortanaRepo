@@ -901,7 +901,8 @@ namespace windows_client.View
             {
                 if (gp.IsFav) // already fav , remove request
                 {
-                    MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
+                    var text = String.Format(AppResources.Conversations_RemFromFav_Confirm_Txt, gp.Name);
+                    MessageBoxResult result = MessageBox.Show(text, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
                     if (result == MessageBoxResult.Cancel)
                         return;
                     gp.IsFav = false;

@@ -202,15 +202,15 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Möchtest du diesen Kontakt sicher aus deinem Freundeskreis entfernen?</value>
+    <value>Möchtest du {0} sicher von der Freundesliste entfernen?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>aus Freundeskreis entfernen</value>
+    <value>von Freundesliste entfernen</value>
     <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>Du hast noch niemanden in deinem Freundeskreis.</value>
+    <value>Deine Freundesliste ist leer</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -598,7 +598,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>zu Freundeskreis hinzufügen</value>
+    <value>als Freund hinzufügen</value>
     <comment>fix length(24)</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
@@ -776,7 +776,17 @@
     <value>Um hike weiterhin zu verwenden, ist ein Update notwendig.</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Hi! Ich verwende hike - eine einfache, schöne Messaging-App, die absolut kostenlos ist. Bei hike gibt es total witzige Emoticons. Außerdem kannst du Statusmeldungen für deinen Freundeskreis posten. Genau wie BBM, nur viel, viel besser! Hol dir jetzt hike und verabschiede dich von langweiligen SMS. Hol dir hike: http://get.hike.in</value>
+    <value>Hi!
+
+Ich nutze jetzt hike, eine simple, hübsche und kostenlose Messaging-App.
+
+Mit hike kannst du kostenlose Nachrichten an deine Freund und Familie senden! Mit hike kannst du deinen Freunden bei hike und denjenigen, die noch nicht bei hike sind, Nachrichten senden! Du wirst nie wieder eine andere Messaging-App benötigen. Und noch viel besser - es ist vollkommen GRATIS!
+
+Bei hike gibt es lustige Sticker und Smileys. Du kannst ebenfalls Statusmeldungen für deine Freunde posten! Genau wie BBM, nur viel viel besser!
+
+Hol dir jetzt hike und verabschiede dich von langweiligen SMS.
+
+Hol dir hike: http://get.hike.in</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -1232,7 +1242,7 @@
     <value>Kontaktliste aktualisieren</value>
   </data>
   <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>Zu deinem Freundeskreis hinzugefügt</value>
+    <value>Als Freund hinzugefügt</value>
     <comment>for friend requests in wp8</comment>
   </data>
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
@@ -1393,7 +1403,7 @@
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>{0} hat dich zum Freundeskreis hinzugefügt</value>
+    <value>{0} hat dich als Freund hinzugefügt</value>
     <comment>{0} will be replaced by username</comment>
   </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
@@ -1418,7 +1428,7 @@
     <value>ist nicht in deinem Adressbuch.</value>
   </data>
   <data name="Conversations_Circle_Of_friends_txt" xml:space="preserve">
-    <value>FREUNDESKREIS</value>
+    <value>FREUNDE</value>
   </data>
   <data name="Conversations_Contacts_on_hike" xml:space="preserve">
     <value>KONTAKTE BEI HIKE</value>
@@ -1471,7 +1481,7 @@
     <value>Sofort</value>
   </data>
   <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
-    <value>Nur dein 'Freundeskreis' sieht deine Statusmeldungen</value>
+    <value>Nur deine 'Freunde' können deinen Statusmeldungen sehen</value>
   </data>
   <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
     <value>Tippe auf dieses Symbol, um eine neue Statusmeldung zu posten.</value>
@@ -1497,7 +1507,7 @@
     <value>Freunde anzeigen</value>
   </data>
   <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
-    <value>Hier siehst du Updates aus deinem Freundeskreis.</value>
+    <value>Hier kannst du Updates von deinen Freunden sehen</value>
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
     <value>Lade deine Freunde zu hike ein.</value>
@@ -1608,7 +1618,7 @@
     <value>Freunde einladen</value>
   </data>
   <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
-    <value>Tippe auf +, um einen Kontakt zu deinem Freundeskreis hinzuzufügen.</value>
+    <value>Tippe auf +, um einen Kontakt als Freund hinzuzufügen</value>
   </data>
   <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
     <value>Was geht, {0}?</value>
@@ -1717,8 +1727,8 @@
     <value>heute</value>
     <comment>General Text</comment>
   </data>
-  <data name="Invite_Sent_Successfully" xml:space="preserve">
-    <value>Einladung erfolgreich gesendet.</value>
+  <data name="Invite_Posted_Successfully" xml:space="preserve">
+    <value>Einladung erfolgreich gepostet</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
     <value>{0} ist wieder bei hike. Sag Hallo :)</value>
@@ -1737,7 +1747,7 @@
     <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
-    <value>deinem Freundeskreis.</value>
+    <value>deine Freunde</value>
     <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
@@ -1748,7 +1758,7 @@
     <value>Ihr werdet jetzt eure Updates sehen</value>
   </data>
   <data name="In_App_Tip_6" xml:space="preserve">
-    <value>Nur dein Freundeskreis kann sehen wann du letztmals online warst.</value>
+    <value>Nur deine Freunde können sehen wann du zuletzt online warst</value>
   </data>
   <data name="DownloadingSticker_txt" xml:space="preserve">
     <value>Sticker wird geladen</value>
@@ -1946,5 +1956,11 @@
   </data>
   <data name="Settings_LockScreenNotifications" xml:space="preserve">
     <value>Benachrichtigungen bei gesperrtem Bildschirm</value>
+  </data>
+  <data name="Camera_Back" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="Camera_Front" xml:space="preserve">
+    <value>Vorderseite</value>
   </data>
 </root>

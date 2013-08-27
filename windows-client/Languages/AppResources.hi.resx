@@ -202,15 +202,15 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>क्या आप वाकई इस संपर्क को दोस्तों की मंडली से निकालना चाहते हैं?</value>
+    <value>क्या आप वाकई {0} को अपनी मित्र सूची से निकालना चाहते हैं?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>दोस्तों के समूह से हटायें !</value>
+    <value>अपनी मित्र सूची से निकालें</value>
     <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>आपके दोस्तों के समूह में कोई दोस्त नहीं है !</value>
+    <value>आपकी मित्र सूची खाली है</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -598,7 +598,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>दोस्तों के चक्र से जोड़ें |</value>
+    <value>मित्र के रूप में जोड़ें</value>
     <comment>fix length(24)</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
@@ -776,16 +776,17 @@
     <value>हाइक का इस्तेमाल जारी रखने के लिए, अपडेट जरूरी है।</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>नमस्ते !
+    <value>नमस्ते!
 
-एक सरल और सुंदर संदेश सेवा का उपयोग शुरू करें जो बिलकुल मुफ्त है
+मैंने hike इस्तेमाल करना शुरू किया है, यह सरल और सुंदर मैसेजिंग एप्लीकेशन है जो बिल्कुल मुफ्त है।
 
-hike  कुछ आनंददायक संदेशों के साथ उपलब्ध है | आप अपने नजदीकी मित्रों को स्थिति 
-सूचना भेज सकते है | इसे BBM की तरह देखिए पर उससे बहुत बेहतर! 
+hike से आप अपने मित्रों और परिवार को मुफ्त मैसेज भेज सकते हैं!  hike से आप उन मित्रों को मैसेज भेज सकते हैं जो hike पर हों और उन्हें भी भेज सकते हैं जो hike पर न हों! आपको दुबारा कोई दूसरा मैसेजिंग ऐप्प इस्तेमाक नहीं करना होगा। सबसे अच्छी बात है कि यह बिल्कुल मुफ्त है!
 
-इसे अभी प्राप्त करें और पुराने साधारण संदेशों को अलविदा कहें
+hike में कुछ मजेदार स्टिकरों और इमोटिकॉन के साथ आता है। आप अपने मित्रों को स्टेटस अपडेट भी पोस्ट कर सकते हैं! इसे आप बीबीएम जैसा मान सकते हैं, पर यह उससे कहीं ज्यादा बेहतर है!
 
-hike  को hike: http://get.hike.in से प्राप्त करें |</value>
+इसे अभी प्राप्त करें और सादे उबाऊ एसएमएस को अलविदा कहें।
+
+hike लें: http://get.hike.in</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -1402,7 +1403,7 @@ hike  को hike: http://get.hike.in से प्राप्त करें 
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>{0} ने आपको मित्र मंडली में जोड़ा</value>
+    <value>{0} ने आपको मित्र के रूप में जोड़ा</value>
     <comment>{0} will be replaced by username</comment>
   </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
@@ -1427,7 +1428,7 @@ hike  को hike: http://get.hike.in से प्राप्त करें 
     <value>यह आपके अड्रेस बुक में नहीं है !</value>
   </data>
   <data name="Conversations_Circle_Of_friends_txt" xml:space="preserve">
-    <value>दोस्तों का समूह !</value>
+    <value>मित्र</value>
   </data>
   <data name="Conversations_Contacts_on_hike" xml:space="preserve">
     <value>hike  पर उपलब्ध संपर्क |</value>
@@ -1480,7 +1481,7 @@ hike  को hike: http://get.hike.in से प्राप्त करें 
     <value>तुरंत</value>
   </data>
   <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
-    <value>केवल आपके 'दोस्तों का सर्कल' आपका स्टेटस अपडेट देख सकते हैं !</value>
+    <value>केवल आपके 'मित्र' आपका स्टेटस अपडेट देख सकते हैं</value>
   </data>
   <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
     <value>नये स्टेटस अपडेट के लिए इस चिह्न को दबाएँ |</value>
@@ -1506,7 +1507,7 @@ hike  को hike: http://get.hike.in से प्राप्त करें 
     <value>दोस्तो को देखे</value>
   </data>
   <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
-    <value>आप अपने दोस्तों के गुट के अपडेट्स यहाँ देख सकते हैं</value>
+    <value>आप अपने मित्रों के अपडेट यहां देख सकते हैं</value>
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
     <value>अपने मित्रों को hike  के लिये आमंत्रित करें!</value>
@@ -1617,7 +1618,7 @@ hike  को hike: http://get.hike.in से प्राप्त करें 
     <value>दोस्तों को आमंत्रण</value>
   </data>
   <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
-    <value>दोस्तों को अपने सर्कल से जोड़ने के लिए कोई + दबाएँ |</value>
+    <value>किसी संपर्क को अपने मित्र के रूप में जोड़ने के लिए + पर टैप करें</value>
   </data>
   <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
     <value>क्या हो रहा है{0}</value>
@@ -1726,8 +1727,8 @@ hike  को hike: http://get.hike.in से प्राप्त करें 
     <value>आज</value>
     <comment>General Text</comment>
   </data>
-  <data name="Invite_Sent_Successfully" xml:space="preserve">
-    <value>आमंत्रण सफलतापूर्वक भेजा गया</value>
+  <data name="Invite_Posted_Successfully" xml:space="preserve">
+    <value>आमंत्रण सफलतापूर्वक पोस्ट किया गया</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
     <value>{0} hike  पर वापस आ गया है। उसे नमस्ते :) बोलें</value>
@@ -1746,7 +1747,7 @@ hike  को hike: http://get.hike.in से प्राप्त करें 
     <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
-    <value>आपके मित्र मंडली</value>
+    <value>आपके मित्र</value>
     <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
@@ -1757,7 +1758,7 @@ hike  को hike: http://get.hike.in से प्राप्त करें 
     <value>अब आप एक-दूसरे के अपडेट देख सकेंगे</value>
   </data>
   <data name="In_App_Tip_6" xml:space="preserve">
-    <value>केवल आपके मित्र मंडली देख पाएगी कि अंतिम बार आप कब दिखे थे</value>
+    <value>केवल आपके मित्र देख सकते हैं कि आप पिछली बार कब दिखे थे</value>
   </data>
   <data name="DownloadingSticker_txt" xml:space="preserve">
     <value>स्टिकर लोड हो रहा है</value>
@@ -1955,5 +1956,11 @@ hike  को hike: http://get.hike.in से प्राप्त करें 
   </data>
   <data name="Settings_LockScreenNotifications" xml:space="preserve">
     <value>लॉक स्क्रीन अधिसूचनाएँ सेट करें</value>
+  </data>
+  <data name="Camera_Back" xml:space="preserve">
+    <value>बैक</value>
+  </data>
+  <data name="Camera_Front" xml:space="preserve">
+    <value>फ्रंट</value>
   </data>
 </root>

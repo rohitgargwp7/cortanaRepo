@@ -881,27 +881,28 @@ namespace windows_client
                 else
                     _viewModel = new HikeViewModel(convList);
 
-                if (!initInUpgradePage)
+                if (!isNewInstall && Utils.compareVersion(_latestVersion, _currentVersion) == 1) // shows this is update
                 {
-                    if (!isNewInstall && Utils.compareVersion(_latestVersion, _currentVersion) == 1) // shows this is update
+                    if (!initInUpgradePage)
                     {
                         appSettings[App.APP_UPDATE_POSTPENDING] = true;
                         appSettings[HikeConstants.AppSettings.NEW_UPDATE] = true;
                         WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
                         if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                             MqttDBUtils.MqttDbUpdateToLatestVersion();
-
-                        if (Utils.compareVersion(_currentVersion, "2.2.0.0") == 0) 
-                            App.ViewModel.ResetInAppTip(1);
                     }
+
+                    if (Utils.compareVersion(_currentVersion, "2.2.0.0") == 0)
+                        App.ViewModel.ResetInAppTip(1);
                 }
+
                 st.Stop();
                 msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
                 IS_VIEWMODEL_LOADED = true;
 
                 // setting it a default counter of 2 to show notification counter for new user on conversation page
-                if (isNewInstall && !appSettings.Contains(App.PRO_TIP_COUNT)) 
+                if (isNewInstall && !appSettings.Contains(App.PRO_TIP_COUNT))
                     App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, 2);
             }
             #endregion
