@@ -202,15 +202,15 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>¿Seguro que quieres quitar a este contacto de tu círculo de amigos?</value>
+    <value>¿Seguro que quieres quitar a {0} de tu lista de amigos?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>quitar del círculo de amigos</value>
+    <value>quitar del amigos</value>
     <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>No tienes a nadie en tu círculo de amigos.</value>
+    <value>Tu lista de amigos está vacía</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -598,7 +598,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>añadir a círculo de amigos</value>
+    <value>añadir como amigo</value>
     <comment>fix length(24)</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
@@ -776,7 +776,17 @@
     <value>Para seguir usando hike, debes actualizarlo.</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>¿Qué tal? He empezado a usar hike, una aplicación de mensajería bonita y sencilla totalmente gratuita. hike incluye emoticonos muy chulos. ¡También puedes publicar actualizaciones de estado para tu círculo de amigos cercanos! ¡Se parece a BBM pero es muchísimo mejor! Descárgatela y olvídate de los aburridos SMS. Consigue hike en: http://get.hike.in</value>
+    <value>¡Hola!
+
+He empezado a usar hike, una aplicación sencilla y chula para enviar mensajes totalmente gratis.
+
+¡Con hike puedes mandar mensajes gratuitos a tus amigos y familiares! ¡Con hike puedes enviar mensajes a tus amigos que tengan hike y también a los que no! No tendrás que volver a usar otra aplicación de mensajes nunca más. ¡Y lo mejor es que es completamente GRATIS!
+
+hike incluye divertidas pegatinas y emoticonos. ¡También puedes publicar actualizaciones de estado que verán tus amigos! ¡Es parecida a BBM pero muchísimo mejor!
+
+Descárgala ya y despídete de los aburridos SMS.
+
+Descarga hike: http://get.hike.in</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -1232,7 +1242,7 @@
     <value>Actualizar lista de contactos</value>
   </data>
   <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>Te añadió a su círculo de amigos</value>
+    <value>Te ha añadido como amigo</value>
     <comment>for friend requests in wp8</comment>
   </data>
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
@@ -1393,7 +1403,7 @@
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>{0} te añadió a su círculo de amigos</value>
+    <value>{0} te añadió como amigo</value>
     <comment>{0} will be replaced by username</comment>
   </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
@@ -1418,7 +1428,7 @@
     <value>no está en tu agenda de contactos.</value>
   </data>
   <data name="Conversations_Circle_Of_friends_txt" xml:space="preserve">
-    <value>CÍRCULO DE AMIGOS</value>
+    <value>AMIGOS</value>
   </data>
   <data name="Conversations_Contacts_on_hike" xml:space="preserve">
     <value>CONTACTOS EN HIKE</value>
@@ -1471,7 +1481,7 @@
     <value>Inmediato</value>
   </data>
   <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
-    <value>Solo tu círculo de amigos puede ver tus actualizaciones de estado.</value>
+    <value>Solo tus "amigos" pueden ver tu actualización de estado</value>
   </data>
   <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
     <value>Toca este icono para publicar un nuevo estado</value>
@@ -1497,7 +1507,7 @@
     <value>Ver amigos</value>
   </data>
   <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
-    <value>Aquí verás las actualizaciones de tu círculo de amigos.</value>
+    <value>Aquí verás las actualizaciones de tus amigos</value>
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
     <value>Invitar a tus amigos a hike</value>
@@ -1608,7 +1618,7 @@
     <value>Invitar a amigos</value>
   </data>
   <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
-    <value>Toca + para añadir a un contacto a tu círculo de amigos.</value>
+    <value>Toca + para añadir a un contacto como amigo</value>
   </data>
   <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
     <value>¿Qué tal, {0}?</value>
@@ -1718,7 +1728,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Invite_Posted_Successfully" xml:space="preserve">
-    <value>Invitación enviada</value>
+    <value>Invitación publicada con éxito</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
     <value>{0} ha vuelto a hike. ¡Dale la bienvenida! :)</value>
@@ -1737,7 +1747,7 @@
     <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
-    <value>con tu círculo de amigos.</value>
+    <value>tus amigos</value>
     <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
@@ -1748,7 +1758,7 @@
     <value>Ahora veréis vuestras respectivas actualizaciones.</value>
   </data>
   <data name="In_App_Tip_6" xml:space="preserve">
-    <value>Solo tu círculo de amigos verá cuándo te conectaste por última vez.</value>
+    <value>Solo tus amigos pueden ver tu última conexión</value>
   </data>
   <data name="DownloadingSticker_txt" xml:space="preserve">
     <value>cargando pegatina</value>
@@ -1948,9 +1958,9 @@
     <value>configurar notificaciones en pantalla de bloqueo</value>
   </data>
   <data name="Camera_Back" xml:space="preserve">
-    <value>Back</value>
+    <value>Trasera</value>
   </data>
   <data name="Camera_Front" xml:space="preserve">
-    <value>Front</value>
+    <value>Delantera</value>
   </data>
 </root>
