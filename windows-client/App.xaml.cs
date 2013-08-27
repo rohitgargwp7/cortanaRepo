@@ -548,7 +548,7 @@ namespace windows_client
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
             // if not new install && current version is less than equal to version 1.8.0.0  and upgrade is done for wp8 device
-            if (!isNewInstall && Utils.compareVersion("2.2.0.9", _currentVersion) == 1 && Utils.IsWP8)
+            if (!isNewInstall && Utils.compareVersion("2.2.0.11", _currentVersion) == 1 && Utils.IsWP8)
             {
                 instantiateClasses(true);
                 RootFrame.Dispatcher.BeginInvoke(delegate
@@ -720,7 +720,7 @@ namespace windows_client
         {
             #region LAST SEEN BYTE TO BOOL FIX
 
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.2.0.9") < 0)
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.2.0.11") < 0)
             {
                 try
                 {
@@ -759,7 +759,7 @@ namespace windows_client
             #endregion
             #region STCIKERS
             //todo:make it 2.2.2.0
-            if (isNewInstall || Utils.compareVersion("2.2.0.9", _currentVersion) == 1)
+            if (isNewInstall || Utils.compareVersion("2.2.0.11", _currentVersion) == 1)
             {
                 StickerCategory.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
                 StickerHelper.CreateDefaultCategories();
