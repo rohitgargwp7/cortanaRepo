@@ -1696,7 +1696,12 @@ namespace windows_client.View
             {
                 if (this.ocMessages.Count > 0 && (!IsMute || this.ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
                 {
-                    llsMessages.ScrollTo(this.ocMessages[this.ocMessages.Count - 1]);
+                    if (vScrollBar != null && llsViewPort != null && (vScrollBar.Maximum - vScrollBar.Value < 2000))
+                        llsViewPort.SetViewportOrigin(new System.Windows.Point(0, vScrollBar.Maximum));
+                    else
+                        llsMessages.ScrollTo(ocMessages[ocMessages.Count - 1]);
+                 
+                    JumpToBottomGrid.Visibility = Visibility.Collapsed;
                 }
             }
             catch (Exception ex)
@@ -6213,6 +6218,11 @@ namespace windows_client.View
                 _h2hofflineToolTip = null;
                 ShowForceSMSOnUI();
             }
+        }
+        ViewportControl llsViewPort;
+        private void ViewPortLoaded(object sender, RoutedEventArgs e)
+        {
+            llsViewPort = sender as ViewportControl;
         }
     }
 
