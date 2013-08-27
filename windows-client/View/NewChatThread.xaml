@@ -275,8 +275,10 @@
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
-                                                <Grid>
+                                                <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="0,0,0,12" Foreground="{Binding MessageTextForeGround}" />
+                                                <Grid Grid.Row="1">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto" />
                                                         <ColumnDefinition Width="Auto" />
@@ -287,7 +289,7 @@
                                                         <TextBlock Text="{Binding Address}" Visibility="{Binding AddressVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" TextTrimming="WordEllipsis" />
                                                     </StackPanel>
                                                 </Grid>
-                                                <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
+                                                <ProgressBar Grid.Row="2" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>
                                             <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                         </Grid>
