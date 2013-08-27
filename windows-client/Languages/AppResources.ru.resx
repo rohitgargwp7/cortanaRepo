@@ -202,15 +202,15 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Вы действительно хотите удалить этот контакт из круга друзей?</value>
+    <value>Вы действительно хотите удалить {0} из списка друзей?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>удалить из круга друзей</value>
+    <value>удалить из списка друзей</value>
     <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>У вас нет никого в кругу друзей</value>
+    <value>Ваш список друзей пуст</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -598,7 +598,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>и в круг друзей</value>
+    <value>добавить в друзья</value>
     <comment>fix length(24)</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
@@ -777,12 +777,14 @@
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
     <value>Привет!
+    
+Я начал использовать hike, простое, элегантное и бесплатное приложение для обмена сообщениями.
 
-Я начинаю использовать hike, простое и удобное бесплатное приложение для чата.		
+hike позволяет отправлять бесплатные сообщения друзьям и родственникам! Я могу общаться не только с друзьями, использующими hike, но и с теми, у кого hike нет! Вам больше не потребуется никакое другое приложение для чата. И самое главное, оно абсолютно БЕСПЛАТНО!
 
-hike включает уморительные смайлы и позволяет публиковать обновления статуса для друзей! Это что-то вроде BBM, но гораздо лучше!
+hike включает смешные стикеры и эмотиконы. Вы также сможете публиковать обновления статуса для своих друзей! Это как BBM, но гораздо лучше!
 
-Загрузи его сейчас и попрощайся со старыми скучными SMS.
+Скачайте приложение и попрощайтесь со старыми скучными SMS.
 
 Загрузить hike: http://get.hike.in</value>
     <comment>Email Invite Text</comment>
@@ -1240,7 +1242,7 @@ hike включает уморительные смайлы и позволяе�
     <value>Обновить список контактов</value>
   </data>
   <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>Добавил(а) вас в круг друзей</value>
+    <value>Добавил(а) вас в друзья</value>
     <comment>for friend requests in wp8</comment>
   </data>
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
@@ -1401,7 +1403,7 @@ hike включает уморительные смайлы и позволяе�
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>{0} добавил(а) вас в круг друзей</value>
+    <value>{0} добавил(а) вас в друзья</value>
     <comment>{0} will be replaced by username</comment>
   </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
@@ -1426,7 +1428,7 @@ hike включает уморительные смайлы и позволяе�
     <value>отсутствует в адресной книге.</value>
   </data>
   <data name="Conversations_Circle_Of_friends_txt" xml:space="preserve">
-    <value>КРУГ ДРУЗЕЙ</value>
+    <value>ДРУЗЬЯ</value>
   </data>
   <data name="Conversations_Contacts_on_hike" xml:space="preserve">
     <value>КОНТАКТЫ В HIKE</value>
@@ -1479,7 +1481,7 @@ hike включает уморительные смайлы и позволяе�
     <value>Немедленно</value>
   </data>
   <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
-    <value>Только ваш круг друзей может видеть обновления вашего статуса</value>
+    <value>Только друзья будут видеть ваши обновления статуса</value>
   </data>
   <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
     <value>Нажмите этот значок, чтобы опубликовать новый статус</value>
@@ -1505,7 +1507,7 @@ hike включает уморительные смайлы и позволяе�
     <value>Посмот. друзей</value>
   </data>
   <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
-    <value>Здесь можно видеть обновления из круга друзей.</value>
+    <value>Здесь будут отображаться обновления ваших друзей</value>
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
     <value>Пригласить друзей в hike</value>
@@ -1616,7 +1618,7 @@ hike включает уморительные смайлы и позволяе�
     <value>Пригласить друзей</value>
   </data>
   <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
-    <value>Нажмите +, чтобы добавить контакт в круг друзей.</value>
+    <value>Нажмите +, чтобы добавить контакт</value>
   </data>
   <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
     <value>В чем дело, {0}?</value>
@@ -1745,7 +1747,7 @@ hike включает уморительные смайлы и позволяе�
     <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
-    <value>обновления статуса для друзей.</value>
+    <value>ваши друзья</value>
     <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
@@ -1756,7 +1758,7 @@ hike включает уморительные смайлы и позволяе�
     <value>Теперь вы можете видеть обновления статуса друг друга.</value>
   </data>
   <data name="In_App_Tip_6" xml:space="preserve">
-    <value>Только ваши друзья могут видеть, когда вы в последний раз были в сети.</value>
+    <value>Только друзья увидят время вашего последнего появления в сети</value>
   </data>
   <data name="DownloadingSticker_txt" xml:space="preserve">
     <value>загрузка стикера</value>
@@ -1804,7 +1806,7 @@ hike включает уморительные смайлы и позволяе�
     <value>посл.раз в сети вчера {0}</value>
   </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
-    <value>Keep close friends close</value>
+    <value>Держите близких друзей как можно ближе</value>
   </data>
   <data name="Button_Retry_Txt" xml:space="preserve">
     <value>Повторить</value>
@@ -1956,9 +1958,9 @@ hike включает уморительные смайлы и позволяе�
     <value>установить уведомления для экрана блокировки</value>
   </data>
   <data name="Camera_Back" xml:space="preserve">
-    <value>Back</value>
+    <value>Назад</value>
   </data>
   <data name="Camera_Front" xml:space="preserve">
-    <value>Front</value>
+    <value>Передняя</value>
   </data>
 </root>

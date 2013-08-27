@@ -1806,7 +1806,7 @@ Descarga hike: http://get.hike.in</value>
     <value>última visita ayer a las {0}</value>
   </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
-    <value>Keep close friends close</value>
+    <value>Ten a tus amigos cerca.</value>
   </data>
   <data name="Button_Retry_Txt" xml:space="preserve">
     <value>Reintentar</value>

@@ -202,15 +202,15 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Veux-tu vraiment supprimer ce contact de ton cercle d'amis ?</value>
+    <value>Veux-tu vraiment supprimer {0} de ta liste d'amis?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>retirer du cercle d'amis</value>
+    <value>supprimer de ta liste d'amis</value>
     <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>Ton cercle d'amis est vide.</value>
+    <value>Ta liste d'amis est vide</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -598,7 +598,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>ajouter au cercle d'amis</value>
+    <value>ajouter comme ami</value>
     <comment>fix length(24)</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
@@ -778,13 +778,15 @@
   <data name="Email_Invite_Txt" xml:space="preserve">
     <value>Salut !
 
-Je viens de commencer à utiliser hike, une application de messagerie simple, belle et totalement gratuite.
+J'utilise hike, une superbe appli de messagerie, simple et gratuite.
 
-hike intègre des émoticônes très drôles et tu peux mettre ton statut à jour pour prévenir ton premier cercle d'amis ! BBM, tu connais ? Eh bien, c'est encore mieux !
+hike te permet d'envoyer gratuitement des messages à tes amis et à ta famille ! Avec hike, tu peux écrire à tes amis présents sur hike... mais aussi aux autres ! Oublie toutes les autres applis de messagerie. Cerise sur le gâteau, elle coûte ZÉRO !
 
-Télécharge-le dès maintenant et dis au revoir aux SMS.
+hike est dotée de stickers et d'émoticônes rigolos. Publie aussi ton statut et montre-le à tes amis ! Pense à BBM, mais en beaucoup mieux !
 
-Télécharge hike : http://get.hike.in</value>
+Procure-toi l'appli maintenant et dis adieu aux SMS.
+
+Procure-toi hike : http://get.hike.in</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -1240,7 +1242,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>Actualiser liste de contacts</value>
   </data>
   <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>T'a ajouté(e) à son cercle d'amis</value>
+    <value>T'a ajouté(e) comme ami(e)</value>
     <comment>for friend requests in wp8</comment>
   </data>
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
@@ -1401,7 +1403,7 @@ Télécharge hike : http://get.hike.in</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>{0} t'a ajouté(e) à son cercle d'amis</value>
+    <value>{0} t'a ajouté à ses amis</value>
     <comment>{0} will be replaced by username</comment>
   </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
@@ -1426,7 +1428,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>n'est pas dans ton carnet d'adresses.</value>
   </data>
   <data name="Conversations_Circle_Of_friends_txt" xml:space="preserve">
-    <value>CERCLE D'AMIS</value>
+    <value>AMIS</value>
   </data>
   <data name="Conversations_Contacts_on_hike" xml:space="preserve">
     <value>CONTACTS SUR HIKE</value>
@@ -1479,7 +1481,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>Tout de suite</value>
   </data>
   <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
-    <value>Seul votre cercle d'amis peut voir vos mises à jour de statut</value>
+    <value>Seuls tes 'amis' peuvent voir ton statut mis à jour</value>
   </data>
   <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
     <value>Touche cette icône pour publier un nouveau statut</value>
@@ -1505,7 +1507,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>Voir les amis</value>
   </data>
   <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
-    <value>Retrouve ici les mises à jour de ton cercle d'amis.</value>
+    <value>Les mises à jour du statut de tes amis s'affichent ici</value>
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
     <value>Invite tes amis sur hike</value>
@@ -1616,7 +1618,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>Inviter des amis</value>
   </data>
   <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
-    <value>Touche + pour ajouter un contact à ton cercle d'amis.</value>
+    <value>Touche + pour ajouter un contact à tes amis</value>
   </data>
   <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
     <value>Ça va, {0} ?</value>
@@ -1726,7 +1728,7 @@ Télécharge hike : http://get.hike.in</value>
     <comment>General Text</comment>
   </data>
   <data name="Invite_Posted_Successfully" xml:space="preserve">
-    <value>Invitation envoyée</value>
+    <value>L'invitation est publié</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
     <value>{0} revient sur hike. Dis-lui bonjour :)</value>
@@ -1745,7 +1747,7 @@ Télécharge hike : http://get.hike.in</value>
     <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
-    <value>statut avec ton cercle d'amis.</value>
+    <value>tes amis</value>
     <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
@@ -1756,7 +1758,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>Vous pourrez voir vos mises à jour respectives</value>
   </data>
   <data name="In_App_Tip_6" xml:space="preserve">
-    <value>Seul ton cercle d'amis pourra savoir à quand remonte ta dernière connexion</value>
+    <value>Seuls tes amis peuvent voir ta dernière connexion</value>
   </data>
   <data name="DownloadingSticker_txt" xml:space="preserve">
     <value>chargement sticker...</value>
@@ -1804,7 +1806,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>dernière connexion hier à {0}</value>
   </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
-    <value>Keep close friends close</value>
+    <value>Garde tes amis près de toi</value>
   </data>
   <data name="Button_Retry_Txt" xml:space="preserve">
     <value>Réessayer</value>
@@ -1956,9 +1958,9 @@ Télécharge hike : http://get.hike.in</value>
     <value>régler les alertes de verrouillage d'écran</value>
   </data>
   <data name="Camera_Back" xml:space="preserve">
-    <value>Back</value>
+    <value>Arrière</value>
   </data>
   <data name="Camera_Front" xml:space="preserve">
-    <value>Front</value>
+    <value>Avant</value>
   </data>
 </root>
