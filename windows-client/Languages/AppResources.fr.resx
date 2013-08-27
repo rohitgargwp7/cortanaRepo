@@ -1955,4 +1955,10 @@ Télécharge hike : http://get.hike.in</value>
   <data name="Settings_LockScreenNotifications" xml:space="preserve">
     <value>régler les alertes de verrouillage d'écran</value>
   </data>
+  <data name="Camera_Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Camera_Front" xml:space="preserve">
+    <value>Front</value>
+  </data>
 </root>

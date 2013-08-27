@@ -1947,4 +1947,10 @@
   <data name="Settings_LockScreenNotifications" xml:space="preserve">
     <value>configurar notificaciones en pantalla de bloqueo</value>
   </data>
+  <data name="Camera_Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Camera_Front" xml:space="preserve">
+    <value>Front</value>
+  </data>
 </root>

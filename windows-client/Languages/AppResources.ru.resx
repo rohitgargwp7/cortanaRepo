@@ -1955,4 +1955,10 @@ hike включает уморительные смайлы и позволяе�
   <data name="Settings_LockScreenNotifications" xml:space="preserve">
     <value>установить уведомления для экрана блокировки</value>
   </data>
+  <data name="Camera_Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Camera_Front" xml:space="preserve">
+    <value>Front</value>
+  </data>
 </root>
