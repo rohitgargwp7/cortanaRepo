@@ -1242,7 +1242,7 @@ hike लें: http://get.hike.in</value>
     <value>ताज़ा संपर्क सूची</value>
   </data>
   <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>आपको मित्र मंडली में जोड़ा</value>
+    <value>आपको दोस्त में शामिल किया</value>
     <comment>for friend requests in wp8</comment>
   </data>
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
