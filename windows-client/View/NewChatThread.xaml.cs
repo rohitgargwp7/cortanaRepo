@@ -1696,7 +1696,12 @@ namespace windows_client.View
             {
                 if (this.ocMessages.Count > 0 && (!IsMute || this.ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
                 {
-                    llsMessages.ScrollTo(this.ocMessages[this.ocMessages.Count - 1]);
+                    if (vScrollBar != null && llsViewPort != null && (vScrollBar.Maximum - vScrollBar.Value < 2000))
+                        llsViewPort.SetViewportOrigin(new System.Windows.Point(0, vScrollBar.Maximum));
+                    else
+                        llsMessages.ScrollTo(ocMessages[ocMessages.Count - 1]);
+                 
+                    JumpToBottomGrid.Visibility = Visibility.Collapsed;
                 }
             }
             catch (Exception ex)
@@ -3733,7 +3738,8 @@ namespace windows_client.View
                     this.ocMessages.Add(convTypingNotification);
                 }
                 isTypingNotificationActive = true;
-                //ScrollToBottom();
+                if (JumpToBottomGrid.Visibility == Visibility.Collapsed)
+                    ScrollToBottom();
             });
             lastTypingNotificationShownTime = TimeUtils.getCurrentTimeStamp();
             scheduler.Schedule(autoHideTypingNotification, TimeSpan.FromSeconds(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE));
@@ -3788,7 +3794,7 @@ namespace windows_client.View
                 //TODO handle vibration for user profile and GC.
                 if ((convMessage.Msisdn == mContactNumber && (convMessage.MetaDataString != null &&
                     convMessage.MetaDataString.Contains(HikeConstants.POKE))) &&
-                    convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE && (!isGroupChat || !_isMute))
+                    convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE && !_isMute)
                 {
                     bool isVibrateEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
@@ -4639,8 +4645,8 @@ namespace windows_client.View
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (isGroupChat)
-                return;
+            //if (isGroupChat)
+            //    return;
             if (isGroupChat && !isGroupAlive)
                 return;
             if (mUserIsBlocked)
@@ -6212,6 +6218,11 @@ namespace windows_client.View
                 _h2hofflineToolTip = null;
                 ShowForceSMSOnUI();
             }
+        }
+        ViewportControl llsViewPort;
+        private void ViewPortLoaded(object sender, RoutedEventArgs e)
+        {
+            llsViewPort = sender as ViewportControl;
         }
     }
 
