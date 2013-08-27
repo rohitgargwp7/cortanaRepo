@@ -1194,7 +1194,9 @@ namespace windows_client.View
                 {
                     msisdn = (string)obj;
                     ContactInfo c = null;
-
+                    //will be populated automatically while loading from db
+                    if (contactsCollectionView.Source == null)
+                        return;
                     if (!App.ViewModel.ContactsCache.TryGetValue(msisdn, out c))
                     {
                         ConversationListObject convObj = null;
@@ -1223,7 +1225,8 @@ namespace windows_client.View
 
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        if (c != null && c.Msisdn != App.MSISDN)
+
+                        if ( c != null && c.Msisdn != App.MSISDN)
                         {
                             c.IsUsedAtMiscPlaces = true;
                             hikeContactList.Add(c);
@@ -1396,6 +1399,9 @@ namespace windows_client.View
             #region UNBLOCK_USER
             else if (HikePubSub.UNBLOCK_USER == type || HikePubSub.UNBLOCK_GROUPOWNER == type)
             {
+                //will be populated automatically while loading from db
+                if (contactsCollectionView.Source == null)
+                    return;
                 ContactInfo c = null;
                 if (obj is ContactInfo)
                     c = obj as ContactInfo;
@@ -1485,6 +1491,9 @@ namespace windows_client.View
             {
                 if (obj is ContactInfo)
                 {
+                    //will be populated automatically while loading from db
+                    if (contactsCollectionView.Source == null)
+                        return;
                     ContactInfo cinfo = obj as ContactInfo;
                     if (cinfo.OnHike && !App.ViewModel.Isfavourite(cinfo.Msisdn))
                     {
@@ -1506,6 +1515,9 @@ namespace windows_client.View
             #region ADDRESSBOOK UPDATE
             else if (type == HikePubSub.ADDRESSBOOK_UPDATED)
             {
+                //will be populated automatically while loading from db
+                if (contactsCollectionView.Source == null)
+                    return;
                 if (obj is object[] && ((object[])obj).Length == 2)
                 {
                     Object[] objContacts = (Object[])obj;
@@ -2010,7 +2022,7 @@ namespace windows_client.View
                 MessageBoxResult result = MessageBox.Show(text, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
                 if (result == MessageBoxResult.Cancel)
                     return;
-                
+
                 convObj.IsFav = false;
                 App.ViewModel.FavList.Remove(convObj);
                 cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
@@ -2384,17 +2396,16 @@ namespace windows_client.View
                 bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
                 cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
             }
-            if (cn == null)
+            if (cn == null && App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
             {
-                if (App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
-                {
-                    cn = App.ViewModel.ContactsCache[fObj.Msisdn];
-                    cn.IsUsedAtMiscPlaces = true;
-                    hikeContactList.Remove(cn);
-                    cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
-                }
+                cn = App.ViewModel.ContactsCache[fObj.Msisdn];
+                cn.IsUsedAtMiscPlaces = true;
             }
-
+            if (cn != null)
+            {
+                hikeContactList.Remove(cn);
+                cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
+            }
             App.ViewModel.FavList.Insert(0, cObj);
             App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
             cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
