@@ -683,6 +683,7 @@ namespace windows_client.View
             });
         }
 
+        bool isContactListLoaded = false;
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             PivotItem pItem = e.AddedItems[0] as PivotItem;
@@ -747,6 +748,7 @@ namespace windows_client.View
                     favBw.RunWorkerAsync();
                     favBw.RunWorkerCompleted += (sf, ef) =>
                     {
+                        isContactListLoaded = true;
                         contactGrid.RowDefinitions[0].Height = GridLength.Auto;
                         cohProgressBar.Visibility = Visibility.Collapsed;
                         contactsCollectionView.Source = hikeContactList;
@@ -955,6 +957,8 @@ namespace windows_client.View
             #region ADD OR REMOVE FAV
             else if (HikePubSub.ADD_REMOVE_FAV == type)
             {
+                if (!isContactListLoaded)
+                    return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
@@ -1195,7 +1199,7 @@ namespace windows_client.View
                     msisdn = (string)obj;
                     ContactInfo c = null;
                     //will be populated automatically while loading from db
-                    if (contactsCollectionView.Source == null)
+                    if (!isContactListLoaded)
                         return;
                     if (!App.ViewModel.ContactsCache.TryGetValue(msisdn, out c))
                     {
@@ -1226,7 +1230,7 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
 
-                        if ( c != null && c.Msisdn != App.MSISDN)
+                        if (c != null && c.Msisdn != App.MSISDN)
                         {
                             c.IsUsedAtMiscPlaces = true;
                             hikeContactList.Add(c);
@@ -1246,6 +1250,8 @@ namespace windows_client.View
             #region ADD_FRIENDS
             else if (HikePubSub.ADD_FRIENDS == type)
             {
+                if (!isContactListLoaded)
+                    return;
                 if (obj is ContactInfo)
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -1368,7 +1374,7 @@ namespace windows_client.View
                         Dispatcher.BeginInvoke(() =>
                         {
                             hikeContactList.Remove(c);
-                            if (contactsCollectionView.Source != null && hikeContactList.Count == 0)
+                            if (isContactListLoaded && hikeContactList.Count == 0)
                             {
                                 emptyListPlaceholderHikeContacts.Visibility = Visibility.Visible;
                                 hikeContactListBox.Visibility = Visibility.Collapsed;
@@ -1400,7 +1406,7 @@ namespace windows_client.View
             else if (HikePubSub.UNBLOCK_USER == type || HikePubSub.UNBLOCK_GROUPOWNER == type)
             {
                 //will be populated automatically while loading from db
-                if (contactsCollectionView.Source == null)
+                if (!isContactListLoaded)
                     return;
                 ContactInfo c = null;
                 if (obj is ContactInfo)
@@ -1492,7 +1498,7 @@ namespace windows_client.View
                 if (obj is ContactInfo)
                 {
                     //will be populated automatically while loading from db
-                    if (contactsCollectionView.Source == null)
+                    if (!isContactListLoaded)
                         return;
                     ContactInfo cinfo = obj as ContactInfo;
                     if (cinfo.OnHike && !App.ViewModel.Isfavourite(cinfo.Msisdn))
@@ -1516,7 +1522,7 @@ namespace windows_client.View
             else if (type == HikePubSub.ADDRESSBOOK_UPDATED)
             {
                 //will be populated automatically while loading from db
-                if (contactsCollectionView.Source == null)
+                if (!isContactListLoaded)
                     return;
                 if (obj is object[] && ((object[])obj).Length == 2)
                 {
@@ -1526,6 +1532,7 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(new Action<List<ContactInfo>>(delegate(List<ContactInfo> listAddedContacts)
                         {
+
                             bool isNewUserAdded = false;
                             foreach (ContactInfo cinfo in listAddedContacts)
                             {
@@ -1627,13 +1634,13 @@ namespace windows_client.View
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                     c.Avatar = convObj.Avatar;
                     c.IsUsedAtMiscPlaces = true;
-                    if (c.Msisdn != App.MSISDN)
+                    if (c.Msisdn != App.MSISDN && isContactListLoaded)
                     {
                         hikeContactList.Add(c);
                         cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                     }
                 }
-                if (hikeContactList.Count > 0)
+                if (hikeContactList.Count > 0 && isContactListLoaded)
                 {
                     emptyListPlaceholderHikeContacts.Visibility = System.Windows.Visibility.Collapsed;
                     hikeContactListBox.Visibility = Visibility.Visible;
@@ -1671,16 +1678,19 @@ namespace windows_client.View
                 obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
                 obj[HikeConstants.DATA] = data;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
+                if (isContactListLoaded)
                 {
-                    emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
-                    favourites.Visibility = System.Windows.Visibility.Visible;
-                    //addFavsPanel.Opacity = 1;
-                }
-                if (hikeContactList.Count == 0)
-                {
-                    emptyListPlaceholderHikeContacts.Visibility = System.Windows.Visibility.Visible;
-                    hikeContactListBox.Visibility = Visibility.Collapsed;
+                    if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
+                    {
+                        emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
+                        favourites.Visibility = System.Windows.Visibility.Visible;
+                        //addFavsPanel.Opacity = 1;
+                    }
+                    if (hikeContactList.Count == 0)
+                    {
+                        emptyListPlaceholderHikeContacts.Visibility = System.Windows.Visibility.Visible;
+                        hikeContactListBox.Visibility = Visibility.Collapsed;
+                    }
                 }
                 App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
             }
