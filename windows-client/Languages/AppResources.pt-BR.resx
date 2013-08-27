@@ -202,15 +202,15 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Tem certeza de que quer remover esse contato do círculo de amigos?</value>
+    <value>Quer mesmo remover {0} de sua lista de amigos?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>remover do círculo de amigos</value>
+    <value>remover de sua lista de amigos</value>
     <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>Você não tem ninguém no seu círculo de amigos.</value>
+    <value>Sua lista de amigos está vazia</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -598,7 +598,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>adicionar ao círculo de amigos</value>
+    <value>adicionar como amigo</value>
     <comment>fix length(24)</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
@@ -778,10 +778,16 @@
   <data name="Email_Invite_Txt" xml:space="preserve">
     <value>Olá!
 
-Eu comecei a usar o hike, um aplicativo simples e bonito para mensagens, que é completamente grátis. 
-O hike vem com alguns emoticons engraçados. Você também pode publicar Atualizações de Status para seus amigos mais próximos! É como o BBM, mas muito, muito melhor!
 
-Tenha o seu agora e diga adeus aos SMS simples e aborrecidos.
+Comecei a usar o hike, um aplicativo de mensagens simples e bonito, totalmente grátis.
+
+
+O hike permite enviar mensagens grátis para os amigos e os familiares! Com o hike, você pode enviar mensagens para amigos no hike e fora dele! Você nunca mais precisará usar outro aplicativo de mensagens. Melhor ainda, é absolutamente GRÁTIS!
+
+O hike tem alguns emoticons e adesivos hilários. Você também pode publicar atualizações de status para os amigos! Pense nele como o BBM, mas muito, muito melhor!
+
+Obtenha-o agora e diga adeus ao SMS simples e entediante.
+
 
 Obtenha o hike: http://get.hike.in</value>
     <comment>Email Invite Text</comment>
@@ -1239,7 +1245,7 @@ Obtenha o hike: http://get.hike.in</value>
     <value>Atualizar lista de contatos</value>
   </data>
   <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>Adicionou você ao círculo de amigos</value>
+    <value>Adicionou você como amigo</value>
     <comment>for friend requests in wp8</comment>
   </data>
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
@@ -1400,7 +1406,7 @@ Obtenha o hike: http://get.hike.in</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>{0} adicionou você ao círculo de amigos</value>
+    <value>{0} adicionou você como amigo</value>
     <comment>{0} will be replaced by username</comment>
   </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
@@ -1425,7 +1431,7 @@ Obtenha o hike: http://get.hike.in</value>
     <value>não está na sua agenda de endereços.</value>
   </data>
   <data name="Conversations_Circle_Of_friends_txt" xml:space="preserve">
-    <value>CÍRCULO DE AMIGOS</value>
+    <value>AMIGOS</value>
   </data>
   <data name="Conversations_Contacts_on_hike" xml:space="preserve">
     <value>CONTATOS NO HIKE</value>
@@ -1478,7 +1484,7 @@ Obtenha o hike: http://get.hike.in</value>
     <value>Imediato</value>
   </data>
   <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
-    <value>Somente seu "Círculo de amigos" pode ver suas atualizações de status</value>
+    <value>Somente 'amigos' podem ser sua atualização de status.</value>
   </data>
   <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
     <value>Toque nesse ícone para publicar um novo status</value>
@@ -1504,7 +1510,7 @@ Obtenha o hike: http://get.hike.in</value>
     <value>Ver amigos</value>
   </data>
   <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
-    <value>Veja atualizações do círculo de amigos aqui.</value>
+    <value>Você pode ver atualizações de seus amigos aqui</value>
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
     <value>Convide amigos para o hike</value>
@@ -1615,7 +1621,7 @@ Obtenha o hike: http://get.hike.in</value>
     <value>Convidar amigos</value>
   </data>
   <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
-    <value>Toque em + para adicionar um contato ao círculo de amigos.</value>
+    <value>Toque em + para adicionar um contato como amigo</value>
   </data>
   <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
     <value>Tudo bem, {0}?</value>
@@ -1724,8 +1730,8 @@ Obtenha o hike: http://get.hike.in</value>
     <value>hoje</value>
     <comment>General Text</comment>
   </data>
-  <data name="Invite_Sent_Successfully" xml:space="preserve">
-    <value>Convite enviado com sucesso</value>
+  <data name="Invite_Posted_Successfully" xml:space="preserve">
+    <value>Comentários</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
     <value>{0} voltou ao hike. Diga olá :)</value>
@@ -1744,7 +1750,7 @@ Obtenha o hike: http://get.hike.in</value>
     <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
-    <value>seu círculo de amigos.</value>
+    <value>seus amigos</value>
     <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
@@ -1755,7 +1761,7 @@ Obtenha o hike: http://get.hike.in</value>
     <value>Agora vocês poderão ver atualizações um do outro</value>
   </data>
   <data name="In_App_Tip_6" xml:space="preserve">
-    <value>Somente seu círculo de amigos pode ver onde você foi visto pela última vez</value>
+    <value>Somente seus amigos podem ver onde você foi visto pela última vez</value>
   </data>
   <data name="DownloadingSticker_txt" xml:space="preserve">
     <value>carregando adesivo</value>
@@ -1954,5 +1960,11 @@ Mantenha pressionada a mensagem para enviar como sms do hike</value>
   </data>
   <data name="Settings_LockScreenNotifications" xml:space="preserve">
     <value>definir notificações de bloqueio de tela</value>
+  </data>
+  <data name="Camera_Back" xml:space="preserve">
+    <value>Voltar</value>
+  </data>
+  <data name="Camera_Front" xml:space="preserve">
+    <value>Frente</value>
   </data>
 </root>

@@ -1577,7 +1577,8 @@ namespace windows_client.View
 
             if (convObj.IsFav) // already fav , remove request
             {
-                MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
+                var text = String.Format(AppResources.Conversations_RemFromFav_Confirm_Txt, convObj.NameToShow);
+                MessageBoxResult result = MessageBox.Show(text, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
                 if (result == MessageBoxResult.Cancel)
                     return;
                 convObj.IsFav = false;
@@ -2002,12 +2003,14 @@ namespace windows_client.View
 
         private void RemoveFavourite_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.Cancel)
-                return;
             ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
             if (convObj != null)
             {
+                var text = String.Format(AppResources.Conversations_RemFromFav_Confirm_Txt, convObj.NameToShow);
+                MessageBoxResult result = MessageBox.Show(text, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.Cancel)
+                    return;
+                
                 convObj.IsFav = false;
                 App.ViewModel.FavList.Remove(convObj);
                 cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);

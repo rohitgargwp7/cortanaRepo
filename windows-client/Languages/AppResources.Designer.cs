@@ -70,7 +70,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to add to circle of friends.
+        ///   Looks up a localized string similar to add as a friend.
         /// </summary>
         public static string Add_To_Fav_Txt {
             get {
@@ -448,7 +448,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Added you to Circle of Friends.
+        ///   Looks up a localized string similar to Added you as a friend.
         /// </summary>
         public static string Conversations_AddedYouToFav_Txt_WP8FrndStatus {
             get {
@@ -475,7 +475,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CIRCLE OF FRIENDS.
+        ///   Looks up a localized string similar to FRIENDS.
         /// </summary>
         public static string Conversations_Circle_Of_friends_txt {
             get {
@@ -583,7 +583,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can see updates from your circle of friends here..
+        ///   Looks up a localized string similar to You can see updates from your friends here.
         /// </summary>
         public static string Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt {
             get {
@@ -646,7 +646,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap on + to add a contact to your circle of friends..
+        ///   Looks up a localized string similar to Tap on + to add a contact as your friend.
         /// </summary>
         public static string Conversations_NoFriend_Tap_Txt {
             get {
@@ -736,7 +736,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure about removing this contact from circle of friends?.
+        ///   Looks up a localized string similar to Do you really want to remove {0} from your friend list?.
         /// </summary>
         public static string Conversations_RemFromFav_Confirm_Txt {
             get {
@@ -763,7 +763,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only your &apos;Circle of friends&apos; can see your status updates.
+        ///   Looks up a localized string similar to Only your &apos;friends&apos; can see your status update.
         /// </summary>
         public static string Conversations_StatusTutorials_Info_Txt {
             get {
@@ -781,7 +781,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You don&apos;t have anyone in your circle of friends..
+        ///   Looks up a localized string similar to Your friend list is empty.
         /// </summary>
         public static string Conversations_TapYesToAdd_Txt {
             get {
@@ -1125,13 +1125,21 @@ namespace windows_client.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Hi!
         ///
+        ///
+        ///
         ///I started using hike, a simple beautiful messaging app that&apos;s absolutely free.
         ///
-        ///hike comes with some hilarious emoticons. You can also post Status Updates to your close circle of friends! Think of it like BBM but much, much better!
         ///
-        ///Get it now and say good bye to plain boring SMS.
         ///
-        ///Get hike: http://get.hike.in.
+        ///hike lets you send free messages to your friends and family! With hike, you can message friends that are on hike and also those who aren&apos;t on hike! You&apos;ll never have to use another messaging app again. Better yet, it&apos;s absolutely FREE!
+        ///
+        ///
+        ///
+        ///hike comes with some hilarious stickers and emoticons. You can also post Status Updates to your friends! Think of it like BBM but much, much better!
+        ///
+        ///
+        ///
+        ///Get it now and say good  [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Email_Invite_Txt {
             get {
@@ -2121,7 +2129,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only your Circle of Friends can see when you were last seen.
+        ///   Looks up a localized string similar to Only your friends can see when you were last seen.
         /// </summary>
         public static string In_App_Tip_6 {
             get {
@@ -2166,11 +2174,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invite sent successfully.
+        ///   Looks up a localized string similar to Invite posted successfully.
         /// </summary>
-        public static string Invite_Sent_Successfully {
+        public static string Invite_Posted_Successfully {
             get {
-                return ResourceManager.GetString("Invite_Sent_Successfully", resourceCulture);
+                return ResourceManager.GetString("Invite_Posted_Successfully", resourceCulture);
             }
         }
         
@@ -3093,7 +3101,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} added you to Circle of Friends.
+        ///   Looks up a localized string similar to {0} added you as a friend.
         /// </summary>
         public static string Profile_AddedYouToFav_Txt_WP8FrndStatus {
             get {
@@ -3300,7 +3308,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to remove from circle of friends.
+        ///   Looks up a localized string similar to remove from your friend list.
         /// </summary>
         public static string RemFromFav_Txt {
             get {
@@ -4641,7 +4649,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to your circle of friends..
+        ///   Looks up a localized string similar to your friends..
         /// </summary>
         public static string WelcomeTut_TxtBlk2 {
             get {

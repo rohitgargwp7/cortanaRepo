@@ -1725,7 +1725,7 @@ hike включает уморительные смайлы и позволяе�
     <value>сегодня</value>
     <comment>General Text</comment>
   </data>
-  <data name="Invite_Sent_Successfully" xml:space="preserve">
+  <data name="Invite_Posted_Successfully" xml:space="preserve">
     <value>Приглашение отправлено</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">

@@ -1725,7 +1725,7 @@ Télécharge hike : http://get.hike.in</value>
     <value>aujourd'h.</value>
     <comment>General Text</comment>
   </data>
-  <data name="Invite_Sent_Successfully" xml:space="preserve">
+  <data name="Invite_Posted_Successfully" xml:space="preserve">
     <value>Invitation envoyée</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
