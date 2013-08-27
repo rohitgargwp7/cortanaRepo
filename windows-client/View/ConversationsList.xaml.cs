@@ -1640,7 +1640,7 @@ namespace windows_client.View
                         cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                     }
                 }
-                if (hikeContactList.Count > 0)
+                if (hikeContactList.Count > 0 && isContactListLoaded)
                 {
                     emptyListPlaceholderHikeContacts.Visibility = System.Windows.Visibility.Collapsed;
                     hikeContactListBox.Visibility = Visibility.Visible;
@@ -1678,16 +1678,19 @@ namespace windows_client.View
                 obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
                 obj[HikeConstants.DATA] = data;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
+                if (isContactListLoaded)
                 {
-                    emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
-                    favourites.Visibility = System.Windows.Visibility.Visible;
-                    //addFavsPanel.Opacity = 1;
-                }
-                if (hikeContactList.Count == 0)
-                {
-                    emptyListPlaceholderHikeContacts.Visibility = System.Windows.Visibility.Visible;
-                    hikeContactListBox.Visibility = Visibility.Collapsed;
+                    if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
+                    {
+                        emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
+                        favourites.Visibility = System.Windows.Visibility.Visible;
+                        //addFavsPanel.Opacity = 1;
+                    }
+                    if (hikeContactList.Count == 0)
+                    {
+                        emptyListPlaceholderHikeContacts.Visibility = System.Windows.Visibility.Visible;
+                        hikeContactListBox.Visibility = Visibility.Collapsed;
+                    }
                 }
                 App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
             }
