@@ -1679,7 +1679,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fun, free messaging for life.
+        ///   Looks up a localized string similar to Keep close friends close.
         /// </summary>
         public static string Fun_Free_Messaging_Txt {
             get {

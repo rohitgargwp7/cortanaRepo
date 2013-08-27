@@ -1812,7 +1812,7 @@ Get hike: http://get.hike.in</value>
     <value>last seen yesterday at {0}</value>
   </data>
   <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
-    <value>Fun, free messaging for life</value>
+    <value>Keep close friends close</value>
   </data>
   <data name="Button_Retry_Txt" xml:space="preserve">
     <value>Retry</value>
