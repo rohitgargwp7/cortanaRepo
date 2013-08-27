@@ -3733,7 +3733,8 @@ namespace windows_client.View
                     this.ocMessages.Add(convTypingNotification);
                 }
                 isTypingNotificationActive = true;
-                //ScrollToBottom();
+                if (JumpToBottomGrid.Visibility == Visibility.Collapsed)
+                    ScrollToBottom();
             });
             lastTypingNotificationShownTime = TimeUtils.getCurrentTimeStamp();
             scheduler.Schedule(autoHideTypingNotification, TimeSpan.FromSeconds(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE));
