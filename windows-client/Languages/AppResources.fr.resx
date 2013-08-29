@@ -1188,7 +1188,7 @@ Procure-toi hike : http://get.hike.in</value>
     <comment>General text</comment>
   </data>
   <data name="ConversationsList_New_Txt" xml:space="preserve">
-    <value>nouveau</value>
+    <value>récompenses</value>
     <comment>Rewards Text</comment>
   </data>
   <data name="Tap_To_Invite_Txt" xml:space="preserve">
@@ -1962,5 +1962,8 @@ Procure-toi hike : http://get.hike.in</value>
   </data>
   <data name="Camera_Front" xml:space="preserve">
     <value>Avant</value>
+  </data>
+  <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
+    <value>Gagnez gratuitement des SMS pour chaque ami qui rejoint hike à cause de vous</value>
   </data>
 </root>
