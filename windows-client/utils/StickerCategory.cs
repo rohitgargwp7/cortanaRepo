@@ -342,9 +342,9 @@ namespace windows_client.utils
                     url = StickerHelper._stickerWVGAPath;
                 else
                     url = StickerHelper._sticker720path;
-                return new BitmapImage(new Uri(string.Format(url, stickerId), UriKind.Relative));
+                return new BitmapImage(new Uri(string.Format(url, category, stickerId), UriKind.Relative));
             }
-            
+
             try
             {
                 lock (readWriteLock)

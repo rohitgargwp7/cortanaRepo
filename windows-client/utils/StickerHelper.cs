@@ -21,21 +21,21 @@ namespace windows_client.utils
         public const string CATEGORY_BOLLYWOOD = "bollywood";
         public const string CATEGORY_TROLL = "rageface";
 
-        public const string _stickerWVGAPath = "/View/images/stickers/WVGA/{0}";
-        public const string _sticker720path = "/View/images/stickers/720p/{0}";
-        public const string _stickerWXGApath = "/View/images/stickers/WXGA/{0}";
+        public const string _stickerWVGAPath = "/View/images/stickers/WVGA/{0}/{1}";
+        public const string _sticker720path = "/View/images/stickers/720p/{0}/{1}";
+        public const string _stickerWXGApath = "/View/images/stickers/WXGA/{0}/{1}";
         public static string[] arrayDefaultHumanoidStickers = new string[]
         {
-            "Humanoid/001_love1.png",
-            "Humanoid/002_love2.png",
-            "Humanoid/003_teasing.png",
-            "Humanoid/004_rofl.png",
-            "Humanoid/005_bored.png",
-            "Humanoid/006_angry.png",
-            "Humanoid/007_strangle.png",
-            "Humanoid/008_shocked.png",
-            "Humanoid/009_hurray.png",
-            "Humanoid/010_yawning.png"
+            "001_love1.png",
+            "002_love2.png",
+            "003_teasing.png",
+            "004_rofl.png",
+            "005_bored.png",
+            "006_angry.png",
+            "007_strangle.png",
+            "008_shocked.png",
+            "009_hurray.png",
+            "010_yawning.png"
         
         };
 
@@ -61,11 +61,11 @@ namespace windows_client.utils
                 if (!_isInitialised)
                 {
                     _dictStickersCategories = new Dictionary<string, StickerCategory>();
-                    
+
                     InitialiseDefaultStickers(CATEGORY_HUMANOID, arrayDefaultHumanoidStickers);
-                    
+
                     InitialiseDefaultStickers(CATEGORY_DOGGY, arrayDefaultDoggyStickers);
-                    
+
                     List<StickerCategory> listStickerCategories = StickerCategory.ReadAllStickerCategories();
                     foreach (StickerCategory sc in listStickerCategories)
                     {
@@ -89,7 +89,7 @@ namespace windows_client.utils
             }
         }
 
-        private void InitialiseDefaultStickers(string category,string[] arrayDefaultStickers)
+        private void InitialiseDefaultStickers(string category, string[] arrayDefaultStickers)
         {
             StickerCategory category1Stickers = new StickerCategory(category, true);
             Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -106,7 +106,7 @@ namespace windows_client.utils
                     else
                         url = _sticker720path;
 
-                    bitmap.UriSource = new Uri(string.Format(url, arrayDefaultStickers[i]), UriKind.Relative);
+                    bitmap.UriSource = new Uri(string.Format(url, category, arrayDefaultStickers[i]), UriKind.Relative);
                     Sticker sticker = new Sticker(category1Stickers.Category, arrayDefaultStickers[i], bitmap);
                     category1Stickers.ListStickers.Add(sticker);
                 }
