@@ -780,7 +780,10 @@ namespace windows_client
                     try
                     {
                         Hyperlink MyLink = new Hyperlink();
-                        MyLink.Foreground = foreground;
+                        
+                        if (foreground != null)
+                            MyLink.Foreground = foreground;
+
                         string url = regexMatch;
                         if (regexType == RegexType.EMAIL)
                             url = "mailto:" + regexMatch;
