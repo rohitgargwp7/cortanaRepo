@@ -173,7 +173,7 @@ namespace windows_client.DbUtils
                 {
                     UpdateConvListForSentMessage(convMessage, convObj);
 
-                    MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId, convMessage);
+                    MessagesTableUtils.addUploadingMessage(convMessage.MessageId, convMessage);
                     convMessage.SetAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
@@ -212,7 +212,7 @@ namespace windows_client.DbUtils
                 {
                     UpdateConvListForSentMessage(convMessage, convObj);
                     //send attachment message (new attachment - upload case)
-                    MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId, convMessage);
+                    MessagesTableUtils.addUploadingMessage(convMessage.MessageId, convMessage);
                     convMessage.SetAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);

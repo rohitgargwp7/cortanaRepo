@@ -238,11 +238,13 @@
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
                                                 <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
                                                 <Image Grid.Row="1" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
                                                 <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="1" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
                                                 <ProgressBar Grid.Row="2" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
+                                                <TextBlock Grid.Row="3" Text="{Binding ProgressText}" Visibility="{Binding ProgressBarVisibility}" Margin="12,5,0,0" Foreground="{Binding MessageTextForeGround}"></TextBlock>
                                             </Grid>
                                             <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                         </Grid>
@@ -322,6 +324,7 @@
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
                                                 <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
                                                 <Grid Grid.Row="1" Margin="10">
@@ -340,6 +343,7 @@
                                                     </Grid>
                                                 </Grid>
                                                 <ProgressBar Grid.Row="2" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
+                                                <TextBlock Grid.Row="3" Text="{Binding ProgressText}" Visibility="{Binding ProgressBarVisibility}" Margin="12,5,0,0" Foreground="{Binding MessageTextForeGround}"></TextBlock>
                                             </Grid>
                                             <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                         </Grid>
