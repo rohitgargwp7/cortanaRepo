@@ -170,10 +170,6 @@ namespace windows_client.View
             runningSeconds++;
         }
 
-        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
-        {
-        }
-
         private void stop()
         {
             progressTimer.Stop();
