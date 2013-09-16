@@ -1525,10 +1525,60 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Network Manager:: Delivery Report, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                    Debug.WriteLine("Network Manager:: ProTip, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
                 }
             }
 
+            #endregion
+            #region Chat Background
+            else if (HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS == type)
+            {
+                JObject data = null;
+
+                try
+                {
+                    ConvMessage cm;
+                    var ts = (long)jsonObj[HikeConstants.TIMESTAMP];
+                    var to = (string)jsonObj[HikeConstants.TO];
+
+                    if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
+                    {
+                        cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED, jsonObj, ts);
+                    }
+                    else
+                    {
+                        var str = String.Format(AppResources.ChatBg_Changed_Text, msisdn);
+                        cm = new ConvMessage(str, msisdn, ts, ConvMessage.State.UNKNOWN);
+                        cm.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+                        cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
+                    }
+
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+
+                    if (obj != null)
+                    {
+                        object[] vals;
+                        vals = new object[3];
+                        vals[0] = cm;
+                        vals[1] = obj;
+
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                            });
+                    }
+
+                    object[] values = new object[2];
+                    values[0] = cm;
+                    values[1] = jsonObj;
+
+                    pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, values);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Network Manager:: Chat Background, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                }
+            }
             #endregion
             #region OTHER
             else

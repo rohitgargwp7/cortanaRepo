@@ -25,8 +25,6 @@ namespace windows_client.utils
         private SolidColorBrush btnGrayForeground;
         private SolidColorBrush groupChatHeaderColor;
         private SolidColorBrush signUpForeground;
-        private SolidColorBrush receivedChatBubbleColor;
-        private SolidColorBrush statusBubbleColor;
         private SolidColorBrush editProfileForeground;
         private SolidColorBrush receivedChatBubbleTimestamp;
         private SolidColorBrush hikeSentChatBubbleTimestamp;
@@ -320,34 +318,6 @@ namespace windows_client.utils
             }
         }
 
-        public SolidColorBrush ReceivedChatBubbleColor
-        {
-            get
-            {
-                if (receivedChatBubbleColor == null)
-                {
-                    if (Utils.isDarkTheme())
-                        receivedChatBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0x50, 0x50, 0x50));
-                    else
-                        receivedChatBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
-                }
-                return receivedChatBubbleColor;
-            }
-        }
-        public SolidColorBrush StatusBubbleColor
-        {
-            get
-            {
-                if (statusBubbleColor == null)
-                {
-                    if (Utils.isDarkTheme())
-                        statusBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0x26, 0x26, 0x26));
-                    else
-                        statusBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
-                }
-                return statusBubbleColor;
-            }
-        }
         public SolidColorBrush EditProfileForeground
         {
             get
@@ -360,45 +330,6 @@ namespace windows_client.utils
                         editProfileForeground = new SolidColorBrush(Color.FromArgb(255, 0x8d, 0x8d, 0x8d));
                 }
                 return editProfileForeground;
-            }
-        }
-
-        public SolidColorBrush ReceivedChatBubbleTimestamp
-        {
-            get
-            {
-                if (receivedChatBubbleTimestamp == null)
-                {
-                    if (Utils.isDarkTheme())
-                        receivedChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0xbc, 0xbc, 0xbc));
-                    else
-                        receivedChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0x83, 0x83, 0x83));
-                }
-                return receivedChatBubbleTimestamp;
-            }
-        }
-
-        public SolidColorBrush HikeSentChatBubbleTimestamp
-        {
-            get
-            {
-                if (hikeSentChatBubbleTimestamp == null)
-                {
-                    hikeSentChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0xb4, 0xd9, 0xf3));
-                }
-                return hikeSentChatBubbleTimestamp;
-            }
-        }
-
-        public SolidColorBrush SMSSentChatBubbleTimestamp
-        {
-            get
-            {
-                if (smsSentChatBubbleTimestamp == null)
-                {
-                    smsSentChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0xd6, 0xea, 0xb9));
-                }
-                return smsSentChatBubbleTimestamp;
             }
         }
 
@@ -473,7 +404,7 @@ namespace windows_client.utils
                 return myLocationPin;
             }
         }
-        
+
         public BitmapImage OnHikeImage
         {
             get
@@ -841,21 +772,6 @@ namespace windows_client.utils
                         lastSeenClockImage = new BitmapImage(new Uri("/View/images/last_seen_clock_black.png", UriKind.Relative));
                 }
                 return lastSeenClockImage;
-            }
-        }
-
-        public SolidColorBrush ReceiveMessageForeground
-        {
-            get
-            {
-                if (receiveMessageForeground == null)
-                {
-                    if (Utils.isDarkTheme())
-                        receiveMessageForeground = this.White;
-                    else
-                        receiveMessageForeground = new SolidColorBrush(Color.FromArgb(255, 83, 83, 83));
-                }
-                return receiveMessageForeground;
             }
         }
 
@@ -1316,7 +1232,7 @@ namespace windows_client.utils
             }
         }
 
-        
+
         #endregion
 
         #region DEFAULT AVATARS
@@ -1547,6 +1463,46 @@ namespace windows_client.utils
             if (Utils.isGroupConversation(msisdn))
                 return getDefaultGroupAvatar(msisdn);
             return getDefaultAvatar(msisdn);
+        }
+
+        public SolidColorBrush ConvertStringToColor(string hexString)
+        {
+            byte a = 0;
+            byte r = 0;
+            byte g = 0;
+            byte b = 0;
+
+            if (hexString.StartsWith("#"))
+                hexString = hexString.Substring(1, 8);
+
+            if (hexString.Length == 8)
+            {
+                a = Convert.ToByte(Int32.Parse(hexString.Substring(0, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
+                r = Convert.ToByte(Int32.Parse(hexString.Substring(2, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
+                g = Convert.ToByte(Int32.Parse(hexString.Substring(4, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
+                b = Convert.ToByte(Int32.Parse(hexString.Substring(6, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
+            }
+            else
+            {
+                a = Convert.ToByte(255);
+                r = Convert.ToByte(Int32.Parse(hexString.Substring(0, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
+                g = Convert.ToByte(Int32.Parse(hexString.Substring(2, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
+                b = Convert.ToByte(Int32.Parse(hexString.Substring(4, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
+            }
+
+            return new SolidColorBrush(Color.FromArgb(a, r, g, b));
+        }
+
+        public byte[] ConvertToBytes(BitmapImage bitmapImage)
+        {
+            WriteableBitmap wb = new WriteableBitmap(bitmapImage);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                wb.SaveJpeg(ms, bitmapImage.PixelWidth, bitmapImage.PixelHeight, 0, 100);
+
+                return ms.ToArray();
+            }
         }
     }
 }

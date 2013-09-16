@@ -17,7 +17,7 @@
     OrientationChanged="PhoneApplicationPage_OrientationChanged"
     SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True" Visibility="Visible" Name="chatThreadMainPage">
+    shell:SystemTray.IsVisible="False">
 
     <phone:PhoneApplicationPage.Resources>
         <Style TargetType="phone:LongListSelector">
@@ -50,29 +50,34 @@
             </Setter>
         </Style>
     </phone:PhoneApplicationPage.Resources>
-    <shell:SystemTray.ProgressIndicator>
-        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
-    </shell:SystemTray.ProgressIndicator>
-
+    
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
-
+    <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        
+        <ProgressBar x:Name="shellProgress" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch" Canvas.ZIndex="4" Foreground="White" Background="Transparent"/>
 
+        <Border Grid.RowSpan="3" x:Name="BackgroundColor" Canvas.ZIndex="-4">
+            <Image x:Name="chatBackground" Stretch="None" Opacity="0.7">
+                <Image.RenderTransform>
+                    <RotateTransform x:Name="chatBackgroundRotateTransform" Angle="0"/>
+                </Image.RenderTransform>
+            </Image>
+        </Border>
 
         <!--<StackPanel Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Left" Margin="20,0,0, 0">
             <Image x:Name="icon" Source="images\hike_header.png" Height="40" Margin="4,25,0,0"/>
         </StackPanel>-->
 
-
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="HikeTitle" Orientation="Vertical" HorizontalAlignment="Stretch">
-            <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+        <Grid x:Name="HikeTitle" HorizontalAlignment="Stretch">
+            <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.5"/>
+            <StackPanel Orientation="Vertical">
                 <Border HorizontalAlignment="Stretch" Height="45" BorderThickness="1" BorderBrush="#414141" Background="#414141" x:Name="gcMuteGrid" Visibility="Collapsed" Margin="0,0,0,10">
                     <Grid HorizontalAlignment="Stretch" Margin="12,0">
                         <Grid.ColumnDefinitions>
@@ -83,22 +88,22 @@
                         <Image Grid.Column="1" Source="images\mute_icon_main.png" VerticalAlignment="Center" HorizontalAlignment="Right" Height="20" Width="20" Margin="0,5,12,5"/>
                     </Grid>
                 </Border>
-                <Grid Name="userHeader" HorizontalAlignment="Stretch" Margin="24,0,24,10" VerticalAlignment="Top">
+                <Grid Name="userHeader" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="24,10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Image Name="userImage" Height="55" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <StackPanel Margin="18,-2,0,0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-                        <TextBlock x:Name="userName"  FontFamily="Segoe WP SemiLight" FontSize="50" VerticalAlignment="Top" Margin="0,-10,0,0"/>
-                        <StackPanel Margin="2,-5,0,0" Orientation="Horizontal" VerticalAlignment="Top" x:Name="lastSeenPannel" Visibility="Collapsed">
-                            <Image x:Name="onlineStatus" MaxHeight="15" MaxWidth="15" Margin="0,0,5,0" Visibility="Collapsed"/>
-                            <TextBlock x:Name="lastSeenTxt" Text="" FontSize="18"/>
+                    <Image Name="userImage" Height="69" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <StackPanel Margin="12,5,0,0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                        <TextBlock x:Name="userName"  FontFamily="Segoe WP SemiLight" FontSize="36" VerticalAlignment="Top" Margin="0,-10,0,0" Foreground="White"/>
+                        <StackPanel Margin="2,0,0,0" Orientation="Horizontal" VerticalAlignment="Top" x:Name="lastSeenPannel">
+                            <Image x:Name="onlineStatus" MaxHeight="15" MaxWidth="15" Margin="0,0,5,0" Visibility="Collapsed" Opacity="0.75"/>
+                            <TextBlock x:Name="lastSeenTxt" Text="" FontSize="18" Foreground="White" Opacity="0.75"/>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
             </StackPanel>
-        </StackPanel>
+        </Grid>
 
         <Grid Grid.Row="1">
             <phone:LongListSelector Name="llsMessages" ItemUnrealized="llsMessages_ItemUnRealized" ItemRealized="llsMessages_ItemRealized" SelectionChanged="ChatMessageSelected" Grid.Row="1" DoubleTap="MessageList_DoubleTap" HorizontalContentAlignment="Stretch" Margin="0 0 0 5" >
@@ -206,7 +211,7 @@
                                             <Rectangle Grid.RowSpan="3" Fill="{Binding BubbleBackGroundColor}" />
                                             <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
                                             <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Grid.Row="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" />
-                                            <TextBlock Grid.Row="2" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="0,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                            <TextBlock Grid.Row="2" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="0,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.8"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
@@ -244,7 +249,7 @@
                                                 <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="1" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
                                                 <ProgressBar Grid.Row="2" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>
-                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.8"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
@@ -291,7 +296,7 @@
                                                 </Grid>
                                                 <ProgressBar Grid.Row="2" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>
-                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.8"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
@@ -341,7 +346,7 @@
                                                 </Grid>
                                                 <ProgressBar Grid.Row="2" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>
-                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.8"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
@@ -359,7 +364,7 @@
                                             <RowDefinition Height="14" />
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
-                                        <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="0, 12, 0, 0" Foreground="{Binding TimeStampForeGround}" />
+                                        <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="0, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
                                         <Path x:Name="bubblePointer" Data="M0,0 L1,1 L0,1" Grid.Row="1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{StaticResource PhoneAccentBrush}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
 
                                         <Grid Grid.Row="2">
@@ -412,7 +417,7 @@
                                                 <TextBlock Grid.Row="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" Grid.Column="1" Margin="0,8,5,0" TextWrapping="Wrap" MinWidth="150" MaxWidth="330" Foreground="{Binding MessageTextForeGround}"/>
                                                 <ProgressBar Grid.Row="2"  x:Name="downloadProgress" Margin="0,5,0,0" Grid.ColumnSpan="2" Height="10" Background="Transparent" Foreground="#333333" Minimum="0" Maximum="100"></ProgressBar>
                                             </Grid>
-                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.8"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
@@ -436,9 +441,9 @@
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding TimeStampForeGround}" />
+                                            <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
                                             <Image Grid.Row="1" HorizontalAlignment="Left" Source="{Binding MessageImage}" Grid.Column="0" />
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.8"/>
                                         </Grid>
                                         <Grid Visibility="{Binding IsStickerLoading}">
                                             <Grid.RowDefinitions>
@@ -446,9 +451,9 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
-                                            <TextBlock  Grid.Row="0" Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding TimeStampForeGround}" />
+                                            <TextBlock  Grid.Row="0" Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
                                             <ProgressBar Grid.Row="1" Foreground="#1ba1e2" IsIndeterminate="True" IsEnabled="True" HorizontalAlignment="Stretch" Margin="0 20 0 30"/>
-                                            <TextBlock Grid.Row="2" Text="{Binding Path=LocalizedResources.DownloadingSticker_txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}" TextAlignment="Left" />
+                                            <TextBlock Grid.Row="2" Text="{Binding Path=LocalizedResources.DownloadingSticker_txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="12,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" TextAlignment="Left" Opacity="0.8"/>
                                         </Grid>
                                         <Grid Visibility="{Binding IsHttpFailed}">
                                             <Grid.RowDefinitions>
@@ -457,10 +462,10 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
-                                            <TextBlock  Grid.Row="0" Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding TimeStampForeGround}" />
+                                            <TextBlock  Grid.Row="0" Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
                                             <Image Grid.Row="1" Source="/View/images/download_failed_bubble.png" MaxHeight="30" Margin="0 30 40 0"/>
-                                            <TextBlock Grid.Row="2" Text="{Binding Path=LocalizedResources.StickerDownloadFailed, Source={StaticResource LocalizedStrings}}"  HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
-                                            <TextBlock Grid.Row="3" Text="{Binding Path=LocalizedResources.TapHereToRetyTxt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                            <TextBlock Grid.Row="2" Text="{Binding Path=LocalizedResources.StickerDownloadFailed, Source={StaticResource LocalizedStrings}}"  HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.8"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding Path=LocalizedResources.TapHereToRetyTxt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Margin="12,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.8"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
@@ -492,7 +497,7 @@
                                             <Rectangle Grid.RowSpan="2" Grid.Column="1"  Fill="{Binding BubbleBackGroundColor}"/>
                                             <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
                                             <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Grid.Row="0" Grid.Column="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" />
-                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,24,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,24,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.8"/>
                                         </Grid>
                                         <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
 
@@ -543,7 +548,7 @@
                                                 </Grid>
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>
-                                            <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                            <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.8"/>
                                         </Grid>
                                         <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
                                     </Grid>
@@ -584,7 +589,7 @@
                                                 <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="0" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>
-                                            <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                            <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.8"/>
                                         </Grid>
                                         <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
                                     </Grid>
@@ -638,7 +643,7 @@
                                                 </Grid>
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>
-                                            <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                            <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.8"/>
                                         </Grid>
                                         <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
                                     </Grid>
@@ -714,7 +719,7 @@
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
 
                                             </Grid>
-                                            <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                            <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.8"/>
                                         </Grid>
                                         <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
                                     </Grid>
@@ -741,7 +746,7 @@
                                             </Grid.ColumnDefinitions>
                                             <Image x:Name="SDRImage" Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Width="30" Grid.Column="0" HorizontalAlignment="Right" Grid.RowSpan="2"></Image>
                                             <Image HorizontalAlignment="Right" Source="{Binding MessageImage}" Grid.Row="0" Grid.Column="1" />
-                                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.8"/>
                                         </Grid>
                                         <Grid Visibility="{Binding IsStickerLoading}">
                                             <Grid.RowDefinitions>
@@ -750,27 +755,27 @@
                                             </Grid.RowDefinitions>
                                             <TextBlock Grid.RowSpan="2" Width="250"></TextBlock>
                                             <ProgressBar Foreground="#1ba1e2" IsIndeterminate="True" IsEnabled="True" Width="150" HorizontalAlignment="Stretch" Margin="0 20 0 10"/>
-                                            <TextBlock Grid.Row="1" Text="{Binding Path=LocalizedResources.DownloadingSticker_txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="12,0,12,0" FontSize="18" Foreground="{Binding TimeStampForeGround}" TextAlignment="Center" />
+                                            <TextBlock Grid.Row="1" Text="{Binding Path=LocalizedResources.DownloadingSticker_txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="12,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" TextAlignment="Center" Opacity="0.8"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
                             </view:ChatThreadTemplateSelector.DtSentSticker>
                             <view:ChatThreadTemplateSelector.DtStatusUpdateBubble>
                                 <DataTemplate x:Name="dtStatusUpdateBubble">
-                                    <Grid x:Name="LayoutRoot"  Margin="0,5,0,5"  Background="{Binding BubbleBackGroundColor}" HorizontalAlignment="Stretch">
-                                        <Grid>
+                                    <Grid x:Name="LayoutRoot" Margin="0,5,0,5" Background="Transparent" HorizontalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border HorizontalAlignment="Stretch" Grid.ColumnSpan="2" VerticalAlignment="Stretch" Background="Black" Opacity="0.5" Canvas.ZIndex="-1"/>
+                                        <Image x:Name="statusTypeImage" Grid.Column="0" MaxHeight="50" Margin="20,10,0,10" VerticalAlignment="Top" Source="{Binding StatusUpdateImage}"/>
+                                        <Grid Grid.Column="1" Margin="12,0">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <Image x:Name="statusTypeImage" Grid.RowSpan="2" Grid.Column="0" MaxHeight="35" Margin="20,10,0,0" VerticalAlignment="Top" Source="{Binding StatusUpdateImage}"/>
-                                            <TextBlock x:Name="statusMessageTxtBlk" Grid.Row="0" Grid.Column="1" Margin="12,5,10,0" FontSize="21" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Top"/>
-                                            <TextBlock x:Name="statusTimestampTxtBlk" Grid.Row="1" Grid.Column="1"  Margin="12,0,0,10" FontSize="15" Foreground="{Binding TimeStampForeGround}"  Text="{Binding TimeStampStr}" VerticalAlignment="Top"/>
+                                            <TextBlock x:Name="statusMessageTxtBlk" Grid.Row="0" Grid.Column="1" Margin="0,5,0,0" FontSize="21" Foreground="White" TextWrapping="Wrap" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Top"/>
+                                            <TextBlock x:Name="statusTimestampTxtBlk" Grid.Row="1" Grid.Column="1"  Margin="0,5,0,10" FontSize="15" Foreground="White" Text="{Binding TimeStampStr}" VerticalAlignment="Top" Opacity="0.7"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
@@ -800,7 +805,7 @@
                     </Grid.ColumnDefinitions>
                     <ScrollViewer Name="svMessage" MaxHeight="150" Background="#eeeeec" >
                         <toolkit:PhoneTextBox  TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Chat" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
-                                                MinHeight="68" MaxHeight="2048" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto"  />
+                                                Height="68" MaxHeight="2048" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto"  />
                     </ScrollViewer>
                     <Image  x:Name="WalkieTalkieMicIcon" Grid.Column="1" Source="/View/images/Mic_icon_black_small.png" Tap="Record_ActionIconTapped" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="Uniform" Margin="0,0,15,17" MaxHeight="30"/>
                 </Grid>
@@ -978,6 +983,32 @@
                 </Grid>
             </StackPanel>
 
+            <Grid x:Name="chatBackgroundMenu" Visibility="Collapsed" Height="350"  Background="#080808" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="180"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Background="#292929">
+                    <Grid Width="140" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Image x:Name="resetBackground" Source="/view/images/icon_cross.png" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-25,-25,0" Canvas.ZIndex="1" Stretch="Uniform" Visibility="Collapsed" Height="50" Tap="resetBackground_Tap"/>
+                        <Image x:Name="chatBackgroundImage" Height="250" HorizontalAlignment="Center" VerticalAlignment="Center" Tap="chatBackgroundImage_Tap"/>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Column="1" Background="#292929" Margin="1,0,0,0">
+                    <ListBox x:Name="chatBackgroundList" SelectionChanged="chatBackgroundList_SelectionChanged">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <toolkit:WrapPanel ItemHeight="95" ItemWidth="95"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Rectangle RadiusX="10" RadiusY="10" Fill="{Binding BackgroundColor}" Width="75" Height="75" Margin="10"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Grid>
             <Grid x:Name="attachmentMenu" Visibility="Collapsed" Height="350" Background="#080808" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>

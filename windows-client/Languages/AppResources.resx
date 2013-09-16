@@ -1966,4 +1966,20 @@ Get hike: http://get.hike.in</value>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
     <value>Earn free SMS for every friend who joins hike because of you</value>
   </data>
+  <data name="On_Hike" xml:space="preserve">
+    <value>on hike</value>
+  </data>
+  <data name="On_SMS" xml:space="preserve">
+    <value>on SMS</value>
+  </data>
+  <data name="People_In_Group" xml:space="preserve">
+    <value>{0} people</value>
+  </data>
+  <data name="Change_Background_Text" xml:space="preserve">
+    <value>change bg</value>
+    <comment>10 characters limit</comment>
+  </data>
+  <data name="ChatBg_Changed_Text" xml:space="preserve">
+    <value>{0} changed the background</value>
+  </data>
 </root>

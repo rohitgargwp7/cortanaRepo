@@ -155,6 +155,7 @@ namespace windows_client
 
         public static readonly string UPDATE_GRP_PIC = "up_grp_pic";
         public static readonly string PRO_TIPS_REC = "proTipRec";
+        public static readonly string CHAT_BACKGROUND_REC = "chatBgRec";
 
         public static readonly string CONTACT_ADDED = "contact_added";
         public static readonly string ADDRESSBOOK_UPDATED= "adbook_updated";

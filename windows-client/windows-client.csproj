@@ -190,6 +190,7 @@
     <Compile Include="Misc\Social.cs" />
     <Compile Include="Model\Analytics.cs" />
     <Compile Include="Model\Attachment.cs" />
+    <Compile Include="Model\ChatBackground.cs" />
     <Compile Include="Model\ContactCompleteDetails.cs" />
     <Compile Include="Model\GroupInfo.cs" />
     <Compile Include="Model\GroupParticipant.cs" />
@@ -209,6 +210,7 @@
     <Compile Include="utils\AccountUtils.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
+    <Compile Include="utils\ChatBackgroundHelper.cs" />
     <Compile Include="utils\StickerPivotHelper.cs" />
     <Compile Include="utils\ContactUtils.cs" />
     <Compile Include="utils\ImageLoader.cs" />
@@ -482,6 +484,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\LockImage.png" />
+    <Content Include="Assets\pattern.png" />
+    <Content Include="Assets\Picture.png" />
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace windows_client.utils
 {
-    class LastSeenHelper
+    public class LastSeenHelper
     {
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private readonly int maxRequestCount = 2;

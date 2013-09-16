@@ -279,9 +279,6 @@ namespace windows_client.utils
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
-
-            if (!_loadWorker.IsBusy)
-                _loadWorker.RunWorkerAsync();
         }
 
         public static void getPicFromHikeServer_Callback(byte[] fullBytes, object fName)
@@ -302,9 +299,6 @@ namespace windows_client.utils
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
-
-            if (!_loadWorker.IsBusy)
-                _loadWorker.RunWorkerAsync();
         }
 
         private static void SetImageSource(ImageInfo imgInfo, Byte[] imgData)

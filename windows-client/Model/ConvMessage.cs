@@ -83,7 +83,8 @@ namespace windows_client.Model
             STATUS_UPDATE,
             IN_APP_TIP,
             FORCE_SMS_NOTIFICATION,
-            H2H_OFFLINE_IN_APP_TIP
+            H2H_OFFLINE_IN_APP_TIP,
+            CHAT_BACKGROUND_CHANGED
         }
 
         public enum MessageType
@@ -118,10 +119,8 @@ namespace windows_client.Model
 
             if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type)
                 return ParticipantInfoState.PARTICIPANT_JOINED;
-
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN_NEW == type)
                 return ParticipantInfoState.MEMBERS_JOINED;
-
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type)
             {
                 JToken jt = null;
@@ -130,21 +129,13 @@ namespace windows_client.Model
                 return ParticipantInfoState.PARTICIPANT_LEFT;
             }
             else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
-            {
                 return ParticipantInfoState.STATUS_UPDATE;
-            }
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END == type)
-            {
                 return ParticipantInfoState.GROUP_END;
-            }
             else if (HikeConstants.MqttMessageTypes.GROUP_USER_JOINED_OR_WAITING == type)
-            {
                 return ParticipantInfoState.GROUP_JOINED_OR_WAITING;
-            }
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
-            {
                 return ParticipantInfoState.USER_OPT_IN;
-            }
             else if (HikeConstants.MqttMessageTypes.USER_JOIN == type)
             {
                 bool isRejoin = false;
@@ -156,33 +147,21 @@ namespace windows_client.Model
                 return isRejoin ? ParticipantInfoState.USER_REJOINED : ParticipantInfoState.USER_JOINED;
             }
             else if (HikeConstants.MqttMessageTypes.HIKE_USER == type)
-            {
                 return ParticipantInfoState.HIKE_USER;
-            }
             else if (HikeConstants.MqttMessageTypes.SMS_USER == type)
-            {
                 return ParticipantInfoState.SMS_USER;
-            }
             else if ("credits_gained" == type)
-            {
                 return ParticipantInfoState.CREDITS_GAINED;
-            }
             else if (HikeConstants.MqttMessageTypes.BLOCK_INTERNATIONAL_USER == type)
-            {
                 return ParticipantInfoState.INTERNATIONAL_USER;
-            }
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME == type)
-            {
                 return ParticipantInfoState.GROUP_NAME_CHANGE;
-            }
             else if (HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP == type)
-            {
                 return ParticipantInfoState.DND_USER;
-            }
             else if (HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC == type)
-            {
                 return ParticipantInfoState.GROUP_PIC_CHANGED;
-            }
+            else if (HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS == type)
+                return ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
             else  // shows type == null
             {
                 JArray dndNumbers = (JArray)obj["dndnumbers"];
@@ -692,8 +671,8 @@ namespace windows_client.Model
         {
             get
             {
-                if(_address == null)
-                    _address= getAddressFromMetaData();
+                if (_address == null)
+                    _address = getAddressFromMetaData();
 
                 return _address;
             }
@@ -1048,51 +1027,38 @@ namespace windows_client.Model
         {
             get
             {
-                if (participantInfoState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
-                {
-                    return UI_Utils.Instance.StatusBubbleColor;
-                }
-                else if (IsSent)
-                {
-                    if (IsSms)
-                    {
-                        return UI_Utils.Instance.SmsBackground;
-                    }
-                    else
-                    {
-                        return UI_Utils.Instance.HikeMsgBackground;
-                    }
-                }
+                if (IsSent)
+                    return App.ViewModel.SelectedBackground.SentBubbleBgColor;
                 else
-                {
-                    return UI_Utils.Instance.ReceivedChatBubbleColor;
-                }
+                    return App.ViewModel.SelectedBackground.ReceivedBubbleBgColor;
+            }
+            set
+            {
+                NotifyPropertyChanged("BubbleBackGroundColor");
             }
         }
 
-        public SolidColorBrush TimeStampForeGround
+        public SolidColorBrush ChatForegroundColor
         {
             get
             {
-                if (participantInfoState == ConvMessage.ParticipantInfoState.STATUS_UPDATE || (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID)))
-                {
-                    return UI_Utils.Instance.ReceivedChatBubbleTimestamp;
-                }
-                else if (IsSent)
-                {
-                    if (IsSms)
-                    {
-                        return UI_Utils.Instance.SMSSentChatBubbleTimestamp;
-                    }
-                    else
-                    {
-                        return UI_Utils.Instance.HikeSentChatBubbleTimestamp;
-                    }
-                }
-                else
-                {
-                    return UI_Utils.Instance.ReceivedChatBubbleTimestamp;
-                }
+                return App.ViewModel.SelectedBackground.ForegroundColor;
+            }
+            set
+            {
+                NotifyPropertyChanged("MessageTextForeGround");
+            }
+        }
+
+        public SolidColorBrush BubbleForegroundColor
+        {
+            get
+            {
+                return App.ViewModel.SelectedBackground.BubbleForegroundColor;
+            }
+            set
+            {
+                NotifyPropertyChanged("MessageTextForeGround");
             }
         }
 
@@ -1100,18 +1066,10 @@ namespace windows_client.Model
         {
             get
             {
-                if (participantInfoState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
-                {
-                    return UI_Utils.Instance.ReceiveMessageForeground;
-                }
-                else if (IsSent)
-                {
-                    return UI_Utils.Instance.White;
-                }
+                if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                    return ChatForegroundColor;
                 else
-                {
-                    return UI_Utils.Instance.ReceiveMessageForeground;
-                }
+                    return BubbleForegroundColor;
             }
         }
 
@@ -1125,8 +1083,6 @@ namespace windows_client.Model
                     return Visibility.Collapsed;
             }
         }
-
-
 
         public ConvMessage(string message, string msisdn, long timestamp, State msgState, PageOrientation currentOrientation)
             : this(message, msisdn, timestamp, msgState, -1, -1, currentOrientation)
@@ -1759,6 +1715,22 @@ namespace windows_client.Model
                     gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
                     this.Message = string.Format(AppResources.GroupImgChangedByGrpMember_Txt, gp.Name);
                     jsonObj.Remove(HikeConstants.DATA);
+                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+                    break;
+                case ParticipantInfoState.CHAT_BACKGROUND_CHANGED:
+                    grpId = (string)jsonObj[HikeConstants.TO];
+                    from = (string)jsonObj[HikeConstants.FROM];
+                    this._groupParticipant = from;
+                    this._msisdn = grpId;
+                    if (from == App.MSISDN)
+                    {
+                        this.Message = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
+                    }
+                    else
+                    {
+                        gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
+                        this.Message = string.Format(AppResources.ChatBg_Changed_Text, gp.Name);
+                    }
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
                 default:

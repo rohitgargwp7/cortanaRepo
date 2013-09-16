@@ -340,6 +340,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to change bg.
+        /// </summary>
+        public static string Change_Background_Text {
+            get {
+                return ResourceManager.GetString("Change_Background_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} changed the background.
+        /// </summary>
+        public static string ChatBg_Changed_Text {
+            get {
+                return ResourceManager.GetString("ChatBg_Changed_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 1 new message.
         /// </summary>
         public static string ChatThread_1NewMessage_txt {
@@ -2858,6 +2876,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to on hike.
+        /// </summary>
+        public static string On_Hike {
+            get {
+                return ResourceManager.GetString("On_Hike", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to on SMS.
+        /// </summary>
+        public static string On_SMS {
+            get {
+                return ResourceManager.GetString("On_SMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to on hike since {0}.
         /// </summary>
         public static string OnHIkeSince_Txt {
@@ -2917,6 +2953,15 @@ namespace windows_client.Languages {
         public static string Pause_Txt {
             get {
                 return ResourceManager.GetString("Pause_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} people.
+        /// </summary>
+        public static string People_In_Group {
+            get {
+                return ResourceManager.GetString("People_In_Group", resourceCulture);
             }
         }
         

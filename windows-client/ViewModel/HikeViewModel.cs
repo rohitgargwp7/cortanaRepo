@@ -17,6 +17,8 @@ using windows_client.utils;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using System.Device.Location;
+using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace windows_client.ViewModel
 {
@@ -159,8 +161,6 @@ namespace windows_client.ViewModel
         public HikeViewModel(List<ConversationListObject> convList)
         {
             _convMap = new Dictionary<string, ConversationListObject>(convList.Count);
-            _pendingReq = new Dictionary<string, ConversationListObject>();
-            _favList = new ObservableCollection<ConversationListObject>();
 
             List<ConversationListObject> listConversationBox = new List<ConversationListObject>();
             // this order should be maintained as _convMap should be populated before loading fav list
@@ -171,38 +171,39 @@ namespace windows_client.ViewModel
                 listConversationBox.Add(convListObj);
             }
             _messageListPageCollection = new ObservableCollection<ConversationListObject>(listConversationBox);
-            MiscDBUtil.LoadFavourites(_favList, _convMap);
-            int count = 0;
-            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-            if (count != _favList.Count) // values are not loaded, move to backup plan
-            {
-                _favList.Clear();
-                MiscDBUtil.LoadFavouritesFromIndividualFiles(_favList, _convMap);
-            }
-            RegisterListeners();
 
-            LoadToolTipsDict();
-            LoadCurrentLocation();
+            LoadViewModelObjects();
         }
 
         public HikeViewModel()
         {
             _messageListPageCollection = new ObservableCollection<ConversationListObject>();
             _convMap = new Dictionary<string, ConversationListObject>();
-            _favList = new ObservableCollection<ConversationListObject>();
+
+            LoadViewModelObjects();
+        }
+
+        private void LoadViewModelObjects()
+        {
             _pendingReq = new Dictionary<string, ConversationListObject>();
+            _favList = new ObservableCollection<ConversationListObject>();
+            
             MiscDBUtil.LoadFavourites(_favList, _convMap);
             int count = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+            
             if (count != _favList.Count) // values are not loaded, move to backup plan
             {
                 _favList.Clear();
                 MiscDBUtil.LoadFavouritesFromIndividualFiles(_favList, _convMap);
             }
+
             RegisterListeners();
 
             LoadToolTipsDict();
             LoadCurrentLocation();
+
+            ChatBackgroundHelper.Instance.Instantiate();
         }
 
         /// <summary>
@@ -311,6 +312,7 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.addListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.addListener(HikePubSub.USER_LEFT, this);
             App.HikePubSubInstance.addListener(HikePubSub.BLOCK_USER, this);
+            App.HikePubSubInstance.addListener(HikePubSub.CHAT_BACKGROUND_REC, this);
         }
 
         private void RemoveListeners()
@@ -319,6 +321,7 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.removeListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.removeListener(HikePubSub.USER_LEFT, this);
             App.HikePubSubInstance.removeListener(HikePubSub.BLOCK_USER, this);
+            App.HikePubSubInstance.removeListener(HikePubSub.CHAT_BACKGROUND_REC, this);
         }
 
         public void onEventReceived(string type, object obj)
@@ -388,6 +391,57 @@ namespace windows_client.ViewModel
                 }
             }
             #endregion
+            #region Chat Background Changed
+            else if (HikePubSub.CHAT_BACKGROUND_REC == type)
+            {
+                object[] vals = (object[])obj;
+                var jsonObj = (JObject)vals[1];
+                var from = (string)jsonObj[HikeConstants.FROM];
+
+                var to = "";
+                try
+                {
+                    to = (string)jsonObj[HikeConstants.TO];
+                }
+                catch { }
+
+                var ts = (string)jsonObj[HikeConstants.TIMESTAMP];
+                var data = (JObject)jsonObj[HikeConstants.DATA];
+                var bgId = (string)data[HikeConstants.BACKGROUND_ID];
+                var img = (string)data[HikeConstants.IMAGE];
+
+                if (String.IsNullOrEmpty(to))
+                {
+                    ChatBackgroundHelper.Instance.UpdateChatBgMap(from, bgId, img, ts);
+                    ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(from);
+                }
+                else
+                {
+                    ChatBackgroundHelper.Instance.UpdateChatBgMap(to, bgId, img, ts);
+                    ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(to);
+                }
+
+                if (from != App.MSISDN)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (App.newChatThreadPage != null)
+                            {
+                                if (String.IsNullOrEmpty(to) && App.newChatThreadPage.mContactNumber == from)
+                                {
+                                    App.newChatThreadPage.ChangeBackground();
+                                }
+                                else if (App.newChatThreadPage.mContactNumber == to)
+                                {
+                                    App.newChatThreadPage.ChangeBackground();
+                                }
+
+                                App.newChatThreadPage.chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
+                            }
+                        });
+                }
+            }
+            #endregion
         }
 
         #region INotifyPropertyChanged Members
@@ -426,6 +480,8 @@ namespace windows_client.ViewModel
                 return _contactsCache;
             }
         }
+
+        #region In Apptips
 
         List<HikeToolTip> _toolTipsList;
         public Dictionary<int, HikeToolTip> DictInAppTip;
@@ -646,6 +702,18 @@ namespace windows_client.ViewModel
                 toolTip.TriggerUIUpdateOnDismissed();
             }
         }
+
+        #endregion
+
+        #region ChatBackground
+
+        public ChatBackground SelectedBackground
+        {
+            get;
+            set;
+        }
+
+        #endregion
 
         public void RemoveFrndReqFromTimeline(string msisdn, FriendsTableUtils.FriendStatusEnum friendStatus)
         {

@@ -241,6 +241,8 @@ namespace windows_client
         public static readonly string PRO_TIP_TIME = "wt";
         public static readonly Int64 DEFAULT_PRO_TIP_TIME = 300;
 
+        public static readonly string BACKGROUND_ID = "bg_id";
+
         public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
         public static string MSISDN = "msisdn";
@@ -389,6 +391,7 @@ namespace windows_client
             public static readonly string DELETE_STATUS_UPDATE = "dsu";
             public static readonly string GROUP_DISPLAY_PIC = "dp";
             public static readonly string PRO_TIPS = "pt";
+            public static readonly string CHAT_BACKGROUNDS = "cbg";
             public static readonly string APP_INFO = "app";
             public static readonly string FORCE_SMS = "fsms";
         }

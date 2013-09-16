@@ -351,6 +351,12 @@ namespace windows_client.DbUtils
                         obj.LastMessage = convMsg.Message;
                 }
                 #endregion
+                #region Chat Background Changed
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED)
+                {
+                    obj.LastMessage = convMsg.Message;
+                }
+                #endregion
                 #region OTHER MSGS
                 else
                     obj.LastMessage = convMsg.Message;
