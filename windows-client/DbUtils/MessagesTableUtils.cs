@@ -191,7 +191,7 @@ namespace windows_client.DbUtils
             return obj;
         }
 
-        public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup)
+        public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup, string from = "")
         {
             if (convMsg == null)
                 return null;
@@ -354,9 +354,9 @@ namespace windows_client.DbUtils
                 #region Chat Background Changed
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED)
                 {
-                    if (!Utils.isGroupConversation(convMsg.Msisdn))
+                    if (!Utils.isGroupConversation(from))
                     {
-                        if (convMsg.Msisdn == App.MSISDN)
+                        if (from == App.MSISDN)
                         {
                             convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
                         }

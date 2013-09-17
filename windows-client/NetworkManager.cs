@@ -1533,8 +1533,6 @@ namespace windows_client
             #region Chat Background
             else if (HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS == type)
             {
-                JObject data = null;
-
                 try
                 {
                     ConvMessage cm;
@@ -1562,7 +1560,7 @@ namespace windows_client
                         cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
                     }
 
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, (string)jsonObj[HikeConstants.FROM]);
 
                     if (obj != null)
                     {

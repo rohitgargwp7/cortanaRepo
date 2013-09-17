@@ -4772,7 +4772,7 @@ namespace windows_client.View
                 img = String.Empty;
 
             string msg = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
-            ConvMessage cm = new ConvMessage(msg, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN, -1, -1, this.Orientation);
+            ConvMessage cm = new ConvMessage(String.Empty, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN, -1, -1, this.Orientation);
             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
             cm.GroupParticipant = App.MSISDN;
             
@@ -4788,7 +4788,8 @@ namespace windows_client.View
             jo[HikeConstants.DATA] = data;
 
             cm.MetaDataString = jo.ToString(Newtonsoft.Json.Formatting.None);
-            ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false);
+            ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, App.MSISDN);
+            cobj.LastMessage = cm.Message = msg;
 
             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
 
