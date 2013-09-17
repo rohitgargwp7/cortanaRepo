@@ -394,8 +394,7 @@ namespace windows_client.ViewModel
             #region Chat Background Changed
             else if (HikePubSub.CHAT_BACKGROUND_REC == type)
             {
-                object[] vals = (object[])obj;
-                var jsonObj = (JObject)vals[1];
+                var jsonObj = (JObject)obj;
                 var from = (string)jsonObj[HikeConstants.FROM];
 
                 var to = "";

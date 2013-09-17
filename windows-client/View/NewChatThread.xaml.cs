@@ -38,6 +38,7 @@ using Microsoft.Phone.BackgroundAudio;
 using System.Collections.ObjectModel;
 using windows_client.ViewModel;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace windows_client.View
 {
@@ -4766,13 +4767,13 @@ namespace windows_client.View
             }
         }
 
-        void SendBackgroundChangedPacket(string bgId, string img = null)
+        async Task SendBackgroundChangedPacket(string bgId, string img = null)
         {
             if (img == null)
                 img = String.Empty;
 
             string msg = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
-            ConvMessage cm = new ConvMessage(String.Empty, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN, -1, -1, this.Orientation);
+            ConvMessage cm = new ConvMessage(String.Empty, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
             cm.GroupParticipant = App.MSISDN;
             
@@ -4787,25 +4788,24 @@ namespace windows_client.View
             jo[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS;
             jo[HikeConstants.DATA] = data;
 
-            cm.MetaDataString = jo.ToString(Newtonsoft.Json.Formatting.None);
             ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, App.MSISDN);
-            cobj.LastMessage = cm.Message = msg;
+            cm.Message = msg;
 
             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
+            cm.MetaDataString = "{\"t\":\"cbg\"}";
 
             if (cobj != null)
-            {// handle msgs
+            {
+                // handle msgs
+                cobj.LastMessage = msg;
+
                 object[] vs = new object[2];
                 vs[0] = cm;
                 vs[1] = cobj;
                 mPubSub.publish(HikePubSub.MESSAGE_RECEIVED, vs);
             }
 
-            // handle saving image
-            object[] vals = new object[2];
-            vals[0] = cm;
-            vals[1] = jo;
-            mPubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, vals);
+            mPubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, jo);
 
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, jo);
         }

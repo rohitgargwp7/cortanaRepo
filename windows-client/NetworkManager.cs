@@ -1556,10 +1556,10 @@ namespace windows_client
                     {
                         var str = String.Format(AppResources.ChatBg_Changed_Text, msisdn);
                         cm = new ConvMessage(str, msisdn, ts, ConvMessage.State.UNKNOWN);
-                        cm.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                         cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
                     }
 
+                    cm.MetaDataString = "{\"t\":\"cbg\"}";
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, (string)jsonObj[HikeConstants.FROM]);
 
                     if (obj != null)
@@ -1575,11 +1575,7 @@ namespace windows_client
                             });
                     }
 
-                    object[] values = new object[2];
-                    values[0] = cm;
-                    values[1] = jsonObj;
-
-                    pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, values);
+                    pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, jsonObj);
                 }
                 catch (Exception ex)
                 {

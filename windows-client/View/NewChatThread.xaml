@@ -75,7 +75,7 @@
         </StackPanel>-->
 
         <!--TitlePanel contains the name of the application and page title-->
-        <Grid x:Name="HikeTitle" HorizontalAlignment="Stretch">
+        <Grid x:Name="HikeTitle" HorizontalAlignment="Stretch" Margin="0,0,0,5">
             <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.5"/>
             <StackPanel Orientation="Vertical">
                 <Border HorizontalAlignment="Stretch" Height="45" BorderThickness="1" BorderBrush="#414141" Background="#414141" x:Name="gcMuteGrid" Visibility="Collapsed" Margin="0,0,0,10">
