@@ -1034,7 +1034,7 @@ namespace windows_client.View
 
             chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
 
-            ChangeBackground();
+            ChangeBackground(false);
         }
 
         private void UpdateChatStatus()
@@ -4837,13 +4837,22 @@ namespace windows_client.View
             }
         }
 
-        public void ChangeBackground()
+        public void ChangeBackground(bool isBubbleColorChanged = true)
         {
             WriteableBitmap wb1;
             
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
             var bg = ChatBackgroundHelper.Instance.ChatBgMap[mContactNumber];
+
+            if (isBubbleColorChanged)
+            {
+                foreach(var msg in ocMessages)
+                {
+                    msg.MessageTextForeGround = null;
+                    msg.BubbleBackGroundColor = null;
+                }
+            }
 
             if (string.IsNullOrEmpty(bg.BackgroundImageBase64))
             {

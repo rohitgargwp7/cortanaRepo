@@ -72,16 +72,27 @@ namespace windows_client.utils
             BackgroundList.Sort(CompareBackground);
         }
 
-        public void UpdateChatBgMap(string id, string bgId, string image, string ts)
+        public bool UpdateChatBgMap(string id, string bgId, string image, long ts)
         {
-            ChatBgMap[id]=new BackgroundImage()
-            {
-                BackgroundId = bgId,
-                BackgroundImageBase64 = image,
-                Timestamp = ts
-            };
+            BackgroundImage bg = ChatBgMap.ContainsKey(id) ? ChatBgMap[id] : new BackgroundImage();
 
-            SaveMapToFile();
+            var newTs = ts;
+            var oldTs = bg.Timestamp;
+
+            if (oldTs < newTs)
+            {
+                bg.BackgroundId = bgId;
+                bg.BackgroundImageBase64 = image;
+                bg.Timestamp = ts;
+
+                ChatBgMap[id] = bg;
+
+                SaveMapToFile();
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -201,7 +212,7 @@ namespace windows_client.utils
             {
                 BackgroundId = bgId,
                 BackgroundImageBase64 = image,
-                Timestamp = TimeUtils.getCurrentTimeStamp().ToString()
+                Timestamp = TimeUtils.getCurrentTimeStamp()
             };
 
             SaveMapToFile();
@@ -232,7 +243,7 @@ namespace windows_client.utils
                 ChatBgMap[msisdn] = new BackgroundImage()
                 {
                     BackgroundId = SetDefaultBackground(msisdn),
-                    Timestamp = TimeUtils.getCurrentTimeStamp().ToString()
+                    Timestamp = TimeUtils.getCurrentTimeStamp()
                 };
 
                 SaveMapToFile();
@@ -295,7 +306,7 @@ namespace windows_client.utils
             ChatBgMap[msisdn] = new BackgroundImage()
             {
                 BackgroundId = id,
-                Timestamp = TimeUtils.getCurrentTimeStamp().ToString()
+                Timestamp = TimeUtils.getCurrentTimeStamp()
             };
 
             SaveMapToFile();
@@ -464,6 +475,34 @@ namespace windows_client.utils
                 Pattern = imgstr
             });
 
+            chatBgs.Add(new ChatBackground()
+            {
+                ID = "7",
+                Background = "#ff6EA510",
+                SentBubbleBackground = "#ffBCEF65",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = true,
+                Position = 7,
+                Thumbnail = null,
+                Pattern = imgstr
+            });
+
+            chatBgs.Add(new ChatBackground()
+            {
+                ID = "8",
+                Background = "#ffD662AA",
+                SentBubbleBackground = "#c5D662AA",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = true,
+                Position = 8,
+                Thumbnail = null,
+                Pattern = imgstr
+            });
+
             lock (readWriteLock)
             {
                 try
@@ -516,6 +555,8 @@ namespace windows_client.utils
             idList.Add("4");
             idList.Add("5");
             idList.Add("6");
+            idList.Add("7");
+            idList.Add("8");
 
             lock (readWriteLock)
             {
@@ -597,7 +638,7 @@ namespace windows_client.utils
     {
         public string BackgroundId;
         public string BackgroundImageBase64;
-        public string Timestamp;
+        public long Timestamp;
 
         public void Write(BinaryWriter writer)
         {
@@ -610,10 +651,7 @@ namespace windows_client.utils
                 else
                     writer.WriteStringBytes(BackgroundImageBase64);
 
-                if (Timestamp == null)
-                    writer.WriteStringBytes("*@N@*");
-                else
-                    writer.WriteStringBytes(Timestamp);
+                writer.Write(Timestamp);
             }
             catch (Exception ex)
             {
@@ -634,10 +672,7 @@ namespace windows_client.utils
                 if (BackgroundImageBase64 == "*@N@*")
                     BackgroundImageBase64 = null;
 
-                count = reader.ReadInt32();
-                Timestamp = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                if (Timestamp == "*@N@*")
-                    Timestamp = null;
+                Timestamp = reader.ReadInt64();
             }
             catch (Exception ex)
             {

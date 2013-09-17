@@ -1044,10 +1044,6 @@ namespace windows_client.Model
             {
                 return App.ViewModel.SelectedBackground.ForegroundColor;
             }
-            set
-            {
-                NotifyPropertyChanged("MessageTextForeGround");
-            }
         }
 
         public SolidColorBrush BubbleForegroundColor
@@ -1056,20 +1052,20 @@ namespace windows_client.Model
             {
                 return App.ViewModel.SelectedBackground.BubbleForegroundColor;
             }
-            set
-            {
-                NotifyPropertyChanged("MessageTextForeGround");
-            }
         }
 
         public SolidColorBrush MessageTextForeGround
         {
             get
             {
-                if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)) || GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
                     return ChatForegroundColor;
                 else
                     return BubbleForegroundColor;
+            }
+            set
+            {
+                NotifyPropertyChanged("MessageTextForeGround");
             }
         }
 

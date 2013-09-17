@@ -354,7 +354,22 @@ namespace windows_client.DbUtils
                 #region Chat Background Changed
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED)
                 {
-                    obj.LastMessage = convMsg.Message;
+                    if (!Utils.isGroupConversation(convMsg.Msisdn))
+                    {
+                        if (convMsg.Msisdn == App.MSISDN)
+                        {
+                            convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
+                        }
+                        else
+                        {
+                            obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, obj.NameToShow);
+                            convMsg.Message = obj.LastMessage;
+                        }
+                    }
+                    else
+                    {
+                        obj.LastMessage = convMsg.Message;
+                    }
                 }
                 #endregion
                 #region OTHER MSGS

@@ -10,11 +10,30 @@ using System.IO;
 using windows_client.Misc;
 using windows_client.utils;
 using System.Windows.Media.Imaging;
+using System.Windows;
+using System.ComponentModel;
 
 namespace windows_client.Model
 {
-    public class ChatBackground
+    public class ChatBackground : INotifyPropertyChanged
     {
+        Visibility _selectedIconVisibility = Visibility.Collapsed;
+        public Visibility SelectedIconVisibility
+        {
+            get
+            {
+                return _selectedIconVisibility;
+            }
+            set
+            {
+                if (value != _selectedIconVisibility)
+                {
+                    _selectedIconVisibility = value;
+                    NotifyPropertyChanged("SelectedIconVisibility");
+                }
+            }
+        }
+
         SolidColorBrush _backgroundColor;
         public SolidColorBrush BackgroundColor
         {
@@ -198,6 +217,25 @@ namespace windows_client.Model
             }
         }
 
-        
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // Used to notify that a property changed
+        public void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    }
+                    catch (Exception ex)
+                    {
+                       System.Diagnostics.Debug.WriteLine("ChatBackground Model :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
+                    }
+                });
+            }
+        }
     }
 }

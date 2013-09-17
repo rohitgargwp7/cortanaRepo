@@ -405,40 +405,30 @@ namespace windows_client.ViewModel
                 }
                 catch { }
 
-                var ts = (string)jsonObj[HikeConstants.TIMESTAMP];
+                var ts = (long)jsonObj[HikeConstants.TIMESTAMP];
                 var data = (JObject)jsonObj[HikeConstants.DATA];
                 var bgId = (string)data[HikeConstants.BACKGROUND_ID];
                 var img = (string)data[HikeConstants.IMAGE];
 
-                if (String.IsNullOrEmpty(to))
-                {
-                    ChatBackgroundHelper.Instance.UpdateChatBgMap(from, bgId, img, ts);
-                    ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(from);
-                }
-                else
-                {
-                    ChatBackgroundHelper.Instance.UpdateChatBgMap(to, bgId, img, ts);
-                    ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(to);
-                }
+                var sender = String.IsNullOrEmpty(to) ? from : to;
 
-                if (from != App.MSISDN)
+                if (ChatBackgroundHelper.Instance.UpdateChatBgMap(sender, bgId, img, ts))
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            if (App.newChatThreadPage != null)
+                    ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(sender);
+
+                    if (from != App.MSISDN)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                if (String.IsNullOrEmpty(to) && App.newChatThreadPage.mContactNumber == from)
+                                if (App.newChatThreadPage != null)
                                 {
-                                    App.newChatThreadPage.ChangeBackground();
+                                    if (App.newChatThreadPage.mContactNumber == sender)
+                                        App.newChatThreadPage.ChangeBackground();
+                                    
+                                    App.newChatThreadPage.chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
                                 }
-                                else if (App.newChatThreadPage.mContactNumber == to)
-                                {
-                                    App.newChatThreadPage.ChangeBackground();
-                                }
-
-                                App.newChatThreadPage.chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
-                            }
-                        });
+                            });
+                    }
                 }
             }
             #endregion
@@ -521,7 +511,7 @@ namespace windows_client.ViewModel
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 30, 0), FullTipMargin = new Thickness(10, 0, 10, 55) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 60, 10, 0) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 80, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_7, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
         }
 
@@ -707,10 +697,24 @@ namespace windows_client.ViewModel
 
         #region ChatBackground
 
+        ChatBackground _selectedBackground;
         public ChatBackground SelectedBackground
         {
-            get;
-            set;
+            get
+            {
+                return _selectedBackground;
+            }
+            set
+            {
+                if (value != _selectedBackground)
+                {
+                    if (_selectedBackground != null)
+                        _selectedBackground.SelectedIconVisibility = Visibility.Collapsed;
+                    
+                    _selectedBackground = value;
+                    _selectedBackground.SelectedIconVisibility = Visibility.Visible;
+                }
+            }
         }
 
         #endregion

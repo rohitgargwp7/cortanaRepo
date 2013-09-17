@@ -1539,8 +1539,17 @@ namespace windows_client
                 {
                     ConvMessage cm;
                     var ts = (long)jsonObj[HikeConstants.TIMESTAMP];
-                    var to = (string)jsonObj[HikeConstants.TO];
+                    if (ts > 0)
+                    {
+                        long timedifference;
+                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                        {
+                            ts = ts - timedifference;
+                            jsonObj[HikeConstants.TIMESTAMP] = ts;
+                        }
+                    }
 
+                    var to = (string)jsonObj[HikeConstants.TO];
                     if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
                     {
                         cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED, jsonObj, ts);
