@@ -1430,15 +1430,13 @@ namespace windows_client.View
             fileTransferIconButton.IsEnabled = true;
             appBar.Buttons.Add(fileTransferIconButton);
 
-            changeBackground = new ApplicationBarMenuItem() { Text = AppResources.Change_Background_Text };
+            changeBackground = new ApplicationBarMenuItem();
+            changeBackground.Text = AppResources.Change_Background_Text;
             changeBackground.Click += changeBackground_Click;
             appBar.MenuItems.Add(changeBackground);
 
             if (isGroupChat)
             {
-                userName.Tap += userHeader_Tap;
-                userImage.Tap += userImage_Tap;
-
                 infoMenuItem = new ApplicationBarMenuItem();
                 infoMenuItem.Text = AppResources.GroupInfo_Txt;
                 infoMenuItem.Click += userHeader_Tap;
@@ -1468,7 +1466,6 @@ namespace windows_client.View
                 callMenuItem.Text = AppResources.Call_Txt;
                 callMenuItem.Click += new EventHandler(callUser_Click);
                 appBar.MenuItems.Add(callMenuItem);
-                userHeader.Tap += userHeader_Tap;
 
                 infoMenuItem = new ApplicationBarMenuItem();
                 infoMenuItem.Text = AppResources.OthersProfile_Txt;
@@ -4788,12 +4785,11 @@ namespace windows_client.View
             jo[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS;
             jo[HikeConstants.DATA] = data;
 
-            ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, App.MSISDN);
             cm.Message = msg;
-
             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
-            cm.MetaDataString = "{\"t\":\"cbg\"}";
-
+            cm.MetaDataString = "{\"t\":\"cbg\"}"; 
+            
+            ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, App.MSISDN);
             if (cobj != null)
             {
                 // handle msgs
@@ -4818,6 +4814,32 @@ namespace windows_client.View
             task.ShowCamera = true;
             task.Completed += task_Completed;
             task.Show();
+        }
+
+        void chatPaint_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (recordGrid.Visibility == Visibility.Visible)
+            {
+                recordGrid.Visibility = Visibility.Collapsed;
+                sendMsgTxtbox.Visibility = Visibility.Visible;
+            }
+
+            App.ViewModel.HideToolTip(LayoutRoot, 0);
+            App.ViewModel.HideToolTip(LayoutRoot, 2);
+
+            if (chatBackgroundMenu.Visibility == Visibility.Collapsed)
+                chatBackgroundMenu.Visibility = Visibility.Visible;
+            else
+                chatBackgroundMenu.Visibility = Visibility.Collapsed;
+
+            if (emoticonPanel.Visibility == Visibility.Visible)
+            {
+                App.ViewModel.HideToolTip(LayoutRoot, 1);
+                emoticonPanel.Visibility = Visibility.Collapsed;
+            }
+
+            attachmentMenu.Visibility = Visibility.Collapsed;
+            this.Focus();
         }
 
         void task_Completed(object sender, PhotoResult e)
@@ -4887,7 +4909,6 @@ namespace windows_client.View
 
                     width += source.PixelWidth;
                 }
-
             }
             else
             {

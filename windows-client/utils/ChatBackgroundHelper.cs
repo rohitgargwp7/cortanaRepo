@@ -20,7 +20,6 @@ namespace windows_client.utils
         private const string bgIdsListFileName = "chatBgList";
         private const string bgIdMapFileName = "chatBgMap";
 
-        Dictionary<String, ChatBackground> ChatBgCache;
         List<String> BackgroundIdList;
 
         public List<ChatBackground> BackgroundList;
@@ -51,7 +50,6 @@ namespace windows_client.utils
 
         public ChatBackgroundHelper()
         {
-            ChatBgCache = new Dictionary<string, ChatBackground>();
             ChatBgMap = new Dictionary<string, BackgroundImage>();
             BackgroundIdList = new List<string>();
             BackgroundList = new List<ChatBackground>();
@@ -63,11 +61,6 @@ namespace windows_client.utils
 
             PopulateBackgrounds();
             PopulateFromFile();
-
-            foreach (var id in BackgroundIdList)
-            {
-                BackgroundList.Add(ChatBgCache[id]);
-            }
 
             BackgroundList.Sort(CompareBackground);
         }
@@ -198,7 +191,8 @@ namespace windows_client.utils
             {
                 var chatBg = ReadBackgroundFromFile(id);
 
-                ChatBgCache.Add(id, chatBg);
+                if (chatBg != null)
+                    BackgroundList.Add(chatBg);
             }
         }
 
@@ -206,7 +200,7 @@ namespace windows_client.utils
 
         public void SetSelectedChatBackgorund(string msisdn, string bgId, string image)
         {
-            App.ViewModel.SelectedBackground = ChatBgCache[bgId];
+            App.ViewModel.SelectedBackground = BackgroundList.Where(b => b.ID == bgId).First();
 
             ChatBgMap[msisdn] = new BackgroundImage()
             {
@@ -224,9 +218,10 @@ namespace windows_client.utils
           
             if (ChatBgMap.TryGetValue(msisdn, out bgObj))
             {
-                ChatBackground bg;
+                var list = BackgroundList.Where(b => b.ID == bgObj.BackgroundId);
+                ChatBackground bg = list.Count()==0?null:list.First();
 
-                if (ChatBgCache.TryGetValue(bgObj.BackgroundId, out bg))
+                if (bg!=null)
                     App.ViewModel.SelectedBackground = bg;
                 else
                 {
@@ -235,7 +230,7 @@ namespace windows_client.utils
                     if (bg == null)
                         GetNewBackground(msisdn, bgObj.BackgroundId);
                     else
-                        ChatBgCache[bgObj.BackgroundId] = App.ViewModel.SelectedBackground = bg;
+                        App.ViewModel.SelectedBackground = bg;
                 }
             }
             else
@@ -255,7 +250,7 @@ namespace windows_client.utils
             int index = random.Next(0, BackgroundIdList.Count);
             var id = BackgroundIdList[index];
 
-            App.ViewModel.SelectedBackground = ChatBgCache[id];
+            App.ViewModel.SelectedBackground = BackgroundList.Where(b => b.ID == id).First();
             return id;
         }
 
@@ -604,6 +599,12 @@ namespace windows_client.utils
             BackgroundIdList.Remove(id);
 
             WriteBackgroundIdsToFile();
+        }
+
+        public void Clear()
+        {
+            ChatBgMap.Clear();
+            SaveMapToFile();
         }
 
         int CompareBackground(ChatBackground x, ChatBackground y)

@@ -186,7 +186,7 @@ namespace windows_client.View
                 }
             });
 
-
+            ChatBackgroundHelper.Instance.Clear();
         }
 
         private void LogOutFb()

@@ -12,6 +12,7 @@ using System.Text;
 using windows_client.Misc;
 using windows_client.Languages;
 using windows_client.ViewModel;
+using System.Linq;
 
 namespace windows_client
 {
@@ -729,6 +730,33 @@ namespace windows_client
 
                                 if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.TOTAL_CREDITS_PER_MONTH)
                                     App.WriteToIsoStorageSettings(kv.Key, val);
+                            }
+                            else if (kv.Key == HikeConstants.CHAT_BACKGROUNDS)
+                            {
+                                var val = kv.Value;
+                                foreach (var obj in val)
+                                {
+                                    JObject jObj = (JObject)obj;
+
+                                    var id = (string)jObj[HikeConstants.MSISDN];
+
+                                    if (ChatBackgroundHelper.Instance.UpdateChatBgMap(id, (string)jObj[HikeConstants.BACKGROUND_ID], (string)jObj[HikeConstants.IMAGE], TimeUtils.getCurrentTimeStamp()))
+                                    {
+                                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                                        {
+                                            if (App.newChatThreadPage != null)
+                                            {
+                                                if (App.newChatThreadPage.mContactNumber == id)
+                                                {
+                                                    ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(id);
+                                                    App.newChatThreadPage.ChangeBackground();
+                                                }
+
+                                                App.newChatThreadPage.chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
+                                            }
+                                        });
+                                    }
+                                }
                             }
                         }
                         catch (Exception ex)
@@ -1548,19 +1576,27 @@ namespace windows_client
                     }
 
                     var to = (string)jsonObj[HikeConstants.TO];
+
+                    var sender = String.IsNullOrEmpty(to) ? msisdn : to;
+                    BackgroundImage bg = null;
+                    if (ChatBackgroundHelper.Instance.ChatBgMap.TryGetValue(sender, out bg))
+                    {
+                        if (bg.Timestamp > ts)
+                            return;
+                    }
+
                     if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
                     {
                         cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED, jsonObj, ts);
                     }
                     else
                     {
-                        var str = String.Format(AppResources.ChatBg_Changed_Text, msisdn);
-                        cm = new ConvMessage(str, msisdn, ts, ConvMessage.State.UNKNOWN);
+                        cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_READ);
                         cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
                     }
 
                     cm.MetaDataString = "{\"t\":\"cbg\"}";
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, (string)jsonObj[HikeConstants.FROM]);
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, msisdn);
 
                     if (obj != null)
                     {
