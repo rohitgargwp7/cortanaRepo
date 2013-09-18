@@ -63,9 +63,9 @@
         <ProgressBar x:Name="shellProgress" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch" Canvas.ZIndex="4" Foreground="White" Background="Transparent"/>
 
         <Border Grid.RowSpan="3" x:Name="BackgroundColor" Canvas.ZIndex="-4">
-            <Image x:Name="chatBackground" Stretch="None" Opacity="0.7">
+            <Image x:Name="chatBackground" Opacity="0.7" Stretch="Fill">
                 <Image.RenderTransform>
-                    <RotateTransform x:Name="chatBackgroundRotateTransform" Angle="0"/>
+                    <RotateTransform x:Name="chatBackgroundRotateTransform"/>
                 </Image.RenderTransform>
             </Image>
         </Border>

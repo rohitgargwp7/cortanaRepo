@@ -4860,6 +4860,8 @@ namespace windows_client.View
             }
         }
 
+        WriteableBitmap _background;
+
         public void ChangeBackground(bool isBubbleColorChanged = true)
         {
             WriteableBitmap wb1;
@@ -4922,7 +4924,19 @@ namespace windows_client.View
                 chatBackgroundImage.Stretch = Stretch.Uniform;
             }
 
-            chatBackground.Source = wb1;
+            _background = wb1;
+
+            RotateImageAndApply();
+        }
+
+        private void RotateImageAndApply()
+        {
+            if (Orientation == PageOrientation.Portrait || Orientation == PageOrientation.PortraitUp || Orientation == PageOrientation.PortraitDown)
+                chatBackground.Source = _background;
+            else if (Orientation == PageOrientation.LandscapeLeft)
+                chatBackground.Source = _background.Rotate(270);
+            else if (Orientation == PageOrientation.LandscapeRight)
+                chatBackground.Source = _background.Rotate(90);
         }
 
         void resetBackground_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -5123,9 +5137,6 @@ namespace windows_client.View
             if (e.Orientation == PageOrientation.Portrait || e.Orientation == PageOrientation.PortraitUp || e.Orientation == PageOrientation.PortraitDown)
             {
                 svMessage.MaxHeight = 150;
-                chatBackgroundRotateTransform.CenterX = 240;
-                chatBackgroundRotateTransform.CenterY = 240;
-                chatBackgroundRotateTransform.Angle = 0d;
             }
             else if (e.Orientation == PageOrientation.Landscape || e.Orientation == PageOrientation.LandscapeLeft || e.Orientation == PageOrientation.LandscapeRight)
             {
@@ -5134,11 +5145,9 @@ namespace windows_client.View
                 App.ViewModel.HideToolTip(LayoutRoot, 0);
                 App.ViewModel.HideToolTip(LayoutRoot, 1);
                 App.ViewModel.HideToolTip(LayoutRoot, 5);
-
-                chatBackgroundRotateTransform.CenterX = 240;
-                chatBackgroundRotateTransform.CenterY = 240;
-                chatBackgroundRotateTransform.Angle = 270d;
             }
+
+            RotateImageAndApply();
         }
         #endregion
 
