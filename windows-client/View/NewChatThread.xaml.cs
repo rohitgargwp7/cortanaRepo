@@ -4891,11 +4891,11 @@ namespace windows_client.View
                 wb1.Render(new Canvas() { Background = new SolidColorBrush(Colors.Transparent), Width = (int)iWidth, Height = (int)iHeight }, null);
                 wb1.Invalidate();
 
-                BitmapImage bitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.Pattern, UriKind.Relative)) { CreateOptions = BitmapCreateOptions.None };
-                WriteableBitmap source = new WriteableBitmap(bitmap);
+                //BitmapImage bitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.Pattern, UriKind.Relative)) { CreateOptions = BitmapCreateOptions.None };
+                //WriteableBitmap source = new WriteableBitmap(bitmap);
 
-                //byte[] imageBytes = System.Convert.FromBase64String(App.ViewModel.SelectedBackground.Pattern);
-                //WriteableBitmap source = new WriteableBitmap(UI_Utils.Instance.createImageFromBytes(imageBytes));
+                byte[] imageBytes = System.Convert.FromBase64String(App.ViewModel.SelectedBackground.Pattern);
+                WriteableBitmap source = new WriteableBitmap(UI_Utils.Instance.createImageFromBytes(imageBytes));
 
                 int height = 0;
 

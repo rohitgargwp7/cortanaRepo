@@ -19,6 +19,7 @@ using Windows.Foundation;
 using System.Device.Location;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using windows_client.Misc;
 
 namespace windows_client.ViewModel
 {
@@ -409,7 +410,7 @@ namespace windows_client.ViewModel
                 var bgId = (string)data[HikeConstants.BACKGROUND_ID];
                 var img = (string)data[HikeConstants.IMAGE];
 
-                var sender = String.IsNullOrEmpty(to) ? from : to;
+                var sender = !String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to) ? to : from;
 
                 if (ChatBackgroundHelper.Instance.UpdateChatBgMap(sender, bgId, img, ts))
                 {
