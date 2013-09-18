@@ -4878,50 +4878,52 @@ namespace windows_client.View
                     msg.BubbleBackGroundColor = null;
                 }
             }
+            
+            var iHeight = 800;
+            var iWidth = 480;
+
+            wb1 = new WriteableBitmap((int)iWidth, (int)iHeight);
+            wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = (int)iWidth, Height = (int)iHeight }, null);
+            wb1.Invalidate();
+
+            WriteableBitmap source = null;
 
             if (string.IsNullOrEmpty(bg.BackgroundImageBase64))
             {
-                chatBackgroundImage.Source = new BitmapImage(new Uri("/assets/Picture.png", UriKind.Relative));
+                chatBackgroundImage.Source = UI_Utils.Instance.ChatBackgroundImage;
                 resetBackground.Visibility = Visibility.Collapsed;
                 chatBackgroundImage.Stretch = Stretch.None;
                 chatBackground.Opacity = 1;
-
-                var iHeight = 800;
-                var iWidth = 480;
-
-                wb1 = new WriteableBitmap((int)iWidth, (int)iHeight);
-                wb1.Render(new Canvas() { Background = new SolidColorBrush(Colors.Transparent), Width = (int)iWidth, Height = (int)iHeight }, null);
-                wb1.Invalidate();
 
                 //BitmapImage bitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.Pattern, UriKind.Relative)) { CreateOptions = BitmapCreateOptions.None };
                 //WriteableBitmap source = new WriteableBitmap(bitmap);
 
                 byte[] imageBytes = System.Convert.FromBase64String(App.ViewModel.SelectedBackground.Pattern);
-                WriteableBitmap source = new WriteableBitmap(UI_Utils.Instance.createImageFromBytes(imageBytes));
-
-                int height = 0;
-
-                for (int width = 0; width <= iWidth; )
-                {
-                    for (height = 0; height <= iHeight; )
-                    {
-                        wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
-                        height += source.PixelHeight;
-                    }
-
-                    width += source.PixelWidth;
-                }
+                source = new WriteableBitmap(UI_Utils.Instance.createImageFromBytes(imageBytes));
             }
             else
             {
                 chatBackground.Opacity = 0.5;
                 resetBackground.Visibility = Visibility.Visible;
-                
-                byte[] imageBytes = System.Convert.FromBase64String(bg.BackgroundImageBase64);
-                wb1 = new WriteableBitmap(UI_Utils.Instance.createImageFromBytes(imageBytes));
 
-                chatBackgroundImage.Source = wb1;
+                byte[] imageBytes = System.Convert.FromBase64String(bg.BackgroundImageBase64);
+                source = new WriteableBitmap(UI_Utils.Instance.createImageFromBytes(imageBytes));
+
+                chatBackgroundImage.Source = source;
                 chatBackgroundImage.Stretch = Stretch.Uniform;
+            }
+
+            int height = 0;
+
+            for (int width = 0; width <= iWidth; )
+            {
+                for (height = 0; height <= iHeight; )
+                {
+                    wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
+                    height += source.PixelHeight;
+                }
+
+                width += source.PixelWidth;
             }
 
             _background = wb1;

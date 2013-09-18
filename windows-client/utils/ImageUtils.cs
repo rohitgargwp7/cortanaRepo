@@ -19,6 +19,7 @@ namespace windows_client.utils
         private SolidColorBrush hikeMsgBackground;
         private SolidColorBrush walkThroughSelectedColumn;
         private SolidColorBrush walkThroughUnselectedColumn;
+        private SolidColorBrush transparent;
         private SolidColorBrush black;
         private SolidColorBrush white;
         private SolidColorBrush btnGrayBackground;
@@ -36,6 +37,7 @@ namespace windows_client.utils
         private SolidColorBrush untappedCategoryColor;
         private SolidColorBrush deleteGreyBackground;
         private SolidColorBrush deleteBlackBackground;
+        private BitmapImage chatBackgroundImage;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
@@ -255,6 +257,16 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush Transparent
+        {
+            get
+            {
+                if (transparent == null)
+                    transparent = new SolidColorBrush(Colors.Transparent);
+                return transparent;
+            }
+        }
+
         public SolidColorBrush Black
         {
             get
@@ -402,6 +414,16 @@ namespace windows_client.utils
                     myLocationPin = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
 
                 return myLocationPin;
+            }
+        }
+
+        public BitmapImage ChatBackgroundImage
+        {
+            get
+            {
+                if (chatBackgroundImage == null)
+                    chatBackgroundImage = new BitmapImage(new Uri("/view/images/ChangeBgPicture.png", UriKind.Relative));
+                return chatBackgroundImage;
             }
         }
 

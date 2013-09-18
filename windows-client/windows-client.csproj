@@ -485,7 +485,7 @@
     </Content>
     <Content Include="Assets\LockImage.png" />
     <Content Include="Assets\pattern.png" />
-    <Content Include="Assets\Picture.png" />
+    <Content Include="View\images\ChangeBgPicture.png" />
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
