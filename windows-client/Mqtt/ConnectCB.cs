@@ -29,7 +29,7 @@ namespace windows_client.Mqtt
                 if (isPresent)
                     App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
                 NetworkManager.turnOffNetworkManager = true; // stop network manager
-                App.MqttManagerInstance.disconnectFromBroker(false);
+                App.MqttManagerInstance.disconnectFromBroker(false, true);
                 MiscDBUtil.clearDatabase();
 
                 HttpNotificationChannel pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
@@ -43,7 +43,7 @@ namespace windows_client.Mqtt
                 }
                 App.HikePubSubInstance.publish(HikePubSub.BAD_USER_PASS, null);
             }
-            else if(hikeMqttManager.connectionStatus != HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET)
+            else if (hikeMqttManager.connectionStatus != HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET)
             {
                 scheduler.Schedule(hikeMqttManager.connect, TimeSpan.FromSeconds(5));
             }

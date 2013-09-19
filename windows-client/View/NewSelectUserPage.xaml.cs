@@ -984,7 +984,7 @@ namespace windows_client.View
             ContactUtils.contactsMap = contacts_to_update_or_add;
             ContactUtils.hike_contactsMap = hike_contacts_by_id;
 
-            App.MqttManagerInstance.disconnectFromBroker(false);
+            App.MqttManagerInstance.disconnectFromBroker(false, true);
             NetworkManager.turnOffNetworkManager = true;
 
             /*
@@ -1037,7 +1037,7 @@ namespace windows_client.View
 
                 foreach (string id in ContactUtils.hike_contactsMap.Keys)
                 {
-                    ContactInfo cinfo=ContactUtils.hike_contactsMap[id][0];
+                    ContactInfo cinfo = ContactUtils.hike_contactsMap[id][0];
                     ContactInfo.DelContacts dCn = new ContactInfo.DelContacts(id, cinfo.Msisdn);
                     hikeIds.Add(dCn);
                     deletedContacts.Add(cinfo);
@@ -1079,7 +1079,7 @@ namespace windows_client.View
                 /* Delete ids from hike user DB */
                 UsersTableUtils.deleteMultipleRows(hikeIds); // this will delete all rows in HikeUser DB that are not in Addressbook.
             }
-            
+
             if (updatedContacts != null && updatedContacts.Count > 0)
             {
                 UsersTableUtils.updateContacts(updatedContacts);

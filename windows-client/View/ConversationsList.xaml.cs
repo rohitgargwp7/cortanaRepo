@@ -401,7 +401,7 @@ namespace windows_client.View
 
         public static void ReloadConversations() // running on some background thread
         {
-            App.MqttManagerInstance.disconnectFromBroker(false);
+            App.MqttManagerInstance.disconnectFromBroker(false, true);
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {

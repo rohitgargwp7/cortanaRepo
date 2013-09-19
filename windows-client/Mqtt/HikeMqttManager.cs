@@ -123,14 +123,15 @@ namespace windows_client.Mqtt
  */
         //synchronized
         //        [MethodImpl(MethodImplOptions.Synchronized)]
-        public void disconnectFromBroker(bool reconnect)
+        public void disconnectFromBroker(bool reconnect, bool callDisconnect)
         {
             try
             {
                 if (mqttConnection != null)
                 {
                     disconnectCalled = !reconnect;
-                    mqttConnection.disconnect(new DisconnectCB(reconnect, this));
+                    if (callDisconnect)
+                        mqttConnection.disconnect(new DisconnectCB(reconnect, this));
                     mqttConnection = null;
                 }
                 setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
@@ -141,18 +142,16 @@ namespace windows_client.Mqtt
             }
         }
 
-        public void SoftDisconnect()
+        public void AddMqttListener()
         {
-            try
-            {
+            if (mqttConnection != null)
+                mqttConnection.MqttListener = this;
+        }
+
+        public void RemoveMqttListener()
+        {
+            if (mqttConnection != null)
                 mqttConnection.MqttListener = null;
-                mqttConnection = null;
-                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("HikeMqttManager ::  SoftDisconnect , Exception : " + ex.StackTrace);
-            }
         }
 
         //synchronized
@@ -171,7 +170,7 @@ namespace windows_client.Mqtt
                     return;
                 }
                 mqttConnection = new MqttConnection(clientId, brokerHostName, brokerPortNumber, uid, password, new ConnectCB(this));
-                mqttConnection.MqttListener = this;
+                AddMqttListener();
             }
 
             try
@@ -449,7 +448,7 @@ namespace windows_client.Mqtt
             setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
             mqttConnection = null;
             if (!disconnectCalled)
-                disconnectFromBroker(true);
+                disconnectFromBroker(true, true);
         }
 
         public void onPublish(String topic, byte[] body)
