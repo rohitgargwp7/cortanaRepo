@@ -211,7 +211,8 @@ namespace finalmqtt.Client
                         _socket.Close();
                         _socket = null;
                     }
-                    mqttListener.onDisconnected();
+                    if (mqttListener != null)
+                        mqttListener.onDisconnected();
                 }
             }
         }
@@ -230,15 +231,16 @@ namespace finalmqtt.Client
                 }
                 else
                 {
+                    if (_socket != null)
+                    {
+                        _socket.Close();
+                        _socket = null;
+                    }
                     if (mqttListener != null)
                     {
-                        if (_socket != null)
-                        {
-                            _socket.Close();
-                            _socket = null;
-                        }
                         mqttListener.onDisconnected();
                     }
+                    return;
                 }
                 readMessagesFromBuffer();
                 read();
@@ -250,7 +252,8 @@ namespace finalmqtt.Client
                     _socket.Close();
                     _socket = null;
                 }
-                mqttListener.onDisconnected();
+                if (mqttListener != null)
+                    mqttListener.onDisconnected();
             }
 
         }
@@ -300,7 +303,8 @@ namespace finalmqtt.Client
                     _socket.Close();
                     _socket = null;
                 }
-                mqttListener.onDisconnected();
+                if (mqttListener != null)
+                    mqttListener.onDisconnected();
             }
         }
 
