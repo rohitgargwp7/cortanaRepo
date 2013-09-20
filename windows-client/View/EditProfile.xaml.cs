@@ -308,20 +308,24 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (this.State.ContainsKey("nameErrorTxt.Opacity"))
-                nameErrorTxt.Opacity = (int)this.State["nameErrorTxt.Opacity"];
 
-            if (this.State.ContainsKey("emailErrorTxt.Opacity"))
-                emailErrorTxt.Opacity = (int)this.State["emailErrorTxt.Opacity"];
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
+            {
+                if (this.State.ContainsKey("nameErrorTxt.Opacity"))
+                    nameErrorTxt.Opacity = (int)this.State["nameErrorTxt.Opacity"];
 
-            if (this.State.ContainsKey("name.Text"))
-                name.Text = (string)this.State["name.Text"];
+                if (this.State.ContainsKey("emailErrorTxt.Opacity"))
+                    emailErrorTxt.Opacity = (int)this.State["emailErrorTxt.Opacity"];
 
-            if (this.State.ContainsKey("email.Text"))
-                email.Text = (string)this.State["email.Text"];
+                if (this.State.ContainsKey("name.Text"))
+                    name.Text = (string)this.State["name.Text"];
 
-            if (this.State.ContainsKey("genderListPicker.SelectedIndex"))
-                genderListPicker.SelectedIndex = (int)this.State["genderListPicker.SelectedIndex"];
+                if (this.State.ContainsKey("email.Text"))
+                    email.Text = (string)this.State["email.Text"];
+
+                if (this.State.ContainsKey("genderListPicker.SelectedIndex"))
+                    genderListPicker.SelectedIndex = (int)this.State["genderListPicker.SelectedIndex"];
+            }
         }
 
         private void textbox_GotFocus(object sender, RoutedEventArgs e)

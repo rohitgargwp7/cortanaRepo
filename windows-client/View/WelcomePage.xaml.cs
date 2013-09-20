@@ -152,8 +152,13 @@ namespace windows_client
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            while (NavigationService.CanGoBack)
-                NavigationService.RemoveBackEntry();
+
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New)
+            {
+                while (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
+            }
+
             if (App.IS_TOMBSTONED)
             {
                 if (this.State.ContainsKey("NetworkErrorTxtBlk.Opacity"))

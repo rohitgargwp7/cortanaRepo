@@ -154,40 +154,46 @@ namespace windows_client.View
             AccountUtils.SocialInvite(statusJSON, new AccountUtils.postResponseFunction(SocialInviteResponse));
         }
 
+        protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
+        {
+            base.OnRemovedFromJournal(e);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.FROM_SOCIAL_PAGE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.SOCIAL_STATE);
+        }
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FROM_SOCIAL_PAGE)) // shows page is navigated from social page
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.FROM_SOCIAL_PAGE);
-                object oo;
-
-                FreeSMS.SocialState ss = FreeSMS.SocialState.DEFAULT;
-
-                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.SOCIAL_STATE, out oo))
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FROM_SOCIAL_PAGE)) // shows page is navigated from social page
                 {
-                    ss = (FreeSMS.SocialState)oo;
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.SOCIAL_STATE);
-                }
+                    object oo;
 
-                switch (ss)
-                {
-                    case FreeSMS.SocialState.FB_LOGIN:
-                        JObject oj = new JObject();
-                        oj["id"] = (string)App.appSettings[HikeConstants.AppSettings.FB_USER_ID];
-                        oj["token"] = (string)App.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
-                        oj["post"] = false;//so that hike promotional post is not posted on fb
-                        AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(SocialPostFB), HikeConstants.FACEBOOK, true);
-                        break;
+                    FreeSMS.SocialState ss = FreeSMS.SocialState.DEFAULT;
 
-                    case FreeSMS.SocialState.TW_LOGIN:
-                        JObject ojj = new JObject();
-                        ojj["id"] = (string)App.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN]; ;
-                        ojj["token"] = (string)App.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN_SECRET];
-                        ojj["post"] = false;
-                        AccountUtils.SocialPost(ojj, new AccountUtils.postResponseFunction(SocialPostTW), HikeConstants.TWITTER, true);
-                        break;
+                    if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.SOCIAL_STATE, out oo))
+                        ss = (FreeSMS.SocialState)oo;
+
+                    switch (ss)
+                    {
+                        case FreeSMS.SocialState.FB_LOGIN:
+                            JObject oj = new JObject();
+                            oj["id"] = (string)App.appSettings[HikeConstants.AppSettings.FB_USER_ID];
+                            oj["token"] = (string)App.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
+                            oj["post"] = false;//so that hike promotional post is not posted on fb
+                            AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(SocialPostFB), HikeConstants.FACEBOOK, true);
+                            break;
+
+                        case FreeSMS.SocialState.TW_LOGIN:
+                            JObject ojj = new JObject();
+                            ojj["id"] = (string)App.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN]; ;
+                            ojj["token"] = (string)App.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN_SECRET];
+                            ojj["post"] = false;
+                            AccountUtils.SocialPost(ojj, new AccountUtils.postResponseFunction(SocialPostTW), HikeConstants.TWITTER, true);
+                            break;
+                    }
                 }
             }
         }

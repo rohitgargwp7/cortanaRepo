@@ -70,64 +70,68 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FROM_SOCIAL_PAGE)) // shows page is navigated from social page
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.FROM_SOCIAL_PAGE);
-                ChangeElementsState(false);
-                object oo;
-                SocialState ss = SocialState.DEFAULT;
-                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.SOCIAL_STATE, out oo))
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FROM_SOCIAL_PAGE)) // shows page is navigated from social page
                 {
-                    ss = (SocialState)oo;
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.SOCIAL_STATE);
-                }
-                switch (ss)
-                {
-                    case SocialState.FB_LOGIN:
-                        ChangeElementsState(false);
-                        JObject oj = new JObject();
-                        oj["id"] = (string)App.appSettings[HikeConstants.AppSettings.FB_USER_ID];
-                        oj["token"] = (string)App.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
-                        AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(SocialPostFB), HikeConstants.FACEBOOK, true);
-                        break;
-                    case SocialState.FB_LOGOUT:
-                        ChangeElementsState(false);
-                        AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFB), HikeConstants.FACEBOOK, false);
-                        break;
-                    case SocialState.TW_LOGIN:
-                        JObject ojj = new JObject();
-                        ojj["id"] = (string)App.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN]; ;
-                        ojj["token"] = (string)App.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN_SECRET];
-                        AccountUtils.SocialPost(ojj, new AccountUtils.postResponseFunction(SocialPostTW), HikeConstants.TWITTER, true);
-                        break;
-                    default:
-                        ChangeElementsState(true);
-                        break;
-                }
-            }
-            else
-            {
-                if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
-                {
-                    IsFacebookConnected = true;
+                    ChangeElementsState(false);
+                    object oo;
+                    SocialState ss = SocialState.DEFAULT;
+                    
+                    if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.SOCIAL_STATE, out oo))
+                        ss = (SocialState)oo;
+                    
+                    switch (ss)
+                    {
+                        case SocialState.FB_LOGIN:
+                            ChangeElementsState(false);
+                            JObject oj = new JObject();
+                            oj["id"] = (string)App.appSettings[HikeConstants.AppSettings.FB_USER_ID];
+                            oj["token"] = (string)App.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
+                            AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(SocialPostFB), HikeConstants.FACEBOOK, true);
+                            break;
+                        case SocialState.FB_LOGOUT:
+                            ChangeElementsState(false);
+                            AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFB), HikeConstants.FACEBOOK, false);
+                            break;
+                        case SocialState.TW_LOGIN:
+                            JObject ojj = new JObject();
+                            ojj["id"] = (string)App.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN]; ;
+                            ojj["token"] = (string)App.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN_SECRET];
+                            AccountUtils.SocialPost(ojj, new AccountUtils.postResponseFunction(SocialPostTW), HikeConstants.TWITTER, true);
+                            break;
+                        default:
+                            ChangeElementsState(true);
+                            break;
+                    }
                 }
                 else
                 {
-                    IsFacebookConnected = false;
-                }
-                if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN))
-                {
-                    IsTwitterConnected = true;
-                }
-                else
-                {
-                    IsTwitterConnected = false;
+                    if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
+                    {
+                        IsFacebookConnected = true;
+                    }
+                    else
+                    {
+                        IsFacebookConnected = false;
+                    }
+                    if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN))
+                    {
+                        IsTwitterConnected = true;
+                    }
+                    else
+                    {
+                        IsTwitterConnected = false;
+                    }
                 }
             }
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
+            PhoneApplicationService.Current.State.Remove(HikeConstants.FROM_SOCIAL_PAGE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.SOCIAL_STATE);
+
             try
             {
                 App.HikePubSubInstance.removeListener(HikePubSub.INVITEE_NUM_CHANGED, this);

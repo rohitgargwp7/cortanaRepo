@@ -505,6 +505,7 @@ namespace windows_client.View
                 _dt.Tick += dt_Tick;
                 _dt.Start();
             }
+
             if (HikeViewModel.stickerHelper == null)
                 HikeViewModel.stickerHelper = new StickerHelper();
 
