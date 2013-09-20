@@ -154,7 +154,7 @@ namespace windows_client.View
             // this is done so that just after unlink/delete , app can again start add book scan
             ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING;
             NetworkManager.turnOffNetworkManager = true;
-            App.MqttManagerInstance.disconnectFromBroker(false, true);
+            App.MqttManagerInstance.disconnectFromBroker(false);
             HikeViewModel.stickerHelper = null;
             App.ClearAppSettings();
             App.appSettings[App.IS_DB_CREATED] = true;

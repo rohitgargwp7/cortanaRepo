@@ -29,7 +29,7 @@ namespace windows_client.Mqtt
                 if (isPresent)
                     App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
                 NetworkManager.turnOffNetworkManager = true; // stop network manager
-                App.MqttManagerInstance.disconnectFromBroker(false, true);
+                App.MqttManagerInstance.disconnectFromBroker(false);
                 MiscDBUtil.clearDatabase();
 
                 HttpNotificationChannel pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);

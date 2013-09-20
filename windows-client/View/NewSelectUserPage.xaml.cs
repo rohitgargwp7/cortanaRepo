@@ -984,7 +984,7 @@ namespace windows_client.View
             ContactUtils.contactsMap = contacts_to_update_or_add;
             ContactUtils.hike_contactsMap = hike_contacts_by_id;
 
-            App.MqttManagerInstance.disconnectFromBroker(false, true);
+            App.MqttManagerInstance.disconnectFromBroker(false);
             NetworkManager.turnOffNetworkManager = true;
 
             /*

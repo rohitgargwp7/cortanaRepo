@@ -123,15 +123,14 @@ namespace windows_client.Mqtt
  */
         //synchronized
         //        [MethodImpl(MethodImplOptions.Synchronized)]
-        public void disconnectFromBroker(bool reconnect, bool callDisconnect)
+        public void disconnectFromBroker(bool reconnect)
         {
             try
             {
                 if (mqttConnection != null)
                 {
                     disconnectCalled = !reconnect;
-                    if (callDisconnect)
-                        mqttConnection.disconnect(new DisconnectCB(reconnect, this));
+                    mqttConnection.disconnect(new DisconnectCB(reconnect, this));
                     mqttConnection = null;
                 }
                 setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
@@ -448,7 +447,7 @@ namespace windows_client.Mqtt
             setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
             mqttConnection = null;
             if (!disconnectCalled)
-                disconnectFromBroker(true, true);
+                disconnectFromBroker(true);
         }
 
         public void onPublish(String topic, byte[] body)
