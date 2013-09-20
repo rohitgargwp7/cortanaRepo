@@ -17,6 +17,7 @@ namespace windows_client.utils
         private SolidColorBrush lastMsgForeground;
         private SolidColorBrush smsBackground;
         private SolidColorBrush hikeMsgBackground;
+        private SolidColorBrush receivedChatBubbleColor; 
         private SolidColorBrush walkThroughSelectedColumn;
         private SolidColorBrush walkThroughUnselectedColumn;
         private SolidColorBrush transparent;
@@ -234,6 +235,28 @@ namespace windows_client.utils
                 if (hikeMsgBackground == null)
                     hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 47, 152, 218));
                 return hikeMsgBackground;
+            }
+        }
+
+        public SolidColorBrush ReceivedChatBubbleColor
+        {
+            get
+            {
+                if (receivedChatBubbleColor == null)
+                    receivedChatBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
+
+                return receivedChatBubbleColor;
+            }
+        }
+
+        public SolidColorBrush ReceiveMessageForeground
+        {
+            get
+            {
+                if (receiveMessageForeground == null)
+                    receiveMessageForeground = new SolidColorBrush(Color.FromArgb(255, 83, 83, 83));
+             
+                return receiveMessageForeground;
             }
         }
 
@@ -977,24 +1000,33 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage CloseButtonBlackImage
+        {
+            get
+            {
+                if (closeButtonBlackImage == null)
+                    closeButtonBlackImage = new BitmapImage(new Uri("/View/images/close_black.png", UriKind.Relative));
+
+                return closeButtonBlackImage;
+            }
+        }
+
+        public BitmapImage CloseButtonWhiteImage
+        {
+            get
+            {
+                if (closeButtonWhiteImage == null)
+                    closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
+
+                return closeButtonWhiteImage;
+            }
+        }
+
         public BitmapImage CloseButtonImage
         {
             get
             {
-                if (Utils.isDarkTheme())
-                {
-                    if (closeButtonBlackImage == null)
-                        closeButtonBlackImage = new BitmapImage(new Uri("/View/images/close_black.png", UriKind.Relative));
-
-                    return closeButtonBlackImage;
-                }
-                else
-                {
-                    if (closeButtonWhiteImage == null)
-                        closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
-
-                    return closeButtonWhiteImage;
-                }
+                return Utils.isDarkTheme() ? CloseButtonBlackImage : CloseButtonWhiteImage;
             }
         }
         public BitmapImage HumanoidOverlay
@@ -1194,17 +1226,6 @@ namespace windows_client.utils
                     expressionsActive = new BitmapImage(new Uri("/View/images/expressions.png", UriKind.Relative));
                 }
                 return expressionsActive;
-            }
-        }
-
-        public BitmapImage CloseButtonWhiteImage
-        {
-            get
-            {
-                if (closeButtonWhiteImage == null)
-                    closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
-
-                return closeButtonWhiteImage;
             }
         }
 

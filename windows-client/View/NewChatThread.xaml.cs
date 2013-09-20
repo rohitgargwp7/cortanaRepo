@@ -347,6 +347,14 @@ namespace windows_client.View
 
                     if (_lastUpdatedLastSeenTimeStamp != 0)
                         UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(actualTimeStamp), true); //show last seen tip if not shown
+                    else
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            onlineStatus.Visibility = Visibility.Collapsed;
+                            lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
+                        });
+                    }
                 }
             }
             else
@@ -356,6 +364,14 @@ namespace windows_client.View
 
                 if (_lastUpdatedLastSeenTimeStamp != 0)
                     UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
+                else
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        onlineStatus.Visibility = Visibility.Collapsed;
+                        lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
+                    });
+                }
             }
         }
 
@@ -787,9 +803,9 @@ namespace windows_client.View
                 e.Cancel = true;
                 return;
             }
-            if (chatBackgroundMenu.Visibility == Visibility.Visible)
+            if (chatBackgroundPopUp.IsOpen)
             {
-                chatBackgroundMenu.Visibility = Visibility.Collapsed;
+                chatBackgroundPopUp.IsOpen = false;
                 e.Cancel = true;
                 return;
             }
@@ -813,6 +829,8 @@ namespace windows_client.View
                 e.Cancel = true;
                 return;
             }
+
+            App.ViewModel.SelectedBackground = null;
 
             base.OnBackKeyPress(e);
         }
@@ -1030,7 +1048,7 @@ namespace windows_client.View
             else
                 this.ApplicationBar = appBar;
 
-            chatBackgroundList.ItemsSource = ChatBackgroundHelper.Instance.BackgroundList;
+            chatBackgroundList.ItemsSource = ChatBackgroundHelper.Instance.BackgroundOC;
             ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(mContactNumber);
 
             chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
@@ -1157,12 +1175,18 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
+                                onlineStatus.Visibility = Visibility.Collapsed;
                                 lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
                             });
                     }
                 };
 
                 _worker.RunWorkerAsync();
+            }
+            else
+            {
+                onlineStatus.Visibility = Visibility.Collapsed;
+                lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
             }
         }
 
@@ -1476,28 +1500,7 @@ namespace windows_client.View
 
         void changeBackground_Click(object sender, EventArgs e)
         {
-            if (recordGrid.Visibility == Visibility.Visible)
-            {
-                recordGrid.Visibility = Visibility.Collapsed;
-                sendMsgTxtbox.Visibility = Visibility.Visible;
-            }
-
-            App.ViewModel.HideToolTip(LayoutRoot, 0);
-            App.ViewModel.HideToolTip(LayoutRoot, 2);
-
-            if (chatBackgroundMenu.Visibility == Visibility.Collapsed)
-                chatBackgroundMenu.Visibility = Visibility.Visible;
-            else
-                chatBackgroundMenu.Visibility = Visibility.Collapsed;
-
-            if (emoticonPanel.Visibility == Visibility.Visible)
-            {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
-                emoticonPanel.Visibility = Visibility.Collapsed;
-            }
-
-            attachmentMenu.Visibility = Visibility.Collapsed;
-            this.Focus();
+            chatBackgroundPopUp.IsOpen = !chatBackgroundPopUp.IsOpen;
         }
 
         private void initInviteMenuItem()
@@ -4314,9 +4317,8 @@ namespace windows_client.View
 
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                lastSeenTxt.Text = String.Empty;
-                                userName.FontSize = 50;
-                                lastSeenPannel.Visibility = Visibility.Collapsed;
+                                onlineStatus.Visibility = Visibility.Collapsed;
+                                lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
                             });
                         }
 
@@ -4444,6 +4446,40 @@ namespace windows_client.View
                 });
             }
 
+            #endregion
+
+            #region Chat Background Changed
+            else if (HikePubSub.CHAT_BACKGROUND_REC == type)
+            {
+                var jsonObj = (JObject)obj;
+                var from = (string)jsonObj[HikeConstants.FROM];
+
+                var to = "";
+                try
+                {
+                    to = (string)jsonObj[HikeConstants.TO];
+                }
+                catch { }
+
+                var ts = (long)jsonObj[HikeConstants.TIMESTAMP];
+                var data = (JObject)jsonObj[HikeConstants.DATA];
+                var bgId = (string)data[HikeConstants.BACKGROUND_ID];
+                var img = (string)data[HikeConstants.IMAGE];
+
+                var sender = !String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to) ? to : from;
+
+                if (sender == mContactNumber)
+                {
+                    ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(sender);
+
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        ChangeBackground();
+
+                        chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
+                    });
+                }
+            }
             #endregion
         }
 
@@ -4801,8 +4837,6 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.MESSAGE_RECEIVED, vs);
             }
 
-            mPubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, jo);
-
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, jo);
         }
 
@@ -4818,6 +4852,18 @@ namespace windows_client.View
 
         void chatPaint_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            chatBackgroundPopUp.IsOpen = !chatBackgroundPopUp.IsOpen;
+        }
+
+        void chatBackgroundPopUp_Closed(object sender, EventArgs e)
+        {
+            ApplicationBar.IsVisible = true;
+        }
+
+        void chatBackgroundPopUp_Opened(object sender, EventArgs e)
+        {
+            ApplicationBar.IsVisible = false;
+
             if (recordGrid.Visibility == Visibility.Visible)
             {
                 recordGrid.Visibility = Visibility.Collapsed;
@@ -4826,11 +4872,6 @@ namespace windows_client.View
 
             App.ViewModel.HideToolTip(LayoutRoot, 0);
             App.ViewModel.HideToolTip(LayoutRoot, 2);
-
-            if (chatBackgroundMenu.Visibility == Visibility.Collapsed)
-                chatBackgroundMenu.Visibility = Visibility.Visible;
-            else
-                chatBackgroundMenu.Visibility = Visibility.Collapsed;
 
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
@@ -4878,7 +4919,7 @@ namespace windows_client.View
                     msg.BubbleBackGroundColor = null;
                 }
             }
-            
+
             var iHeight = 800;
             var iWidth = 480;
 
@@ -4895,11 +4936,17 @@ namespace windows_client.View
                 chatBackgroundImage.Stretch = Stretch.None;
                 chatBackground.Opacity = 1;
 
-                //BitmapImage bitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.Pattern, UriKind.Relative)) { CreateOptions = BitmapCreateOptions.None };
-                //WriteableBitmap source = new WriteableBitmap(bitmap);
-
-                byte[] imageBytes = System.Convert.FromBase64String(App.ViewModel.SelectedBackground.Pattern);
-                source = new WriteableBitmap(UI_Utils.Instance.createImageFromBytes(imageBytes));
+                if (!string.IsNullOrEmpty(App.ViewModel.SelectedBackground.Pattern))
+                {
+                    byte[] imageBytes = System.Convert.FromBase64String(App.ViewModel.SelectedBackground.Pattern);
+                    source = new WriteableBitmap(UI_Utils.Instance.createImageFromBytes(imageBytes));
+                }
+                else
+                {
+                    source = null;
+                    _background = null;
+                    chatBackground.Source = null;
+                }
             }
             else
             {
@@ -4909,30 +4956,36 @@ namespace windows_client.View
                 byte[] imageBytes = System.Convert.FromBase64String(bg.BackgroundImageBase64);
                 source = new WriteableBitmap(UI_Utils.Instance.createImageFromBytes(imageBytes));
 
-                chatBackgroundImage.Source = source;
-                chatBackgroundImage.Stretch = Stretch.Uniform;
+                chatBackgroundImage.Source = source.Crop(0, source.PixelHeight / 4, 480, 250);
+                chatBackgroundImage.Stretch = Stretch.None;
             }
 
-            int height = 0;
-
-            for (int width = 0; width <= iWidth; )
+            if (source != null)
             {
-                for (height = 0; height <= iHeight; )
+                int height = 0;
+
+                for (int width = 0; width <= iWidth; )
                 {
-                    wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
-                    height += source.PixelHeight;
+                    for (height = 0; height <= iHeight; )
+                    {
+                        wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
+                        height += source.PixelHeight;
+                    }
+
+                    width += source.PixelWidth;
                 }
 
-                width += source.PixelWidth;
+                _background = wb1;
+
+                RotateImageAndApply();
             }
-
-            _background = wb1;
-
-            RotateImageAndApply();
         }
 
         private void RotateImageAndApply()
         {
+            if (_background == null)
+                return;
+
             if (Orientation == PageOrientation.Portrait || Orientation == PageOrientation.PortraitUp || Orientation == PageOrientation.PortraitDown)
                 chatBackground.Source = _background;
             else if (Orientation == PageOrientation.LandscapeLeft)

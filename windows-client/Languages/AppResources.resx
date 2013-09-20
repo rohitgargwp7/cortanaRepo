@@ -1982,4 +1982,7 @@ Get hike: http://get.hike.in</value>
   <data name="ChatBg_Changed_Text" xml:space="preserve">
     <value>{0} changed the background</value>
   </data>
+  <data name="Default_Txt" xml:space="preserve">
+    <value>default</value>
+  </data>
 </root>

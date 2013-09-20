@@ -925,6 +925,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to default.
+        /// </summary>
+        public static string Default_Txt {
+            get {
+                return ResourceManager.GetString("Default_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hike couldn&apos;t delete your account. Please try again..
         /// </summary>
         public static string Delete_Account_Failed {

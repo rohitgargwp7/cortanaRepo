@@ -8,6 +8,7 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using windows_client.utils;
+using System.Windows.Media;
 
 namespace windows_client.Controls
 {
@@ -159,6 +160,55 @@ namespace windows_client.Controls
         {
             InAppTipUC tipControl = obj as InAppTipUC;
             tipControl.bottomBubblePointer.Margin = (Thickness)e.NewValue;
+        }
+
+        public SolidColorBrush TipBackground
+        {
+            get
+            {
+                return (SolidColorBrush)GetValue(TipBackgroundProperty);
+            }
+            set
+            {
+                SetValue(TipBackgroundProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty TipBackgroundProperty = DependencyProperty.Register(
+            "TipBackground", typeof(SolidColorBrush), typeof(InAppTipUC), new PropertyMetadata(OnTipBackgroundChanged));
+
+        private static void OnTipBackgroundChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            InAppTipUC tipControl = obj as InAppTipUC;
+            tipControl.topBubblePointer.Fill = (SolidColorBrush)e.NewValue;
+            tipControl.bottomBubblePointer.Fill = (SolidColorBrush)e.NewValue;
+            tipControl.tipBackground.Background = (SolidColorBrush)e.NewValue;
+        }
+
+        public SolidColorBrush TipForeground
+        {
+            get
+            {
+                return (SolidColorBrush)GetValue(TipForegroundProperty);
+            }
+            set
+            {
+                SetValue(TipForegroundProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty TipForegroundProperty = DependencyProperty.Register(
+            "TipForeground", typeof(SolidColorBrush), typeof(InAppTipUC), new PropertyMetadata(OnTipForegroundChanged));
+
+        private static void OnTipForegroundChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            InAppTipUC tipControl = obj as InAppTipUC;
+            tipControl.tipText.Foreground = (SolidColorBrush)e.NewValue;
+
+            if ((SolidColorBrush)e.NewValue == UI_Utils.Instance.White)
+                tipControl.closeButtonImage.Source = UI_Utils.Instance.CloseButtonWhiteImage;
+            else
+                tipControl.closeButtonImage.Source = UI_Utils.Instance.CloseButtonBlackImage;
         }
 
         public event EventHandler<EventArgs> Dismissed;

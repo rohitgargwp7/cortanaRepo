@@ -70,6 +70,46 @@
             </Image>
         </Border>
 
+        <Popup x:Name="chatBackgroundPopUp" Grid.RowSpan="3" Height="800" Width="480" IsOpen="False" Opened="chatBackgroundPopUp_Opened" Closed="chatBackgroundPopUp_Closed">
+            <Grid x:Name="chatBackgroundMenu" Height="800" Width="480" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid>
+                    <StackPanel Grid.Row="0" Margin="12,17,0,28">
+                        <TextBlock Text="CHANGE" Style="{StaticResource PhoneTextNormalStyle}" Foreground="Black"/>
+                        <TextBlock Text="theme" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" Foreground="Black"/>
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Background="#DBDBDB" MaxWidth="450" Height="250"  HorizontalAlignment="Center" VerticalAlignment="Center" Tap="chatBackgroundImage_Tap">
+                        <Image x:Name="resetBackground" Source="/view/images/close_black.png" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-25,-25,0" Canvas.ZIndex="1" Stretch="Uniform" Visibility="Collapsed" Height="50" Tap="resetBackground_Tap"/>
+                        <Image x:Name="chatBackgroundImage" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None"/>
+                    </Grid>
+                    <Grid Grid.Row="1" Background="#ffffff" Margin="1,0,0,0" HorizontalAlignment="Center">
+                        <ListBox x:Name="chatBackgroundList" SelectionChanged="chatBackgroundList_SelectionChanged" Margin="5,12">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <toolkit:WrapPanel ItemHeight="150" ItemWidth="150"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{Binding BackgroundColor}" Width="140" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="Black" BorderThickness="{Binding SelectedBgThickness}">
+                                        <TextBlock Text="{Binding Path= LocalizedResources.Default_Txt, Source={StaticResource LocalizedStrings}}" Canvas.ZIndex="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding DefaultTextVisibility}" Foreground="Black"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Popup>
         <!--<StackPanel Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Left" Margin="20,0,0, 0">
             <Image x:Name="icon" Source="images\hike_header.png" Height="40" Margin="4,25,0,0"/>
         </StackPanel>-->
@@ -125,9 +165,9 @@
                                             <RowDefinition Height="14"/>
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
-                                        <Path x:Name="topBubblePointer" Opacity="0.7" Data="M0,0 L1,1 L-1,1" HorizontalAlignment="Right" Fill="White" Stretch="Fill" UseLayoutRounding="False" Width="16" Margin="0,0,20,-1"/>
+                                        <Path x:Name="topBubblePointer" Opacity="0.7" Data="M0,0 L1,1 L-1,1" HorizontalAlignment="Right" Fill="#ff686868" Stretch="Fill" UseLayoutRounding="False" Width="16" Margin="0,0,20,-1"/>
                                         <Grid Grid.Row="1" HorizontalAlignment="Stretch">
-                                            <Border Background="White" Opacity="0.7"/>
+                                            <Border Background="#ff686868" Opacity="0.7"/>
                                             <Grid VerticalAlignment="Center" Margin="15" HorizontalAlignment="Stretch">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
@@ -147,9 +187,9 @@
                                             <RowDefinition Height="14"/>
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
-                                        <Path x:Name="topBubblePointer" Opacity="0.7" Data="M0,0 L1,1 L-1,1" HorizontalAlignment="Left" Fill="White" Stretch="Fill" UseLayoutRounding="False" Width="16" Margin="20,0,0,-1"/>
+                                        <Path x:Name="topBubblePointer" Opacity="0.7" Data="M0,0 L1,1 L-1,1" HorizontalAlignment="Left" Fill="#ff686868" Stretch="Fill" UseLayoutRounding="False" Width="16" Margin="20,0,0,-1"/>
                                         <Grid Grid.Row="1" HorizontalAlignment="Stretch">
-                                            <Border Background="White" Opacity="0.7"/>
+                                            <Border Background="#ff686868" Opacity="0.7"/>
                                             <Grid VerticalAlignment="Center" Margin="15" HorizontalAlignment="Stretch">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
@@ -984,35 +1024,6 @@
                 </Grid>
             </StackPanel>
 
-            <Grid x:Name="chatBackgroundMenu" Visibility="Collapsed" Height="350"  Background="#080808" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" MinWidth="180"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid Background="#292929">
-                    <Grid Width="140" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Image x:Name="resetBackground" Source="/view/images/icon_cross.png" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-25,-25,0" Canvas.ZIndex="1" Stretch="Uniform" Visibility="Collapsed" Height="50" Tap="resetBackground_Tap"/>
-                        <Image x:Name="chatBackgroundImage" Height="250" HorizontalAlignment="Center" VerticalAlignment="Center" Tap="chatBackgroundImage_Tap"/>
-                    </Grid>
-                </Grid>
-                <Grid Grid.Column="1" Background="#292929" Margin="1,0,0,0">
-                    <ListBox x:Name="chatBackgroundList" SelectionChanged="chatBackgroundList_SelectionChanged" Margin="5,12">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <toolkit:WrapPanel ItemHeight="95" ItemWidth="95"/>
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="10">
-                                    <Image Source="/view/images/icon_tick.png" Height="50" Width="50" Canvas.ZIndex="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding SelectedIconVisibility}"/>
-                                    <Rectangle RadiusX="10" RadiusY="10" Fill="{Binding BackgroundColor}" Width="75" Height="75" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Grid>
-            </Grid>
             <Grid x:Name="attachmentMenu" Visibility="Collapsed" Height="350" Background="#080808" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>

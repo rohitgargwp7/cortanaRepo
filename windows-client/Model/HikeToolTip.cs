@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 
 namespace windows_client.Model
 {
@@ -15,6 +16,8 @@ namespace windows_client.Model
         public Thickness FullTipMargin { get; set; }
         public bool IsShown { get; set; }
         public bool IsCurrentlyShown { get; set; }
+        public SolidColorBrush Foreground { get; set; }
+        public SolidColorBrush Background { get; set; }
 
         public void TriggerUIUpdateOnDismissed()
         {

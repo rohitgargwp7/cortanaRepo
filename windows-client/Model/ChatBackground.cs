@@ -17,19 +17,19 @@ namespace windows_client.Model
 {
     public class ChatBackground : INotifyPropertyChanged
     {
-        Visibility _selectedIconVisibility = Visibility.Collapsed;
-        public Visibility SelectedIconVisibility
+        Thickness _selectedBgThickness = new Thickness(0.5);
+        public Thickness SelectedBgThickness
         {
             get
             {
-                return _selectedIconVisibility;
+                return _selectedBgThickness;
             }
             set
             {
-                if (value != _selectedIconVisibility)
+                if (value != _selectedBgThickness)
                 {
-                    _selectedIconVisibility = value;
-                    NotifyPropertyChanged("SelectedIconVisibility");
+                    _selectedBgThickness = value;
+                    NotifyPropertyChanged("SelectedBgThickness");
                 }
             }
         }
@@ -102,8 +102,17 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility DefaultTextVisibility
+        {
+            get
+            {
+                return IsDefault ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
         public string ID;
         public string Pattern;
+        public bool IsDefault;
         public bool IsTile;
         public string Background;
         public string SentBubbleBackground;
@@ -124,6 +133,7 @@ namespace windows_client.Model
                 else
                     writer.WriteStringBytes(Pattern);
 
+                writer.Write(IsDefault);
                 writer.Write(IsTile);
 
                 if (Background == null)
@@ -177,6 +187,7 @@ namespace windows_client.Model
                 if (Pattern == "*@N@*")
                     Pattern = null;
 
+                IsDefault = reader.ReadBoolean();
                 IsTile = reader.ReadBoolean();
 
                 count = reader.ReadInt32();

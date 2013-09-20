@@ -247,7 +247,6 @@ namespace windows_client.Model
                     NotifyPropertyChanged("MessageStatus");
                     NotifyPropertyChanged("SendAsSMSVisibility");
                     NotifyPropertyChanged("BubbleBackGroundColor");
-                    NotifyPropertyChanged("TimeStampForeGround");
                     NotifyPropertyChanged("MessageTextForeGround");
                     if (_messageStatus == State.SENT_CONFIRMED)
                     {
@@ -404,7 +403,6 @@ namespace windows_client.Model
                     _isSms = value;
                     NotifyPropertyChanged("SendAsSMSVisibility");
                     NotifyPropertyChanged("BubbleBackGroundColor");
-                    NotifyPropertyChanged("TimeStampForeGround");
                     NotifyPropertyChanged("MessageTextForeGround");
                 }
             }
@@ -1027,7 +1025,19 @@ namespace windows_client.Model
         {
             get
             {
-                if (IsSent)
+                if (App.ViewModel.SelectedBackground.IsDefault)
+                {
+                    if (IsSent)
+                    {
+                        if (IsSms)
+                            return UI_Utils.Instance.SmsBackground;
+                        else
+                            return UI_Utils.Instance.HikeMsgBackground;
+                    }
+                    else
+                        return UI_Utils.Instance.ReceivedChatBubbleColor;
+                }
+                else if (IsSent)
                     return App.ViewModel.SelectedBackground.SentBubbleBgColor;
                 else
                     return App.ViewModel.SelectedBackground.ReceivedBubbleBgColor;
@@ -1061,7 +1071,17 @@ namespace windows_client.Model
                 if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)) || GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
                     return ChatForegroundColor;
                 else
-                    return BubbleForegroundColor;
+                {
+                    if (App.ViewModel.SelectedBackground.IsDefault)
+                    {
+                        if (IsSent)
+                            return UI_Utils.Instance.White;
+                        else
+                            return UI_Utils.Instance.ReceiveMessageForeground;
+                    }
+                    else
+                        return BubbleForegroundColor;
+                }
             }
             set
             {

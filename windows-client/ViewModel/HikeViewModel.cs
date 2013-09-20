@@ -313,7 +313,6 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.addListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.addListener(HikePubSub.USER_LEFT, this);
             App.HikePubSubInstance.addListener(HikePubSub.BLOCK_USER, this);
-            App.HikePubSubInstance.addListener(HikePubSub.CHAT_BACKGROUND_REC, this);
         }
 
         private void RemoveListeners()
@@ -322,7 +321,6 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.removeListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.removeListener(HikePubSub.USER_LEFT, this);
             App.HikePubSubInstance.removeListener(HikePubSub.BLOCK_USER, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.CHAT_BACKGROUND_REC, this);
         }
 
         public void onEventReceived(string type, object obj)
@@ -389,46 +387,6 @@ namespace windows_client.ViewModel
                 catch (Exception e)
                 {
                     Debug.WriteLine("HikeViewModel :: OnEventReceived : BLOCK USER , Exception : ", e.StackTrace);
-                }
-            }
-            #endregion
-            #region Chat Background Changed
-            else if (HikePubSub.CHAT_BACKGROUND_REC == type)
-            {
-                var jsonObj = (JObject)obj;
-                var from = (string)jsonObj[HikeConstants.FROM];
-
-                var to = "";
-                try
-                {
-                    to = (string)jsonObj[HikeConstants.TO];
-                }
-                catch { }
-
-                var ts = (long)jsonObj[HikeConstants.TIMESTAMP];
-                var data = (JObject)jsonObj[HikeConstants.DATA];
-                var bgId = (string)data[HikeConstants.BACKGROUND_ID];
-                var img = (string)data[HikeConstants.IMAGE];
-
-                var sender = !String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to) ? to : from;
-
-                if (ChatBackgroundHelper.Instance.UpdateChatBgMap(sender, bgId, img, ts))
-                {
-                    ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(sender);
-
-                    if (from != App.MSISDN)
-                    {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                if (App.newChatThreadPage != null)
-                                {
-                                    if (App.newChatThreadPage.mContactNumber == sender)
-                                        App.newChatThreadPage.ChangeBackground();
-                                    
-                                    App.newChatThreadPage.chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
-                                }
-                            });
-                    }
                 }
             }
             #endregion
@@ -506,13 +464,13 @@ namespace windows_client.ViewModel
         {
             _toolTipsList = new List<HikeToolTip>();
 
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 130, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 0), Background = UI_Utils.Instance.GreyTextForeGround, Foreground = UI_Utils.Instance.White });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 130, 0), FullTipMargin = new Thickness(10, 0, 10, 70), Background = UI_Utils.Instance.GreyTextForeGround, Foreground = UI_Utils.Instance.White });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70), Background = UI_Utils.Instance.GreyTextForeGround, Foreground = UI_Utils.Instance.White });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 30, 0), FullTipMargin = new Thickness(10, 0, 10, 55) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 80, 10, 0) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_7, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0), Background = UI_Utils.Instance.GreyTextForeGround, Foreground = UI_Utils.Instance.White });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 80, 10, 0), Background = UI_Utils.Instance.GreyTextForeGround, Foreground = UI_Utils.Instance.White });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_7, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0), Background = UI_Utils.Instance.GreyTextForeGround, Foreground = UI_Utils.Instance.White });
         }
 
         /// <summary>
@@ -591,6 +549,12 @@ namespace windows_client.ViewModel
 
                 if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE) && index == 1)
                     tip.TipMargin = new Thickness(10, 0, 110, 0);
+
+                if (tip.Background != null)
+                    inAppTipUC.TipBackground = tip.Background;
+
+                if (tip.Foreground != null)
+                    inAppTipUC.TipForeground = tip.Foreground;
 
                 if (tip.IsTop)
                 {
@@ -709,10 +673,12 @@ namespace windows_client.ViewModel
                 if (value != _selectedBackground)
                 {
                     if (_selectedBackground != null)
-                        _selectedBackground.SelectedIconVisibility = Visibility.Collapsed;
+                        _selectedBackground.SelectedBgThickness = new Thickness(0.5);
                     
                     _selectedBackground = value;
-                    _selectedBackground.SelectedIconVisibility = Visibility.Visible;
+
+                    if (_selectedBackground != null)
+                        _selectedBackground.SelectedBgThickness = new Thickness(5);
                 }
             }
         }

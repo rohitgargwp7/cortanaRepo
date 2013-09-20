@@ -10,6 +10,7 @@ using System.IO.IsolatedStorage;
 using System.IO;
 using windows_client.Misc;
 using System.Windows.Media.Imaging;
+using System.Collections.ObjectModel;
 
 namespace windows_client.utils
 {
@@ -23,6 +24,7 @@ namespace windows_client.utils
         List<String> BackgroundIdList;
 
         public List<ChatBackground> BackgroundList;
+        public ObservableCollection<ChatBackground> BackgroundOC;
 
         public Dictionary<String, BackgroundImage> ChatBgMap;
 
@@ -53,6 +55,7 @@ namespace windows_client.utils
             ChatBgMap = new Dictionary<string, BackgroundImage>();
             BackgroundIdList = new List<string>();
             BackgroundList = new List<ChatBackground>();
+            BackgroundOC = new ObservableCollection<ChatBackground>();
         }
 
         public void Instantiate()
@@ -212,9 +215,24 @@ namespace windows_client.utils
             SaveMapToFile();
         }
 
+        int LastIndex = 0;
+
         public void SetSelectedChatBackgorund(string msisdn)
         {
             BackgroundImage bgObj;
+
+            if (App.ViewModel.SelectedBackground == null)
+            {
+                LastIndex = 3;
+
+                BackgroundOC.Clear();
+                var list = BackgroundList.Take(LastIndex);
+
+                foreach (var bg in list)
+                    BackgroundOC.Add(bg);
+
+                LoadBackgroundOCFromList();
+            }
           
             if (ChatBgMap.TryGetValue(msisdn, out bgObj))
             {
@@ -252,6 +270,17 @@ namespace windows_client.utils
 
             App.ViewModel.SelectedBackground = BackgroundList.Where(b => b.ID == id).First();
             return id;
+        }
+
+        public void LoadBackgroundOCFromList()
+        {
+            if (LastIndex >= BackgroundList.Count)
+                return;
+
+            for (int i = LastIndex; i < LastIndex + 20 && i < BackgroundList.Count; i++)
+                BackgroundOC.Add(BackgroundList[i]);
+
+            LastIndex += 20;
         }
 
         /// <summary>
@@ -375,7 +404,7 @@ namespace windows_client.utils
             {
                 ID = "0",
                 Background = "#ff4fb17b",
-                SentBubbleBackground = "#ffc6ffe0",
+                SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -385,12 +414,26 @@ namespace windows_client.utils
                 Pattern = imgstr
             });
 
+            chatBgs.Add(new ChatBackground()
+            {
+                ID = "9",
+                Background = "#ffffffff",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffefefef",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = true,
+                Position = 0,
+                IsDefault = true,
+                Thumbnail = null,
+                Pattern = null
+            });
 
             chatBgs.Add(new ChatBackground()
             {
                 ID = "1",
                 Background = "#ffc8544f",
-                SentBubbleBackground = "#ffffdbd9",
+                SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -404,7 +447,7 @@ namespace windows_client.utils
             {
                 ID = "2",
                 Background = "#ff515b61",
-                SentBubbleBackground = "#ffdbf2ff",
+                SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -418,7 +461,7 @@ namespace windows_client.utils
             {
                 ID = "3",
                 Background = "#ff7546af",
-                SentBubbleBackground = "#fff4e0ff",
+                SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -432,7 +475,7 @@ namespace windows_client.utils
             {
                 ID = "4",
                 Background = "#ffe05f03",
-                SentBubbleBackground = "#ffffeac6",
+                SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -446,7 +489,7 @@ namespace windows_client.utils
             {
                 ID = "5",
                 Background = "#ff0c9e91",
-                SentBubbleBackground = "#ffc6fffa",
+                SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -460,7 +503,7 @@ namespace windows_client.utils
             {
                 ID = "6",
                 Background = "#ffe7ad00",
-                SentBubbleBackground = "#fffcffc6",
+                SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -474,7 +517,7 @@ namespace windows_client.utils
             {
                 ID = "7",
                 Background = "#ff6EA510",
-                SentBubbleBackground = "#ffBCEF65",
+                SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -488,7 +531,7 @@ namespace windows_client.utils
             {
                 ID = "8",
                 Background = "#ffD662AA",
-                SentBubbleBackground = "#c5D662AA",
+                SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -552,6 +595,7 @@ namespace windows_client.utils
             idList.Add("6");
             idList.Add("7");
             idList.Add("8");
+            idList.Add("9");
 
             lock (readWriteLock)
             {

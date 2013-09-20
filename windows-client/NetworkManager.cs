@@ -1577,7 +1577,8 @@ namespace windows_client
 
                     var to = (string)jsonObj[HikeConstants.TO];
 
-                    var sender = String.IsNullOrEmpty(to) ? msisdn : to;
+                    var sender = !String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to) ? to : msisdn;
+
                     BackgroundImage bg = null;
                     if (ChatBackgroundHelper.Instance.ChatBgMap.TryGetValue(sender, out bg))
                     {
@@ -1611,7 +1612,14 @@ namespace windows_client
                             });
                     }
 
-                    pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, jsonObj);
+                    var data = (JObject)jsonObj[HikeConstants.DATA];
+                    var bgId = (string)data[HikeConstants.BACKGROUND_ID];
+                    var img = (string)data[HikeConstants.IMAGE];
+
+                    if (ChatBackgroundHelper.Instance.UpdateChatBgMap(sender, bgId, img, ts))
+                    {
+                        pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, jsonObj);
+                    }
                 }
                 catch (Exception ex)
                 {
