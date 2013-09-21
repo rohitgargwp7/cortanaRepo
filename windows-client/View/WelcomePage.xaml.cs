@@ -152,12 +152,8 @@ namespace windows_client
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New)
-            {
-                while (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry();
-            }
+            while (NavigationService.CanGoBack)
+                NavigationService.RemoveBackEntry();
 
             if (App.IS_TOMBSTONED)
             {

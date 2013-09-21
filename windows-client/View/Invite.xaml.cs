@@ -17,6 +17,8 @@ using Microsoft.Phone.Shell;
 using windows_client.Languages;
 using System.Diagnostics;
 using windows_client.utils;
+using Newtonsoft.Json.Linq;
+using windows_client.Model;
 using windows_client.DbUtils;
 using System.Net.NetworkInformation;
 

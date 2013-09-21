@@ -76,13 +76,11 @@ namespace windows_client.View
                 ChangeElementsState(false);
                 object oo;
                 SocialState ss = SocialState.DEFAULT;
-
                 if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.SOCIAL_STATE, out oo))
                 {
                     ss = (SocialState)oo;
                     PhoneApplicationService.Current.State.Remove(HikeConstants.SOCIAL_STATE);
                 }
-
                 switch (ss)
                 {
                     case SocialState.FB_LOGIN:

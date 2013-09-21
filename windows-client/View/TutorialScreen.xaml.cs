@@ -66,8 +66,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            if (e.NavigationMode == NavigationMode.New && NavigationService.CanGoBack)
+            if (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
         }
         public void OnNextClick(object sender, EventArgs e)
