@@ -154,7 +154,6 @@ namespace windows_client
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
-
             if (App.IS_TOMBSTONED)
             {
                 if (this.State.ContainsKey("NetworkErrorTxtBlk.Opacity"))
