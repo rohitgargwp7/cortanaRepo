@@ -2459,23 +2459,26 @@ namespace windows_client.View
             {
                 launchPagePivot.SelectedIndex = 3;
 
-                int index = 0;
-                if (ProTipHelper.CurrentProTip != null)
-                    index = 1;
+                if (isStatusMessagesLoaded)
+                {
+                    int index = 0;
+                    if (ProTipHelper.CurrentProTip != null)
+                        index = 1;
 
-                int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
-                //if no new status scroll to latest unseen friends request
-                if (UnreadFriendRequests > 0 && (pendingCount > UnreadFriendRequests))
-                {
-                    int x = pendingCount - UnreadFriendRequests;
-                    if (x >= 0 && App.ViewModel.StatusList.Count > x)
-                        statusLLS.ScrollIntoView(App.ViewModel.StatusList[x + index]); //handling index out of bounds exception
-                }
-                //scroll to latest unread status
-                else if ((App.ViewModel.StatusList.Count > pendingCount) && RefreshBarCount > 0
-                    && App.ViewModel.StatusList.Count > pendingCount) //handling index out of bounds exception
-                {
-                    statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount + index]);
+                    int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
+                    //if no new status scroll to latest unseen friends request
+                    if (UnreadFriendRequests > 0 && (pendingCount > UnreadFriendRequests))
+                    {
+                        int x = pendingCount - UnreadFriendRequests;
+                        if (x >= 0 && App.ViewModel.StatusList.Count > (x + index))
+                            statusLLS.ScrollIntoView(App.ViewModel.StatusList[x + index]); //handling index out of bounds exception
+                    }
+                    //scroll to latest unread status
+                    else if ((App.ViewModel.StatusList.Count > (pendingCount + index)) && RefreshBarCount > 0
+                        && App.ViewModel.StatusList.Count > (pendingCount + index)) //handling index out of bounds exception
+                    {
+                        statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount + index]);
+                    }
                 }
             }
         }
