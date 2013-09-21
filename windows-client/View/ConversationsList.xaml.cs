@@ -2474,8 +2474,7 @@ namespace windows_client.View
                             statusLLS.ScrollIntoView(App.ViewModel.StatusList[x + index]); //handling index out of bounds exception
                     }
                     //scroll to latest unread status
-                    else if ((App.ViewModel.StatusList.Count > (pendingCount + index)) && RefreshBarCount > 0
-                        && App.ViewModel.StatusList.Count > (pendingCount + index)) //handling index out of bounds exception
+                    else if ((App.ViewModel.StatusList.Count > (pendingCount + index)) && RefreshBarCount > 0) //handling index out of bounds exception
                     {
                         statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount + index]);
                     }
