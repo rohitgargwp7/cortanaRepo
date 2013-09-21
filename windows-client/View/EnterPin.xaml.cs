@@ -180,10 +180,10 @@ namespace windows_client
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
             if (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
 
-            timer.Visibility = Visibility.Visible;
             progressTimer = new DispatcherTimer();
             progressTimer.Interval = TimeSpan.FromSeconds(1);
             progressTimer.Tick += new EventHandler(enableCallMeOption);
@@ -195,8 +195,7 @@ namespace windows_client
                 timer.Text = (timerValue / 60).ToString("00") + ":" + (timerValue % 60).ToString("00");
             }
 
-            if (timerValue == 0)
-                timer.Visibility = Visibility.Collapsed;
+            timer.Visibility = timerValue == 0 ? Visibility.Collapsed : Visibility.Visible;
 
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {

@@ -247,24 +247,28 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            // Get a dictionary of query string keys and values.
-            IDictionary<string, string> queryStrings = this.NavigationContext.QueryString;
 
-            // Ensure that there is at least one key in the query string, and check 
-            // whether the "FileId" key is present.
-            if (queryStrings.ContainsKey("FileId"))
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
-                PhoneApplicationService.Current.State["SharePicker"] = queryStrings["FileId"];
-                queryStrings.Clear();
-                txtChat.Text = AppResources.Share_With_Txt;
-            }
+                // Get a dictionary of query string keys and values.
+                IDictionary<string, string> queryStrings = this.NavigationContext.QueryString;
 
-            if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
-            {
-                while (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry();
+                // Ensure that there is at least one key in the query string, and check 
+                // whether the "FileId" key is present.
+                if (queryStrings.ContainsKey("FileId"))
+                {
+                    PhoneApplicationService.Current.State["SharePicker"] = queryStrings["FileId"];
+                    queryStrings.Clear();
+                    txtChat.Text = AppResources.Share_With_Txt;
+                }
 
-                App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
+                if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
+                {
+                    while (NavigationService.CanGoBack)
+                        NavigationService.RemoveBackEntry();
+
+                    App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
+                }
             }
         }
 
