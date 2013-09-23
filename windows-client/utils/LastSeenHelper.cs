@@ -21,13 +21,8 @@ namespace windows_client.utils
                 cNumber = number;
                 AccountUtils.LastSeenRequest(requestLastSeen_Callback, cNumber);
             }
-            else
-            {
-                if (UpdateLastSeen != null)
-                    UpdateLastSeen(this, null);
-
-                return;
-            }
+            else if (UpdateLastSeen != null)
+                UpdateLastSeen(this, null);
         }
 
         public void requestLastSeen_Callback(JObject obj)
