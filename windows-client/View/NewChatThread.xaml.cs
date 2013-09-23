@@ -259,7 +259,6 @@ namespace windows_client.View
             }
 
             _currentOrientation = this.Orientation;
-
         }
 
         void Instance_UpdateChatBackground(object sender, ChatBackgroundEventArgs e)
@@ -3010,9 +3009,6 @@ namespace windows_client.View
             lastText = string.Empty;
             sendIconButton.IsEnabled = false;
 
-            if (chatBackgroundMenu.Visibility == Visibility.Visible)
-                chatBackgroundMenu.Visibility = Visibility.Collapsed;
-
             if (emoticonPanel.Visibility == Visibility.Collapsed)
                 sendMsgTxtbox.Focus();
 
@@ -3165,9 +3161,6 @@ namespace windows_client.View
 
             if (this.attachmentMenu.Visibility == Visibility.Visible)
                 this.attachmentMenu.Visibility = Visibility.Collapsed;
-
-            if (chatBackgroundMenu.Visibility == Visibility.Visible)
-                chatBackgroundMenu.Visibility = Visibility.Collapsed;
         }
 
         private void sendMsgTxtbox_LostFocus(object sender, RoutedEventArgs e)
@@ -3435,18 +3428,12 @@ namespace windows_client.View
                 emoticonPanel.Visibility = Visibility.Collapsed;
             }
 
-            if (chatBackgroundMenu.Visibility == Visibility.Visible)
-                chatBackgroundMenu.Visibility = Visibility.Collapsed;
-
             attachmentMenu.Visibility = Visibility.Collapsed;
             this.Focus();
         }
 
         private void fileTransferButton_Click(object sender, EventArgs e)
         {
-            if (chatBackgroundMenu.Visibility == Visibility.Visible)
-                chatBackgroundMenu.Visibility = Visibility.Collapsed;
-
             if (recordGrid.Visibility == Visibility.Visible)
             {
                 recordGrid.Visibility = Visibility.Collapsed;
@@ -4800,6 +4787,8 @@ namespace windows_client.View
             }
         }
 
+        #region Chat Backgrounds
+
         async Task SendBackgroundChangedPacket(string bgId, string img = null)
         {
             if (img == null)
@@ -5014,6 +5003,16 @@ namespace windows_client.View
                 }
             }
         }
+
+        private void vgroup_CurrentStateChanging(object sender, VisualStateChangedEventArgs e)
+        {
+            if (e.NewState.Name == "CompressionBottom")
+            {
+                ChatBackgroundHelper.Instance.LoadBackgroundOCFromList();
+            }
+        }
+
+        #endregion
 
         private void messageListBox_GotFocus(object sender, RoutedEventArgs e)
         {

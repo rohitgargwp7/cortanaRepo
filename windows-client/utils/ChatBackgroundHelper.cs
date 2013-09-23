@@ -231,7 +231,7 @@ namespace windows_client.utils
                 foreach (var bg in list)
                     BackgroundOC.Add(bg);
 
-                LoadBackgroundOCFromList();
+                //LoadBackgroundOCFromList();
             }
           
             if (ChatBgMap.TryGetValue(msisdn, out bgObj))
@@ -277,10 +277,10 @@ namespace windows_client.utils
             if (LastIndex >= BackgroundList.Count)
                 return;
 
-            for (int i = LastIndex; i < LastIndex + 20 && i < BackgroundList.Count; i++)
+            for (int i = LastIndex; i < LastIndex + 3 && i < BackgroundList.Count; i++)
                 BackgroundOC.Add(BackgroundList[i]);
 
-            LastIndex += 20;
+            LastIndex += 3;
         }
 
         /// <summary>
@@ -421,7 +421,7 @@ namespace windows_client.utils
                 SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffefefef",
                 BubbleForeground = "#ff000000",
-                Foreground = "#ffffffff",
+                Foreground = "#ff000000",
                 IsTile = true,
                 Position = 0,
                 IsDefault = true,
@@ -541,6 +541,118 @@ namespace windows_client.utils
                 Pattern = imgstr
             });
 
+            chatBgs.Add(new ChatBackground()
+            {
+                ID = "13",
+                Background = "#ff1E648C",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = true,
+                Position = 13,
+                Thumbnail = null,
+                Pattern = imgstr
+            });
+
+            chatBgs.Add(new ChatBackground()
+            {
+                ID = "14",
+                Background = "#ff2AAAFF",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = true,
+                Position = 14,
+                Thumbnail = null,
+                Pattern = imgstr
+            });
+
+            chatBgs.Add(new ChatBackground()
+            {
+                ID = "15",
+                Background = "#ff7F55FF",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = true,
+                Position = 15,
+                Thumbnail = null,
+                Pattern = imgstr
+            });
+
+            chatBgs.Add(new ChatBackground()
+            {
+                ID = "16",
+                Background = "#ffFFFF7F",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ff000000",
+                IsTile = true,
+                Position = 16,
+                Thumbnail = null,
+                Pattern = imgstr
+            });
+
+            chatBgs.Add(new ChatBackground()
+            {
+                ID = "17",
+                Background = "#ff8E681C",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = true,
+                Position = 17,
+                Thumbnail = null,
+                Pattern = imgstr
+            });
+
+            chatBgs.Add(new ChatBackground()
+            {
+                ID = "18",
+                Background = "#ff3C516E",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = true,
+                Position = 18,
+                Thumbnail = null,
+                Pattern = imgstr
+            });
+
+            chatBgs.Add(new ChatBackground()
+            {
+                ID = "19",
+                Background = "#ff05A2A5",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = true,
+                Position = 19,
+                Thumbnail = null,
+                Pattern = imgstr
+            });
+
+            chatBgs.Add(new ChatBackground()
+            {
+                ID = "20",
+                Background = "#ffA20D08",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = true,
+                Position = 20,
+                Thumbnail = null,
+                Pattern = imgstr
+            });
+
             lock (readWriteLock)
             {
                 try
@@ -596,6 +708,14 @@ namespace windows_client.utils
             idList.Add("7");
             idList.Add("8");
             idList.Add("9");
+            idList.Add("13");
+            idList.Add("14");
+            idList.Add("15");
+            idList.Add("16");
+            idList.Add("17");
+            idList.Add("18");
+            idList.Add("19");
+            idList.Add("20");
 
             lock (readWriteLock)
             {
