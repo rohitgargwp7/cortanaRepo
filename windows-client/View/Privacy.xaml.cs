@@ -76,8 +76,8 @@ namespace windows_client.View
         private void Unlink_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (!canGoBack)
-                return; 
-            
+                return;
+
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
@@ -103,14 +103,14 @@ namespace windows_client.View
 
         private void unlinkAccountResponse_Callback(JObject obj)
         {
-            
+
         }
 
         private void Delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (!canGoBack)
-                return; 
-            
+                return;
+
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
