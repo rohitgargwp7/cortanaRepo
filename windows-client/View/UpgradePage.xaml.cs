@@ -61,7 +61,7 @@ namespace windows_client.View
                         StatusMsgsTable.MessagesDbUpdateToLatestVersion();
                     if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                         MqttDBUtils.MqttDbUpdateToLatestVersion();
-                    if (Utils.compareVersion("2.2.0.6", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
+                    if (Utils.compareVersion("2.2.2.0", App.CURRENT_VERSION) == 1)
                     {
                         using (HikeUsersDb db = new HikeUsersDb(App.UsersDBConnectionstring))
                         {
