@@ -778,15 +778,12 @@
   <data name="Email_Invite_Txt" xml:space="preserve">
     <value>¡Hola!
 
-He empezado a usar hike, una aplicación sencilla y chula para enviar mensajes totalmente gratis.
+Acabo de bajarme hike, un nuevo servicio de mensajería increíble. ¡Es más rápido, sencillo y hasta más bonito!
 
-¡Con hike puedes mandar mensajes gratuitos a tus amigos y familiares! ¡Con hike puedes enviar mensajes a tus amigos que tengan hike y también a los que no! No tendrás que volver a usar otra aplicación de mensajes nunca más. ¡Y lo mejor es que es completamente GRATIS!
+¡Gracias a las nuevas y divertidas pegatinas de hike, tus mensajes no volverán a ser aburridos!
+hike también te da una opción de privacidad para que solo tus amigos más cercanos puedan saber cuándo te conectaste por última vez.
 
-hike incluye divertidas pegatinas y emoticonos. ¡También puedes publicar actualizaciones de estado que verán tus amigos! ¡Es parecida a BBM pero muchísimo mejor!
-
-Descárgala ya y despídete de los aburridos SMS.
-
-Descarga hike: http://get.hike.in</value>
+¡Descárgalo ya http://hike.in y vamos a chatear gratis!</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">

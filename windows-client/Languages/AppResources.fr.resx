@@ -778,15 +778,12 @@
   <data name="Email_Invite_Txt" xml:space="preserve">
     <value>Salut !
 
-J'utilise hike, une superbe appli de messagerie, simple et gratuite.
+J'utilise la nouvelle messagerie hike ! Plus simple, plus rapide, et encore plus belle qu'avant !
 
-hike te permet d'envoyer gratuitement des messages à tes amis et à ta famille ! Avec hike, tu peux écrire à tes amis présents sur hike... mais aussi aux autres ! Oublie toutes les autres applis de messagerie. Cerise sur le gâteau, elle coûte ZÉRO !
+Et avec ses stickers drôles et inédits, tu n'enverras jamais un seul message ennuyeux !
+hike te permet aussi de révéler la date et l'heure de ta dernière connexion afin de te rapprocher de tes amis.
 
-hike est dotée de stickers et d'émoticônes rigolos. Publie aussi ton statut et montre-le à tes amis ! Pense à BBM, mais en beaucoup mieux !
-
-Procure-toi l'appli maintenant et dis adieu aux SMS.
-
-Procure-toi hike : http://get.hike.in</value>
+Télécharge-le maintenant (http://hike.in) et discutons gratuitement !</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">

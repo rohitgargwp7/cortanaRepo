@@ -1123,23 +1123,14 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hi!
+        ///   Looks up a localized string similar to Hi, 
         ///
+        ///I just got the awesome new hike messenger, it&apos;s faster, simpler and even more beautiful!
+        ///Check out their hilarious new stickers and you&apos;ll surely never send another plain boring message!
         ///
+        ///hike also gives you the choice of Privacy with Last Seen so that you can keep you close friends closer.
         ///
-        ///I started using hike, a simple beautiful messaging app that&apos;s absolutely free.
-        ///
-        ///
-        ///
-        ///hike lets you send free messages to your friends and family! With hike, you can message friends that are on hike and also those who aren&apos;t on hike! You&apos;ll never have to use another messaging app again. Better yet, it&apos;s absolutely FREE!
-        ///
-        ///
-        ///
-        ///hike comes with some hilarious stickers and emoticons. You can also post Status Updates to your friends! Think of it like BBM but much, much better!
-        ///
-        ///
-        ///
-        ///Get it now and s [rest of string was truncated]&quot;;.
+        ///Download it now http://hike.in and join the fun!.
         /// </summary>
         public static string Email_Invite_Txt {
             get {
