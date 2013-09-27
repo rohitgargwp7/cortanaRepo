@@ -713,9 +713,27 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
-            #region ProTips 2.2.2.1
-            App.RemoveKeyFromAppSettings(App.PRO_TIP_DISMISS_TIME);
-            ProTipHelper.Instance.ClearOldProTips();
+            #region ProTips 2.2.2.2
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.2.2.2") < 0)
+            {
+                try
+                {
+                    var proTip = new ProTipHelper.ProTip();
+                    App.appSettings.TryGetValue(App.PRO_TIP, out proTip);
+
+                    if (proTip != null)
+                    {
+                        App.RemoveKeyFromAppSettings(App.PRO_TIP);
+                        App.appSettings[App.PRO_TIP] = proTip.Id;
+                        ProTipHelper.CurrentProTip = proTip;
+                        ProTipHelper.Instance.WriteProTipToFile();
+                    }
+                }
+                catch { }
+
+                App.RemoveKeyFromAppSettings(App.PRO_TIP_DISMISS_TIME);
+                ProTipHelper.Instance.ClearOldProTips();
+            }
             #endregion
             #region LAST SEEN BYTE TO BOOL FIX
 

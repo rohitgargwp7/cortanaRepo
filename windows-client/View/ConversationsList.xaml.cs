@@ -2550,7 +2550,7 @@ namespace windows_client.View
             ProTipCount = 0;
 
             JObject proTipAnalyticsJson = new JObject();
-            proTipAnalyticsJson.Add(Analytics.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip._id);
+            proTipAnalyticsJson.Add(Analytics.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip.Id);
 
             JObject data = new JObject();
             data.Add(HikeConstants.METADATA, proTipAnalyticsJson);
@@ -2581,16 +2581,13 @@ namespace windows_client.View
 
         void showProTip()
         {
-            ProTip proTip;
-            App.appSettings.TryGetValue(App.PRO_TIP, out proTip);
-
-            if (proTip != null)
+            if (ProTipHelper.CurrentProTip != null)
             {
-                var proTipUc = new ProTipUC(proTip, ProTipImage_Tapped, dismissProTip_Click);
                 if (App.ViewModel.StatusList != null && App.ViewModel.StatusList.Count > 0 && App.ViewModel.StatusList[0] is ProTipUC)
-                    App.ViewModel.StatusList[0] = proTipUc;
-                else
-                    App.ViewModel.StatusList.Insert(0, proTipUc);
+                    App.ViewModel.StatusList.RemoveAt(0);
+
+                var proTipUc = new ProTipUC(ProTipImage_Tapped, dismissProTip_Click);
+                App.ViewModel.StatusList.Insert(0, proTipUc);
 
                 ProTipCount = 1;
             }
