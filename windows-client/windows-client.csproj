@@ -209,7 +209,6 @@
     <Compile Include="utils\AccountUtils.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
-    <Compile Include="utils\Extensions.cs" />
     <Compile Include="utils\StickerPivotHelper.cs" />
     <Compile Include="utils\ContactUtils.cs" />
     <Compile Include="utils\ImageLoader.cs" />
