@@ -161,10 +161,11 @@ namespace windows_client.utils
                     var fileNames = store.GetFileNames(PROTIPS_DIRECTORY + "\\*");
 
                     var currentFile = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
+                    var currentTipFile = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.Id);
 
                     foreach (var fileName in fileNames)
                     {
-                        if (store.FileExists(fileName) && fileName != currentFile)
+                        if (fileName != currentFile && fileName != currentTipFile && store.FileExists(fileName))
                             store.DeleteFile(fileName);
                     }
                 }
