@@ -725,8 +725,6 @@ namespace windows_client
                     {
                         App.RemoveKeyFromAppSettings(App.PRO_TIP);
                         App.appSettings[App.PRO_TIP] = proTip.Id;
-                        ProTipHelper.CurrentProTip = proTip;
-                        ProTipHelper.Instance.WriteProTipToFile();
                     }
                 }
                 catch { }

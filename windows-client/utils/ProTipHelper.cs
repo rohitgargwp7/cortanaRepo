@@ -314,10 +314,17 @@ namespace windows_client.utils
                     if (ImageUrl == "*@N@*")
                         ImageUrl = null;
 
-                    count = reader.ReadInt32();
-                    Base64Image = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                    if (Base64Image == "*@N@*")
+                    try
+                    {
+                        count = reader.ReadInt32();
+                        Base64Image = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                        if (Base64Image == "*@N@*")
+                            Base64Image = null;
+                    }
+                    catch
+                    {
                         Base64Image = null;
+                    }
                 }
                 catch (Exception ex)
                 {
