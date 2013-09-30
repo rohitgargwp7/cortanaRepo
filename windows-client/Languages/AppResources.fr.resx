@@ -1786,16 +1786,6 @@ Télécharge-le maintenant (http://hike.in) et discutons gratuitement !</value>
   <data name="Installed_Txt" xml:space="preserve">
     <value>Installé</value>
   </data>
-  <data name="sms_invite_message_1" xml:space="preserve">
-    <value>Salut ! J'utilise hike, qui propose de superbes stickers et émoticônes que je voudrais partager avec toi. Pour l'obtenir : http://hike.in/</value>
-  </data>
-  <data name="sms_invite_message_2" xml:space="preserve">
-    <value>Salut ! J'utilise hike, qui permet aux amis proches de savoir à quand remonte la dernière connexion. Pour l'obtenir : http://hike.in/</value>
-    <comment>Constants General Text</comment>
-  </data>
-  <data name="sms_invite_message_3" xml:space="preserve">
-    <value>Salut ! J'utilise hike, qui propose un walkie-talkie grâce auquel je t'envoie des messages vocaux gratuits. Pour l'obtenir : http://hike.in/</value>
-  </data>
   <data name="Last_Seen_Today_At" xml:space="preserve">
     <value>dernière connexion aujourd'hui à {0}</value>
   </data>
@@ -1962,5 +1952,8 @@ Télécharge-le maintenant (http://hike.in) et discutons gratuitement !</value>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
     <value>Gagnez gratuitement des SMS pour chaque ami qui rejoint hike à cause de vous</value>
+  </data>
+  <data name="sms_invite_message" xml:space="preserve">
+    <value>'utilise la nouvelle messagerie hike ! Plus simple, plus rapide, et drôle avec ses stickers inédits ! Télécharge-le maintenant et discutons gratuitement (http://hike.in)</value>
   </data>
 </root>

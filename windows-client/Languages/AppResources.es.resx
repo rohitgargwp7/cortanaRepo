@@ -1786,16 +1786,6 @@ hike también te da una opción de privacidad para que solo tus amigos más cerc
   <data name="Installed_Txt" xml:space="preserve">
     <value>Instalado</value>
   </data>
-  <data name="sms_invite_message_1" xml:space="preserve">
-    <value>¡Hola! Estoy usando hike. Incluye un montón de pegatinas y emoticonos que quiero compartir contigo. ¡Descárgatela ya en http://hike.in!</value>
-  </data>
-  <data name="sms_invite_message_2" xml:space="preserve">
-    <value>¡Hola! Estoy usando hike. Puedes mostrar tu última conexión a los amigos que quieras. Descárgatela ya en http://hike.in/</value>
-    <comment>Constants General Text</comment>
-  </data>
-  <data name="sms_invite_message_3" xml:space="preserve">
-    <value>¡Hola! Estoy usando hike, que incluye un walkie-talkie para poder enviarte mensajes de voz gratis. Descárgatela ya en http://hike.in/</value>
-  </data>
   <data name="Last_Seen_Today_At" xml:space="preserve">
     <value>última visita hoy a las {0}</value>
   </data>
@@ -1962,5 +1952,8 @@ hike también te da una opción de privacidad para que solo tus amigos más cerc
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
     <value>Gana SMS gratis por cada amigo que se una a través de ti hike</value>
+  </data>
+  <data name="sms_invite_message" xml:space="preserve">
+    <value>¡Acabo de bajarme el nuevo servicio de mensajería hike! ¡Es más sencillo y rápido e incluye nuevas pegatinas muy divertidas! Descárgalo ya y empecemos a chatear gratis http://hike.in</value>
   </data>
 </root>

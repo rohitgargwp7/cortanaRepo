@@ -3938,29 +3938,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hey, I&apos;m using hike, and it has all these awesome stickers and emoticons which I want to share with you. Get it now http://hike.in/.
+        ///   Looks up a localized string similar to I just got the new hike messenger! It&apos;s simpler, faster with hilarious new stickers! Download it now and lets chat for free http://hike.in.
         /// </summary>
-        public static string sms_invite_message_1 {
+        public static string sms_invite_message {
             get {
-                return ResourceManager.GetString("sms_invite_message_1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hey, I&apos;m using hike, which lets us show our &quot;last seen&quot; status only to the friends we choose, and not everyone. Get it now http://hike.in/.
-        /// </summary>
-        public static string sms_invite_message_2 {
-            get {
-                return ResourceManager.GetString("sms_invite_message_2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hey, I&apos;m using hike; it comes with a cool Walkie-Talkie which lets me send you free voice messages. Get it now http://hike.in/.
-        /// </summary>
-        public static string sms_invite_message_3 {
-            get {
-                return ResourceManager.GetString("sms_invite_message_3", resourceCulture);
+                return ResourceManager.GetString("sms_invite_message", resourceCulture);
             }
         }
         
