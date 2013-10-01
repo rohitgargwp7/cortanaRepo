@@ -28,6 +28,7 @@ using windows_client.Controls.StatusUpdate;
 using Coding4Fun.Phone.Controls;
 using System.Windows.Media;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace windows_client.View
 {
@@ -108,6 +109,10 @@ namespace windows_client.View
             base.OnNavigatedFrom(e);
             if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
                 TotalUnreadStatuses = 0;
+
+            contactsCollectionView.Source = null;
+            favCollectionView.Source = null;
+            statusLLS.ItemsSource = null;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -116,10 +121,15 @@ namespace windows_client.View
             if (launchPagePivot.SelectedIndex == 3)
             {
                 TotalUnreadStatuses = 0;
+
+                if (isStatusMessagesLoaded)
+                    statusLLS.ItemsSource = App.ViewModel.StatusList;
             }
+
+            if (_isFavListBound && launchPagePivot.SelectedIndex == 1)
+                BindFriendsAsync();
+
             this.llsConversations.SelectedItem = null;
-            this.favourites.SelectedIndex = -1;
-            this.hikeContactListBox.SelectedIndex = -1;
             this.statusLLS.SelectedIndex = -1;
 
             App.IS_TOMBSTONED = false;
@@ -194,6 +204,43 @@ namespace windows_client.View
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 launchPagePivot.SelectedIndex = 3;
+        }
+
+        private async void BindFriendsAsync()
+        {
+            contactGrid.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
+            cohProgressBar.Visibility = Visibility.Visible;
+
+            txtCircleOfFriends.Visibility = Visibility.Collapsed;
+            cofCounter.Visibility = Visibility.Collapsed;
+            txtContactsOnHike.Visibility = Visibility.Collapsed;
+            cohCounter.Visibility = Visibility.Collapsed;
+            emptyListPlaceholderFiends.Visibility = Visibility.Collapsed;
+            favourites.Visibility = Visibility.Collapsed;
+            emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
+            hikeContactListBox.Visibility = Visibility.Collapsed;
+
+            //Await aync are used so that the UI thread is not blocked by the below binding computation.
+            await Task.Delay(500);
+
+            contactsCollectionView.Source = hikeContactList;
+            favCollectionView.Source = App.ViewModel.FavList;
+
+            contactGrid.RowDefinitions[0].Height = GridLength.Auto;
+            cohProgressBar.Visibility = Visibility.Collapsed;
+
+            txtCircleOfFriends.Visibility = Visibility.Visible;
+            cofCounter.Visibility = Visibility.Visible;
+            txtContactsOnHike.Visibility = Visibility.Visible;
+            cohCounter.Visibility = Visibility.Visible;
+
+            favourites.Visibility = App.ViewModel.FavList.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            emptyListPlaceholderFiends.Visibility = App.ViewModel.FavList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            emptyListPlaceholderHikeContacts.Visibility = hikeContactList.Count > 0 ? Visibility.Collapsed : Visibility.Visible;
+            hikeContactListBox.Visibility = hikeContactList.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+
+            this.favourites.SelectedIndex = -1;
+            this.hikeContactListBox.SelectedIndex = -1;
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -785,6 +832,10 @@ namespace windows_client.View
                         }
                     };
                 }
+                else if (favCollectionView.Source == null)
+                {
+                    BindFriendsAsync();
+                }
                 #endregion
             }
             else if (selectedIndex == 2)
@@ -872,6 +923,9 @@ namespace windows_client.View
                 {
                     RefreshBarCount = 0;
                     UnreadFriendRequests = 0;
+
+                    if (statusLLS.ItemsSource == null)
+                        statusLLS.ItemsSource = App.ViewModel.StatusList;
                 }
             }
             if (selectedIndex != 3)
