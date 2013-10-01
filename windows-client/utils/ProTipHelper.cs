@@ -16,7 +16,6 @@ namespace windows_client.utils
     class ProTipHelper
     {
         private const string PROTIPS_DIRECTORY = "ProTips";
-        private const string CURRENT_PROTIP_TN = "CurrentProTipThumbnail";
 
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static object readWriteLock = new object();
