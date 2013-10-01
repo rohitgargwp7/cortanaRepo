@@ -539,20 +539,5 @@ namespace windows_client.utils
             obj[HikeConstants.TYPE] = HikeConstants.REQUEST_SERVER_TIME;
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
-
-        public static string GetRandomInviteString()
-        {
-            Random rnd = new Random();
-
-            switch (rnd.Next() % 3)
-            {
-                case 0:
-                    return AppResources.sms_invite_message_1;
-                case 1:
-                    return AppResources.sms_invite_message_2;
-                default:
-                    return AppResources.sms_invite_message_3;
-            }
-        }
     }
 }
