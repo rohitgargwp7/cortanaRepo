@@ -206,14 +206,6 @@ namespace windows_client.View
                 launchPagePivot.SelectedIndex = 3;
         }
 
-        Task Delay()
-        {
-            return Task.Run(() =>
-            {
-                System.Threading.Thread.Sleep(500);
-            });
-        }
-
         private async void BindFriendsAsync()
         {
             contactGrid.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
@@ -228,7 +220,8 @@ namespace windows_client.View
             emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
             hikeContactListBox.Visibility = Visibility.Collapsed;
 
-            await Delay();
+            //Await aync are used so that the UI thread is not blocked by the below binding computation.
+            await Task.Delay(500);
 
             contactsCollectionView.Source = hikeContactList;
             favCollectionView.Source = App.ViewModel.FavList;
