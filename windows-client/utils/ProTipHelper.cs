@@ -281,6 +281,11 @@ namespace windows_client.utils
 
                             if (store.FileExists(fileName))
                                 store.DeleteFile(fileName);
+
+                            fileName = PROTIPS_DIRECTORY + "\\" + CURRENT_PROTIP_IMAGE;
+
+                            if (store.FileExists(fileName))
+                                store.DeleteFile(fileName);
                         }
                         catch (Exception ex)
                         {
