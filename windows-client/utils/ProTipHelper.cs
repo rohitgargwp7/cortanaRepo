@@ -237,12 +237,12 @@ namespace windows_client.utils
         public void ClearProTips()
         {
             if (CurrentProTip != null)
-            {
                 RemoveCurrentProTip();
 
-                App.appSettings[App.PRO_TIP] = null;
-                App.appSettings[App.PRO_TIP_COUNT] = 0;
-            }
+            ClearOldProTips();
+
+            App.appSettings.Remove(App.PRO_TIP);
+            App.RemoveKeyFromAppSettings(App.PRO_TIP_COUNT);
         }
 
         public void ClearOldProTips()
