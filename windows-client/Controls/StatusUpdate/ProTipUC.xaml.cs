@@ -19,16 +19,16 @@ namespace windows_client.Controls.StatusUpdate
             : base(string.Empty, null, string.Empty, string.Empty)
         {
             InitializeComponent();
-            if (!String.IsNullOrEmpty(ProTipHelper.CurrentProTip.Header))
+            if (!String.IsNullOrEmpty(ProTipHelper.CurrentProTip._header))
             {
                 proTipTitleText.Visibility = Visibility.Visible;
-                proTipTitleText.Text = ProTipHelper.CurrentProTip.Header;
+                proTipTitleText.Text = ProTipHelper.CurrentProTip._header;
             }
 
-            if (!String.IsNullOrEmpty(ProTipHelper.CurrentProTip.Body))
+            if (!String.IsNullOrEmpty(ProTipHelper.CurrentProTip._body))
             {
                 proTipContentText.Visibility = Visibility.Visible;
-                proTipContentText.Text = ProTipHelper.CurrentProTip.Body;
+                proTipContentText.Text = ProTipHelper.CurrentProTip._body;
             }
 
             if (!String.IsNullOrEmpty(ProTipHelper.CurrentProTip.ImageUrl))

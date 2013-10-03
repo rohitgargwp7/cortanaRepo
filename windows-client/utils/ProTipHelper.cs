@@ -16,6 +16,7 @@ namespace windows_client.utils
     class ProTipHelper
     {
         private const string PROTIPS_DIRECTORY = "ProTips";
+        private const string CURRENT_PROTIP_IMAGE = "CurrentProtipImage";
 
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static object readWriteLock = new object();
@@ -52,7 +53,7 @@ namespace windows_client.utils
                             App.appSettings.TryGetValue(App.PRO_TIP, out id);
 
                             if (!String.IsNullOrEmpty(id))
-                                ReadFromFile(id);
+                                ReadProTipFromFile(id);
                         }
                     }
                 }
@@ -62,6 +63,8 @@ namespace windows_client.utils
 
         public void AddProTip(string id, string header, string body, string imageUrl, string base64Image)
         {
+            RemoveCurrentProTip();
+
             CurrentProTip = new ProTip(id, header, body, imageUrl, base64Image);
 
             App.WriteToIsoStorageSettings(App.PRO_TIP, id);
@@ -72,13 +75,83 @@ namespace windows_client.utils
                 ShowProTip(null, null);
         }
 
+        public void saveProTipImage(byte[] imageBytes)
+        {
+            if (imageBytes == null)
+                return;
+
+            lock (readWriteLock)
+            {
+                try
+                {
+                    string FileName = PROTIPS_DIRECTORY + "\\" + CURRENT_PROTIP_IMAGE;
+
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (store.FileExists(FileName))
+                            store.DeleteFile(FileName);
+
+                        using (var file = store.OpenFile(FileName, FileMode.OpenOrCreate, FileAccess.Write))
+                        {
+                            using (BinaryWriter writer = new BinaryWriter(file))
+                            {
+                                writer.Seek(0, SeekOrigin.Begin);
+                                writer.Write(imageBytes.Length);
+                                writer.Write(imageBytes);
+                                writer.Flush();
+                                writer.Close();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("ProTipHelper :: saveProTipImage : saveProTipImage, Exception : " + ex.StackTrace);
+                }
+            }
+        }
+
+        public byte[] getProTipImage()
+        {
+            byte[] imageBytes = null;
+            lock (readWriteLock)
+            {
+                try
+                {
+                    string FileName = PROTIPS_DIRECTORY + "\\" + CURRENT_PROTIP_IMAGE;
+
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (!store.FileExists(FileName))
+                            return null;
+
+                        using (var file = store.OpenFile(FileName, FileMode.Open, FileAccess.Read))
+                        {
+                            using (BinaryReader reader = new BinaryReader(file))
+                            {
+                                var count = reader.ReadInt32();
+                                imageBytes = reader.ReadBytes(count);
+                                reader.Close();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("ProTipHelper :: getProTipImage : getProTipImage, Exception : " + ex.StackTrace);
+                }
+            }
+
+            return imageBytes;
+        }
+
         public void WriteProTipToFile()
         {
             lock (readWriteLock)
             {
                 try
                 {
-                    string fileName = PROTIPS_DIRECTORY + "\\" + CurrentProTip.Id;
+                    string fileName = PROTIPS_DIRECTORY + "\\" + CurrentProTip._id;
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
                         if (!store.DirectoryExists(PROTIPS_DIRECTORY))
@@ -106,7 +179,7 @@ namespace windows_client.utils
             }
         }
 
-        static void ReadFromFile(String id)
+        static void ReadProTipFromFile(String id)
         {
             lock (readWriteLock)
             {
@@ -143,12 +216,12 @@ namespace windows_client.utils
         public void ClearProTips()
         {
             if (CurrentProTip != null)
-            {
                 RemoveCurrentProTip();
 
-                App.appSettings[App.PRO_TIP] = null;
-                App.appSettings[App.PRO_TIP_COUNT] = 0;
-            }
+            ClearOldProTips();
+
+            App.appSettings.Remove(App.PRO_TIP);
+            App.RemoveKeyFromAppSettings(App.PRO_TIP_COUNT);
         }
 
         public void ClearOldProTips()
@@ -159,13 +232,25 @@ namespace windows_client.utils
                 {
                     var fileNames = store.GetFileNames(PROTIPS_DIRECTORY + "\\*");
 
-                    var currentFile = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
-                    var currentTipFile = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.Id);
-
-                    foreach (var fileName in fileNames)
+                    if (CurrentProTip != null)
                     {
-                        if (fileName != currentFile && fileName != currentTipFile && store.FileExists(fileName))
-                            store.DeleteFile(fileName);
+                        var currentFile = CurrentProTip.ImageUrl != null ? PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl) : String.Empty;
+
+                        var currentTipFile = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip._id);
+
+                        foreach (var fileName in fileNames)
+                        {
+                            if (fileName != currentFile && fileName != currentTipFile && store.FileExists(fileName))
+                                store.DeleteFile(fileName);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var fileName in fileNames)
+                        {
+                            if (store.FileExists(fileName))
+                                store.DeleteFile(fileName);
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -188,12 +273,20 @@ namespace windows_client.utils
                     {
                         try
                         {
-                            string fileName = PROTIPS_DIRECTORY + "\\" + CurrentProTip.Id;
+                            string fileName = PROTIPS_DIRECTORY + "\\" + CurrentProTip._id;
 
                             if (store.FileExists(fileName))
                                 store.DeleteFile(fileName);
 
-                            fileName = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
+                            if (CurrentProTip.ImageUrl != null)
+                            {
+                                fileName = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
+
+                                if (store.FileExists(fileName))
+                                    store.DeleteFile(fileName);
+                            }
+
+                            fileName = PROTIPS_DIRECTORY + "\\" + CURRENT_PROTIP_IMAGE;
 
                             if (store.FileExists(fileName))
                                 store.DeleteFile(fileName);
@@ -208,128 +301,128 @@ namespace windows_client.utils
 
             CurrentProTip = null;
         }
+    }
 
-        public class ProTip
+    public class ProTip
+    {
+        public string _id;
+        public string _header;
+        public string _body;
+        public string ImageUrl;
+        public string Base64Image;
+
+        ImageSource _tipImage;
+        public ImageSource TipImage
         {
-            public string Id;
-            public string Header;
-            public string Body;
-            public string ImageUrl;
-            public string Base64Image;
-
-            ImageSource _tipImage;
-            public ImageSource TipImage
+            get
             {
-                get
+                if (_tipImage == null)
                 {
-                    if (_tipImage == null)
-                    {
-                        if (Base64Image != null)
-                            _tipImage = UI_Utils.Instance.createImageFromBytes(System.Convert.FromBase64String(Base64Image));
-                        else
-                            _tipImage = ProcesImageSource();
-
-                        return _tipImage;
-                    }
+                    if (Base64Image != null)
+                        _tipImage = UI_Utils.Instance.createImageFromBytes(System.Convert.FromBase64String(Base64Image));
                     else
-                        return _tipImage;
+                        _tipImage = ProcesImageSource();
+
+                    return _tipImage;
                 }
+                else
+                    return _tipImage;
+            }
+        }
+
+        private ImageSource ProcesImageSource()
+        {
+            ImageSource source = null;
+
+            source = new BitmapImage();
+
+            if (!String.IsNullOrEmpty(ImageUrl))
+                ImageLoader.Load(source as BitmapImage, new Uri(ImageUrl), null, Utils.ConvertUrlToFileName(ImageUrl));
+
+            return source;
+        }
+
+        public ProTip() { }
+
+        public ProTip(string id, string header, string body, string imageUrl, string base64Image)
+        {
+            _id = id;
+            _header = header;
+            _body = body;
+            ImageUrl = imageUrl;
+            Base64Image = base64Image;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            try
+            {
+                writer.WriteStringBytes(_id);
+
+                if (_header == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(_header);
+
+                if (_body == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(_body);
+
+                if (ImageUrl == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(ImageUrl);
+
+                if (Base64Image == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(Base64Image);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("ProTip :: Write : Unable To write, Exception : " + ex.StackTrace);
             }
 
-            private ImageSource ProcesImageSource()
+        }
+
+        public void Read(BinaryReader reader)
+        {
+            try
             {
-                ImageSource source = null;
+                int count = reader.ReadInt32();
+                _id = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
 
-                source = new BitmapImage();
+                count = reader.ReadInt32();
+                _header = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (_header == "*@N@*")
+                    _header = null;
 
-                if (!String.IsNullOrEmpty(ImageUrl))
-                    ImageLoader.Load(source as BitmapImage, new Uri(ImageUrl), null, Utils.ConvertUrlToFileName(ImageUrl));
+                count = reader.ReadInt32();
+                _body = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (_body == "*@N@*")
+                    _body = null;
 
-                return source;
-            }
+                count = reader.ReadInt32();
+                ImageUrl = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (ImageUrl == "*@N@*")
+                    ImageUrl = null;
 
-            public ProTip() { }
-
-            public ProTip(string id, string header, string body, string imageUrl, string base64Image)
-            {
-                Id = id;
-                Header = header;
-                Body = body;
-                ImageUrl = imageUrl;
-                Base64Image = base64Image;
-            }
-
-            public void Write(BinaryWriter writer)
-            {
                 try
                 {
-                    writer.WriteStringBytes(Id);
-
-                    if (Header == null)
-                        writer.WriteStringBytes("*@N@*");
-                    else
-                        writer.WriteStringBytes(Header);
-
-                    if (Body == null)
-                        writer.WriteStringBytes("*@N@*");
-                    else
-                        writer.WriteStringBytes(Body);
-
-                    if (ImageUrl == null)
-                        writer.WriteStringBytes("*@N@*");
-                    else
-                        writer.WriteStringBytes(ImageUrl);
-
-                    if (Base64Image == null)
-                        writer.WriteStringBytes("*@N@*");
-                    else
-                        writer.WriteStringBytes(Base64Image);
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine("ProTip :: Write : Unable To write, Exception : " + ex.StackTrace);
-                }
-
-            }
-
-            public void Read(BinaryReader reader)
-            {
-                try
-                {
-                    int count = reader.ReadInt32();
-                    Id = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-
                     count = reader.ReadInt32();
-                    Header = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                    if (Header == "*@N@*")
-                        Header = null;
-
-                    count = reader.ReadInt32();
-                    Body = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                    if (Body == "*@N@*")
-                        Body = null;
-
-                    count = reader.ReadInt32();
-                    ImageUrl = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                    if (ImageUrl == "*@N@*")
-                        ImageUrl = null;
-
-                    try
-                    {
-                        count = reader.ReadInt32();
-                        Base64Image = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                        if (Base64Image == "*@N@*")
-                            Base64Image = null;
-                    }
-                    catch
-                    {
+                    Base64Image = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                    if (Base64Image == "*@N@*")
                         Base64Image = null;
-                    }
                 }
-                catch (Exception ex)
+                catch
                 {
-                    System.Diagnostics.Debug.WriteLine("ProTip :: Read : Read, Exception : " + ex.StackTrace);
+                    Base64Image = null;
                 }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("ProTip :: Read : Read, Exception : " + ex.StackTrace);
             }
         }
     }
