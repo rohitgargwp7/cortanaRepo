@@ -63,13 +63,13 @@ namespace windows_client.utils
 
         public void AddProTip(string id, string header, string body, string imageUrl, string base64Image)
         {
+            RemoveCurrentProTip();
+
             CurrentProTip = new ProTip(id, header, body, imageUrl, base64Image);
 
             App.WriteToIsoStorageSettings(App.PRO_TIP, id);
 
             WriteProTipToFile();
-
-            DeleteProTipImage();
 
             if (ShowProTip != null)
                 ShowProTip(null, null);
@@ -143,27 +143,6 @@ namespace windows_client.utils
             }
 
             return imageBytes;
-        }
-
-        public void DeleteProTipImage()
-        {
-            lock (readWriteLock)
-            {
-                try
-                {
-                    string FileName = PROTIPS_DIRECTORY + "\\" + CURRENT_PROTIP_IMAGE;
-
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
-                    {
-                        if (store.FileExists(FileName))
-                            store.DeleteFile(FileName);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine("ProTipHelper :: DeleteProTipImage : DeleteProTipImage, Exception : " + ex.StackTrace);
-                }
-            }
         }
 
         public void WriteProTipToFile()
