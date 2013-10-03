@@ -15,26 +15,26 @@ namespace windows_client.Controls.StatusUpdate
 {
     public partial class ProTipUC : StatusUpdateBox
     {
-        public ProTipUC(ProTip proTip, EventHandler<System.Windows.Input.GestureEventArgs> imageTap, EventHandler<System.Windows.Input.GestureEventArgs> dismissTap)
+        public ProTipUC(EventHandler<System.Windows.Input.GestureEventArgs> imageTap, EventHandler<System.Windows.Input.GestureEventArgs> dismissTap)
             : base(string.Empty, null, string.Empty, string.Empty)
         {
             InitializeComponent();
-            if (!String.IsNullOrEmpty(proTip._header))
+            if (!String.IsNullOrEmpty(ProTipHelper.CurrentProTip.Header))
             {
                 proTipTitleText.Visibility = Visibility.Visible;
-                proTipTitleText.Text = proTip._header;
+                proTipTitleText.Text = ProTipHelper.CurrentProTip.Header;
             }
 
-            if (!String.IsNullOrEmpty(proTip._body))
+            if (!String.IsNullOrEmpty(ProTipHelper.CurrentProTip.Body))
             {
                 proTipContentText.Visibility = Visibility.Visible;
-                proTipContentText.Text = proTip._body;
+                proTipContentText.Text = ProTipHelper.CurrentProTip.Body;
             }
 
-            if (!String.IsNullOrEmpty(proTip.ImageUrl))
+            if (!String.IsNullOrEmpty(ProTipHelper.CurrentProTip.ImageUrl))
             {
                 Binding myBinding = new Binding();
-                myBinding.Source = proTip.TipImage;
+                myBinding.Source = ProTipHelper.CurrentProTip.TipImage;
                 proTipImage.SetBinding(Image.SourceProperty, myBinding);
                 proTipImage.Visibility = Visibility.Visible;
 

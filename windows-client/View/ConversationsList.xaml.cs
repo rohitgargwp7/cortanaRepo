@@ -483,7 +483,6 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.UNBLOCK_USER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
             mPubSub.addListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
-            mPubSub.addListener(HikePubSub.PRO_TIPS_REC, this);
             mPubSub.addListener(HikePubSub.CONTACT_ADDED, this);
             mPubSub.addListener(HikePubSub.ADDRESSBOOK_UPDATED, this);
         }
@@ -509,7 +508,6 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.UNBLOCK_USER, this);
                 mPubSub.removeListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
                 mPubSub.removeListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
-                mPubSub.removeListener(HikePubSub.PRO_TIPS_REC, this);
                 mPubSub.removeListener(HikePubSub.CONTACT_ADDED, this);
                 mPubSub.removeListener(HikePubSub.ADDRESSBOOK_UPDATED, this);
             }
@@ -1490,42 +1488,6 @@ namespace windows_client.View
                     }
                 });
 
-            }
-            #endregion
-            #region PRO_TIPS
-            else if (HikePubSub.PRO_TIPS_REC == type)
-            {
-                var vals = obj as object[];
-
-                var id = (string)vals[0];
-                var header = (string)vals[1];
-                var text = (string)vals[2];
-                var imageUrl = (string)vals[3];
-                Int64 time = 0;
-                try
-                {
-                    time = (Int64)vals[4];
-                }
-                catch
-                {
-                }
-
-                if (time > 0)
-                {
-                    if (App.appSettings.Contains(App.PRO_TIP_DISMISS_TIME))
-                        App.appSettings[App.PRO_TIP_DISMISS_TIME] = time;
-                    else
-                        App.WriteToIsoStorageSettings(App.PRO_TIP_DISMISS_TIME, time);
-
-                    ProTipHelper.Instance.ChangeTimerTime(time);
-                }
-                else
-                {
-                    if (!App.appSettings.Contains(App.PRO_TIP_DISMISS_TIME))
-                        App.WriteToIsoStorageSettings(App.PRO_TIP_DISMISS_TIME, HikeConstants.DEFAULT_PRO_TIP_TIME);
-                }
-
-                ProTipHelper.Instance.AddProTip(id, header, text, imageUrl);
             }
             #endregion
             #region DELETE CONVERSATION
@@ -2642,7 +2604,7 @@ namespace windows_client.View
             ProTipCount = 0;
 
             JObject proTipAnalyticsJson = new JObject();
-            proTipAnalyticsJson.Add(Analytics.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip._id);
+            proTipAnalyticsJson.Add(Analytics.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip.Id);
 
             JObject data = new JObject();
             data.Add(HikeConstants.METADATA, proTipAnalyticsJson);
@@ -2669,18 +2631,18 @@ namespace windows_client.View
                     }
                 };
             worker.RunWorkerAsync();
-
-            ProTipHelper.Instance.StartTimer();
         }
 
         void showProTip()
         {
-            ProTip proTip;
-            App.appSettings.TryGetValue(App.PRO_TIP, out proTip);
-
-            if (proTip != null)
+            if (ProTipHelper.CurrentProTip != null)
             {
-                App.ViewModel.StatusList.Insert(0, new ProTipUC(proTip, ProTipImage_Tapped, dismissProTip_Click));
+                if (App.ViewModel.StatusList != null && App.ViewModel.StatusList.Count > 0 && App.ViewModel.StatusList[0] is ProTipUC)
+                    App.ViewModel.StatusList.RemoveAt(0);
+
+                var proTipUc = new ProTipUC(ProTipImage_Tapped, dismissProTip_Click);
+                App.ViewModel.StatusList.Insert(0, proTipUc);
+
                 ProTipCount = 1;
             }
         }

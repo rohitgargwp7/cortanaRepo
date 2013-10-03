@@ -398,9 +398,6 @@ namespace windows_client
                     MqttManagerInstance.connect();
             }
 
-            if (ProTipHelper.Instance.proTipTimer != null)
-                ProTipHelper.Instance.proTipTimer.Start();
-
             NetworkManager.turnOffNetworkManager = false;
             App.mMqttManager.IsAppStarted = false;
         }
@@ -425,9 +422,6 @@ namespace windows_client
                     return;
                 ConversationTableUtils.saveConvObjectList();
             }
-
-            if (ProTipHelper.Instance.proTipTimer != null)
-                ProTipHelper.Instance.proTipTimer.Stop();
 
             App.mMqttManager.IsLastSeenPacketSent = false;
             App.mMqttManager.RemoveMqttListener();
@@ -719,6 +713,26 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
+            #region ProTips 2.2.2.2
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.2.2.2") < 0)
+            {
+                try
+                {
+                    var proTip = new ProTipHelper.ProTip();
+                    App.appSettings.TryGetValue(App.PRO_TIP, out proTip);
+
+                    if (proTip != null)
+                    {
+                        App.RemoveKeyFromAppSettings(App.PRO_TIP);
+                        App.appSettings[App.PRO_TIP] = proTip.Id;
+                    }
+                }
+                catch { }
+
+                App.RemoveKeyFromAppSettings(App.PRO_TIP_DISMISS_TIME);
+                ProTipHelper.Instance.ClearOldProTips();
+            }
+            #endregion
             #region LAST SEEN BYTE TO BOOL FIX
 
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.2.2.0") < 0)

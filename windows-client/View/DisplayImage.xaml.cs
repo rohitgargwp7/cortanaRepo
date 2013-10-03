@@ -62,13 +62,9 @@ namespace windows_client.View
                         fileName = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
                         loadingProgress.Opacity = 1;
                         if (!Utils.isGroupConversation(msisdn))
-                        {
                             AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + msisdn + "?fullsize=true", getProfilePic_Callback, true, fileName);
-                        }
                         else
-                        {
                             AccountUtils.createGetRequest(AccountUtils.BASE + "/group/" + msisdn + "/avatar?fullsize=true", getProfilePic_Callback, true, fileName);
-                        }
                     }
                     else
                     {
@@ -89,7 +85,15 @@ namespace windows_client.View
                 else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IMAGE_TO_DISPLAY))
                 {
                     if (ProTipHelper.CurrentProTip != null)
+                    {
                         this.FileImage.Source = ProTipHelper.CurrentProTip.TipImage;
+
+                        if (ProTipHelper.CurrentProTip.Base64Image != null)
+                        {
+                            loadingProgress.Opacity = 1;
+                            AccountUtils.createGetRequest(ProTipHelper.CurrentProTip.ImageUrl, getPicFromHikeServer_Callback, true, Utils.ConvertUrlToFileName(ProTipHelper.CurrentProTip.ImageUrl));
+                        }
+                    }
                 }
                 else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.STATUS_IMAGE_TO_DISPLAY))
                 {
@@ -103,10 +107,28 @@ namespace windows_client.View
                         string msisdn = statusImageInfo[0].Replace(":", "_");
                         string serverId = statusImageInfo[1].Replace(":", "_");
                         string fullFilePath = MiscDBUtil.STATUS_UPDATE_LARGE + "/" + msisdn + "/" + serverId;
+                        loadingProgress.Opacity = 1;
                         AccountUtils.createGetRequest(AccountUtils.BASE + "/user/status/" + statusImageInfo[1] + "?only_image=true",
                             onStatusImageDownloaded, true, fullFilePath);
                     }
                 }
+            }
+        }
+
+        public void getPicFromHikeServer_Callback(byte[] fullBytes, object fName)
+        {
+            try
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    loadingProgress.Opacity = 0;
+                    if (fullBytes != null && fullBytes.Length > 0)
+                        this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullBytes);
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }
         }
 
