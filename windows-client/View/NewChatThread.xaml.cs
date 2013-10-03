@@ -5326,7 +5326,7 @@ namespace windows_client.View
                 }
                 IEnumerator<KeyValuePair<string, JToken>> keyVals = stickers.GetEnumerator();
                 List<KeyValuePair<string, byte[]>> listHighResStickersBytes = new List<KeyValuePair<string, byte[]>>();
-                bool isDisabled = false; 
+                bool isDisabled = false;
                 while (keyVals.MoveNext())
                 {
                     try
@@ -5336,6 +5336,7 @@ namespace windows_client.View
                         if (id == "disabled")
                         {
                             isDisabled = (bool)stickers[kv.Key];
+                            continue;
                         }
                         string iconBase64 = stickers[kv.Key].ToString();
                         byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
@@ -5360,7 +5361,7 @@ namespace windows_client.View
                         if (highResImage == null)
                             continue;
 
-                        if (convMessage != null && !isDisabled)
+                        if (convMessage != null)
                         {
                             string key = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
                             convMessage.ImageDownloadFailed = false;
@@ -5368,21 +5369,28 @@ namespace windows_client.View
                             convMessage.StickerObj.StickerImageBytes = keyValuePair.Value;
                             lruStickerCache.AddObject(key, highResImage);
                         }
-                        Byte[] lowResImageBytes = UI_Utils.Instance.PngImgToJpegByteArray(highResImage);
-                        listLowResStickersBytes.Add(new KeyValuePair<string, byte[]>(stickerId, lowResImageBytes));
-                        stickerCategory.ListStickers.Add(new Sticker(category, stickerId, lowResImageBytes, false));
+                        if (!isDisabled)
+                        {
+                            Byte[] lowResImageBytes = UI_Utils.Instance.PngImgToJpegByteArray(highResImage);
+                            listLowResStickersBytes.Add(new KeyValuePair<string, byte[]>(stickerId, lowResImageBytes));
+                            stickerCategory.ListStickers.Add(new Sticker(category, stickerId, lowResImageBytes, false));
+                        }
                     }
                     if (convMessage != null)
                     {
-                        stickerCategory.HasNewStickers = true;
-                        ShowNewStickerUi(stickerCategory);
+                        if (!isDisabled)
+                        {
+                            stickerCategory.HasNewStickers = true;
+                            ShowNewStickerUi(stickerCategory);
+                        }
                     }
                     else
                     {
                         stickerCategory.HasNewStickers = false;
                         HideNewStickerUI(stickerCategory, false);
                     }
-                    stickerCategory.WriteLowResToFile(listLowResStickersBytes, hasMoreStickers);
+                    if (!isDisabled)
+                        stickerCategory.WriteLowResToFile(listLowResStickersBytes, hasMoreStickers);
 
                     if (stickerCategory != null)
                     {
