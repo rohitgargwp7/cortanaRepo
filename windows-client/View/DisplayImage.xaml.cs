@@ -87,11 +87,17 @@ namespace windows_client.View
                     if (ProTipHelper.CurrentProTip != null)
                     {
                         this.FileImage.Source = ProTipHelper.CurrentProTip.TipImage;
-
                         if (ProTipHelper.CurrentProTip.Base64Image != null)
                         {
-                            loadingProgress.Opacity = 1;
-                            AccountUtils.createGetRequest(ProTipHelper.CurrentProTip.ImageUrl, getPicFromHikeServer_Callback, true, Utils.ConvertUrlToFileName(ProTipHelper.CurrentProTip.ImageUrl));
+                            byte[] fullViewBytes = ProTipHelper.Instance.getProTipImage();
+
+                            if (fullViewBytes != null && fullViewBytes.Length > 0)
+                                this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewBytes);
+                            else
+                            {
+                                loadingProgress.Opacity = 1;
+                                AccountUtils.createGetRequest(ProTipHelper.CurrentProTip.ImageUrl, getProTipPicFromHikeServer_Callback, true, Utils.ConvertUrlToFileName(ProTipHelper.CurrentProTip.ImageUrl));
+                            }
                         }
                     }
                 }
@@ -115,10 +121,13 @@ namespace windows_client.View
             }
         }
 
-        public void getPicFromHikeServer_Callback(byte[] fullBytes, object fName)
+        public void getProTipPicFromHikeServer_Callback(byte[] fullBytes, object fName)
         {
             try
             {
+                if (fullBytes != null && fullBytes.Length > 0)
+                    ProTipHelper.Instance.saveProTipImage(fullBytes);
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     loadingProgress.Opacity = 0;

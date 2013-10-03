@@ -16,6 +16,7 @@ namespace windows_client.utils
     class ProTipHelper
     {
         private const string PROTIPS_DIRECTORY = "ProTips";
+        private const string CURRENT_PROTIP_IMAGE = "CurrentProtipImage";
 
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static object readWriteLock = new object();
@@ -68,8 +69,101 @@ namespace windows_client.utils
 
             WriteProTipToFile();
 
+            DeleteProTipImage();
+
             if (ShowProTip != null)
                 ShowProTip(null, null);
+        }
+
+        public void saveProTipImage(byte[] imageBytes)
+        {
+            if (imageBytes == null)
+                return;
+
+            lock (readWriteLock)
+            {
+                try
+                {
+                    string FileName = PROTIPS_DIRECTORY + "\\" + CURRENT_PROTIP_IMAGE;
+
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (store.FileExists(FileName))
+                            store.DeleteFile(FileName);
+
+                        using (var file = store.OpenFile(FileName, FileMode.OpenOrCreate, FileAccess.Write))
+                        {
+                            using (BinaryWriter writer = new BinaryWriter(file))
+                            {
+                                writer.Seek(0, SeekOrigin.Begin);
+                                writer.Write(imageBytes.Length);
+                                writer.Write(imageBytes);
+                                writer.Flush();
+                                writer.Close();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("ProTipHelper :: saveProTipImage : saveProTipImage, Exception : " + ex.StackTrace);
+                }
+            }
+        }
+
+        public byte[] getProTipImage()
+        {
+            byte[] imageBytes = null;
+            lock (readWriteLock)
+            {
+                try
+                {
+                    string FileName = PROTIPS_DIRECTORY + "\\" + CURRENT_PROTIP_IMAGE;
+
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (!store.FileExists(FileName))
+                            return null;
+
+                        using (var file = store.OpenFile(FileName, FileMode.Open, FileAccess.Read))
+                        {
+                            using (BinaryReader reader = new BinaryReader(file))
+                            {
+                                var count = reader.ReadInt32();
+                                imageBytes = reader.ReadBytes(count);
+                                reader.Close();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("ProTipHelper :: getProTipImage : getProTipImage, Exception : " + ex.StackTrace);
+                }
+            }
+
+            return imageBytes;
+        }
+
+        public void DeleteProTipImage()
+        {
+            lock (readWriteLock)
+            {
+                try
+                {
+                    string FileName = PROTIPS_DIRECTORY + "\\" + CURRENT_PROTIP_IMAGE;
+
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (store.FileExists(FileName))
+                            store.DeleteFile(FileName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("ProTipHelper :: DeleteProTipImage : DeleteProTipImage, Exception : " + ex.StackTrace);
+                }
+            }
         }
 
         public void WriteProTipToFile()
