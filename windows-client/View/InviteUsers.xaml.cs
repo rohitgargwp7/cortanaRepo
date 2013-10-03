@@ -153,7 +153,7 @@ namespace windows_client.View
                         continue;
                     JObject obj = new JObject();
                     JObject data = new JObject();
-                    data[HikeConstants.SMS_MESSAGE] = Utils.GetRandomInviteString();
+                    data[HikeConstants.SMS_MESSAGE] = AppResources.sms_invite_message;
                     data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
                     data[HikeConstants.MESSAGE_ID] = -1;
                     obj[HikeConstants.TO] = key;
@@ -185,14 +185,14 @@ namespace windows_client.View
                     count++;
                 }
 
-                var randomString = Utils.GetRandomInviteString();
+                var smsString = AppResources.sms_invite_message;
                 var ts = TimeUtils.getCurrentTimeStamp();
 
                 if (count == 1)
                 {
                     obj[HikeConstants.TO] = toNum;
                     data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                    data[HikeConstants.HIKE_MESSAGE] = randomString;
+                    data[HikeConstants.HIKE_MESSAGE] = smsString;
                     data[HikeConstants.TIMESTAMP] = ts;
                     obj[HikeConstants.DATA] = data;
                     obj[HikeConstants.TYPE] = NetworkManager.INVITE;
@@ -211,7 +211,7 @@ namespace windows_client.View
                 App.MqttManagerInstance.mqttPublishToServer(obj);
                 SmsComposeTask smsComposeTask = new SmsComposeTask();
                 smsComposeTask.To = msisdns;
-                smsComposeTask.Body = randomString;
+                smsComposeTask.Body = smsString;
                 smsComposeTask.Show();
             }
             NavigationService.GoBack();

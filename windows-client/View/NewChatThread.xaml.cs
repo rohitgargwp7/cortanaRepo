@@ -2776,7 +2776,7 @@ namespace windows_client.View
                         {
                             if (!gp.IsOnHike)
                             {
-                                ConvMessage convMessage = new ConvMessage(Utils.GetRandomInviteString(), gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                                ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                                 convMessage.IsInvite = true;
                                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
                             }
@@ -2785,7 +2785,7 @@ namespace windows_client.View
                     else
                     {
                         //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-                        ConvMessage convMessage = new ConvMessage(Utils.GetRandomInviteString(), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                        ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                         convMessage.IsSms = true;
                         convMessage.IsInvite = true;
                         sendMsg(convMessage, false);
@@ -2818,13 +2818,13 @@ namespace windows_client.View
                         msisdns = mContactNumber;
 
                     var ts = TimeUtils.getCurrentTimeStamp();
-                    var randomString = Utils.GetRandomInviteString();
+                    var smsString = AppResources.sms_invite_message;
 
                     if (!isGroupChat)
                     {
                         obj[HikeConstants.TO] = msisdns;
                         data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                        data[HikeConstants.HIKE_MESSAGE] = randomString;
+                        data[HikeConstants.HIKE_MESSAGE] = smsString;
                         data[HikeConstants.TIMESTAMP] = ts;
                         obj[HikeConstants.DATA] = data;
                         obj[HikeConstants.TYPE] = NetworkManager.INVITE;
@@ -2844,7 +2844,7 @@ namespace windows_client.View
 
                     SmsComposeTask smsComposeTask = new SmsComposeTask();
                     smsComposeTask.To = msisdns;
-                    smsComposeTask.Body = randomString;
+                    smsComposeTask.Body = smsString;
                     smsComposeTask.Show();
                 }
             }

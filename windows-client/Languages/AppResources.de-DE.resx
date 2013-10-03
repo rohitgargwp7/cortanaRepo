@@ -776,17 +776,14 @@
     <value>Um hike weiterhin zu verwenden, ist ein Update notwendig.</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Hi!
+    <value>Hallo,
 
-Ich nutze jetzt hike, eine simple, hübsche und kostenlose Messaging-App.
+ich habe jetzt den fantastischen neuen hike Messenger. Er ist schneller, einfacher und noch schicker!
 
-Mit hike kannst du kostenlose Nachrichten an deine Freund und Familie senden! Mit hike kannst du deinen Freunden bei hike und denjenigen, die noch nicht bei hike sind, Nachrichten senden! Du wirst nie wieder eine andere Messaging-App benötigen. Und noch viel besser - es ist vollkommen GRATIS!
+Mit den lustigen neuen Stickern von hike wirst du bestimmt nie wieder eine einfache langweilige Nachricht verschicken!
+hike gibt dir mit "Zuletzt gesehen" die Chance auf mehr oder weniger oder Privatsphäre, um deine Freunde näher zu dir zu holen.
 
-Bei hike gibt es lustige Sticker und Smileys. Du kannst ebenfalls Statusmeldungen für deine Freunde posten! Genau wie BBM, nur viel viel besser!
-
-Hol dir jetzt hike und verabschiede dich von langweiligen SMS.
-
-Hol dir hike: http://get.hike.in</value>
+Jetzt herunterladen - http://hike.in - und kostenlos loschatten!</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -1789,16 +1786,6 @@ Hol dir hike: http://get.hike.in</value>
   <data name="Installed_Txt" xml:space="preserve">
     <value>Installiert</value>
   </data>
-  <data name="sms_invite_message_1" xml:space="preserve">
-    <value>Hey, ich verwende hike und hier gibt es tolle neue Sticker und Emoticons, die ich mit dir teilen möchte. Hol dir jetzt http://hike.in/</value>
-  </data>
-  <data name="sms_invite_message_2" xml:space="preserve">
-    <value>Hey, ich verwende hike - hier sieht meinen "Zuletzt online"-Status nicht jeder, nur ausgewählten Freunde. Hol dir jetzt http://hike.in/</value>
-    <comment>Constants General Text</comment>
-  </data>
-  <data name="sms_invite_message_3" xml:space="preserve">
-    <value>Hey, ich verwende hike mit einem coolen Walkie-Talkie, mit dem du Freunden gratis Sprachnachrichten senden kannst. Besuche http://hike.in/</value>
-  </data>
   <data name="Last_Seen_Today_At" xml:space="preserve">
     <value>Zuletzt online heute um {0}</value>
   </data>
@@ -1965,5 +1952,8 @@ Hol dir hike: http://get.hike.in</value>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
     <value>Verdienen Sie kostenlose SMS für jeden Freund, hike tritt wegen dir</value>
+  </data>
+  <data name="sms_invite_message" xml:space="preserve">
+    <value>Ich habe jetzt den neuen hike Messenger! Er ist einfacher, schneller und hat urkomische neue Sticker! Jetzt herunterladen und kostenlos loschatten: http://hike.in</value>
   </data>
 </root>

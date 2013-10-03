@@ -776,17 +776,14 @@
     <value>É preciso atualizar para continuar a usar o hike.</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Olá!
+    <value>Olá,
 
-Comecei a usar o hike, um aplicativo de mensagens simples e bonito, totalmente grátis.
+Eu tenho o novo e incrível app para mensagens hike: ele é mais simples, mais rápido e ainda mais bonito!
 
-O hike permite enviar mensagens grátis para os amigos e os familiares! Com o hike, você pode enviar mensagens para amigos no hike e fora dele! Você nunca mais precisará usar outro aplicativo de mensagens. Melhor ainda, é absolutamente GRÁTIS!
+Com os adesivos novos e divertidos do hike, você nunca mais enviará outra mensagem sem graça!
+Com o hike você pode escolher a Privacidade com Visto pela última vez, para manter os amigos próximos ainda mais próximos
 
-O hike tem alguns emoticons e adesivos hilários. Você também pode publicar atualizações de status para os amigos! Pense nele como o BBM, mas muito, muito melhor!
-
-Obtenha-o agora e diga adeus ao SMS simples e entediante.
-
-Obtenha o hike: http://get.hike.in</value>
+Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -1789,16 +1786,6 @@ Obtenha o hike: http://get.hike.in</value>
   <data name="Installed_Txt" xml:space="preserve">
     <value>Instalado</value>
   </data>
-  <data name="sms_invite_message_1" xml:space="preserve">
-    <value>Olá, estou usando o hike, que tem adesivos e emoticons incríveis que quero compartilhar com você. Obtenha agora em http://hike.in/</value>
-  </data>
-  <data name="sms_invite_message_2" xml:space="preserve">
-    <value>Olá, estou usando o hike, que permite mostrar o status "visto em" só para amigos selecionados. Obtenha agora em http://hike.in/</value>
-    <comment>Constants General Text</comment>
-  </data>
-  <data name="sms_invite_message_3" xml:space="preserve">
-    <value>Olá, estou usando o hike, que vem com um Walkie-Talkie que permite enviar mensagens de voz gratuitas. Obtenha agora em http://hike.in/</value>
-  </data>
   <data name="Last_Seen_Today_At" xml:space="preserve">
     <value>visto pela última vez hoje às {0}</value>
   </data>
@@ -1966,5 +1953,8 @@ Mantenha pressionada a mensagem para enviar como sms do hike</value>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
     <value>Ganhe SMS grátis para cada amigo que se junta hike por causa de você</value>
+  </data>
+  <data name="sms_invite_message" xml:space="preserve">
+    <value>Eu tenho o novo app de mensagens hike! Ele é mais simples e mais rápido, com novos adesivos divertidos! Baixe-o agora e vamos conversar grátis http://hike.in</value>
   </data>
 </root>
