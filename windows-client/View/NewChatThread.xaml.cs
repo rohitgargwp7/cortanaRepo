@@ -5326,13 +5326,17 @@ namespace windows_client.View
                 }
                 IEnumerator<KeyValuePair<string, JToken>> keyVals = stickers.GetEnumerator();
                 List<KeyValuePair<string, byte[]>> listHighResStickersBytes = new List<KeyValuePair<string, byte[]>>();
-
+                bool isDisabled = false; 
                 while (keyVals.MoveNext())
                 {
                     try
                     {
                         KeyValuePair<string, JToken> kv = keyVals.Current;
                         string id = (string)kv.Key;
+                        if (id == "disabled")
+                        {
+                            isDisabled = (bool)stickers[kv.Key];
+                        }
                         string iconBase64 = stickers[kv.Key].ToString();
                         byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
                         listHighResStickersBytes.Add(new KeyValuePair<string, byte[]>(id, imageBytes));
@@ -5356,7 +5360,7 @@ namespace windows_client.View
                         if (highResImage == null)
                             continue;
 
-                        if (convMessage != null)
+                        if (convMessage != null && !isDisabled)
                         {
                             string key = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
                             convMessage.ImageDownloadFailed = false;
