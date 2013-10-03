@@ -716,19 +716,7 @@ namespace windows_client
             #region ProTips 2.2.2.2
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.2.2.2") < 0)
             {
-                try
-                {
-                    var proTip = new ProTipHelper.ProTip();
-                    App.appSettings.TryGetValue(App.PRO_TIP, out proTip);
-
-                    if (proTip != null)
-                    {
-                        App.RemoveKeyFromAppSettings(App.PRO_TIP);
-                        App.appSettings[App.PRO_TIP] = proTip.Id;
-                    }
-                }
-                catch { }
-
+                App.RemoveKeyFromAppSettings(App.PRO_TIP);
                 App.RemoveKeyFromAppSettings(App.PRO_TIP_DISMISS_TIME);
                 ProTipHelper.Instance.ClearOldProTips();
             }
