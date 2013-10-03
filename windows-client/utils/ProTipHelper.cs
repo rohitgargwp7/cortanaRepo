@@ -53,7 +53,7 @@ namespace windows_client.utils
                             App.appSettings.TryGetValue(App.PRO_TIP, out id);
 
                             if (!String.IsNullOrEmpty(id))
-                                ReadFromFile(id);
+                                ReadProTipFromFile(id);
                         }
                     }
                 }
@@ -200,7 +200,7 @@ namespace windows_client.utils
             }
         }
 
-        static void ReadFromFile(String id)
+        static void ReadProTipFromFile(String id)
         {
             lock (readWriteLock)
             {
@@ -253,13 +253,24 @@ namespace windows_client.utils
                 {
                     var fileNames = store.GetFileNames(PROTIPS_DIRECTORY + "\\*");
 
-                    var currentFile = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
-                    var currentTipFile = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.Id);
-
-                    foreach (var fileName in fileNames)
+                    if (CurrentProTip != null)
                     {
-                        if (fileName != currentFile && fileName != currentTipFile && store.FileExists(fileName))
-                            store.DeleteFile(fileName);
+                        var currentFile = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
+                        var currentTipFile = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.Id);
+
+                        foreach (var fileName in fileNames)
+                        {
+                            if (fileName != currentFile && fileName != currentTipFile && store.FileExists(fileName))
+                                store.DeleteFile(fileName);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var fileName in fileNames)
+                        {
+                            if (store.FileExists(fileName))
+                                store.DeleteFile(fileName);
+                        }
                     }
                 }
                 catch (Exception ex)
