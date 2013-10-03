@@ -718,13 +718,13 @@ namespace windows_client
             {
                 try
                 {
-                    var proTip = new ProTipHelper.ProTip();
+                    var proTip = new ProTip();
                     App.appSettings.TryGetValue(App.PRO_TIP, out proTip);
 
                     if (proTip != null)
                     {
                         App.RemoveKeyFromAppSettings(App.PRO_TIP);
-                        App.appSettings[App.PRO_TIP] = proTip.Id;
+                        App.appSettings[App.PRO_TIP] = proTip._id;
                     }
                 }
                 catch { }

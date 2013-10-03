@@ -2604,7 +2604,7 @@ namespace windows_client.View
             ProTipCount = 0;
 
             JObject proTipAnalyticsJson = new JObject();
-            proTipAnalyticsJson.Add(Analytics.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip.Id);
+            proTipAnalyticsJson.Add(Analytics.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip._id);
 
             JObject data = new JObject();
             data.Add(HikeConstants.METADATA, proTipAnalyticsJson);
