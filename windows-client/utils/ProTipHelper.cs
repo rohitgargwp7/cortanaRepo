@@ -253,24 +253,10 @@ namespace windows_client.utils
                 {
                     var fileNames = store.GetFileNames(PROTIPS_DIRECTORY + "\\*");
 
-                    if (CurrentProTip != null)
+                    foreach (var fileName in fileNames)
                     {
-                        var currentFile = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
-                        var currentTipFile = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.Id);
-
-                        foreach (var fileName in fileNames)
-                        {
-                            if (fileName != currentFile && fileName != currentTipFile && store.FileExists(fileName))
-                                store.DeleteFile(fileName);
-                        }
-                    }
-                    else
-                    {
-                        foreach (var fileName in fileNames)
-                        {
-                            if (store.FileExists(fileName))
-                                store.DeleteFile(fileName);
-                        }
+                        if (store.FileExists(fileName))
+                            store.DeleteFile(fileName);
                     }
                 }
                 catch (Exception ex)
