@@ -234,7 +234,8 @@ namespace windows_client.utils
 
                     if (CurrentProTip != null)
                     {
-                        var currentFile = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
+                        var currentFile = CurrentProTip.ImageUrl != null ? PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl) : String.Empty;
+
                         var currentTipFile = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip._id);
 
                         foreach (var fileName in fileNames)
@@ -277,10 +278,13 @@ namespace windows_client.utils
                             if (store.FileExists(fileName))
                                 store.DeleteFile(fileName);
 
-                            fileName = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
+                            if (CurrentProTip.ImageUrl != null)
+                            {
+                                fileName = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
 
-                            if (store.FileExists(fileName))
-                                store.DeleteFile(fileName);
+                                if (store.FileExists(fileName))
+                                    store.DeleteFile(fileName);
+                            }
 
                             fileName = PROTIPS_DIRECTORY + "\\" + CURRENT_PROTIP_IMAGE;
 
