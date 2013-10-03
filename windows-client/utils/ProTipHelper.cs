@@ -19,14 +19,14 @@ namespace windows_client.utils
         private const string PROTIPS_DIRECTORY = "ProTips";
         private const string proTipsListFileName = "proTipList";
         private const string deletedProTipsListFileName = "delProTipList";
-        
+
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static object readWriteLock = new object();
-        
+
         private static volatile ProTipHelper instance = null;
         public DispatcherTimer proTipTimer;
         private static ProTip _currentProTip = null;
-        
+
         public event EventHandler<EventArgs> ShowProTip;
 
         public static ProTip CurrentProTip
@@ -68,7 +68,7 @@ namespace windows_client.utils
         {
             if (_deletedTips == null)
                 ReadDeletedTipsFromFile();
-            
+
             if (_deletedTips != null && _deletedTips.Count > 0 && _deletedTips.Contains(id))
                 return;
 
@@ -123,7 +123,7 @@ namespace windows_client.utils
 
                 if (CurrentProTip != null)
                 {
-                    App.WriteToIsoStorageSettings(App.PRO_TIP,CurrentProTip);
+                    App.WriteToIsoStorageSettings(App.PRO_TIP, CurrentProTip);
 
                     if (ShowProTip != null)
                         ShowProTip(null, null);
@@ -142,7 +142,7 @@ namespace windows_client.utils
             {
                 if (proTipTimer != null)
                     proTipTimer.Interval = TimeSpan.FromSeconds(newTime); //time might have changed, hence reinitializing timer
-            }),time);
+            }), time);
         }
 
         public void ClearProTips()
@@ -271,7 +271,7 @@ namespace windows_client.utils
                     try
                     {
                         string fileName = PROTIPS_DIRECTORY + "\\" + deletedProTipsListFileName;
-                       
+
                         if (_deletedTips == null)
                             _deletedTips = new List<string>();
 
@@ -379,7 +379,7 @@ namespace windows_client.utils
 
         void ReadProTipIdsFromFile()
         {
-             lock (readWriteLock)
+            lock (readWriteLock)
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                 {
@@ -396,7 +396,7 @@ namespace windows_client.utils
                                 using (BinaryReader reader = new BinaryReader(file))
                                 {
                                     int count = reader.ReadInt32();
-                                    
+
                                     for (int i = 0; i < count; i++)
                                         _proTipsQueue.Enqueue(reader.ReadString());
 
@@ -419,7 +419,7 @@ namespace windows_client.utils
         {
             lock (readWriteLock)
             {
-                ProTip proTip = new ProTip(id,header,body,imageUrl);
+                ProTip proTip = new ProTip(id, header, body, imageUrl);
 
                 try
                 {
@@ -468,7 +468,7 @@ namespace windows_client.utils
                                 using (var reader = new BinaryReader(file))
                                 {
                                     proTip = new ProTip();
-                                    
+
                                     var count = reader.ReadInt32();
                                     proTip._id = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
 
@@ -517,7 +517,7 @@ namespace windows_client.utils
 
             Int64 time = 0;
             App.appSettings.TryGetValue(App.PRO_TIP_DISMISS_TIME, out time);
-            
+
             if (time > 0 && time > ts.TotalSeconds)
             {
                 if (proTipTimer == null)
@@ -569,9 +569,7 @@ namespace windows_client.utils
 
         private ImageSource ProcesImageSource()
         {
-            ImageSource source = null;
-
-            source = new BitmapImage();
+            ImageSource source = new BitmapImage();
 
             if (!String.IsNullOrEmpty(ImageUrl))
                 ImageLoader.Load(source as BitmapImage, new Uri(ImageUrl), null, Utils.ConvertUrlToFileName(ImageUrl));
@@ -587,7 +585,7 @@ namespace windows_client.utils
             _header = header;
             _body = body;
             ImageUrl = imageUrl;
-         
+
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     _tipImage = ProcesImageSource();
@@ -599,7 +597,7 @@ namespace windows_client.utils
             try
             {
                 writer.WriteStringBytes(_id);
-                
+
                 if (_header == null)
                     writer.WriteStringBytes("*@N@*");
                 else
@@ -629,20 +627,20 @@ namespace windows_client.utils
             {
                 int count = reader.ReadInt32();
                 _id = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                
+
                 count = reader.ReadInt32();
                 _header = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_header == "*@N@*")
                     _header = null;
-                
+
                 count = reader.ReadInt32();
                 _body = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_body == "*@N@*")
                     _body = null;
-                
+
                 count = reader.ReadInt32();
                 ImageUrl = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                
+
                 if (ImageUrl == "*@N@*")
                     ImageUrl = null;
             }

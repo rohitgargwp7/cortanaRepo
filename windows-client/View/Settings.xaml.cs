@@ -10,6 +10,7 @@ using Microsoft.Phone.Shell;
 using windows_client.Model;
 using windows_client.utils;
 using System.Windows.Media.Imaging;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
