@@ -767,7 +767,6 @@ namespace windows_client.View
         {
             ocMessages.Clear();
             lruStickerCache.Clear();
-            pivotStickers = null;
         }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
