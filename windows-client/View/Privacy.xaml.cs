@@ -194,7 +194,7 @@ namespace windows_client.View
             var fb = new FacebookClient();
             var parameters = new Dictionary<string, object>();
             parameters["access_token"] = (string)App.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
-            parameters["next"] = "https://www.facebook.com/connect/login_success.html";
+            parameters["next"] = "https://m.facebook.com/connect/login_success.html";
             var logoutUrl = fb.GetLogoutUrl(parameters);
             Deployment.Current.Dispatcher.BeginInvoke(() =>
               {

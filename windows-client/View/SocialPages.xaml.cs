@@ -85,7 +85,7 @@ namespace windows_client.View
                 perms = extendedPermissions;
             var parameters = new Dictionary<string, object>();
             parameters["client_id"] = Misc.Social.FacebookSettings.AppID;
-            parameters["redirect_uri"] = "https://www.facebook.com/connect/login_success.html";
+            parameters["redirect_uri"] = "https://m.facebook.com/connect/login_success.html";
             parameters["response_type"] = "token";
             parameters["display"] = "touch";
             parameters["scope"] = perms;
@@ -97,7 +97,7 @@ namespace windows_client.View
             var fb = new FacebookClient();
             var parameters = new Dictionary<string, object>();
             parameters["access_token"] = (string)App.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
-            parameters["next"] = "https://www.facebook.com/connect/login_success.html";
+            parameters["next"] = "https://m.facebook.com/connect/login_success.html";
             var logoutUrl = fb.GetLogoutUrl(parameters);
             BrowserControl.Navigate(logoutUrl);
         }
@@ -115,7 +115,7 @@ namespace windows_client.View
             else if (socialNetwork == HikeConstants.FACEBOOK) // facebook auth
             {
                 FacebookOAuthResult oauthResult;
-                if (e.Uri.AbsoluteUri == "https://www.facebook.com/connect/login_success.html")
+                if (e.Uri.AbsoluteUri == "https://m.facebook.com/connect/login_success.html")
                 {
                     App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN);
                     App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
