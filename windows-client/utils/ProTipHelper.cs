@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -193,7 +193,7 @@ namespace windows_client.utils
 
                         if (!store.FileExists(fileName))
                             return;
-                        
+
                         CurrentProTip = new ProTip();
 
                         using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))

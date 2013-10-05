@@ -473,7 +473,7 @@ namespace windows_client.utils
                 return myLocationPin;
             }
         }
-        
+
         public BitmapImage OnHikeImage
         {
             get
@@ -1316,7 +1316,7 @@ namespace windows_client.utils
             }
         }
 
-        
+
         #endregion
 
         #region DEFAULT AVATARS
@@ -1504,7 +1504,7 @@ namespace windows_client.utils
             }
             return bitmapImage;
         }
-
+       
         /// <summary>
         /// Call this function only if you want to cache the Bitmap Image
         /// </summary>

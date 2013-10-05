@@ -11,17 +11,13 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     d:DesignHeight="480" d:DesignWidth="480">
     <UserControl.Resources>
-        <Style TargetType="ScrollViewer">
-            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
-            <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Style TargetType="phone:LongListSelector">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="ScrollViewer">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+                    <ControlTemplate TargetType="phone:LongListSelector">
+                        <Grid Background="{TemplateBinding Background}" d:DesignWidth="480" d:DesignHeight="800">
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="ScrollStates">
                                     <VisualStateGroup.Transitions>
@@ -29,57 +25,37 @@
                                     </VisualStateGroup.Transitions>
                                     <VisualState x:Name="Scrolling">
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="Opacity" To="1" Duration="0"/>
-                                            <DoubleAnimation Storyboard.TargetName="HorizontalScrollBar" Storyboard.TargetProperty="Opacity" To="1" Duration="0"/>
+                                            <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="VerticalScrollBar"/>
                                         </Storyboard>
                                     </VisualState>
-                                    <VisualState x:Name="NotScrolling">
-                                    </VisualState>
-                                </VisualStateGroup>
-                                <VisualStateGroup x:Name="VerticalCompression" CurrentStateChanged="vgroup_CurrentStateChanging">
-                                    <VisualState x:Name="NoVerticalCompression"/>
-                                    <VisualState x:Name="CompressionTop"/>
-                                    <VisualState x:Name="CompressionBottom"/>
-                                </VisualStateGroup>
-                                <VisualStateGroup x:Name="HorizontalCompression">
-                                    <VisualState x:Name="NoHorizontalCompression"/>
-                                    <VisualState x:Name="CompressionLeft"/>
-                                    <VisualState x:Name="CompressionRight"/>
+                                    <VisualState x:Name="NotScrolling"/>
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
-                            <Grid Margin="{TemplateBinding Padding}">
-                                <ScrollContentPresenter x:Name="ScrollContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"/>
-                                <ScrollBar x:Name="VerticalScrollBar" IsHitTestVisible="False" Height="Auto" Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" IsTabStop="False" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Value="{TemplateBinding VerticalOffset}" Orientation="Vertical" ViewportSize="{TemplateBinding ViewportHeight}" />
-                                <ScrollBar x:Name="HorizontalScrollBar" IsHitTestVisible="False" Width="Auto" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" IsTabStop="False" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Value="{TemplateBinding HorizontalOffset}" Orientation="Horizontal" ViewportSize="{TemplateBinding ViewportWidth}" />
+                            <Grid Margin="0">
+                                <ViewportControl x:Name="ViewportControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Top" />
+                                <ScrollBar x:Name="VerticalScrollBar" Opacity="0" Margin="2 0 2 0" Orientation="Vertical" HorizontalAlignment="Right" Width="5"  ValueChanged="vScrollBar1_ValueChanged"  />
                             </Grid>
-                        </Border>
+                        </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
-
     </UserControl.Resources>
     <Grid x:Name="LayoutRoot" Background="#323232" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <ListBox Name="llsStickerCategory" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Margin="10 0 0 0">
-
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <toolkit:WrapPanel ItemHeight="140" ItemWidth="150"  VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListBox.ItemTemplate>
+        <phone:LongListSelector Name="llsStickerCategory" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Margin="10 0 0 0" LayoutMode="Grid" MinHeight="200" GridCellSize="145,145">
+            <phone:LongListSelector.ItemTemplate>
                 <DataTemplate>
                     <Grid Height="140" Width="150">
                         <Image Margin="5,5,5,5" Source="{Binding StickerImage}" MaxHeight="130" MaxWidth="130"  HorizontalAlignment="Center" VerticalAlignment="Center">
                         </Image>
                     </Grid>
                 </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+            </phone:LongListSelector.ItemTemplate>
+        </phone:LongListSelector>
         <StackPanel Visibility="Collapsed" x:Name="stLoading" Height="230" Margin="0 10 0 0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
             <TextBlock Text="{Binding Path=LocalizedResources.Sticker_Downloading_Txt,Source={StaticResource LocalizedStrings}}" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 80 0 0"/>
             <ProgressBar Height="5"  VerticalContentAlignment="Bottom" IsIndeterminate="True" IsEnabled="True" Foreground="White" HorizontalAlignment="Stretch" VerticalAlignment="Center"></ProgressBar>
