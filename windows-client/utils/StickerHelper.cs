@@ -7,7 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using windows_client.ViewModel;
 
 namespace windows_client.utils
 {
@@ -21,21 +23,23 @@ namespace windows_client.utils
         public const string CATEGORY_BOLLYWOOD = "bollywood";
         public const string CATEGORY_TROLL = "rageface";
 
-        public const string _stickerWVGAPath = "/View/images/stickers/WVGA/{0}";
-        public const string _sticker720path = "/View/images/stickers/720p/{0}";
-        public const string _stickerWXGApath = "/View/images/stickers/WXGA/{0}";
+        public const string _stickerWVGAPath = "/View/images/stickers/WVGA/{0}/{1}";
+        public const string _sticker720path = "/View/images/stickers/720p/{0}/{1}";
+        public const string _stickerWXGApath = "/View/images/stickers/WXGA/{0}/{1}";
+
+        public LruCache<string, BitmapImage> lruStickers = new LruCache<string, BitmapImage>(20, 0);
         public static string[] arrayDefaultHumanoidStickers = new string[]
         {
-            "Humanoid/001_love1.png",
-            "Humanoid/002_love2.png",
-            "Humanoid/003_teasing.png",
-            "Humanoid/004_rofl.png",
-            "Humanoid/005_bored.png",
-            "Humanoid/006_angry.png",
-            "Humanoid/007_strangle.png",
-            "Humanoid/008_shocked.png",
-            "Humanoid/009_hurray.png",
-            "Humanoid/010_yawning.png"
+            "001_love1.png",
+            "002_love2.png",
+            "003_teasing.png",
+            "004_rofl.png",
+            "005_bored.png",
+            "006_angry.png",
+            "007_strangle.png",
+            "008_shocked.png",
+            "009_hurray.png",
+            "010_yawning.png"
         
         };
 
@@ -61,21 +65,22 @@ namespace windows_client.utils
                 if (!_isInitialised)
                 {
                     _dictStickersCategories = new Dictionary<string, StickerCategory>();
-                    
+
                     InitialiseDefaultStickers(CATEGORY_HUMANOID, arrayDefaultHumanoidStickers);
-                    
+
                     InitialiseDefaultStickers(CATEGORY_DOGGY, arrayDefaultDoggyStickers);
-                    
+
                     List<StickerCategory> listStickerCategories = StickerCategory.ReadAllStickerCategories();
                     foreach (StickerCategory sc in listStickerCategories)
                     {
                         if (_dictStickersCategories.ContainsKey(sc.Category))
                         {
                             StickerCategory stickerCategory = _dictStickersCategories[sc.Category];
-                            foreach (Sticker sticker in stickerCategory.ListStickers)
+                            foreach (Sticker sticker in sc.ListStickers)
                             {
-                                sc.ListStickers.Add(sticker);
+                                stickerCategory.ListStickers.Add(sticker);
                             }
+                            sc.ListStickers = stickerCategory.ListStickers;
                         }
                         _dictStickersCategories[sc.Category] = sc;
                     }
@@ -89,40 +94,26 @@ namespace windows_client.utils
             }
         }
 
-        private void InitialiseDefaultStickers(string category,string[] arrayDefaultStickers)
+        private void InitialiseDefaultStickers(string category, string[] arrayDefaultStickers)
         {
             StickerCategory category1Stickers = new StickerCategory(category, true);
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            for (int i = 0; i < arrayDefaultStickers.Length; i++)
             {
-                for (int i = 0; i < arrayDefaultStickers.Length; i++)
+                Sticker sticker = new Sticker(category1Stickers.Category, arrayDefaultStickers[i], null, false);
+                category1Stickers.ListStickers.Add(sticker);
+            }
+            if (_dictStickersCategories.ContainsKey(category1Stickers.Category))
+            {
+                StickerCategory stickerCategory = _dictStickersCategories[category1Stickers.Category];
+                foreach (Sticker sticker in category1Stickers.ListStickers)
                 {
-                    BitmapImage bitmap = new BitmapImage();
-                    bitmap.CreateOptions = BitmapCreateOptions.BackgroundCreation;
-                    string url;
-                    if (Utils.CurrentResolution == Utils.Resolutions.WXGA)
-                        url = _stickerWXGApath;
-                    else if (Utils.CurrentResolution == Utils.Resolutions.WVGA)
-                        url = _stickerWVGAPath;
-                    else
-                        url = _sticker720path;
-
-                    bitmap.UriSource = new Uri(string.Format(url, arrayDefaultStickers[i]), UriKind.Relative);
-                    Sticker sticker = new Sticker(category1Stickers.Category, arrayDefaultStickers[i], bitmap);
-                    category1Stickers.ListStickers.Add(sticker);
+                    stickerCategory.ListStickers.Add(sticker);
                 }
-                if (_dictStickersCategories.ContainsKey(category1Stickers.Category))
-                {
-                    StickerCategory stickerCategory = _dictStickersCategories[category1Stickers.Category];
-                    foreach (Sticker sticker in category1Stickers.ListStickers)
-                    {
-                        stickerCategory.ListStickers.Add(sticker);
-                    }
-                    _dictStickersCategories[category1Stickers.Category] = stickerCategory;
-                }
-                else
-                    _dictStickersCategories[category1Stickers.Category] = category1Stickers;
+                _dictStickersCategories[category1Stickers.Category] = stickerCategory;
+            }
+            else
+                _dictStickersCategories[category1Stickers.Category] = category1Stickers;
 
-            });
         }
 
         public StickerCategory GetStickersByCategory(string category)
@@ -155,19 +146,90 @@ namespace windows_client.utils
             StickerCategory.CreateCategory(CATEGORY_BOLLYWOOD);
             StickerCategory.CreateCategory(CATEGORY_TROLL);
         }
+
+        /// <summary>
+        /// Get sticker if present on client
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="category"></param>
+        /// <param name="stickerId"></param>
+        /// <param name="stickerImageBytes">send null if no bytes available</param>
+        /// <param name="isHighres"></param>
+        public void GetSticker(ref BitmapImage image, string category, string stickerId, byte[] stickerImageBytes, bool isHighres)
+        {
+            if (string.IsNullOrEmpty(stickerId) || string.IsNullOrEmpty(category))
+                return;
+            if (stickerImageBytes != null && stickerImageBytes.Length > 0)
+            {
+                image = UI_Utils.Instance.createImageFromBytes(stickerImageBytes);
+                if (isHighres)
+                    App.newChatThreadPage.lruStickerCache.AddObject(category + "_" + stickerId, image);
+                else
+                    lruStickers.AddObject(category + "_" + stickerId, image);
+                return;
+            }
+            if ((category == StickerHelper.CATEGORY_DOGGY && StickerHelper.arrayDefaultDoggyStickers.Contains(stickerId))
+                || (category == StickerHelper.CATEGORY_HUMANOID && StickerHelper.arrayDefaultHumanoidStickers.Contains(stickerId)))
+            {
+                string url;
+                if (Utils.CurrentResolution == Utils.Resolutions.WXGA)
+                    url = _stickerWXGApath;
+                else if (Utils.CurrentResolution == Utils.Resolutions.WVGA)
+                    url = StickerHelper._stickerWVGAPath;
+                else
+                    url = StickerHelper._sticker720path;
+                image.UriSource = new Uri(string.Format(url, category, stickerId), UriKind.Relative);
+                if (isHighres)
+                    App.newChatThreadPage.lruStickerCache.AddObject(category + "_" + stickerId, image);
+                else
+                    lruStickers.AddObject(category + "_" + stickerId, image);
+                return;
+            }
+
+            try
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                {
+                    string fileName = StickerCategory.STICKERS_DIR + "\\" + (isHighres ? StickerCategory.HIGH_RESOLUTION_DIR : StickerCategory.LOW_RESOLUTION_DIR) + "\\" + category + "\\" + stickerId;
+                    if (store.FileExists(fileName))
+                    {
+                        using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
+                        {
+                            using (var reader = new BinaryReader(file))
+                            {
+                                int imageBytesCount = reader.ReadInt32();
+                                Byte[] imageBytes = reader.ReadBytes(imageBytesCount);
+                                image = UI_Utils.Instance.createImageFromBytes(imageBytes);
+                                if (isHighres)
+                                    App.newChatThreadPage.lruStickerCache.AddObject(category + "_" + stickerId, image);
+                                else
+                                    lruStickers.AddObject(category + "_" + stickerId, image);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("StickerCategory::CreateFromFile, Exception:" + ex.Message);
+            }
+            return;
+        }
     }
 
     public class Sticker
     {
         private string _id;
         private string _category;
-        private BitmapImage _stickerImage;
-
-        public Sticker(string category, string id, BitmapImage stickerImage)
+        private bool _isHighRes;
+        private byte[] _stickerImageBytes;
+        public Sticker(string category, string id, byte[] stickerImageBytes, bool isHighRes)
         {
             this._category = category;
             this._id = id;
-            this._stickerImage = stickerImage;
+            this._stickerImageBytes = stickerImageBytes;
+            this._isHighRes = isHighRes;
         }
 
 
@@ -186,16 +248,50 @@ namespace windows_client.utils
                 return _category;
             }
         }
+        public bool IsStickerDownloaded
+        {
+            get;
+            set;
+        }
+
+        public byte[] StickerImageBytes
+        {
+            get
+            {
+                return _stickerImageBytes;
+            }
+            set
+            {
+                _stickerImageBytes = value;
+            }
+        }
 
         public BitmapImage StickerImage
         {
             get
             {
-                return _stickerImage;
-            }
-            set
-            {
-                _stickerImage = value;
+                if (_isHighRes)
+                {
+                    BitmapImage _stickerImage = App.newChatThreadPage.lruStickerCache.GetObject(_category + "_" + Id);
+                    if (_stickerImage == null)
+                    {
+                        _stickerImage = new BitmapImage();
+                        HikeViewModel.stickerHelper.GetSticker(ref _stickerImage, _category, _id, _stickerImageBytes, true);
+                    }
+
+                    return _stickerImage;
+                }
+                else
+                {
+                    BitmapImage _stickerImage = HikeViewModel.stickerHelper.lruStickers.GetObject(_category + "_" + Id);
+                    if (_stickerImage == null)
+                    {
+                        _stickerImage = new BitmapImage();
+                        HikeViewModel.stickerHelper.GetSticker(ref _stickerImage, _category, _id, _stickerImageBytes, false);
+                    }
+
+                    return _stickerImage;
+                }
             }
         }
     }

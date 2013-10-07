@@ -211,7 +211,7 @@ namespace windows_client.utils
         public static void Load(BitmapImage imageSource, Uri uri, Uri defaultImgUrl = null, String fileName = null, bool useWebClient = false)
         {
             imageSource.CreateOptions = BitmapCreateOptions.DelayCreation;
-            ImageInfo imgInfo = new ImageInfo(imageSource, uri, defaultImgUrl, useWebClient,fileName);
+            ImageInfo imgInfo = new ImageInfo(imageSource, uri, defaultImgUrl, useWebClient, fileName);
             Sources.Add(imgInfo);
 
             if (_loadWorker == null)
@@ -229,11 +229,13 @@ namespace windows_client.utils
                         if (!_loadWorker.IsBusy)
                             _loadWorker.RunWorkerAsync();
                     }
+                    else
+                        _loadWorker = null;
                 };
-            }
 
-            if (!_loadWorker.IsBusy)
-                _loadWorker.RunWorkerAsync();
+                if (!_loadWorker.IsBusy)
+                    _loadWorker.RunWorkerAsync();
+            }
         }
 
         private static Boolean Download(ImageInfo imgInfo)

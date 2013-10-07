@@ -23,7 +23,6 @@ namespace windows_client
 {
     public partial class EnterName : PhoneApplicationPage
     {
-        private bool isFirstLaunch = true;
         private bool reloadImage = true;
         public bool isClicked = false;
         private string ac_name;
@@ -204,7 +203,7 @@ namespace windows_client
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
 
-            if (isFirstLaunch)
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
                 PushHelper.Instance.registerPushnotifications();
                 
@@ -236,8 +235,6 @@ namespace windows_client
                 
                     bw.RunWorkerAsync();
                 }
-
-                isFirstLaunch = false;
             }
 
             txtBxEnterName.Hint = AppResources.EnterName_Name_Hint;

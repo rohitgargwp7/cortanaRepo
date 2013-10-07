@@ -1150,23 +1150,14 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hi!
+        ///   Looks up a localized string similar to Hi, 
         ///
+        ///I just got the awesome new hike messenger, it&apos;s faster, simpler and even more beautiful!
+        ///Check out their hilarious new stickers and you&apos;ll surely never send another plain boring message!
         ///
+        ///hike also gives you the choice of Privacy with Last Seen so that you can keep you close friends closer.
         ///
-        ///I started using hike, a simple beautiful messaging app that&apos;s absolutely free.
-        ///
-        ///
-        ///
-        ///hike lets you send free messages to your friends and family! With hike, you can message friends that are on hike and also those who aren&apos;t on hike! You&apos;ll never have to use another messaging app again. Better yet, it&apos;s absolutely FREE!
-        ///
-        ///
-        ///
-        ///hike comes with some hilarious stickers and emoticons. You can also post Status Updates to your friends! Think of it like BBM but much, much better!
-        ///
-        ///
-        ///
-        ///Get it now and s [rest of string was truncated]&quot;;.
+        ///Download it now http://hike.in and join the fun!.
         /// </summary>
         public static string Email_Invite_Txt {
             get {
@@ -4001,29 +3992,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hey, I&apos;m using hike, and it has all these awesome stickers and emoticons which I want to share with you. Get it now http://hike.in/.
+        ///   Looks up a localized string similar to I just got the new hike messenger! It&apos;s simpler, faster with hilarious new stickers! Download it now and lets chat for free http://hike.in.
         /// </summary>
-        public static string sms_invite_message_1 {
+        public static string sms_invite_message {
             get {
-                return ResourceManager.GetString("sms_invite_message_1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hey, I&apos;m using hike, which lets us show our &quot;last seen&quot; status only to the friends we choose, and not everyone. Get it now http://hike.in/.
-        /// </summary>
-        public static string sms_invite_message_2 {
-            get {
-                return ResourceManager.GetString("sms_invite_message_2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hey, I&apos;m using hike; it comes with a cool Walkie-Talkie which lets me send you free voice messages. Get it now http://hike.in/.
-        /// </summary>
-        public static string sms_invite_message_3 {
-            get {
-                return ResourceManager.GetString("sms_invite_message_3", resourceCulture);
+                return ResourceManager.GetString("sms_invite_message", resourceCulture);
             }
         }
         

@@ -655,7 +655,7 @@ namespace windows_client.View
             if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
             {
                 long time = TimeUtils.getCurrentTimeStamp();
-                ConvMessage convMessage = new ConvMessage(Utils.GetRandomInviteString(), msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
+                ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = true;
                 convMessage.IsInvite = true;
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
@@ -668,11 +668,11 @@ namespace windows_client.View
                 JObject data = new JObject();
 
                 var ts = TimeUtils.getCurrentTimeStamp();
-                var randomString = Utils.GetRandomInviteString();
+                var smsString = AppResources.sms_invite_message;
 
                 obj[HikeConstants.TO] = toNum;
                 data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                data[HikeConstants.HIKE_MESSAGE] = randomString;
+                data[HikeConstants.HIKE_MESSAGE] = smsString;
                 data[HikeConstants.TIMESTAMP] = ts;
                 obj[HikeConstants.DATA] = data;
                 obj[HikeConstants.TYPE] = NetworkManager.INVITE;
@@ -682,7 +682,7 @@ namespace windows_client.View
 
                 SmsComposeTask smsComposeTask = new SmsComposeTask();
                 smsComposeTask.To = msisdns;
-                smsComposeTask.Body = randomString;
+                smsComposeTask.Body = smsString;
                 smsComposeTask.Show();
             }
 

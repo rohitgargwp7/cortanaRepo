@@ -76,9 +76,6 @@ namespace windows_client.View
 
             _duration = microphone.BufferDuration;
 
-            // Event handler for getting audio data when the buffer is full
-            microphone.BufferReady += new EventHandler<EventArgs>(microphone_BufferReady);
-
             blankImage = new BitmapImage(new Uri("Images/blank.png", UriKind.RelativeOrAbsolute));
             microphoneImage = new BitmapImage(new Uri("images/microphone.png", UriKind.RelativeOrAbsolute));
             speakerImage = new BitmapImage(new Uri("images/speaker.png", UriKind.RelativeOrAbsolute));
@@ -137,6 +134,9 @@ namespace windows_client.View
 
         private void record()
         {
+            microphone.BufferReady -= microphone_BufferReady;
+            microphone.BufferReady += microphone_BufferReady;
+
             runningTime.Text = "00:00";
             progressTimer.Start();
 
@@ -168,10 +168,6 @@ namespace windows_client.View
                 stop();
             
             runningSeconds++;
-        }
-
-        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
-        {
         }
 
         private void stop()

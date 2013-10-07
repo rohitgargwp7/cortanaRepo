@@ -1525,31 +1525,32 @@ namespace windows_client
 
                 try
                 {
-                    object[] vals = new object[5];
                     data = (JObject)jsonObj[HikeConstants.DATA];
-                    vals[0] = (string)data[HikeConstants.PRO_TIP_ID];
-                    vals[1] = (string)data[HikeConstants.PRO_TIP_HEADER];
-                    vals[2] = (string)data[HikeConstants.PRO_TIP_TEXT];
+                    var id = (string)data[HikeConstants.PRO_TIP_ID];
+                    var header = (string)data[HikeConstants.PRO_TIP_HEADER];
+                    var text = (string)data[HikeConstants.PRO_TIP_TEXT];
 
+                    var imageUrl = "";
                     try
                     {
-                        vals[3] = (string)data[HikeConstants.PRO_TIP_IMAGE];
+                        imageUrl = (string)data[HikeConstants.PRO_TIP_IMAGE];
                     }
                     catch
                     {
-                        vals[3] = "";
+                        imageUrl = "";
                     }
 
+                    var base64Image = "";
                     try
                     {
-                        vals[4] = (Int64)data[HikeConstants.PRO_TIP_TIME]; //assumed minutes time
+                        base64Image = (string)data[HikeConstants.THUMBNAIL];
                     }
                     catch
                     {
-                        vals[4] = 0;
+                        base64Image = "";
                     }
 
-                    pubSub.publish(HikePubSub.PRO_TIPS_REC, vals);
+                    ProTipHelper.Instance.AddProTip(id, header, text, imageUrl, base64Image);
                 }
                 catch (Exception ex)
                 {

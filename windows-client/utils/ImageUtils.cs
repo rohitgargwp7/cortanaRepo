@@ -1463,7 +1463,7 @@ namespace windows_client.utils
             }
             return bitmapImage;
         }
-
+       
         /// <summary>
         /// Call this function only if you want to cache the Bitmap Image
         /// </summary>
