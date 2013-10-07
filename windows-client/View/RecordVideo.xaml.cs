@@ -20,6 +20,7 @@ using Windows.Storage.Streams;
 using windows_client.DbUtils;
 using System.Threading.Tasks;
 using windows_client.Controls;
+using windows_client.utils;
 
 namespace windows_client.View
 {
@@ -328,22 +329,7 @@ namespace windows_client.View
                 StopVideoRecording();
         }
 
-        string ConvertToStorageSizeString(long size)
-        {
-            string[] suffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
-            int i = 0;
-            double dValue = (double)size;
-
-            while (Math.Round(dValue / 1024) >= 1)
-            {
-                Debug.WriteLine("Size: " + dValue);
-
-                dValue /= 1024;
-                i++;
-            }
-
-            return string.Format("{0,2:n1} {1}", dValue, suffixes[i]);
-        }
+        
 
         Boolean _isGoingBack = false;
 
@@ -709,7 +695,7 @@ namespace windows_client.View
                 Byte[] fileBytes = null;
                 MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.TEMP_VIDEO_NAME, out fileBytes);
 
-                txtSize.Text = ConvertToStorageSizeString(fileBytes.Length);
+                txtSize.Text = Utils.ConvertToStorageSizeString(fileBytes.Length);
             }
             catch
             {

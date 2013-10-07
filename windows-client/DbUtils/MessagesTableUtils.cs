@@ -20,16 +20,16 @@ namespace windows_client.DbUtils
         private static object lockObj = new object();
 
         //keep a set of currently uploading or downloading messages.
-        private static Dictionary<long, ConvMessage> uploadingOrDownloadingMessages = new Dictionary<long, ConvMessage>();
+        private static Dictionary<long, ConvMessage> uploadingMessages = new Dictionary<long, ConvMessage>();
 
-        public static void addUploadingOrDownloadingMessage(long messageId, ConvMessage conMessage)
+        public static void addUploadingMessage(long messageId, ConvMessage conMessage)
         {
             if (messageId == -1)
                 return;
             lock (lockObj)
             {
-                if (!uploadingOrDownloadingMessages.ContainsKey(messageId))
-                    uploadingOrDownloadingMessages.Add(messageId, conMessage);
+                if (!uploadingMessages.ContainsKey(messageId))
+                    uploadingMessages.Add(messageId, conMessage);
             }
         }
 
@@ -39,16 +39,16 @@ namespace windows_client.DbUtils
                 return;
             lock (lockObj)
             {
-                if (uploadingOrDownloadingMessages.ContainsKey(messageId))
-                    uploadingOrDownloadingMessages.Remove(messageId);
+                if (uploadingMessages.ContainsKey(messageId))
+                    uploadingMessages.Remove(messageId);
             }
         }
 
-        public static bool isUploadingOrDownloadingMessage(long messageId)
+        public static bool isUploadingMessage(long messageId)
         {
             lock (lockObj)
             {
-                return uploadingOrDownloadingMessages.ContainsKey(messageId);
+                return uploadingMessages.ContainsKey(messageId);
             }
         }
 
@@ -58,9 +58,9 @@ namespace windows_client.DbUtils
                 return null;
             lock (lockObj)
             {
-                if (uploadingOrDownloadingMessages.ContainsKey(messageId))
+                if (uploadingMessages.ContainsKey(messageId))
                 {
-                    return uploadingOrDownloadingMessages[messageId];
+                    return uploadingMessages[messageId];
                 }
                 return null;
             }

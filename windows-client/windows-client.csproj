@@ -103,6 +103,9 @@
     <Reference Include="Coding4Fun.Phone.Controls">
       <HintPath>lib\Coding4Fun.Phone.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="ConcurrentDictionary">
+      <HintPath>lib\ConcurrentDictionary.dll</HintPath>
+    </Reference>
     <Reference Include="Facebook, Version=6.0.10.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Facebook.6.1.4\lib\wp71\Facebook.dll</HintPath>
@@ -177,6 +180,10 @@
     <Compile Include="DbUtils\StatusMsgsTable.cs" />
     <Compile Include="DbUtils\UsersTableUtils.cs" />
     <Compile Include="FileTransfer.cs" />
+    <Compile Include="FileTransfers\FileSavedState.cs" />
+    <Compile Include="FileTransfers\FileTransferBase.cs" />
+    <Compile Include="FileTransfers\FileTransferManager.cs" />
+    <Compile Include="FileTransfers\UploadTask.cs" />
     <Compile Include="HikeConstants.cs" />
     <Compile Include="HikePubSub.cs" />
     <Compile Include="Languages\AppResources.Designer.cs">
