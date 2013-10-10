@@ -217,11 +217,13 @@ namespace windows_client.DbUtils
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
 
-                    AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
+                    //AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
                     if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                         MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
                                 Convert.ToString(convMessage.MessageId), fileBytes);
-                    AccountUtils.uploadFile(fileBytes, finalCallbackForUploadFile, convMessage);
+                    //AccountUtils.uploadFile(fileBytes, finalCallbackForUploadFile, convMessage);
+
+                    FileTransfers.FileUploader.Load(convMessage, fileBytes);
                 });
             }
             #endregion
@@ -230,14 +232,16 @@ namespace windows_client.DbUtils
             {
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
-                byte[] fileBytes;
-                if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                    fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
-                else
-                    MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
-                                Convert.ToString(convMessage.MessageId), out fileBytes);
-                AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
-                AccountUtils.uploadFile(fileBytes, finalCallbackForUploadFile, convMessage);
+
+                FileTransfers.FileUploader.Load(convMessage);
+                //byte[] fileBytes;
+                //if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                //    fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
+                //else
+                //    MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                //                Convert.ToString(convMessage.MessageId), out fileBytes);
+                //AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
+                //AccountUtils.uploadFile(fileBytes, finalCallbackForUploadFile, convMessage);
             }
             #endregion
             #region MESSAGE_RECEIVED_READ
