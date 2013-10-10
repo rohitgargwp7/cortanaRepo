@@ -95,7 +95,7 @@ namespace windows_client.FileTransfers
                     if (FileInfo.ConvMessage != null)
                     {
                         FileInfo.ConvMessage.ProgressBarValue = FileInfo.PercentageTransfer;
-                        FileInfo.ConvMessage.FileAttachment.FileState = Attachment.AttachmentState.STARTED;
+                        FileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
                     }
 
                     UploadFileBytes();
@@ -110,7 +110,7 @@ namespace windows_client.FileTransfers
                 if (FileInfo.ConvMessage != null)
                 {
                     FileInfo.ConvMessage.ProgressBarValue = FileInfo.PercentageTransfer;
-                    FileInfo.ConvMessage.FileAttachment.FileState = Attachment.AttachmentState.STARTED;
+                    FileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
                 }
 
                 UploadFileBytes();

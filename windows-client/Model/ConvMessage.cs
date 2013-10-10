@@ -275,6 +275,9 @@ namespace windows_client.Model
                         SdrImageVisibility = Visibility.Visible;
                         NotifyPropertyChanged("SdrImageVisibility");
                     }
+
+                    if (_messageStatus == State.SENT_FAILED && FileAttachment != null && FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
+                        FileTransfers.FileUploader.Load(this);
                 }
             }
         }
@@ -378,6 +381,9 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != value)
                     _fileAttachment = value;
+
+                if (_messageStatus == State.SENT_FAILED && _fileAttachment != null && _fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
+                    FileTransfers.FileUploader.Load(this);
             }
         }
 

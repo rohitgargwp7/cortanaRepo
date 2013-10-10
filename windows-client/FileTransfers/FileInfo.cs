@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using windows_client.Model;
 using windows_client.DbUtils;
 using Newtonsoft.Json.Linq;
+using System.IO;
+using windows_client.Misc;
+using windows_client.utils;
 
 namespace windows_client.FileTransfers
 {
@@ -27,21 +30,11 @@ namespace windows_client.FileTransfers
             }
         }
 
-        public string Id
-        {
-            get
-            {
-                return Msisdn + MessageId;
-            }
-        }
-
+        public string Id;
         public int BytesTransferred;
         public int CurrentHeaderPosition;
         public byte[] FileBytes;
         public string ContentType;
-        public string Msisdn;
-        public long MessageId;
-        public string MetaDataString;
         public string FileName;
         public JObject SuccessObj;
         public string FileKey;
@@ -51,33 +44,109 @@ namespace windows_client.FileTransfers
 
         public ConvMessage ConvMessage;
 
+        public FileInfo()
+        {
+        }
+
         public FileInfo(ConvMessage convMessage, byte[] fileBytes)
         {
             ConvMessage = convMessage;
             FileBytes = fileBytes;
-            MetaDataString = convMessage.MetaDataString;
             ContentType = convMessage.FileAttachment.ContentType;
-            Msisdn = ConvMessage.Msisdn;
-            MessageId = ConvMessage.MessageId;
             FileName = ConvMessage.FileAttachment.FileName;
 
-            InitFileBytes();
+            Id = ConvMessage.Msisdn + "//" + ConvMessage.MessageId;
+
+            if (fileBytes != null)
+                FileBytes = fileBytes;
+            else
+                InitFileBytes();
         }
 
         void InitFileBytes()
         {
-            if (ContentType.Contains(HikeConstants.CT_CONTACT))
-                FileBytes = Encoding.UTF8.GetBytes(MetaDataString);
+            if (ConvMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                FileBytes = Encoding.UTF8.GetBytes(ConvMessage.MetaDataString);
             else
-                MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn + "/" + Convert.ToString(MessageId), out FileBytes);
+                MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + ConvMessage.Msisdn + "/" + Convert.ToString(ConvMessage.MessageId), out FileBytes);
         }
 
-        void Write()
+        public void Write(BinaryWriter writer)
         {
+            if (Id == null)
+                writer.WriteStringBytes("*@N@*");
+            else
+                writer.WriteStringBytes(Id);
+
+            writer.Write(BytesTransferred);
+            writer.Write(CurrentHeaderPosition);
+
+            if (SuccessObj == null)
+                writer.WriteStringBytes("*@N@*");
+            else
+                writer.WriteStringBytes(SuccessObj.ToString(Newtonsoft.Json.Formatting.None));
+
+            if (Message == null)
+                writer.WriteStringBytes("*@N@*");
+            else
+                writer.WriteStringBytes(Message);
+
+            if (FileKey == null)
+                writer.WriteStringBytes("*@N@*");
+            else
+                writer.WriteStringBytes(FileKey);
+
+            if (FileName == null)
+                writer.WriteStringBytes("*@N@*");
+            else
+                writer.WriteStringBytes(FileName);
+
+            if (ContentType == null)
+                writer.WriteStringBytes("*@N@*");
+            else
+                writer.WriteStringBytes(ContentType);
+
+            writer.Write((int)FileState);
+
+            writer.Write(FileBytes != null ? FileBytes.Length : 0);
+            if (FileBytes != null)
+                writer.Write(FileBytes);
         }
 
-        void Read()
+        public void Read(BinaryReader reader)
         {
+            int count = reader.ReadInt32();
+            Id = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (Id == "*@N@*")
+                Id = null;
+            
+            BytesTransferred = reader.ReadInt32();
+            CurrentHeaderPosition = reader.ReadInt32();
+            
+            count = reader.ReadInt32();
+            SuccessObj = JObject.Parse(Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count));
+            if (Id == "*@N@*")
+                SuccessObj = null;
+            
+            count = reader.ReadInt32();
+            Message = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (Message == "*@N@*")
+                Message = null;
+            
+            count = reader.ReadInt32();
+            FileKey = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (FileKey == "*@N@*")
+                FileKey = null; 
+
+            count = reader.ReadInt32();
+            FileName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (FileName == "*@N@*")
+                FileName = null; ContentType = reader.ReadString();
+
+            FileState = (Attachment.AttachmentState)reader.ReadInt32();
+            
+            count = reader.ReadInt32();
+            FileBytes = count != 0 ? reader.ReadBytes(count) : FileBytes = null;
         }
     }
 }
