@@ -174,8 +174,7 @@ namespace windows_client.FileTransfers
 
         private static BackgroundUploaderService UploadServices = new BackgroundUploaderService();
 
-        private static string UploadDirectoryName = "FileUpload";
-        private static string UploadMapFileName = "UploadMap";
+        private static string UPLOAD_DIRECTORY_NAME = "FileUpload";
         private static object readWriteLock = new object();
 
         public static async void ResumeAllUploads()
@@ -188,10 +187,10 @@ namespace windows_client.FileTransfers
                 {
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
-                        if (!store.DirectoryExists(UploadDirectoryName))
+                        if (!store.DirectoryExists(UPLOAD_DIRECTORY_NAME))
                             return;
 
-                        var fileNames = store.GetFileNames(UploadDirectoryName + "//*");
+                        var fileNames = store.GetFileNames(UPLOAD_DIRECTORY_NAME + "\\*");
 
                         foreach (var fileName in fileNames)
                         {
@@ -210,7 +209,7 @@ namespace windows_client.FileTransfers
                         }
                     }
 
-                    if (!App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
+                    if (!App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING) && Sources.Count > 0)
                         StartUpload();
                 }
                 catch (Exception ex)
@@ -231,12 +230,12 @@ namespace windows_client.FileTransfers
                     string fileName = "";
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
-                        if (!store.DirectoryExists(UploadDirectoryName))
-                            store.CreateDirectory(UploadDirectoryName);
+                        if (!store.DirectoryExists(UPLOAD_DIRECTORY_NAME))
+                            store.CreateDirectory(UPLOAD_DIRECTORY_NAME);
 
                         foreach (var keyValue in UploadMap)
                         {
-                            fileName = UploadDirectoryName + "\\" + keyValue.Key;
+                            fileName = UPLOAD_DIRECTORY_NAME + "\\" + keyValue.Key;
                             
                             if (store.FileExists(fileName))
                                 store.DeleteFile(fileName);
