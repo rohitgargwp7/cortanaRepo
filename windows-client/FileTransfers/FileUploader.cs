@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using windows_client.Model;
 using System.ComponentModel;
+using System.Linq;
+using windows_client.DbUtils;
 
 namespace windows_client.FileTransfers
 {
@@ -16,8 +18,32 @@ namespace windows_client.FileTransfers
             {
                 FileInfo fileInfo = Sources.Dequeue();
 
-                if (!Download(fileInfo))
-                    Sources.Enqueue(fileInfo);
+                if (fileInfo.FileState == Attachment.AttachmentState.COMPLETED)
+                {
+                    if (fileInfo.ConvMessage == null)
+                    {
+                        Sources.Enqueue(fileInfo);
+                    }
+                    else
+                    {
+                        fileInfo.ConvMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                        fileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
+                        MiscDBUtil.saveAttachmentObject(fileInfo.ConvMessage.FileAttachment, fileInfo.ConvMessage.Msisdn, fileInfo.ConvMessage.MessageId);
+
+                        fileInfo.ConvMessage.ProgressBarValue = 100;
+
+                        App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, fileInfo.ConvMessage.serialize(true));
+                        fileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED); 
+                        
+                        fileInfo.ConvMessage = null;
+                        fileInfo = null;
+                    }
+                }
+                else
+                {
+                    if (!Download(fileInfo))
+                        Sources.Enqueue(fileInfo);
+                }
             }
         }
 
@@ -28,8 +54,41 @@ namespace windows_client.FileTransfers
             convMessage.FileAttachment.FileState = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
 
             FileInfo fileInfo = new FileInfo(convMessage, fileBytes);
-            Sources.Enqueue(fileInfo);
 
+            var list = SourceList.Where(s => s.Id == fileInfo.Id);
+            if (list.Count() > 0)
+            {
+                var fInfo = list.First() as FileInfo;
+                fInfo.ConvMessage = fileInfo.ConvMessage;
+                fileInfo.FileState = fInfo.FileState;
+
+                if (fInfo.FileState == Attachment.AttachmentState.COMPLETED)
+                {
+                    fileInfo.ConvMessage.Message = fileInfo.Message;
+                    fileInfo.ConvMessage.FileAttachment.FileKey = fileInfo.FileKey;
+
+                    fileInfo.ConvMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                    fileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
+                    MiscDBUtil.saveAttachmentObject(fileInfo.ConvMessage.FileAttachment, fileInfo.ConvMessage.Msisdn, fileInfo.ConvMessage.MessageId);
+
+                    fileInfo.ConvMessage.ProgressBarValue = 100;
+
+                    App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, fileInfo.ConvMessage.serialize(true));
+                    fileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
+
+                    SourceList.Remove(fInfo);
+                    fInfo.ConvMessage = null;
+                    fInfo = null;
+
+                    fileInfo.ConvMessage = null;
+                    fileInfo = null;
+                    return;
+                }
+            }
+
+
+            Sources.Enqueue(fileInfo);
+            SourceList.Add(fileInfo);
             if (_loadWorker == null)
             {
                 _loadWorker = new BackgroundWorker();
@@ -86,10 +145,18 @@ namespace windows_client.FileTransfers
                 client.UploadComplete -= dClient_UploadComplete;
 
                 FileInfo fileInfo = client.FileInfo as FileInfo;
-                if (isUploadSuccess)
-                    fileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
-                else
-                    fileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                if (fileInfo.ConvMessage != null)
+                {
+                    if (isUploadSuccess)
+                        fileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
+                    else
+                        fileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                }
+
+                fileInfo.ConvMessage = null;
+                fileInfo = null;
+
+                SourceList.Remove(fileInfo);
 
                 UploadServices.Remove(client);
             }
@@ -98,12 +165,16 @@ namespace windows_client.FileTransfers
         static void dClient_UploadComplete(object sender, UploadCompletedArgs e)
         {
             var fileInfo = e.UserState as FileInfo;
-            fileInfo.ConvMessage.ProgressBarValue = 100;
+            
+            if (fileInfo.ConvMessage != null)
+                fileInfo.ConvMessage.ProgressBarValue = 100;
+
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, fileInfo.ConvMessage.serialize(true));
             RemoveFromUploaderService(sender as BackgroundUploader, true);
         }
 
         static Queue<FileInfo> Sources = new Queue<FileInfo>();
+        static List<FileInfo> SourceList = new List<FileInfo>();
 
         private static BackgroundUploaderService UploadServices = new BackgroundUploaderService();
     }

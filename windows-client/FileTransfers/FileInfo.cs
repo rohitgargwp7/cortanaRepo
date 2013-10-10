@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using windows_client.Model;
 using windows_client.DbUtils;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client.FileTransfers
 {
@@ -26,9 +27,27 @@ namespace windows_client.FileTransfers
             }
         }
 
+        public string Id
+        {
+            get
+            {
+                return Msisdn + MessageId;
+            }
+        }
+
         public int BytesTransferred;
         public int CurrentHeaderPosition;
         public byte[] FileBytes;
+        public string ContentType;
+        public string Msisdn;
+        public long MessageId;
+        public string MetaDataString;
+        public string FileName;
+        public JObject SuccessObj;
+        public string FileKey;
+        public string Message;
+
+        public Attachment.AttachmentState FileState;
 
         public ConvMessage ConvMessage;
 
@@ -36,15 +55,29 @@ namespace windows_client.FileTransfers
         {
             ConvMessage = convMessage;
             FileBytes = fileBytes;
+            MetaDataString = convMessage.MetaDataString;
+            ContentType = convMessage.FileAttachment.ContentType;
+            Msisdn = ConvMessage.Msisdn;
+            MessageId = ConvMessage.MessageId;
+            FileName = ConvMessage.FileAttachment.FileName;
 
-            if (FileBytes == null)
-            {
-                if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                    FileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
-                else
-                    MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
-                                Convert.ToString(convMessage.MessageId), out FileBytes);
-            }
+            InitFileBytes();
+        }
+
+        void InitFileBytes()
+        {
+            if (ContentType.Contains(HikeConstants.CT_CONTACT))
+                FileBytes = Encoding.UTF8.GetBytes(MetaDataString);
+            else
+                MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn + "/" + Convert.ToString(MessageId), out FileBytes);
+        }
+
+        void Write()
+        {
+        }
+
+        void Read()
+        {
         }
     }
 }
