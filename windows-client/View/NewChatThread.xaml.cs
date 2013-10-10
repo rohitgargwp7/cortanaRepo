@@ -212,6 +212,8 @@ namespace windows_client.View
 
         public LruCache<string, BitmapImage> lruStickerCache;
 
+        public Dictionary<string, List<ConvMessage>> dictDownloadingSticker = new Dictionary<string, List<ConvMessage>>();
+
         #region PAGE BASED FUNCTIONS
 
         //        private ObservableCollection<UIElement> messagesCollection;
@@ -2414,7 +2416,20 @@ namespace windows_client.View
                             {
                                 image = StickerCategory.GetHighResolutionSticker(convMessage.StickerObj);
                                 if (image == null)
-                                    AccountUtils.GetSingleSticker(convMessage, ResolutionId, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
+                                {
+                                    List<ConvMessage> listDownloading;
+                                    if (dictDownloadingSticker.TryGetValue(categoryStickerId, out listDownloading))
+                                    {
+                                        listDownloading.Add(convMessage);
+                                    }
+                                    else
+                                    {
+                                        listDownloading = new List<ConvMessage>();
+                                        listDownloading.Add(convMessage);
+                                        dictDownloadingSticker.Add(categoryStickerId, listDownloading);
+                                        AccountUtils.GetSingleSticker(convMessage, ResolutionId, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
+                                    }
+                                }
                                 else
                                 {
                                     lruStickerCache.AddObject(categoryStickerId, image);
@@ -5364,9 +5379,17 @@ namespace windows_client.View
                         if (convMessage != null)
                         {
                             string key = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
-                            convMessage.ImageDownloadFailed = false;
-                            convMessage.StickerObj.IsStickerDownloaded = true;
-                            convMessage.StickerObj.StickerImageBytes = keyValuePair.Value;
+                            List<ConvMessage> listDownlaoding;
+                            if (dictDownloadingSticker.TryGetValue(key, out listDownlaoding))
+                            {
+                                foreach (ConvMessage conv in listDownlaoding)
+                                {
+                                    conv.ImageDownloadFailed = false;
+                                    conv.StickerObj.IsStickerDownloaded = true;
+                                    conv.StickerObj.StickerImageBytes = keyValuePair.Value;
+                                }
+                                dictDownloadingSticker.Remove(key);
+                            }
                             lruStickerCache.AddObject(key, highResImage);
                         }
                         if (!isDisabled)
