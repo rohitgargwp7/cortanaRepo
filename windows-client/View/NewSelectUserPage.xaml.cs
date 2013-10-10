@@ -44,7 +44,7 @@ namespace windows_client.View
         private List<Group<ContactInfo>> defaultJumpList = null;
         private string charsEntered;
         ContactInfo contactInfoObj;
-        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 20;
+        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 50;
         private int defaultGroupmembers = 0;
         private ProgressIndicatorControl progressIndicator;
         private StringBuilder stringBuilderForContactNames = new StringBuilder();

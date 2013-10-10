@@ -89,7 +89,7 @@ namespace windows_client
         private static string _currentVersion = "1.0.0.0";
         private static string _latestVersion;
         public static bool IS_VIEWMODEL_LOADED = false;
-        public static bool IS_MARKETPLACE = false; // change this to toggle debugging
+        public static bool IS_MARKETPLACE = true; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
         private static bool _isTombstoneLaunch = false;
@@ -714,8 +714,8 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
-            #region ProTips 2.2.2.2
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.2.2.2") < 0)
+            #region ProTips 2.3.0.0
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.3.0.0") < 0)
             {
                 try
                 {
