@@ -129,10 +129,11 @@ namespace windows_client.Controls
             vScrollBar = sender as ScrollBar;
             if (vScrollBar != null)
             {
-                if ((vScrollBar.Maximum - vScrollBar.Value) < 100 && vScrollBar.Value < vScrollBar.Maximum)
+                if ((vScrollBar.Maximum - vScrollBar.Value) < 100 && llsStickerCategory.ManipulationState != ManipulationState.Idle)
                 {
                     StickerCategory stickerCategory;
-                    if (App.newChatThreadPage != null && (stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_category)) != null && stickerCategory.HasMoreStickers && !stickerCategory.IsDownLoading)
+                    //if download message is shown that means user has not yet requested download
+                    if (App.newChatThreadPage != null && (stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_category)) != null && !stickerCategory.ShowDownloadMessage && stickerCategory.HasMoreStickers && !stickerCategory.IsDownLoading)
                     {
                         if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0)
                         {
