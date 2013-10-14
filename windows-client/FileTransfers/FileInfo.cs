@@ -18,11 +18,11 @@ namespace windows_client.FileTransfers
         {
             get 
             {
-                return ((double)BytesTransferred / TotalSize) * 100;
+                return ((double)BytesTransferred / TotalBytes) * 100;
             }
         }
 
-        public int TotalSize
+        public int TotalBytes
         {
             get
             {
@@ -55,7 +55,7 @@ namespace windows_client.FileTransfers
             ContentType = convMessage.FileAttachment.ContentType;
             FileName = ConvMessage.FileAttachment.FileName;
 
-            Id = ConvMessage.Msisdn + "//" + ConvMessage.MessageId;
+            Id = ConvMessage.Msisdn + "___" + ConvMessage.MessageId;
 
             if (fileBytes != null)
                 FileBytes = fileBytes;
@@ -124,9 +124,11 @@ namespace windows_client.FileTransfers
             CurrentHeaderPosition = reader.ReadInt32();
             
             count = reader.ReadInt32();
-            SuccessObj = JObject.Parse(Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count));
-            if (Id == "*@N@*")
+            var str = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (str == "*@N@*")
                 SuccessObj = null;
+            else
+                SuccessObj = JObject.Parse(str);
             
             count = reader.ReadInt32();
             Message = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
@@ -141,7 +143,12 @@ namespace windows_client.FileTransfers
             count = reader.ReadInt32();
             FileName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
             if (FileName == "*@N@*")
-                FileName = null; ContentType = reader.ReadString();
+                FileName = null;
+
+            count = reader.ReadInt32();
+            ContentType = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (ContentType == "*@N@*")
+                ContentType = null;
 
             FileState = (Attachment.AttachmentState)reader.ReadInt32();
             

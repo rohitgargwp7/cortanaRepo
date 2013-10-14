@@ -569,6 +569,8 @@ namespace windows_client.DbUtils
                 if (store.FileExists(attachmentFileBytes))
                     store.DeleteFile(attachmentFileBytes);
             }
+
+            FileTransfers.FileUploader.Instance.DeleteUploadTask(msisdn, messageId);
         }
 
         public static void deleteMsisdnData(string msisdn)
@@ -579,11 +581,17 @@ namespace windows_client.DbUtils
             attachmentPaths[1] = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
+                string[] fileNames = store.GetFileNames(attachmentPaths[0] + "/*");
+                foreach (string fileName in fileNames)
+                {
+                    FileTransfers.FileUploader.Instance.DeleteUploadTask(msisdn, Convert.ToInt64(fileName));
+                }
+
                 foreach (string attachmentPath in attachmentPaths)
                 {
                     if (store.DirectoryExists(attachmentPath))
                     {
-                        string[] fileNames = store.GetFileNames(attachmentPath + "/*");
+                        fileNames = store.GetFileNames(attachmentPath + "/*");
                         foreach (string fileName in fileNames)
                         {
                             store.DeleteFile(attachmentPath + "/" + fileName);

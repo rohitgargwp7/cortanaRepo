@@ -1592,7 +1592,7 @@ namespace windows_client.View
                 if (listDownload.Count > 0)
                 {
                     BackgroundWorker bw = new BackgroundWorker();
-                    bw.DoWork += (s,e) =>
+                    bw.DoWork += (s, e) =>
                         {
                             foreach (ConvMessage conv in listDownload)
                             {
@@ -1974,14 +1974,6 @@ namespace windows_client.View
                     }
                     else
                     {
-                        //resend message
-                        //chatBubble.setAttachmentState(Attachment.AttachmentState.STARTED);
-                        //ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
-                        //convMessage.IsSms = !isOnHike;
-                        //convMessage.HasAttachment = true;
-                        //convMessage.MessageId = chatBubble.MessageId;
-                        //convMessage.FileAttachment = chatBubble.FileAttachment;
-                        convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
                         if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                         {
                             convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
@@ -2005,14 +1997,15 @@ namespace windows_client.View
                             convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                                 "/" + convMessage.FileAttachment.FileKey;
                         }
-                        //else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                        //{
-                        //    convMessage.MetaDataString = chatBubble.MetaDataString;
-                        //}
-                        object[] values = new object[2];
-                        values[0] = convMessage;
-                        // values[1] = chatBubble;
-                        mPubSub.publish(HikePubSub.ATTACHMENT_RESEND, values);
+
+                        Byte[] fileBytes;
+
+                        if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                            fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
+                        else
+                            MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" + Convert.ToString(convMessage.MessageId), out fileBytes);
+
+                        FileTransfers.FileUploader.Instance.Load(convMessage, fileBytes);
                     }
                 }
                 else
@@ -2401,6 +2394,12 @@ namespace windows_client.View
                         {
                             convMessage.FileAttachment = attachments[convMessage.MessageId];
                             attachments.Remove(convMessage.MessageId);
+
+                            if (convMessage.IsSent && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING)
+                                && (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED
+                                || convMessage.FileAttachment.FileState == Attachment.AttachmentState.PAUSED
+                                || convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED))
+                                FileTransfers.FileUploader.Instance.Load(convMessage);
                         }
                         if (convMessage.FileAttachment == null)
                         {
@@ -2422,7 +2421,7 @@ namespace windows_client.View
                             else if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.STARTED && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
                             {
                                 listDownload.Add(convMessage);
-                              
+
                             }
                         }
                     }
@@ -3301,8 +3300,34 @@ namespace windows_client.View
                 convMessage.SetAttachmentState(Attachment.AttachmentState.CANCELED);
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
             }
+
+            FileTransfers.FileUploader.Instance.CancelUploadTask(convMessage.Msisdn, convMessage.MessageId);
         }
 
+        private void MenuItem_Click_Pause(object sender, RoutedEventArgs e)
+        {
+            ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
+            if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
+            {
+                convMessage.SetAttachmentState(Attachment.AttachmentState.MANUAL_PAUSED);
+                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
+            }
+
+            FileTransfers.FileUploader.Instance.PauseUploadTask(convMessage.Msisdn, convMessage.MessageId);
+        }
+
+        private void MenuItem_Click_Resume(object sender, RoutedEventArgs e)
+        {
+            ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
+            if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.PAUSED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
+            {
+                convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
+                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
+            }
+
+            FileTransfers.FileUploader.Instance.Load(convMessage);
+        }
+        
         private void MenuItem_Click_SendAsSMS(object sender, RoutedEventArgs e)
         {
             if (mCredits > 0)

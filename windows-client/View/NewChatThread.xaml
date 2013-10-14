@@ -509,6 +509,8 @@
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                 <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Pause_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Pause" Visibility="{Binding ShowPauseMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Resume_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Resume" Visibility="{Binding ShowResumeMenu}"/>
                                                 <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
                                                 <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
                                                 <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
@@ -559,6 +561,8 @@
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                 <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Pause_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Pause" Visibility="{Binding ShowPauseMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Resume_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Resume" Visibility="{Binding ShowResumeMenu}"/>
                                                 <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
                                                 <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
                                                 <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
@@ -583,10 +587,12 @@
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
                                                 <Image Grid.Row="0" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
                                                 <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="0" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
+                                                <TextBlock Grid.Row="2" Text="{Binding ProgressText}" Visibility="{Binding ProgressBarVisibility}" Margin="12,5,0,0" Foreground="{Binding MessageTextForeGround}"></TextBlock>
                                             </Grid>
                                             <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                         </Grid>
@@ -600,6 +606,8 @@
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                 <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Pause_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Pause" Visibility="{Binding ShowPauseMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Resume_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Resume" Visibility="{Binding ShowResumeMenu}"/>
                                                 <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
                                                 <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
                                                 <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
@@ -624,6 +632,7 @@
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
                                                 </Grid.RowDefinitions>
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
@@ -641,6 +650,7 @@
                                                     </Grid>
                                                 </Grid>
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
+                                                <TextBlock Grid.Row="2" Text="{Binding ProgressText}" Visibility="{Binding ProgressBarVisibility}" Margin="12,5,0,0" Foreground="{Binding MessageTextForeGround}"></TextBlock>
                                             </Grid>
                                             <TextBlock Grid.Row="1" Grid.Column="1"  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                         </Grid>
@@ -684,6 +694,8 @@
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu x:Name="ctxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                 <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Pause_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Pause" Visibility="{Binding ShowPauseMenu}"/>
+                                                <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Resume_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Resume" Visibility="{Binding ShowResumeMenu}"/>
                                                 <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
                                                 <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
                                                 <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
@@ -708,15 +720,18 @@
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Image Width="35" Height="25" Margin="12,12,12,0" HorizontalAlignment="Left" Source="{Binding MessageImage}" />
-                                                <TextBlock Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" Grid.Column="1" Margin="0,8,5,0" TextWrapping="Wrap" MinWidth="150" MaxWidth="330" Foreground="{Binding MessageTextForeGround}"/>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Image Width="35" Height="25" Margin="12,12,12,0" HorizontalAlignment="Left" Source="{Binding MessageImage}" />
+                                                    <TextBlock Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" Grid.Column="1" Margin="0,8,5,0" TextWrapping="Wrap" MinWidth="150" MaxWidth="330" Foreground="{Binding MessageTextForeGround}"/>
+                                                </Grid>
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
-
+                                                <TextBlock Grid.Row="2" Text="{Binding ProgressText}" Visibility="{Binding ProgressBarVisibility}" Margin="12,5,0,0" Foreground="{Binding MessageTextForeGround}"></TextBlock>
                                             </Grid>
                                             <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                         </Grid>

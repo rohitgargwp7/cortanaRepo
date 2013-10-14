@@ -1946,4 +1946,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="sms_invite_message" xml:space="preserve">
     <value>I just got the new hike messenger! It's simpler, faster with hilarious new stickers! Download it now and lets chat for free http://hike.in</value>
   </data>
+  <data name="Resume_Txt" xml:space="preserve">
+    <value>resume</value>
+  </data>
 </root>

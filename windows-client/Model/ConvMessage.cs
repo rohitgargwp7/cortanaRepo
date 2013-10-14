@@ -275,9 +275,6 @@ namespace windows_client.Model
                         SdrImageVisibility = Visibility.Visible;
                         NotifyPropertyChanged("SdrImageVisibility");
                     }
-
-                    if (_messageStatus == State.SENT_FAILED && FileAttachment != null && FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
-                        FileTransfers.FileUploader.Load(this);
                 }
             }
         }
@@ -381,9 +378,6 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != value)
                     _fileAttachment = value;
-
-                if (_messageStatus == State.SENT_FAILED && _fileAttachment != null && _fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
-                    FileTransfers.FileUploader.Load(this);
             }
         }
 
@@ -872,6 +866,28 @@ namespace windows_client.Model
             get
             {
                 if (FileAttachment.FileState == Attachment.AttachmentState.STARTED)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public Visibility ShowPauseMenu
+        {
+            get
+            {
+                if (FileAttachment.FileState == Attachment.AttachmentState.STARTED)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public Visibility ShowResumeMenu
+        {
+            get
+            {
+                if (FileAttachment.FileState == Attachment.AttachmentState.PAUSED || FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
@@ -1702,6 +1718,8 @@ namespace windows_client.Model
             if (FileAttachment.FileState == Attachment.AttachmentState.CANCELED || FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
                 ProgressBarValue = 0;
             NotifyPropertyChanged("ShowCancelMenu");
+            NotifyPropertyChanged("ShowResumeMenu");
+            NotifyPropertyChanged("ShowPauseMenu");
             NotifyPropertyChanged("ShowForwardMenu");
             NotifyPropertyChanged("ShowDeleteMenu");
             NotifyPropertyChanged("SdrImage");

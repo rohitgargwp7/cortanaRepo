@@ -9,35 +9,46 @@ using System.Linq;
 using windows_client.DbUtils;
 using System.IO.IsolatedStorage;
 using System.IO;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace windows_client.FileTransfers
 {
-    public static class FileUploader
+    public class FileUploader
     {
-        private static void LoadReq()
+        private void LoadReq()
         {
             if (Sources.Count > 0)
             {
                 FileInfo fileInfo = Sources.Dequeue();
 
-                if (fileInfo.FileState == Attachment.AttachmentState.COMPLETED)
+                if (fileInfo.FileState == Attachment.AttachmentState.CANCELED)
+                {
+                    UploadMap.Remove(fileInfo.Id);
+                    DeleteUpload(fileInfo.Id);
+                    fileInfo.ConvMessage = null;
+                    fileInfo = null;
+                    return;
+                }
+                else if (fileInfo.FileState == Attachment.AttachmentState.COMPLETED)
                 {
                     if (fileInfo.ConvMessage != null)
                         MarkedFileInfoAsUploaded(fileInfo);
                 }
-                else
+                else if (!App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING) || (fileInfo.FileState != Attachment.AttachmentState.PAUSED && fileInfo.FileState != Attachment.AttachmentState.MANUAL_PAUSED))
                 {
                     if (!Download(fileInfo))
                         Sources.Enqueue(fileInfo);
                 }
+                else
+                    Sources.Enqueue(fileInfo);
             }
         }
 
-        private static void MarkedFileInfoAsUploaded(FileInfo fileInfo)
+        private void MarkedFileInfoAsUploaded(FileInfo fileInfo)
         {
             fileInfo.ConvMessage.Message = fileInfo.Message;
-            fileInfo.ConvMessage.FileAttachment.FileKey = fileInfo.FileKey; 
-            
+            fileInfo.ConvMessage.FileAttachment.FileKey = fileInfo.FileKey;
+
             fileInfo.ConvMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
             fileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
             MiscDBUtil.saveAttachmentObject(fileInfo.ConvMessage.FileAttachment, fileInfo.ConvMessage.Msisdn, fileInfo.ConvMessage.MessageId);
@@ -48,17 +59,35 @@ namespace windows_client.FileTransfers
             fileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
 
             UploadMap.Remove(fileInfo.Id);
-            SaveAllUploads();
+            DeleteUploadBackUpOnComplete(fileInfo);
 
             fileInfo.ConvMessage = null;
             fileInfo = null;
         }
 
-        static BackgroundWorker _loadWorker;
-
-        public static void Load(ConvMessage convMessage, byte[] fileBytes = null)
+        BackgroundWorker _loadWorker;
+        private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
+        private static volatile FileUploader instance = null;
+        
+        public static FileUploader Instance
         {
-            var id = convMessage.Msisdn + convMessage.MessageId;
+            get
+            {
+                if (instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (instance == null)
+                            instance = new FileUploader();
+                    }
+                }
+                return instance;
+            }
+        }
+
+        public void Load(ConvMessage convMessage, byte[] fileBytes = null)
+        {
+            var id = convMessage.Msisdn + "___" + convMessage.MessageId;
             FileInfo fInfo = null;
 
             if (UploadMap.TryGetValue(id, out fInfo))
@@ -67,6 +96,14 @@ namespace windows_client.FileTransfers
 
                 if (fInfo.FileState == Attachment.AttachmentState.COMPLETED)
                     MarkedFileInfoAsUploaded(fInfo);
+
+                if (fInfo.FileState == Attachment.AttachmentState.PAUSED || fInfo.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
+                {
+                    fInfo.FileState = Attachment.AttachmentState.STARTED;
+                    Sources.Enqueue(fInfo);
+                    SaveUploadStatus(fInfo);
+                    StartUpload();
+                }
             }
             else
             {
@@ -76,13 +113,13 @@ namespace windows_client.FileTransfers
                 {
                     Sources.Enqueue(fInfo);
                     UploadMap.Add(fInfo.Id, fInfo);
-                    SaveAllUploads();
+                    SaveUploadStatus(fInfo);
                     StartUpload();
                 }
             }
         }
 
-        private static void StartUpload()
+        private void StartUpload()
         {
             if (_loadWorker == null)
             {
@@ -108,9 +145,9 @@ namespace windows_client.FileTransfers
             }
         }
 
-        private static Boolean Download(FileInfo imgInfo)
+        private Boolean Download(FileInfo fileInfo)
         {
-            if (UploadServices.Count >= 5)
+            if (UploadServices.Count >= 5 || !NetworkInterface.GetIsNetworkAvailable())
             {
                 return false;
             }
@@ -120,19 +157,19 @@ namespace windows_client.FileTransfers
                 dClient.UploadComplete += dClient_UploadComplete;
                 dClient.UploadFailed += dClient_UploadFailed;
 
-                dClient.OpenReadAsync(imgInfo);
+                dClient.OpenReadAsync(fileInfo);
                 UploadServices.Add(dClient);
 
                 return true;
             }
         }
 
-        static void dClient_UploadFailed(object sender, EventArgs e)
+        void dClient_UploadFailed(object sender, EventArgs e)
         {
             RemoveFromUploaderService(sender as BackgroundUploader, false);
         }
 
-        private static void RemoveFromUploaderService(BackgroundUploader client, Boolean isUploadSuccess)
+        private void RemoveFromUploaderService(BackgroundUploader client, Boolean isUploadSuccess)
         {
             if (client != null)
             {
@@ -146,10 +183,12 @@ namespace windows_client.FileTransfers
                         fileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
                     else
                         fileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
-                }
 
-                UploadMap.Remove(fileInfo.Id);
-                SaveAllUploads();
+                    MiscDBUtil.saveAttachmentObject(fileInfo.ConvMessage.FileAttachment, fileInfo.ConvMessage.Msisdn, fileInfo.ConvMessage.MessageId);
+
+                    UploadMap.Remove(fileInfo.Id);
+                    DeleteUploadBackUpOnComplete(fileInfo);
+                }
 
                 fileInfo.ConvMessage = null;
                 fileInfo = null;
@@ -158,29 +197,29 @@ namespace windows_client.FileTransfers
             }
         }
 
-        static void dClient_UploadComplete(object sender, UploadCompletedArgs e)
+        void dClient_UploadComplete(object sender, UploadCompletedArgs e)
         {
             var fileInfo = e.UserState as FileInfo;
-            
-            if (fileInfo.ConvMessage != null)
-                fileInfo.ConvMessage.ProgressBarValue = 100;
 
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, fileInfo.ConvMessage.serialize(true));
+            if (fileInfo.ConvMessage != null)
+            {
+                fileInfo.ConvMessage.ProgressBarValue = 100;
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, fileInfo.ConvMessage.serialize(true));
+            }
+
             RemoveFromUploaderService(sender as BackgroundUploader, true);
         }
 
-        static Queue<FileInfo> Sources = new Queue<FileInfo>();
-        static Dictionary<string, FileInfo> UploadMap = new Dictionary<string, FileInfo>();
+        Queue<FileInfo> Sources = new Queue<FileInfo>();
+        Dictionary<string, FileInfo> UploadMap = new Dictionary<string, FileInfo>();
 
-        private static BackgroundUploaderService UploadServices = new BackgroundUploaderService();
+        private BackgroundUploaderService UploadServices = new BackgroundUploaderService();
 
-        private static string UPLOAD_DIRECTORY_NAME = "FileUpload";
+        private const string UPLOAD_DIRECTORY_NAME = "FileUpload";
         private static object readWriteLock = new object();
 
-        public static async void ResumeAllUploads()
+        public void ResumeAllUploads()
         {
-            await Task.Delay(500);
-
             lock (readWriteLock)
             {
                 try
@@ -195,7 +234,7 @@ namespace windows_client.FileTransfers
                         foreach (var fileName in fileNames)
                         {
                             FileInfo fileInfo = new FileInfo();
-                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
+                            using (var file = store.OpenFile(UPLOAD_DIRECTORY_NAME + "\\" + fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                             {
                                 using (BinaryReader reader = new BinaryReader(file))
                                 {
@@ -219,46 +258,127 @@ namespace windows_client.FileTransfers
             }
         }
 
-        public static async void SaveAllUploads()
+        public void PauseUploadTask(string msisdn, long id)
         {
-            await Task.Delay(100);
+            var fileInfoId = msisdn + "___" + id;
+            FileInfo fInfo;
+
+            if (UploadMap.TryGetValue(fileInfoId, out fInfo))
+            {
+                fInfo.FileState = Attachment.AttachmentState.MANUAL_PAUSED;
+                SaveUploadStatus(fInfo);
+            }
+        }
+
+        public void CancelUploadTask(string msisdn, long id)
+        {
+            var fileInfoId = msisdn + "___" + id;
+            FileInfo fInfo;
+
+            if (UploadMap.TryGetValue(fileInfoId, out fInfo))
+            {
+                fInfo.FileState = Attachment.AttachmentState.CANCELED;
+                SaveUploadStatus(fInfo);
+            }
+        }
+
+        public void DeleteUploadTask(string msisdn, long id)
+        {
+            DeleteUploadTask(msisdn + "___" + id);
+        }
+        
+        public void DeleteUploadTask(string id)
+        {
+            FileInfo fInfo;
+
+            if (UploadMap.TryGetValue(id, out fInfo))
+                fInfo.FileState = Attachment.AttachmentState.CANCELED;
+
+            DeleteUpload(id);
+        }
+
+        public void DeleteUpload(string id)
+        {
+            lock (readWriteLock)
+            {
+                try
+                {
+                    string fileName = UPLOAD_DIRECTORY_NAME + "\\" + id;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (!store.DirectoryExists(UPLOAD_DIRECTORY_NAME))
+                            return;
+
+                        if (store.FileExists(fileName))
+                            store.DeleteFile(fileName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("FileUploader :: Delete Upload From IS, Exception : " + ex.StackTrace);
+                }
+            }
+        }
+
+        
+        public void DeleteUploadBackUpOnComplete(FileInfo fileInfo)
+        {
+            lock (readWriteLock)
+            {
+                try
+                {
+                    string fileName = UPLOAD_DIRECTORY_NAME + "\\" + fileInfo.Id;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (!store.DirectoryExists(UPLOAD_DIRECTORY_NAME))
+                            return;
+
+                        if (store.FileExists(fileName))
+                            store.DeleteFile(fileName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("FileUploader :: Delete Upload From IS, Exception : " + ex.StackTrace);
+                }
+            }
+
+        }
+
+        public async void SaveUploadStatus(FileInfo fileInfo)
+        {
+            await Task.Delay(1000);
 
             lock (readWriteLock)
             {
                 try
                 {
-                    string fileName = "";
+                    string fileName = UPLOAD_DIRECTORY_NAME + "\\" + fileInfo.Id;
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
                         if (!store.DirectoryExists(UPLOAD_DIRECTORY_NAME))
                             store.CreateDirectory(UPLOAD_DIRECTORY_NAME);
 
-                        foreach (var keyValue in UploadMap)
-                        {
-                            fileName = UPLOAD_DIRECTORY_NAME + "\\" + keyValue.Key;
-                            
-                            if (store.FileExists(fileName))
-                                store.DeleteFile(fileName);
+                        if (store.FileExists(fileName))
+                            store.DeleteFile(fileName);
 
-                            using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.Write))
+                        using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
+                        {
+                            using (BinaryWriter writer = new BinaryWriter(file))
                             {
-                                using (BinaryWriter writer = new BinaryWriter(file))
-                                {
-                                    writer.Seek(0, SeekOrigin.Begin);
-                                    keyValue.Value.Write(writer);
-                                    writer.Flush();
-                                    writer.Close();
-                                }
+                                writer.Seek(0, SeekOrigin.Begin);
+                                fileInfo.Write(writer);
+                                writer.Flush();
+                                writer.Close();
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("FileUploader :: Save Uploads To File, Exception : " + ex.StackTrace);
+                    System.Diagnostics.Debug.WriteLine("FileUploader :: Save Upload Status To IS, Exception : " + ex.StackTrace);
                 }
             }
-
         }
     }
 }

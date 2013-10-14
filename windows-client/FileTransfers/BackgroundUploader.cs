@@ -57,9 +57,11 @@ namespace windows_client.FileTransfers
             var myHttpWebRequest = (HttpWebRequest)vars[0];
             HttpWebResponse response = null;
             string data = null;
+            HttpStatusCode responseCode = HttpStatusCode.NotFound;
             try
             {
                 response = (HttpWebResponse)myHttpWebRequest.EndGetResponse(result);
+                responseCode = response.StatusCode;
                 Stream responseStream = response.GetResponseStream();
                 using (var reader = new StreamReader(responseStream))
                 {
@@ -70,17 +72,27 @@ namespace windows_client.FileTransfers
             {
                 Debug.WriteLine("BackgroundUploader ::  GetRequestCallback :  GetRequestCallback , Exception : " + e.StackTrace);
                 data = null;
+
+                var webException = e as WebException;
+                if (webException != null)
+                {
+                    HttpWebResponse webResponse = webException.Response as HttpWebResponse;
+                    if (webResponse != null)
+                        responseCode = webResponse.StatusCode;
+                    else
+                        responseCode = HttpStatusCode.RequestTimeout;
+                }
             }
             finally
             {
-                UpdateStatusAfterGetResponse(data);
+                UpdateStatusAfterGetResponse(data, responseCode);
             }
         }
 
-        private void UpdateStatusAfterGetResponse(string data)
+        private void UpdateStatusAfterGetResponse(string data, HttpStatusCode responseCode)
         {
             int index = 0;
-            if (!String.IsNullOrEmpty(data))
+            if (responseCode == HttpStatusCode.OK)
             {
                 index = Convert.ToInt32(data);
 
@@ -95,13 +107,15 @@ namespace windows_client.FileTransfers
                     if (FileInfo.ConvMessage != null)
                     {
                         FileInfo.ConvMessage.ProgressBarValue = FileInfo.PercentageTransfer;
+                        FileInfo.ConvMessage.ProgressText = string.Format("{0} of {1}", Utils.ConvertToStorageSizeString(FileInfo.BytesTransferred), Utils.ConvertToStorageSizeString(FileInfo.TotalBytes));
                         FileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
+                        MiscDBUtil.saveAttachmentObject(FileInfo.ConvMessage.FileAttachment, FileInfo.ConvMessage.Msisdn, FileInfo.ConvMessage.MessageId);
                     }
 
                     UploadFileBytes();
                 }
             }
-            else
+            else if (responseCode == HttpStatusCode.NotFound)
             {
                 // fresh upload
                 FileInfo.CurrentHeaderPosition = FileInfo.BytesTransferred = index;
@@ -110,7 +124,9 @@ namespace windows_client.FileTransfers
                 if (FileInfo.ConvMessage != null)
                 {
                     FileInfo.ConvMessage.ProgressBarValue = FileInfo.PercentageTransfer;
+                    FileInfo.ConvMessage.ProgressText = string.Format("{0} of {1}", Utils.ConvertToStorageSizeString(FileInfo.BytesTransferred), Utils.ConvertToStorageSizeString(FileInfo.TotalBytes));
                     FileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
+                    MiscDBUtil.saveAttachmentObject(FileInfo.ConvMessage.FileAttachment, FileInfo.ConvMessage.Msisdn, FileInfo.ConvMessage.MessageId);
                 }
 
                 UploadFileBytes();
@@ -203,9 +219,12 @@ namespace windows_client.FileTransfers
             HttpWebRequest myHttpWebRequest = (HttpWebRequest)vars[0];
             HttpWebResponse response = null;
             string data = null;
+
+            HttpStatusCode responseCode =  HttpStatusCode.NotFound;
             try
             {
                 response = (HttpWebResponse)myHttpWebRequest.EndGetResponse(result);
+                responseCode = response.StatusCode;
                 Stream responseStream = response.GetResponseStream();
                 using (var reader = new StreamReader(responseStream))
                 {
@@ -216,49 +235,82 @@ namespace windows_client.FileTransfers
             {
                 Debug.WriteLine("BackgroundUploader ::  UploadResponseCallback :  UploadResponseCallback , Exception : " + e.StackTrace);
                 data = null;
+
+                var webException = e as WebException;
+                if (webException != null)
+                {
+                    HttpWebResponse webResponse = webException.Response as HttpWebResponse;
+                    if (webResponse != null)
+                        responseCode = webResponse.StatusCode;
+                    else
+                        responseCode = HttpStatusCode.RequestTimeout;
+                }
             }
             finally
             {
-                UpdateStatusAfterPartialUpload(data);
+                UpdateStatusAfterPartialUpload(data, responseCode);
             }
         }
 
-        private void UpdateStatusAfterPartialUpload(string data)
+        private void UpdateStatusAfterPartialUpload(string data, HttpStatusCode code)
         {
             JObject jObject = null;
 
-            try
+            if (code == HttpStatusCode.OK)
             {
                 if (!String.IsNullOrEmpty(data))
                     jObject = JObject.Parse(data);
-            }
-            finally
-            {
-                if (data != null)
+
+                if (jObject != null)
                 {
-                    if (jObject != null)
-                    {
-                        FileInfo.SuccessObj = jObject;
-                        NotifyComplete(FileInfo);
-                    }
-                    else
-                    {
-                        FileInfo.BytesTransferred += _blockSize - 1;
-                        FileInfo.CurrentHeaderPosition += _blockSize;
+                    FileInfo.SuccessObj = jObject;
+                    NotifyComplete(FileInfo);
+                }
+            }
+            else if (code == HttpStatusCode.Created)
+            {
+                FileInfo.BytesTransferred += _blockSize - 1;
+                FileInfo.CurrentHeaderPosition += _blockSize;
 
-                        if (FileInfo.ConvMessage != null)
-                        {
-                            FileInfo.ConvMessage.ProgressBarValue = FileInfo.PercentageTransfer;
-                        }
+                if (FileInfo.ConvMessage != null)
+                {
+                    FileInfo.ConvMessage.ProgressBarValue = FileInfo.PercentageTransfer;
+                    FileInfo.ConvMessage.ProgressText = string.Format("{0} of {1}", Utils.ConvertToStorageSizeString(FileInfo.BytesTransferred), Utils.ConvertToStorageSizeString(FileInfo.TotalBytes));
+                }
 
-                        UploadFileBytes();
-                    }
+                if (FileInfo.FileState == Attachment.AttachmentState.CANCELED)
+                {
+                    FileUploader.Instance.DeleteUpload(FileInfo.Id);
+                    FileInfo.ConvMessage = null;
+                    FileInfo = null;
                 }
                 else
                 {
-                    FileInfo.SuccessObj = null;
-                    NotifyComplete(FileInfo);
+                    FileUploader.Instance.SaveUploadStatus(FileInfo);
+
+                    if (FileInfo.FileState == Attachment.AttachmentState.STARTED || (!App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING) && FileInfo.FileState != Attachment.AttachmentState.MANUAL_PAUSED))
+                        UploadFileBytes();
                 }
+            }
+            else if (code == HttpStatusCode.RequestTimeout)
+            {
+                FileInfo.FileState = Attachment.AttachmentState.PAUSED;
+
+                FileUploader.Instance.SaveUploadStatus(FileInfo);
+
+                if (FileInfo.ConvMessage != null)
+                {
+                    FileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.PAUSED);
+                    MiscDBUtil.saveAttachmentObject(FileInfo.ConvMessage.FileAttachment, FileInfo.ConvMessage.Msisdn, FileInfo.ConvMessage.MessageId);
+                }
+                //todo:retry logic
+                //if (FileInfo.FileState == Attachment.AttachmentState.STARTED || (App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING) && FileInfo.FileState == Attachment.AttachmentState.PAUSED))
+                //    UploadFileBytes();
+            }
+            else
+            {
+                FileInfo.SuccessObj = null;
+                NotifyComplete(FileInfo);
             }
         }
 
@@ -279,7 +331,7 @@ namespace windows_client.FileTransfers
                 }
                 else if (fileInfo.ContentType.Contains(HikeConstants.AUDIO))
                 {
-                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                    fileInfo.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                         "/" + fileInfo.FileKey;
                 }
                 else if (fileInfo.ContentType.Contains(HikeConstants.VIDEO))
@@ -317,6 +369,7 @@ namespace windows_client.FileTransfers
                 {
                     convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
                     convMessage.SetAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                    MiscDBUtil.saveAttachmentObject(FileInfo.ConvMessage.FileAttachment, FileInfo.ConvMessage.Msisdn, FileInfo.ConvMessage.MessageId);
                     NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
                 }
 

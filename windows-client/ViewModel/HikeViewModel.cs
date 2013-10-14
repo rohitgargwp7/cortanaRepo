@@ -184,7 +184,7 @@ namespace windows_client.ViewModel
             LoadToolTipsDict();
             LoadCurrentLocation();
 
-            FileTransfers.FileUploader.ResumeAllUploads();
+            FileTransfers.FileUploader.Instance.ResumeAllUploads();
         }
 
         public HikeViewModel()
@@ -206,7 +206,7 @@ namespace windows_client.ViewModel
             LoadToolTipsDict();
             LoadCurrentLocation();
 
-            FileTransfers.FileUploader.ResumeAllUploads();
+            FileTransfers.FileUploader.Instance.ResumeAllUploads();
         }
 
         /// <summary>
