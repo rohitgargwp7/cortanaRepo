@@ -908,11 +908,6 @@ namespace windows_client
                 #region KICKEDOUT USER ADDED
                 else if (gcState == GroupChatState.KICKEDOUT_USER_ADDED)
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (!App.IS_MARKETPLACE) // remove this later , this is only for QA
-                            MessageBox.Show("GCJ came after adding knocked user!!");
-                    });
                     GroupTableUtils.SetGroupAlive(grpId);
                     convMessage = new ConvMessage(jsonObj, false, false); // this will be normal GCJ msg
                     this.pubSub.publish(HikePubSub.GROUP_ALIVE, grpId);
