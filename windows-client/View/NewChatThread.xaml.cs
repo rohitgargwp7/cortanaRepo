@@ -5465,6 +5465,16 @@ namespace windows_client.View
                 if (convMessage != null)
                 {
                     convMessage.ImageDownloadFailed = true;
+                    string key = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
+                    List<ConvMessage> listDownlaoding;
+                    if (dictDownloadingSticker.TryGetValue(key, out listDownlaoding))
+                    {
+                        foreach (ConvMessage conv in listDownlaoding)
+                        {
+                            conv.ImageDownloadFailed = true;
+                        }
+                        dictDownloadingSticker.Remove(key);
+                    }
                 }
             }
         }
