@@ -92,6 +92,12 @@ namespace windows_client.View
             autoDownloadToggle.IsChecked = autoDownload;
             this.autoDownloadToggle.Content = autoDownload ? AppResources.On : AppResources.Off;
 
+            bool autoUpload;
+            if (!App.appSettings.TryGetValue(App.AUTO_UPLOAD_SETTING, out autoUpload))
+                autoUpload = true;
+            autoUploadToggle.IsChecked = autoUpload;
+            this.autoUploadToggle.Content = autoUpload ? AppResources.On : AppResources.Off;
+         
             byte statusSettingsValue;
             if (App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue))
             {
@@ -277,6 +283,27 @@ namespace windows_client.View
         {
             this.autoDownloadToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.AUTO_DOWNLOAD_SETTING, false);
+            App.appSettings.Save();
+        }
+
+        private void autoUploadToggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            autoUploadToggle.Loaded -= autoUploadToggle_Loaded;
+            autoUploadToggle.Checked += autoUploadToggle_Checked;
+            autoUploadToggle.Unchecked += autoUploadToggle_Unchecked;
+        }
+
+        private void autoUploadToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.autoUploadToggle.Content = AppResources.On;
+            App.appSettings.Remove(App.AUTO_UPLOAD_SETTING);
+            App.appSettings.Save();
+        }
+
+        private void autoUploadToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.autoUploadToggle.Content = AppResources.Off;
+            App.WriteToIsoStorageSettings(App.AUTO_UPLOAD_SETTING, false);
             App.appSettings.Save();
         }
 

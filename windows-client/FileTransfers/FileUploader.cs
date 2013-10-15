@@ -15,6 +15,8 @@ namespace windows_client.FileTransfers
 {
     public class FileUploader
     {
+        int _downloadLimit = 20;
+
         private void LoadReq()
         {
             if (Sources.Count > 0)
@@ -34,9 +36,9 @@ namespace windows_client.FileTransfers
                     if (fileInfo.ConvMessage != null)
                         MarkedFileInfoAsUploaded(fileInfo);
                 }
-                else if (!App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING) || (fileInfo.FileState != Attachment.AttachmentState.PAUSED && fileInfo.FileState != Attachment.AttachmentState.MANUAL_PAUSED))
+                else if (fileInfo.FileState != Attachment.AttachmentState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) || fileInfo.FileState != Attachment.AttachmentState.PAUSED))
                 {
-                    if (!Download(fileInfo))
+                    if (!Upload(fileInfo))
                         Sources.Enqueue(fileInfo);
                 }
                 else
@@ -56,7 +58,6 @@ namespace windows_client.FileTransfers
             fileInfo.ConvMessage.ProgressBarValue = 100;
 
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, fileInfo.ConvMessage.serialize(true));
-            fileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
 
             UploadMap.Remove(fileInfo.Id);
             DeleteUploadBackUpOnComplete(fileInfo);
@@ -100,7 +101,13 @@ namespace windows_client.FileTransfers
                 if (fInfo.FileState == Attachment.AttachmentState.PAUSED || fInfo.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
                 {
                     fInfo.FileState = Attachment.AttachmentState.STARTED;
-                    Sources.Enqueue(fInfo);
+                    fInfo.ConvMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                    fInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
+                    MiscDBUtil.saveAttachmentObject(fInfo.ConvMessage.FileAttachment, fInfo.ConvMessage.Msisdn, fInfo.ConvMessage.MessageId);
+
+                    if (!Sources.Contains(fInfo))
+                        Sources.Enqueue(fInfo);
+
                     SaveUploadStatus(fInfo);
                     StartUpload();
                 }
@@ -119,7 +126,7 @@ namespace windows_client.FileTransfers
             }
         }
 
-        private void StartUpload()
+        public void StartUpload()
         {
             if (_loadWorker == null)
             {
@@ -145,7 +152,7 @@ namespace windows_client.FileTransfers
             }
         }
 
-        private Boolean Download(FileInfo fileInfo)
+        private Boolean Upload(FileInfo fileInfo)
         {
             if (UploadServices.Count >= 5 || !NetworkInterface.GetIsNetworkAvailable())
             {
@@ -166,7 +173,20 @@ namespace windows_client.FileTransfers
 
         void dClient_UploadFailed(object sender, EventArgs e)
         {
-            RemoveFromUploaderService(sender as BackgroundUploader, false);
+            var client = sender as BackgroundUploader;
+            if (client != null)
+            {
+                FileInfo fileInfo = client.FileInfo as FileInfo;
+                Sources.Enqueue(fileInfo);
+
+                if (fileInfo.FileState != Attachment.AttachmentState.CANCELED || fileInfo.FileState != Attachment.AttachmentState.MANUAL_PAUSED)
+                {
+                    if (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING))
+                        StartUpload();
+                }
+
+                UploadServices.Remove(client);
+            }
         }
 
         private void RemoveFromUploaderService(BackgroundUploader client, Boolean isUploadSuccess)
@@ -179,11 +199,7 @@ namespace windows_client.FileTransfers
                 FileInfo fileInfo = client.FileInfo as FileInfo;
                 if (fileInfo.ConvMessage != null)
                 {
-                    if (isUploadSuccess)
-                        fileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
-                    else
-                        fileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
-
+                    fileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
                     MiscDBUtil.saveAttachmentObject(fileInfo.ConvMessage.FileAttachment, fileInfo.ConvMessage.Msisdn, fileInfo.ConvMessage.MessageId);
 
                     UploadMap.Remove(fileInfo.Id);
@@ -248,7 +264,7 @@ namespace windows_client.FileTransfers
                         }
                     }
 
-                    if (!App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING) && Sources.Count > 0)
+                    if (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && Sources.Count > 0)
                         StartUpload();
                 }
                 catch (Exception ex)

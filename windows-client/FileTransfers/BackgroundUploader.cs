@@ -24,7 +24,8 @@ namespace windows_client.FileTransfers
     {
         const string _boundary = "----------V2ymHFg03ehbqgZCaKO6jy";
         int _blockSize = 1024;
-        
+        int _defaultBlockSize = 1024;
+        int _attemptNumber = 1;
         public void OpenReadAsync(FileInfo fileInfo)
         {
             IsBusy = true;
@@ -272,6 +273,8 @@ namespace windows_client.FileTransfers
                 FileInfo.BytesTransferred += _blockSize - 1;
                 FileInfo.CurrentHeaderPosition += _blockSize;
 
+                _blockSize = ++_attemptNumber * _blockSize;
+
                 if (FileInfo.ConvMessage != null)
                 {
                     FileInfo.ConvMessage.ProgressBarValue = FileInfo.PercentageTransfer;
@@ -281,18 +284,24 @@ namespace windows_client.FileTransfers
                 if (FileInfo.FileState == Attachment.AttachmentState.CANCELED)
                 {
                     FileUploader.Instance.DeleteUpload(FileInfo.Id);
-                    FileInfo.ConvMessage = null;
-                    FileInfo = null;
+
+                    FileInfo.SuccessObj = null;
+                    NotifyComplete(FileInfo);
                 }
                 else
                 {
                     FileUploader.Instance.SaveUploadStatus(FileInfo);
 
-                    if (FileInfo.FileState == Attachment.AttachmentState.STARTED || (!App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING) && FileInfo.FileState != Attachment.AttachmentState.MANUAL_PAUSED))
+                    if (FileInfo.FileState == Attachment.AttachmentState.STARTED || (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileInfo.FileState != Attachment.AttachmentState.MANUAL_PAUSED))
                         UploadFileBytes();
+                    else
+                    {
+                        FileInfo.SuccessObj = null;
+                        NotifyComplete(FileInfo);
+                    }
                 }
             }
-            else if (code == HttpStatusCode.RequestTimeout)
+            else
             {
                 FileInfo.FileState = Attachment.AttachmentState.PAUSED;
 
@@ -303,12 +312,7 @@ namespace windows_client.FileTransfers
                     FileInfo.ConvMessage.SetAttachmentState(Attachment.AttachmentState.PAUSED);
                     MiscDBUtil.saveAttachmentObject(FileInfo.ConvMessage.FileAttachment, FileInfo.ConvMessage.Msisdn, FileInfo.ConvMessage.MessageId);
                 }
-                //todo:retry logic
-                //if (FileInfo.FileState == Attachment.AttachmentState.STARTED || (App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING) && FileInfo.FileState == Attachment.AttachmentState.PAUSED))
-                //    UploadFileBytes();
-            }
-            else
-            {
+
                 FileInfo.SuccessObj = null;
                 NotifyComplete(FileInfo);
             }
@@ -368,12 +372,8 @@ namespace windows_client.FileTransfers
                 if (convMessage != null)
                 {
                     convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
-                    convMessage.SetAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
-                    MiscDBUtil.saveAttachmentObject(FileInfo.ConvMessage.FileAttachment, FileInfo.ConvMessage.Msisdn, FileInfo.ConvMessage.MessageId);
                     NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
                 }
-
-                FileInfo.FileState = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
 
                 if (UploadFailed != null)
                     UploadFailed(this, new UploadCompletedArgs(FileInfo));

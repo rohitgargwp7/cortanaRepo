@@ -48,6 +48,7 @@ namespace windows_client.utils
         private BitmapImage httpFailed;
         private BitmapImage emptyImage;
         private BitmapImage sent;
+        private BitmapImage paused;
         private BitmapImage delivered;
         private BitmapImage read;
         private BitmapImage trying;
@@ -553,6 +554,16 @@ namespace windows_client.utils
                 if (sent == null)
                     sent = new BitmapImage(new Uri("/View/images/ic_sent.png", UriKind.Relative));
                 return sent;
+            }
+        }
+
+        public BitmapImage Paused
+        {
+            get
+            {
+                if (paused == null)
+                    paused = new BitmapImage(new Uri("/View/images/ic_paused.png", UriKind.Relative));
+                return paused;
             }
         }
 

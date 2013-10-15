@@ -40,6 +40,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <toolkit:ToggleSwitch  Margin="0 0 0 -15" Grid.Row="0" x:Name="locationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
@@ -55,9 +56,11 @@
                 <toolkit:ToggleSwitch Margin="0 0 0 -15"  Grid.Row="5" x:Name="statusUpdateNotificationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="statusUpdateNotificationToggle_Loaded"
                                           Header="{Binding Path= LocalizedResources.Settings_StatusNotification_SwitchHeader, Source={StaticResource LocalizedStrings}}" />
                 <toolkit:ToggleSwitch Margin="0 0 0 -15"  Grid.Row="6" x:Name="autoDownloadToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="autoDownloadToggle_Loaded"
-                                          Header="Auto Download File" />
-                <toolkit:ListPicker Grid.Row="7" x:Name="listBoxStatusSettings" Loaded="listBoxStatusSettings_Loaded" Margin="10 -5 10 0" Visibility="Collapsed"/>
-                <Button Grid.Row="8" Content="{Binding Path= LocalizedResources.Settings_LockScreenNotifications, Source={StaticResource LocalizedStrings}}" Tap="btnGoToLockSettings_Click" />
+                                          Header="Auto download file" />
+                <toolkit:ToggleSwitch Margin="0 0 0 -15"  Grid.Row="7" x:Name="autoUploadToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="autoUploadToggle_Loaded"
+                                          Header="Auto resume file uploads" />
+                <toolkit:ListPicker Grid.Row="8" x:Name="listBoxStatusSettings" Loaded="listBoxStatusSettings_Loaded" Margin="10 -5 10 0" Visibility="Collapsed"/>
+                <Button Grid.Row="9" Content="{Binding Path= LocalizedResources.Settings_LockScreenNotifications, Source={StaticResource LocalizedStrings}}" Tap="btnGoToLockSettings_Click" />
             </Grid>
         </ScrollViewer>
     </Grid>

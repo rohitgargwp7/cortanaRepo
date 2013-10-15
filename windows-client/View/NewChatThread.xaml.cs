@@ -2395,7 +2395,7 @@ namespace windows_client.View
                             convMessage.FileAttachment = attachments[convMessage.MessageId];
                             attachments.Remove(convMessage.MessageId);
 
-                            if (convMessage.IsSent && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING)
+                            if (convMessage.IsSent && !App.appSettings.Contains(App.AUTO_UPLOAD_SETTING)
                                 && (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED
                                 || convMessage.FileAttachment.FileState == Attachment.AttachmentState.PAUSED
                                 || convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED))
@@ -2421,7 +2421,6 @@ namespace windows_client.View
                             else if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.STARTED && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
                             {
                                 listDownload.Add(convMessage);
-
                             }
                         }
                     }

@@ -377,7 +377,10 @@ namespace windows_client.Model
             set
             {
                 if (_fileAttachment != value)
+                {
                     _fileAttachment = value;
+                    NotifyPropertyChanged("SdrImage");
+                }
             }
         }
 
@@ -515,6 +518,9 @@ namespace windows_client.Model
         {
             get
             {
+                if (FileAttachment != null && (FileAttachment.FileState == Attachment.AttachmentState.PAUSED || FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED))
+                    return UI_Utils.Instance.Paused;
+
                 switch (_messageStatus)
                 {
                     case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
