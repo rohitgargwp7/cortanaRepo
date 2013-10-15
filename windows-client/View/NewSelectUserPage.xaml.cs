@@ -825,6 +825,8 @@ namespace windows_client.View
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
                 contact.Msisdn = Utils.NormalizeNumber(contact.Name);
+                if (contact.Msisdn == App.MSISDN)
+                    return;
                 contact = GetContactIfExists(contact);
                 contact.Name = contact.Msisdn;
             }

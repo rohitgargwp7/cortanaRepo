@@ -212,6 +212,8 @@ namespace windows_client.View
 
         public LruCache<string, BitmapImage> lruStickerCache;
 
+        public Dictionary<string, List<ConvMessage>> dictDownloadingSticker = new Dictionary<string, List<ConvMessage>>();
+
         #region PAGE BASED FUNCTIONS
 
         //        private ObservableCollection<UIElement> messagesCollection;
@@ -1937,10 +1939,9 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                     NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
                 }
-                if (convMessage.StickerObj != null && convMessage.StickerObj.StickerImage == null && convMessage.ImageDownloadFailed)
+                if (convMessage.StickerObj != null && !convMessage.StickerObj.IsStickerDownloaded && convMessage.ImageDownloadFailed)
                 {
-                    AccountUtils.GetSingleSticker(convMessage, ResolutionId, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
-                    convMessage.ImageDownloadFailed = false;
+                    GetHighResStickerForUi(convMessage);
                 }
                 else if (convMessage.FileAttachment == null || convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
                     return;
@@ -2406,21 +2407,7 @@ namespace windows_client.View
                         {
                             JObject meataDataJson = JObject.Parse(convMessage.MetaDataString);
                             convMessage.StickerObj = new Sticker((string)meataDataJson[HikeConstants.CATEGORY_ID], (string)meataDataJson[HikeConstants.STICKER_ID], null, true);
-                            string categoryStickerId = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
-                            BitmapImage image = lruStickerCache.GetObject(categoryStickerId);
-                            if (image != null)
-                                convMessage.StickerObj.IsStickerDownloaded = true;
-                            else
-                            {
-                                image = StickerCategory.GetHighResolutionSticker(convMessage.StickerObj);
-                                if (image == null)
-                                    AccountUtils.GetSingleSticker(convMessage, ResolutionId, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
-                                else
-                                {
-                                    lruStickerCache.AddObject(categoryStickerId, image);
-                                    convMessage.StickerObj.IsStickerDownloaded = true;
-                                }
-                            }
+                            GetHighResStickerForUi(convMessage);
                             chatBubble = convMessage;
                             if (!convMessage.IsSent)
                                 chatBubble.GroupMemberName = isGroupChat ?
@@ -2757,6 +2744,41 @@ namespace windows_client.View
             catch (Exception e)
             {
                 Debug.WriteLine("NEW CHAT THREAD :: " + e.StackTrace);
+            }
+        }
+
+        private void GetHighResStickerForUi(ConvMessage convMessage)
+        {
+            if (convMessage.StickerObj == null)
+                return;
+            convMessage.ImageDownloadFailed = false;//to show loading sticker
+            string categoryStickerId = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
+            BitmapImage image = lruStickerCache.GetObject(categoryStickerId);
+            if (image != null)
+                convMessage.StickerObj.IsStickerDownloaded = true;
+            else
+            {
+                image = StickerCategory.GetHighResolutionSticker(convMessage.StickerObj);
+                if (image == null)
+                {
+                    List<ConvMessage> listDownloading;
+                    if (dictDownloadingSticker.TryGetValue(categoryStickerId, out listDownloading))
+                    {
+                        listDownloading.Add(convMessage);
+                    }
+                    else
+                    {
+                        listDownloading = new List<ConvMessage>();
+                        listDownloading.Add(convMessage);
+                        dictDownloadingSticker.Add(categoryStickerId, listDownloading);
+                        AccountUtils.GetSingleSticker(convMessage, ResolutionId, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
+                    }
+                }
+                else
+                {
+                    lruStickerCache.AddObject(categoryStickerId, image);
+                    convMessage.StickerObj.IsStickerDownloaded = true;
+                }
             }
         }
 
@@ -5302,6 +5324,16 @@ namespace windows_client.View
                 if (convMessage != null)
                 {
                     convMessage.ImageDownloadFailed = true;
+                    string key = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
+                    List<ConvMessage> listDownlaoding;
+                    if (dictDownloadingSticker.TryGetValue(key, out listDownlaoding))
+                    {
+                        foreach (ConvMessage conv in listDownlaoding)
+                        {
+                            conv.ImageDownloadFailed = true;
+                        }
+                        dictDownloadingSticker.Remove(key);
+                    }
                 }
 
                 return;
@@ -5364,9 +5396,17 @@ namespace windows_client.View
                         if (convMessage != null)
                         {
                             string key = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
-                            convMessage.ImageDownloadFailed = false;
-                            convMessage.StickerObj.IsStickerDownloaded = true;
-                            convMessage.StickerObj.StickerImageBytes = keyValuePair.Value;
+                            List<ConvMessage> listDownlaoding;
+                            if (dictDownloadingSticker.TryGetValue(key, out listDownlaoding))
+                            {
+                                foreach (ConvMessage conv in listDownlaoding)
+                                {
+                                    conv.ImageDownloadFailed = false;
+                                    conv.StickerObj.IsStickerDownloaded = true;
+                                    conv.StickerObj.StickerImageBytes = keyValuePair.Value;
+                                }
+                                dictDownloadingSticker.Remove(key);
+                            }
                             lruStickerCache.AddObject(key, highResImage);
                         }
                         if (!isDisabled)
@@ -5425,6 +5465,16 @@ namespace windows_client.View
                 if (convMessage != null)
                 {
                     convMessage.ImageDownloadFailed = true;
+                    string key = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
+                    List<ConvMessage> listDownlaoding;
+                    if (dictDownloadingSticker.TryGetValue(key, out listDownlaoding))
+                    {
+                        foreach (ConvMessage conv in listDownlaoding)
+                        {
+                            conv.ImageDownloadFailed = true;
+                        }
+                        dictDownloadingSticker.Remove(key);
+                    }
                 }
             }
         }
