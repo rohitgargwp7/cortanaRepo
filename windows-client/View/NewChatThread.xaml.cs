@@ -5243,6 +5243,10 @@ namespace windows_client.View
             if (category == StickerHelper.CATEGORY_RECENT)
             {
                 stickerPivot.SetLlsSourceList(HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers);
+                if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count == 0)
+                    stickerPivot.ShowNoStickers();
+                else
+                    stickerPivot.ShowStickers();
                 return;
             }
             else
