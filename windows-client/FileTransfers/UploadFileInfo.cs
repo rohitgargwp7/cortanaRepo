@@ -12,13 +12,21 @@ using windows_client.utils;
 
 namespace windows_client.FileTransfers
 {
-    public class FileInfo
+    public class UploadFileInfo
     {
+        public int BytesTransfered
+        {
+            get
+            {
+                return CurrentHeaderPosition == 0 ? 0 : CurrentHeaderPosition - 1;
+            }
+        }
+
         public double PercentageTransfer
         {
             get 
             {
-                return ((double)BytesTransferred / TotalBytes) * 100;
+                return ((double)BytesTransfered / TotalBytes) * 100;
             }
         }
 
@@ -30,71 +38,45 @@ namespace windows_client.FileTransfers
             }
         }
 
-        public string Id;
-        public int BytesTransferred;
+        public int BlockSize = 1024;
+        public int AttemptNumber = 1;
+
+        public string SessionId;
         public int CurrentHeaderPosition;
         public byte[] FileBytes;
         public string ContentType;
         public string FileName;
         public JObject SuccessObj;
-        public string FileKey;
-        public string Message;
 
-        public Attachment.AttachmentState FileState;
+        public UploadState FileState;
 
-        public ConvMessage ConvMessage;
-
-        public FileInfo()
+        public UploadFileInfo()
         {
         }
 
-        public FileInfo(ConvMessage convMessage, byte[] fileBytes)
+        public UploadFileInfo(string key, byte[] fileBytes, string fileName, string contentType)
         {
-            ConvMessage = convMessage;
+            SessionId = key;
             FileBytes = fileBytes;
-            ContentType = convMessage.FileAttachment.ContentType;
-            FileName = ConvMessage.FileAttachment.FileName;
-
-            Id = ConvMessage.Msisdn + "___" + ConvMessage.MessageId;
-
-            if (fileBytes != null)
-                FileBytes = fileBytes;
-            else
-                InitFileBytes();
-        }
-
-        void InitFileBytes()
-        {
-            if (ConvMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                FileBytes = Encoding.UTF8.GetBytes(ConvMessage.MetaDataString);
-            else
-                MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + ConvMessage.Msisdn + "/" + Convert.ToString(ConvMessage.MessageId), out FileBytes);
+            ContentType = contentType;
+            FileName = fileName;
+            FileState = UploadState.NOT_STARTED;
+            FileBytes = fileBytes;
         }
 
         public void Write(BinaryWriter writer)
         {
-            if (Id == null)
+            if (SessionId == null)
                 writer.WriteStringBytes("*@N@*");
             else
-                writer.WriteStringBytes(Id);
+                writer.WriteStringBytes(SessionId);
 
-            writer.Write(BytesTransferred);
             writer.Write(CurrentHeaderPosition);
 
             if (SuccessObj == null)
                 writer.WriteStringBytes("*@N@*");
             else
                 writer.WriteStringBytes(SuccessObj.ToString(Newtonsoft.Json.Formatting.None));
-
-            if (Message == null)
-                writer.WriteStringBytes("*@N@*");
-            else
-                writer.WriteStringBytes(Message);
-
-            if (FileKey == null)
-                writer.WriteStringBytes("*@N@*");
-            else
-                writer.WriteStringBytes(FileKey);
 
             if (FileName == null)
                 writer.WriteStringBytes("*@N@*");
@@ -116,11 +98,10 @@ namespace windows_client.FileTransfers
         public void Read(BinaryReader reader)
         {
             int count = reader.ReadInt32();
-            Id = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-            if (Id == "*@N@*")
-                Id = null;
-            
-            BytesTransferred = reader.ReadInt32();
+            SessionId = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (SessionId == "*@N@*")
+                SessionId = null;
+
             CurrentHeaderPosition = reader.ReadInt32();
             
             count = reader.ReadInt32();
@@ -131,16 +112,6 @@ namespace windows_client.FileTransfers
                 SuccessObj = JObject.Parse(str);
             
             count = reader.ReadInt32();
-            Message = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-            if (Message == "*@N@*")
-                Message = null;
-            
-            count = reader.ReadInt32();
-            FileKey = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-            if (FileKey == "*@N@*")
-                FileKey = null; 
-
-            count = reader.ReadInt32();
             FileName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
             if (FileName == "*@N@*")
                 FileName = null;
@@ -150,10 +121,21 @@ namespace windows_client.FileTransfers
             if (ContentType == "*@N@*")
                 ContentType = null;
 
-            FileState = (Attachment.AttachmentState)reader.ReadInt32();
+            FileState = (UploadState)reader.ReadInt32();
             
             count = reader.ReadInt32();
             FileBytes = count != 0 ? reader.ReadBytes(count) : FileBytes = null;
         }
+    }
+
+    public enum UploadState
+    {
+        NOT_STARTED,
+        FAILED,  
+        STARTED,
+        COMPLETED,
+        CANCELED,
+        PAUSED,
+        MANUAL_PAUSED
     }
 }

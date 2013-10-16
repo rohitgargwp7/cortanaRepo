@@ -475,6 +475,8 @@ namespace windows_client
                     {
                         PushHelper.Instance.registerPushnotifications();
                     }
+
+                    FileTransfers.FileUploader.Instance.StartUpload();
                 }
                 else
                 {

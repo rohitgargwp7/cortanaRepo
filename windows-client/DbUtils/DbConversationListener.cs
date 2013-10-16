@@ -138,7 +138,7 @@ namespace windows_client.DbUtils
                         MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
                                 Convert.ToString(convMessage.MessageId), fileBytes);
 
-                    FileTransfers.FileUploader.Instance.Load(convMessage, fileBytes);
+                    FileTransfers.FileUploader.Instance.Upload(convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes);
                 });
             }
             #endregion
@@ -170,7 +170,7 @@ namespace windows_client.DbUtils
                         MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
                                 Convert.ToString(convMessage.MessageId), fileBytes);
 
-                    FileTransfers.FileUploader.Instance.Load(convMessage, fileBytes);
+                    FileTransfers.FileUploader.Instance.Upload(convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes);
                 });
             }
             #endregion
