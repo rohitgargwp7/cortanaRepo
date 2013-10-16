@@ -2471,15 +2471,25 @@ namespace windows_client.View
                             convMessage.FileAttachment = attachments[convMessage.MessageId];
                             attachments.Remove(convMessage.MessageId);
 
-                            if (convMessage.IsSent && !App.appSettings.Contains(App.AUTO_UPLOAD_SETTING))
+                            if (convMessage.IsSent)
                             {
-                                if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED
-                                    || convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED
-                                || convMessage.FileAttachment.FileState == Attachment.AttachmentState.PAUSED)
+                                if (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING))
+                                {
+                                    if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED
+                                        || convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED
+                                    || convMessage.FileAttachment.FileState == Attachment.AttachmentState.PAUSED)
+                                    {
+                                        UploadFileInfo fInfo;
+                                        if (FileUploader.Instance.UploadMap.TryGetValue(convMessage.MessageId.ToString(), out fInfo))
+                                            UpdateUploadProgresInConvMessage(fInfo, convMessage);
+                                    }
+                                }
+                                else
                                 {
                                     UploadFileInfo fInfo;
                                     if (FileUploader.Instance.UploadMap.TryGetValue(convMessage.MessageId.ToString(), out fInfo))
                                         UpdateUploadProgresInConvMessage(fInfo, convMessage);
+
                                 }
                             }
                         }

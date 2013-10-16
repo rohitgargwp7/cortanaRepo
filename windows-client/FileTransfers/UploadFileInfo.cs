@@ -103,14 +103,14 @@ namespace windows_client.FileTransfers
                 SessionId = null;
 
             CurrentHeaderPosition = reader.ReadInt32();
-            
+
             count = reader.ReadInt32();
             var str = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
             if (str == "*@N@*")
                 SuccessObj = null;
             else
                 SuccessObj = JObject.Parse(str);
-            
+
             count = reader.ReadInt32();
             FileName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
             if (FileName == "*@N@*")
@@ -122,7 +122,10 @@ namespace windows_client.FileTransfers
                 ContentType = null;
 
             FileState = (UploadState)reader.ReadInt32();
-            
+
+            if (App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileState == UploadState.STARTED)
+                FileState = UploadState.PAUSED;
+
             count = reader.ReadInt32();
             FileBytes = count != 0 ? reader.ReadBytes(count) : FileBytes = null;
         }
