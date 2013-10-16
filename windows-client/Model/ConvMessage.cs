@@ -564,8 +564,7 @@ namespace windows_client.Model
             {
                 if (_stickerObj != null)
                 {
-                    if (_stickerObj.StickerImage != null)
-                        return _stickerObj.StickerImage;
+                    return _stickerObj.StickerImage;
                 }
 
                 if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
@@ -879,7 +878,7 @@ namespace windows_client.Model
             {
                 if (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID))
                 {
-                    if (_stickerObj != null && (_stickerObj.StickerImage != null && !imageDownloadFailed))
+                    if (_stickerObj != null && _stickerObj.IsStickerDownloaded && !imageDownloadFailed)
                         return Visibility.Visible;
                     else
                         return Visibility.Collapsed;
@@ -906,7 +905,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (StickerObj != null && StickerObj.StickerImage != null)
+                if (StickerObj != null && StickerObj.IsStickerDownloaded)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
@@ -917,7 +916,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (StickerObj != null && StickerObj.StickerImage == null && !imageDownloadFailed)
+                if (StickerObj != null && !StickerObj.IsStickerDownloaded && !imageDownloadFailed)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
@@ -928,7 +927,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (StickerObj != null && StickerObj.StickerImage == null && imageDownloadFailed)
+                if (StickerObj != null && !StickerObj.IsStickerDownloaded && imageDownloadFailed)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
@@ -1778,6 +1777,5 @@ namespace windows_client.Model
                     break;
             }
         }
-
     }
 }

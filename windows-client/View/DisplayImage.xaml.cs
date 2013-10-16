@@ -31,80 +31,113 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            //TODO - use constants rather hard coded strings - MG
-            if (PhoneApplicationService.Current.State.ContainsKey("objectForFileTransfer"))
+
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
-                object[] fileTapped = (object[])PhoneApplicationService.Current.State["objectForFileTransfer"];
-                long messsageId = (long)fileTapped[0];
-                msisdn = (string)fileTapped[1];
-                string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(messsageId);
-                byte[] filebytes;
-                MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
-                this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(filebytes);
-            }
-            else if (PhoneApplicationService.Current.State.ContainsKey("displayProfilePic"))
-            {
-                string fileName;
-                object[] profilePicTapped = (object[])PhoneApplicationService.Current.State["displayProfilePic"];
-                msisdn = (string)profilePicTapped[0];
-                string filePath = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
-                //check if image is already stored
-                byte[] fullViewBytes = MiscDBUtil.getThumbNailForMsisdn(filePath);
-                if (fullViewBytes != null && fullViewBytes.Length > 0)
+                //TODO - use constants rather hard coded strings - MG
+                if (PhoneApplicationService.Current.State.ContainsKey("objectForFileTransfer"))
                 {
-                    this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewBytes);
+                    object[] fileTapped = (object[])PhoneApplicationService.Current.State["objectForFileTransfer"];
+                    long messsageId = (long)fileTapped[0];
+                    msisdn = (string)fileTapped[1];
+                    string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(messsageId);
+                    byte[] filebytes;
+                    MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
+                    this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(filebytes);
                 }
-                else if (MiscDBUtil.hasCustomProfileImage(msisdn))
+                else if (PhoneApplicationService.Current.State.ContainsKey("displayProfilePic"))
                 {
-                    fileName = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
-                    loadingProgress.Opacity = 1;
-                    if (!Utils.isGroupConversation(msisdn))
+                    string fileName;
+                    object[] profilePicTapped = (object[])PhoneApplicationService.Current.State["displayProfilePic"];
+                    msisdn = (string)profilePicTapped[0];
+                    string filePath = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
+                    //check if image is already stored
+                    byte[] fullViewBytes = MiscDBUtil.getThumbNailForMsisdn(filePath);
+                    if (fullViewBytes != null && fullViewBytes.Length > 0)
                     {
-                        AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + msisdn + "?fullsize=true", getProfilePic_Callback, true, fileName);
+                        this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewBytes);
                     }
-                    else
+                    else if (MiscDBUtil.hasCustomProfileImage(msisdn))
                     {
-                        AccountUtils.createGetRequest(AccountUtils.BASE + "/group/" + msisdn + "/avatar?fullsize=true", getProfilePic_Callback, true, fileName);
-                    }
-                }
-                else
-                {
-                    fileName = UI_Utils.Instance.getDefaultAvatarFileName(msisdn,
-                        Utils.isGroupConversation(msisdn));
-                    byte[] defaultImageBytes = MiscDBUtil.getThumbNailForMsisdn(fileName);
-                    if (defaultImageBytes == null || defaultImageBytes.Length == 0)
-                    {
+                        fileName = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
                         loadingProgress.Opacity = 1;
-                        AccountUtils.createGetRequest(AccountUtils.AVATAR_BASE + "/static/avatars/" + fileName, getProfilePic_Callback, false, fileName);
+                        if (!Utils.isGroupConversation(msisdn))
+                            AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + msisdn + "?fullsize=true", getProfilePic_Callback, true, fileName);
+                        else
+                            AccountUtils.createGetRequest(AccountUtils.BASE + "/group/" + msisdn + "/avatar?fullsize=true", getProfilePic_Callback, true, fileName);
                     }
                     else
                     {
-                        this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(defaultImageBytes);
+                        fileName = UI_Utils.Instance.getDefaultAvatarFileName(msisdn,
+                            Utils.isGroupConversation(msisdn));
+                        byte[] defaultImageBytes = MiscDBUtil.getThumbNailForMsisdn(fileName);
+                        if (defaultImageBytes == null || defaultImageBytes.Length == 0)
+                        {
+                            loadingProgress.Opacity = 1;
+                            AccountUtils.createGetRequest(AccountUtils.AVATAR_BASE + "/static/avatars/" + fileName, getProfilePic_Callback, false, fileName);
+                        }
+                        else
+                        {
+                            this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(defaultImageBytes);
+                        }
+                    }
+                }
+                else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IMAGE_TO_DISPLAY))
+                {
+                    if (ProTipHelper.CurrentProTip != null)
+                    {
+                        this.FileImage.Source = ProTipHelper.CurrentProTip.TipImage;
+                        if (ProTipHelper.CurrentProTip.Base64Image != null)
+                        {
+                            byte[] fullViewBytes = ProTipHelper.Instance.getProTipImage();
+
+                            if (fullViewBytes != null && fullViewBytes.Length > 0)
+                                this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewBytes);
+                            else
+                            {
+                                loadingProgress.Opacity = 1;
+                                AccountUtils.createGetRequest(ProTipHelper.CurrentProTip.ImageUrl, getProTipPicFromHikeServer_Callback, true, Utils.ConvertUrlToFileName(ProTipHelper.CurrentProTip.ImageUrl));
+                            }
+                        }
+                    }
+                }
+                else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.STATUS_IMAGE_TO_DISPLAY))
+                {
+                    string[] statusImageInfo = (string[])PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY];
+                    byte[] statusImageBytes = null;
+                    bool isThumbnail;
+                    MiscDBUtil.getStatusUpdateImage(statusImageInfo[0], statusImageInfo[1], out statusImageBytes, out isThumbnail);
+                    this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(statusImageBytes);
+                    if (isThumbnail)
+                    {
+                        string msisdn = statusImageInfo[0].Replace(":", "_");
+                        string serverId = statusImageInfo[1].Replace(":", "_");
+                        string fullFilePath = MiscDBUtil.STATUS_UPDATE_LARGE + "/" + msisdn + "/" + serverId;
+                        loadingProgress.Opacity = 1;
+                        AccountUtils.createGetRequest(AccountUtils.BASE + "/user/status/" + statusImageInfo[1] + "?only_image=true",
+                            onStatusImageDownloaded, true, fullFilePath);
                     }
                 }
             }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IMAGE_TO_DISPLAY))
+        }
+
+        public void getProTipPicFromHikeServer_Callback(byte[] fullBytes, object fName)
+        {
+            try
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.IMAGE_TO_DISPLAY);
-             
-                if (ProTipHelper.CurrentProTip != null)
-                    this.FileImage.Source = ProTipHelper.CurrentProTip.TipImage;
-            }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.STATUS_IMAGE_TO_DISPLAY))
-            {
-                string[] statusImageInfo = (string[])PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY];
-                byte[] statusImageBytes = null;
-                bool isThumbnail;
-                MiscDBUtil.getStatusUpdateImage(statusImageInfo[0], statusImageInfo[1], out statusImageBytes, out isThumbnail);
-                this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(statusImageBytes);
-                if (isThumbnail)
+                if (fullBytes != null && fullBytes.Length > 0)
+                    ProTipHelper.Instance.saveProTipImage(fullBytes);
+
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    string msisdn = statusImageInfo[0].Replace(":", "_");
-                    string serverId = statusImageInfo[1].Replace(":", "_");
-                    string fullFilePath = MiscDBUtil.STATUS_UPDATE_LARGE + "/" + msisdn + "/" + serverId;
-                    AccountUtils.createGetRequest(AccountUtils.BASE + "/user/status/" + statusImageInfo[1] + "?only_image=true",
-                        onStatusImageDownloaded, true, fullFilePath);
-                }
+                    loadingProgress.Opacity = 0;
+                    if (fullBytes != null && fullBytes.Length > 0)
+                        this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullBytes);
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }
         }
 

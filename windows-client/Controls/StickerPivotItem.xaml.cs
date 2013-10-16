@@ -12,6 +12,7 @@ using windows_client.utils;
 using windows_client.ViewModel;
 using System.Windows.Media;
 using System.Collections;
+using System.Windows.Controls.Primitives;
 
 namespace windows_client.Controls
 {
@@ -23,14 +24,19 @@ namespace windows_client.Controls
         {
             InitializeComponent();
             llsStickerCategory.Tap += Stickers_Tap;
-            llsStickerCategory.ItemsSource = listStickers;
+            //  llsStickerCategory.ItemsSource = listStickers;item source will be set when that particular category would be tapped
             _pivotIndex = pivotIndex;
             _category = category;
         }
 
+        public void SetLlsSource(ObservableCollection<Sticker> listStickers)
+        {
+            llsStickerCategory.ItemsSource = listStickers;
+        }
+
         private void Stickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            ListBox llsStickerCategory = (sender as ListBox);
+            LongListSelector llsStickerCategory = (sender as LongListSelector);
             Sticker sticker = llsStickerCategory.SelectedItem as Sticker;
             llsStickerCategory.SelectedItem = null;
             if (sticker == null)
@@ -80,7 +86,7 @@ namespace windows_client.Controls
             stLoading.Visibility = Visibility.Collapsed;
             stNoStickers.Visibility = Visibility.Collapsed;
             stRetry.Visibility = Visibility.Visible;
-            if (llsStickerCategory.Items != null && llsStickerCategory.Items.Count > 0)
+            if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0)
                 btnClose.Visibility = Visibility.Visible;
             else
                 btnClose.Visibility = Visibility.Collapsed;
@@ -88,7 +94,7 @@ namespace windows_client.Controls
         }
         private void RetryStickersTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (llsStickerCategory.Items != null && llsStickerCategory.Items.Count > 0)
+            if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0)
             {
                 ShowStickers();
                 ShowHidMoreProgreesBar(true);
@@ -117,21 +123,27 @@ namespace windows_client.Controls
             llsStickerCategory.Visibility = Visibility.Visible;
         }
 
-        private void vgroup_CurrentStateChanging(object sender, VisualStateChangedEventArgs e)
+        ScrollBar vScrollBar = null;
+        private void vScrollBar1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (e.NewState.Name == "CompressionBottom")
+            vScrollBar = sender as ScrollBar;
+            if (vScrollBar != null)
             {
-                StickerCategory stickerCategory;
-                if (App.newChatThreadPage != null && (stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_category)) != null && stickerCategory.HasMoreStickers && !stickerCategory.IsDownLoading)
+                if ((vScrollBar.Maximum - vScrollBar.Value) < 100 && llsStickerCategory.ManipulationState != ManipulationState.Idle)
                 {
-                    if (llsStickerCategory.ItemsSource != null && llsStickerCategory.Items.Count > 0)
+                    StickerCategory stickerCategory;
+                    //if download message is shown that means user has not yet requested download
+                    if (App.newChatThreadPage != null && (stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_category)) != null && !stickerCategory.ShowDownloadMessage && stickerCategory.HasMoreStickers && !stickerCategory.IsDownLoading)
                     {
-                        ShowStickers();
-                        ShowHidMoreProgreesBar(true);
+                        if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0)
+                        {
+                            ShowStickers();
+                            ShowHidMoreProgreesBar(true);
+                        }
+                        else
+                            ShowLoadingStickers();
+                        App.newChatThreadPage.PostRequestForBatchStickers(stickerCategory);
                     }
-                    else
-                        ShowLoadingStickers();
-                    App.newChatThreadPage.PostRequestForBatchStickers(stickerCategory);
                 }
             }
         }

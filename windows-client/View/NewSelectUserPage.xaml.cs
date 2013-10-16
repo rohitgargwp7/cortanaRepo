@@ -44,7 +44,7 @@ namespace windows_client.View
         private List<Group<ContactInfo>> defaultJumpList = null;
         private string charsEntered;
         ContactInfo contactInfoObj;
-        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 20;
+        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 50;
         private int defaultGroupmembers = 0;
         private ProgressIndicatorControl progressIndicator;
         private StringBuilder stringBuilderForContactNames = new StringBuilder();
@@ -247,24 +247,28 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            // Get a dictionary of query string keys and values.
-            IDictionary<string, string> queryStrings = this.NavigationContext.QueryString;
 
-            // Ensure that there is at least one key in the query string, and check 
-            // whether the "FileId" key is present.
-            if (queryStrings.ContainsKey("FileId"))
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
-                PhoneApplicationService.Current.State["SharePicker"] = queryStrings["FileId"];
-                queryStrings.Clear();
-                txtChat.Text = AppResources.Share_With_Txt;
-            }
+                // Get a dictionary of query string keys and values.
+                IDictionary<string, string> queryStrings = this.NavigationContext.QueryString;
 
-            if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
-            {
-                while (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry();
+                // Ensure that there is at least one key in the query string, and check 
+                // whether the "FileId" key is present.
+                if (queryStrings.ContainsKey("FileId"))
+                {
+                    PhoneApplicationService.Current.State["SharePicker"] = queryStrings["FileId"];
+                    queryStrings.Clear();
+                    txtChat.Text = AppResources.Share_With_Txt;
+                }
 
-                App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
+                if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
+                {
+                    while (NavigationService.CanGoBack)
+                        NavigationService.RemoveBackEntry();
+
+                    App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
+                }
             }
         }
 
@@ -821,6 +825,8 @@ namespace windows_client.View
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
                 contact.Msisdn = Utils.NormalizeNumber(contact.Name);
+                if (contact.Msisdn == App.MSISDN)
+                    return;
                 contact = GetContactIfExists(contact);
                 contact.Name = contact.Msisdn;
             }
@@ -1037,7 +1043,7 @@ namespace windows_client.View
 
                 foreach (string id in ContactUtils.hike_contactsMap.Keys)
                 {
-                    ContactInfo cinfo=ContactUtils.hike_contactsMap[id][0];
+                    ContactInfo cinfo = ContactUtils.hike_contactsMap[id][0];
                     ContactInfo.DelContacts dCn = new ContactInfo.DelContacts(id, cinfo.Msisdn);
                     hikeIds.Add(dCn);
                     deletedContacts.Add(cinfo);
@@ -1079,7 +1085,7 @@ namespace windows_client.View
                 /* Delete ids from hike user DB */
                 UsersTableUtils.deleteMultipleRows(hikeIds); // this will delete all rows in HikeUser DB that are not in Addressbook.
             }
-            
+
             if (updatedContacts != null && updatedContacts.Count > 0)
             {
                 UsersTableUtils.updateContacts(updatedContacts);
@@ -1300,7 +1306,7 @@ namespace windows_client.View
                 return;
             long time = TimeUtils.getCurrentTimeStamp();
             //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-            ConvMessage convMessage = new ConvMessage(Utils.GetRandomInviteString(), ci.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
+            ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, ci.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = true;
             convMessage.IsInvite = true;
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));

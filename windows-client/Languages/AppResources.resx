@@ -764,27 +764,14 @@
     <value>To continue using hike, an update is required.</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Hi!
+    <value>Hi, 
 
+I just got the awesome new hike messenger, it's faster, simpler and even more beautiful!
+Check out their hilarious new stickers and you'll surely never send another plain boring message!
 
+hike also gives you the choice of Privacy with Last Seen so that you can keep you close friends closer.
 
-I started using hike, a simple beautiful messaging app that's absolutely free.
-
-
-
-hike lets you send free messages to your friends and family! With hike, you can message friends that are on hike and also those who aren't on hike! You'll never have to use another messaging app again. Better yet, it's absolutely FREE!
-
-
-
-hike comes with some hilarious stickers and emoticons. You can also post Status Updates to your friends! Think of it like BBM but much, much better!
-
-
-
-Get it now and say good bye to plain boring SMS.
-
-
-
-Get hike: http://get.hike.in</value>
+Download it now http://hike.in and join the fun!</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -1783,16 +1770,6 @@ Get hike: http://get.hike.in</value>
   <data name="Installed_Txt" xml:space="preserve">
     <value>Installed</value>
   </data>
-  <data name="sms_invite_message_1" xml:space="preserve">
-    <value>Hey, I'm using hike, and it has all these awesome stickers and emoticons which I want to share with you. Get it now http://hike.in/</value>
-  </data>
-  <data name="sms_invite_message_2" xml:space="preserve">
-    <value>Hey, I'm using hike, which lets us show our "last seen" status only to the friends we choose, and not everyone. Get it now http://hike.in/</value>
-    <comment>Constants General Text</comment>
-  </data>
-  <data name="sms_invite_message_3" xml:space="preserve">
-    <value>Hey, I'm using hike; it comes with a cool Walkie-Talkie which lets me send you free voice messages. Get it now http://hike.in/</value>
-  </data>
   <data name="Last_Seen_Today_At" xml:space="preserve">
     <value>last seen today at {0}</value>
   </data>
@@ -1965,5 +1942,8 @@ Get hike: http://get.hike.in</value>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
     <value>Earn free SMS for every friend who joins hike because of you</value>
+  </data>
+  <data name="sms_invite_message" xml:space="preserve">
+    <value>I just got the new hike messenger! It's simpler, faster with hilarious new stickers! Download it now and lets chat for free http://hike.in</value>
   </data>
 </root>

@@ -76,8 +76,8 @@ namespace windows_client.View
         private void Unlink_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (!canGoBack)
-                return; 
-            
+                return;
+
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
@@ -103,14 +103,14 @@ namespace windows_client.View
 
         private void unlinkAccountResponse_Callback(JObject obj)
         {
-            
+
         }
 
         private void Delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (!canGoBack)
-                return; 
-            
+                return;
+
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBox.Show(AppResources.No_Network_Txt, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
@@ -194,7 +194,7 @@ namespace windows_client.View
             var fb = new FacebookClient();
             var parameters = new Dictionary<string, object>();
             parameters["access_token"] = (string)App.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
-            parameters["next"] = "https://www.facebook.com/connect/login_success.html";
+            parameters["next"] = "https://m.facebook.com/connect/login_success.html";
             var logoutUrl = fb.GetLogoutUrl(parameters);
             Deployment.Current.Dispatcher.BeginInvoke(() =>
               {

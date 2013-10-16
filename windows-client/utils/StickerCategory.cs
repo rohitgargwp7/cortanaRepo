@@ -37,6 +37,9 @@ namespace windows_client.utils
             }
         }
 
+        /// <summary>
+        /// currenty request has been sent to server for download
+        /// </summary>
         public bool IsDownLoading
         {
             get
@@ -49,6 +52,9 @@ namespace windows_client.utils
             }
         }
 
+        /// <summary>
+        /// shows server has more stickers for download
+        /// </summary>
         public bool HasMoreStickers
         {
             get
@@ -61,6 +67,9 @@ namespace windows_client.utils
             }
         }
 
+        /// <summary>
+        /// to show stickers download overlay
+        /// </summary>
         public bool ShowDownloadMessage
         {
             get
@@ -73,6 +82,9 @@ namespace windows_client.utils
             }
         }
 
+        /// <summary>
+        /// shows category has newly downloaded stickers
+        /// </summary>
         public bool HasNewStickers
         {
             get
@@ -91,6 +103,10 @@ namespace windows_client.utils
             {
                 return _listStickers;
             }
+            set
+            {
+                _listStickers = value;
+            }
         }
         public StickerCategory(string category, bool hasMoreStickers)
             : this(category)
@@ -104,55 +120,6 @@ namespace windows_client.utils
             _listStickers = new ObservableCollection<Sticker>();
         }
 
-
-        public void CreateFromFile()
-        {
-            lock (readWriteLock)
-            {
-                try
-                {
-                    Dictionary<string, Byte[]> dictImageBytes = new Dictionary<string, Byte[]>();
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
-                    {
-                        string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + _category;
-                        string[] files = store.GetFileNames(folder + "\\*");
-                        if (files != null)
-                            foreach (string stickerId in files)
-                            {
-                                string fileName = folder + "\\" + stickerId;
-                                using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
-                                {
-                                    using (var reader = new BinaryReader(file))
-                                    {
-                                        if (stickerId == METADATA)
-                                        {
-                                            _hasMoreStickers = reader.ReadBoolean();
-                                            _showDownloadMessage = reader.ReadBoolean();
-                                            _hasNewStickers = reader.ReadBoolean();
-                                        }
-                                        else
-                                        {
-                                            int imageBytesCount = reader.ReadInt32();
-                                            dictImageBytes.Add(stickerId, reader.ReadBytes(imageBytesCount));
-                                        }
-                                    }
-                                }
-                            }
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                foreach (string stickerId in dictImageBytes.Keys)
-                                {
-                                    this._listStickers.Add(new Sticker(_category, stickerId, UI_Utils.Instance.createImageFromBytes(dictImageBytes[stickerId])));
-                                }
-                            });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("StickerCategory::CreateFromFile, Exception:" + ex.Message);
-                }
-            }
-        }
 
         public void WriteHighResToFile(List<KeyValuePair<string, Byte[]>> listStickersImageBytes)
         {
@@ -327,13 +294,13 @@ namespace windows_client.utils
             }
         }
 
-        public static BitmapImage GetHighResolutionSticker(string stickerId, string category)
+        public static BitmapImage GetHighResolutionSticker(Sticker sticker)
         {
-            if (string.IsNullOrEmpty(stickerId) || string.IsNullOrEmpty(category))
+            if (sticker == null || string.IsNullOrEmpty(sticker.Id) || string.IsNullOrEmpty(sticker.Category))
                 return null;
 
-            if ((category == StickerHelper.CATEGORY_DOGGY && StickerHelper.arrayDefaultDoggyStickers.Contains(stickerId))
-                || (category == StickerHelper.CATEGORY_HUMANOID && StickerHelper.arrayDefaultHumanoidStickers.Contains(stickerId)))
+            if ((sticker.Category == StickerHelper.CATEGORY_DOGGY && StickerHelper.arrayDefaultDoggyStickers.Contains(sticker.Id))
+                || (sticker.Category == StickerHelper.CATEGORY_HUMANOID && StickerHelper.arrayDefaultHumanoidStickers.Contains(sticker.Id)))
             {
                 string url;
                 if (Utils.CurrentResolution == Utils.Resolutions.WXGA)
@@ -342,7 +309,7 @@ namespace windows_client.utils
                     url = StickerHelper._stickerWVGAPath;
                 else
                     url = StickerHelper._sticker720path;
-                return new BitmapImage(new Uri(string.Format(url, category, stickerId), UriKind.Relative));
+                return new BitmapImage(new Uri(string.Format(url, sticker.Category, sticker.Id), UriKind.Relative));
             }
 
             try
@@ -351,7 +318,7 @@ namespace windows_client.utils
                 {
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
-                        string fileName = StickerCategory.STICKERS_DIR + "\\" + StickerCategory.HIGH_RESOLUTION_DIR + "\\" + category + "\\" + stickerId;
+                        string fileName = StickerCategory.STICKERS_DIR + "\\" + StickerCategory.HIGH_RESOLUTION_DIR + "\\" + sticker.Category + "\\" + sticker.Id;
                         if (store.FileExists(fileName))
                         {
                             using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
@@ -359,8 +326,8 @@ namespace windows_client.utils
                                 using (var reader = new BinaryReader(file))
                                 {
                                     int imageBytesCount = reader.ReadInt32();
-                                    Byte[] imageBytes = reader.ReadBytes(imageBytesCount);
-                                    return UI_Utils.Instance.createImageFromBytes(imageBytes);
+                                    sticker.StickerImageBytes = reader.ReadBytes(imageBytesCount);
+                                    return UI_Utils.Instance.createImageFromBytes(sticker.StickerImageBytes);
                                 }
                             }
                         }
@@ -414,8 +381,6 @@ namespace windows_client.utils
                         if (folders != null)
                             foreach (string category in folders)
                             {
-                                bool hasMetaData = false;
-                                List<KeyValuePair<string, Byte[]>> listImageBytes = new List<KeyValuePair<string, Byte[]>>();
                                 StickerCategory stickerCategory = new StickerCategory(category);
                                 string[] files1 = store.GetFileNames(folder + "\\" + category + "\\*");
                                 IEnumerable<string> files = files1.OrderBy(x => x);
@@ -435,12 +400,12 @@ namespace windows_client.utils
                                                         stickerCategory._hasMoreStickers = reader.ReadBoolean();
                                                         stickerCategory._showDownloadMessage = reader.ReadBoolean();
                                                         stickerCategory._hasNewStickers = reader.ReadBoolean();
-                                                        hasMetaData = true;
                                                     }
                                                     else
                                                     {
                                                         int imageBytesCount = reader.ReadInt32();
-                                                        listImageBytes.Add(new KeyValuePair<string, Byte[]>(stickerId, reader.ReadBytes(imageBytesCount)));
+                                                        Byte[] imageBytes = reader.ReadBytes(imageBytesCount);
+                                                        stickerCategory._listStickers.Add(new Sticker(category, stickerId, imageBytes, false));
                                                     }
                                                 }
                                                 catch (Exception ex)
@@ -450,14 +415,6 @@ namespace windows_client.utils
                                             }
                                         }
                                     }
-                                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                                {
-                                    foreach (KeyValuePair<string, Byte[]> keyValuePair in listImageBytes)
-                                    {
-
-                                        stickerCategory._listStickers.Add(new Sticker(category, keyValuePair.Key, UI_Utils.Instance.createImageFromBytes(keyValuePair.Value)));
-                                    }
-                                });
                                 listStickerCategory.Add(stickerCategory);
                             }
                     }
