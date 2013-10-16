@@ -1504,7 +1504,26 @@ namespace windows_client.utils
             }
             return bitmapImage;
         }
-       
+        public BitmapImage createImageFromBytes(byte[] imagebytes, BitmapImage bitmapImage)
+        {
+            if (imagebytes == null || imagebytes.Length == 0)
+                return null;
+            try
+            {
+                using (var memStream = new MemoryStream(imagebytes))
+                {
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    if (bitmapImage == null)
+                        bitmapImage = new BitmapImage();
+                    bitmapImage.SetSource(memStream);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
+            }
+            return bitmapImage;
+        }
         /// <summary>
         /// Call this function only if you want to cache the Bitmap Image
         /// </summary>

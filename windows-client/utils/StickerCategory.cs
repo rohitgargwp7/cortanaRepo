@@ -403,9 +403,7 @@ namespace windows_client.utils
                                                     }
                                                     else
                                                     {
-                                                        int imageBytesCount = reader.ReadInt32();
-                                                        Byte[] imageBytes = reader.ReadBytes(imageBytesCount);
-                                                        stickerCategory._listStickers.Add(new Sticker(category, stickerId, imageBytes, false));
+                                                        stickerCategory._listStickers.Add(new Sticker(category, stickerId, null, false));
                                                     }
                                                 }
                                                 catch (Exception ex)
