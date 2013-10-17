@@ -235,7 +235,7 @@ namespace windows_client.View
             _lastSeenHelper = new LastSeenHelper();
             _lastSeenHelper.UpdateLastSeen += LastSeenResponseReceived;
 
-            FileTransfers.FileUploader.Instance.UploadUpdated += Instance_UploadUpdated;
+            FileTransfers.FileUploader.Instance.UpdateFileUploadStatusOnUI += FileUploadStatusUpdated;
 
             onlineStatus.Source = UI_Utils.Instance.LastSeenClockImage;
 
@@ -260,7 +260,7 @@ namespace windows_client.View
             _currentOrientation = this.Orientation;
         }
 
-        void Instance_UploadUpdated(object sender, UploadCompletedArgs e)
+        void FileUploadStatusUpdated(object sender, UploadCompletedArgs e)
         {
             UploadFileInfo fInfo = e.FileInfo;
             var id = Convert.ToInt64(fInfo.SessionId);
@@ -281,26 +281,26 @@ namespace windows_client.View
 
             Attachment.AttachmentState state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
 
-            if (fInfo.FileState == UploadState.CANCELED)
+            if (fInfo.FileState == UploadFileState.CANCELED)
                 state = Attachment.AttachmentState.CANCELED;
-            else if (fInfo.FileState == UploadState.COMPLETED)
+            else if (fInfo.FileState == UploadFileState.COMPLETED)
                 state = Attachment.AttachmentState.COMPLETED;
-            else if (fInfo.FileState == UploadState.PAUSED)
+            else if (fInfo.FileState == UploadFileState.PAUSED)
                 state = Attachment.AttachmentState.PAUSED;
-            else if (fInfo.FileState == UploadState.MANUAL_PAUSED)
+            else if (fInfo.FileState == UploadFileState.MANUAL_PAUSED)
                 state = Attachment.AttachmentState.MANUAL_PAUSED;
-            else if (fInfo.FileState == UploadState.FAILED)
+            else if (fInfo.FileState == UploadFileState.FAILED)
                 state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
-            else if (fInfo.FileState == UploadState.STARTED)
+            else if (fInfo.FileState == UploadFileState.STARTED)
                 state = Attachment.AttachmentState.STARTED;
-            else if (fInfo.FileState == UploadState.NOT_STARTED)
+            else if (fInfo.FileState == UploadFileState.NOT_STARTED)
                 state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
 
             convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
             convMessage.SetAttachmentState(state);
             MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
-            if (fInfo.FileState == UploadState.COMPLETED)
+            if (fInfo.FileState == UploadFileState.COMPLETED)
             {
                 JObject data = fInfo.SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
                 var fileKey = data[HikeConstants.FILE_KEY].ToString();
@@ -334,7 +334,7 @@ namespace windows_client.View
                 FileUploader.Instance.UploadMap.Remove(fInfo.SessionId);
                 FileUploader.Instance.DeleteUploadData(fInfo.SessionId);
             }
-            else if (fInfo.FileState == UploadState.FAILED)
+            else if (fInfo.FileState == UploadFileState.FAILED)
             {
                 convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
                 NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
@@ -2473,24 +2473,9 @@ namespace windows_client.View
 
                             if (convMessage.IsSent)
                             {
-                                if (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING))
-                                {
-                                    if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED
-                                        || convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED
-                                    || convMessage.FileAttachment.FileState == Attachment.AttachmentState.PAUSED)
-                                    {
-                                        UploadFileInfo fInfo;
-                                        if (FileUploader.Instance.UploadMap.TryGetValue(convMessage.MessageId.ToString(), out fInfo))
-                                            UpdateUploadProgresInConvMessage(fInfo, convMessage);
-                                    }
-                                }
-                                else
-                                {
-                                    UploadFileInfo fInfo;
-                                    if (FileUploader.Instance.UploadMap.TryGetValue(convMessage.MessageId.ToString(), out fInfo))
-                                        UpdateUploadProgresInConvMessage(fInfo, convMessage);
-
-                                }
+                                UploadFileInfo fInfo;
+                                if (FileUploader.Instance.UploadMap.TryGetValue(convMessage.MessageId.ToString(), out fInfo))
+                                    UpdateUploadProgresInConvMessage(fInfo, convMessage);
                             }
                         }
                         if (convMessage.FileAttachment == null)

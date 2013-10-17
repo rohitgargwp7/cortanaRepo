@@ -68,7 +68,7 @@ namespace windows_client.FileTransfers
             UploadFileInfo fInfo = null;
             if (UploadMap.TryGetValue(key, out fInfo))
             {
-                fInfo.FileState = UploadState.STARTED;
+                fInfo.FileState = UploadFileState.STARTED;
 
                 if (!Sources.Contains(fInfo))
                     Sources.Enqueue(fInfo);
@@ -76,8 +76,8 @@ namespace windows_client.FileTransfers
                 SaveUploadData(fInfo);
                 StartUpload();
 
-                if (UploadUpdated != null)
-                    UploadUpdated(null, new UploadCompletedArgs(fInfo));
+                if (UpdateFileUploadStatusOnUI != null)
+                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fInfo));
             }
         }
 
@@ -87,7 +87,7 @@ namespace windows_client.FileTransfers
             {
                 UploadFileInfo fileInfo = Sources.Dequeue();
 
-                if (fileInfo.FileState == UploadState.CANCELED)
+                if (fileInfo.FileState == UploadFileState.CANCELED)
                 {
                     UploadMap.Remove(fileInfo.SessionId);
                     DeleteUploadData(fileInfo.SessionId);
@@ -96,12 +96,13 @@ namespace windows_client.FileTransfers
                 }
                 else if (fileInfo.BytesTransfered == fileInfo.TotalBytes - 1)
                 {
-                    fileInfo.FileState = UploadState.COMPLETED;
+                    fileInfo.FileState = UploadFileState.COMPLETED;
+                    SaveUploadData(fileInfo);
                  
-                    if (UploadUpdated != null)
-                        UploadUpdated(null, new UploadCompletedArgs(fileInfo));
+                    if (UpdateFileUploadStatusOnUI != null)
+                        UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
                 }
-                else if (fileInfo.FileState != UploadState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) || fileInfo.FileState != UploadState.PAUSED))
+                else if (fileInfo.FileState != UploadFileState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) || fileInfo.FileState != UploadFileState.PAUSED))
                 {
                     if (!Upload(fileInfo))
                         Sources.Enqueue(fileInfo);
@@ -118,11 +119,11 @@ namespace windows_client.FileTransfers
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                fileInfo.FileState = UploadState.FAILED;
+                fileInfo.FileState = UploadFileState.FAILED;
                 SaveUploadData(fileInfo);
 
-                if (UploadUpdated != null)
-                    UploadUpdated(null, new UploadCompletedArgs(fileInfo));
+                if (UpdateFileUploadStatusOnUI != null)
+                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
                 
                 return true;
             }
@@ -178,7 +179,7 @@ namespace windows_client.FileTransfers
 
             if (UploadMap.TryGetValue(id, out fInfo))
             {
-                fInfo.FileState = UploadState.MANUAL_PAUSED;
+                fInfo.FileState = UploadFileState.MANUAL_PAUSED;
                 SaveUploadData(fInfo);
             }
         }
@@ -189,7 +190,7 @@ namespace windows_client.FileTransfers
 
             if (UploadMap.TryGetValue(id, out fInfo))
             {
-                fInfo.FileState = UploadState.CANCELED;
+                fInfo.FileState = UploadFileState.CANCELED;
                 SaveUploadData(fInfo);
             }
         }
@@ -199,7 +200,7 @@ namespace windows_client.FileTransfers
             UploadFileInfo fInfo;
 
             if (UploadMap.TryGetValue(id, out fInfo))
-                fInfo.FileState = UploadState.CANCELED;
+                fInfo.FileState = UploadFileState.CANCELED;
 
             DeleteUploadData(id);
         }
@@ -278,7 +279,7 @@ namespace windows_client.FileTransfers
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = fileInfo.FileName;
             req.Headers["X-Thumbnail-Required"] = "0";
-            req.Headers["X-SESSION-ID"] = fileInfo.FileName;
+            req.Headers["X-SESSION-ID"] = fileInfo.SessionId;
             req.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
 
             req.BeginGetResponse(GetResponseCallback, new object[] { req, fileInfo });
@@ -333,20 +334,20 @@ namespace windows_client.FileTransfers
 
                 if (fileInfo.FileBytes.Length - 1 == index)
                 {
-                    fileInfo.FileState = UploadState.COMPLETED;
+                    fileInfo.FileState = UploadFileState.COMPLETED;
                     SaveUploadData(fileInfo);
 
-                    if (UploadUpdated != null)
-                        UploadUpdated(null, new UploadCompletedArgs(fileInfo));
+                    if (UpdateFileUploadStatusOnUI != null)
+                        UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
                 }
                 else
                 {
                     fileInfo.CurrentHeaderPosition = index + 1;
-                    fileInfo.FileState = UploadState.STARTED;
+                    fileInfo.FileState = UploadFileState.STARTED;
                     SaveUploadData(fileInfo);
 
-                    if (UploadUpdated != null)
-                        UploadUpdated(null, new UploadCompletedArgs(fileInfo));
+                    if (UpdateFileUploadStatusOnUI != null)
+                        UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
 
                     BeginPostRequest(fileInfo);
                 }
@@ -355,11 +356,11 @@ namespace windows_client.FileTransfers
             {
                 // fresh upload
                 fileInfo.CurrentHeaderPosition = index;
-                fileInfo.FileState = UploadState.STARTED;
+                fileInfo.FileState = UploadFileState.STARTED;
                 SaveUploadData(fileInfo);
 
-                if (UploadUpdated != null)
-                    UploadUpdated(null, new UploadCompletedArgs(fileInfo));
+                if (UpdateFileUploadStatusOnUI != null)
+                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
 
                 BeginPostRequest(fileInfo);
             }
@@ -378,7 +379,7 @@ namespace windows_client.FileTransfers
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = fileInfo.FileName;
             req.Headers["X-Thumbnail-Required"] = "0";
-            req.Headers["X-SESSION-ID"] = fileInfo.FileName;
+            req.Headers["X-SESSION-ID"] = fileInfo.SessionId;
 
             var bytesLeft = fileInfo.FileBytes.Length - fileInfo.CurrentHeaderPosition;
             fileInfo.BlockSize = bytesLeft >= fileInfo.BlockSize ? fileInfo.BlockSize : bytesLeft;
@@ -503,12 +504,12 @@ namespace windows_client.FileTransfers
                     fileInfo.SuccessObj = jObject;
                     fileInfo.CurrentHeaderPosition = fileInfo.TotalBytes;
 
-                    if (fileInfo.FileState == UploadState.STARTED)
+                    if (fileInfo.FileState == UploadFileState.STARTED)
                     {
-                        fileInfo.FileState = UploadState.COMPLETED;
+                        fileInfo.FileState = UploadFileState.COMPLETED;
 
-                        if (UploadUpdated != null)
-                            UploadUpdated(null, new UploadCompletedArgs(fileInfo));
+                        if (UpdateFileUploadStatusOnUI != null)
+                            UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
                     }
 
                     SaveUploadData(fileInfo);
@@ -516,7 +517,7 @@ namespace windows_client.FileTransfers
             }
             else if (code == HttpStatusCode.Created)
             {
-                if (fileInfo.FileState == UploadState.CANCELED)
+                if (fileInfo.FileState == UploadFileState.CANCELED)
                 {
                     FileUploader.Instance.DeleteUploadData(fileInfo.SessionId);
                 }
@@ -527,36 +528,36 @@ namespace windows_client.FileTransfers
 
                     SaveUploadData(fileInfo);
 
-                    if (fileInfo.FileState == UploadState.STARTED || (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && fileInfo.FileState != UploadState.MANUAL_PAUSED))
+                    if (fileInfo.FileState == UploadFileState.STARTED || (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && fileInfo.FileState != UploadFileState.MANUAL_PAUSED))
                         BeginPostRequest(fileInfo);
                    
-                    if (UploadUpdated != null)
-                        UploadUpdated(null, new UploadCompletedArgs(fileInfo));
+                    if (UpdateFileUploadStatusOnUI != null)
+                        UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
                 }
             }
             else if (code == HttpStatusCode.NotFound || code == HttpStatusCode.BadRequest)
             {
-                fileInfo.FileState = UploadState.FAILED;
+                fileInfo.FileState = UploadFileState.FAILED;
                 SaveUploadData(fileInfo);
 
-                if (UploadUpdated != null)
-                    UploadUpdated(null, new UploadCompletedArgs(fileInfo));
+                if (UpdateFileUploadStatusOnUI != null)
+                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
             }
             else
             {
                 SaveUploadData(fileInfo);
 
-                if (fileInfo.FileState == UploadState.STARTED || (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && fileInfo.FileState != UploadState.MANUAL_PAUSED))
+                if (fileInfo.FileState == UploadFileState.STARTED || (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && fileInfo.FileState != UploadFileState.MANUAL_PAUSED))
                     BeginPostRequest(fileInfo);
 
-                if (UploadUpdated != null)
-                    UploadUpdated(null, new UploadCompletedArgs(fileInfo));
+                if (UpdateFileUploadStatusOnUI != null)
+                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
             }
         }
 
         #endregion
 
-        public event EventHandler<UploadCompletedArgs> UploadUpdated;
+        public event EventHandler<UploadCompletedArgs> UpdateFileUploadStatusOnUI;
     }
 
     public class UploadCompletedArgs : EventArgs

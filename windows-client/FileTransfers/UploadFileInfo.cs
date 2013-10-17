@@ -48,7 +48,7 @@ namespace windows_client.FileTransfers
         public string FileName;
         public JObject SuccessObj;
 
-        public UploadState FileState;
+        public UploadFileState FileState;
 
         public UploadFileInfo()
         {
@@ -60,7 +60,7 @@ namespace windows_client.FileTransfers
             FileBytes = fileBytes;
             ContentType = contentType;
             FileName = fileName;
-            FileState = UploadState.NOT_STARTED;
+            FileState = UploadFileState.NOT_STARTED;
             FileBytes = fileBytes;
         }
 
@@ -121,17 +121,17 @@ namespace windows_client.FileTransfers
             if (ContentType == "*@N@*")
                 ContentType = null;
 
-            FileState = (UploadState)reader.ReadInt32();
+            FileState = (UploadFileState)reader.ReadInt32();
 
-            if (App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileState == UploadState.STARTED)
-                FileState = UploadState.PAUSED;
+            if (App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileState == UploadFileState.STARTED)
+                FileState = UploadFileState.PAUSED;
 
             count = reader.ReadInt32();
             FileBytes = count != 0 ? reader.ReadBytes(count) : FileBytes = null;
         }
     }
 
-    public enum UploadState
+    public enum UploadFileState
     {
         NOT_STARTED,
         FAILED,  
