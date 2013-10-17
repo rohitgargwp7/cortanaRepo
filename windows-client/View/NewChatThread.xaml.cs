@@ -4984,15 +4984,15 @@ namespace windows_client.View
             conv.MetaDataString = string.Format("{{{0}:'{1}',{2}:'{3}'}}", HikeConstants.STICKER_ID, sticker.Id, HikeConstants.CATEGORY_ID, sticker.Category);
             AddNewMessageToUI(conv, false);
             HikeViewModel.stickerHelper.recentStickerHelper.AddSticker(sticker);
-            //// to enable vibration on sticker sending
-            //bool isVibrateEnabled = true;
-            //App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
+            // to enable vibration on sticker sending
+            bool isVibrateEnabled = true;
+            App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
 
-            //if (isVibrateEnabled)
-            //{
-            //    VibrateController vibrate = VibrateController.Default;
-            //    vibrate.Start(TimeSpan.FromMilliseconds(200));
-            //}
+            if (isVibrateEnabled)
+            {
+                VibrateController vibrate = VibrateController.Default;
+                vibrate.Start(TimeSpan.FromMilliseconds(200));
+            }
             mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
         }
 
