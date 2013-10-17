@@ -337,7 +337,7 @@ namespace windows_client.utils
     {
         public const string RECENTS_FILE = "recents";
         private const int maxStickersCount = 30;
-        private object readWriteLock = new object();
+        private static object readWriteLock = new object();
         public List<Sticker> listRecentStickers;
         public RecentStickerHelper()
         {
@@ -500,6 +500,32 @@ namespace windows_client.utils
                         recentSticker.UpdateRecentsFile();
                 });
 
+        }
+
+        public static void DeleteRecents()
+        {
+            lock (readWriteLock)
+            {
+                try
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+
+                        try
+                        {
+                            store.DeleteFile(StickerCategory.STICKERS_DIR + "\\" + RECENTS_FILE);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("RecentStickerHelper :: DeleteRecents : Exception :{0} , StackTrace:{1} ", ex.Message, ex.StackTrace);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("FriendsTableUtils :: DeleteAllFriends : DeleteAllFriends, Exception : " + ex.StackTrace);
+                }
+            }
         }
 
     }
