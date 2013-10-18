@@ -540,7 +540,6 @@ namespace windows_client.utils
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
-
         public static string ConvertToStorageSizeString(long sizeInBytes)
         {
             string[] suffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
