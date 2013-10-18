@@ -20,6 +20,7 @@ namespace windows_client.FileTransfers
     public class FileUploader
     {
         private const string UPLOAD_DIRECTORY_NAME = "FileUpload";
+        const int _maxBlockSize = 1048576;
         const int _defaultBlockSize = 1024;
         const int _noOfParallelRequest = 20;
 
@@ -535,7 +536,19 @@ namespace windows_client.FileTransfers
                 else
                 {
                     fileInfo.CurrentHeaderPosition += fileInfo.BlockSize;
-                    fileInfo.BlockSize = ++fileInfo.AttemptNumber * _defaultBlockSize;
+
+                    if (fileInfo.FileState == UploadFileState.STARTED)
+                    {
+                        var newSize = (fileInfo.AttemptNumber + 1) * _defaultBlockSize;
+
+                        if (newSize <= _maxBlockSize)
+                            fileInfo.BlockSize = ++fileInfo.AttemptNumber * _defaultBlockSize;
+                    }
+                    else
+                    {
+                        fileInfo.AttemptNumber = 1;
+                        fileInfo.BlockSize = _defaultBlockSize;
+                    }
 
                     SaveUploadData(fileInfo);
 

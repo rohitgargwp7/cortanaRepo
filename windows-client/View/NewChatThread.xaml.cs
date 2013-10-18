@@ -6466,10 +6466,10 @@ namespace windows_client.View
         {
             _uploadProgressBarIsTapped = true;
 
-            var grid = sender as Button;
-            if (grid != null)
+            var button = sender as Button;
+            if (button != null)
             {
-                var id = Convert.ToInt64(grid.Tag);
+                var id = Convert.ToInt64(button.Tag);
                 if (msgMap.ContainsKey(id))
                 {
                     var convMessage = msgMap[id];
