@@ -47,7 +47,7 @@ namespace windows_client
                         if (instance == null)
                         {
                             instance = new FileTransfer();
-                            instance.RemoveOldTransferRequests();
+                            instance.ProcessOldTransferRequests();
                         }
                     }
                 }
@@ -98,7 +98,7 @@ namespace windows_client
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                MessageBox.Show("More than 25 files cannot be downloaded at a time");
+                                MessageBox.Show(AppResources.Download_MaxFiles_Txt);
                             });
                     }
                 }
@@ -275,7 +275,7 @@ namespace windows_client
             }
         }
 
-        public void RemoveOldTransferRequests()
+        public void ProcessOldTransferRequests()
         {
             if (transferRequests != null)
             {
@@ -317,6 +317,31 @@ namespace windows_client
             //}
         }
 
+        public void RemoveAllTransferRequests()
+        {
+            IEnumerable<BackgroundTransferRequest> transferRequests = BackgroundTransferService.Requests;
+
+            foreach (var transfer in transferRequests)
+            {
+                RemoveTransferRequest(transfer, transfer.Tag);
+            }
+        }
+
+        public void RemoveTransfersForMsisdn(string reqMsisdn)
+        {
+            IEnumerable<BackgroundTransferRequest> transferRequests = BackgroundTransferService.Requests;
+
+            foreach (var transfer in transferRequests)
+            {
+                string[] data = transfer.Tag.Split('/');
+                if (data.Length == 2)
+                {
+                    string msisdn = data[0];
+                    if (reqMsisdn == msisdn)
+                        RemoveTransferRequest(transfer, transfer.Tag);
+                }
+            }
+        }
 
         private bool RemoveTransferRequest(BackgroundTransferRequest transferToRemove, string mapKey)
         {

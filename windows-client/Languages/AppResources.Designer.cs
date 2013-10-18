@@ -952,6 +952,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to More than 25 files cannot be downloaded at a time.
+        /// </summary>
+        public static string Download_MaxFiles_Txt {
+            get {
+                return ResourceManager.GetString("Download_MaxFiles_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download.
         /// </summary>
         public static string Download_txt {

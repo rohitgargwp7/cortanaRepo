@@ -309,6 +309,7 @@ namespace windows_client.DbUtils
                 //ConversationTableUtils.saveConvObjectList();
                 MiscDBUtil.deleteMsisdnData(convMsisdn);
                 MessagesTableUtils.DeleteLongMessages(convMsisdn);
+                FileTransfer.Instance.RemoveTransfersForMsisdn(convMsisdn);
             }
             #endregion
             else if (type == HikePubSub.SAVE_STATUS_IN_DB)

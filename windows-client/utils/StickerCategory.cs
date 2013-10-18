@@ -37,6 +37,9 @@ namespace windows_client.utils
             }
         }
 
+        /// <summary>
+        /// currenty request has been sent to server for download
+        /// </summary>
         public bool IsDownLoading
         {
             get
@@ -49,6 +52,9 @@ namespace windows_client.utils
             }
         }
 
+        /// <summary>
+        /// shows server has more stickers for download
+        /// </summary>
         public bool HasMoreStickers
         {
             get
@@ -61,6 +67,9 @@ namespace windows_client.utils
             }
         }
 
+        /// <summary>
+        /// to show stickers download overlay
+        /// </summary>
         public bool ShowDownloadMessage
         {
             get
@@ -73,6 +82,9 @@ namespace windows_client.utils
             }
         }
 
+        /// <summary>
+        /// shows category has newly downloaded stickers
+        /// </summary>
         public bool HasNewStickers
         {
             get
@@ -391,9 +403,7 @@ namespace windows_client.utils
                                                     }
                                                     else
                                                     {
-                                                        int imageBytesCount = reader.ReadInt32();
-                                                        Byte[] imageBytes = reader.ReadBytes(imageBytesCount);
-                                                        stickerCategory._listStickers.Add(new Sticker(category, stickerId, imageBytes, false));
+                                                        stickerCategory._listStickers.Add(new Sticker(category, stickerId, null, false));
                                                     }
                                                 }
                                                 catch (Exception ex)

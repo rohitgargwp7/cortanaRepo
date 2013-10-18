@@ -914,11 +914,6 @@ namespace windows_client
                 #region KICKEDOUT USER ADDED
                 else if (gcState == GroupChatState.KICKEDOUT_USER_ADDED)
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (!App.IS_MARKETPLACE) // remove this later , this is only for QA
-                            MessageBox.Show("GCJ came after adding knocked user!!");
-                    });
                     GroupTableUtils.SetGroupAlive(grpId);
                     convMessage = new ConvMessage(jsonObj, false, false); // this will be normal GCJ msg
                     this.pubSub.publish(HikePubSub.GROUP_ALIVE, grpId);
@@ -1481,11 +1476,14 @@ namespace windows_client
                             listStickers.Add((string)jarray[i]);
                         }
                         StickerCategory.DeleteSticker(category, listStickers);
+                        RecentStickerHelper.DeleteSticker(category, listStickers);
+
                     }
                     else if (subType == HikeConstants.REMOVE_CATEGORY)
                     {
                         string category = (string)jsonData[HikeConstants.CATEGORY_ID];
                         StickerCategory.DeleteCategory(category);
+                        RecentStickerHelper.DeleteCategory(category);
                     }
 
                 }
