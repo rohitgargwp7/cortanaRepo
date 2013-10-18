@@ -2165,6 +2165,9 @@ namespace windows_client.View
                                     currentAudioMessage = null;
                                 }
 
+                                CompositionTarget.Rendering -= CompositionTarget_Rendering;
+                                CompositionTarget.Rendering += CompositionTarget_Rendering; 
+                                
                                 currentAudioMessage = convMessage;
 
                                 if (currentAudioMessage != null)
