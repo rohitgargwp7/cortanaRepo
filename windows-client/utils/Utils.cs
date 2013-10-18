@@ -548,8 +548,6 @@ namespace windows_client.utils
 
             while (Math.Round(dValue / 1024) >= 1)
             {
-                Debug.WriteLine("Size: " + dValue);
-
                 dValue /= 1024;
                 i++;
             }

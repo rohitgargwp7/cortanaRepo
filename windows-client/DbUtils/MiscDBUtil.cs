@@ -438,10 +438,6 @@ namespace windows_client.DbUtils
                                 Attachment attachment = new Attachment();
                                 attachment.Read(reader);
                                 long messageId = Int64.Parse(msgId);
-                                if (attachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED && MessagesTableUtils.isUploadingMessage(messageId))
-                                {
-                                    attachment.FileState = Attachment.AttachmentState.STARTED;
-                                }
                                 msgIdAttachmentMap.Add(Int64.Parse(msgId), attachment);
                             }
                         }
@@ -449,6 +445,38 @@ namespace windows_client.DbUtils
                 }
                 return msgIdAttachmentMap;
             }
+        }
+
+        public static Attachment getFileAttachment(string msisdn, string id)
+        {
+            if (msisdn == null) // this is imp as explicit handling of null is required to check exception
+                return null;
+
+            msisdn = msisdn.Replace(":", "_");
+
+            Attachment attachment = null;
+            string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
+            
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (store.DirectoryExists(fileDirectory))
+                {
+                    var fName = fileDirectory + "/" + id;
+                    if(store.FileExists(fName))
+                    {
+                        using (var file = store.OpenFile(fName, FileMode.Open, FileAccess.Read))
+                        {
+                            using (var reader = new BinaryReader(file))
+                            {
+                                attachment = new Attachment();
+                                attachment.Read(reader);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return attachment;
         }
 
         public static Attachment UpdateFileAttachmentState(string msisdn, string msgId, Attachment.AttachmentState fileState)

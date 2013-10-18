@@ -53,9 +53,9 @@ namespace windows_client.FileTransfers
             ThreadPool.SetMaxThreads(_noOfParallelRequest, _noOfParallelRequest);
         }
 
-        public void Upload(string key, string fileName, string contentType, byte[] fileBytes)
+        public void Upload(string msisdn, string key, string fileName, string contentType, byte[] fileBytes)
         {
-            UploadFileInfo fInfo = new UploadFileInfo(key, fileBytes, fileName, contentType);
+            UploadFileInfo fInfo = new UploadFileInfo(msisdn, key, fileBytes, fileName, contentType);
 
             Sources.Enqueue(fInfo);
             UploadMap.Add(fInfo.SessionId, fInfo);
@@ -77,7 +77,7 @@ namespace windows_client.FileTransfers
                 StartUpload();
 
                 if (UpdateFileUploadStatusOnUI != null)
-                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fInfo));
+                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fInfo,true));
             }
         }
 
@@ -100,15 +100,15 @@ namespace windows_client.FileTransfers
                     SaveUploadData(fileInfo);
                  
                     if (UpdateFileUploadStatusOnUI != null)
-                        UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
+                        UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo, true));
+
+                    App.HikePubSubInstance.publish(HikePubSub.UPLOAD_COMPLETE, fileInfo);
                 }
                 else if (fileInfo.FileState != UploadFileState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) || fileInfo.FileState != UploadFileState.PAUSED))
                 {
                     if (!Upload(fileInfo))
                         Sources.Enqueue(fileInfo);
                 }
-                else
-                    Sources.Enqueue(fileInfo);
             }
 
             if (Sources.Count > 0)
@@ -123,7 +123,9 @@ namespace windows_client.FileTransfers
                 SaveUploadData(fileInfo);
 
                 if (UpdateFileUploadStatusOnUI != null)
-                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
+                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo,true));
+
+                App.HikePubSubInstance.publish(HikePubSub.UPLOAD_COMPLETE, fileInfo);
                 
                 return true;
             }
@@ -338,17 +340,22 @@ namespace windows_client.FileTransfers
                     SaveUploadData(fileInfo);
 
                     if (UpdateFileUploadStatusOnUI != null)
-                        UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
+                        UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo,true));
+
+                    App.HikePubSubInstance.publish(HikePubSub.UPLOAD_COMPLETE, fileInfo);
                 }
                 else
                 {
                     fileInfo.CurrentHeaderPosition = index + 1;
                     fileInfo.FileState = UploadFileState.STARTED;
+
                     SaveUploadData(fileInfo);
 
                     if (UpdateFileUploadStatusOnUI != null)
-                        UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
+                        UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo,true));
 
+                    App.HikePubSubInstance.publish(HikePubSub.UPLOAD_COMPLETE, fileInfo);
+                    
                     BeginPostRequest(fileInfo);
                 }
             }
@@ -359,8 +366,10 @@ namespace windows_client.FileTransfers
                 fileInfo.FileState = UploadFileState.STARTED;
                 SaveUploadData(fileInfo);
 
+                App.HikePubSubInstance.publish(HikePubSub.UPLOAD_COMPLETE, fileInfo);
+
                 if (UpdateFileUploadStatusOnUI != null)
-                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
+                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo,true));
 
                 BeginPostRequest(fileInfo);
             }
@@ -509,7 +518,9 @@ namespace windows_client.FileTransfers
                         fileInfo.FileState = UploadFileState.COMPLETED;
 
                         if (UpdateFileUploadStatusOnUI != null)
-                            UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
+                            UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo, true));
+                     
+                        App.HikePubSubInstance.publish(HikePubSub.UPLOAD_COMPLETE, fileInfo);
                     }
 
                     SaveUploadData(fileInfo);
@@ -532,26 +543,34 @@ namespace windows_client.FileTransfers
                         BeginPostRequest(fileInfo);
                    
                     if (UpdateFileUploadStatusOnUI != null)
-                        UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
+                        UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo, false));
                 }
             }
-            else if (code == HttpStatusCode.NotFound || code == HttpStatusCode.BadRequest)
+            else if (code == HttpStatusCode.BadRequest)
             {
                 fileInfo.FileState = UploadFileState.FAILED;
                 SaveUploadData(fileInfo);
 
                 if (UpdateFileUploadStatusOnUI != null)
-                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
+                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo,true));
+
+                App.HikePubSubInstance.publish(HikePubSub.UPLOAD_COMPLETE, fileInfo);
             }
             else
             {
+                //app suspension and disconnected case
+                fileInfo.FileState = UploadFileState.PAUSED;
                 SaveUploadData(fileInfo);
 
-                if (fileInfo.FileState == UploadFileState.STARTED || (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && fileInfo.FileState != UploadFileState.MANUAL_PAUSED))
-                    BeginPostRequest(fileInfo);
+                if (!Sources.Contains(fileInfo))
+                {
+                    Sources.Enqueue(fileInfo);
+
+                    StartUpload();
+                }
 
                 if (UpdateFileUploadStatusOnUI != null)
-                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo));
+                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo, true));
             }
         }
 
@@ -562,11 +581,13 @@ namespace windows_client.FileTransfers
 
     public class UploadCompletedArgs : EventArgs
     {
-        public UploadCompletedArgs(UploadFileInfo fileInfo)
+        public UploadCompletedArgs(UploadFileInfo fileInfo, bool isStateChanged)
         {
             FileInfo = fileInfo;
+            IsStateChanged = isStateChanged;
         }
 
         public UploadFileInfo FileInfo { get; private set; }
+        public bool IsStateChanged { get; private set; }
     }
 }

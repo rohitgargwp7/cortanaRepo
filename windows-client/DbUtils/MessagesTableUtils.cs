@@ -19,54 +19,6 @@ namespace windows_client.DbUtils
     {
         private static object lockObj = new object();
 
-        //keep a set of currently uploading or downloading messages.
-        private static Dictionary<long, ConvMessage> uploadingMessages = new Dictionary<long, ConvMessage>();
-
-        public static void addUploadingMessage(long messageId, ConvMessage conMessage)
-        {
-            if (messageId == -1)
-                return;
-            lock (lockObj)
-            {
-                if (!uploadingMessages.ContainsKey(messageId))
-                    uploadingMessages.Add(messageId, conMessage);
-            }
-        }
-
-        public static void removeUploadingOrDownloadingMessage(long messageId)
-        {
-            if (messageId == -1)
-                return;
-            lock (lockObj)
-            {
-                if (uploadingMessages.ContainsKey(messageId))
-                    uploadingMessages.Remove(messageId);
-            }
-        }
-
-        public static bool isUploadingMessage(long messageId)
-        {
-            lock (lockObj)
-            {
-                return uploadingMessages.ContainsKey(messageId);
-            }
-        }
-
-        public static ConvMessage getUploadingOrDownloadingMessage(long messageId)
-        {
-            if (messageId == -1)
-                return null;
-            lock (lockObj)
-            {
-                if (uploadingMessages.ContainsKey(messageId))
-                {
-                    return uploadingMessages[messageId];
-                }
-                return null;
-            }
-        }
-
-
         //private static HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring); // use this chatsDbContext to improve performance
 
         /* This is shown on chat thread screen*/

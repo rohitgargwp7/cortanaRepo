@@ -298,6 +298,8 @@ namespace windows_client.View
             this.autoUploadToggle.Content = AppResources.On;
             App.appSettings.Remove(App.AUTO_UPLOAD_SETTING);
             App.appSettings.Save();
+
+            FileTransfers.FileUploader.Instance.StartUpload();
         }
 
         private void autoUploadToggle_Unchecked(object sender, RoutedEventArgs e)

@@ -157,6 +157,8 @@ namespace windows_client
         public static readonly string CONTACT_ADDED = "contact_added";
         public static readonly string ADDRESSBOOK_UPDATED= "adbook_updated";
 
+        public static readonly string UPLOAD_COMPLETE = "uploadComplete";
+
         private readonly Thread mThread;
 
         private readonly BlockingQueue mQueue;

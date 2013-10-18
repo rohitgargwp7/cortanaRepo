@@ -46,6 +46,7 @@ namespace windows_client.FileTransfers
         public byte[] FileBytes;
         public string ContentType;
         public string FileName;
+        public string Msisdn;
         public JObject SuccessObj;
 
         public UploadFileState FileState;
@@ -54,8 +55,9 @@ namespace windows_client.FileTransfers
         {
         }
 
-        public UploadFileInfo(string key, byte[] fileBytes, string fileName, string contentType)
+        public UploadFileInfo(string msisdn, string key, byte[] fileBytes, string fileName, string contentType)
         {
+            Msisdn = msisdn;
             SessionId = key;
             FileBytes = fileBytes;
             ContentType = contentType;
@@ -66,6 +68,11 @@ namespace windows_client.FileTransfers
 
         public void Write(BinaryWriter writer)
         {
+            if (Msisdn == null)
+                writer.WriteStringBytes("*@N@*");
+            else
+                writer.WriteStringBytes(Msisdn);
+            
             if (SessionId == null)
                 writer.WriteStringBytes("*@N@*");
             else
@@ -98,6 +105,11 @@ namespace windows_client.FileTransfers
         public void Read(BinaryReader reader)
         {
             int count = reader.ReadInt32();
+            Msisdn = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (Msisdn == "*@N@*")
+                Msisdn = null;
+            
+            count = reader.ReadInt32();
             SessionId = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
             if (SessionId == "*@N@*")
                 SessionId = null;
