@@ -1470,11 +1470,14 @@ namespace windows_client
                             listStickers.Add((string)jarray[i]);
                         }
                         StickerCategory.DeleteSticker(category, listStickers);
+                        RecentStickerHelper.DeleteSticker(category, listStickers);
+
                     }
                     else if (subType == HikeConstants.REMOVE_CATEGORY)
                     {
                         string category = (string)jsonData[HikeConstants.CATEGORY_ID];
                         StickerCategory.DeleteCategory(category);
+                        RecentStickerHelper.DeleteCategory(category);
                     }
 
                 }

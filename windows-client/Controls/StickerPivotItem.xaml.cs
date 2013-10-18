@@ -20,7 +20,7 @@ namespace windows_client.Controls
     {
         private int _pivotIndex;
         private string _category;
-        public StickerPivotItem(ObservableCollection<Sticker> listStickers, int pivotIndex, string category)
+        public StickerPivotItem(int pivotIndex, string category)
         {
             InitializeComponent();
             llsStickerCategory.Tap += Stickers_Tap;
@@ -33,7 +33,10 @@ namespace windows_client.Controls
         {
             llsStickerCategory.ItemsSource = listStickers;
         }
-
+        public void SetLlsSourceList(List<Sticker> listStickers)
+        {
+            llsStickerCategory.ItemsSource = listStickers;
+        }
         private void Stickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             LongListSelector llsStickerCategory = (sender as LongListSelector);
