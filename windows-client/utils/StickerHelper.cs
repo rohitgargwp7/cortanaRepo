@@ -513,17 +513,20 @@ namespace windows_client.utils
 
                         try
                         {
-                            store.DeleteFile(StickerCategory.STICKERS_DIR + "\\" + RECENTS_FILE);
+                            string filename = StickerCategory.STICKERS_DIR + "\\" + RECENTS_FILE;
+
+                            if (store.FileExists(filename))
+                                store.DeleteFile(filename);
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine("RecentStickerHelper :: DeleteRecents : Exception :{0} , StackTrace:{1} ", ex.Message, ex.StackTrace);
+                            Debug.WriteLine("RecentStickerHelper :: DeleteRecents :Delete FIle: Exception :{0} , StackTrace:{1} ", ex.Message, ex.StackTrace);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("FriendsTableUtils :: DeleteAllFriends : DeleteAllFriends, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("RecentStickerHelper :: DeleteRecents , Exception :{0} , StackTrace:{1} ", ex.Message, ex.StackTrace);
                 }
             }
         }
