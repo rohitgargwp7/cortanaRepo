@@ -47,7 +47,7 @@ namespace windows_client
                         if (instance == null)
                         {
                             instance = new FileTransfer();
-                            instance.RemoveOldTransferRequests();
+                            instance.ProcessOldTransferRequests();
                         }
                     }
                 }
@@ -275,7 +275,7 @@ namespace windows_client
             }
         }
 
-        public void RemoveOldTransferRequests()
+        public void ProcessOldTransferRequests()
         {
             if (transferRequests != null)
             {
@@ -317,6 +317,15 @@ namespace windows_client
             //}
         }
 
+        public void RemoveAllTransferRequests()
+        {
+            IEnumerable<BackgroundTransferRequest> transferRequests = BackgroundTransferService.Requests;
+
+            foreach (var transfer in transferRequests)
+            {
+                RemoveTransferRequest(transfer, transfer.Tag);
+            }
+        }
 
         private bool RemoveTransferRequest(BackgroundTransferRequest transferToRemove, string mapKey)
         {

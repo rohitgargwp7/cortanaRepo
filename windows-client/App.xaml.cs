@@ -915,7 +915,7 @@ namespace windows_client
             PostLocaleInfo();
             #endregion
             #region FILE TRANSFER
-            FileTransfer.Instance.RemoveOldTransferRequests();
+            FileTransfer.Instance.ProcessOldTransferRequests();
             #endregion
 
         }
