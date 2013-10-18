@@ -466,7 +466,7 @@ namespace windows_client.DbUtils
                     if (store.FileExists(fileName))
                     {
                         attachment = new Attachment();
-                        using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
+                        using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
                         {
                             using (var reader = new BinaryReader(file, Encoding.UTF8, true))
                             {

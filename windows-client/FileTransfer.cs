@@ -98,7 +98,7 @@ namespace windows_client
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                MessageBox.Show("More than 25 files cannot be downloaded at a time");
+                                MessageBox.Show(AppResources.Download_MaxFiles_Txt);
                             });
                     }
                 }

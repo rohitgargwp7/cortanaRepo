@@ -1966,4 +1966,7 @@ Get hike: http://get.hike.in</value>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
     <value>Earn free SMS for every friend who joins hike because of you</value>
   </data>
+  <data name="Download_MaxFiles_Txt" xml:space="preserve">
+    <value>More than 25 files cannot be downloaded at a time</value>
+  </data>
 </root>
