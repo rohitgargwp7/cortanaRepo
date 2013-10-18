@@ -146,7 +146,7 @@ namespace windows_client
                     {
                         convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
                     }
-                    else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_UPLOAD_SETTING))
+                    else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
                     {
                         FileTransfer.Instance.DownloadFile(convMessage, convMessage.Msisdn.Replace(":", "_"));
                         convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
