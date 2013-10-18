@@ -327,6 +327,22 @@ namespace windows_client
             }
         }
 
+        public void RemoveTransfersForMsisdn(string reqMsisdn)
+        {
+            IEnumerable<BackgroundTransferRequest> transferRequests = BackgroundTransferService.Requests;
+
+            foreach (var transfer in transferRequests)
+            {
+                string[] data = transfer.Tag.Split('/');
+                if (data.Length == 2)
+                {
+                    string msisdn = data[0];
+                    if (reqMsisdn == msisdn)
+                        RemoveTransferRequest(transfer, transfer.Tag);
+                }
+            }
+        }
+
         private bool RemoveTransferRequest(BackgroundTransferRequest transferToRemove, string mapKey)
         {
             ConvMessage conv;

@@ -631,6 +631,7 @@ namespace windows_client.View
             GroupManager.Instance.GroupCache.Clear();
             GroupManager.Instance.DeleteAllGroups();
             GroupTableUtils.deleteAllGroups();
+            FileTransfer.Instance.RemoveAllTransferRequests();
         }
 
         private void createGroup_Click(object sender, EventArgs e)
