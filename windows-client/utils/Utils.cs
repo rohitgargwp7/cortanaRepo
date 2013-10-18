@@ -539,5 +539,23 @@ namespace windows_client.utils
             obj[HikeConstants.TYPE] = HikeConstants.REQUEST_SERVER_TIME;
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
+
+        public static string ConvertToStorageSizeString(long sizeInBytes)
+        {
+            string[] suffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+            int i = 0;
+            double dValue = (double)sizeInBytes;
+
+            while (Math.Round(dValue / 1024) >= 1)
+            {
+                Debug.WriteLine("Size: " + dValue);
+
+                dValue /= 1024;
+                i++;
+            }
+
+            return string.Format("{0,2:n1} {1}", dValue, suffixes[i]);
+        }
+
     }
 }

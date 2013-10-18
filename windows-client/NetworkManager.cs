@@ -146,6 +146,12 @@ namespace windows_client
                     {
                         convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
                     }
+                    else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
+                    {
+                        FileTransfer.Instance.DownloadFile(convMessage, convMessage.Msisdn.Replace(":", "_"));
+                        convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
+                        MiscDBUtil.UpdateFileAttachmentState(convMessage.Msisdn.Replace(":", "_"), convMessage.MessageId.ToString(), Attachment.AttachmentState.STARTED);
+                    }
                     if (obj == null)
                         return;
                     if (convMessage.FileAttachment != null)

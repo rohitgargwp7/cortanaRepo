@@ -103,6 +103,9 @@
     <Reference Include="Coding4Fun.Phone.Controls">
       <HintPath>lib\Coding4Fun.Phone.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="ConcurrentDictionary">
+      <HintPath>lib\ConcurrentDictionary.dll</HintPath>
+    </Reference>
     <Reference Include="Facebook, Version=6.0.10.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Facebook.6.1.4\lib\wp71\Facebook.dll</HintPath>

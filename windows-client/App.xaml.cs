@@ -43,6 +43,7 @@ namespace windows_client
         public static readonly string STATUS_UPDATE_SECOND_SETTING = "stUpSecSet";
         public static readonly string LAST_SEEN_SEETING = "lstSeenSet";
         public static readonly string USE_LOCATION_SETTING = "locationSet";
+        public static readonly string AUTO_DOWNLOAD_SETTING = "autoDownload";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
         public static readonly string SHOW_BASIC_TUTORIAL = "basicTut";
@@ -374,7 +375,7 @@ namespace windows_client
         {
             _isAppLaunched = false; // this means app is activated, could be tombstone or dormant state
             _isTombstoneLaunch = !e.IsApplicationInstancePreserved; //e.IsApplicationInstancePreserved  --> if this is true its dormant else tombstoned
-            
+
             if (_isTombstoneLaunch)
             {
                 try
@@ -408,7 +409,7 @@ namespace windows_client
         {
             NetworkManager.turnOffNetworkManager = true;
             sendAppBgStatusToServer();
-            
+
             if (App.AnalyticsInstance != null)
                 App.AnalyticsInstance.saveObject();
 
@@ -434,7 +435,7 @@ namespace windows_client
         {
             if (App.AnalyticsInstance != null)
                 App.AnalyticsInstance.saveObject(); //check for null
-            
+
             sendAppBgStatusToServer();
             //appDeinitialize();
         }
@@ -511,7 +512,7 @@ namespace windows_client
                     int idx = targetPage.IndexOf("?") + 1;
                     string param = targetPage.Substring(idx);
                     e.Cancel = true;
-                    
+
                     RootFrame.Dispatcher.BeginInvoke(delegate
                     {
                         RootFrame.Navigate(new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative));
@@ -749,7 +750,7 @@ namespace windows_client
                             App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, false);
                     }
                 }
-                catch(InvalidCastException ex)
+                catch (InvalidCastException ex)
                 {
                     // will not reach here for new user & upgraded user.
                 }
@@ -927,6 +928,9 @@ namespace windows_client
             #endregion
             #region Post App Locale
             PostLocaleInfo();
+            #endregion
+            #region FILE TRANSFER
+            FileTransfer.Instance.ProcessOldTransferRequests();
             #endregion
 
         }

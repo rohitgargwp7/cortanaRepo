@@ -86,6 +86,12 @@ namespace windows_client.View
             lastSeenTimeStampToggle.IsChecked = showlastSeen;
             this.lastSeenTimeStampToggle.Content = showlastSeen ? AppResources.On : AppResources.Off;
 
+            bool autoDownload;
+            if (!App.appSettings.TryGetValue(App.AUTO_DOWNLOAD_SETTING, out autoDownload))
+                autoDownload = true;
+            autoDownloadToggle.IsChecked = autoDownload;
+            this.autoDownloadToggle.Content = autoDownload ? AppResources.On : AppResources.Off;
+
             byte statusSettingsValue;
             if (App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue))
             {
@@ -254,11 +260,31 @@ namespace windows_client.View
             App.appSettings.Remove(HikeConstants.LOCATION_DEVICE_COORDINATE);
             App.appSettings.Save();
         }
-       
+        private void autoDownloadToggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            autoDownloadToggle.Loaded -= autoDownloadToggle_Loaded;
+            autoDownloadToggle.Checked += autoDownloadToggle_Checked;
+            autoDownloadToggle.Unchecked += autoDownloadToggle_Unchecked;
+        }
+        private void autoDownloadToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.autoDownloadToggle.Content = AppResources.On;
+            App.appSettings.Remove(App.AUTO_DOWNLOAD_SETTING);
+            App.appSettings.Save();
+        }
+
+        private void autoDownloadToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.autoDownloadToggle.Content = AppResources.Off;
+            App.WriteToIsoStorageSettings(App.AUTO_DOWNLOAD_SETTING, false);
+            App.appSettings.Save();
+        }
         private async void btnGoToLockSettings_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             // Launch URI for the lock screen settings screen.
             var op = await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-lock:"));
         }
+
+
     }
 }

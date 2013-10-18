@@ -542,6 +542,7 @@ namespace windows_client.Model
             get;
             set;
         }
+
         private PageOrientation _currentOrientation;
         public PageOrientation CurrentOrientation
         {
@@ -604,7 +605,7 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null && (_fileAttachment.FileState != Attachment.AttachmentState.COMPLETED || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO) || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
                 {
-                    if (IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                    if ((IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED) || _fileAttachment.FileState == Attachment.AttachmentState.STARTED)
                         return Visibility.Collapsed;
                     return Visibility.Visible;
                 }
@@ -768,13 +769,14 @@ namespace windows_client.Model
                 _progressBarValue = value;
                 if (_progressBarValue >= 100)
                 {
-                    NotifyPropertyChanging("PlayIconVisibility");
-                    NotifyPropertyChanging("PlayIconImage");
                     SdrImageVisibility = Visibility.Visible;
                     NotifyPropertyChanged("SdrImageVisibility");
                 }
+                NotifyPropertyChanging("PlayIconVisibility");
+                NotifyPropertyChanging("PlayIconImage");
                 NotifyPropertyChanged("ProgressBarVisibility");
                 NotifyPropertyChanged("ProgressBarValue");
+                NotifyPropertyChanged("ProgressText");
             }
             get
             {
@@ -1125,7 +1127,17 @@ namespace windows_client.Model
             }
         }
 
+        public bool UserTappedDownload
+        {
+            get;
+            set;
+        }
 
+        public string ProgressText
+        {
+            get;
+            set;
+        }
 
         public ConvMessage(string message, string msisdn, long timestamp, State msgState, PageOrientation currentOrientation)
             : this(message, msisdn, timestamp, msgState, -1, -1, currentOrientation)
@@ -1316,7 +1328,7 @@ namespace windows_client.Model
         // Used to notify that a property changed
         public void NotifyPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
+            if (PropertyChanged != null && !string.IsNullOrEmpty(propertyName))
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {

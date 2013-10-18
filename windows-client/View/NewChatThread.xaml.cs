@@ -1542,7 +1542,6 @@ namespace windows_client.View
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-
                     AddMessageToOcMessages(cm, true, false, true);
                 });
             }
@@ -1592,6 +1591,20 @@ namespace windows_client.View
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 NetworkManager.turnOffNetworkManager = false;
+                if (listDownload.Count > 0)
+                {
+                    BackgroundWorker bw = new BackgroundWorker();
+                    bw.DoWork += (s,e) =>
+                        {
+                            foreach (ConvMessage conv in listDownload)
+                            {
+                                FileTransfer.Instance.DownloadFile(conv, mContactNumber.Replace(":", "_"));
+                                conv.SetAttachmentState(Attachment.AttachmentState.STARTED);
+                            }
+                            listDownload.Clear();
+                        };
+                    bw.RunWorkerAsync();
+                }
             });
         }
 
@@ -1951,9 +1964,9 @@ namespace windows_client.View
                     {
                         if (NetworkInterface.GetIsNetworkAvailable())
                         {
+                            convMessage.UserTappedDownload = true;
                             convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
-                            FileTransfer.Instance.downloadFile(convMessage, mContactNumber.Replace(":", "_"));
-                            MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId, convMessage);
+                            FileTransfer.Instance.DownloadFile(convMessage, mContactNumber.Replace(":", "_"));
                         }
                         else
                         {
@@ -2005,19 +2018,16 @@ namespace windows_client.View
                 }
                 else
                 {
-                    displayAttachment(convMessage, false);
+                    displayAttachment(convMessage);
                 }
             }
             isContextMenuTapped = false;
         }
 
-        public void displayAttachment(ConvMessage convMessage, bool shouldUpdateAttachment)
+        public void displayAttachment(ConvMessage convMessage)
         {
             string contactNumberOrGroupId = mContactNumber.Replace(":", "_");
-            if (shouldUpdateAttachment)
-            {
-                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
-            }
+
             if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
             {
                 object[] fileTapped = new object[2];
@@ -2365,6 +2375,8 @@ namespace windows_client.View
       * it is scheduled
       */
 
+        List<ConvMessage> listDownload = new List<ConvMessage>();
+
         private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived, bool readFromDb = false)
         {
             if (_isSendAllAsSMSVisible && ocMessages != null && convMessage.IsSent)
@@ -2397,8 +2409,23 @@ namespace windows_client.View
                             Debug.WriteLine("Fileattachment object is null for convmessage with attachment");
                             return;
                         }
-
-                        chatBubble = MessagesTableUtils.getUploadingOrDownloadingMessage(convMessage.MessageId);
+                        if (convMessage.IsSent)
+                            chatBubble = MessagesTableUtils.getUploadingOrDownloadingMessage(convMessage.MessageId);
+                        else
+                        {
+                            bool isDownloading;
+                            chatBubble = FileTransfer.Instance.GetDownloadingMessage(mContactNumber.Replace(":", "_"), convMessage.MessageId.ToString(), out isDownloading);
+                            if (isDownloading)
+                            {
+                                if (chatBubble == null)
+                                    FileTransfer.Instance.UpdateConvMap(convMessage, mContactNumber.Replace(":", "_"));
+                            }
+                            else if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.STARTED && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
+                            {
+                                listDownload.Add(convMessage);
+                              
+                            }
+                        }
                     }
 
                     if (chatBubble == null)
