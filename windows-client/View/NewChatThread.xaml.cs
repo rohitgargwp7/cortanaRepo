@@ -1985,6 +1985,12 @@ namespace windows_client.View
 
         private void FileAttachmentMessage_Tap(object sender, SelectionChangedEventArgs e)
         {
+            if (_uploadProgressBarIsTapped)
+            {
+                _uploadProgressBarIsTapped = false;
+                return;
+            }
+
             emoticonPanel.Visibility = Visibility.Collapsed;
             App.ViewModel.HideToolTip(LayoutRoot, 1);
             attachmentMenu.Visibility = Visibility.Collapsed;
@@ -3374,9 +3380,8 @@ namespace windows_client.View
             FileTransfers.FileUploader.Instance.CancelUploadTask(convMessage.MessageId.ToString());
         }
 
-        private void MenuItem_Click_Pause(object sender, RoutedEventArgs e)
+        private void PauseUpload(ConvMessage convMessage)
         {
-            ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
             if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
             {
                 convMessage.SetAttachmentState(Attachment.AttachmentState.MANUAL_PAUSED);
@@ -3386,9 +3391,8 @@ namespace windows_client.View
             FileTransfers.FileUploader.Instance.PauseUploadTask(convMessage.MessageId.ToString());
         }
 
-        private void MenuItem_Click_Resume(object sender, RoutedEventArgs e)
+        private void ResumeUpload(ConvMessage convMessage)
         {
-            ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
             if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.PAUSED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
             {
                 convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
@@ -3397,7 +3401,7 @@ namespace windows_client.View
 
             FileTransfers.FileUploader.Instance.ResumeUpload(convMessage.MessageId.ToString());
         }
-        
+
         private void MenuItem_Click_SendAsSMS(object sender, RoutedEventArgs e)
         {
             if (mCredits > 0)
@@ -6449,10 +6453,36 @@ namespace windows_client.View
                 ShowForceSMSOnUI();
             }
         }
+
         ViewportControl llsViewPort;
         private void ViewPortLoaded(object sender, RoutedEventArgs e)
         {
             llsViewPort = sender as ViewportControl;
+        }
+
+        bool _uploadProgressBarIsTapped = false;
+
+        private void PauseResume_Tapped(object sender, RoutedEventArgs e)
+        {
+            _uploadProgressBarIsTapped = true;
+
+            var grid = sender as Button;
+            if (grid != null)
+            {
+                var id = Convert.ToInt64(grid.Tag);
+                if (msgMap.ContainsKey(id))
+                {
+                    var convMessage = msgMap[id];
+
+                    if (convMessage.FileAttachment != null)
+                    {
+                        if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
+                            PauseUpload(convMessage);
+                        else if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.PAUSED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
+                            ResumeUpload(convMessage);
+                    }
+                }
+            }
         }
     }
 

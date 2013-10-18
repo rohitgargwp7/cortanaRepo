@@ -561,7 +561,6 @@
     <Content Include="View\images\humanoid_overlay.png" />
     <Content Include="View\images\icon_direction.png" />
     <Content Include="View\images\emoticons\tiranga4.png" />
-    <Content Include="View\images\ic_paused.png" />
     <Content Include="View\images\MediaPlayIcon.png" />
     <Content Include="View\images\doggy_icon.png" />
     <Content Include="View\images\doggy_i_icon.png" />
@@ -652,12 +651,14 @@
     <Content Include="View\images\MyLocation.png" />
     <Content Include="View\images\notification_read.png" />
     <Content Include="View\images\notification_unread.png" />
+    <Content Include="View\images\pause_ftr.png" />
     <Content Include="View\images\pause_icon.png" />
     <Content Include="View\images\places_icon.png" />
     <Content Include="View\images\profile_header_stock.png" />
     <Content Include="View\images\profile_header_stock_dark.png" />
     <Content Include="View\images\refresh_bar_arrow.png" />
     <Content Include="View\images\remove_wt_icon.png" />
+    <Content Include="View\images\resume_ftr.png" />
     <Content Include="View\images\rf_icon.png" />
     <Content Include="View\images\rf_i_icon.png" />
     <Content Include="View\images\search_icon.png" />

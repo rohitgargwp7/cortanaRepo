@@ -3353,15 +3353,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to resume.
-        /// </summary>
-        public static string Resume_Txt {
-            get {
-                return ResourceManager.GetString("Resume_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to save.
         /// </summary>
         public static string Save_AppBar_Btn {

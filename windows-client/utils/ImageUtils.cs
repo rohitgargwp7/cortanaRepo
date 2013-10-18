@@ -48,7 +48,6 @@ namespace windows_client.utils
         private BitmapImage httpFailed;
         private BitmapImage emptyImage;
         private BitmapImage sent;
-        private BitmapImage paused;
         private BitmapImage delivered;
         private BitmapImage read;
         private BitmapImage trying;
@@ -122,6 +121,9 @@ namespace windows_client.utils
         private FontFamily groupChatMessageHeader;
         private FontFamily messageText;
         private BitmapImage myLocationPin;
+
+        private BitmapImage resumeFTR;
+        private BitmapImage pausedFTR;
 
         #endregion
 
@@ -557,13 +559,23 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage Paused
+        public BitmapImage PausedFTR
         {
             get
             {
-                if (paused == null)
-                    paused = new BitmapImage(new Uri("/View/images/ic_paused.png", UriKind.Relative));
-                return paused;
+                if (pausedFTR == null)
+                    pausedFTR = new BitmapImage(new Uri("/View/images/pause_ftr.png", UriKind.Relative));
+                return pausedFTR;
+            }
+        }
+
+        public BitmapImage ResumeFTR
+        {
+            get
+            {
+                if (resumeFTR == null)
+                    resumeFTR = new BitmapImage(new Uri("/View/images/resume_ftr.png", UriKind.Relative));
+                return resumeFTR;
             }
         }
 

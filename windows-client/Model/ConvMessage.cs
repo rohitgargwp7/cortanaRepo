@@ -213,6 +213,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("MessageId");
                     _messageId = value;
+                    NotifyPropertyChanged("MessageId");
                 }
             }
         }
@@ -514,13 +515,32 @@ namespace windows_client.Model
             get { return String.IsNullOrEmpty(DispMessage) ? Visibility.Collapsed : Visibility.Visible; }
         }
 
+        public BitmapImage PauseResumeImage
+        {
+            get
+            {
+                if (FileAttachment.FileState == Attachment.AttachmentState.PAUSED || FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
+                    return UI_Utils.Instance.ResumeFTR;
+                else
+                    return UI_Utils.Instance.PausedFTR;
+            }
+        }
+
+        public Visibility PauseResumeImageVisibility
+        {
+            get
+            {
+                if (FileAttachment.FileState == Attachment.AttachmentState.PAUSED || FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED || FileAttachment.FileState == Attachment.AttachmentState.STARTED)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
         public BitmapImage SdrImage
         {
             get
             {
-                if (FileAttachment != null && (FileAttachment.FileState == Attachment.AttachmentState.PAUSED || FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED))
-                    return UI_Utils.Instance.Paused;
-
                 switch (_messageStatus)
                 {
                     case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
@@ -872,28 +892,6 @@ namespace windows_client.Model
             get
             {
                 if (FileAttachment.FileState == Attachment.AttachmentState.STARTED)
-                    return Visibility.Visible;
-                else
-                    return Visibility.Collapsed;
-            }
-        }
-
-        public Visibility ShowPauseMenu
-        {
-            get
-            {
-                if (FileAttachment.FileState == Attachment.AttachmentState.STARTED)
-                    return Visibility.Visible;
-                else
-                    return Visibility.Collapsed;
-            }
-        }
-
-        public Visibility ShowResumeMenu
-        {
-            get
-            {
-                if (FileAttachment.FileState == Attachment.AttachmentState.PAUSED || FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
@@ -1724,10 +1722,10 @@ namespace windows_client.Model
             if (FileAttachment.FileState == Attachment.AttachmentState.CANCELED || FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
                 ProgressBarValue = 0;
             NotifyPropertyChanged("ShowCancelMenu");
-            NotifyPropertyChanged("ShowResumeMenu");
-            NotifyPropertyChanged("ShowPauseMenu");
             NotifyPropertyChanged("ShowForwardMenu");
             NotifyPropertyChanged("ShowDeleteMenu");
+            NotifyPropertyChanged("PauseResumeImage");
+            NotifyPropertyChanged("PauseResumeImageVisibility");
             NotifyPropertyChanged("SdrImage");
             NotifyPropertyChanged("PlayIconVisibility");
             NotifyPropertyChanged("PlayIconImage");
