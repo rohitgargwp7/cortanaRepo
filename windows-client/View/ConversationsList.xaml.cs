@@ -28,6 +28,7 @@ using windows_client.Controls.StatusUpdate;
 using Coding4Fun.Phone.Controls;
 using System.Windows.Media;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace windows_client.View
 {
@@ -108,6 +109,10 @@ namespace windows_client.View
             base.OnNavigatedFrom(e);
             if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
                 TotalUnreadStatuses = 0;
+
+            contactsCollectionView.Source = null;
+            favCollectionView.Source = null;
+            statusLLS.ItemsSource = null;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -116,10 +121,15 @@ namespace windows_client.View
             if (launchPagePivot.SelectedIndex == 3)
             {
                 TotalUnreadStatuses = 0;
+
+                if (isStatusMessagesLoaded)
+                    statusLLS.ItemsSource = App.ViewModel.StatusList;
             }
+
+            if (_isFavListBound && launchPagePivot.SelectedIndex == 1)
+                BindFriendsAsync();
+
             this.llsConversations.SelectedItem = null;
-            this.favourites.SelectedIndex = -1;
-            this.hikeContactListBox.SelectedIndex = -1;
             this.statusLLS.SelectedIndex = -1;
 
             App.IS_TOMBSTONED = false;
@@ -194,6 +204,43 @@ namespace windows_client.View
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 launchPagePivot.SelectedIndex = 3;
+        }
+
+        private async void BindFriendsAsync()
+        {
+            contactGrid.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
+            cohProgressBar.Visibility = Visibility.Visible;
+
+            txtCircleOfFriends.Visibility = Visibility.Collapsed;
+            cofCounter.Visibility = Visibility.Collapsed;
+            txtContactsOnHike.Visibility = Visibility.Collapsed;
+            cohCounter.Visibility = Visibility.Collapsed;
+            emptyListPlaceholderFiends.Visibility = Visibility.Collapsed;
+            favourites.Visibility = Visibility.Collapsed;
+            emptyListPlaceholderHikeContacts.Visibility = Visibility.Collapsed;
+            hikeContactListBox.Visibility = Visibility.Collapsed;
+
+            //Await aync are used so that the UI thread is not blocked by the below binding computation.
+            await Task.Delay(500);
+
+            contactsCollectionView.Source = hikeContactList;
+            favCollectionView.Source = App.ViewModel.FavList;
+
+            contactGrid.RowDefinitions[0].Height = GridLength.Auto;
+            cohProgressBar.Visibility = Visibility.Collapsed;
+
+            txtCircleOfFriends.Visibility = Visibility.Visible;
+            cofCounter.Visibility = Visibility.Visible;
+            txtContactsOnHike.Visibility = Visibility.Visible;
+            cohCounter.Visibility = Visibility.Visible;
+
+            favourites.Visibility = App.ViewModel.FavList.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            emptyListPlaceholderFiends.Visibility = App.ViewModel.FavList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            emptyListPlaceholderHikeContacts.Visibility = hikeContactList.Count > 0 ? Visibility.Collapsed : Visibility.Visible;
+            hikeContactListBox.Visibility = hikeContactList.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+
+            this.favourites.SelectedIndex = -1;
+            this.hikeContactListBox.SelectedIndex = -1;
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -436,7 +483,6 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.UNBLOCK_USER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
             mPubSub.addListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
-            mPubSub.addListener(HikePubSub.PRO_TIPS_REC, this);
             mPubSub.addListener(HikePubSub.CONTACT_ADDED, this);
             mPubSub.addListener(HikePubSub.ADDRESSBOOK_UPDATED, this);
         }
@@ -462,7 +508,6 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.UNBLOCK_USER, this);
                 mPubSub.removeListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
                 mPubSub.removeListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
-                mPubSub.removeListener(HikePubSub.PRO_TIPS_REC, this);
                 mPubSub.removeListener(HikePubSub.CONTACT_ADDED, this);
                 mPubSub.removeListener(HikePubSub.ADDRESSBOOK_UPDATED, this);
             }
@@ -787,6 +832,10 @@ namespace windows_client.View
                         }
                     };
                 }
+                else if (favCollectionView.Source == null)
+                {
+                    BindFriendsAsync();
+                }
                 #endregion
             }
             else if (selectedIndex == 2)
@@ -874,6 +923,9 @@ namespace windows_client.View
                 {
                     RefreshBarCount = 0;
                     UnreadFriendRequests = 0;
+
+                    if (statusLLS.ItemsSource == null)
+                        statusLLS.ItemsSource = App.ViewModel.StatusList;
                 }
             }
             if (selectedIndex != 3)
@@ -1436,42 +1488,6 @@ namespace windows_client.View
                     }
                 });
 
-            }
-            #endregion
-            #region PRO_TIPS
-            else if (HikePubSub.PRO_TIPS_REC == type)
-            {
-                var vals = obj as object[];
-
-                var id = (string)vals[0];
-                var header = (string)vals[1];
-                var text = (string)vals[2];
-                var imageUrl = (string)vals[3];
-                Int64 time = 0;
-                try
-                {
-                    time = (Int64)vals[4];
-                }
-                catch
-                {
-                }
-
-                if (time > 0)
-                {
-                    if (App.appSettings.Contains(App.PRO_TIP_DISMISS_TIME))
-                        App.appSettings[App.PRO_TIP_DISMISS_TIME] = time;
-                    else
-                        App.WriteToIsoStorageSettings(App.PRO_TIP_DISMISS_TIME, time);
-
-                    ProTipHelper.Instance.ChangeTimerTime(time);
-                }
-                else
-                {
-                    if (!App.appSettings.Contains(App.PRO_TIP_DISMISS_TIME))
-                        App.WriteToIsoStorageSettings(App.PRO_TIP_DISMISS_TIME, HikeConstants.DEFAULT_PRO_TIP_TIME);
-                }
-
-                ProTipHelper.Instance.AddProTip(id, header, text, imageUrl);
             }
             #endregion
             #region DELETE CONVERSATION
@@ -2459,23 +2475,25 @@ namespace windows_client.View
             {
                 launchPagePivot.SelectedIndex = 3;
 
-                int index = 0;
-                if (ProTipHelper.CurrentProTip != null)
-                    index = 1;
+                if (isStatusMessagesLoaded)
+                {
+                    int index = 0;
+                    if (ProTipHelper.CurrentProTip != null)
+                        index = 1;
 
-                int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
-                //if no new status scroll to latest unseen friends request
-                if (UnreadFriendRequests > 0 && (pendingCount > UnreadFriendRequests))
-                {
-                    int x = pendingCount - UnreadFriendRequests;
-                    if (x >= 0 && App.ViewModel.StatusList.Count > x)
-                        statusLLS.ScrollIntoView(App.ViewModel.StatusList[x + index]); //handling index out of bounds exception
-                }
-                //scroll to latest unread status
-                else if ((App.ViewModel.StatusList.Count > pendingCount) && RefreshBarCount > 0
-                    && App.ViewModel.StatusList.Count > pendingCount) //handling index out of bounds exception
-                {
-                    statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount + index]);
+                    int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
+                    //if no new status scroll to latest unseen friends request
+                    if (UnreadFriendRequests > 0 && (pendingCount > UnreadFriendRequests))
+                    {
+                        int x = pendingCount - UnreadFriendRequests;
+                        if (x >= 0 && App.ViewModel.StatusList.Count > (x + index))
+                            statusLLS.ScrollIntoView(App.ViewModel.StatusList[x + index]); //handling index out of bounds exception
+                    }
+                    //scroll to latest unread status
+                    else if ((App.ViewModel.StatusList.Count > (pendingCount + index)) && RefreshBarCount > 0) //handling index out of bounds exception
+                    {
+                        statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount + index]);
+                    }
                 }
             }
         }
@@ -2613,18 +2631,18 @@ namespace windows_client.View
                     }
                 };
             worker.RunWorkerAsync();
-
-            ProTipHelper.Instance.StartTimer();
         }
 
         void showProTip()
         {
-            ProTip proTip;
-            App.appSettings.TryGetValue(App.PRO_TIP, out proTip);
-
-            if (proTip != null)
+            if (ProTipHelper.CurrentProTip != null)
             {
-                App.ViewModel.StatusList.Insert(0, new ProTipUC(proTip, ProTipImage_Tapped, dismissProTip_Click));
+                if (App.ViewModel.StatusList != null && App.ViewModel.StatusList.Count > 0 && App.ViewModel.StatusList[0] is ProTipUC)
+                    App.ViewModel.StatusList.RemoveAt(0);
+
+                var proTipUc = new ProTipUC(ProTipImage_Tapped, dismissProTip_Click);
+                App.ViewModel.StatusList.Insert(0, proTipUc);
+
                 ProTipCount = 1;
             }
         }

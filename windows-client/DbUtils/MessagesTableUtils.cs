@@ -72,8 +72,11 @@ namespace windows_client.DbUtils
         /* This is shown on chat thread screen*/
         public static List<ConvMessage> getMessagesForMsisdn(string msisdn, long lastMessageId, int count)
         {
-            List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdnForPaging(DbCompiledQueries.chatsDbContext, msisdn, lastMessageId, count).ToList<ConvMessage>();
-            return (res == null || res.Count == 0) ? null : res;
+            using (HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdnForPaging(chatsDbContext, msisdn, lastMessageId, count).ToList<ConvMessage>();
+                return (res == null || res.Count == 0) ? null : res;
+            }
         }
 
         /* This queries messages table and get the last message for given msisdn*/

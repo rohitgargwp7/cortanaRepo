@@ -131,8 +131,9 @@ namespace windows_client.DbUtils
             ProTipHelper.Instance.ClearProTips();
             App.appSettings[App.PRO_TIP_COUNT] = 2; // reset value of protip count for next new user
             #endregion
-            #region DELETE CATEGORIES
+            #region DELETE CATEGORIES, RECENT STICKERS
             StickerCategory.DeleteAllCategories();
+            RecentStickerHelper.DeleteRecents();
             #endregion
             #region RESET IN APP TIPS
             App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;

@@ -19,7 +19,6 @@ namespace windows_client.View
     public partial class BlockListPage : PhoneApplicationPage, HikePubSub.Listener
     {
         public ObservableCollection<ContactInfo> blockedList = null;
-        private bool isInitialised;
 
         public BlockListPage()
         {
@@ -127,7 +126,8 @@ namespace windows_client.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (!isInitialised)
+
+            if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
             {
                 shellProgress.IsVisible = true;
                 registerListeners();
@@ -148,7 +148,6 @@ namespace windows_client.View
                     }
                     shellProgress.IsVisible = false;
                 };
-                isInitialised = true;
             }
         }
 

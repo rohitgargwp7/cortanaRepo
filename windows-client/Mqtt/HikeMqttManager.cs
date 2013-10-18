@@ -141,18 +141,16 @@ namespace windows_client.Mqtt
             }
         }
 
-        public void SoftDisconnect()
+        public void AddMqttListener()
         {
-            try
-            {
+            if (mqttConnection != null)
+                mqttConnection.MqttListener = this;
+        }
+
+        public void RemoveMqttListener()
+        {
+            if (mqttConnection != null)
                 mqttConnection.MqttListener = null;
-                mqttConnection = null;
-                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("HikeMqttManager ::  SoftDisconnect , Exception : " + ex.StackTrace);
-            }
         }
 
         //synchronized
@@ -171,7 +169,7 @@ namespace windows_client.Mqtt
                     return;
                 }
                 mqttConnection = new MqttConnection(clientId, brokerHostName, brokerPortNumber, uid, password, new ConnectCB(this));
-                mqttConnection.MqttListener = this;
+                AddMqttListener();
             }
 
             try

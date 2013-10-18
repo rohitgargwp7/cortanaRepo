@@ -52,56 +52,59 @@ namespace windows_client.utils
                 StickerCategory stickerCategory;
                 int pivotIndex = 0;
                 //done thos way to maintain order of insertion
+                CreateStickerPivotItem(StickerHelper.CATEGORY_RECENT, pivotIndex);
+                dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_RECENT;
+                pivotIndex++;
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID)) != null)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_HUMANOID;
                     pivotIndex++;
                 }
 
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_DOGGY;
                     pivotIndex++;
                 }
 
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_KITTY;
                     pivotIndex++;
                 }
 
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_EXPRESSIONS;
                     pivotIndex++;
                 }
 
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_BOLLYWOOD;
                     pivotIndex++;
                 }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_TROLL;
                 }
                 isInitialised = true;
             }
         }
 
-        private void CreateStickerPivotItem(string category, ObservableCollection<Sticker> listSticker, int pivotIndex)
+        private void CreateStickerPivotItem(string category, int pivotIndex)
         {
             PivotItem pvt = new PivotItem();
             pvt.Margin = zeroThickness;
             pvt.BorderThickness = zeroThickness;
             pvt.Padding = zeroThickness;
-            StickerPivotItem stickerPivot = new StickerPivotItem( listSticker, pivotIndex, category);
+            StickerPivotItem stickerPivot = new StickerPivotItem(pivotIndex, category);
             StickerPivotHelper.Instance.dictStickersPivot[category] = stickerPivot;
             pvt.Content = stickerPivot;
             _stickerPivot.Items.Add(pvt);
