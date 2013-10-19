@@ -103,7 +103,7 @@ namespace windows_client.FileTransfers
                     if (UpdateFileUploadStatusOnUI != null)
                         UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo, true));
 
-                    App.HikePubSubInstance.publish(HikePubSub.UPLOAD_COMPLETE, fileInfo);
+                    App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
                 }
                 else if (fileInfo.FileState != UploadFileState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) || fileInfo.FileState != UploadFileState.PAUSED))
                 {
@@ -126,7 +126,7 @@ namespace windows_client.FileTransfers
                 if (UpdateFileUploadStatusOnUI != null)
                     UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo,true));
 
-                App.HikePubSubInstance.publish(HikePubSub.UPLOAD_COMPLETE, fileInfo);
+                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
                 
                 return true;
             }
@@ -343,7 +343,7 @@ namespace windows_client.FileTransfers
                     if (UpdateFileUploadStatusOnUI != null)
                         UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo,true));
 
-                    App.HikePubSubInstance.publish(HikePubSub.UPLOAD_COMPLETE, fileInfo);
+                    App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
                 }
                 else
                 {
@@ -355,7 +355,7 @@ namespace windows_client.FileTransfers
                     if (UpdateFileUploadStatusOnUI != null)
                         UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo,true));
 
-                    App.HikePubSubInstance.publish(HikePubSub.UPLOAD_COMPLETE, fileInfo);
+                    App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
                     
                     BeginPostRequest(fileInfo);
                 }
@@ -367,7 +367,7 @@ namespace windows_client.FileTransfers
                 fileInfo.FileState = UploadFileState.STARTED;
                 SaveUploadData(fileInfo);
 
-                App.HikePubSubInstance.publish(HikePubSub.UPLOAD_COMPLETE, fileInfo);
+                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
 
                 if (UpdateFileUploadStatusOnUI != null)
                     UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo,true));
@@ -521,7 +521,7 @@ namespace windows_client.FileTransfers
                         if (UpdateFileUploadStatusOnUI != null)
                             UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo, true));
                      
-                        App.HikePubSubInstance.publish(HikePubSub.UPLOAD_COMPLETE, fileInfo);
+                        App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
                     }
 
                     SaveUploadData(fileInfo);
@@ -567,7 +567,7 @@ namespace windows_client.FileTransfers
                 if (UpdateFileUploadStatusOnUI != null)
                     UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo,true));
 
-                App.HikePubSubInstance.publish(HikePubSub.UPLOAD_COMPLETE, fileInfo);
+                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
             }
             else
             {

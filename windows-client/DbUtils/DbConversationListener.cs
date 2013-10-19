@@ -45,7 +45,7 @@ namespace windows_client.DbUtils
             mPubSub.addListener(HikePubSub.ATTACHMENT_SENT, this);
             mPubSub.addListener(HikePubSub.FORWARD_ATTACHMENT, this);
             mPubSub.addListener(HikePubSub.SAVE_STATUS_IN_DB, this);
-            mPubSub.addListener(HikePubSub.UPLOAD_COMPLETE, this);
+            mPubSub.addListener(HikePubSub.FILE_STATE_CHANGED, this);
         }
 
         private void removeListeners()
@@ -63,7 +63,7 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.ATTACHMENT_SENT, this);
             mPubSub.removeListener(HikePubSub.FORWARD_ATTACHMENT, this);
             mPubSub.removeListener(HikePubSub.SAVE_STATUS_IN_DB, this);
-            mPubSub.removeListener(HikePubSub.UPLOAD_COMPLETE, this);
+            mPubSub.removeListener(HikePubSub.FILE_STATE_CHANGED, this);
         }
 
         //call this from UI thread
@@ -315,7 +315,7 @@ namespace windows_client.DbUtils
                 StatusMessage sm = obj as StatusMessage;
                 StatusMsgsTable.InsertStatusMsg(sm, false);
             }
-            else if (type == HikePubSub.UPLOAD_COMPLETE)
+            else if (type == HikePubSub.FILE_STATE_CHANGED)
             {
                 var fInfo = obj as UploadFileInfo;
 
