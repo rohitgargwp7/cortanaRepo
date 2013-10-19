@@ -171,7 +171,7 @@ namespace windows_client.FileTransfers
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("FileUploader :: Save Uploads To File, Exception : " + ex.StackTrace);
+                    System.Diagnostics.Debug.WriteLine("FileUploader :: Load Uploads From File, Exception : " + ex.StackTrace);
                 }
             }
         }

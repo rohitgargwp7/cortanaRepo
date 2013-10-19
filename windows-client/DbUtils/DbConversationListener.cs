@@ -16,6 +16,7 @@ using windows_client.Languages;
 using Microsoft.Phone.Controls;
 using System.Text;
 using windows_client.FileTransfers;
+using System.Diagnostics;
 
 namespace windows_client.DbUtils
 {
@@ -323,10 +324,16 @@ namespace windows_client.DbUtils
                 {
                     var id = Convert.ToInt64(fInfo.SessionId);
                     ConvMessage convMessage = DbCompiledQueries.GetMessagesForMsgId(context, id).FirstOrDefault<ConvMessage>();
-                    
-                    if (convMessage != null)
+
+                    if (convMessage == null)
+                        return;
+
+                    try
                     {
                         var attachment = MiscDBUtil.getFileAttachment(fInfo.Msisdn, fInfo.SessionId);
+                        if (attachment == null)
+                            return;
+
                         convMessage.FileAttachment = attachment;
 
                         Attachment.AttachmentState state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
@@ -346,7 +353,7 @@ namespace windows_client.DbUtils
                         else if (fInfo.FileState == UploadFileState.NOT_STARTED)
                             state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
 
-                        if (fInfo.FileState == UploadFileState.COMPLETED) 
+                        if (fInfo.FileState == UploadFileState.COMPLETED)
                             convMessage.ProgressBarValue = 100;
 
                         convMessage.SetAttachmentState(state);
@@ -391,6 +398,10 @@ namespace windows_client.DbUtils
                             convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
                             NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
                         }
+                    }
+                    catch
+                    {
+                        Debug.WriteLine("DbConversationListener :: FILE_STATE_CHANGED : FILE_STATE_CHANGED, Exception : " + e.StackTrace);
                     }
                 }
             }
