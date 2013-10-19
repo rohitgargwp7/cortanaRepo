@@ -120,7 +120,7 @@ namespace windows_client.DbUtils
                 ConvMessage convMessage = (ConvMessage)vals[0];
                 string sourceFilePath = (string)vals[1];
 
-                convMessage.MessageStatus = ConvMessage.State.UNKNOWN;
+                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
                 convMessage.MessageId = convMessage.MessageId;
 
@@ -151,7 +151,7 @@ namespace windows_client.DbUtils
                 ConvMessage convMessage = (ConvMessage)vals[0];
                 byte[] fileBytes = (byte[])vals[1];
 
-                convMessage.MessageStatus = ConvMessage.State.UNKNOWN;
+                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
 
                 // in case of db failure convObj returned will be null
@@ -399,7 +399,7 @@ namespace windows_client.DbUtils
                             NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
                         }
                     }
-                    catch
+                    catch(Exception e)
                     {
                         Debug.WriteLine("DbConversationListener :: FILE_STATE_CHANGED : FILE_STATE_CHANGED, Exception : " + e.StackTrace);
                     }
