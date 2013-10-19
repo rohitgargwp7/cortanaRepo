@@ -119,6 +119,7 @@ namespace windows_client.DbUtils
                 ConvMessage convMessage = (ConvMessage)vals[0];
                 string sourceFilePath = (string)vals[1];
 
+                convMessage.MessageStatus = ConvMessage.State.UNKNOWN;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
                 convMessage.MessageId = convMessage.MessageId;
 
@@ -135,7 +136,6 @@ namespace windows_client.DbUtils
                     if (fileBytes == null)
                         return;
 
-                    convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
@@ -150,8 +150,7 @@ namespace windows_client.DbUtils
                 ConvMessage convMessage = (ConvMessage)vals[0];
                 byte[] fileBytes = (byte[])vals[1];
 
-                //In case of sending attachments, here message state should be unknown instead of sent_unconfirmed
-                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                convMessage.MessageStatus = ConvMessage.State.UNKNOWN;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
 
                 // in case of db failure convObj returned will be null
@@ -167,7 +166,6 @@ namespace windows_client.DbUtils
                         MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
                                 Convert.ToString(convMessage.MessageId), fileBytes);
 
-                    convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
@@ -381,6 +379,7 @@ namespace windows_client.DbUtils
                             }
 
                             convMessage.FileAttachment.FileKey = fileKey;
+                            convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
                             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
 
