@@ -804,6 +804,9 @@ namespace windows_client.View
                 {
                     Debug.WriteLine("NewChatThread.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
                 }
+
+                FileTransfers.FileUploader.Instance.UpdateFileUploadStatusOnUI -= FileUploadStatusUpdated;
+
                 gridStickers.Children.Remove(pivotStickers);
                 ClearPageResources();
                 if (App.newChatThreadPage == this)
