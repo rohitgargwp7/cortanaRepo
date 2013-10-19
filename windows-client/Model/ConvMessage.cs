@@ -213,6 +213,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("MessageId");
                     _messageId = value;
+                    NotifyPropertyChanged("MessageId");
                 }
             }
         }
@@ -377,7 +378,10 @@ namespace windows_client.Model
             set
             {
                 if (_fileAttachment != value)
+                {
                     _fileAttachment = value;
+                    NotifyPropertyChanged("SdrImage");
+                }
             }
         }
 
@@ -509,6 +513,28 @@ namespace windows_client.Model
         public Visibility DispMessageVisibility
         {
             get { return String.IsNullOrEmpty(DispMessage) ? Visibility.Collapsed : Visibility.Visible; }
+        }
+
+        public BitmapImage PauseResumeImage
+        {
+            get
+            {
+                if (FileAttachment.FileState == Attachment.AttachmentState.PAUSED || FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
+                    return UI_Utils.Instance.ResumeFTR;
+                else
+                    return UI_Utils.Instance.PausedFTR;
+            }
+        }
+
+        public Visibility PauseResumeImageVisibility
+        {
+            get
+            {
+                if (FileAttachment.FileState == Attachment.AttachmentState.PAUSED || FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED || FileAttachment.FileState == Attachment.AttachmentState.STARTED)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
         }
 
         public BitmapImage SdrImage
@@ -1698,6 +1724,8 @@ namespace windows_client.Model
             NotifyPropertyChanged("ShowCancelMenu");
             NotifyPropertyChanged("ShowForwardMenu");
             NotifyPropertyChanged("ShowDeleteMenu");
+            NotifyPropertyChanged("PauseResumeImage");
+            NotifyPropertyChanged("PauseResumeImageVisibility");
             NotifyPropertyChanged("SdrImage");
             NotifyPropertyChanged("PlayIconVisibility");
             NotifyPropertyChanged("PlayIconImage");

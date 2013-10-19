@@ -122,6 +122,9 @@ namespace windows_client.utils
         private FontFamily messageText;
         private BitmapImage myLocationPin;
 
+        private BitmapImage resumeFTR;
+        private BitmapImage pausedFTR;
+
         #endregion
 
         #region STATUS UPDATE CUSTOM CONTROLS
@@ -553,6 +556,26 @@ namespace windows_client.utils
                 if (sent == null)
                     sent = new BitmapImage(new Uri("/View/images/ic_sent.png", UriKind.Relative));
                 return sent;
+            }
+        }
+
+        public BitmapImage PausedFTR
+        {
+            get
+            {
+                if (pausedFTR == null)
+                    pausedFTR = new BitmapImage(new Uri("/View/images/pause_ftr.png", UriKind.Relative));
+                return pausedFTR;
+            }
+        }
+
+        public BitmapImage ResumeFTR
+        {
+            get
+            {
+                if (resumeFTR == null)
+                    resumeFTR = new BitmapImage(new Uri("/View/images/resume_ftr.png", UriKind.Relative));
+                return resumeFTR;
             }
         }
 

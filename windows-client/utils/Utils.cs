@@ -548,14 +548,11 @@ namespace windows_client.utils
 
             while (Math.Round(dValue / 1024) >= 1)
             {
-                Debug.WriteLine("Size: " + dValue);
-
                 dValue /= 1024;
                 i++;
             }
 
             return string.Format("{0,2:n1} {1}", dValue, suffixes[i]);
         }
-
     }
 }

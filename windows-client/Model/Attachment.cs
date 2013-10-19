@@ -20,7 +20,9 @@ namespace windows_client.Model
             FAILED_OR_NOT_STARTED = 0,  /* message sent to server */
             STARTED, /* message could not be sent, manually retry */
             COMPLETED, /* message received by server */
-            CANCELED
+            CANCELED,
+            PAUSED,
+            MANUAL_PAUSED
         }
 
         [DataMember]

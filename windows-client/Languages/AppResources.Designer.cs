@@ -205,6 +205,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto download file.
+        /// </summary>
+        public static string Auto_Download_Settings_Header {
+            get {
+                return ResourceManager.GetString("Auto_Download_Settings_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto resume file uploads.
+        /// </summary>
+        public static string Auto_Upload_Settings_Header {
+            get {
+                return ResourceManager.GetString("Auto_Upload_Settings_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tap to {0} this person.
         /// </summary>
         public static string Block_Tap_Txt {

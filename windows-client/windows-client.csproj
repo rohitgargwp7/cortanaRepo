@@ -180,6 +180,8 @@
     <Compile Include="DbUtils\StatusMsgsTable.cs" />
     <Compile Include="DbUtils\UsersTableUtils.cs" />
     <Compile Include="FileTransfer.cs" />
+    <Compile Include="FileTransfers\UploadFileInfo.cs" />
+    <Compile Include="FileTransfers\FileUploader.cs" />
     <Compile Include="HikeConstants.cs" />
     <Compile Include="HikePubSub.cs" />
     <Compile Include="Languages\AppResources.Designer.cs">
@@ -649,12 +651,14 @@
     <Content Include="View\images\MyLocation.png" />
     <Content Include="View\images\notification_read.png" />
     <Content Include="View\images\notification_unread.png" />
+    <Content Include="View\images\pause_ftr.png" />
     <Content Include="View\images\pause_icon.png" />
     <Content Include="View\images\places_icon.png" />
     <Content Include="View\images\profile_header_stock.png" />
     <Content Include="View\images\profile_header_stock_dark.png" />
     <Content Include="View\images\refresh_bar_arrow.png" />
     <Content Include="View\images\remove_wt_icon.png" />
+    <Content Include="View\images\resume_ftr.png" />
     <Content Include="View\images\rf_icon.png" />
     <Content Include="View\images\rf_i_icon.png" />
     <Content Include="View\images\search_icon.png" />

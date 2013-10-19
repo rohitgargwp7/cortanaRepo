@@ -33,7 +33,7 @@ namespace windows_client.utils
 
         private static readonly int PRODUCTION_PORT = 80;
 
-        private static readonly int STAGING_PORT = 80;
+        private static readonly int STAGING_PORT = 8080;
 
         public static bool IsProd
         {
@@ -138,13 +138,14 @@ namespace windows_client.utils
         public delegate void downloadFile(byte[] downloadedData, object metadata);
         public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage);
 
-        private enum RequestType
+        public enum RequestType
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
             POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS, GET_ONHIKE_DATE, POST_INFO_ON_APP_UPDATE, GET_STICKERS,
             LAST_SEEN_POST, SOCIAL_INVITE
         }
-        private static void addToken(HttpWebRequest req)
+
+        public static void addToken(HttpWebRequest req)
         {
             req.Headers["Cookie"] = "user=" + mToken + ";uid=" + (string)App.appSettings[App.UID_SETTING];
         }
@@ -375,7 +376,7 @@ namespace windows_client.utils
             req.BeginGetResponse(GetRequestCallback, new object[] { req, finalCallbackFunction });
         }
 
-        private static void setParams_Callback(IAsyncResult result)
+        public static void setParams_Callback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
             JObject data = new JObject();
@@ -527,25 +528,8 @@ namespace windows_client.utils
                     byte[] dataBytes = (byte[])vars[2];
                     postUploadPhotoFunction finalCallbackForUploadFile = vars[3] as postUploadPhotoFunction;
                     ConvMessage convMessage = vars[4] as ConvMessage;
-                    // SentChatBubble chatBubble = vars[5] as SentChatBubble;
-                    int bufferSize = 2048;
-                    int startIndex = 0;
-                    int noOfBytesToWrite = 0;
-                    double progressValue = 0;
-                    while (startIndex < dataBytes.Length)
-                    {
-                        Thread.Sleep(5);
-                        noOfBytesToWrite = dataBytes.Length - startIndex;
-                        noOfBytesToWrite = noOfBytesToWrite < bufferSize ? noOfBytesToWrite : bufferSize;
-                        postStream.Write(dataBytes, startIndex, noOfBytesToWrite);
-                        progressValue = ((double)(startIndex + noOfBytesToWrite) / dataBytes.Length) * 100;
-                        if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.CANCELED)
-                            break;
-                        progressValue -= 10;
-                        convMessage.ProgressBarValue = progressValue < 0 ? 0 : progressValue;
-                        startIndex += noOfBytesToWrite;
-                    }
-
+                    postStream.Write(dataBytes, 0, dataBytes.Length);
+                    postStream.Close();
                     postStream.Close();
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage });
                     return;
@@ -841,7 +825,7 @@ namespace windows_client.utils
             return data;
         }
 
-        private static void json_Callback(IAsyncResult result)
+        public static void json_Callback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
             RequestType type = (RequestType)vars[1];

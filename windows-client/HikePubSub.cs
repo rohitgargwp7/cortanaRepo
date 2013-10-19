@@ -132,8 +132,6 @@ namespace windows_client
 
         public static readonly string DELETE_STATUS_AND_CONV = "delConvStatus";
 
-        public static readonly string ATTACHMENT_RESEND = "resendOrForward";
-
         public static readonly string UPDATE_ACCOUNT_NAME = "updateAccountName";
 
         public static readonly string INVITE_TOKEN_ADDED = "inviteTokenAdded";
@@ -158,6 +156,8 @@ namespace windows_client
 
         public static readonly string CONTACT_ADDED = "contact_added";
         public static readonly string ADDRESSBOOK_UPDATED= "adbook_updated";
+
+        public static readonly string FILE_STATE_CHANGED = "fileStateChanged";
 
         private readonly Thread mThread;
 

@@ -258,7 +258,7 @@ namespace windows_client
                 if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.CANCELED)
                 {
                     convMessage.ProgressBarValue = e.Request.BytesReceived * 100 / e.Request.TotalBytesToReceive;
-                    convMessage.ProgressText = string.Format("{0} of {1}", Utils.ConvertToStorageSizeString(e.Request.BytesReceived), Utils.ConvertToStorageSizeString(e.Request.TotalBytesToReceive));
+                    convMessage.ProgressText = string.Format("{0}/{1}", Utils.ConvertToStorageSizeString(e.Request.BytesReceived), Utils.ConvertToStorageSizeString(e.Request.TotalBytesToReceive));
                 }
                 else
                 {
