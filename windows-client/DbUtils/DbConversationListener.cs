@@ -137,6 +137,9 @@ namespace windows_client.DbUtils
                     if (fileBytes == null)
                         return;
 
+                    if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                        MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
+
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
