@@ -647,7 +647,7 @@ namespace windows_client.Model
                 if (_fileAttachment != null)
                 {
                     if (_fileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
-                        return !IsSent ? UI_Utils.Instance.DownloadIcon : UI_Utils.Instance.BlankBitmapImage;
+                        return IsSent || _fileAttachment.FileState == Attachment.AttachmentState.STARTED ? UI_Utils.Instance.BlankBitmapImage : UI_Utils.Instance.DownloadIcon;
                     else if (_fileAttachment.ContentType.Contains(HikeConstants.AUDIO) && IsPlaying)
                         return UI_Utils.Instance.PauseIcon;
                     else
