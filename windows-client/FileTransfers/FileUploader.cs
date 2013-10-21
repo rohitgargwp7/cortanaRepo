@@ -79,6 +79,8 @@ namespace windows_client.FileTransfers
 
                 if (UpdateFileUploadStatusOnUI != null)
                     UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fInfo,true));
+
+                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fInfo);
             }
         }
 
@@ -539,10 +541,13 @@ namespace windows_client.FileTransfers
 
                     if (fileInfo.FileState == UploadFileState.STARTED)
                     {
-                        var newSize = (fileInfo.AttemptNumber + 1) * _defaultBlockSize;
+                        var newSize = (fileInfo.AttemptNumber + fileInfo.AttemptNumber) * _defaultBlockSize;
 
                         if (newSize <= _maxBlockSize)
-                            fileInfo.BlockSize = ++fileInfo.AttemptNumber * _defaultBlockSize;
+                        {
+                            fileInfo.AttemptNumber += fileInfo.AttemptNumber;
+                            fileInfo.BlockSize = fileInfo.AttemptNumber * _defaultBlockSize;
+                        }
                     }
                     else
                     {
