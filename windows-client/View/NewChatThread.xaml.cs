@@ -2484,6 +2484,9 @@ namespace windows_client.View
                             {
                                 listDownload.Add(convMessage);
                             }
+                            if (chatBubble != null)
+                                chatBubble.GroupMemberName = isGroupChat ?
+                                  GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                         }
                     }
 
