@@ -1034,9 +1034,9 @@ namespace windows_client.View
             #region ADD TO PENDING
             else if (HikePubSub.ADD_TO_PENDING == type)
             {
-
-                if (!App.ViewModel.IsPendingListLoaded)
+                if (!App.ViewModel.IsPendingListLoaded || !isStatusMessagesLoaded)
                     return;
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     ConversationListObject co = (ConversationListObject)obj;
@@ -1061,7 +1061,6 @@ namespace windows_client.View
                         {
                             UnreadFriendRequests++;
                         }
-
                     }
                 });
             }
