@@ -619,9 +619,24 @@ namespace windows_client
                                                         else
                                                             FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                                                         Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
-                                                        LoadFavAndPending(isFav, fkkvv.Key, name); // true for favs
+                                                        LoadFavAndPending(isFav, fkkvv.Key); // true for favs
                                                         thrAreFavs = true;
+
+                                                        ConversationListObject favObj;
+                                                        if (App.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
+                                                            favObj = App.ViewModel.ConvMap[fkkvv.Key];
+                                                        else
+                                                        {
+                                                            ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(fkkvv.Key);
+                                                            if (ci != null)
+                                                                name = ci.Name;
+
+                                                            favObj = new ConversationListObject(fkkvv.Key, name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(fkkvv.Key) : null);
+                                                        }
+
+                                                        this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
                                                     }
+                                                   
                                                     if (thrAreFavs)
                                                         this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV, null);
                                                 });
@@ -1543,7 +1558,7 @@ namespace windows_client
             #endregion
         }
 
-        private void LoadFavAndPending(bool isFav, string msisdn, string name)
+        private void LoadFavAndPending(bool isFav, string msisdn)
         {
             if (msisdn == null)
                 return;
