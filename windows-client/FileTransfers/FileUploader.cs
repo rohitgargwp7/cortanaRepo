@@ -20,7 +20,9 @@ namespace windows_client.FileTransfers
     public class FileUploader
     {
         private const string UPLOAD_DIRECTORY_NAME = "FileUpload";
-        const int _maxBlockSize = 1048576;
+        int MaxBlockSize;
+        const int Wifi3GBuffer =  1048576;
+        const int EDGEBuffer =  102400;
         const int _defaultBlockSize = 1024;
         const int _noOfParallelRequest = 20;
 
@@ -51,6 +53,7 @@ namespace windows_client.FileTransfers
 
         public FileUploader()
         {
+            MaxBlockSize = Wifi3GBuffer;
             ThreadPool.SetMaxThreads(_noOfParallelRequest, _noOfParallelRequest);
         }
 
@@ -62,6 +65,11 @@ namespace windows_client.FileTransfers
             UploadMap.Add(fInfo.SessionId, fInfo);
             SaveUploadData(fInfo);
             StartUpload();
+        }
+
+        public void ChangeMaxUploadBuffer(NetworkInterfaceSubType type)
+        {
+            MaxBlockSize = type == NetworkInterfaceSubType.Cellular_EDGE ? EDGEBuffer : Wifi3GBuffer;
         }
 
         public void ResumeUpload(string key)
@@ -543,7 +551,7 @@ namespace windows_client.FileTransfers
                     {
                         var newSize = (fileInfo.AttemptNumber + fileInfo.AttemptNumber) * _defaultBlockSize;
 
-                        if (newSize <= _maxBlockSize)
+                        if (newSize <= MaxBlockSize)
                         {
                             fileInfo.AttemptNumber += fileInfo.AttemptNumber;
                             fileInfo.BlockSize = fileInfo.AttemptNumber * _defaultBlockSize;
