@@ -476,24 +476,24 @@ namespace windows_client.FileTransfers
 
             HttpWebRequest myHttpWebRequest = (HttpWebRequest)vars[0];
 
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                try
-                {
-                    var netInterface = myHttpWebRequest.GetCurrentNetworkInterface();
-                    MaxBlockSize = (netInterface.InterfaceSubtype == NetworkInterfaceSubType.Cellular_EDGE 
-                        || netInterface.InterfaceSubtype == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
+            //Deployment.Current.Dispatcher.BeginInvoke(() =>
+            //{
+            //    try
+            //    {
+            //        var netInterface = myHttpWebRequest.GetCurrentNetworkInterface();
+            //        MaxBlockSize = (netInterface.InterfaceSubtype == NetworkInterfaceSubType.Cellular_EDGE 
+            //            || netInterface.InterfaceSubtype == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
 
-                    System.Diagnostics.Debug.WriteLine(netInterface.InterfaceType.ToString());
-                }
-                catch (NetworkException networkException)
-                {
-                    if (networkException.NetworkErrorCode == NetworkError.WebRequestAlreadyFinished)
-                    {
-                        System.Diagnostics.Debug.WriteLine("Cannot call GetCurrentNetworkInterface if the webrequest is already complete");
-                    }
-                }
-            }); 
+            //        System.Diagnostics.Debug.WriteLine(netInterface.InterfaceType.ToString());
+            //    }
+            //    catch (NetworkException networkException)
+            //    {
+            //        if (networkException.NetworkErrorCode == NetworkError.WebRequestAlreadyFinished)
+            //        {
+            //            System.Diagnostics.Debug.WriteLine("Cannot call GetCurrentNetworkInterface if the webrequest is already complete");
+            //        }
+            //    }
+            //}); 
             
             HttpWebResponse response = null;
 
