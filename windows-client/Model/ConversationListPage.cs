@@ -37,7 +37,7 @@ namespace windows_client.Model
         private int _muteVal = -1; // this is used to track mute (added in version 1.5.0.0)
         private BitmapImage empImage = null;
         private bool _isFav;
-
+        private bool _isHikeBot;
         #endregion
 
         #region Properties
@@ -238,7 +238,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (Utils.isGroupConversation(Msisdn))
+                if (Utils.isGroupConversation(Msisdn) || _isHikeBot)
                     return Visibility.Collapsed;
                 else
                     return Visibility.Visible;
@@ -290,7 +290,7 @@ namespace windows_client.Model
                 }
             }
         }
-        
+
         public Visibility UnreadCircleVisibility
         {
             get
@@ -487,6 +487,18 @@ namespace windows_client.Model
             }
         }
 
+        public bool IsHikeBot
+        {
+            get
+            {
+                return _isHikeBot;
+            }
+            set
+            {
+                _isHikeBot = value;
+            }
+        }
+
         public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar, ConvMessage.State msgStatus, long lastMsgId)
         {
             this._msisdn = msisdn;
@@ -528,7 +540,7 @@ namespace windows_client.Model
             double defaultWidth = 17;
             var num = UnreadCounter;
 
-            while (num!=0)
+            while (num != 0)
             {
                 num /= 10;
                 defaultWidth += 8;
@@ -588,6 +600,7 @@ namespace windows_client.Model
                 writer.Write(_lastMsgId);
                 writer.Write(_muteVal);
                 writer.Write(_unreadCounter);
+                writer.Write(_isHikeBot);
             }
             catch (Exception ex)
             {
@@ -670,6 +683,14 @@ namespace windows_client.Model
                         _unreadCounter = 1;
                     else
                         _unreadCounter = 0;
+                }
+                try
+                {
+                    _isHikeBot = reader.ReadBoolean();
+                }
+                catch
+                {
+                    _isHikeBot = false;
                 }
 
             }

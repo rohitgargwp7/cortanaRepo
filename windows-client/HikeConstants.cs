@@ -37,7 +37,7 @@ namespace windows_client
         public static readonly string FILE_SYSTEM_VERSION = "File_System_Version";
         public static readonly string REQUEST_SERVER_TIME = "rsts";
         public static readonly string STATUS = "st";
-        
+
         public static readonly string CRITICAL = "critical";
         public static readonly string LATEST = "latest";
         public static readonly string APP_ID = "appID";
@@ -67,7 +67,7 @@ namespace windows_client
         public static readonly string LOCATION_TITLE = "title";
         public static readonly string LOCATION_FILENAME = "Location";
         public static readonly string LOCATION_CONTENT_TYPE = "hikemap/location";
-        
+
         public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
         public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
         public static readonly string FILES_THUMBNAILS = FILE_TRANSFER_LOCATION + "/Thumbnails";
@@ -162,6 +162,10 @@ namespace windows_client
 
         public static readonly string CAMERA_FRONT = "Front";
         public static readonly string CAMERA_BACK = "Back";
+
+        public static const string FTUE_TEAMHIKE_MSISDN = "+hike+";
+        public static const string FTUE_HIKEBOT_MSISDN = "+hike1+";
+        public static const string FTUE_GAMING_MSISDN = "+hike2+";
 
         public static string FAQS_LINK
         {
@@ -362,6 +366,7 @@ namespace windows_client
             public static readonly string SCALE_UP = "scaleUpIfNeeded";
             public static readonly string UPDATE_AVAILABLE = "updateAvailable";
             public static readonly string KEEP_MESSAGE = "keepMessage";
+            public static readonly string SEND_BOT = "sendbot";
         }
 
         public static class MqttMessageTypes
@@ -372,11 +377,11 @@ namespace windows_client
             public static readonly string GROUP_CHAT_LEAVE = "gcl";
             public static readonly string GROUP_CHAT_END = "gce";
             public static readonly string GROUP_CHAT_NAME = "gcn";
-            public static readonly string REQUEST_ACCOUNT_INFO = "rai";
             public static readonly string DND_USER_IN_GROUP = "dugc";
 
             public static readonly string ACCOUNT_INFO = "ai";
             public static readonly string ACCOUNT_CONFIG = "ac";
+            public static readonly string REQUEST_ACCOUNT_INFO = "rai";
             public static readonly string GROUP_USER_JOINED_OR_WAITING = "gujow";
             public static readonly string USER_OPT_IN = "uo";
             public static readonly string USER_JOIN = "uj";
