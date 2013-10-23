@@ -14,13 +14,16 @@ using System.Net;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using windows_client.utils;
+using System.Windows;
 
 namespace windows_client.FileTransfers
 {
     public class FileUploader
     {
         private const string UPLOAD_DIRECTORY_NAME = "FileUpload";
-        const int _maxBlockSize = 1048576;
+        int MaxBlockSize;
+        const int WifiBuffer =  1048576;
+        const int MobileBuffer =  102400;
         const int _defaultBlockSize = 1024;
         const int _noOfParallelRequest = 20;
 
@@ -51,6 +54,7 @@ namespace windows_client.FileTransfers
 
         public FileUploader()
         {
+            MaxBlockSize = WifiBuffer;
             ThreadPool.SetMaxThreads(_noOfParallelRequest, _noOfParallelRequest);
         }
 
@@ -62,6 +66,11 @@ namespace windows_client.FileTransfers
             UploadMap.Add(fInfo.SessionId, fInfo);
             SaveUploadData(fInfo);
             StartUpload();
+        }
+
+        public void ChangeMaxUploadBuffer(NetworkInterfaceSubType type)
+        {
+            MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE || type == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
         }
 
         public void ResumeUpload(string key)
@@ -126,7 +135,7 @@ namespace windows_client.FileTransfers
                 SaveUploadData(fileInfo);
 
                 if (UpdateFileUploadStatusOnUI != null)
-                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo,true));
+                    UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo, true));
 
                 App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
                 
@@ -466,7 +475,28 @@ namespace windows_client.FileTransfers
             object[] vars = (object[])result.AsyncState;
 
             HttpWebRequest myHttpWebRequest = (HttpWebRequest)vars[0];
+
+            //Deployment.Current.Dispatcher.BeginInvoke(() =>
+            //{
+            //    try
+            //    {
+            //        var netInterface = myHttpWebRequest.GetCurrentNetworkInterface();
+            //        MaxBlockSize = (netInterface.InterfaceSubtype == NetworkInterfaceSubType.Cellular_EDGE 
+            //            || netInterface.InterfaceSubtype == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
+
+            //        System.Diagnostics.Debug.WriteLine(netInterface.InterfaceType.ToString());
+            //    }
+            //    catch (NetworkException networkException)
+            //    {
+            //        if (networkException.NetworkErrorCode == NetworkError.WebRequestAlreadyFinished)
+            //        {
+            //            System.Diagnostics.Debug.WriteLine("Cannot call GetCurrentNetworkInterface if the webrequest is already complete");
+            //        }
+            //    }
+            //}); 
+            
             HttpWebResponse response = null;
+
             string data = null;
 
             HttpStatusCode responseCode =  HttpStatusCode.NotFound;
@@ -543,7 +573,7 @@ namespace windows_client.FileTransfers
                     {
                         var newSize = (fileInfo.AttemptNumber + fileInfo.AttemptNumber) * _defaultBlockSize;
 
-                        if (newSize <= _maxBlockSize)
+                        if (newSize <= MaxBlockSize)
                         {
                             fileInfo.AttemptNumber += fileInfo.AttemptNumber;
                             fileInfo.BlockSize = fileInfo.AttemptNumber * _defaultBlockSize;
