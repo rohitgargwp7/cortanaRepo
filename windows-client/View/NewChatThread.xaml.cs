@@ -289,13 +289,19 @@ namespace windows_client.View
                 if (fInfo.FileState == UploadFileState.CANCELED)
                     state = Attachment.AttachmentState.CANCELED;
                 else if (fInfo.FileState == UploadFileState.COMPLETED)
+                {
+                    convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                     state = Attachment.AttachmentState.COMPLETED;
+                }
                 else if (fInfo.FileState == UploadFileState.PAUSED)
                     state = Attachment.AttachmentState.PAUSED;
                 else if (fInfo.FileState == UploadFileState.MANUAL_PAUSED)
                     state = Attachment.AttachmentState.MANUAL_PAUSED;
                 else if (fInfo.FileState == UploadFileState.FAILED)
+                {
                     state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                    convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                }
                 else if (fInfo.FileState == UploadFileState.STARTED)
                     state = Attachment.AttachmentState.STARTED;
                 else if (fInfo.FileState == UploadFileState.NOT_STARTED)
