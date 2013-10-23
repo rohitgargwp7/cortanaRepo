@@ -163,9 +163,9 @@ namespace windows_client
         public static readonly string CAMERA_FRONT = "Front";
         public static readonly string CAMERA_BACK = "Back";
 
-        public static const string FTUE_TEAMHIKE_MSISDN = "+hike+";
-        public static const string FTUE_HIKEBOT_MSISDN = "+hike1+";
-        public static const string FTUE_GAMING_MSISDN = "+hike2+";
+        public  const string FTUE_TEAMHIKE_MSISDN = "+hike+";
+        public const string FTUE_HIKEBOT_MSISDN = "+hike1+";
+        public const string FTUE_GAMING_MSISDN = "+hike2+";
 
         public static string FAQS_LINK
         {
