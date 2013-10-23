@@ -359,9 +359,6 @@ namespace windows_client.DbUtils
                         if (fInfo.FileState == UploadFileState.COMPLETED)
                             convMessage.ProgressBarValue = 100;
 
-                        convMessage.SetAttachmentState(state);
-                        MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-
                         if (fInfo.FileState == UploadFileState.COMPLETED)
                         {
                             JObject data = fInfo.SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
@@ -401,6 +398,9 @@ namespace windows_client.DbUtils
                             convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
                             NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
                         }
+
+                        convMessage.SetAttachmentState(state);
+                        MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     }
                     catch(Exception e)
                     {

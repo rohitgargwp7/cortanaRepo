@@ -1729,7 +1729,12 @@ namespace windows_client.Model
             NotifyPropertyChanged("SdrImage");
             NotifyPropertyChanged("PlayIconVisibility");
             NotifyPropertyChanged("PlayIconImage");
-            SdrImageVisibility = attachmentState != Attachment.AttachmentState.STARTED ? Visibility.Visible : Visibility.Collapsed;
+
+            SdrImageVisibility = attachmentState != Attachment.AttachmentState.STARTED 
+                && attachmentState != Attachment.AttachmentState.PAUSED 
+                && attachmentState != Attachment.AttachmentState.MANUAL_PAUSED 
+                ? Visibility.Visible : Visibility.Collapsed;
+            
             NotifyPropertyChanged("SdrImageVisibility");
         }
 

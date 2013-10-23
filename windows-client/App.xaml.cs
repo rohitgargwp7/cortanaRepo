@@ -476,6 +476,8 @@ namespace windows_client
                         PushHelper.Instance.registerPushnotifications();
                     }
 
+
+                    FileTransfers.FileUploader.Instance.ChangeMaxUploadBuffer(e.NetworkInterface.InterfaceSubtype);
                     FileTransfers.FileUploader.Instance.StartUpload();
                 }
                 else
