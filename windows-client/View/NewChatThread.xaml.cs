@@ -831,7 +831,6 @@ namespace windows_client.View
                 ShowDownloadOverlay(false);
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
                 emoticonPanel.Visibility = Visibility.Collapsed;
                 e.Cancel = true;
                 return;
@@ -1129,47 +1128,58 @@ namespace windows_client.View
 
         private void ShowInAppTips()
         {
-            int chatThreadCount;
+            HikeToolTip tip;
+            
+            App.ViewModel.DictInAppTip.TryGetValue(1, out tip);
 
-            var keyExist = App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out chatThreadCount); //initilaized in upgrade logic
-            if (keyExist)
+            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
             {
-                if (App.ViewModel.DictInAppTip != null)
+                App.ViewModel.DisplayTip(LayoutRoot, 1);
+                chatThreadMainPage.ApplicationBar = appBar;
+            }
+            else
+            {
+                int chatThreadCount;
+
+                var keyExist = App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out chatThreadCount); //initilaized in upgrade logic
+                if (keyExist)
                 {
-                    HikeToolTip tip;
-
-                    if (chatThreadCount == 0)
+                    if (App.ViewModel.DictInAppTip != null)
                     {
-                        App.ViewModel.DictInAppTip.TryGetValue(0, out tip);
 
-                        if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-                            App.ViewModel.DisplayTip(LayoutRoot, 0);
+                        if (chatThreadCount == 0)
+                        {
+                            App.ViewModel.DictInAppTip.TryGetValue(0, out tip);
+
+                            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                                App.ViewModel.DisplayTip(LayoutRoot, 0);
+                            else
+                                chatThreadCount++;
+
+                            chatThreadMainPage.ApplicationBar = appBar;
+                        }
+                        else if (chatThreadCount == 1)
+                        {
+                            App.ViewModel.DictInAppTip.TryGetValue(2, out tip);
+
+                            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                                App.ViewModel.DisplayTip(LayoutRoot, 2);
+                            else
+                                chatThreadCount++;
+
+                            chatThreadMainPage.ApplicationBar = appBar;
+                        }
                         else
-                            chatThreadCount++;
+                            showNudgeTute();
 
-                        chatThreadMainPage.ApplicationBar = appBar;
-                    }
-                    else if (chatThreadCount == 1)
-                    {
-                        App.ViewModel.DictInAppTip.TryGetValue(2, out tip);
-
-                        if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-                            App.ViewModel.DisplayTip(LayoutRoot, 2);
-                        else
-                            chatThreadCount++;
-
-                        chatThreadMainPage.ApplicationBar = appBar;
+                        App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
                     }
                     else
                         showNudgeTute();
-
-                    App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
                 }
                 else
-                    showNudgeTute();
+                    chatThreadMainPage.ApplicationBar = appBar;
             }
-            else
-                chatThreadMainPage.ApplicationBar = appBar;
         }
 
         private void GetUserLastSeen()
@@ -2005,7 +2015,6 @@ namespace windows_client.View
             }
 
             emoticonPanel.Visibility = Visibility.Collapsed;
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
             attachmentMenu.Visibility = Visibility.Collapsed;
 
             ConvMessage convMessage = llsMessages.SelectedItem as ConvMessage;
@@ -3066,8 +3075,6 @@ namespace windows_client.View
             if (String.IsNullOrEmpty(message))
                 return;
 
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
-
             attachmentMenu.Visibility = Visibility.Collapsed;
 
             if (message == "" || (!isOnHike && mCredits <= 0))
@@ -3086,8 +3093,6 @@ namespace windows_client.View
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
-
             emoticonPanel.Visibility = Visibility.Collapsed;
 
             if ((!isOnHike && mCredits <= 0))
@@ -3196,11 +3201,7 @@ namespace windows_client.View
             //this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
             //ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
-            {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
-
                 this.emoticonPanel.Visibility = Visibility.Collapsed;
-            }
 
             if (this.attachmentMenu.Visibility == Visibility.Visible)
                 this.attachmentMenu.Visibility = Visibility.Collapsed;
@@ -3515,6 +3516,7 @@ namespace windows_client.View
             }
 
             App.ViewModel.HideToolTip(LayoutRoot, 0);
+            App.ViewModel.HideToolTip(LayoutRoot, 1);
             App.ViewModel.HideToolTip(LayoutRoot, 2);
 
             attachmentMenu.Visibility = Visibility.Collapsed;
@@ -3523,8 +3525,6 @@ namespace windows_client.View
 
         private void ShowStickerPallet()
         {
-            App.ViewModel.DisplayTip(LayoutRoot, 1);
-
             gridEmoticons.Visibility = Visibility.Collapsed;
             gridStickers.Visibility = Visibility.Visible;
 
@@ -3557,6 +3557,7 @@ namespace windows_client.View
             }
 
             App.ViewModel.HideToolTip(LayoutRoot, 0);
+            App.ViewModel.HideToolTip(LayoutRoot, 1);
             App.ViewModel.HideToolTip(LayoutRoot, 2);
 
             if (attachmentMenu.Visibility == Visibility.Collapsed)
@@ -3565,11 +3566,8 @@ namespace windows_client.View
                 attachmentMenu.Visibility = Visibility.Collapsed;
 
             if (emoticonPanel.Visibility == Visibility.Visible)
-            {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
-
                 emoticonPanel.Visibility = Visibility.Collapsed;
-            }
+
             this.Focus();
         }
 
@@ -5832,9 +5830,8 @@ namespace windows_client.View
 
         private void Record_ActionIconTapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.ViewModel.HideToolTip(LayoutRoot, 2);
-
             App.ViewModel.HideToolTip(LayoutRoot, 1);
+            App.ViewModel.HideToolTip(LayoutRoot, 2);
 
             attachmentMenu.Visibility = Visibility.Collapsed;
             emoticonPanel.Visibility = Visibility.Collapsed;
