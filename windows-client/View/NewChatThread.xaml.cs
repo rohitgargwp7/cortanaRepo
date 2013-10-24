@@ -259,7 +259,6 @@ namespace windows_client.View
                 jumpToBottomBorder.Background = UI_Utils.Instance.BlackBorderBrush;
             }
 
-            _currentOrientation = this.Orientation;
         }
 
         void FileUploadStatusUpdated(object sender, UploadCompletedArgs e)
@@ -1777,12 +1776,13 @@ namespace windows_client.View
             {
                 if (this.ocMessages.Count > 0 && (!IsMute || this.ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
                 {
-                    if (vScrollBar != null && llsViewPort != null && (vScrollBar.Maximum - vScrollBar.Value < 2000))
+                    JumpToBottomGrid.Visibility = Visibility.Collapsed;
+
+                    if (vScrollBar != null && llsViewPort != null && ((vScrollBar.Maximum - vScrollBar.Value) < 2000))
                         llsViewPort.SetViewportOrigin(new System.Windows.Point(0, vScrollBar.Maximum));
                     else
                         llsMessages.ScrollTo(ocMessages[ocMessages.Count - 1]);
 
-                    JumpToBottomGrid.Visibility = Visibility.Collapsed;
                 }
             }
             catch (Exception ex)
@@ -4973,10 +4973,8 @@ namespace windows_client.View
         }
 
         #region Orientation Handling
-        PageOrientation _currentOrientation;
         private void PhoneApplicationPage_OrientationChanged(object sender, OrientationChangedEventArgs e)
         {
-            _currentOrientation = this.Orientation;
             for (int i = 0; i < ocMessages.Count; i++)
             {
                 ConvMessage convMessage = ocMessages[i];
@@ -5032,12 +5030,16 @@ namespace windows_client.View
         private void vScrollBar1_ValueChanged(Object sender, EventArgs e)
         {
             vScrollBar = sender as ScrollBar;
-            if (vScrollBar != null && vScrollBar.Maximum < 1000000 && _currentOrientation == this.Orientation)
+            if (vScrollBar != null && llsMessages.ManipulationState != ManipulationState.Idle)
             {
-                if ((vScrollBar.Maximum - vScrollBar.Value) < 100)
+                if ((vScrollBar.Maximum - vScrollBar.Value) < 200)
                 {
                     JumpToBottomGrid.Visibility = Visibility.Collapsed;
                     _unreadMessageCounter = 0;
+                }
+                else if ((vScrollBar.Maximum - vScrollBar.Value) > 2000 && JumpToBottomGrid.Visibility == Visibility.Collapsed)
+                {
+                    ShowJumpToBottom(false);
                 }
             }
         }
@@ -5068,7 +5070,7 @@ namespace windows_client.View
         {
             if (vScrollBar != null && (ocMessages != null && ocMessages.Count > 6) && vScrollBar.Maximum < 1000000)
             {
-                if ((vScrollBar.Maximum - vScrollBar.Value) > 300)
+                if ((vScrollBar.Maximum - vScrollBar.Value) > 500)
                 {
                     if (increaseUnreadCounter)
                         _unreadMessageCounter += 1;
