@@ -1022,7 +1022,7 @@
                 </Grid>
             </Grid>
 
-            <Grid x:Name="attachmentMenu" Visibility="Collapsed" MaxHeight="350" Background="#080808" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid x:Name="attachmentMenu" Visibility="Collapsed" Height="319" Background="#080808" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
