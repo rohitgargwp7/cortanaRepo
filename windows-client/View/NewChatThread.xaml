@@ -249,15 +249,17 @@
                                                 <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                             </Grid>
                                         </Grid>
-                                        <Button Grid.Column="1" Style="{StaticResource ButtonNoStyle}" HorizontalAlignment="Left" Margin="10,2,-12,0" Visibility="{Binding ProgressBarVisibility}" VerticalAlignment="Center">
+                                        <Button Grid.Column="1" Style="{StaticResource ButtonNoStyle}" HorizontalAlignment="Left" Margin="10,2,-12,0" Visibility="{Binding ProgressBarVisibility}" VerticalAlignment="Center" Click="PauseResume_Tapped" Tag="{Binding MessageId}">
                                             <Button.Content>
                                                 <Grid>
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto"/>
                                                         <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
-                                                    <ProgressBar Value="{Binding ProgressBarValue}" Margin="-12,5,0,0" Width="170" Background="#e1e1e1" Foreground="#adadad" Minimum="0" Maximum="100" />
-                                                    <TextBlock Text="{Binding ProgressText}" Margin="0,5,0,0" Foreground="{StaticResource PhoneForegroundBrush}" FontSize="14" VerticalAlignment="Center" Grid.Row="1"/>
+                                                    <Image Source="{Binding PauseResumeImage}" Visibility="{Binding PauseResumeImageVisibility}" Height="20" VerticalAlignment="Center" Stretch="Uniform" HorizontalAlignment="Left" Margin="0,5,0,0"/>
+                                                    <ProgressBar Value="{Binding ProgressBarValue}" Margin="-12,5,0,0" Width="170" Background="#e1e1e1" Foreground="#adadad" Minimum="0" Maximum="100" Grid.Row="1"/>
+                                                    <TextBlock Text="{Binding ProgressText}" Margin="0,5,0,0" Foreground="{StaticResource PhoneForegroundBrush}" FontSize="14" VerticalAlignment="Center" Grid.Row="2"/>
                                                 </Grid>
                                             </Button.Content>
                                         </Button>
@@ -361,15 +363,17 @@
                                                 <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
                                             </Grid>
                                         </Grid>
-                                        <Button Grid.Column="1" Style="{StaticResource ButtonNoStyle}" HorizontalAlignment="Left" Margin="10,2,-12,0" Visibility="{Binding ProgressBarVisibility}" VerticalAlignment="Center">
+                                        <Button Grid.Column="1" Style="{StaticResource ButtonNoStyle}" HorizontalAlignment="Left" Margin="10,2,-12,0" Visibility="{Binding ProgressBarVisibility}" VerticalAlignment="Center" Click="PauseResume_Tapped" Tag="{Binding MessageId}">
                                             <Button.Content>
                                                 <Grid>
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto"/>
                                                         <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
-                                                    <ProgressBar Value="{Binding ProgressBarValue}" Margin="-12,5,0,0" Width="170" Background="#e1e1e1" Foreground="#adadad" Minimum="0" Maximum="100" />
-                                                    <TextBlock Text="{Binding ProgressText}" Margin="0,5,0,0" Foreground="{StaticResource PhoneForegroundBrush}" FontSize="14" VerticalAlignment="Center" Grid.Row="1"/>
+                                                    <Image Source="{Binding PauseResumeImage}" Visibility="{Binding PauseResumeImageVisibility}" Height="20" VerticalAlignment="Center" Stretch="Uniform" HorizontalAlignment="Left" Margin="0,5,0,0"/>
+                                                    <ProgressBar Value="{Binding ProgressBarValue}" Margin="-12,5,0,0" Width="170" Background="#e1e1e1" Foreground="#adadad" Minimum="0" Maximum="100" Grid.Row="1"/>
+                                                    <TextBlock Text="{Binding ProgressText}" Margin="0,5,0,0" Foreground="{StaticResource PhoneForegroundBrush}" FontSize="14" VerticalAlignment="Center" Grid.Row="2"/>
                                                 </Grid>
                                             </Button.Content>
                                         </Button>

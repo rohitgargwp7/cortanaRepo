@@ -299,7 +299,7 @@ namespace windows_client.View
             App.appSettings.Remove(App.AUTO_UPLOAD_SETTING);
             App.appSettings.Save();
 
-            FileTransfers.FileUploader.Instance.StartUpload();
+            FileTransfers.FileTransferManager.Instance.StartTask();
         }
 
         private void autoUploadToggle_Unchecked(object sender, RoutedEventArgs e)

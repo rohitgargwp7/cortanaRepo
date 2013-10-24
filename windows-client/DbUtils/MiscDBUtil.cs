@@ -599,7 +599,7 @@ namespace windows_client.DbUtils
                     store.DeleteFile(attachmentFileBytes);
             }
 
-            FileTransfers.FileUploader.Instance.DeleteUploadTask(messageId.ToString());
+            FileTransfers.FileTransferManager.Instance.DeleteTask(messageId.ToString());
         }
 
         public static void deleteMsisdnData(string msisdn)
@@ -613,7 +613,7 @@ namespace windows_client.DbUtils
                 string[] fileNames = store.GetFileNames(attachmentPaths[0] + "/*");
                 foreach (string fileName in fileNames)
                 {
-                    FileTransfers.FileUploader.Instance.DeleteUploadTask(fileName);
+                    FileTransfers.FileTransferManager.Instance.DeleteTask(fileName);
                 }
 
                 foreach (string attachmentPath in attachmentPaths)

@@ -477,8 +477,8 @@ namespace windows_client
                     }
 
 
-                    FileTransfers.FileUploader.Instance.ChangeMaxUploadBuffer(e.NetworkInterface.InterfaceSubtype);
-                    FileTransfers.FileUploader.Instance.StartUpload();
+                    FileTransfers.FileTransferManager.Instance.ChangeMaxUploadBuffer(e.NetworkInterface.InterfaceSubtype);
+                    FileTransfers.FileTransferManager.Instance.StartTask();
                 }
                 else
                 {

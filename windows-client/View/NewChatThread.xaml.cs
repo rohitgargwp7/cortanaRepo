@@ -237,7 +237,7 @@ namespace windows_client.View
             _lastSeenHelper = new LastSeenHelper();
             _lastSeenHelper.UpdateLastSeen += LastSeenResponseReceived;
 
-            FileTransfers.FileUploader.Instance.UpdateFileUploadStatusOnUI += FileUploadStatusUpdated;
+            FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI += FileTransferStatusUpdated;
 
             onlineStatus.Source = UI_Utils.Instance.LastSeenClockImage;
 
@@ -262,56 +262,82 @@ namespace windows_client.View
             _currentOrientation = this.Orientation;
         }
 
-        void FileUploadStatusUpdated(object sender, UploadCompletedArgs e)
+        void FileTransferStatusUpdated(object sender, TaskCompletedArgs e)
         {
-            UploadFileInfo fInfo = e.FileInfo;
+            HikeFileInfo fInfo = e.FileInfo;
             var id = Convert.ToInt64(fInfo.SessionId);
 
             if (msgMap.ContainsKey(id))
             {
                 var convMessage = msgMap[id];
-                UpdateUploadProgresInConvMessage(fInfo, convMessage, e.IsStateChanged);
+                UpdateFileTransferProgresInConvMessage(fInfo, convMessage, e.IsStateChanged);
             }
         }
 
-        private static void UpdateUploadProgresInConvMessage(UploadFileInfo fInfo, ConvMessage convMessage, bool isStateChanged)
+        private void UpdateFileTransferProgresInConvMessage(HikeFileInfo fInfo, ConvMessage convMessage, bool isStateChanged)
         {
             if (convMessage == null)
                 return;
-
-            convMessage.ProgressBarValue = fInfo.PercentageTransfer;
-            convMessage.ProgressText = string.Format("{0}/{1}", Utils.ConvertToStorageSizeString(fInfo.CurrentHeaderPosition - 1), Utils.ConvertToStorageSizeString(fInfo.TotalBytes));
+            
+            //if (!fInfo.IsDownload)
+            {
+                convMessage.ProgressBarValue = fInfo.PercentageTransfer;
+                convMessage.ProgressText = string.Format("{0}/{1}", Utils.ConvertToStorageSizeString(fInfo.CurrentHeaderPosition - 1), Utils.ConvertToStorageSizeString(fInfo.TotalBytes));
+            }
 
             if (isStateChanged)
             {
                 Attachment.AttachmentState state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
 
-                if (fInfo.FileState == UploadFileState.CANCELED)
+                if (fInfo.FileState == HikeFileState.CANCELED)
                     state = Attachment.AttachmentState.CANCELED;
-                else if (fInfo.FileState == UploadFileState.COMPLETED)
+                else if (fInfo.FileState == HikeFileState.COMPLETED)
                 {
-                    convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                     state = Attachment.AttachmentState.COMPLETED;
+
+                    if (!fInfo.IsDownload)
+                        convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 }
-                else if (fInfo.FileState == UploadFileState.PAUSED)
+                else if (fInfo.FileState == HikeFileState.PAUSED)
                     state = Attachment.AttachmentState.PAUSED;
-                else if (fInfo.FileState == UploadFileState.MANUAL_PAUSED)
+                else if (fInfo.FileState == HikeFileState.MANUAL_PAUSED)
                     state = Attachment.AttachmentState.MANUAL_PAUSED;
-                else if (fInfo.FileState == UploadFileState.FAILED)
+                else if (fInfo.FileState == HikeFileState.FAILED)
                 {
-                    state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
-                    convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
-                }
-                else if (fInfo.FileState == UploadFileState.STARTED)
-                    state = Attachment.AttachmentState.STARTED;
-                else if (fInfo.FileState == UploadFileState.NOT_STARTED)
                     state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
 
-                if (fInfo.FileState == UploadFileState.COMPLETED)
-                        convMessage.ProgressBarValue = 100;
+                    if (!fInfo.IsDownload)
+                        convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                }
+                else if (fInfo.FileState == HikeFileState.STARTED)
+                    state = Attachment.AttachmentState.STARTED;
+                else if (fInfo.FileState == HikeFileState.NOT_STARTED)
+                    state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+
+                if (fInfo.FileState == HikeFileState.COMPLETED)
+                    convMessage.ProgressBarValue = 100;
 
                 convMessage.SetAttachmentState(state);
-                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+
+                if (fInfo.IsDownload)
+                {
+                    MiscDBUtil.UpdateFileAttachmentState(fInfo.Msisdn, fInfo.SessionId, state);
+
+                    if (fInfo.FileState == HikeFileState.COMPLETED)
+                    {
+                        msgMap.Remove(convMessage.MessageId);
+
+                        if (convMessage.UserTappedDownload)
+                        {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                displayAttachment(convMessage);
+                            });
+                        }
+                    }
+                }
+                else
+                    MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
             }
         }
 
@@ -811,7 +837,7 @@ namespace windows_client.View
                     Debug.WriteLine("NewChatThread.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
                 }
 
-                FileTransfers.FileUploader.Instance.UpdateFileUploadStatusOnUI -= FileUploadStatusUpdated;
+                FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI -= FileTransferStatusUpdated;
 
                 gridStickers.Children.Remove(pivotStickers);
                 ClearPageResources();
@@ -1650,20 +1676,19 @@ namespace windows_client.View
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 NetworkManager.turnOffNetworkManager = false;
-                if (listDownload.Count > 0)
-                {
-                    BackgroundWorker bw = new BackgroundWorker();
-                    bw.DoWork += (s, e) =>
-                        {
-                            foreach (ConvMessage conv in listDownload)
-                            {
-                                FileTransfer.Instance.DownloadFile(conv, mContactNumber.Replace(":", "_"));
-                                conv.SetAttachmentState(Attachment.AttachmentState.STARTED);
-                            }
-                            listDownload.Clear();
-                        };
-                    bw.RunWorkerAsync();
-                }
+                //if (listDownload.Count > 0)
+                //{
+                //    BackgroundWorker bw = new BackgroundWorker();
+                //    bw.DoWork += (s, e) =>
+                //        {
+                //            foreach (ConvMessage conv in listDownload)
+                //            {
+                //                FileTransfers.FileTransferManager.Instance.AddFileToUploadDownloadTask(conv.Msisdn, conv.MessageId.ToString(), conv.FileAttachment.FileKey, conv.FileAttachment.ContentType, null, true);
+                //            }
+                //            listDownload.Clear();
+                //        };
+                //    bw.RunWorkerAsync();
+                //}
             });
         }
 
@@ -2030,8 +2055,10 @@ namespace windows_client.View
                         if (NetworkInterface.GetIsNetworkAvailable())
                         {
                             convMessage.UserTappedDownload = true;
-                            convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
-                            FileTransfer.Instance.DownloadFile(convMessage, mContactNumber.Replace(":", "_"));
+                            if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
+                                FileTransfers.FileTransferManager.Instance.AddFileToUploadDownloadTask(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, null, true);
+                            else
+                                FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString());
                         }
                         else
                         {
@@ -2064,7 +2091,7 @@ namespace windows_client.View
                                 "/" + convMessage.FileAttachment.FileKey;
                         }
 
-                        FileTransfers.FileUploader.Instance.ResumeUpload(convMessage.MessageId.ToString());
+                        FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString());
                     }
                 }
                 else
@@ -2456,40 +2483,27 @@ namespace windows_client.View
                             convMessage.FileAttachment = attachments[convMessage.MessageId];
                             attachments.Remove(convMessage.MessageId);
 
-                            if (convMessage.IsSent)
-                            {
-                                UploadFileInfo fInfo;
-                                if (FileUploader.Instance.UploadMap.TryGetValue(convMessage.MessageId.ToString(), out fInfo))
-                                    UpdateUploadProgresInConvMessage(fInfo, convMessage, true);
-                            }
+                            if (!convMessage.IsSent && convMessage.FileAttachment.FileState != Attachment.AttachmentState.CANCELED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                                msgMap.Add(convMessage.MessageId, convMessage);
+
+                            HikeFileInfo fInfo;
+                            if (FileTransferManager.Instance.TaskMap.TryGetValue(convMessage.MessageId.ToString(), out fInfo))
+                                UpdateFileTransferProgresInConvMessage(fInfo, convMessage, true);
                         }
+                        else if (!convMessage.IsSent && convMessage.FileAttachment.FileState != Attachment.AttachmentState.CANCELED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                        {
+                            msgMap.Add(convMessage.MessageId, convMessage);
+
+                            HikeFileInfo fInfo;
+                            if (FileTransferManager.Instance.TaskMap.TryGetValue(convMessage.MessageId.ToString(), out fInfo))
+                                UpdateFileTransferProgresInConvMessage(fInfo, convMessage, true);
+                        }
+
                         if (convMessage.FileAttachment == null)
                         {
                             //Done to avoid crash. Code should never reach here
                             Debug.WriteLine("Fileattachment object is null for convmessage with attachment");
                             return;
-                        }
-                        if (convMessage.IsSent)
-                        {
-                            chatBubble = convMessage;
-
-                            if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
-                                     || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
-                                msgMap.Add(convMessage.MessageId, chatBubble);
-                        }
-                        else
-                        {
-                            bool isDownloading;
-                            chatBubble = FileTransfer.Instance.GetDownloadingMessage(mContactNumber.Replace(":", "_"), convMessage.MessageId.ToString(), out isDownloading);
-                            if (isDownloading)
-                            {
-                                if (chatBubble == null)
-                                    FileTransfer.Instance.UpdateConvMap(convMessage, mContactNumber.Replace(":", "_"));
-                            }
-                            else if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.STARTED && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
-                            {
-                                listDownload.Add(convMessage);
-                            }
                         }
                     }
 
@@ -3389,7 +3403,7 @@ namespace windows_client.View
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
             }
 
-            FileTransfers.FileUploader.Instance.CancelUploadTask(convMessage.MessageId.ToString());
+            FileTransfers.FileTransferManager.Instance.CancelTask(convMessage.MessageId.ToString());
         }
 
         private void PauseUpload(ConvMessage convMessage)
@@ -3400,7 +3414,7 @@ namespace windows_client.View
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
             }
 
-            FileTransfers.FileUploader.Instance.PauseUploadTask(convMessage.MessageId.ToString());
+            FileTransfers.FileTransferManager.Instance.PauseTask(convMessage.MessageId.ToString());
         }
 
         private void ResumeUpload(ConvMessage convMessage)
@@ -3411,7 +3425,7 @@ namespace windows_client.View
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
             }
 
-            FileTransfers.FileUploader.Instance.ResumeUpload(convMessage.MessageId.ToString());
+            FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString());
         }
 
         private void MenuItem_Click_SendAsSMS(object sender, RoutedEventArgs e)
