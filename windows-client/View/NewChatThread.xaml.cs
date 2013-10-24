@@ -259,7 +259,6 @@ namespace windows_client.View
                 jumpToBottomBorder.Background = UI_Utils.Instance.BlackBorderBrush;
             }
 
-            _currentOrientation = this.Orientation;
         }
 
         void FileUploadStatusUpdated(object sender, UploadCompletedArgs e)
@@ -4974,10 +4973,8 @@ namespace windows_client.View
         }
 
         #region Orientation Handling
-        PageOrientation _currentOrientation;
         private void PhoneApplicationPage_OrientationChanged(object sender, OrientationChangedEventArgs e)
         {
-            _currentOrientation = this.Orientation;
             for (int i = 0; i < ocMessages.Count; i++)
             {
                 ConvMessage convMessage = ocMessages[i];
