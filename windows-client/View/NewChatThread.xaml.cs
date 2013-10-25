@@ -592,9 +592,7 @@ namespace windows_client.View
             {
                 string msisdn = (this.NavigationContext.QueryString["msisdn"] as string).Trim();
                 this.NavigationContext.QueryString.Clear();
-                if (msisdn.Contains("hike"))
-                    msisdn = "+hike+";
-                else if (Char.IsDigit(msisdn[0]))
+                if (Char.IsDigit(msisdn[0]))
                     msisdn = "+" + msisdn;
 
                 //MessageBox.Show(msisdn, "NEW CHAT", MessageBoxButton.OK);
@@ -1047,10 +1045,7 @@ namespace windows_client.View
             mUserIsBlocked = groupOwner != null ? App.ViewModel.BlockedHashset.Contains(groupOwner) : App.ViewModel.BlockedHashset.Contains(mContactNumber);
             userName.Text = mContactName;
 
-            if (Utils.IsHikeBotMsg(mContactNumber))
-            {
-                _isHikeBot = true;
-            }
+            _isHikeBot = Utils.IsHikeBotMsg(mContactNumber);
 
             initAppBar(isAddUser);
 
@@ -1145,8 +1140,13 @@ namespace windows_client.View
 
         private void ShowInAppTips()
         {
+            if (_isHikeBot)
+            {
+                chatThreadMainPage.ApplicationBar = appBar;
+                return;
+            }
             HikeToolTip tip;
-            
+
             App.ViewModel.DictInAppTip.TryGetValue(1, out tip);
 
             if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
@@ -4821,7 +4821,7 @@ namespace windows_client.View
         //TODO - MG try to use sametap event for header n statusBubble
         private void statusBubble_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            if (!isContextMenuTapped && !isGroupChat)
+            if (!isContextMenuTapped && !isGroupChat && _isHikeBot)
             {
                 PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
