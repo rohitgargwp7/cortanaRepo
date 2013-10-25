@@ -83,7 +83,7 @@ namespace windows_client.FileTransfers
         {
             if (fileInfo.FileState == HikeFileState.CANCELED)
             {
-                FileTransferManager.Instance.DeleteTaskData(fileInfo.SessionId);
+                FileTransferManager.Instance.DeleteTaskData(fileInfo.Id);
             }
             else if (responseCode == HttpStatusCode.PartialContent || responseCode == HttpStatusCode.OK)
             {
@@ -114,7 +114,7 @@ namespace windows_client.FileTransfers
 
                     if (fileInfo.FileState == HikeFileState.CANCELED)
                     {
-                        FileTransferManager.Instance.DeleteTaskData(fileInfo.SessionId);
+                        FileTransferManager.Instance.DeleteTaskData(fileInfo.Id);
                     }
                     else if (fileInfo.BytesTransfered == fileInfo.TotalBytes - 1)
                     {

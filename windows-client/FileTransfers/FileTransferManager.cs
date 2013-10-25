@@ -64,7 +64,7 @@ namespace windows_client.FileTransfers
             DownloadFileInfo fInfo = new DownloadFileInfo(msisdn, key, fileName, contentType);
 
             PendingTasks.Enqueue(fInfo);
-            TaskMap.Add(fInfo.SessionId, fInfo);
+            TaskMap.Add(fInfo.Id, fInfo);
             SaveTaskData(fInfo);
             StartTask();
         }
@@ -74,7 +74,7 @@ namespace windows_client.FileTransfers
             UploadFileInfo fInfo = new UploadFileInfo(msisdn, key, fileBytes, fileName, contentType);
 
             PendingTasks.Enqueue(fInfo);
-            TaskMap.Add(fInfo.SessionId, fInfo);
+            TaskMap.Add(fInfo.Id, fInfo);
             SaveTaskData(fInfo);
             StartTask();
         }
@@ -113,8 +113,8 @@ namespace windows_client.FileTransfers
 
                 if (fileInfo.FileState == HikeFileState.CANCELED)
                 {
-                    TaskMap.Remove(fileInfo.SessionId);
-                    DeleteTaskData(fileInfo.SessionId);
+                    TaskMap.Remove(fileInfo.Id);
+                    DeleteTaskData(fileInfo.Id);
                     fileInfo = null;
                     return;
                 }
@@ -350,7 +350,7 @@ namespace windows_client.FileTransfers
             {
                 try
                 {
-                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + fileInfo.SessionId;
+                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + fileInfo.Id;
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
                         if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))

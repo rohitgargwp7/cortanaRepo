@@ -31,7 +31,7 @@ namespace windows_client.FileTransfers
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = fileInfo.FileName;
             req.Headers["X-Thumbnail-Required"] = "0";
-            req.Headers["X-SESSION-ID"] = fileInfo.SessionId;
+            req.Headers["X-SESSION-ID"] = fileInfo.Id;
             req.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
 
             req.BeginGetResponse(UploadGetResponseCallback, new object[] { req, fileInfo });
@@ -128,7 +128,7 @@ namespace windows_client.FileTransfers
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = fileInfo.FileName;
             req.Headers["X-Thumbnail-Required"] = "0";
-            req.Headers["X-SESSION-ID"] = fileInfo.SessionId;
+            req.Headers["X-SESSION-ID"] = fileInfo.Id;
 
             var bytesLeft = fileInfo.FileBytes.Length - fileInfo.CurrentHeaderPosition;
             (fileInfo as UploadFileInfo).BlockSize = bytesLeft >= (fileInfo as UploadFileInfo).BlockSize ? (fileInfo as UploadFileInfo).BlockSize : bytesLeft;
@@ -290,7 +290,7 @@ namespace windows_client.FileTransfers
             {
                 if (fileInfo.FileState == HikeFileState.CANCELED)
                 {
-                    FileTransferManager.Instance.DeleteTaskData(fileInfo.SessionId);
+                    FileTransferManager.Instance.DeleteTaskData(fileInfo.Id);
                 }
                 else
                 {

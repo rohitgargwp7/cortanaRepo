@@ -327,7 +327,7 @@ namespace windows_client.DbUtils
 
                 using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
                 {
-                    var id = Convert.ToInt64(fInfo.SessionId);
+                    var id = Convert.ToInt64(fInfo.Id);
                     ConvMessage convMessage = DbCompiledQueries.GetMessagesForMsgId(context, id).FirstOrDefault<ConvMessage>();
 
                     if (convMessage == null)
@@ -335,7 +335,7 @@ namespace windows_client.DbUtils
 
                     try
                     {
-                        var attachment = MiscDBUtil.getFileAttachment(fInfo.Msisdn, fInfo.SessionId);
+                        var attachment = MiscDBUtil.getFileAttachment(fInfo.Msisdn, fInfo.Id);
                         if (attachment == null)
                             return;
 
@@ -365,7 +365,7 @@ namespace windows_client.DbUtils
                         {
                             if (fInfo.FileState == HikeFileState.COMPLETED)
                             {
-                                string destinationPath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.SessionId;
+                                string destinationPath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.Id;
                                 string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));
 
                                 using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
@@ -401,12 +401,12 @@ namespace windows_client.DbUtils
                                     catch { }
                                 }
 
-                                FileTransferManager.Instance.TaskMap.Remove(fInfo.SessionId);
-                                FileTransferManager.Instance.DeleteTaskData(fInfo.SessionId);
+                                FileTransferManager.Instance.TaskMap.Remove(fInfo.Id);
+                                FileTransferManager.Instance.DeleteTaskData(fInfo.Id);
                             }
 
                             convMessage.SetAttachmentState(state);
-                            MiscDBUtil.UpdateFileAttachmentState(fInfo.Msisdn, fInfo.SessionId, state);
+                            MiscDBUtil.UpdateFileAttachmentState(fInfo.Msisdn, fInfo.Id, state);
                         }
                         else
                         {
@@ -441,8 +441,8 @@ namespace windows_client.DbUtils
 
                                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
 
-                                FileTransferManager.Instance.TaskMap.Remove(fInfo.SessionId);
-                                FileTransferManager.Instance.DeleteTaskData(fInfo.SessionId);
+                                FileTransferManager.Instance.TaskMap.Remove(fInfo.Id);
+                                FileTransferManager.Instance.DeleteTaskData(fInfo.Id);
                             }
                             else if (fInfo.FileState == HikeFileState.FAILED)
                             {

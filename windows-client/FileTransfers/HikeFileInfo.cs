@@ -6,7 +6,7 @@ namespace windows_client.FileTransfers
         int BytesTransfered { get; }
         double PercentageTransfer { get; }
         int TotalBytes { get; set; }
-        string SessionId { get; set; }
+        string Id { get; set; }
         int CurrentHeaderPosition { get; set; }
         byte[] FileBytes { get; set; }
         string ContentType { get; set; }

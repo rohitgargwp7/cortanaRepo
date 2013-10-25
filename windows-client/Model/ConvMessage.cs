@@ -631,7 +631,7 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null && (_fileAttachment.FileState != Attachment.AttachmentState.COMPLETED || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO) || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
                 {
-                    if ((IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED) || _fileAttachment.FileState == Attachment.AttachmentState.STARTED)
+                    if ((IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED) || _fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
                         return Visibility.Collapsed;
                     return Visibility.Visible;
                 }
@@ -646,8 +646,10 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null)
                 {
-                    if (_fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
-                        return !IsSent ? UI_Utils.Instance.DownloadIcon : UI_Utils.Instance.BlankBitmapImage;
+                    if (!IsSent && _fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
+                        return UI_Utils.Instance.DownloadIcon;
+                    else if (_fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
+                        return UI_Utils.Instance.BlankBitmapImage;
                     else if (_fileAttachment.ContentType.Contains(HikeConstants.AUDIO) && IsPlaying)
                         return UI_Utils.Instance.PauseIcon;
                     else
@@ -1730,11 +1732,11 @@ namespace windows_client.Model
             NotifyPropertyChanged("PlayIconVisibility");
             NotifyPropertyChanged("PlayIconImage");
 
-            SdrImageVisibility = attachmentState != Attachment.AttachmentState.STARTED 
-                && attachmentState != Attachment.AttachmentState.PAUSED 
-                && attachmentState != Attachment.AttachmentState.MANUAL_PAUSED 
+            SdrImageVisibility = attachmentState != Attachment.AttachmentState.STARTED
+                && attachmentState != Attachment.AttachmentState.PAUSED
+                && attachmentState != Attachment.AttachmentState.MANUAL_PAUSED
                 ? Visibility.Visible : Visibility.Collapsed;
-            
+
             NotifyPropertyChanged("SdrImageVisibility");
         }
 

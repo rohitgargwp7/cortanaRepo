@@ -35,7 +35,7 @@ namespace windows_client.FileTransfers
         public int TotalBytes { get; set; }
         public int BlockSize = 1024;
         public int AttemptNumber = 1;
-        public string SessionId { get; set; }
+        public string Id { get; set; }
         public int CurrentHeaderPosition { get; set; }
         public byte[] FileBytes { get; set; }
         public string ContentType { get; set; }
@@ -51,7 +51,7 @@ namespace windows_client.FileTransfers
         public DownloadFileInfo(string msisdn, string key, string fileName, string contentType)
         {
             Msisdn = msisdn;
-            SessionId = key;
+            Id = key;
             FileName = fileName;
             ContentType = contentType;
             FileState = HikeFileState.NOT_STARTED;
@@ -64,10 +64,10 @@ namespace windows_client.FileTransfers
             else
                 writer.WriteStringBytes(Msisdn);
 
-            if (SessionId == null)
+            if (Id == null)
                 writer.WriteStringBytes("*@N@*");
             else
-                writer.WriteStringBytes(SessionId);
+                writer.WriteStringBytes(Id);
 
             writer.Write(CurrentHeaderPosition);
 
@@ -103,9 +103,9 @@ namespace windows_client.FileTransfers
                 Msisdn = null;
 
             count = reader.ReadInt32();
-            SessionId = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-            if (SessionId == "*@N@*")
-                SessionId = null;
+            Id = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (Id == "*@N@*")
+                Id = null;
 
             CurrentHeaderPosition = reader.ReadInt32();
 

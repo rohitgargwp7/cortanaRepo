@@ -265,7 +265,7 @@ namespace windows_client.View
         void FileTransferStatusUpdated(object sender, TaskCompletedArgs e)
         {
             HikeFileInfo fInfo = e.FileInfo;
-            var id = Convert.ToInt64(fInfo.SessionId);
+            var id = Convert.ToInt64(fInfo.Id);
 
             if (msgMap.ContainsKey(id))
             {
@@ -318,7 +318,7 @@ namespace windows_client.View
 
                 if (fInfo is DownloadFileInfo)
                 {
-                    MiscDBUtil.UpdateFileAttachmentState(fInfo.Msisdn, fInfo.SessionId, state);
+                    MiscDBUtil.UpdateFileAttachmentState(fInfo.Msisdn, fInfo.Id, state);
 
                     if (fInfo.FileState == HikeFileState.COMPLETED)
                     {
