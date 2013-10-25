@@ -1447,14 +1447,6 @@ namespace windows_client.View
             sendIconButton.IsEnabled = false;
             appBar.Buttons.Add(sendIconButton);
 
-            //add icon for smiley
-            emoticonsIconButton = new ApplicationBarIconButton();
-            emoticonsIconButton.IconUri = new Uri("/View/images/icon_emoticon.png", UriKind.Relative);
-            emoticonsIconButton.Text = AppResources.Smiley_Txt;
-            emoticonsIconButton.Click += new EventHandler(emoticonButton_Click);
-            emoticonsIconButton.IsEnabled = true;
-            appBar.Buttons.Add(emoticonsIconButton);
-
             //add icon for sticker
             stickersIconButton = new ApplicationBarIconButton();
             stickersIconButton.IconUri = new Uri("/View/images/icon_sticker.png", UriKind.Relative);
@@ -1462,6 +1454,14 @@ namespace windows_client.View
             stickersIconButton.Click += new EventHandler(emoticonButton_Click);
             stickersIconButton.IsEnabled = true;
             appBar.Buttons.Add(stickersIconButton);
+
+            //add icon for smiley
+            emoticonsIconButton = new ApplicationBarIconButton();
+            emoticonsIconButton.IconUri = new Uri("/View/images/icon_emoticon.png", UriKind.Relative);
+            emoticonsIconButton.Text = AppResources.Smiley_Txt;
+            emoticonsIconButton.Click += new EventHandler(emoticonButton_Click);
+            emoticonsIconButton.IsEnabled = true;
+            appBar.Buttons.Add(emoticonsIconButton);
 
             //add file transfer button
             fileTransferIconButton = new ApplicationBarIconButton();
