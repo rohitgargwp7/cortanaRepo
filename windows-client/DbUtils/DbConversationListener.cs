@@ -361,7 +361,7 @@ namespace windows_client.DbUtils
                         if (fInfo.FileState == HikeFileState.COMPLETED)
                             convMessage.ProgressBarValue = 100;
 
-                        if (fInfo is DownloadFileInfo)
+                        if (fInfo is FileDownloader)
                         {
                             if (fInfo.FileState == HikeFileState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.Id))
                             {
@@ -405,7 +405,7 @@ namespace windows_client.DbUtils
                         {
                             if (fInfo.FileState == HikeFileState.COMPLETED)
                             {
-                                JObject data = (fInfo as UploadFileInfo).SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
+                                JObject data = (fInfo as FileUploader).SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
                                 var fileKey = data[HikeConstants.FILE_KEY].ToString();
 
                                 if (fInfo.ContentType.Contains(HikeConstants.IMAGE))

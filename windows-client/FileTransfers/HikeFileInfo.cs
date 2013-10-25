@@ -16,6 +16,7 @@ namespace windows_client.FileTransfers
 
         void Write(BinaryWriter writer);
         void Read(BinaryReader reader);
+        void Save();
     }
 
     public enum HikeFileState

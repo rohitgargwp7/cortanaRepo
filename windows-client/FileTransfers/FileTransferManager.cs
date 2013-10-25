@@ -54,14 +54,14 @@ namespace windows_client.FileTransfers
 
         public FileTransferManager()
         {
-            DownloadFileInfo.MaxBlockSize = WifiBuffer;
-            UploadFileInfo.MaxBlockSize = WifiBuffer;
+            FileDownloader.MaxBlockSize = WifiBuffer;
+            FileUploader.MaxBlockSize = WifiBuffer;
             ThreadPool.SetMaxThreads(_noOfParallelRequest, _noOfParallelRequest);
         }
 
         public void DownloadFile(string msisdn, string key, string fileName, string contentType)
         {
-            DownloadFileInfo fInfo = new DownloadFileInfo(msisdn, key, fileName, contentType);
+            FileDownloader fInfo = new FileDownloader(msisdn, key, fileName, contentType);
 
             PendingTasks.Enqueue(fInfo);
             TaskMap.Add(fInfo.Id, fInfo);
@@ -71,7 +71,7 @@ namespace windows_client.FileTransfers
 
         public void UploadFile(string msisdn, string key, string fileName, string contentType, byte[] fileBytes)
         {
-            UploadFileInfo fInfo = new UploadFileInfo(msisdn, key, fileBytes, fileName, contentType);
+            FileUploader fInfo = new FileUploader(msisdn, key, fileBytes, fileName, contentType);
 
             PendingTasks.Enqueue(fInfo);
             TaskMap.Add(fInfo.Id, fInfo);
@@ -81,8 +81,8 @@ namespace windows_client.FileTransfers
 
         public void ChangeMaxUploadBuffer(NetworkInterfaceSubType type)
         {
-            UploadFileInfo.MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE || type == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
-            DownloadFileInfo.MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE || type == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
+            FileUploader.MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE || type == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
+            FileDownloader.MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE || type == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
         }
 
         public void ResumeTask(string key)
@@ -128,12 +128,12 @@ namespace windows_client.FileTransfers
 
                     App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
                 }
-                else if (fileInfo is UploadFileInfo && fileInfo.FileState != HikeFileState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) || fileInfo.FileState != HikeFileState.PAUSED))
+                else if (fileInfo is FileUploader && fileInfo.FileState != HikeFileState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) || fileInfo.FileState != HikeFileState.PAUSED))
                 {
                     if (!BeginUploadDownload(fileInfo))
                         PendingTasks.Enqueue(fileInfo);
                 }
-                else if (fileInfo is DownloadFileInfo && fileInfo.FileState != HikeFileState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING) || fileInfo.FileState != HikeFileState.PAUSED))
+                else if (fileInfo is FileDownloader && fileInfo.FileState != HikeFileState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING) || fileInfo.FileState != HikeFileState.PAUSED))
                 {
                     if (!BeginUploadDownload(fileInfo))
                         PendingTasks.Enqueue(fileInfo);
@@ -160,18 +160,10 @@ namespace windows_client.FileTransfers
             }
             else
             {
-                if (fileInfo is DownloadFileInfo)
-                {
-                    FileDownloader downloader = new FileDownloader();
-                    downloader.DownloadStatusChanged += downloader_DownloadStatusChanged;
-                    return ThreadPool.QueueUserWorkItem(downloader.BeginDownloadGetRequest, fileInfo);
-                }
+                if (fileInfo is FileDownloader)
+                    return ThreadPool.QueueUserWorkItem((fileInfo as FileDownloader).BeginDownloadGetRequest, null);
                 else
-                {
-                    FileUploader uploader = new FileUploader();
-                    uploader.UploadStatusChanged += uploader_UploadStatusChanged;
-                    return ThreadPool.QueueUserWorkItem(uploader.BeginUploadGetRequest, fileInfo);
-                }
+                    return ThreadPool.QueueUserWorkItem((fileInfo as FileUploader).BeginUploadGetRequest, null);
             }
         }
 
@@ -180,7 +172,7 @@ namespace windows_client.FileTransfers
             SaveTaskData(e.FileInfo);
 
             if (UpdateTaskStatusOnUI != null)
-                UpdateTaskStatusOnUI(null, new TaskCompletedArgs(e.FileInfo, e.IsStateChanged));
+                UpdateTaskStatusOnUI(null, e);
 
             if (e.IsStateChanged)
                 App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, e.FileInfo);
@@ -198,7 +190,7 @@ namespace windows_client.FileTransfers
             SaveTaskData(e.FileInfo);
 
             if (UpdateTaskStatusOnUI != null)
-                UpdateTaskStatusOnUI(null, new TaskCompletedArgs(e.FileInfo, e.IsStateChanged));
+                UpdateTaskStatusOnUI(null, e);
 
             if (e.IsStateChanged)
                 App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, e.FileInfo);
@@ -238,7 +230,7 @@ namespace windows_client.FileTransfers
 
                         foreach (var fileName in fileNames)
                         {
-                            UploadFileInfo fileInfo = new UploadFileInfo();
+                            FileUploader fileInfo = new FileUploader();
                             using (var file = store.OpenFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                             {
                                 using (BinaryReader reader = new BinaryReader(file))
@@ -278,7 +270,7 @@ namespace windows_client.FileTransfers
 
                         foreach (var fileName in fileNames)
                         {
-                            DownloadFileInfo fileInfo = new DownloadFileInfo();
+                            FileDownloader fileInfo = new FileDownloader();
 
                             using (var file = store.OpenFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                             {
@@ -359,36 +351,7 @@ namespace windows_client.FileTransfers
 
         void SaveTaskData(HikeFileInfo fileInfo)
         {
-            lock (readWriteLock)
-            {
-                try
-                {
-                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + fileInfo.Id;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
-                    {
-                        if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
-                            store.CreateDirectory(FILE_TRANSFER_DIRECTORY_NAME);
-
-                        if (store.FileExists(fileName))
-                            store.DeleteFile(fileName);
-
-                        using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
-                        {
-                            using (BinaryWriter writer = new BinaryWriter(file))
-                            {
-                                writer.Seek(0, SeekOrigin.Begin);
-                                fileInfo.Write(writer);
-                                writer.Flush();
-                                writer.Close();
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine("FileUploader :: Save Upload Status To IS, Exception : " + ex.StackTrace);
-                }
-            }
+            fileInfo.Save();
         }
 
         public event EventHandler<TaskCompletedArgs> UpdateTaskStatusOnUI;

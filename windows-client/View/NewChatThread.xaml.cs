@@ -292,7 +292,7 @@ namespace windows_client.View
                 {
                     state = Attachment.AttachmentState.COMPLETED;
 
-                    if (fInfo is UploadFileInfo)
+                    if (fInfo is FileUploader)
                         convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 }
                 else if (fInfo.FileState == HikeFileState.PAUSED)
@@ -303,7 +303,7 @@ namespace windows_client.View
                 {
                     state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
 
-                    if (fInfo is UploadFileInfo)
+                    if (fInfo is FileUploader)
                         convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
                 }
                 else if (fInfo.FileState == HikeFileState.STARTED)
@@ -316,7 +316,7 @@ namespace windows_client.View
 
                 convMessage.SetAttachmentState(state);
 
-                if (fInfo is DownloadFileInfo)
+                if (fInfo is FileDownloader)
                 {
                     MiscDBUtil.UpdateFileAttachmentState(fInfo.Msisdn, fInfo.Id, state);
 

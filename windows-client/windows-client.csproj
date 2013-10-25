@@ -180,12 +180,10 @@
     <Compile Include="DbUtils\StatusMsgsTable.cs" />
     <Compile Include="DbUtils\UsersTableUtils.cs" />
     <Compile Include="FileTransfer.cs" />
-    <Compile Include="FileTransfers\DownloadFileInfo.cs" />
     <Compile Include="FileTransfers\FileDownloader.cs" />
-    <Compile Include="FileTransfers\FileUploader.cs" />
     <Compile Include="FileTransfers\HikeFileInfo.cs" />
     <Compile Include="FileTransfers\FileTransferManager.cs" />
-    <Compile Include="FileTransfers\UploadFileInfo.cs" />
+    <Compile Include="FileTransfers\FileUploader.cs" />
     <Compile Include="HikeConstants.cs" />
     <Compile Include="HikePubSub.cs" />
     <Compile Include="Languages\AppResources.Designer.cs">
