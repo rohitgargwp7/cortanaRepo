@@ -337,7 +337,10 @@ namespace windows_client.View
             App.MqttManagerInstance.connect();
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
-                Utils.requestAccountInfo();
+                if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION))
+                    Utils.RequestHikeBot();
+                else
+                    Utils.requestAccountInfo();
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
                 App.RemoveKeyFromAppSettings(HikeConstants.IS_NEW_INSTALLATION);
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE);
