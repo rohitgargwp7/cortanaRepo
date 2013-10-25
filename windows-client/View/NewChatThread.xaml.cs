@@ -105,6 +105,7 @@ namespace windows_client.View
         ApplicationBarMenuItem infoMenuItem;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
+        ApplicationBarIconButton stickersIconButton = null;
         ApplicationBarIconButton fileTransferIconButton = null;
         private PhotoChooserTask photoChooserTask;
         private CameraCaptureTask cameraCaptureTask;
@@ -259,7 +260,6 @@ namespace windows_client.View
                 jumpToBottomBorder.Background = UI_Utils.Instance.BlackBorderBrush;
             }
 
-            _currentOrientation = this.Orientation;
         }
 
         void FileTransferStatusUpdated(object sender, TaskCompletedArgs e)
@@ -859,7 +859,6 @@ namespace windows_client.View
                 ShowDownloadOverlay(false);
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
                 emoticonPanel.Visibility = Visibility.Collapsed;
                 e.Cancel = true;
                 return;
@@ -1157,47 +1156,58 @@ namespace windows_client.View
 
         private void ShowInAppTips()
         {
-            int chatThreadCount;
+            HikeToolTip tip;
+            
+            App.ViewModel.DictInAppTip.TryGetValue(1, out tip);
 
-            var keyExist = App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out chatThreadCount); //initilaized in upgrade logic
-            if (keyExist)
+            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
             {
-                if (App.ViewModel.DictInAppTip != null)
+                App.ViewModel.DisplayTip(LayoutRoot, 1);
+                chatThreadMainPage.ApplicationBar = appBar;
+            }
+            else
+            {
+                int chatThreadCount;
+
+                var keyExist = App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out chatThreadCount); //initilaized in upgrade logic
+                if (keyExist)
                 {
-                    HikeToolTip tip;
-
-                    if (chatThreadCount == 0)
+                    if (App.ViewModel.DictInAppTip != null)
                     {
-                        App.ViewModel.DictInAppTip.TryGetValue(0, out tip);
 
-                        if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-                            App.ViewModel.DisplayTip(LayoutRoot, 0);
+                        if (chatThreadCount == 0)
+                        {
+                            App.ViewModel.DictInAppTip.TryGetValue(0, out tip);
+
+                            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                                App.ViewModel.DisplayTip(LayoutRoot, 0);
+                            else
+                                chatThreadCount++;
+
+                            chatThreadMainPage.ApplicationBar = appBar;
+                        }
+                        else if (chatThreadCount == 1)
+                        {
+                            App.ViewModel.DictInAppTip.TryGetValue(2, out tip);
+
+                            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                                App.ViewModel.DisplayTip(LayoutRoot, 2);
+                            else
+                                chatThreadCount++;
+
+                            chatThreadMainPage.ApplicationBar = appBar;
+                        }
                         else
-                            chatThreadCount++;
+                            showNudgeTute();
 
-                        chatThreadMainPage.ApplicationBar = appBar;
-                    }
-                    else if (chatThreadCount == 1)
-                    {
-                        App.ViewModel.DictInAppTip.TryGetValue(2, out tip);
-
-                        if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-                            App.ViewModel.DisplayTip(LayoutRoot, 2);
-                        else
-                            chatThreadCount++;
-
-                        chatThreadMainPage.ApplicationBar = appBar;
+                        App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
                     }
                     else
                         showNudgeTute();
-
-                    App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
                 }
                 else
-                    showNudgeTute();
+                    chatThreadMainPage.ApplicationBar = appBar;
             }
-            else
-                chatThreadMainPage.ApplicationBar = appBar;
         }
 
         private void GetUserLastSeen()
@@ -1464,6 +1474,14 @@ namespace windows_client.View
             sendIconButton.Click += new EventHandler(sendMsgBtn_Click);
             sendIconButton.IsEnabled = false;
             appBar.Buttons.Add(sendIconButton);
+
+            //add icon for sticker
+            stickersIconButton = new ApplicationBarIconButton();
+            stickersIconButton.IconUri = new Uri("/View/images/icon_sticker.png", UriKind.Relative);
+            stickersIconButton.Text = AppResources.Sticker_Txt;
+            stickersIconButton.Click += new EventHandler(emoticonButton_Click);
+            stickersIconButton.IsEnabled = true;
+            appBar.Buttons.Add(stickersIconButton);
 
             //add icon for smiley
             emoticonsIconButton = new ApplicationBarIconButton();
@@ -1799,12 +1817,13 @@ namespace windows_client.View
             {
                 if (this.ocMessages.Count > 0 && (!IsMute || this.ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
                 {
-                    if (vScrollBar != null && llsViewPort != null && (vScrollBar.Maximum - vScrollBar.Value < 2000))
+                    JumpToBottomGrid.Visibility = Visibility.Collapsed;
+
+                    if (vScrollBar != null && llsViewPort != null && ((vScrollBar.Maximum - vScrollBar.Value) < 2000))
                         llsViewPort.SetViewportOrigin(new System.Windows.Point(0, vScrollBar.Maximum));
                     else
                         llsMessages.ScrollTo(ocMessages[ocMessages.Count - 1]);
 
-                    JumpToBottomGrid.Visibility = Visibility.Collapsed;
                 }
             }
             catch (Exception ex)
@@ -1990,6 +2009,7 @@ namespace windows_client.View
                 {
                     App.ViewModel.BlockedHashset.Remove(mContactNumber);
                     mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
+                    stickersIconButton.IsEnabled = true;
                     emoticonsIconButton.IsEnabled = true;
                     enableSendMsgButton = true;
                     sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
@@ -2023,7 +2043,6 @@ namespace windows_client.View
             }
 
             emoticonPanel.Visibility = Visibility.Collapsed;
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
             attachmentMenu.Visibility = Visibility.Collapsed;
 
             ConvMessage convMessage = llsMessages.SelectedItem as ConvMessage;
@@ -2199,8 +2218,8 @@ namespace windows_client.View
                                 }
 
                                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
-                                CompositionTarget.Rendering += CompositionTarget_Rendering; 
-                                
+                                CompositionTarget.Rendering += CompositionTarget_Rendering;
+
                                 currentAudioMessage = convMessage;
 
                                 if (currentAudioMessage != null)
@@ -2501,6 +2520,32 @@ namespace windows_client.View
                             //Done to avoid crash. Code should never reach here
                             Debug.WriteLine("Fileattachment object is null for convmessage with attachment");
                             return;
+                        }
+       
+                        if (convMessage.IsSent)
+                        {
+                            chatBubble = convMessage;
+
+                            if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                                     || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
+                                msgMap.Add(convMessage.MessageId, chatBubble);
+                        }
+                        else
+                        {
+                            bool isDownloading;
+                            chatBubble = FileTransfer.Instance.GetDownloadingMessage(mContactNumber.Replace(":", "_"), convMessage.MessageId.ToString(), out isDownloading);
+                            if (isDownloading)
+                            {
+                                if (chatBubble == null)
+                                    FileTransfer.Instance.UpdateConvMap(convMessage, mContactNumber.Replace(":", "_"));
+                            }
+                            else if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.STARTED && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
+                            {
+                                listDownload.Add(convMessage);
+                            }
+                            if (chatBubble != null)
+                                chatBubble.GroupMemberName = isGroupChat ?
+                                  GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                         }
                     }
 
@@ -3070,8 +3115,6 @@ namespace windows_client.View
             if (String.IsNullOrEmpty(message))
                 return;
 
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
-
             attachmentMenu.Visibility = Visibility.Collapsed;
 
             if (message == "" || (!isOnHike && mCredits <= 0))
@@ -3090,8 +3133,6 @@ namespace windows_client.View
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
-
             emoticonPanel.Visibility = Visibility.Collapsed;
 
             if ((!isOnHike && mCredits <= 0))
@@ -3200,11 +3241,7 @@ namespace windows_client.View
             //this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
             //ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
-            {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
-
                 this.emoticonPanel.Visibility = Visibility.Collapsed;
-            }
 
             if (this.attachmentMenu.Visibility == Visibility.Visible)
                 this.attachmentMenu.Visibility = Visibility.Collapsed;
@@ -3466,6 +3503,52 @@ namespace windows_client.View
 
         private void emoticonButton_Click(object sender, EventArgs e)
         {
+            var appButton = sender as ApplicationBarIconButton;
+
+            if (appButton != null)
+            {
+                if (emoticonPanel.Visibility == Visibility.Collapsed)
+                {
+                    emoticonPanel.Visibility = Visibility.Visible;
+
+                    if (appButton.Text == AppResources.Sticker_Txt)
+                    {
+                        ShowStickerPallet();
+                    }
+                    else
+                    {
+                        gridEmoticons.Visibility = Visibility.Visible;
+                        gridStickers.Visibility = Visibility.Collapsed;
+                    }
+                }
+                else
+                {
+                    if (appButton.Text == AppResources.Sticker_Txt)
+                    {
+                        if (gridStickers.Visibility == Visibility.Collapsed)
+                        {
+                            ShowStickerPallet();
+                        }
+                        else
+                        {
+                            emoticonPanel.Visibility = Visibility.Collapsed;
+                        }
+                    }
+                    else
+                    {
+                        if (gridEmoticons.Visibility == Visibility.Collapsed)
+                        {
+                            gridEmoticons.Visibility = Visibility.Visible;
+                            gridStickers.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            emoticonPanel.Visibility = Visibility.Collapsed;
+                        }
+                    }
+                }
+            }
+
             if (recordGrid.Visibility == Visibility.Visible)
             {
                 recordGrid.Visibility = Visibility.Collapsed;
@@ -3473,34 +3556,36 @@ namespace windows_client.View
             }
 
             App.ViewModel.HideToolTip(LayoutRoot, 0);
+            App.ViewModel.HideToolTip(LayoutRoot, 1);
             App.ViewModel.HideToolTip(LayoutRoot, 2);
-
-            if (emoticonPanel.Visibility == Visibility.Collapsed)
-            {
-                App.ViewModel.DisplayTip(LayoutRoot, 1);
-                emoticonPanel.Visibility = Visibility.Visible;
-
-                if (gridStickers.Visibility == Visibility.Visible)
-                {
-                    if (pivotStickers.SelectedIndex > 0)
-                    {
-                        string category;
-                        if (StickerPivotHelper.Instance.dictPivotCategory.TryGetValue(pivotStickers.SelectedIndex, out category))
-                        {
-                            CategoryTap(category);
-                        }
-                    }
-
-                }
-            }
-            else
-            {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
-                emoticonPanel.Visibility = Visibility.Collapsed;
-            }
 
             attachmentMenu.Visibility = Visibility.Collapsed;
             this.Focus();
+        }
+
+        private void ShowStickerPallet()
+        {
+            gridEmoticons.Visibility = Visibility.Collapsed;
+            gridStickers.Visibility = Visibility.Visible;
+
+            if (!isStickersLoaded)
+            {
+                if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
+                    CategoryRecent_Tap(null, null);
+                else
+                    Category0_Tap(null, null);
+
+                isStickersLoaded = true;
+            }
+
+            if (pivotStickers.SelectedIndex > 0)
+            {
+                string category;
+                if (StickerPivotHelper.Instance.dictPivotCategory.TryGetValue(pivotStickers.SelectedIndex, out category))
+                {
+                    CategoryTap(category);
+                }
+            }
         }
 
         private void fileTransferButton_Click(object sender, EventArgs e)
@@ -3512,6 +3597,7 @@ namespace windows_client.View
             }
 
             App.ViewModel.HideToolTip(LayoutRoot, 0);
+            App.ViewModel.HideToolTip(LayoutRoot, 1);
             App.ViewModel.HideToolTip(LayoutRoot, 2);
 
             if (attachmentMenu.Visibility == Visibility.Collapsed)
@@ -3520,11 +3606,8 @@ namespace windows_client.View
                 attachmentMenu.Visibility = Visibility.Collapsed;
 
             if (emoticonPanel.Visibility == Visibility.Visible)
-            {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
-
                 emoticonPanel.Visibility = Visibility.Collapsed;
-            }
+
             this.Focus();
         }
 
@@ -3544,7 +3627,6 @@ namespace windows_client.View
         {
             try
             {
-
                 cameraCaptureTask.Show();
                 attachmentMenu.Visibility = Visibility.Collapsed;
             }
@@ -3605,17 +3687,9 @@ namespace windows_client.View
 
         }
 
-
-
         private void chatListBox_tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             emoticonPanel.Visibility = Visibility.Collapsed;
-        }
-
-        private void emoticonPanel_LostFocus(object sender, RoutedEventArgs e)
-        {
-            //emoticonPanel.Visibility = Visibility.Collapsed;
-
         }
 
         private void emotList0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3805,6 +3879,7 @@ namespace windows_client.View
                 llsMessages.IsHitTestVisible = false;
                 bottomPanel.IsHitTestVisible = false;
                 OverlayMessagePanel.Visibility = Visibility.Visible;
+                stickersIconButton.IsEnabled = false;
                 emoticonsIconButton.IsEnabled = false;
                 sendIconButton.IsEnabled = enableSendMsgButton = false;
                 fileTransferIconButton.IsEnabled = false;
@@ -3818,12 +3893,14 @@ namespace windows_client.View
                 OverlayMessagePanel.Visibility = Visibility.Collapsed;
                 if (isGroupChat && !isGroupAlive)
                 {
+                    stickersIconButton.IsEnabled = false;
                     emoticonsIconButton.IsEnabled = false;
                     sendIconButton.IsEnabled = enableSendMsgButton = false;
                     fileTransferIconButton.IsEnabled = false;
                 }
                 else if (!showNoSmsLeftOverlay)
                 {
+                    stickersIconButton.IsEnabled = true;
                     emoticonsIconButton.IsEnabled = true;
                     enableSendMsgButton = true;
                     sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
@@ -4508,6 +4585,7 @@ namespace windows_client.View
             sendMsgTxtbox.IsHitTestVisible = false;
             appBar.IsMenuEnabled = false;
             sendIconButton.IsEnabled = enableSendMsgButton = false;
+            stickersIconButton.IsEnabled = false;
             emoticonsIconButton.IsEnabled = false;
             fileTransferIconButton.IsEnabled = false;
         }
@@ -4519,6 +4597,7 @@ namespace windows_client.View
             appBar.IsMenuEnabled = true;
             enableSendMsgButton = true;
             sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
+            stickersIconButton.IsEnabled = true;
             emoticonsIconButton.IsEnabled = true;
             fileTransferIconButton.IsEnabled = true;
         }
@@ -4981,10 +5060,8 @@ namespace windows_client.View
         }
 
         #region Orientation Handling
-        PageOrientation _currentOrientation;
         private void PhoneApplicationPage_OrientationChanged(object sender, OrientationChangedEventArgs e)
         {
-            _currentOrientation = this.Orientation;
             for (int i = 0; i < ocMessages.Count; i++)
             {
                 ConvMessage convMessage = ocMessages[i];
@@ -5040,12 +5117,16 @@ namespace windows_client.View
         private void vScrollBar1_ValueChanged(Object sender, EventArgs e)
         {
             vScrollBar = sender as ScrollBar;
-            if (vScrollBar != null && vScrollBar.Maximum < 1000000 && _currentOrientation == this.Orientation)
+            if (vScrollBar != null && llsMessages.ManipulationState != ManipulationState.Idle)
             {
-                if ((vScrollBar.Maximum - vScrollBar.Value) < 100)
+                if ((vScrollBar.Maximum - vScrollBar.Value) < 200)
                 {
                     JumpToBottomGrid.Visibility = Visibility.Collapsed;
                     _unreadMessageCounter = 0;
+                }
+                else if ((vScrollBar.Maximum - vScrollBar.Value) > 2000 && JumpToBottomGrid.Visibility == Visibility.Collapsed)
+                {
+                    ShowJumpToBottom(false);
                 }
             }
         }
@@ -5076,7 +5157,7 @@ namespace windows_client.View
         {
             if (vScrollBar != null && (ocMessages != null && ocMessages.Count > 6) && vScrollBar.Maximum < 1000000)
             {
-                if ((vScrollBar.Maximum - vScrollBar.Value) > 300)
+                if ((vScrollBar.Maximum - vScrollBar.Value) > 500)
                 {
                     if (increaseUnreadCounter)
                         _unreadMessageCounter += 1;
@@ -5123,23 +5204,6 @@ namespace windows_client.View
             mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
         }
 
-        private void StickersTab_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
-
-            gridEmoticons.Visibility = Visibility.Collapsed;
-            gridStickers.Visibility = Visibility.Visible;
-            if (!isStickersLoaded)
-            {
-                if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
-                    CategoryRecent_Tap(sender, e);
-                else
-                    Category0_Tap(sender, e);
-                isStickersLoaded = true;
-            }
-        }
-
-
         private void PivotStickers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string category;
@@ -5172,12 +5236,6 @@ namespace windows_client.View
             }
         }
 
-        private void StickersBack_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            gridEmoticons.Visibility = Visibility.Visible;
-            gridStickers.Visibility = Visibility.Collapsed;
-        }
-
         private void CategoryRecent_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (_selectedCategory == StickerHelper.CATEGORY_RECENT)
@@ -5204,6 +5262,7 @@ namespace windows_client.View
 
             CategoryTap(_selectedCategory);
         }
+
         private void Category0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (_selectedCategory == StickerHelper.CATEGORY_HUMANOID)
@@ -5379,7 +5438,7 @@ namespace windows_client.View
             else
                 stickerPivot.SetLlsSource(stickerCategory.ListStickers);
 
-            if (stickerCategory.ShowDownloadMessage || (stickerCategory.HasNewStickers && !stickerCategory.HasMoreStickers))
+            if (!stickerCategory.HasNewStickers && !stickerCategory.HasMoreStickers)
             {
                 HideNewStickerUI(stickerCategory, true);
             }
@@ -5413,6 +5472,9 @@ namespace windows_client.View
             {
                 switch (stickerCategory.Category)
                 {
+                    case StickerHelper.CATEGORY_HUMANOID:
+                        stCategory0.BorderThickness = zeroThickness;
+                        break;
                     case StickerHelper.CATEGORY_DOGGY:
                         stCategory1.BorderThickness = zeroThickness;
                         break;
@@ -5443,6 +5505,9 @@ namespace windows_client.View
             {
                 switch (stickerCategory.Category)
                 {
+                    case StickerHelper.CATEGORY_HUMANOID:
+                        stCategory0.BorderThickness = newCategoryThickness;
+                        break;
                     case StickerHelper.CATEGORY_DOGGY:
                         stCategory1.BorderThickness = newCategoryThickness;
                         break;
@@ -5616,7 +5681,8 @@ namespace windows_client.View
                     else
                     {
                         stickerCategory.HasNewStickers = false;
-                        HideNewStickerUI(stickerCategory, false);
+                        if (!hasMoreStickers)
+                            HideNewStickerUI(stickerCategory, false);
                     }
                     if (!isDisabled)
                         stickerCategory.WriteLowResToFile(listLowResStickersBytes, hasMoreStickers);
@@ -5671,6 +5737,7 @@ namespace windows_client.View
         public void ShowDownloadOverlay(bool show)
         {
             sendIconButton.IsEnabled = show ? sendMsgTxtbox.Text.Length > 0 : false;
+            stickersIconButton.IsEnabled = !show;
             emoticonsIconButton.IsEnabled = !show;
             fileTransferIconButton.IsEnabled = !show;
             if (show)
@@ -5750,43 +5817,42 @@ namespace windows_client.View
             //done thos way to maintain order of insertion
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID)) != null)
             {
-                if (stickerCategory.HasNewStickers)
+                if (stickerCategory.HasNewStickers || stickerCategory.HasMoreStickers)
                     ShowNewStickerUi(stickerCategory);
             }
 
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
             {
                 stCategory1.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewStickers)
+                if (stickerCategory.HasNewStickers || stickerCategory.HasMoreStickers)
                     ShowNewStickerUi(stickerCategory);
             }
 
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
             {
                 stCategory2.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewStickers)
+                if (stickerCategory.HasNewStickers || stickerCategory.HasMoreStickers)
                     ShowNewStickerUi(stickerCategory);
             }
 
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
             {
                 stCategory3.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewStickers)
+                if (stickerCategory.HasNewStickers || stickerCategory.HasMoreStickers)
                     ShowNewStickerUi(stickerCategory);
-
             }
 
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
             {
                 stCategory4.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewStickers)
+                if (stickerCategory.HasNewStickers || stickerCategory.HasMoreStickers)
                     ShowNewStickerUi(stickerCategory);
             }
 
             if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
             {
                 stCategory5.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewStickers)
+                if (stickerCategory.HasNewStickers || stickerCategory.HasMoreStickers)
                     ShowNewStickerUi(stickerCategory);
             }
 
@@ -5796,7 +5862,7 @@ namespace windows_client.View
             StickerPivotHelper.Instance.InitialiseStickerPivot();
             pivotStickers = StickerPivotHelper.Instance.StickerPivot;
             pivotStickers.SelectionChanged += PivotStickers_SelectionChanged;
-            pivotStickers.Height = 240;
+            pivotStickers.MaxHeight = 240;
             pivotStickers.SetValue(Grid.RowProperty, 0);
             gridStickers.Children.Add(pivotStickers);
         }
@@ -5806,9 +5872,8 @@ namespace windows_client.View
 
         private void Record_ActionIconTapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.ViewModel.HideToolTip(LayoutRoot, 2);
-
             App.ViewModel.HideToolTip(LayoutRoot, 1);
+            App.ViewModel.HideToolTip(LayoutRoot, 2);
 
             attachmentMenu.Visibility = Visibility.Collapsed;
             emoticonPanel.Visibility = Visibility.Collapsed;

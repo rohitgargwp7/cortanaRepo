@@ -464,8 +464,8 @@ namespace windows_client.ViewModel
         {
             _toolTipsList = new List<HikeToolTip>();
 
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 130, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 262, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 180, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 30, 0), FullTipMargin = new Thickness(10, 0, 10, 55) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
@@ -546,9 +546,6 @@ namespace windows_client.ViewModel
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 3);
                 else if (index == 3)
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 2);
-
-                if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE) && index == 1)
-                    tip.TipMargin = new Thickness(10, 0, 110, 0);
 
                 if (tip.IsTop)
                 {
