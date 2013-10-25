@@ -195,7 +195,15 @@ namespace windows_client.FileTransfers
             if (UpdateTaskStatusOnUI != null)
                 UpdateTaskStatusOnUI(null, new TaskCompletedArgs(e.FileInfo, e.IsStateChanged));
 
-            App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, e.FileInfo);
+            if (e.IsStateChanged)
+                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, e.FileInfo);
+
+            if (e.FileInfo.FileState == HikeFileState.PAUSED && !PendingTasks.Contains(e.FileInfo))
+            {
+                PendingTasks.Enqueue(e.FileInfo);
+
+                StartTask();
+            }
         }
 
         public void PopulatePreviousUploads()

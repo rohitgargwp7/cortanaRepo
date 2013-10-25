@@ -363,7 +363,7 @@ namespace windows_client.DbUtils
 
                         if (fInfo is DownloadFileInfo)
                         {
-                            if (fInfo.FileState == HikeFileState.COMPLETED)
+                            if (fInfo.FileState == HikeFileState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.Id))
                             {
                                 string destinationPath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.Id;
                                 string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));
@@ -385,20 +385,13 @@ namespace windows_client.DbUtils
                                         }
                                     }
 
-                                    try
+                                    if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
                                     {
-                                        //Deployment.Current.Dispatcher.BeginInvoke(() =>
-                                        //    {
-                                        //        if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
-                                        //        {
-                                        //            IsolatedStorageFileStream myFileStream = isoStore.OpenFile(destinationPath, FileMode.Open, FileAccess.Read);
-                                        //            MediaLibrary library = new MediaLibrary();
-                                        //            library.SavePicture(convMessage.FileAttachment.FileName, myFileStream);
-                                        //            myFileStream.Close();
-                                        //        }
-                                        //    });
+                                        IsolatedStorageFileStream myFileStream = isoStore.OpenFile(destinationPath, FileMode.Open, FileAccess.Read);
+                                        MediaLibrary library = new MediaLibrary();
+                                        library.SavePicture(convMessage.FileAttachment.FileName, myFileStream);
+                                        myFileStream.Close();
                                     }
-                                    catch { }
                                 }
 
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.Id);
