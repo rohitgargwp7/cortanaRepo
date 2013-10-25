@@ -564,7 +564,13 @@ namespace windows_client.utils
             get
             {
                 if (pausedFTR == null)
-                    pausedFTR = new BitmapImage(new Uri("/View/images/pause_ftr.png", UriKind.Relative));
+                {
+                    if (Utils.isDarkTheme())
+                        pausedFTR = new BitmapImage(new Uri("/View/images/pause_white_ftr.png", UriKind.Relative));
+                    else
+                        pausedFTR = new BitmapImage(new Uri("/View/images/pause_black_ftr.png", UriKind.Relative));
+                } 
+                
                 return pausedFTR;
             }
         }
@@ -574,7 +580,13 @@ namespace windows_client.utils
             get
             {
                 if (resumeFTR == null)
-                    resumeFTR = new BitmapImage(new Uri("/View/images/resume_ftr.png", UriKind.Relative));
+                {
+                    if (Utils.isDarkTheme())
+                        resumeFTR = new BitmapImage(new Uri("/View/images/resume_white_ftr.png", UriKind.Relative));
+                    else
+                        resumeFTR = new BitmapImage(new Uri("/View/images/resume_black_ftr.png", UriKind.Relative));
+                }
+
                 return resumeFTR;
             }
         }
