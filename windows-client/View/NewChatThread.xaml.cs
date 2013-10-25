@@ -1457,7 +1457,7 @@ namespace windows_client.View
 
             //add icon for sticker
             stickersIconButton = new ApplicationBarIconButton();
-            stickersIconButton.IconUri = new Uri("/View/images/expressions.png", UriKind.Relative);
+            stickersIconButton.IconUri = new Uri("/View/images/icon_sticker.png", UriKind.Relative);
             stickersIconButton.Text = AppResources.Sticker_Txt;
             stickersIconButton.Click += new EventHandler(emoticonButton_Click);
             stickersIconButton.IsEnabled = true;
