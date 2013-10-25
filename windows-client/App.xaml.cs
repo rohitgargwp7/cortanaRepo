@@ -937,7 +937,9 @@ namespace windows_client
             #region FILE TRANSFER
             FileTransfer.Instance.ProcessOldTransferRequests();
             #endregion
+            #region HIKE BOT
             WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
+            #endregion
         }
 
         public static void createDatabaseAsync()

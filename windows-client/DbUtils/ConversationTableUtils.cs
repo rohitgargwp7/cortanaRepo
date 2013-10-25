@@ -97,7 +97,6 @@ namespace windows_client.DbUtils
                 if (Utils.IsHikeBotMsg(convMessage.Msisdn))
                 {
                     obj = new ConversationListObject(convMessage.Msisdn, Utils.GetHikeBotName(convMessage.Msisdn), convMessage.Message, true, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
-                    obj.IsHikeBot = true;
                 }
                 else
                 {
