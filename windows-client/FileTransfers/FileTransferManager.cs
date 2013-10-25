@@ -128,7 +128,12 @@ namespace windows_client.FileTransfers
 
                     App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
                 }
-                else if (fileInfo.FileState != HikeFileState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) || fileInfo.FileState != HikeFileState.PAUSED))
+                else if (fileInfo is UploadFileInfo && fileInfo.FileState != HikeFileState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) || fileInfo.FileState != HikeFileState.PAUSED))
+                {
+                    if (!BeginUploadDownload(fileInfo))
+                        PendingTasks.Enqueue(fileInfo);
+                }
+                else if (fileInfo is DownloadFileInfo && fileInfo.FileState != HikeFileState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING) || fileInfo.FileState != HikeFileState.PAUSED))
                 {
                     if (!BeginUploadDownload(fileInfo))
                         PendingTasks.Enqueue(fileInfo);
@@ -210,8 +215,8 @@ namespace windows_client.FileTransfers
         {
             PopulateUploads();
             PopulateDownloads();
-            
-            if (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && PendingTasks.Count > 0)
+
+            if ((!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) || !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING)) && PendingTasks.Count > 0)
                 StartTask();
         }
 

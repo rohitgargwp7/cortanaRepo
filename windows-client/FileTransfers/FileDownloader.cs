@@ -36,6 +36,7 @@ namespace windows_client.FileTransfers
             HttpWebResponse response = null;
             Stream responseStream = null;
             HttpStatusCode responseCode = HttpStatusCode.NotFound;
+
             try
             {
                 response = (HttpWebResponse)myHttpWebRequest.EndGetResponse(result);
@@ -146,7 +147,10 @@ namespace windows_client.FileTransfers
             }
             else
             {
-                fileInfo.FileState = HikeFileState.PAUSED;
+                if (App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
+                    fileInfo.FileState = HikeFileState.FAILED;
+                else
+                    fileInfo.FileState = HikeFileState.PAUSED;
 
                 if (DownloadStatusChanged != null)
                     DownloadStatusChanged(this, new TaskCompletedArgs(fileInfo, true));
