@@ -136,6 +136,11 @@ namespace windows_client.FileTransfers
             {
                 fileInfo.FileState = HikeFileState.FAILED;
 
+                //Deployment.Current.Dispatcher.BeginInvoke(() =>
+                //{
+                //    MessageBox.Show(AppResources.File_Not_Exist_Message, AppResources.File_Not_Exist_Caption, MessageBoxButton.OK);
+                //});
+
                 if (DownloadStatusChanged != null)
                     DownloadStatusChanged(this, new TaskCompletedArgs(fileInfo, true));
             }
