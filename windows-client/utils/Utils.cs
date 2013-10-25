@@ -418,6 +418,7 @@ namespace windows_client.utils
                     return string.Empty;
             }
         }
+
         public static bool IsWP8
         {
             get
@@ -569,6 +570,16 @@ namespace windows_client.utils
             }
 
             return string.Format("{0,2:n1} {1}", dValue, suffixes[i]);
+        }
+
+        public static void RequestHikeBot()
+        {
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
+            JObject data = new JObject();
+            data.Add(HikeConstants.Extras.SEND_BOT, true);
+            obj.Add(HikeConstants.DATA, data);
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
     }
 }

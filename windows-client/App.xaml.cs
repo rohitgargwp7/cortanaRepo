@@ -937,10 +937,7 @@ namespace windows_client
             #region FILE TRANSFER
             FileTransfer.Instance.ProcessOldTransferRequests();
             #endregion
-            #region REQUEST BOT
-            if (isNewInstall)
-                RequestHikeBot();
-            #endregion
+            WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
         }
 
         public static void createDatabaseAsync()
@@ -1162,15 +1159,6 @@ namespace windows_client
             }
         }
 
-        public static void RequestHikeBot()
-        {
-            JObject obj = new JObject();
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
-            JObject data = new JObject();
-            data.Add(HikeConstants.Extras.SEND_BOT, true);
-            obj.Add(HikeConstants.DATA, data);
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-        }
         private void sendAppBgStatusToServer()
         {
             JObject obj = new JObject();

@@ -110,7 +110,7 @@ namespace windows_client.View
         private CameraCaptureTask cameraCaptureTask;
         private object statusObject = null;
         private int _unreadMessageCounter = 0;
-
+        private bool _isHikeBot = false;
         private LastSeenHelper _lastSeenHelper;
         Boolean _isSendAllAsSMSVisible = false;
         //        private ObservableCollection<MyChatBubble> chatThreadPageCollection = new ObservableCollection<MyChatBubble>();
@@ -780,7 +780,7 @@ namespace windows_client.View
             {
                 base.OnRemovedFromJournal(e);
                 removeListeners();
-
+                RemoveEmmaBot();
                 if (mediaElement != null)
                 {
                     CompositionTarget.Rendering -= CompositionTarget_Rendering;
@@ -823,6 +823,7 @@ namespace windows_client.View
             }
         }
 
+
         private void ClearPageResources()
         {
             ocMessages.Clear();
@@ -864,6 +865,20 @@ namespace windows_client.View
             base.OnBackKeyPress(e);
         }
 
+        public void RemoveEmmaBot()
+        {
+            if (_isHikeBot && mContactNumber == HikeConstants.FTUE_HIKEBOT_MSISDN && App.appSettings.Contains(HikeConstants.AppSettings.REMOVE_EMMA))
+            {
+                ConversationListObject convObj;
+                if (App.ViewModel.ConvMap.TryGetValue(mContactNumber, out convObj))
+                {
+                    App.ViewModel.ConvMap.Remove(convObj.Msisdn);
+                    App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
+                    mPubSub.publish(HikePubSub.DELETE_CONVERSATION, convObj.Msisdn);
+                    mPubSub.publish(HikePubSub.DELETE_STATUS_AND_CONV, convObj);//to update ui of conversation list page
+                }
+            }
+        }
         #endregion
 
         #region INIT PAGE BASED ON STATE
@@ -1032,12 +1047,9 @@ namespace windows_client.View
             mUserIsBlocked = groupOwner != null ? App.ViewModel.BlockedHashset.Contains(groupOwner) : App.ViewModel.BlockedHashset.Contains(mContactNumber);
             userName.Text = mContactName;
 
-            // if hike bot msg disable appbar, textbox etc
             if (Utils.IsHikeBotMsg(mContactNumber))
             {
-                sendMsgTxtbox.IsEnabled = false;
-                WalkieTalkieMicIcon.IsHitTestVisible = false;
-                return;
+                _isHikeBot = true;
             }
 
             initAppBar(isAddUser);
@@ -1478,6 +1490,10 @@ namespace windows_client.View
                 leaveMenuItem.Text = AppResources.SelectUser_LeaveGrp_Txt;
                 leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
                 appBar.MenuItems.Add(leaveMenuItem);
+            }
+            else if (_isHikeBot)
+            {
+                userHeader.Tap += userImage_Tap;
             }
             else
             {
@@ -3373,6 +3389,7 @@ namespace windows_client.View
                 App.ViewModel.MessageListPageCollection.Remove(obj); // removed from observable collection
                 App.ViewModel.ConvMap.Remove(mContactNumber);
                 // delete from db will be handled by dbconversation listener
+                mPubSub.publish(HikePubSub.DELETE_STATUS_AND_CONV, obj);//to update ui of conversation list page
                 delConv = true;
             }
 
@@ -5068,6 +5085,8 @@ namespace windows_client.View
 
         private void ShowJumpToBottom(bool increaseUnreadCounter)
         {
+            if (_isHikeBot)
+                return;
             if (vScrollBar != null && (ocMessages != null && ocMessages.Count > 6) && vScrollBar.Maximum < 1000000)
             {
                 if ((vScrollBar.Maximum - vScrollBar.Value) > 500)
