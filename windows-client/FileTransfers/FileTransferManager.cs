@@ -21,10 +21,10 @@ namespace windows_client.FileTransfers
     public class FileTransferManager
     {
         private const string FILE_TRANSFER_DIRECTORY_NAME = "FileTransfer";
-        int MaxBlockSize;
+        private const string FILE_TRANSFER_UPLOAD_DIRECTORY_NAME = "Upload";
+        private const string FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME = "Download";
         const int WifiBuffer =  1048576;
         const int MobileBuffer =  102400;
-        const int _defaultBlockSize = 1024;
         const int _noOfParallelRequest = 20;
 
         private static volatile FileTransferManager instance = null;
@@ -54,13 +54,24 @@ namespace windows_client.FileTransfers
 
         public FileTransferManager()
         {
-            MaxBlockSize = WifiBuffer;
+            DownloadFileInfo.MaxBlockSize = WifiBuffer;
+            UploadFileInfo.MaxBlockSize = WifiBuffer;
             ThreadPool.SetMaxThreads(_noOfParallelRequest, _noOfParallelRequest);
         }
 
-        public void AddFileToUploadDownloadTask(string msisdn, string key, string fileName, string contentType, byte[] fileBytes, bool isDownload)
+        public void DownloadFile(string msisdn, string key, string fileName, string contentType)
         {
-            HikeFileInfo fInfo = new HikeFileInfo(msisdn, key, fileBytes, fileName, contentType, isDownload);
+            DownloadFileInfo fInfo = new DownloadFileInfo(msisdn, key, fileName, contentType);
+
+            PendingTasks.Enqueue(fInfo);
+            TaskMap.Add(fInfo.SessionId, fInfo);
+            SaveTaskData(fInfo);
+            StartTask();
+        }
+
+        public void UploadFile(string msisdn, string key, string fileName, string contentType, byte[] fileBytes)
+        {
+            UploadFileInfo fInfo = new UploadFileInfo(msisdn, key, fileBytes, fileName, contentType);
 
             PendingTasks.Enqueue(fInfo);
             TaskMap.Add(fInfo.SessionId, fInfo);
@@ -70,7 +81,8 @@ namespace windows_client.FileTransfers
 
         public void ChangeMaxUploadBuffer(NetworkInterfaceSubType type)
         {
-            MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE || type == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
+            UploadFileInfo.MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE || type == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
+            DownloadFileInfo.MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE || type == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
         }
 
         public void ResumeTask(string key)
@@ -143,14 +155,59 @@ namespace windows_client.FileTransfers
             }
             else
             {
-                if (fileInfo.IsDownload)
-                    return ThreadPool.QueueUserWorkItem(BeginDownloadGetRequest, fileInfo);
+                if (fileInfo is DownloadFileInfo)
+                {
+                    FileDownloader downloader = new FileDownloader();
+                    downloader.DownloadStatusChanged += downloader_DownloadStatusChanged;
+                    return ThreadPool.QueueUserWorkItem(downloader.BeginDownloadGetRequest, fileInfo);
+                }
                 else
-                    return ThreadPool.QueueUserWorkItem(BeginUploadGetRequest, fileInfo);
+                {
+                    FileUploader uploader = new FileUploader();
+                    uploader.UploadStatusChanged += uploader_UploadStatusChanged;
+                    return ThreadPool.QueueUserWorkItem(uploader.BeginUploadGetRequest, fileInfo);
+                }
             }
         }
 
+        void uploader_UploadStatusChanged(object sender, TaskCompletedArgs e)
+        {
+            SaveTaskData(e.FileInfo);
+
+            if (UpdateTaskStatusOnUI != null)
+                UpdateTaskStatusOnUI(null, new TaskCompletedArgs(e.FileInfo, e.IsStateChanged));
+
+            if (e.IsStateChanged)
+                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, e.FileInfo);
+
+            if (e.FileInfo.FileState == HikeFileState.PAUSED && !PendingTasks.Contains(e.FileInfo))
+            {
+                PendingTasks.Enqueue(e.FileInfo);
+
+                StartTask();
+            }
+        }
+
+        void downloader_DownloadStatusChanged(object sender, TaskCompletedArgs e)
+        {
+            SaveTaskData(e.FileInfo);
+
+            if (UpdateTaskStatusOnUI != null)
+                UpdateTaskStatusOnUI(null, new TaskCompletedArgs(e.FileInfo, e.IsStateChanged));
+
+            App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, e.FileInfo);
+        }
+
         public void PopulatePreviousUploads()
+        {
+            PopulateUploads();
+            PopulateDownloads();
+            
+            if (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && PendingTasks.Count > 0)
+                StartTask();
+        }
+
+        void PopulateUploads()
         {
             lock (readWriteLock)
             {
@@ -161,12 +218,15 @@ namespace windows_client.FileTransfers
                         if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
                             return;
 
-                        var fileNames = store.GetFileNames(FILE_TRANSFER_DIRECTORY_NAME + "\\*");
+                        if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME))
+                            return;
+
+                        var fileNames = store.GetFileNames(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\*");
 
                         foreach (var fileName in fileNames)
                         {
-                            HikeFileInfo fileInfo = new HikeFileInfo();
-                            using (var file = store.OpenFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            UploadFileInfo fileInfo = new UploadFileInfo();
+                            using (var file = store.OpenFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                             {
                                 using (BinaryReader reader = new BinaryReader(file))
                                 {
@@ -179,16 +239,55 @@ namespace windows_client.FileTransfers
                             PendingTasks.Enqueue(fileInfo);
                         }
                     }
-
-                    if (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && PendingTasks.Count > 0)
-                        StartTask();
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("FileUploader :: Load Uploads From File, Exception : " + ex.StackTrace);
+                    System.Diagnostics.Debug.WriteLine("FileTransferManager :: Load Uploads From File, Exception : " + ex.StackTrace);
                 }
             }
         }
+
+        void PopulateDownloads()
+        {
+            lock (readWriteLock)
+            {
+                try
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
+                            return;
+
+                        if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME))
+                            return;
+
+                        var fileNames = store.GetFileNames(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\*");
+
+                        foreach (var fileName in fileNames)
+                        {
+                            DownloadFileInfo fileInfo = new DownloadFileInfo();
+
+                            using (var file = store.OpenFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            {
+                                using (BinaryReader reader = new BinaryReader(file))
+                                {
+                                    fileInfo.Read(reader);
+                                    reader.Close();
+                                }
+                            }
+
+                            TaskMap.Add(fileName, fileInfo);
+                            PendingTasks.Enqueue(fileInfo);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("FileTransferManager :: Load Downloads From File, Exception : " + ex.StackTrace);
+                }
+            }
+        }
+
 
         public void PauseTask(string id)
         {
@@ -278,524 +377,6 @@ namespace windows_client.FileTransfers
                 }
             }
         }
-
-        #region Download Http Request
-
-        void BeginDownloadGetRequest(object obj)
-        {
-            var fileInfo = obj as HikeFileInfo;
-
-            var req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + fileInfo.FileName)) as HttpWebRequest;
-            req .AllowReadStreamBuffering = false;
-            req.Method = "GET";
-            req.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
-            req.Headers["Range"] = string.Format("bytes={0}-", fileInfo.CurrentHeaderPosition);
-
-            req.BeginGetResponse(DownloadGetResponseCallback, new object[] { req, fileInfo });
-        }
-
-        void DownloadGetResponseCallback(IAsyncResult result)
-        {
-            object[] vars = (object[])result.AsyncState;
-
-            var myHttpWebRequest = (HttpWebRequest)vars[0];
-            HttpWebResponse response = null;
-            Stream responseStream = null;
-            HttpStatusCode responseCode = HttpStatusCode.NotFound;
-            try
-            {
-                response = (HttpWebResponse)myHttpWebRequest.EndGetResponse(result);
-                responseCode = response.StatusCode;
-                responseStream = response.GetResponseStream();
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("BackgroundUploader ::  GetRequestCallback :  GetRequestCallback , Exception : " + e.StackTrace);
-                responseStream = null;
-
-                var webException = e as WebException;
-                if (webException != null)
-                {
-                    HttpWebResponse webResponse = webException.Response as HttpWebResponse;
-                    if (webResponse != null)
-                        responseCode = webResponse.StatusCode;
-                    else
-                        responseCode = HttpStatusCode.RequestTimeout;
-                }
-            }
-            finally
-            {
-                var fileInfo = vars[1] as HikeFileInfo;
-
-                if (response != null)
-                {
-                    if (fileInfo.FileBytes == null)
-                    {
-                        fileInfo.TotalBytes = (int)response.ContentLength;
-                        fileInfo.FileBytes = new byte[fileInfo.TotalBytes];
-                    }
-
-                    fileInfo.FileState = HikeFileState.STARTED;
-
-                    SaveTaskData(fileInfo);
-
-                    if (UpdateTaskStatusOnUI != null)
-                        UpdateTaskStatusOnUI(null, new TaskCompletedArgs(fileInfo, true));
-
-                    App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
-                }
-
-                ProcessDownloadGetResponse(responseStream, responseCode, fileInfo);
-            }
-        }
-
-        void ProcessDownloadGetResponse(Stream responseStream, HttpStatusCode responseCode, HikeFileInfo fileInfo)
-        {
-            if (fileInfo.FileState == HikeFileState.CANCELED)
-            {
-                FileTransferManager.Instance.DeleteTaskData(fileInfo.SessionId);
-            }
-            else if (responseCode == HttpStatusCode.PartialContent || responseCode == HttpStatusCode.OK)
-            {
-                byte[] newBytes = null;
-                using (BinaryReader br = new BinaryReader(responseStream))
-                {
-                    while (fileInfo.BytesTransfered != fileInfo.TotalBytes && fileInfo.FileState == HikeFileState.STARTED)
-                    {
-                        newBytes = br.ReadBytes(fileInfo.BlockSize);
-
-                        if (newBytes.Length == 0)
-                            break;
-
-                        Array.Copy(newBytes, 0, fileInfo.FileBytes, fileInfo.CurrentHeaderPosition, newBytes.Length);
-                        fileInfo.CurrentHeaderPosition += newBytes.Length;
-
-                        var newSize = (fileInfo.AttemptNumber + fileInfo.AttemptNumber) * _defaultBlockSize;
-
-                        if (newSize <= MaxBlockSize)
-                        {
-                            fileInfo.AttemptNumber += fileInfo.AttemptNumber;
-                            fileInfo.BlockSize = fileInfo.AttemptNumber * _defaultBlockSize;
-                        }
-
-                        SaveTaskData(fileInfo);
-
-                        if (UpdateTaskStatusOnUI != null)
-                            UpdateTaskStatusOnUI(null, new TaskCompletedArgs(fileInfo, false));
-                    }
-
-                    if (fileInfo.FileState == HikeFileState.CANCELED)
-                    {
-                        FileTransferManager.Instance.DeleteTaskData(fileInfo.SessionId);
-                    } 
-                    else if (fileInfo.BytesTransfered == fileInfo.TotalBytes)
-                    {
-                        fileInfo.FileState = HikeFileState.COMPLETED;
-
-                        SaveTaskData(fileInfo);
-
-                        if (UpdateTaskStatusOnUI != null)
-                            UpdateTaskStatusOnUI(null, new TaskCompletedArgs(fileInfo, false));
-                    }
-                    else if (newBytes.Length == 0)
-                    {
-                        fileInfo.FileState = HikeFileState.PAUSED;
-                        SaveTaskData(fileInfo);
-
-                        if (!PendingTasks.Contains(fileInfo))
-                        {
-                            PendingTasks.Enqueue(fileInfo);
-                            StartTask();
-                        }
-
-                        if (UpdateTaskStatusOnUI != null)
-                            UpdateTaskStatusOnUI(null, new TaskCompletedArgs(fileInfo, true));
-
-                        App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
-                    }
-                }
-            }
-            else if (responseCode == HttpStatusCode.BadRequest)
-            {
-                fileInfo.FileState = HikeFileState.FAILED;
-                SaveTaskData(fileInfo);
-
-                if (UpdateTaskStatusOnUI != null)
-                    UpdateTaskStatusOnUI(null, new TaskCompletedArgs(fileInfo, true));
-
-                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
-            }
-            else
-            {
-                fileInfo.FileState = HikeFileState.PAUSED;
-                SaveTaskData(fileInfo);
-
-                if (!PendingTasks.Contains(fileInfo))
-                {
-                    PendingTasks.Enqueue(fileInfo);
-
-                    StartTask();
-                }
-
-                if (UpdateTaskStatusOnUI != null)
-                    UpdateTaskStatusOnUI(null, new TaskCompletedArgs(fileInfo, true));
-
-                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
-            }
-        }
-
-
-        #endregion
-
-        #region Upload Http Request
-
-        string _boundary = "----------V2ymHFg03ehbqgZCaKO6jy";
-
-        void BeginUploadGetRequest(object obj)
-        {
-            var fileInfo =  obj as HikeFileInfo;
-
-            var req = HttpWebRequest.Create(new Uri(HikeConstants.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
-            
-            AccountUtils.addToken(req);
-            
-            req.Method = "GET";
-            
-            req.Headers["Connection"] = "Keep-Alive";
-            req.Headers["Content-Name"] = fileInfo.FileName;
-            req.Headers["X-Thumbnail-Required"] = "0";
-            req.Headers["X-SESSION-ID"] = fileInfo.SessionId;
-            req.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
-
-            req.BeginGetResponse(UploadGetResponseCallback, new object[] { req, fileInfo });
-        }
-
-        void UploadGetResponseCallback(IAsyncResult result)
-        {
-            object[] vars = (object[])result.AsyncState;
-
-            var myHttpWebRequest = (HttpWebRequest)vars[0];
-            HttpWebResponse response = null;
-            string data = null;
-            HttpStatusCode responseCode = HttpStatusCode.NotFound;
-            try
-            {
-                response = (HttpWebResponse)myHttpWebRequest.EndGetResponse(result);
-                responseCode = response.StatusCode;
-                Stream responseStream = response.GetResponseStream();
-                using (var reader = new StreamReader(responseStream))
-                {
-                    data = reader.ReadToEnd();
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("BackgroundUploader ::  GetRequestCallback :  GetRequestCallback , Exception : " + e.StackTrace);
-                data = null;
-
-                var webException = e as WebException;
-                if (webException != null)
-                {
-                    HttpWebResponse webResponse = webException.Response as HttpWebResponse;
-                    if (webResponse != null)
-                        responseCode = webResponse.StatusCode;
-                    else
-                        responseCode = HttpStatusCode.RequestTimeout;
-                }
-            }
-            finally
-            {
-                var fileInfo = vars[1] as HikeFileInfo;
-                ProcessUploadGetResponse(data, responseCode, fileInfo);
-            }
-        }
-
-        void ProcessUploadGetResponse(string data, HttpStatusCode responseCode, HikeFileInfo fileInfo)
-        {
-            int index = 0;
-            if (responseCode == HttpStatusCode.OK)
-            {
-                index = Convert.ToInt32(data);
-
-                if (fileInfo.FileBytes.Length - 1 == index)
-                {
-                    fileInfo.FileState = HikeFileState.COMPLETED;
-                    SaveTaskData(fileInfo);
-
-                    if (UpdateTaskStatusOnUI != null)
-                        UpdateTaskStatusOnUI(null, new TaskCompletedArgs(fileInfo,true));
-
-                    App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
-                }
-                else
-                {
-                    fileInfo.CurrentHeaderPosition = index + 1;
-                    fileInfo.FileState = HikeFileState.STARTED;
-
-                    SaveTaskData(fileInfo);
-
-                    if (UpdateTaskStatusOnUI != null)
-                        UpdateTaskStatusOnUI(null, new TaskCompletedArgs(fileInfo,true));
-
-                    App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
-                    
-                    BeginUploadPostRequest(fileInfo);
-                }
-            }
-            else if (responseCode == HttpStatusCode.NotFound)
-            {
-                // fresh upload
-                fileInfo.CurrentHeaderPosition = index;
-                fileInfo.FileState = HikeFileState.STARTED;
-                SaveTaskData(fileInfo);
-
-                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
-
-                if (UpdateTaskStatusOnUI != null)
-                    UpdateTaskStatusOnUI(null, new TaskCompletedArgs(fileInfo,true));
-
-                BeginUploadPostRequest(fileInfo);
-            }
-        }
-
-        void BeginUploadPostRequest(HikeFileInfo fileInfo)
-        {
-            var req = HttpWebRequest.Create(new Uri(HikeConstants.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
-           
-            AccountUtils.addToken(req);
-
-            req.Method = "POST";
-            
-            req.ContentType = string.Format("multipart/form-data; boundary={0}", _boundary);
-            
-            req.Headers["Connection"] = "Keep-Alive";
-            req.Headers["Content-Name"] = fileInfo.FileName;
-            req.Headers["X-Thumbnail-Required"] = "0";
-            req.Headers["X-SESSION-ID"] = fileInfo.SessionId;
-
-            var bytesLeft = fileInfo.FileBytes.Length - fileInfo.CurrentHeaderPosition;
-            fileInfo.BlockSize = bytesLeft >= fileInfo.BlockSize ? fileInfo.BlockSize : bytesLeft;
-
-            var endPosition = fileInfo.CurrentHeaderPosition + fileInfo.BlockSize;
-            endPosition -= 1;
-
-            req.Headers["X-CONTENT-RANGE"] = string.Format("bytes {0}-{1}/{2}", fileInfo.CurrentHeaderPosition, endPosition, fileInfo.FileBytes.Length);
-
-            var partialDataBytes = new byte[endPosition - fileInfo.CurrentHeaderPosition + 1];
-            Array.Copy(fileInfo.FileBytes, fileInfo.CurrentHeaderPosition, partialDataBytes, 0, endPosition - fileInfo.CurrentHeaderPosition + 1);
-
-            var param = new Dictionary<string, string>();
-            param.Add("Cookie", req.Headers["Cookie"]);
-            param.Add("X-SESSION-ID", req.Headers["X-SESSION-ID"]);
-            param.Add("X-CONTENT-RANGE",req.Headers["X-CONTENT-RANGE"]);
-            var bytesToUpload = getMultiPartBytes(partialDataBytes, param, fileInfo);
-
-            req.BeginGetRequestStream(UploadPostRequestCallback, new object[] { req, bytesToUpload, fileInfo });
-        }
-
-        byte[] getMultiPartBytes(byte[] data, Dictionary<string, string> param, HikeFileInfo fileInfo)
-        {
-            String boundaryMessage = getBoundaryMessage(param, fileInfo);
-            String endBoundary = "\r\n--" + _boundary + "--\r\n";
-
-            var bos = new MemoryStream();
-            
-            var msg = Encoding.UTF8.GetBytes(boundaryMessage);
-            bos.Write(msg, 0, msg.Length);
-
-            bos.Write(data, 0, data.Length);
-
-            msg = Encoding.UTF8.GetBytes(endBoundary);
-            bos.Write(msg, 0, msg.Length);
-            
-            bos.Close();
-
-            return bos.ToArray();
-        }
-
-        String getBoundaryMessage(Dictionary<string, string> param, HikeFileInfo fileInfo)
-        {
-            String res = "--" + _boundary + "\r\n";
-
-            var keys = param.Keys;
-
-            foreach (var keyValue in param)
-                res += "Content-Disposition: form-data; name=\"" + keyValue.Key + "\"\r\n" + "\r\n" + keyValue.Value + "\r\n" + "--" + _boundary + "\r\n";
-
-            res += "Content-Disposition: form-data; name=\"file\"; filename=\"" + fileInfo.FileName + "\"\r\n" + "Content-Type: " + fileInfo.ContentType + "\r\n\r\n";
-
-            return res;
-        }
-
-        void UploadPostRequestCallback(IAsyncResult result)
-        {
-            object[] vars = (object[])result.AsyncState;
-            JObject data = new JObject();
-            HttpWebRequest req = vars[0] as HttpWebRequest;
-            Stream postStream = req.EndGetRequestStream(result);
-            byte[] dataBytes = (byte[])vars[1];
-            postStream.Write(dataBytes, 0, dataBytes.Length);
-            postStream.Close();
-            postStream.Close();
-            var fileInfo = vars[2] as HikeFileInfo;
-            req.BeginGetResponse(UploadPostResponseCallback, new object[] { req, fileInfo });
-        }
-
-        void UploadPostResponseCallback(IAsyncResult result)
-        {
-            object[] vars = (object[])result.AsyncState;
-
-            HttpWebRequest myHttpWebRequest = (HttpWebRequest)vars[0];
-
-            //Deployment.Current.Dispatcher.BeginInvoke(() =>
-            //{
-            //    try
-            //    {
-            //        var netInterface = myHttpWebRequest.GetCurrentNetworkInterface();
-            //        MaxBlockSize = (netInterface.InterfaceSubtype == NetworkInterfaceSubType.Cellular_EDGE 
-            //            || netInterface.InterfaceSubtype == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
-
-            //        System.Diagnostics.Debug.WriteLine(netInterface.InterfaceType.ToString());
-            //    }
-            //    catch (NetworkException networkException)
-            //    {
-            //        if (networkException.NetworkErrorCode == NetworkError.WebRequestAlreadyFinished)
-            //        {
-            //            System.Diagnostics.Debug.WriteLine("Cannot call GetCurrentNetworkInterface if the webrequest is already complete");
-            //        }
-            //    }
-            //}); 
-            
-            HttpWebResponse response = null;
-
-            string data = null;
-
-            HttpStatusCode responseCode =  HttpStatusCode.NotFound;
-            try
-            {
-                response = (HttpWebResponse)myHttpWebRequest.EndGetResponse(result);
-                responseCode = response.StatusCode;
-                Stream responseStream = response.GetResponseStream();
-                using (var reader = new StreamReader(responseStream))
-                {
-                    data = reader.ReadToEnd();
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("BackgroundUploader ::  UploadResponseCallback :  UploadResponseCallback , Exception : " + e.StackTrace);
-                data = null;
-
-                var webException = e as WebException;
-                if (webException != null)
-                {
-                    HttpWebResponse webResponse = webException.Response as HttpWebResponse;
-                    if (webResponse != null)
-                        responseCode = webResponse.StatusCode;
-                    else
-                        responseCode = HttpStatusCode.RequestTimeout;
-                }
-            }
-            finally
-            {
-                var fileInfo = vars[1] as HikeFileInfo;
-                ProcessUploadPostResponse(data, responseCode, fileInfo);
-            }
-        }
-
-        void ProcessUploadPostResponse(string data, HttpStatusCode code, HikeFileInfo fileInfo)
-        {
-            JObject jObject = null;
-
-            if (code == HttpStatusCode.OK)
-            {
-                if (!String.IsNullOrEmpty(data))
-                    jObject = JObject.Parse(data);
-
-                if (jObject != null)
-                {
-                    fileInfo.SuccessObj = jObject;
-                    fileInfo.CurrentHeaderPosition = fileInfo.TotalBytes;
-
-                    if (fileInfo.FileState == HikeFileState.STARTED)
-                    {
-                        fileInfo.FileState = HikeFileState.COMPLETED;
-
-                        if (UpdateTaskStatusOnUI != null)
-                            UpdateTaskStatusOnUI(null, new TaskCompletedArgs(fileInfo, true));
-                     
-                        App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
-                    }
-
-                    SaveTaskData(fileInfo);
-                }
-            }
-            else if (code == HttpStatusCode.Created)
-            {
-                if (fileInfo.FileState == HikeFileState.CANCELED)
-                {
-                    FileTransferManager.Instance.DeleteTaskData(fileInfo.SessionId);
-                }
-                else
-                {
-                    fileInfo.CurrentHeaderPosition += fileInfo.BlockSize;
-
-                    if (fileInfo.FileState == HikeFileState.STARTED)
-                    {
-                        var newSize = (fileInfo.AttemptNumber + fileInfo.AttemptNumber) * _defaultBlockSize;
-
-                        if (newSize <= MaxBlockSize)
-                        {
-                            fileInfo.AttemptNumber += fileInfo.AttemptNumber;
-                            fileInfo.BlockSize = fileInfo.AttemptNumber * _defaultBlockSize;
-                        }
-                    }
-                    else
-                    {
-                        fileInfo.AttemptNumber = 1;
-                        fileInfo.BlockSize = _defaultBlockSize;
-                    }
-
-                    SaveTaskData(fileInfo);
-
-                    if (fileInfo.FileState == HikeFileState.STARTED || (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && fileInfo.FileState != HikeFileState.MANUAL_PAUSED))
-                        BeginUploadPostRequest(fileInfo);
-                   
-                    if (UpdateTaskStatusOnUI != null)
-                        UpdateTaskStatusOnUI(null, new TaskCompletedArgs(fileInfo, false));
-                }
-            }
-            else if (code == HttpStatusCode.BadRequest)
-            {
-                fileInfo.FileState = HikeFileState.FAILED;
-                SaveTaskData(fileInfo);
-
-                if (UpdateTaskStatusOnUI != null)
-                    UpdateTaskStatusOnUI(null, new TaskCompletedArgs(fileInfo,true));
-
-                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
-            }
-            else
-            {
-                //app suspension and disconnected case
-                fileInfo.FileState = HikeFileState.PAUSED;
-                SaveTaskData(fileInfo);
-
-                if (!PendingTasks.Contains(fileInfo))
-                {
-                    PendingTasks.Enqueue(fileInfo);
-
-                    StartTask();
-                }
-
-                if (UpdateTaskStatusOnUI != null)
-                    UpdateTaskStatusOnUI(null, new TaskCompletedArgs(fileInfo, true));
-
-                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
-            }
-        }
-
-        #endregion
 
         public event EventHandler<TaskCompletedArgs> UpdateTaskStatusOnUI;
     }

@@ -148,7 +148,7 @@ namespace windows_client
                     }
                     else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
                     {
-                        FileTransfers.FileTransferManager.Instance.AddFileToUploadDownloadTask(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, null, true);
+                        FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType);
                         MiscDBUtil.UpdateFileAttachmentState(convMessage.Msisdn.Replace(":", "_"), convMessage.MessageId.ToString(), Attachment.AttachmentState.STARTED);
                     }
                     if (obj == null)

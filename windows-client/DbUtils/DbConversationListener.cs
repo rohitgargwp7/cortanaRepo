@@ -145,7 +145,7 @@ namespace windows_client.DbUtils
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
-                    FileTransfers.FileTransferManager.Instance.AddFileToUploadDownloadTask(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes, false);
+                    FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes);
                 });
             }
             #endregion
@@ -175,7 +175,7 @@ namespace windows_client.DbUtils
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
-                    FileTransfers.FileTransferManager.Instance.AddFileToUploadDownloadTask(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes, false);
+                    FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes);
                 });
             }
             #endregion
@@ -361,7 +361,7 @@ namespace windows_client.DbUtils
                         if (fInfo.FileState == HikeFileState.COMPLETED)
                             convMessage.ProgressBarValue = 100;
 
-                        if (fInfo.IsDownload)
+                        if (fInfo is DownloadFileInfo)
                         {
                             if (fInfo.FileState == HikeFileState.COMPLETED)
                             {
@@ -412,7 +412,7 @@ namespace windows_client.DbUtils
                         {
                             if (fInfo.FileState == HikeFileState.COMPLETED)
                             {
-                                JObject data = fInfo.SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
+                                JObject data = (fInfo as UploadFileInfo).SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
                                 var fileKey = data[HikeConstants.FILE_KEY].ToString();
 
                                 if (fInfo.ContentType.Contains(HikeConstants.IMAGE))

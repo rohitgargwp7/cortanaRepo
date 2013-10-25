@@ -12,7 +12,7 @@ using windows_client.utils;
 
 namespace windows_client.FileTransfers
 {
-    public class UploadFileInfo : HikeFileInfo
+    public class DownloadFileInfo : HikeFileInfo
     {
         public static int MaxBlockSize;
 
@@ -28,24 +28,13 @@ namespace windows_client.FileTransfers
         {
             get
             {
-                return ((double)BytesTransfered / TotalBytes) * 100;
+                return TotalBytes == 0 ? 0 : ((double)BytesTransfered / TotalBytes) * 100;
             }
         }
 
-        public int TotalBytes
-        {
-            get
-            {
-                return FileBytes.Length;
-            }
-            set
-            {
-            }
-        }
-
+        public int TotalBytes { get; set; }
         public int BlockSize = 1024;
         public int AttemptNumber = 1;
-
         public string SessionId { get; set; }
         public int CurrentHeaderPosition { get; set; }
         public byte[] FileBytes { get; set; }
@@ -53,18 +42,16 @@ namespace windows_client.FileTransfers
         public string FileName { get; set; }
         public string Msisdn { get; set; }
         public JObject SuccessObj { get; set; }
-
         public HikeFileState FileState { get; set; }
 
-        public UploadFileInfo()
+        public DownloadFileInfo()
         {
         }
 
-        public UploadFileInfo(string msisdn, string key, byte[] fileBytes, string fileName, string contentType)
+        public DownloadFileInfo(string msisdn, string key, string fileName, string contentType)
         {
             Msisdn = msisdn;
             SessionId = key;
-            FileBytes = fileBytes;
             FileName = fileName;
             ContentType = contentType;
             FileState = HikeFileState.NOT_STARTED;
@@ -104,6 +91,8 @@ namespace windows_client.FileTransfers
             writer.Write(FileBytes != null ? FileBytes.Length : 0);
             if (FileBytes != null)
                 writer.Write(FileBytes);
+
+            writer.Write(TotalBytes);
         }
 
         public void Read(BinaryReader reader)
@@ -144,6 +133,8 @@ namespace windows_client.FileTransfers
 
             count = reader.ReadInt32();
             FileBytes = count != 0 ? reader.ReadBytes(count) : FileBytes = null;
+
+            TotalBytes = reader.ReadInt32();
         }
     }
 }

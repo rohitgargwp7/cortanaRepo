@@ -279,11 +279,8 @@ namespace windows_client.View
             if (convMessage == null)
                 return;
             
-            //if (!fInfo.IsDownload)
-            {
                 convMessage.ProgressBarValue = fInfo.PercentageTransfer;
                 convMessage.ProgressText = string.Format("{0}/{1}", Utils.ConvertToStorageSizeString(fInfo.CurrentHeaderPosition - 1), Utils.ConvertToStorageSizeString(fInfo.TotalBytes));
-            }
 
             if (isStateChanged)
             {
@@ -295,7 +292,7 @@ namespace windows_client.View
                 {
                     state = Attachment.AttachmentState.COMPLETED;
 
-                    if (!fInfo.IsDownload)
+                    if (fInfo is UploadFileInfo)
                         convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 }
                 else if (fInfo.FileState == HikeFileState.PAUSED)
@@ -306,7 +303,7 @@ namespace windows_client.View
                 {
                     state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
 
-                    if (!fInfo.IsDownload)
+                    if (fInfo is UploadFileInfo)
                         convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
                 }
                 else if (fInfo.FileState == HikeFileState.STARTED)
@@ -319,7 +316,7 @@ namespace windows_client.View
 
                 convMessage.SetAttachmentState(state);
 
-                if (fInfo.IsDownload)
+                if (fInfo is DownloadFileInfo)
                 {
                     MiscDBUtil.UpdateFileAttachmentState(fInfo.Msisdn, fInfo.SessionId, state);
 
@@ -2056,7 +2053,7 @@ namespace windows_client.View
                         {
                             convMessage.UserTappedDownload = true;
                             if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
-                                FileTransfers.FileTransferManager.Instance.AddFileToUploadDownloadTask(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, null, true);
+                                FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType);
                             else
                                 FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString());
                         }
