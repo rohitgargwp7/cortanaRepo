@@ -619,6 +619,8 @@ namespace windows_client.FileTransfers
 
                 if (UpdateFileUploadStatusOnUI != null)
                     UpdateFileUploadStatusOnUI(null, new UploadCompletedArgs(fileInfo, true));
+
+                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
             }
         }
 
