@@ -934,10 +934,6 @@ namespace windows_client
             #region Post App Locale
             PostLocaleInfo();
             #endregion
-            #region FILE TRANSFER
-            FileTransfer.Instance.ProcessOldTransferRequests();
-            #endregion
-
         }
 
         public static void createDatabaseAsync()

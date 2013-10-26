@@ -179,7 +179,6 @@
     <Compile Include="DbUtils\MqttDBUtils.cs" />
     <Compile Include="DbUtils\StatusMsgsTable.cs" />
     <Compile Include="DbUtils\UsersTableUtils.cs" />
-    <Compile Include="FileTransfer.cs" />
     <Compile Include="FileTransfers\FileDownloader.cs" />
     <Compile Include="FileTransfers\IFileInfo.cs" />
     <Compile Include="FileTransfers\FileTransferManager.cs" />

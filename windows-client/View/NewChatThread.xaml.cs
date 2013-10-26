@@ -2534,7 +2534,7 @@ namespace windows_client.View
                             Debug.WriteLine("Fileattachment object is null for convmessage with attachment");
                             return;
                         }
-       
+
                         if (convMessage.IsSent)
                         {
                             chatBubble = convMessage;
@@ -2543,23 +2543,9 @@ namespace windows_client.View
                                      || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
                                 msgMap.Add(convMessage.MessageId, chatBubble);
                         }
-                        else
-                        {
-                            bool isDownloading;
-                            chatBubble = FileTransfer.Instance.GetDownloadingMessage(mContactNumber.Replace(":", "_"), convMessage.MessageId.ToString(), out isDownloading);
-                            if (isDownloading)
-                            {
-                                if (chatBubble == null)
-                                    FileTransfer.Instance.UpdateConvMap(convMessage, mContactNumber.Replace(":", "_"));
-                            }
-                            else if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.STARTED && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
-                            {
-                                listDownload.Add(convMessage);
-                            }
-                            if (chatBubble != null)
-                                chatBubble.GroupMemberName = isGroupChat ?
-                                  GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
-                        }
+                        else if (chatBubble != null)
+                            chatBubble.GroupMemberName = isGroupChat ?
+                              GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                     }
 
                     if (chatBubble == null)

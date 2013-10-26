@@ -141,7 +141,7 @@ namespace windows_client.utils
         public enum RequestType
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
-            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS, GET_ONHIKE_DATE, POST_INFO_ON_APP_UPDATE, GET_STICKERS,
+            POST_PUSHNOTIFICATION_DATA, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS, GET_ONHIKE_DATE, POST_INFO_ON_APP_UPDATE, GET_STICKERS,
             LAST_SEEN_POST, SOCIAL_INVITE
         }
 
@@ -295,21 +295,6 @@ namespace windows_client.utils
             req.Method = "POST";
             req.ContentType = "application/json";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_INFO_ON_APP_UPDATE, finalCallbackFunction });
-        }
-
-        public static void uploadFile(byte[] dataBytes, postUploadPhotoFunction finalCallbackFunction, ConvMessage convMessage)
-        {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
-            addToken(req);
-            req.Method = "PUT";
-            req.ContentType = convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE) ||
-                convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO) ? "" : convMessage.FileAttachment.ContentType;
-            req.Headers["Connection"] = "Keep-Alive";
-            req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
-
-            req.Headers["X-Thumbnail-Required"] = "0";
-
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPLOAD_FILE, dataBytes, finalCallbackFunction, convMessage });
         }
 
         public static void postStatus(JObject statusJSON, postResponseFunction finalCallbackFunction)
@@ -523,17 +508,6 @@ namespace windows_client.utils
                     data[HikeConstants.APP_VERSION] = Utils.getAppVersion();
                     data[HikeConstants.DEVICE_TYPE_KEY] = "windows";
                     break;
-                #region UPLOAD FILE
-                case RequestType.UPLOAD_FILE:
-                    byte[] dataBytes = (byte[])vars[2];
-                    postUploadPhotoFunction finalCallbackForUploadFile = vars[3] as postUploadPhotoFunction;
-                    ConvMessage convMessage = vars[4] as ConvMessage;
-                    postStream.Write(dataBytes, 0, dataBytes.Length);
-                    postStream.Close();
-                    postStream.Close();
-                    req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage });
-                    return;
-                #endregion
                 #region POST STATUS
                 case RequestType.POST_STATUS:
                     data = vars[2] as JObject;
