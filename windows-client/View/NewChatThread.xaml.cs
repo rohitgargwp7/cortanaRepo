@@ -4845,14 +4845,14 @@ namespace windows_client.View
                 case 0:
                     if (imagePathsForListRecent.Count > 0)
                     {
-                        gridNoSticker.Visibility = Visibility.Collapsed;
+                        gridNoRecents.Visibility = Visibility.Collapsed;
                         gridShowRecents.Visibility = Visibility.Visible;
                         emotListRecent.ItemsSource = null;
                         emotListRecent.ItemsSource = imagePathsForListRecent;
                     }
                     else
                     {
-                        gridNoSticker.Visibility = Visibility.Visible;
+                        gridNoRecents.Visibility = Visibility.Visible;
                         gridShowRecents.Visibility = Visibility.Collapsed;
                     }
 

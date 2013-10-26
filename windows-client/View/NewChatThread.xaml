@@ -911,7 +911,7 @@
                                     </phone:LongListSelector.ItemTemplate>
                                 </phone:LongListSelector>
                                 </Grid>
-                                <Grid Name="gridNoSticker">
+                                <Grid Name="gridNoRecents">
                                     <TextBlock Text="{Binding Path= LocalizedResources.RecentEmoticons_DefaultText, Source={StaticResource LocalizedStrings}}" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40 0 40 0" TextWrapping="Wrap" TextAlignment="Center"/>
                                 </Grid>
                             </Grid>
