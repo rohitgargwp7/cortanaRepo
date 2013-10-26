@@ -3245,7 +3245,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Looks like you havn&apos;t sent any stickers, please share a sticker from our cool sticker categories.
+        ///   Looks up a localized string similar to Stickers that you recently shared, would show up here..
         /// </summary>
         public static string RecentSticker_Default_Txt {
             get {
