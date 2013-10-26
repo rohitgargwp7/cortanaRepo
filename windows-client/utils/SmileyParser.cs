@@ -354,7 +354,7 @@ namespace windows_client
                 _emoticonImagesForList3[l].CreateOptions = BitmapCreateOptions.BackgroundCreation;
                 _emoticonImagesForList3[l].UriSource = new Uri(emoticonPaths[i + j + k + l], UriKind.Relative);
             }
-            LoadSticker();
+            LoadRecentEmoticons();
             IS_INSTANTIATED = true;
         }
 
@@ -585,10 +585,10 @@ namespace windows_client
 
         public const string RECENTS_FILE = "recents";
         public const string RECENTS_EMOTICONS_FOLDER = "EMOTICONS";
-        private const int maxStickersCount = 30;
+        private const int maxEmoticonsCount = 30;
         private static object readWriteLock = new object();
 
-        public void LoadSticker()
+        public void LoadRecentEmoticons()
         {
             lock (readWriteLock)
             {
@@ -616,12 +616,12 @@ namespace windows_client
                 }
             }
         }
-        public void AddSticker(int index)
+        public void AddEmoticons(int index)
         {
-            AddSticker(new Emoticon(index));
+            AddEmoticons(new Emoticon(index));
         }
 
-        public void AddSticker(Emoticon emoticon)
+        public void AddEmoticons(Emoticon emoticon)
         {
             if (emoticon == null)
                 return;
@@ -655,7 +655,7 @@ namespace windows_client
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("RecentStickerHelper :: UpdateRecentsFile : DeletingFile , Exception : " + ex.StackTrace);
+                        Debug.WriteLine("SmileyParser :: UpdateRecentsFile : DeletingFile , Exception : " + ex.StackTrace);
                     }
                     try
                     {
@@ -678,19 +678,19 @@ namespace windows_client
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("RecentStickerHelper :: UpdateRecentsFile : WritingFile , Exception : " + ex.StackTrace);
+                        Debug.WriteLine("SmileyParser :: UpdateRecentsFile : WritingFile , Exception : " + ex.StackTrace);
                     }
 
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("RecentStickerHelper :: UpdateRecentsFile , Exception : " + ex.StackTrace);
+                Debug.WriteLine("SmileyParser :: UpdateRecentsFile , Exception : " + ex.StackTrace);
             }
         }
         private void ShrinkToSize()
         {
-            if (this._emoticonImagesForRecent.Count > (maxStickersCount - 1))
+            if (this._emoticonImagesForRecent.Count > (maxEmoticonsCount - 1))
             {
                 _emoticonImagesForRecent.RemoveAt(_emoticonImagesForRecent.Count - 1);
             }

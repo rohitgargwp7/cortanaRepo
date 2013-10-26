@@ -3704,7 +3704,7 @@ namespace windows_client.View
             recordGrid.Visibility = Visibility.Collapsed;
             sendMsgTxtbox.Visibility = Visibility.Visible;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[emoticon.Index];
-            SmileyParser.Instance.AddSticker(emoticon);
+            SmileyParser.Instance.AddEmoticons(emoticon);
         }
 
         private void emotList0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3716,7 +3716,7 @@ namespace windows_client.View
             int index = emotList0.SelectedIndex;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emotList0.SelectedIndex = -1;
-            SmileyParser.Instance.AddSticker(index);
+            SmileyParser.Instance.AddEmoticons(index);
         }
 
         private void emotList1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3728,7 +3728,7 @@ namespace windows_client.View
             int index = emotList1.SelectedIndex + SmileyParser.Instance.emoticon0Size;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emotList1.SelectedIndex = -1;
-            SmileyParser.Instance.AddSticker(index);
+            SmileyParser.Instance.AddEmoticons(index);
         }
 
         private void emotList2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3740,7 +3740,7 @@ namespace windows_client.View
             int index = emotList2.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emotList2.SelectedIndex = -1;
-            SmileyParser.Instance.AddSticker(index);
+            SmileyParser.Instance.AddEmoticons(index);
 
         }
         private void emotList3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3752,7 +3752,7 @@ namespace windows_client.View
             int index = emotList3.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size + SmileyParser.Instance.emoticon2Size;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emotList3.SelectedIndex = -1;
-            SmileyParser.Instance.AddSticker(index);
+            SmileyParser.Instance.AddEmoticons(index);
         }
         #endregion
 
