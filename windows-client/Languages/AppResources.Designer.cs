@@ -3245,6 +3245,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stickers that you recently shared, would show up here..
+        /// </summary>
+        public static string RecentSticker_Default_Txt {
+            get {
+                return ResourceManager.GetString("RecentSticker_Default_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to record.
         /// </summary>
         public static string Record_Txt {

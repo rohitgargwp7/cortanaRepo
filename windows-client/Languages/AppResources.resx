@@ -1955,4 +1955,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Auto_Upload_Settings_Header" xml:space="preserve">
     <value>Auto resume file uploads</value>
   </data>
+  <data name="RecentSticker_Default_Txt" xml:space="preserve">
+    <value>Stickers that you recently shared, would show up here.</value>
+  </data>
 </root>
