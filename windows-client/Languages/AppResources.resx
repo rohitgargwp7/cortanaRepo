@@ -1955,4 +1955,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Auto_Upload_Settings_Header" xml:space="preserve">
     <value>Auto resume file uploads</value>
   </data>
+  <data name="RecentSticker_Default_Txt" xml:space="preserve">
+    <value>Looks like you havn't sent any stickers, please share a sticker from our cool sticker categories</value>
+  </data>
 </root>
