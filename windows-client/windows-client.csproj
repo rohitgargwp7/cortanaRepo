@@ -238,6 +238,9 @@
     <Compile Include="View\ConversationsList.xaml.cs">
       <DependentUpon>ConversationsList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Preferences.xaml.cs">
+      <DependentUpon>Preferences.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\DisplayImage.xaml.cs">
       <DependentUpon>DisplayImage.xaml</DependentUpon>
     </Compile>
@@ -292,8 +295,8 @@
     <Compile Include="View\NewSelectUserPage.xaml.cs">
       <DependentUpon>NewSelectUserPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Privacy.xaml.cs">
-      <DependentUpon>Privacy.xaml</DependentUpon>
+    <Compile Include="View\Account.xaml.cs">
+      <DependentUpon>Account.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\RecordMedia.xaml.cs">
       <DependentUpon>RecordMedia.xaml</DependentUpon>
@@ -363,6 +366,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ConversationsList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Preferences.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -438,7 +445,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Privacy.xaml">
+    <Page Include="View\Account.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -525,7 +532,7 @@
     <Content Include="View\images\avatars\TealPeople.png" />
     <Content Include="View\images\back_button.png" />
     <Content Include="View\images\blocklist_holder.png" />
-    <Content Include="View\images\block_list_icon.png" />
+    <Content Include="View\images\block_list_icon_black.png" />
     <Content Include="View\images\block_list_icon_white.png" />
     <Content Include="View\images\bollywood_overlay.png" />
     <Content Include="View\images\call.png" />
@@ -587,8 +594,8 @@
     <Content Include="View\images\icon_cross.png" />
     <Content Include="View\images\icon_editprofile.png" />
     <Content Include="View\images\icon_group.png" />
-    <Content Include="View\images\icon_notification.png" />
-    <Content Include="View\images\icon_notification_black.png" />
+    <Content Include="View\images\notification_white.png" />
+    <Content Include="View\images\notification_black.png" />
     <Content Include="View\images\icon_pause.png" />
     <Content Include="View\images\icon_message.png" />
     <Content Include="View\images\icon_play.png" />
@@ -907,9 +914,9 @@
     <Content Include="View\images\ic_delivered.png" />
     <Content Include="View\images\ic_read.png" />
     <Content Include="View\images\ic_sent.png" />
-    <Resource Include="View\images\privacy.png" />
+    <Resource Include="View\images\privacy_black.png" />
     <Content Include="View\images\play_icon.png" />
-    <Resource Include="View\images\privacy_dark.png" />
+    <Resource Include="View\images\privacy_white.png" />
     <Content Include="View\images\signup_logo.png" />
     <Resource Include="View\images\free_sms_dark.png" />
     <Content Include="View\images\ic_block_active.png" />

@@ -27,33 +27,56 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="25,5,0,0" Background="Transparent">
-
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <Image x:Name="privacyImage" Width="28" VerticalAlignment="Center" Margin="0,17,0,0" Grid.Row="0" Grid.Column="0"></Image>
-            <Image x:Name="settingsImage" Width="32" VerticalAlignment="Center" Margin="0,17,0,0" Grid.Row="1" Grid.Column="0"></Image>
-            <Image x:Name="blockListImage" Width="32" VerticalAlignment="Center" Margin="0,17,0,0" Grid.Row="2" Grid.Column="0"></Image>
-            <StackPanel Grid.Row="0" Grid.Column="1" Margin="20,30,0,0" Tap="Privacy_Tap">
-                <TextBlock Text="{Binding Path= LocalizedResources.SettingsSubtitle_Account_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                <TextBlock Text="{Binding Path= LocalizedResources.Settings_AccountSettings_Txt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="1" Margin="20,30,0,0" Tap="Notifications_Tap">
-                <TextBlock Text="{Binding Path= LocalizedResources.SettingsSubtitle_Preferences_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                <TextBlock Text="{Binding Path= LocalizedResources.Settings_PreferencesSettings_Txt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
-            </StackPanel>
-            <StackPanel Grid.Row="2" Grid.Column="1" Margin="20,30,0,0" Tap="BlockList_Tap">
-                <TextBlock Text="{Binding Path= LocalizedResources.SettingsSubtitle_Blocklist_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                <TextBlock Text="{Binding Path= LocalizedResources.Settings_BlocklistSettings_Txt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
-            </StackPanel>
+            <Grid Grid.Row="0" Margin="0,0,0,0" Tap="Preferences_Tap">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image x:Name="settingsImage" Width="32" VerticalAlignment="Center" Margin="0,17,0,0"/>
+                <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                    <TextBlock Text="{Binding Path= LocalizedResources.Preferences_Header_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Settings_PreferencesSettings_Txt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="1" Margin="0,30,0,0" Tap="Notifications_Tap">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image x:Name="notificationsImage" Width="32" VerticalAlignment="Center" Margin="0,17,0,0"/>
+                <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                    <TextBlock Text="{Binding Path= LocalizedResources.SettingsSubtitle_Notification_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Settings_NotificationSettings_Txt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="2" Margin="0,30,0,0" Tap="Account_Tap">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image x:Name="privacyImage" Width="28" VerticalAlignment="Center" Margin="0,17,0,0"></Image>
+                <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                    <TextBlock Text="{Binding Path= LocalizedResources.Account_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Settings_AccountSettings_Txt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="3" Margin="0,30,0,0" Tap="BlockList_Tap">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image x:Name="blockListImage" Width="32" VerticalAlignment="Center" Margin="0,17,0,0"/>
+                <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                    <TextBlock Text="{Binding Path= LocalizedResources.SettingsSubtitle_Blocklist_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Settings_BlocklistSettings_Txt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
+                </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
 
