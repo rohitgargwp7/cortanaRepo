@@ -20,7 +20,7 @@
     shell:SystemTray.IsVisible="True" Visibility="Visible" Name="chatThreadMainPage">
 
     <phone:PhoneApplicationPage.Resources>
-        <Style TargetType="phone:LongListSelector">
+        <Style x:Name="llsMessagesStyle"  TargetType="phone:LongListSelector">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
             <Setter Property="Template">
@@ -43,6 +43,22 @@
                             <Grid Margin="0">
                                 <ViewportControl x:Name="ViewportControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" Loaded="ViewPortLoaded"/>
                                 <ScrollBar x:Name="VerticalScrollBar" Opacity="0" Margin="2 0 2 0" Orientation="Vertical" HorizontalAlignment="Right" Width="5"  ValueChanged="vScrollBar1_ValueChanged"  />
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Name="emoticonsStyle"  TargetType="phone:LongListSelector">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="phone:LongListSelector">
+                        <Grid Background="{TemplateBinding Background}" d:DesignWidth="480" d:DesignHeight="800">
+                            <Grid Margin="0">
+                                <ViewportControl x:Name="ViewportControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Top"/>
+                                <ScrollBar x:Name="VerticalScrollBar" Opacity="0" Margin="2 0 2 0" Orientation="Vertical" HorizontalAlignment="Right" Width="5" />
                             </Grid>
                         </Grid>
                     </ControlTemplate>
@@ -101,7 +117,7 @@
         </StackPanel>
 
         <Grid Grid.Row="1">
-            <phone:LongListSelector Name="llsMessages" ItemUnrealized="llsMessages_ItemUnRealized" ItemRealized="llsMessages_ItemRealized" SelectionChanged="ChatMessageSelected" Grid.Row="1" DoubleTap="MessageList_DoubleTap" HorizontalContentAlignment="Stretch" Margin="0 0 0 5" >
+            <phone:LongListSelector Name="llsMessages" Style="{StaticResource llsMessagesStyle}" ItemUnrealized="llsMessages_ItemUnRealized" ItemRealized="llsMessages_ItemRealized" SelectionChanged="ChatMessageSelected" Grid.Row="1" DoubleTap="MessageList_DoubleTap" HorizontalContentAlignment="Stretch" Margin="0 0 0 5" >
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <view:ChatThreadTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
@@ -881,6 +897,25 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <controls:Pivot Name="emoticonPivot" Grid.Row="0" SelectionChanged="emoticonPivot_SelectionChanged" Foreground="Black" MaxHeight="240">
+                        <controls:PivotItem Margin="0,0,0,0">
+                            <Grid x:Name="emotGridRecent" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch">
+                                <Grid Name="gridShowRecents">
+                                    <phone:LongListSelector Name="emotListRecent" Style="{StaticResource emoticonsStyle}" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Tap="emotListRecent_Tap" LayoutMode="Grid" GridCellSize="65,65">
+                                    <phone:LongListSelector.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Image Source="{Binding Image}" MaxHeight="40" MaxWidth="40"  HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                </Image>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </phone:LongListSelector.ItemTemplate>
+                                </phone:LongListSelector>
+                                </Grid>
+                                <Grid Name="gridNoSticker">
+                                    <TextBlock Text="{Binding Path= LocalizedResources.RecentEmoticons_DefaultText, Source={StaticResource LocalizedStrings}}" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40 0 40 0" TextWrapping="Wrap" TextAlignment="Center"/>
+                                </Grid>
+                            </Grid>
+                        </controls:PivotItem>
                         <controls:PivotItem Margin="0,8,0,0">
                             <Grid x:Name="emotGrid0">
                                 <ListBox Height="230" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList0_Tap">
@@ -965,20 +1000,24 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Border Name="emotHeaderRect0" Grid.Column="0" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect0_Tap">
+                        <Border Name="emotHeaderRectRecent" Grid.Column="0" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRectRecent_Tap">
                             <Image Source="images\emoticons\emo_im_01_bigsmile.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
-                        <Border Name="emotHeaderRect1" Grid.Column="1" Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect1_Tap" >
+                        <Border Name="emotHeaderRect0" Grid.Column="1" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect0_Tap">
+                            <Image Source="images\emoticons\emo_im_01_bigsmile.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border Name="emotHeaderRect1" Grid.Column="2" Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect1_Tap" >
                             <Image Source="images\emoticons\emo_im_81_exciting.png" Height="30" HorizontalAlignment="Center"  VerticalAlignment="Center"/>
                         </Border>
-                        <Border Name="emotHeaderRect2"  Grid.Column="2" Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect2_Tap">
+                        <Border Name="emotHeaderRect2"  Grid.Column="3" Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect2_Tap">
                             <Image Source="images\emoticons\emo_im_111_grin.png" Height="30" Margin="0 4 0 0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
-                        <Border Name="emotHeaderRect3" Grid.Column="3"  Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect3_Tap">
+                        <Border Name="emotHeaderRect3" Grid.Column="4"  Background="#4d4d4d" Margin="2,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect3_Tap">
                             <Image Source="images\emoticons\tiranga4.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
-                        <Button Name="btnBackKey" Style="{StaticResource ButtonWithNoPaddingStyle}" Margin="2,0,0,0" BorderThickness="0"  Grid.Column="4" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="OnEmoticonBackKeyPress" >
+                        <Button Name="btnBackKey" Style="{StaticResource ButtonWithNoPaddingStyle}" Margin="2,0,0,0" BorderThickness="0"  Grid.Column="5" Background="#4d4d4d"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="OnEmoticonBackKeyPress" >
                             <Image Source="images\emoticon_back_key.png"  Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button>
                     </Grid>

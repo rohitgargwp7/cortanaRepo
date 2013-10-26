@@ -14,12 +14,15 @@ using System.IO;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Controls;
 using windows_client.Languages;
+using System.IO.IsolatedStorage;
+using System.Threading.Tasks;
 
 namespace windows_client
 {
     public class SmileyParser
     {
         private bool IS_INSTANTIATED = false;
+        public List<Emoticon> _emoticonImagesForRecent = null;
         public BitmapImage[] _emoticonImagesForList0 = null;
         public BitmapImage[] _emoticonImagesForList1 = null;
         public BitmapImage[] _emoticonImagesForList2 = null;
@@ -351,6 +354,7 @@ namespace windows_client
                 _emoticonImagesForList3[l].CreateOptions = BitmapCreateOptions.BackgroundCreation;
                 _emoticonImagesForList3[l].UriSource = new Uri(emoticonPaths[i + j + k + l], UriKind.Relative);
             }
+            LoadSticker();
             IS_INSTANTIATED = true;
         }
 
@@ -544,7 +548,159 @@ namespace windows_client
 
         };
 
+        #region RECENT EMOTICONS
+        public class Emoticon
+        {
+            int _index;
+            BitmapImage _image;
+            public int Index
+            {
+                get
+                {
+                    return _index;
+                }
+            }
 
+            public BitmapImage Image
+            {
+                get
+                {
+                    return _image;
+                }
+            }
+            public Emoticon(int index)
+            {
+                _index = index;
+                _image = Instance.lookUpFromCache(_index);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (!(obj is Emoticon))
+                    return false;
+                Emoticon emoticon = obj as Emoticon;
+                return this._index == emoticon.Index;
+            }
+        }
+
+        public const string RECENTS_FILE = "recents";
+        public const string RECENTS_EMOTICONS_FOLDER = "EMOTICONS";
+        private const int maxStickersCount = 30;
+        private static object readWriteLock = new object();
+
+        public void LoadSticker()
+        {
+            lock (readWriteLock)
+            {
+                _emoticonImagesForRecent = new List<Emoticon>();
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                {
+                    string fileName = RECENTS_EMOTICONS_FOLDER + "\\" + RECENTS_FILE;
+                    if (store.FileExists(fileName))
+                    {
+                        using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
+                        {
+                            using (var reader = new BinaryReader(file))
+                            {
+                                int total = reader.ReadInt32();
+                                for (int i = 0; i < total; i++)
+                                {
+                                    int id = reader.ReadInt32();
+                                    _emoticonImagesForRecent.Add(new Emoticon(id));
+                                }
+
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        public void AddSticker(int index)
+        {
+            AddSticker(new Emoticon(index));
+        }
+
+        public void AddSticker(Emoticon emoticon)
+        {
+            if (emoticon == null)
+                return;
+            lock (readWriteLock)
+            {
+                if (!_emoticonImagesForRecent.Remove(emoticon))
+                    ShrinkToSize();
+                _emoticonImagesForRecent.Insert(0, emoticon);
+                UpdateRecentsFile();
+            }
+        }
+
+        public async Task UpdateRecentsFile()
+        {
+            try
+            {
+                await Task.Delay(1);
+
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                {
+                    if (!store.DirectoryExists(RECENTS_EMOTICONS_FOLDER))
+                    {
+                        store.CreateDirectory(RECENTS_EMOTICONS_FOLDER);
+                    }
+                    string fileName = RECENTS_EMOTICONS_FOLDER + "\\" + RECENTS_FILE;
+
+                    try
+                    {
+                        if (store.FileExists(fileName))
+                            store.DeleteFile(fileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("RecentStickerHelper :: UpdateRecentsFile : DeletingFile , Exception : " + ex.StackTrace);
+                    }
+                    try
+                    {
+                        using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
+                        {
+                            using (BinaryWriter writer = new BinaryWriter(file))
+                            {
+                                writer.Seek(0, SeekOrigin.Begin);
+                                writer.Write(_emoticonImagesForRecent.Count);
+                                foreach (Emoticon emoticon in _emoticonImagesForRecent)
+                                {
+                                    writer.Write(emoticon.Index);
+                                }
+                                writer.Flush();
+                                writer.Close();
+                            }
+                            file.Close();
+                            file.Dispose();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("RecentStickerHelper :: UpdateRecentsFile : WritingFile , Exception : " + ex.StackTrace);
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("RecentStickerHelper :: UpdateRecentsFile , Exception : " + ex.StackTrace);
+            }
+        }
+        private void ShrinkToSize()
+        {
+            if (this._emoticonImagesForRecent.Count > (maxStickersCount - 1))
+            {
+                _emoticonImagesForRecent.RemoveAt(_emoticonImagesForRecent.Count - 1);
+            }
+        }
+
+
+
+
+
+        #endregion
 
         public BitmapImage lookUpFromCache(string emoticon)
         {
@@ -569,7 +725,25 @@ namespace windows_client
             }
         }
 
-
+        public BitmapImage lookUpFromCache(int emoticonIndex)
+        {
+            if (emoticonIndex < _emoticonImagesForList0.Length)
+            {
+                return _emoticonImagesForList0[emoticonIndex];
+            }
+            else if (emoticonIndex < _emoticonImagesForList0.Length + _emoticonImagesForList1.Length)
+            {
+                return _emoticonImagesForList1[emoticonIndex - _emoticonImagesForList0.Length];
+            }
+            else if (emoticonIndex < _emoticonImagesForList0.Length + _emoticonImagesForList1.Length + _emoticonImagesForList2.Length)
+            {
+                return _emoticonImagesForList2[emoticonIndex - _emoticonImagesForList0.Length - _emoticonImagesForList1.Length];
+            }
+            else
+            {
+                return _emoticonImagesForList3[emoticonIndex - _emoticonImagesForList0.Length - _emoticonImagesForList1.Length - _emoticonImagesForList2.Length];
+            }
+        }
         private Dictionary<string, int> _emoticonUriHash;
         public Dictionary<string, int> EmoticonUriHash
         {
@@ -780,7 +954,7 @@ namespace windows_client
                     try
                     {
                         Hyperlink MyLink = new Hyperlink();
-                        
+
                         if (foreground != null)
                             MyLink.Foreground = foreground;
 

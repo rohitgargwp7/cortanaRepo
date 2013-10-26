@@ -148,6 +148,13 @@ namespace windows_client.View
 
         private List<long> idsToUpdate = null; // this will store ids in perception fix case
 
+        private List<SmileyParser.Emoticon> imagePathsForListRecent
+        {
+            get
+            {
+                return SmileyParser.Instance._emoticonImagesForRecent;
+            }
+        }
         private BitmapImage[] imagePathsForList0
         {
             get
@@ -529,6 +536,7 @@ namespace windows_client.View
                 NetworkManager.turnOffNetworkManager = false;
                 App.MqttManagerInstance.connect();
             };
+            emotListRecent.ItemsSource = imagePathsForListRecent;
             emotList0.ItemsSource = imagePathsForList0;
             emotList1.ItemsSource = imagePathsForList1;
             emotList2.ItemsSource = imagePathsForList2;
@@ -3484,6 +3492,7 @@ namespace windows_client.View
             object s = e.OriginalSource;
         }
 
+        bool isEmoticonLoaded = false;
         private void emoticonButton_Click(object sender, EventArgs e)
         {
             var appButton = sender as ApplicationBarIconButton;
@@ -3500,8 +3509,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        gridEmoticons.Visibility = Visibility.Visible;
-                        gridStickers.Visibility = Visibility.Collapsed;
+                        ShowEmoticonPalette();
                     }
                 }
                 else
@@ -3521,8 +3529,7 @@ namespace windows_client.View
                     {
                         if (gridEmoticons.Visibility == Visibility.Collapsed)
                         {
-                            gridEmoticons.Visibility = Visibility.Visible;
-                            gridStickers.Visibility = Visibility.Collapsed;
+                            ShowEmoticonPalette();
                         }
                         else
                         {
@@ -3545,6 +3552,18 @@ namespace windows_client.View
             attachmentMenu.Visibility = Visibility.Collapsed;
             this.Focus();
         }
+
+        private void ShowEmoticonPalette()
+        {
+            gridEmoticons.Visibility = Visibility.Visible;
+            gridStickers.Visibility = Visibility.Collapsed;
+            if (!isEmoticonLoaded)
+            {
+                emoticonPivot.SelectedIndex = imagePathsForListRecent.Count > 0 ? 0 : 1;
+                isEmoticonLoaded = true;
+            }
+        }
+
 
         private void ShowStickerPallet()
         {
@@ -3675,6 +3694,19 @@ namespace windows_client.View
             emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
+        private void emotListRecent_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            LongListSelector llsStickerCategory = (sender as LongListSelector);
+            SmileyParser.Emoticon emoticon = llsStickerCategory.SelectedItem as SmileyParser.Emoticon;
+            llsStickerCategory.SelectedItem = null;
+            if (emoticon == null)
+                return;
+            recordGrid.Visibility = Visibility.Collapsed;
+            sendMsgTxtbox.Visibility = Visibility.Visible;
+            sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[emoticon.Index];
+            SmileyParser.Instance.AddSticker(emoticon);
+        }
+
         private void emotList0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (emotList0.SelectedIndex < 0)
@@ -3684,6 +3716,7 @@ namespace windows_client.View
             int index = emotList0.SelectedIndex;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emotList0.SelectedIndex = -1;
+            SmileyParser.Instance.AddSticker(index);
         }
 
         private void emotList1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3695,6 +3728,7 @@ namespace windows_client.View
             int index = emotList1.SelectedIndex + SmileyParser.Instance.emoticon0Size;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emotList1.SelectedIndex = -1;
+            SmileyParser.Instance.AddSticker(index);
         }
 
         private void emotList2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3706,6 +3740,8 @@ namespace windows_client.View
             int index = emotList2.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emotList2.SelectedIndex = -1;
+            SmileyParser.Instance.AddSticker(index);
+
         }
         private void emotList3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -3716,6 +3752,7 @@ namespace windows_client.View
             int index = emotList3.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size + SmileyParser.Instance.emoticon2Size;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emotList3.SelectedIndex = -1;
+            SmileyParser.Instance.AddSticker(index);
         }
         #endregion
 
@@ -4752,64 +4789,102 @@ namespace windows_client.View
             }
         }
 
-        private void emotHeaderRect0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void emotHeaderRectRecent_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
+            emotHeaderRectRecent.Background = UI_Utils.Instance.TappedCategoryColor;
+            emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
             emoticonPivot.SelectedIndex = 0;
         }
 
+        private void emotHeaderRect0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
+            emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emoticonPivot.SelectedIndex = 1;
+        }
+
         private void emotHeaderRect1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.TappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emoticonPivot.SelectedIndex = 1;
+            emoticonPivot.SelectedIndex = 2;
 
         }
 
         private void emotHeaderRect2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.TappedCategoryColor;
             emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emoticonPivot.SelectedIndex = 2;
+            emoticonPivot.SelectedIndex = 3;
         }
         private void emotHeaderRect3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect3.Background = UI_Utils.Instance.TappedCategoryColor;
-            emoticonPivot.SelectedIndex = 3;
+            emoticonPivot.SelectedIndex = 4;
         }
         private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             switch (emoticonPivot.SelectedIndex)
             {
                 case 0:
-                    emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
+                    if (imagePathsForListRecent.Count > 0)
+                    {
+                        gridNoSticker.Visibility = Visibility.Collapsed;
+                        gridShowRecents.Visibility = Visibility.Visible;
+                        emotListRecent.ItemsSource = null;
+                        emotListRecent.ItemsSource = imagePathsForListRecent;
+                    }
+                    else
+                    {
+                        gridNoSticker.Visibility = Visibility.Visible;
+                        gridShowRecents.Visibility = Visibility.Collapsed;
+                    }
+
+                    emotHeaderRectRecent.Background = UI_Utils.Instance.TappedCategoryColor;
+                    emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
                     break;
                 case 1:
+                    emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
+                    emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    break;
+                case 2:
+                    emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.TappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
                     break;
-                case 2:
+                case 3:
+                    emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.TappedCategoryColor;
                     emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
                     break;
-                case 3:
+                case 4:
+                    emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
@@ -5177,7 +5252,7 @@ namespace windows_client.View
             conv.MetaDataString = string.Format("{{{0}:'{1}',{2}:'{3}'}}", HikeConstants.STICKER_ID, sticker.Id, HikeConstants.CATEGORY_ID, sticker.Category);
             AddNewMessageToUI(conv, false);
             HikeViewModel.stickerHelper.recentStickerHelper.AddSticker(sticker);
-          
+
             mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
         }
 
@@ -6549,6 +6624,7 @@ namespace windows_client.View
                 }
             }
         }
+
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector
