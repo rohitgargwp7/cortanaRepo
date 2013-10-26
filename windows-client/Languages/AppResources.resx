@@ -1130,7 +1130,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>General Text</comment>
   </data>
   <data name="FileTransfer_ErrorMsgBoxText" xml:space="preserve">
-    <value>Unable to download file. </value>
+    <value>Overload</value>
     <comment>cs. Text in message box followed by exception message</comment>
   </data>
   <data name="SelectUser_HideSmsContacts_Txt" xml:space="preserve">
@@ -1943,8 +1943,8 @@ Download it now http://hike.in and join the fun!</value>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
     <value>Earn free SMS for every friend who joins hike because of you</value>
   </data>
-  <data name="Download_MaxFiles_Txt" xml:space="preserve">
-    <value>More than 25 files cannot be downloaded at a time</value>
+  <data name="FT_MaxFiles_Txt" xml:space="preserve">
+    <value>Unable to process file transfer request.</value>
   </data>
   <data name="sms_invite_message" xml:space="preserve">
     <value>I just got the new hike messenger! It's simpler, faster with hilarious new stickers! Download it now and lets chat for free http://hike.in</value>

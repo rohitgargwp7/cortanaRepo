@@ -145,7 +145,8 @@ namespace windows_client.DbUtils
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
-                    FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes);
+                    if(!FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes))
+                        MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
                 });
             }
             #endregion
@@ -175,7 +176,8 @@ namespace windows_client.DbUtils
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
-                    FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes);
+                    if(!FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes))
+                        MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
                 });
             }
             #endregion
@@ -323,7 +325,7 @@ namespace windows_client.DbUtils
             }
             else if (type == HikePubSub.FILE_STATE_CHANGED)
             {
-                var fInfo = obj as HikeFileInfo;
+                var fInfo = obj as IFileInfo;
 
                 using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
                 {
@@ -343,27 +345,27 @@ namespace windows_client.DbUtils
 
                         Attachment.AttachmentState state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
 
-                        if (fInfo.FileState == HikeFileState.CANCELED)
+                        if (fInfo.FileState == FileTransferState.CANCELED)
                             state = Attachment.AttachmentState.CANCELED;
-                        else if (fInfo.FileState == HikeFileState.COMPLETED)
+                        else if (fInfo.FileState == FileTransferState.COMPLETED)
                             state = Attachment.AttachmentState.COMPLETED;
-                        else if (fInfo.FileState == HikeFileState.PAUSED)
+                        else if (fInfo.FileState == FileTransferState.PAUSED)
                             state = Attachment.AttachmentState.PAUSED;
-                        else if (fInfo.FileState == HikeFileState.MANUAL_PAUSED)
+                        else if (fInfo.FileState == FileTransferState.MANUAL_PAUSED)
                             state = Attachment.AttachmentState.MANUAL_PAUSED;
-                        else if (fInfo.FileState == HikeFileState.FAILED)
+                        else if (fInfo.FileState == FileTransferState.FAILED)
                             state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
-                        else if (fInfo.FileState == HikeFileState.STARTED)
+                        else if (fInfo.FileState == FileTransferState.STARTED)
                             state = Attachment.AttachmentState.STARTED;
-                        else if (fInfo.FileState == HikeFileState.NOT_STARTED)
+                        else if (fInfo.FileState == FileTransferState.NOT_STARTED)
                             state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
 
-                        if (fInfo.FileState == HikeFileState.COMPLETED)
+                        if (fInfo.FileState == FileTransferState.COMPLETED)
                             convMessage.ProgressBarValue = 100;
 
                         if (fInfo is FileDownloader)
                         {
-                            if (fInfo.FileState == HikeFileState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.Id))
+                            if (fInfo.FileState == FileTransferState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.Id))
                             {
                                 string destinationPath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.Id;
                                 string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));
@@ -395,7 +397,7 @@ namespace windows_client.DbUtils
                                 }
 
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.Id);
-                                FileTransferManager.Instance.DeleteTaskData(fInfo.Id);
+                                fInfo.Delete();
                             }
 
                             convMessage.SetAttachmentState(state);
@@ -403,7 +405,7 @@ namespace windows_client.DbUtils
                         }
                         else
                         {
-                            if (fInfo.FileState == HikeFileState.COMPLETED)
+                            if (fInfo.FileState == FileTransferState.COMPLETED)
                             {
                                 JObject data = (fInfo as FileUploader).SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
                                 var fileKey = data[HikeConstants.FILE_KEY].ToString();
@@ -435,9 +437,9 @@ namespace windows_client.DbUtils
                                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
 
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.Id);
-                                FileTransferManager.Instance.DeleteTaskData(fInfo.Id);
+                                fInfo.Delete();
                             }
-                            else if (fInfo.FileState == HikeFileState.FAILED)
+                            else if (fInfo.FileState == FileTransferState.FAILED)
                             {
                                 convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
                                 NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);

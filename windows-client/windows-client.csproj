@@ -181,9 +181,11 @@
     <Compile Include="DbUtils\UsersTableUtils.cs" />
     <Compile Include="FileTransfer.cs" />
     <Compile Include="FileTransfers\FileDownloader.cs" />
-    <Compile Include="FileTransfers\HikeFileInfo.cs" />
+    <Compile Include="FileTransfers\IFileInfo.cs" />
     <Compile Include="FileTransfers\FileTransferManager.cs" />
     <Compile Include="FileTransfers\FileUploader.cs" />
+    <Compile Include="FileTransfers\FileTransferState.cs" />
+    <Compile Include="FileTransfers\FileTransferSatatusChangedEventArgs.cs" />
     <Compile Include="HikeConstants.cs" />
     <Compile Include="HikePubSub.cs" />
     <Compile Include="Languages\AppResources.Designer.cs">

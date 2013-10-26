@@ -970,15 +970,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More than 25 files cannot be downloaded at a time.
-        /// </summary>
-        public static string Download_MaxFiles_Txt {
-            get {
-                return ResourceManager.GetString("Download_MaxFiles_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Download.
         /// </summary>
         public static string Download_txt {
@@ -1445,7 +1436,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to download file. .
+        ///   Looks up a localized string similar to Overload.
         /// </summary>
         public static string FileTransfer_ErrorMsgBoxText {
             get {
@@ -1675,6 +1666,15 @@ namespace windows_client.Languages {
         public static string Friends_Txt {
             get {
                 return ResourceManager.GetString("Friends_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to process file transfer request..
+        /// </summary>
+        public static string FT_MaxFiles_Txt {
+            get {
+                return ResourceManager.GetString("FT_MaxFiles_Txt", resourceCulture);
             }
         }
         

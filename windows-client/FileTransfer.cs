@@ -98,7 +98,7 @@ namespace windows_client
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                MessageBox.Show(AppResources.Download_MaxFiles_Txt);
+                                MessageBox.Show(AppResources.FT_MaxFiles_Txt);
                             });
                     }
                 }

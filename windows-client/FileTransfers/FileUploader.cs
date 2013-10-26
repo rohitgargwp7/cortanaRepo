@@ -15,14 +15,21 @@ using System.Diagnostics;
 
 namespace windows_client.FileTransfers
 {
-    public class FileUploader : HikeFileInfo
+    public class FileUploader : IFileInfo
     {
-        private const string FILE_TRANSFER_DIRECTORY_NAME = "FileTransfer";
-        private const string FILE_TRANSFER_UPLOAD_DIRECTORY_NAME = "Upload";
-        private static object readWriteLock = new object();
-        
+        const string FILE_TRANSFER_DIRECTORY_NAME = "FileTransfer";
+        const string FILE_TRANSFER_UPLOAD_DIRECTORY_NAME = "Upload";
+        const int DefaultBlockSize = 1024;
+
+        static object readWriteLock = new object();
+
         public static int MaxBlockSize;
 
+        string _boundary = "----------V2ymHFg03ehbqgZCaKO6jy";
+
+        int BlockSize = 1024;
+        int AttemptNumber = 1;
+        
         public int BytesTransfered
         {
             get
@@ -30,7 +37,6 @@ namespace windows_client.FileTransfers
                 return CurrentHeaderPosition == 0 ? 0 : CurrentHeaderPosition - 1;
             }
         }
-
         public double PercentageTransfer
         {
             get
@@ -38,7 +44,6 @@ namespace windows_client.FileTransfers
                 return ((double)BytesTransfered / TotalBytes) * 100;
             }
         }
-
         public int TotalBytes
         {
             get
@@ -49,10 +54,6 @@ namespace windows_client.FileTransfers
             {
             }
         }
-
-        public int BlockSize = 1024;
-        public int AttemptNumber = 1;
-
         public string Id { get; set; }
         public int CurrentHeaderPosition { get; set; }
         public byte[] FileBytes { get; set; }
@@ -61,7 +62,7 @@ namespace windows_client.FileTransfers
         public string Msisdn { get; set; }
         public JObject SuccessObj { get; set; }
 
-        public HikeFileState FileState { get; set; }
+        public FileTransferState FileState { get; set; }
 
         public FileUploader()
         {
@@ -74,7 +75,7 @@ namespace windows_client.FileTransfers
             FileBytes = fileBytes;
             FileName = fileName;
             ContentType = contentType;
-            FileState = HikeFileState.NOT_STARTED;
+            FileState = FileTransferState.NOT_STARTED;
         }
 
         public void Write(BinaryWriter writer)
@@ -144,10 +145,10 @@ namespace windows_client.FileTransfers
             if (ContentType == "*@N@*")
                 ContentType = null;
 
-            FileState = (HikeFileState)reader.ReadInt32();
+            FileState = (FileTransferState)reader.ReadInt32();
 
-            if (App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileState == HikeFileState.STARTED)
-                FileState = HikeFileState.PAUSED;
+            if (App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileState == FileTransferState.STARTED)
+                FileState = FileTransferState.PAUSED;
 
             count = reader.ReadInt32();
             FileBytes = count != 0 ? reader.ReadBytes(count) : FileBytes = null;
@@ -190,12 +191,34 @@ namespace windows_client.FileTransfers
             }
         }
 
-        string _boundary = "----------V2ymHFg03ehbqgZCaKO6jy";
-        const int _defaultBlockSize = 1024;
+        public void Delete()
+        {
+            lock (readWriteLock)
+            {
+                try
+                {
+                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + Id;
 
-        public event EventHandler<TaskCompletedArgs> UploadStatusChanged;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
+                            return;
 
-        public void BeginUploadGetRequest(object obj)
+                        if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME))
+                            return;
+
+                        if (store.FileExists(fileName))
+                            store.DeleteFile(fileName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("FileUploader :: Delete Upload From IS, Exception : " + ex.StackTrace);
+                }
+            }
+        }
+
+        public void Start(object obj)
         {
             var req = HttpWebRequest.Create(new Uri(HikeConstants.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
 
@@ -260,18 +283,18 @@ namespace windows_client.FileTransfers
 
                 if (FileBytes.Length - 1 == index)
                 {
-                    FileState = HikeFileState.COMPLETED;
+                    FileState = FileTransferState.COMPLETED;
 
-                    if (UploadStatusChanged != null)
-                        UploadStatusChanged(this, new TaskCompletedArgs(this, true));
+                    if (StatusChanged != null)
+                        StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
                 }
                 else
                 {
                     CurrentHeaderPosition = index + 1;
-                    FileState = HikeFileState.STARTED;
+                    FileState = FileTransferState.STARTED;
 
-                    if (UploadStatusChanged != null)
-                        UploadStatusChanged(this, new TaskCompletedArgs(this, true));
+                    if (StatusChanged != null)
+                        StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
 
                     BeginUploadPostRequest();
                 }
@@ -280,10 +303,10 @@ namespace windows_client.FileTransfers
             {
                 // fresh upload
                 CurrentHeaderPosition = index;
-                FileState = HikeFileState.STARTED;
+                FileState = FileTransferState.STARTED;
 
-                if (UploadStatusChanged != null)
-                    UploadStatusChanged(this, new TaskCompletedArgs(this, true));
+                if (StatusChanged != null)
+                    StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
 
                 BeginUploadPostRequest();
             }
@@ -448,64 +471,66 @@ namespace windows_client.FileTransfers
 
                     var stateUpdated = false;
 
-                    if (FileState == HikeFileState.STARTED)
+                    if (FileState == FileTransferState.STARTED)
                     {
-                        FileState = HikeFileState.COMPLETED;
+                        FileState = FileTransferState.COMPLETED;
                         stateUpdated = true;
                     }
 
-                    if (UploadStatusChanged != null)
-                        UploadStatusChanged(this, new TaskCompletedArgs(this, stateUpdated));
+                    if (StatusChanged != null)
+                        StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, stateUpdated));
                 }
             }
             else if (code == HttpStatusCode.Created)
             {
-                if (FileState == HikeFileState.CANCELED)
+                if (FileState == FileTransferState.CANCELED)
                 {
-                    FileTransferManager.Instance.DeleteTaskData(Id);
+                    Delete();                    
                 }
                 else
                 {
                     CurrentHeaderPosition += BlockSize;
 
-                    if (FileState == HikeFileState.STARTED)
+                    if (FileState == FileTransferState.STARTED)
                     {
-                        var newSize = (AttemptNumber + AttemptNumber) * _defaultBlockSize;
+                        var newSize = (AttemptNumber + AttemptNumber) * DefaultBlockSize;
 
                         if (newSize <= MaxBlockSize)
                         {
                             AttemptNumber += AttemptNumber;
-                            BlockSize = AttemptNumber * _defaultBlockSize;
+                            BlockSize = AttemptNumber * DefaultBlockSize;
                         }
                     }
                     else
                     {
                         AttemptNumber = 1;
-                        BlockSize = _defaultBlockSize;
+                        BlockSize = DefaultBlockSize;
                     }
 
-                    if (FileState == HikeFileState.STARTED || (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileState != HikeFileState.MANUAL_PAUSED))
+                    if (FileState == FileTransferState.STARTED || (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
                         BeginUploadPostRequest();
 
-                    if (UploadStatusChanged != null)
-                        UploadStatusChanged(this, new TaskCompletedArgs(this, false));
+                    if (StatusChanged != null)
+                        StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, false));
                 }
             }
             else if (code == HttpStatusCode.BadRequest)
             {
-                FileState = HikeFileState.FAILED;
+                FileState = FileTransferState.FAILED;
 
-                if (UploadStatusChanged != null)
-                    UploadStatusChanged(this, new TaskCompletedArgs(this, true));
+                if (StatusChanged != null)
+                    StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
             }
             else
             {
                 //app suspension and disconnected case
-                FileState = HikeFileState.PAUSED;
+                FileState = FileTransferState.PAUSED;
 
-                if (UploadStatusChanged != null)
-                    UploadStatusChanged(this, new TaskCompletedArgs(this, true));
+                if (StatusChanged != null)
+                    StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
             }
         }
+        
+        public event EventHandler<FileTransferSatatusChangedEventArgs> StatusChanged;
     }
 }

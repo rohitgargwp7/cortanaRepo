@@ -15,14 +15,19 @@ using System.Diagnostics;
 
 namespace windows_client.FileTransfers
 {
-    public class FileDownloader : HikeFileInfo
+    public class FileDownloader : IFileInfo
     {
-        private const string FILE_TRANSFER_DIRECTORY_NAME = "FileTransfer";
-        private const string FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME = "Download";
-        private static object readWriteLock = new object();
+        const string FILE_TRANSFER_DIRECTORY_NAME = "FileTransfer";
+        const string FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME = "Download";
+        const int DefaultBlockSize = 1024;
+
+        static object readWriteLock = new object();
        
         public static int MaxBlockSize;
 
+        int BlockSize = 1024;
+        int AttemptNumber = 1;
+        
         public int BytesTransfered
         {
             get
@@ -30,7 +35,6 @@ namespace windows_client.FileTransfers
                 return CurrentHeaderPosition == 0 ? 0 : CurrentHeaderPosition - 1;
             }
         }
-
         public double PercentageTransfer
         {
             get
@@ -38,17 +42,14 @@ namespace windows_client.FileTransfers
                 return TotalBytes == 0 ? 0 : ((double)BytesTransfered / TotalBytes) * 100;
             }
         }
-
         public int TotalBytes { get; set; }
-        public int BlockSize = 1024;
-        public int AttemptNumber = 1;
         public string Id { get; set; }
         public int CurrentHeaderPosition { get; set; }
         public byte[] FileBytes { get; set; }
         public string ContentType { get; set; }
         public string FileName { get; set; }
         public string Msisdn { get; set; }
-        public HikeFileState FileState { get; set; }
+        public FileTransferState FileState { get; set; }
 
         public FileDownloader()
         {
@@ -60,7 +61,7 @@ namespace windows_client.FileTransfers
             Id = key;
             FileName = fileName;
             ContentType = contentType;
-            FileState = HikeFileState.NOT_STARTED;
+            FileState = FileTransferState.NOT_STARTED;
         }
 
         public void Write(BinaryWriter writer)
@@ -120,10 +121,10 @@ namespace windows_client.FileTransfers
             if (ContentType == "*@N@*")
                 ContentType = null;
 
-            FileState = (HikeFileState)reader.ReadInt32();
+            FileState = (FileTransferState)reader.ReadInt32();
 
-            if (App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileState == HikeFileState.STARTED)
-                FileState = HikeFileState.PAUSED;
+            if (App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileState == FileTransferState.STARTED)
+                FileState = FileTransferState.PAUSED;
 
             count = reader.ReadInt32();
             FileBytes = count != 0 ? reader.ReadBytes(count) : FileBytes = null;
@@ -168,11 +169,34 @@ namespace windows_client.FileTransfers
             }
         }
 
-        const int _defaultBlockSize = 1024;
+        public void Delete()
+        {
+            lock (readWriteLock)
+            {
+                try
+                {
+                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + Id;
 
-        public event EventHandler<TaskCompletedArgs> DownloadStatusChanged;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
+                            return;
 
-        public void BeginDownloadGetRequest(object obj)
+                        if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME))
+                            return;
+
+                        if (store.FileExists(fileName))
+                            store.DeleteFile(fileName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("FileDownloader :: Delete Download From IS, Exception : " + ex.StackTrace);
+                }
+            }
+        }
+
+        public void Start(object obj)
         {
             var req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + FileName)) as HttpWebRequest;
             req.AllowReadStreamBuffering = false;
@@ -223,10 +247,10 @@ namespace windows_client.FileTransfers
                         FileBytes = new byte[TotalBytes];
                     }
 
-                    FileState = HikeFileState.STARTED;
+                    FileState = FileTransferState.STARTED;
 
-                    if (DownloadStatusChanged != null)
-                        DownloadStatusChanged(this, new TaskCompletedArgs(this, true));
+                    if (StatusChanged != null)
+                        StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
                 }
 
                 ProcessDownloadGetResponse(responseStream, responseCode);
@@ -235,16 +259,16 @@ namespace windows_client.FileTransfers
 
         void ProcessDownloadGetResponse(Stream responseStream, HttpStatusCode responseCode)
         {
-            if (FileState == HikeFileState.CANCELED)
+            if (FileState == FileTransferState.CANCELED)
             {
-                FileTransferManager.Instance.DeleteTaskData(Id);
+                Delete();
             }
             else if (responseCode == HttpStatusCode.PartialContent || responseCode == HttpStatusCode.OK)
             {
                 byte[] newBytes = null;
                 using (BinaryReader br = new BinaryReader(responseStream))
                 {
-                    while (BytesTransfered != TotalBytes && FileState == HikeFileState.STARTED)
+                    while (BytesTransfered != TotalBytes && FileState == FileTransferState.STARTED)
                     {
                         newBytes = br.ReadBytes(BlockSize);
 
@@ -254,60 +278,62 @@ namespace windows_client.FileTransfers
                         Array.Copy(newBytes, 0, FileBytes, CurrentHeaderPosition, newBytes.Length);
                         CurrentHeaderPosition += newBytes.Length;
 
-                        var newSize = (AttemptNumber + AttemptNumber) * _defaultBlockSize;
+                        var newSize = (AttemptNumber + AttemptNumber) * DefaultBlockSize;
 
                         if (newSize <= MaxBlockSize)
                         {
                             AttemptNumber += AttemptNumber;
-                            BlockSize = AttemptNumber * _defaultBlockSize;
+                            BlockSize = AttemptNumber * DefaultBlockSize;
                         }
 
-                        if (DownloadStatusChanged != null)
-                            DownloadStatusChanged(this, new TaskCompletedArgs(this, false));
+                        if (StatusChanged != null)
+                            StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, false));
                     }
 
-                    if (FileState == HikeFileState.CANCELED)
+                    if (FileState == FileTransferState.CANCELED)
                     {
-                        FileTransferManager.Instance.DeleteTaskData(Id);
+                        Delete();
                     }
                     else if (BytesTransfered == TotalBytes - 1)
                     {
-                        FileState = HikeFileState.COMPLETED;
+                        FileState = FileTransferState.COMPLETED;
 
-                        if (DownloadStatusChanged != null)
-                            DownloadStatusChanged(this, new TaskCompletedArgs(this, true));
+                        if (StatusChanged != null)
+                            StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
                     }
                     else if (newBytes.Length == 0)
                     {
-                        FileState = HikeFileState.PAUSED;
+                        FileState = FileTransferState.PAUSED;
 
-                        if (DownloadStatusChanged != null)
-                            DownloadStatusChanged(this, new TaskCompletedArgs(this, true));
+                        if (StatusChanged != null)
+                            StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
                     }
                 }
             }
             else if (responseCode == HttpStatusCode.BadRequest)
             {
-                FileState = HikeFileState.FAILED;
+                FileState = FileTransferState.FAILED;
 
                 //Deployment.Current.Dispatcher.BeginInvoke(() =>
                 //{
                 //    MessageBox.Show(AppResources.File_Not_Exist_Message, AppResources.File_Not_Exist_Caption, MessageBoxButton.OK);
                 //});
 
-                if (DownloadStatusChanged != null)
-                    DownloadStatusChanged(this, new TaskCompletedArgs(this, true));
+                if (StatusChanged != null)
+                    StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
             }
             else
             {
                 if (App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
-                    FileState = HikeFileState.FAILED;
+                    FileState = FileTransferState.FAILED;
                 else
-                    FileState = HikeFileState.PAUSED;
+                    FileState = FileTransferState.PAUSED;
 
-                if (DownloadStatusChanged != null)
-                    DownloadStatusChanged(this, new TaskCompletedArgs(this, true));
+                if (StatusChanged != null)
+                    StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
             }
         }
+
+        public event EventHandler<FileTransferSatatusChangedEventArgs> StatusChanged;
     }
 }

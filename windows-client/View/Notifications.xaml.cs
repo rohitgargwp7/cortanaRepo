@@ -277,6 +277,8 @@ namespace windows_client.View
             this.autoDownloadToggle.Content = AppResources.On;
             App.appSettings.Remove(App.AUTO_DOWNLOAD_SETTING);
             App.appSettings.Save();
+
+            FileTransfers.FileTransferManager.Instance.StartTask();
         }
 
         private void autoDownloadToggle_Unchecked(object sender, RoutedEventArgs e)
