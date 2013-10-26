@@ -1958,4 +1958,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="RecentSticker_Default_Txt" xml:space="preserve">
     <value>Stickers that you recently shared, would show up here.</value>
   </data>
+  <data name="RecentEmoticons_DefaultText" xml:space="preserve">
+    <value>Emoticons that you recently used, would show up here.</value>
+  </data>
 </root>

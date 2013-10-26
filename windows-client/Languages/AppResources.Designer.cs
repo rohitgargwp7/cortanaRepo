@@ -3245,6 +3245,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   ///   Looks up a localized string similar to Emoticons that you recently used, would show up here..
+        /// </summary>
+        public static string RecentEmoticons_DefaultText {
+            get {
+                return ResourceManager.GetString("RecentEmoticons_DefaultText", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Stickers that you recently shared, would show up here..
         /// </summary>
         public static string RecentSticker_Default_Txt {
