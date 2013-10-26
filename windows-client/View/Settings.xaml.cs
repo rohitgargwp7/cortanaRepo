@@ -21,16 +21,16 @@ namespace windows_client.View
             InitializeComponent();
             if (Utils.isDarkTheme())
             {
-                privacyImage.Source = new BitmapImage(new Uri("images/privacy_white.png", UriKind.Relative));
+                accountImage.Source = new BitmapImage(new Uri("images/privacy_white.png", UriKind.Relative));
                 blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon_white.png", UriKind.Relative));
-                settingsImage.Source = new BitmapImage(new Uri("images/notification_white.png", UriKind.Relative));
+                preferencesImage.Source = new BitmapImage(new Uri("images/settings_icon_white.png", UriKind.Relative));
                 notificationsImage.Source = new BitmapImage(new Uri("images/notification_white.png", UriKind.Relative));
             }
             else
             {
-                privacyImage.Source = new BitmapImage(new Uri("images/privacy_black.png", UriKind.Relative));
+                accountImage.Source = new BitmapImage(new Uri("images/privacy_black.png", UriKind.Relative));
                 blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon.png", UriKind.Relative));
-                settingsImage.Source = new BitmapImage(new Uri("images/notification_black.png", UriKind.Relative));
+                preferencesImage.Source = new BitmapImage(new Uri("images/settings_icon_black.png", UriKind.Relative));
                 notificationsImage.Source = new BitmapImage(new Uri("images/notification_black.png", UriKind.Relative));
             }
         }
