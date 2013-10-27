@@ -28,7 +28,7 @@ namespace windows_client.FileTransfers
         string _boundary = "----------V2ymHFg03ehbqgZCaKO6jy";
 
         int BlockSize = 1024;
-        int AttemptNumber = 1;
+        int AttemptFactor = 1;
         
         public int BytesTransfered
         {
@@ -46,17 +46,11 @@ namespace windows_client.FileTransfers
         }
         public int TotalBytes
         {
-            get
-            {
-                return FileBytes.Length;
-            }
-            set
-            {
-            }
+            get;
+            set;
         }
         public string Id { get; set; }
         public int CurrentHeaderPosition { get; set; }
-        public byte[] FileBytes { get; set; }
         public string ContentType { get; set; }
         public string FileName { get; set; }
         public string Msisdn { get; set; }
@@ -68,11 +62,11 @@ namespace windows_client.FileTransfers
         {
         }
 
-        public FileUploader(string msisdn, string key, byte[] fileBytes, string fileName, string contentType)
+        public FileUploader(string msisdn, string key, int size, string fileName, string contentType)
         {
             Msisdn = msisdn;
             Id = key;
-            FileBytes = fileBytes;
+            TotalBytes = size;
             FileName = fileName;
             ContentType = contentType;
             FileState = FileTransferState.NOT_STARTED;
@@ -109,9 +103,7 @@ namespace windows_client.FileTransfers
 
             writer.Write((int)FileState);
 
-            writer.Write(FileBytes != null ? FileBytes.Length : 0);
-            if (FileBytes != null)
-                writer.Write(FileBytes);
+            writer.Write(TotalBytes);
         }
 
         public void Read(BinaryReader reader)
@@ -150,8 +142,7 @@ namespace windows_client.FileTransfers
             if (App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileState == FileTransferState.STARTED)
                 FileState = FileTransferState.PAUSED;
 
-            count = reader.ReadInt32();
-            FileBytes = count != 0 ? reader.ReadBytes(count) : FileBytes = null;
+            TotalBytes = reader.ReadInt32();
         }
 
         public void Save()
@@ -281,7 +272,7 @@ namespace windows_client.FileTransfers
             {
                 index = Convert.ToInt32(data);
 
-                if (FileBytes.Length - 1 == index)
+                if (TotalBytes - 1 == index)
                 {
                     FileState = FileTransferState.COMPLETED;
 
@@ -327,16 +318,17 @@ namespace windows_client.FileTransfers
             req.Headers["X-Thumbnail-Required"] = "0";
             req.Headers["X-SESSION-ID"] = Id;
 
-            var bytesLeft = FileBytes.Length - CurrentHeaderPosition;
+            var bytesLeft = TotalBytes - CurrentHeaderPosition;
             BlockSize = bytesLeft >= BlockSize ? BlockSize : bytesLeft;
 
             var endPosition = CurrentHeaderPosition + BlockSize;
             endPosition -= 1;
 
-            req.Headers["X-CONTENT-RANGE"] = string.Format("bytes {0}-{1}/{2}", CurrentHeaderPosition, endPosition, FileBytes.Length);
+            req.Headers["X-CONTENT-RANGE"] = string.Format("bytes {0}-{1}/{2}", CurrentHeaderPosition, endPosition, TotalBytes);
 
             var partialDataBytes = new byte[endPosition - CurrentHeaderPosition + 1];
-            Array.Copy(FileBytes, CurrentHeaderPosition, partialDataBytes, 0, endPosition - CurrentHeaderPosition + 1);
+
+            partialDataBytes = ReadChunkFromIsolatedStorage(CurrentHeaderPosition, endPosition - CurrentHeaderPosition + 1);
 
             var param = new Dictionary<string, string>();
             param.Add("Cookie", req.Headers["Cookie"]);
@@ -493,17 +485,22 @@ namespace windows_client.FileTransfers
 
                     if (FileState == FileTransferState.STARTED)
                     {
-                        var newSize = (AttemptNumber + AttemptNumber) * DefaultBlockSize;
+                        var newSize = (AttemptFactor + AttemptFactor) * DefaultBlockSize;
 
                         if (newSize <= MaxBlockSize)
                         {
-                            AttemptNumber += AttemptNumber;
-                            BlockSize = AttemptNumber * DefaultBlockSize;
+                            AttemptFactor += AttemptFactor;
+                            BlockSize = AttemptFactor * DefaultBlockSize;
+                        }
+                        else
+                        {
+                            AttemptFactor /= 2;
+                            BlockSize = MaxBlockSize;
                         }
                     }
                     else
                     {
-                        AttemptNumber = 1;
+                        AttemptFactor = 1;
                         BlockSize = DefaultBlockSize;
                     }
 
@@ -530,7 +527,35 @@ namespace windows_client.FileTransfers
                     StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
             }
         }
-        
+
+        public byte[] ReadChunkFromIsolatedStorage(int position, int size)
+        {
+            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + Id;
+            string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
+            byte[] bytes = new byte[size];
+
+            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (!myIsolatedStorage.DirectoryExists(fileDirectory))
+                    return null;
+
+                if (!myIsolatedStorage.FileExists(filePath))
+                    return null;
+
+                using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(filePath, FileMode.OpenOrCreate, myIsolatedStorage))
+                {
+                    fileStream.Seek(position, SeekOrigin.Begin);
+
+                    using (BinaryReader reader = new BinaryReader(fileStream))
+                    {
+                        reader.Read(bytes, 0, size);
+                    }
+                }
+            }
+         
+            return bytes;
+        }
+
         public event EventHandler<FileTransferSatatusChangedEventArgs> StatusChanged;
     }
 }

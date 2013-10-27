@@ -26,7 +26,7 @@ namespace windows_client.FileTransfers
         public static int MaxBlockSize;
 
         int BlockSize = 1024;
-        int AttemptNumber = 1;
+        int AttemptFactor = 1;
         
         public int BytesTransfered
         {
@@ -45,7 +45,6 @@ namespace windows_client.FileTransfers
         public int TotalBytes { get; set; }
         public string Id { get; set; }
         public int CurrentHeaderPosition { get; set; }
-        public byte[] FileBytes { get; set; }
         public string ContentType { get; set; }
         public string FileName { get; set; }
         public string Msisdn { get; set; }
@@ -90,10 +89,6 @@ namespace windows_client.FileTransfers
 
             writer.Write((int)FileState);
 
-            writer.Write(FileBytes != null ? FileBytes.Length : 0);
-            if (FileBytes != null)
-                writer.Write(FileBytes);
-
             writer.Write(TotalBytes);
         }
 
@@ -125,9 +120,6 @@ namespace windows_client.FileTransfers
 
             if (App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileState == FileTransferState.STARTED)
                 FileState = FileTransferState.PAUSED;
-
-            count = reader.ReadInt32();
-            FileBytes = count != 0 ? reader.ReadBytes(count) : FileBytes = null;
 
             TotalBytes = reader.ReadInt32();
         }
@@ -241,11 +233,8 @@ namespace windows_client.FileTransfers
             {
                 if (response != null)
                 {
-                    if (FileBytes == null)
-                    {
+                    if (TotalBytes == 0)
                         TotalBytes = (int)response.ContentLength;
-                        FileBytes = new byte[TotalBytes];
-                    }
 
                     FileState = FileTransferState.STARTED;
 
@@ -257,33 +246,63 @@ namespace windows_client.FileTransfers
             }
         }
 
-        void ProcessDownloadGetResponse(Stream responseStream, HttpStatusCode responseCode)
+        public void WriteChunkToIsolatedStorage(byte[] bytes, int position)
+        {
+            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + Id;
+            string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
+            if (bytes != null)
+            {
+                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!myIsolatedStorage.DirectoryExists(fileDirectory))
+                        myIsolatedStorage.CreateDirectory(fileDirectory);
+
+                    using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(filePath, FileMode.OpenOrCreate, myIsolatedStorage))
+                    {
+                        using (BinaryWriter writer = new BinaryWriter(fileStream))
+                        {
+                            writer.Seek(position, SeekOrigin.Begin);
+                            writer.Write(bytes, 0, bytes.Length);
+                        }
+                    }
+                }
+            }
+        }
+
+        async void ProcessDownloadGetResponse(Stream responseStream, HttpStatusCode responseCode)
         {
             if (FileState == FileTransferState.CANCELED)
             {
                 Delete();
             }
-            else if (responseCode == HttpStatusCode.PartialContent || responseCode == HttpStatusCode.OK)
+            else if (responseStream != null && (responseCode == HttpStatusCode.PartialContent || responseCode == HttpStatusCode.OK))
             {
                 byte[] newBytes = null;
                 using (BinaryReader br = new BinaryReader(responseStream))
                 {
                     while (BytesTransfered != TotalBytes && FileState == FileTransferState.STARTED)
                     {
+                        await Task.Delay(100);
+
                         newBytes = br.ReadBytes(BlockSize);
 
                         if (newBytes.Length == 0)
                             break;
 
-                        Array.Copy(newBytes, 0, FileBytes, CurrentHeaderPosition, newBytes.Length);
+                        WriteChunkToIsolatedStorage(newBytes, CurrentHeaderPosition);
                         CurrentHeaderPosition += newBytes.Length;
 
-                        var newSize = (AttemptNumber + AttemptNumber) * DefaultBlockSize;
+                        var newSize = (AttemptFactor + AttemptFactor) * DefaultBlockSize;
 
                         if (newSize <= MaxBlockSize)
                         {
-                            AttemptNumber += AttemptNumber;
-                            BlockSize = AttemptNumber * DefaultBlockSize;
+                            AttemptFactor += AttemptFactor;
+                            BlockSize = AttemptFactor * DefaultBlockSize;
+                        }
+                        else
+                        {
+                            AttemptFactor /= 2;
+                            BlockSize = MaxBlockSize;
                         }
 
                         if (StatusChanged != null)

@@ -10,7 +10,6 @@ namespace windows_client.FileTransfers
         int TotalBytes { get; set; }
         string Id { get; set; }
         int CurrentHeaderPosition { get; set; }
-        byte[] FileBytes { get; set; }
         string ContentType { get; set; }
         string FileName { get; set; }
         string Msisdn { get; set; }

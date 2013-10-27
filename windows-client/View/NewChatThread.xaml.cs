@@ -2128,7 +2128,10 @@ namespace windows_client.View
                     displayAttachment(convMessage);
                 }
             }
+
             isContextMenuTapped = false;
+
+            llsMessages.SelectedItem = null;
         }
 
         public void displayAttachment(ConvMessage convMessage)
@@ -2511,21 +2514,22 @@ namespace windows_client.View
                         {
                             convMessage.FileAttachment = attachments[convMessage.MessageId];
                             attachments.Remove(convMessage.MessageId);
+                        }
 
-                            if (!convMessage.IsSent && convMessage.FileAttachment.FileState != Attachment.AttachmentState.CANCELED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                        if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.CANCELED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                        {
+                            if (!convMessage.IsSent ||
+                                (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ) ||
+                                (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED))))
+                            {
+                                chatBubble = convMessage;
+
                                 msgMap.Add(convMessage.MessageId, convMessage);
 
-                            IFileInfo fInfo;
-                            if (FileTransferManager.Instance.TaskMap.TryGetValue(convMessage.MessageId.ToString(), out fInfo))
-                                UpdateFileTransferProgresInConvMessage(fInfo, convMessage, true);
-                        }
-                        else if (!convMessage.IsSent && convMessage.FileAttachment.FileState != Attachment.AttachmentState.CANCELED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
-                        {
-                            msgMap.Add(convMessage.MessageId, convMessage);
-
-                            IFileInfo fInfo;
-                            if (FileTransferManager.Instance.TaskMap.TryGetValue(convMessage.MessageId.ToString(), out fInfo))
-                                UpdateFileTransferProgresInConvMessage(fInfo, convMessage, true);
+                                IFileInfo fInfo;
+                                if (FileTransferManager.Instance.TaskMap.TryGetValue(convMessage.MessageId.ToString(), out fInfo))
+                                    UpdateFileTransferProgresInConvMessage(fInfo, convMessage, true);
+                            }
                         }
 
                         if (convMessage.FileAttachment == null)
@@ -2535,17 +2539,8 @@ namespace windows_client.View
                             return;
                         }
 
-                        if (convMessage.IsSent)
-                        {
-                            chatBubble = convMessage;
-
-                            if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
-                                     || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
-                                msgMap.Add(convMessage.MessageId, chatBubble);
-                        }
-                        else if (chatBubble != null)
-                            chatBubble.GroupMemberName = isGroupChat ?
-                              GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
+                        if (!convMessage.IsSent)
+                            chatBubble.GroupMemberName = isGroupChat ? GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                     }
 
                     if (chatBubble == null)
@@ -4239,20 +4234,19 @@ namespace windows_client.View
                         {
                             if (kv.Key < maxId)
                             {
-
                                 ConvMessage msg = kv.Value;
-                                if (msg.FileAttachment == null || (msg.FileAttachment.FileState == Attachment.AttachmentState.COMPLETED))
+                                if (msg.IsSent && (msg.FileAttachment == null || (msg.FileAttachment.FileState == Attachment.AttachmentState.COMPLETED)))
                                 {
                                     idsToUpdate.Add(kv.Key);
                                     msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
                                 }
-
                             }
-
                         }
+
                         // remove these ids from map
                         foreach (long id in idsToUpdate)
                             msgMap.Remove(id);
+
                         MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ);
                         idsToUpdate = null;
                     }
@@ -6575,6 +6569,8 @@ namespace windows_client.View
                             ResumeUpload(convMessage);
                     }
                 }
+                else
+                    _uploadProgressBarIsTapped = false;
             }
         }
     }

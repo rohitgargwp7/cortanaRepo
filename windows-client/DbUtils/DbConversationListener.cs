@@ -139,13 +139,11 @@ namespace windows_client.DbUtils
                     if (fileBytes == null)
                         return;
 
-                    if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                        MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
-
+                    MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
-                    if(!FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes))
+                    if(!FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length))
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
                 });
             }
@@ -169,14 +167,11 @@ namespace windows_client.DbUtils
                     UpdateConvListForSentMessage(convMessage, convObj);
                     //send attachment message (new attachment - upload case)
 
-                    if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                        MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
-                                Convert.ToString(convMessage.MessageId), fileBytes);
-
+                    MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
-                    if(!FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes))
+                    if(!FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length))
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
                 });
             }
@@ -366,27 +361,12 @@ namespace windows_client.DbUtils
                         {
                             if (fInfo.FileState == FileTransferState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.Id))
                             {
-                                string destinationPath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.Id;
-                                string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));
-
-                                using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
+                                if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
                                 {
-                                    if (isoStore.FileExists(destinationPath))
-                                        isoStore.DeleteFile(destinationPath);
+                                    string destinationPath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.Id;
+                                    string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));
 
-                                    if (!isoStore.DirectoryExists(destinationDirectory))
-                                        isoStore.CreateDirectory(destinationDirectory);
-
-                                    using (var file = isoStore.OpenFile(destinationPath, FileMode.Create, FileAccess.Write))
-                                    {
-                                        using (var writer = new BinaryWriter(file))
-                                        {
-                                            writer.Seek(0, SeekOrigin.Begin);
-                                            writer.Write(fInfo.FileBytes);
-                                        }
-                                    }
-
-                                    if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
+                                    using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
                                     {
                                         IsolatedStorageFileStream myFileStream = isoStore.OpenFile(destinationPath, FileMode.Open, FileAccess.Read);
                                         MediaLibrary library = new MediaLibrary();

@@ -81,7 +81,7 @@ namespace windows_client.FileTransfers
             return true;
         }
 
-        public bool UploadFile(string msisdn, string key, string fileName, string contentType, byte[] fileBytes)
+        public bool UploadFile(string msisdn, string key, string fileName, string contentType, int size)
         {
             if (TaskMap.ContainsKey(key))
             {
@@ -90,7 +90,7 @@ namespace windows_client.FileTransfers
             }
             else
             {
-                FileUploader fInfo = new FileUploader(msisdn, key, fileBytes, fileName, contentType);
+                FileUploader fInfo = new FileUploader(msisdn, key, size, fileName, contentType);
 
                 PendingTasks.Enqueue(fInfo);
                 TaskMap.Add(fInfo.Id, fInfo);
@@ -124,12 +124,13 @@ namespace windows_client.FileTransfers
                     PendingTasks.Enqueue(fInfo);
 
                 SaveTaskData(fInfo);
-                StartTask();
 
                 if (UpdateTaskStatusOnUI != null)
                     UpdateTaskStatusOnUI(null, new FileTransferSatatusChangedEventArgs(fInfo, true));
 
                 App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fInfo);
+
+                StartTask();
             }
         }
 
@@ -146,7 +147,7 @@ namespace windows_client.FileTransfers
                     fileInfo = null;
                     return;
                 }
-                else if (fileInfo.BytesTransfered == fileInfo.TotalBytes - 1)
+                else if (fileInfo.BytesTransfered == fileInfo.TotalBytes - 1 && fileInfo.FileState == FileTransferState.STARTED)
                 {
                     fileInfo.FileState = FileTransferState.COMPLETED;
                     SaveTaskData(fileInfo);
