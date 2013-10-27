@@ -285,7 +285,6 @@ namespace windows_client.FileTransfers
                         await Task.Delay(100);
 
                         newBytes = br.ReadBytes(BlockSize);
-
                         if (newBytes.Length == 0)
                             break;
 
