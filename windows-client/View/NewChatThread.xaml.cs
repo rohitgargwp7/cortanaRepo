@@ -2522,8 +2522,6 @@ namespace windows_client.View
                                 (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ) ||
                                 (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED))))
                             {
-                                chatBubble = convMessage;
-
                                 msgMap.Add(convMessage.MessageId, convMessage);
 
                                 IFileInfo fInfo;
@@ -2539,7 +2537,9 @@ namespace windows_client.View
                             return;
                         }
 
-                        if (!convMessage.IsSent)
+                        if (convMessage.IsSent)
+                            chatBubble = convMessage;
+                        else if (chatBubble != null)
                             chatBubble.GroupMemberName = isGroupChat ? GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                     }
 
