@@ -700,6 +700,10 @@
     <Content Include="View\images\stickers\WVGA\humanoid\008_shocked.png" />
     <Content Include="View\images\stickers\WVGA\humanoid\009_hurray.png" />
     <Content Include="View\images\stickers\WVGA\humanoid\010_yawning.png" />
+    <Content Include="View\images\account_white.png" />
+    <Content Include="View\images\notifications_black.png" />
+    <Content Include="View\images\notifications_white.png" />
+    <Content Include="View\images\account_black.png" />
     <Content Include="View\images\timeline_photo.png" />
     <Content Include="View\images\timeline_status_icon.png" />
     <Content Include="View\images\troll_overlay.png" />
