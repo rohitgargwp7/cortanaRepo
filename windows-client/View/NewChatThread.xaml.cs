@@ -1756,7 +1756,7 @@ namespace windows_client.View
                         string sourceMsisdn = (string)attachmentData[1];
                         long messageId = (long)attachmentData[2];
                         string metaDataString = (string)attachmentData[3];
-                        string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + messageId;
+                        string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn.Replace(":", "_") + "/" + messageId;
 
                         ConvMessage convMessage = new ConvMessage("", mContactNumber,
                             TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
@@ -2148,7 +2148,27 @@ namespace windows_client.View
                         if (FileTransferManager.Instance.PendingTasks.Count >= FileTransferManager.MaxQueueCount)
                             MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
                         else
-                            FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString());
+                        {
+                            if (FileTransferManager.Instance.TaskMap.Keys.Contains(convMessage.MessageId.ToString()))
+                                FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString());
+                            else 
+                            {
+                                // upgrade from older builds, if user taps, they wont bepresent in the tranfer manager map
+                                if (convMessage.IsSent)
+                                {
+                                    byte[] fileBytes = null;
+
+                                    if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                                        fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
+                                    else
+                                        MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + convMessage.MessageId, out fileBytes);
+
+                                    FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
+                                }
+                                else
+                                    FileTransferManager.Instance.DownloadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType);
+                            }
+                        }
                     }
                 }
                 else

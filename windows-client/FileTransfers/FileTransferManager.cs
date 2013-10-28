@@ -236,7 +236,7 @@ namespace windows_client.FileTransfers
             }
         }
 
-        public void PopulatePreviousUploads()
+        public void PopulatePreviousTasks()
         {
             PopulateUploads();
             PopulateDownloads();
