@@ -24,12 +24,12 @@ using System.Net.NetworkInformation;
 
 namespace windows_client.View
 {
-    public partial class Privacy : PhoneApplicationPage, HikePubSub.Listener
+    public partial class Account : PhoneApplicationPage, HikePubSub.Listener
     {
         bool canGoBack = true;
         private ProgressIndicatorControl progress = null; // there should be just one instance of this.
 
-        public Privacy()
+        public Account()
         {
             InitializeComponent();
             if (Utils.isDarkTheme())
@@ -164,6 +164,7 @@ namespace windows_client.View
             App.WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
             MiscDBUtil.clearDatabase();
             PushHelper.Instance.closePushnotifications();
+            SmileyParser.Instance.CleanRecentEmoticons();
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {

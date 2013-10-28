@@ -952,7 +952,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete.
+        ///   Looks up a localized string similar to delete.
         /// </summary>
         public static string Delete_Txt_Caps {
             get {
@@ -3056,7 +3056,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Permanently delete your hike account.
+        ///   Looks up a localized string similar to permanently delete your hike account.
         /// </summary>
         public static string Privacy_DeleteAccountText {
             get {
@@ -3083,7 +3083,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Logout your account from this device.
+        ///   Looks up a localized string similar to logout your account from this device.
         /// </summary>
         public static string Privacy_UnlinkAccountText {
             get {
@@ -3731,7 +3731,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage your hike account.
+        ///   Looks up a localized string similar to manage your hike account.
         /// </summary>
         public static string Settings_AccountSettings_Txt {
             get {
@@ -3740,7 +3740,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A list of people you&apos;ve blocked.
+        ///   Looks up a localized string similar to a list of people you&apos;ve blocked.
         /// </summary>
         public static string Settings_BlocklistSettings_Txt {
             get {
@@ -3776,7 +3776,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your notifications preferences.
+        ///   Looks up a localized string similar to your notifications preferences.
         /// </summary>
         public static string Settings_NotificationSettings_Txt {
             get {
@@ -3785,7 +3785,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your account preferences.
+        ///   Looks up a localized string similar to your account preferences.
         /// </summary>
         public static string Settings_PreferencesSettings_Txt {
             get {
@@ -3848,16 +3848,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Account.
-        /// </summary>
-        public static string SettingsSubtitle_Account_Txt {
-            get {
-                return ResourceManager.GetString("SettingsSubtitle_Account_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Blocklist.
+        ///   Looks up a localized string similar to blocklist.
         /// </summary>
         public static string SettingsSubtitle_Blocklist_Txt {
             get {
@@ -3866,20 +3857,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Notifications.
+        ///   Looks up a localized string similar to notifications.
         /// </summary>
         public static string SettingsSubtitle_Notification_Txt {
             get {
                 return ResourceManager.GetString("SettingsSubtitle_Notification_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Preferences.
-        /// </summary>
-        public static string SettingsSubtitle_Preferences_Txt {
-            get {
-                return ResourceManager.GetString("SettingsSubtitle_Preferences_Txt", resourceCulture);
             }
         }
         
@@ -4343,7 +4325,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unlink.
+        ///   Looks up a localized string similar to unlink.
         /// </summary>
         public static string Unlink_Txt {
             get {

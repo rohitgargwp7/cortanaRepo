@@ -1007,7 +1007,7 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Border Name="emotHeaderRectRecent" Grid.Column="0" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRectRecent_Tap">
-                            <Image Source="images\emoticons\emo_im_01_bigsmile.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Source="images\recent_icon.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <Border Name="emotHeaderRect0" Grid.Column="1" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tap="emotHeaderRect0_Tap">
                             <Image Source="images\emoticons\emo_im_01_bigsmile.png" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
