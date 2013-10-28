@@ -2039,6 +2039,7 @@ namespace windows_client.View
             if (_uploadProgressBarIsTapped)
             {
                 _uploadProgressBarIsTapped = false;
+                llsMessages.SelectedItem = null;
                 return;
             }
 
@@ -2063,7 +2064,9 @@ namespace windows_client.View
                     GetHighResStickerForUi(convMessage);
                 }
                 else if (convMessage.FileAttachment == null || convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
-                    return;
+                {
+                    PauseTransfer(convMessage);
+                }
                 else if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.STARTED)
                 {
                     if (!convMessage.IsSent)
@@ -3434,7 +3437,7 @@ namespace windows_client.View
             FileTransfers.FileTransferManager.Instance.CancelTask(convMessage.MessageId.ToString());
         }
 
-        private void PauseUpload(ConvMessage convMessage)
+        private void PauseTransfer(ConvMessage convMessage)
         {
             if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
             {
@@ -3445,7 +3448,7 @@ namespace windows_client.View
             FileTransfers.FileTransferManager.Instance.PauseTask(convMessage.MessageId.ToString());
         }
 
-        private void ResumeUpload(ConvMessage convMessage)
+        private void ResumeTransfer(ConvMessage convMessage)
         {
             if(FileTransferManager.Instance.PendingTasks.Count >= FileTransferManager.MaxQueueCount)
             {
@@ -6564,9 +6567,9 @@ namespace windows_client.View
                     if (convMessage.FileAttachment != null)
                     {
                         if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
-                            PauseUpload(convMessage);
+                            PauseTransfer(convMessage);
                         else if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.PAUSED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
-                            ResumeUpload(convMessage);
+                            ResumeTransfer(convMessage);
                     }
                 }
                 else

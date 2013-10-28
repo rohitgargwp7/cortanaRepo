@@ -1445,7 +1445,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In Progress.
+        ///   Looks up a localized string similar to Confirm.
         /// </summary>
         public static string FileTransfer_InProgress {
             get {
@@ -1454,7 +1454,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you quit now, file tranfers will be paused. Are you sure you want to quit?.
+        ///   Looks up a localized string similar to Quitting the application would pause your currently in progress file transfers. Do you want to continue?.
         /// </summary>
         public static string FileTransfer_InProgress_Msg {
             get {
@@ -2102,7 +2102,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap here to share stickers and emoticons :).
+        ///   Looks up a localized string similar to Tap here to share our awesome emoticons :).
         /// </summary>
         public static string In_App_Tip_1 {
             get {

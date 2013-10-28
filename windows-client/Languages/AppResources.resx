@@ -1672,7 +1672,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>Message is too short to be sent</comment>
   </data>
   <data name="In_App_Tip_1" xml:space="preserve">
-    <value>Tap here to share stickers and emoticons :)</value>
+    <value>Tap here to share our awesome emoticons :)</value>
   </data>
   <data name="In_App_Tip_2" xml:space="preserve">
     <value>New stickers!</value>
@@ -1956,9 +1956,9 @@ Download it now http://hike.in and join the fun!</value>
     <value>Auto resume file uploads</value>
   </data>
   <data name="FileTransfer_InProgress" xml:space="preserve">
-    <value>In Progress</value>
+    <value>Confirm</value>
   </data>
   <data name="FileTransfer_InProgress_Msg" xml:space="preserve">
-    <value>If you quit now, file tranfers will be paused. Are you sure you want to quit?</value>
+    <value>Quitting the application would pause your currently in progress file transfers. Do you want to continue?</value>
   </data>
 </root>
