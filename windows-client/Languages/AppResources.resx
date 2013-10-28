@@ -1059,7 +1059,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>cs. delete account progress</comment>
   </data>
   <data name="Privacy_DeleteAccountText" xml:space="preserve">
-    <value>Permanently delete your hike account</value>
+    <value>permanently delete your hike account</value>
     <comment>xaml</comment>
   </data>
   <data name="Privacy_UnlinkAccountHeader" xml:space="preserve">
@@ -1071,7 +1071,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>cs. unlink account progress</comment>
   </data>
   <data name="Privacy_UnlinkAccountText" xml:space="preserve">
-    <value>Logout your account from this device</value>
+    <value>logout your account from this device</value>
     <comment>xaml</comment>
   </data>
   <data name="Privacy_UnlinkConfirmMsgBxText" xml:space="preserve">
@@ -1348,11 +1348,11 @@ Download it now http://hike.in and join the fun!</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Delete_Txt_Caps" xml:space="preserve">
-    <value>Delete</value>
+    <value>delete</value>
     <comment>Privacy page (xaml)</comment>
   </data>
   <data name="Unlink_Txt" xml:space="preserve">
-    <value>Unlink</value>
+    <value>unlink</value>
     <comment>Privacy page (xaml)</comment>
   </data>
   <data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
@@ -1574,23 +1574,20 @@ Download it now http://hike.in and join the fun!</value>
   <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
     <value>add contact</value>
   </data>
-  <data name="SettingsSubtitle_Account_Txt" xml:space="preserve">
-    <value>Account</value>
-  </data>
   <data name="SettingsSubtitle_Blocklist_Txt" xml:space="preserve">
-    <value>Blocklist</value>
+    <value>blocklist</value>
   </data>
   <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
-    <value>Notifications</value>
+    <value>notifications</value>
   </data>
   <data name="Settings_AccountSettings_Txt" xml:space="preserve">
-    <value>Manage your hike account</value>
+    <value>manage your hike account</value>
   </data>
   <data name="Settings_BlocklistSettings_Txt" xml:space="preserve">
-    <value>A list of people you've blocked</value>
+    <value>a list of people you've blocked</value>
   </data>
   <data name="Settings_NotificationSettings_Txt" xml:space="preserve">
-    <value>Your notifications preferences</value>
+    <value>your notifications preferences</value>
   </data>
   <data name="Blocklist_user_txt" xml:space="preserve">
     <value>user</value>
@@ -1653,11 +1650,8 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Preferences_Header_Txt" xml:space="preserve">
     <value>preferences</value>
   </data>
-  <data name="SettingsSubtitle_Preferences_Txt" xml:space="preserve">
-    <value>Preferences</value>
-  </data>
   <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
-    <value>Your account preferences</value>
+    <value>your account preferences</value>
   </data>
   <data name="Drag_Here_To_Delete" xml:space="preserve">
     <value>Drag here to delete</value>

@@ -28,8 +28,9 @@ namespace windows_client.Model
 
         //st = settingsScreen
 
+        public static readonly string PREFERENCES = "stPref";
         public static readonly string NOTIFICATIONS = "stNot";
-        public static readonly string PRIVACY = "stPriv";
+        public static readonly string ACCOUNT = "stPriv";
         public static readonly string BLOCKLIST = "stBlk";
 
         //in = invite Screen

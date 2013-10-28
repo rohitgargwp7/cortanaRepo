@@ -593,6 +593,7 @@ namespace windows_client
             lock (readWriteLock)
             {
                 _emoticonImagesForRecent = new List<Emoticon>();
+
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                 {
                     string fileName = RECENTS_EMOTICONS_FOLDER + "\\" + RECENTS_FILE;
@@ -612,10 +613,28 @@ namespace windows_client
                             }
                         }
                     }
-
                 }
             }
         }
+
+        public void CleanRecentEmoticons()
+        {
+            if (_emoticonImagesForRecent != null)
+                _emoticonImagesForRecent.Clear();
+
+            lock (readWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                {
+                    string fileName = RECENTS_EMOTICONS_FOLDER + "\\" + RECENTS_FILE;
+                    if (store.FileExists(fileName))
+                    {
+                        store.DeleteFile(fileName);
+                    }
+                }
+            }
+        }
+
         public void AddEmoticons(int index)
         {
             AddEmoticons(new Emoticon(index));
@@ -708,21 +727,18 @@ namespace windows_client
             EmoticonUriHash.TryGetValue(emoticon, out imgIndex);
 
             if (imgIndex < _emoticonImagesForList0.Length)
-            {
                 return _emoticonImagesForList0[imgIndex];
-            }
-            else if (imgIndex < _emoticonImagesForList0.Length + _emoticonImagesForList1.Length)
-            {
-                return _emoticonImagesForList1[imgIndex - _emoticonImagesForList0.Length];
-            }
-            else if (imgIndex < _emoticonImagesForList0.Length + _emoticonImagesForList1.Length + _emoticonImagesForList2.Length)
-            {
-                return _emoticonImagesForList2[imgIndex - _emoticonImagesForList0.Length - _emoticonImagesForList1.Length];
-            }
-            else
-            {
-                return _emoticonImagesForList3[imgIndex - _emoticonImagesForList0.Length - _emoticonImagesForList1.Length - _emoticonImagesForList2.Length];
-            }
+
+            imgIndex -= _emoticonImagesForList0.Length;
+            if (imgIndex < _emoticonImagesForList1.Length)
+                return _emoticonImagesForList1[imgIndex];
+
+            imgIndex -= _emoticonImagesForList1.Length;
+            if (imgIndex < _emoticonImagesForList2.Length)
+                return _emoticonImagesForList2[imgIndex];
+
+            imgIndex -= _emoticonImagesForList2.Length;
+            return _emoticonImagesForList3[imgIndex];
         }
 
         public BitmapImage lookUpFromCache(int emoticonIndex)
