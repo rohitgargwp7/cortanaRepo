@@ -285,9 +285,9 @@ namespace windows_client.View
         {
             if (convMessage == null)
                 return;
-            
-                convMessage.ProgressBarValue = fInfo.PercentageTransfer;
-                convMessage.ProgressText = string.Format("{0}/{1}", Utils.ConvertToStorageSizeString(fInfo.CurrentHeaderPosition - 1), Utils.ConvertToStorageSizeString(fInfo.TotalBytes));
+
+            convMessage.ProgressBarValue = fInfo.PercentageTransfer;
+            convMessage.ProgressText = string.Format("{0}/{1}", Utils.ConvertToStorageSizeString(fInfo.BytesTransfered), Utils.ConvertToStorageSizeString(fInfo.TotalBytes));
 
             if (isStateChanged)
             {
@@ -3476,7 +3476,7 @@ namespace windows_client.View
 
         private void ResumeTransfer(ConvMessage convMessage)
         {
-            if(FileTransferManager.Instance.PendingTasks.Count >= FileTransferManager.MaxQueueCount)
+            if (FileTransferManager.Instance.PendingTasks.Count >= FileTransferManager.MaxQueueCount)
             {
                 MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
                 return;
