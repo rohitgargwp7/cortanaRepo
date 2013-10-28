@@ -162,7 +162,6 @@ namespace windows_client.View
             App.appSettings[App.SHOW_STATUS_UPDATES_TUTORIAL] = true;
             App.WriteToIsoStorageSettings(App.SHOW_BASIC_TUTORIAL, true);
             App.WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
-            FileTransfer.Instance.RemoveAllTransferRequests();
             MiscDBUtil.clearDatabase();
             PushHelper.Instance.closePushnotifications();
             SmileyParser.Instance.CleanRecentEmoticons();

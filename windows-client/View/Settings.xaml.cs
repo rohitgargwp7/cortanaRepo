@@ -21,17 +21,17 @@ namespace windows_client.View
             InitializeComponent();
             if (Utils.isDarkTheme())
             {
-                accountImage.Source = new BitmapImage(new Uri("images/privacy_white.png", UriKind.Relative));
+                accountImage.Source = new BitmapImage(new Uri("images/account_white.png", UriKind.Relative));
                 blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon_white.png", UriKind.Relative));
                 preferencesImage.Source = new BitmapImage(new Uri("images/settings_icon_white.png", UriKind.Relative));
-                notificationsImage.Source = new BitmapImage(new Uri("images/notification_white.png", UriKind.Relative));
+                notificationsImage.Source = new BitmapImage(new Uri("images/notifications_white.png", UriKind.Relative));
             }
             else
             {
-                accountImage.Source = new BitmapImage(new Uri("images/privacy_black.png", UriKind.Relative));
-                blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon.png", UriKind.Relative));
-                preferencesImage.Source = new BitmapImage(new Uri("images/settings_icon_black.png", UriKind.Relative));
-                notificationsImage.Source = new BitmapImage(new Uri("images/notification_black.png", UriKind.Relative));
+                accountImage.Source = new BitmapImage(new Uri("images/account_black.png", UriKind.Relative));
+                blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon_black.png", UriKind.Relative));
+                preferencesImage.Source = new BitmapImage(new Uri("images/settings_icon_dark.png", UriKind.Relative));
+                notificationsImage.Source = new BitmapImage(new Uri("images/notifications_black.png", UriKind.Relative));
             }
         }
 

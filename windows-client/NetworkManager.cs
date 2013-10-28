@@ -148,9 +148,10 @@ namespace windows_client
                     }
                     else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
                     {
-                        FileTransfer.Instance.DownloadFile(convMessage, convMessage.Msisdn.Replace(":", "_"));
-                        convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
-                        MiscDBUtil.UpdateFileAttachmentState(convMessage.Msisdn.Replace(":", "_"), convMessage.MessageId.ToString(), Attachment.AttachmentState.STARTED);
+                        if (FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType))
+                            MiscDBUtil.UpdateFileAttachmentState(convMessage.Msisdn.Replace(":", "_"), convMessage.MessageId.ToString(), Attachment.AttachmentState.STARTED);
+                        else
+                            MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
                     }
                     if (obj == null)
                         return;

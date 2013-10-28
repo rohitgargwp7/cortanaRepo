@@ -477,8 +477,8 @@ namespace windows_client
                     }
 
 
-                    FileTransfers.FileUploader.Instance.ChangeMaxUploadBuffer(e.NetworkInterface.InterfaceSubtype);
-                    FileTransfers.FileUploader.Instance.StartUpload();
+                    FileTransfers.FileTransferManager.Instance.ChangeMaxUploadBuffer(e.NetworkInterface.InterfaceSubtype);
+                    FileTransfers.FileTransferManager.Instance.StartTask();
                 }
                 else
                 {
@@ -933,9 +933,6 @@ namespace windows_client
             #endregion
             #region Post App Locale
             PostLocaleInfo();
-            #endregion
-            #region FILE TRANSFER
-            FileTransfer.Instance.ProcessOldTransferRequests();
             #endregion
             #region HIKE BOT
             WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
