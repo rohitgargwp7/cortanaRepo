@@ -2089,7 +2089,8 @@ namespace windows_client.View
                 }
                 else if (convMessage.FileAttachment == null || convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
                 {
-                    PauseTransfer(convMessage);
+                    if (convMessage.FileAttachment != null)
+                        PauseTransfer(convMessage);
                 }
                 else if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.STARTED)
                 {
