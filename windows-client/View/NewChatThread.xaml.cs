@@ -1176,11 +1176,10 @@ namespace windows_client.View
                 chatThreadMainPage.ApplicationBar = appBar;
                 return;
             }
+
             HikeToolTip tip;
 
-            App.ViewModel.DictInAppTip.TryGetValue(1, out tip);
-
-            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+            if (App.ViewModel.DictInAppTip != null && App.ViewModel.DictInAppTip.TryGetValue(1, out tip) && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
             {
                 App.ViewModel.DisplayTip(LayoutRoot, 1);
                 chatThreadMainPage.ApplicationBar = appBar;
@@ -1194,7 +1193,6 @@ namespace windows_client.View
                 {
                     if (App.ViewModel.DictInAppTip != null)
                     {
-
                         if (chatThreadCount == 0)
                         {
                             App.ViewModel.DictInAppTip.TryGetValue(0, out tip);
