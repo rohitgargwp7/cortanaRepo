@@ -1955,4 +1955,10 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Auto_Upload_Settings_Header" xml:space="preserve">
     <value>Auto resume file uploads</value>
   </data>
+  <data name="FileTransfer_InProgress" xml:space="preserve">
+    <value>In Progress</value>
+  </data>
+  <data name="FileTransfer_InProgress_Msg" xml:space="preserve">
+    <value>If you quit now, file tranfers will be paused. Are you sure you want to quit?</value>
+  </data>
 </root>

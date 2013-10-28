@@ -1936,6 +1936,17 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
+            if (FileTransfers.FileTransferManager.Instance.IsBusy())
+            {
+                var result = MessageBox.Show(AppResources.FileTransfer_InProgress_Msg, AppResources.FileTransfer_InProgress, MessageBoxButton.OKCancel);
+
+                if (result != MessageBoxResult.OK)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
             NetworkManager.turnOffNetworkManager = true;
             if (App.IS_VIEWMODEL_LOADED)
             {

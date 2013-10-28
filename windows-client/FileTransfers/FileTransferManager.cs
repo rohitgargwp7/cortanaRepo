@@ -173,6 +173,17 @@ namespace windows_client.FileTransfers
                 StartTask();
         }
 
+        public bool IsBusy()
+        {
+            foreach (var key in TaskMap.Keys)
+            {
+                if (TaskMap[key].FileState == FileTransferState.STARTED)
+                    return true;
+            }
+
+            return false;
+        }
+
         void FailTask(IFileInfo fInfo)
         {
             fInfo.FileState = FileTransferState.FAILED;

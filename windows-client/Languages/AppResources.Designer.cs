@@ -1445,6 +1445,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In Progress.
+        /// </summary>
+        public static string FileTransfer_InProgress {
+            get {
+                return ResourceManager.GetString("FileTransfer_InProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you quit now, file tranfers will be paused. Are you sure you want to quit?.
+        /// </summary>
+        public static string FileTransfer_InProgress_Msg {
+            get {
+                return ResourceManager.GetString("FileTransfer_InProgress_Msg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to forward.
         /// </summary>
         public static string Forward_Txt {
