@@ -934,6 +934,9 @@ namespace windows_client
             #region Post App Locale
             PostLocaleInfo();
             #endregion
+            #region HIKE BOT
+            WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
+            #endregion
         }
 
         public static void createDatabaseAsync()

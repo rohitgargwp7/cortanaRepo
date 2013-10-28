@@ -93,16 +93,23 @@ namespace windows_client.DbUtils
             }
             else
             {
-                ContactInfo contactInfo = null;
-                if (App.ViewModel.ContactsCache.ContainsKey(convMessage.Msisdn))
-                    contactInfo = App.ViewModel.ContactsCache[convMessage.Msisdn];
-                else
-                    contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
                 byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(convMessage.Msisdn);
-                obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
-                    contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
-                if (App.ViewModel.Isfavourite(convMessage.Msisdn))
-                    obj.IsFav = true;
+                if (Utils.IsHikeBotMsg(convMessage.Msisdn))
+                {
+                    obj = new ConversationListObject(convMessage.Msisdn, Utils.GetHikeBotName(convMessage.Msisdn), convMessage.Message, true, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
+                }
+                else
+                {
+                    ContactInfo contactInfo = null;
+                    if (App.ViewModel.ContactsCache.ContainsKey(convMessage.Msisdn))
+                        contactInfo = App.ViewModel.ContactsCache[convMessage.Msisdn];
+                    else
+                        contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
+                    obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
+                        contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
+                    if (App.ViewModel.Isfavourite(convMessage.Msisdn))
+                        obj.IsFav = true;
+                }
             }
 
             /*If ABCD join grp chat convObj should show D joined grp chat as D is last in sorted order*/
@@ -494,7 +501,7 @@ namespace windows_client.DbUtils
             {
                 if (string.IsNullOrWhiteSpace(item.Msisdn))
                     return false;
-                else if (item.Msisdn == "+hike+")
+                else if (Utils.IsHikeBotMsg(item.Msisdn))
                     return true;
                 else if (item.Msisdn.Contains(":"))
                 {

@@ -13,6 +13,7 @@ using windows_client.ViewModel;
 using System.Windows.Media;
 using System.Collections;
 using System.Windows.Controls.Primitives;
+using windows_client.Languages;
 
 namespace windows_client.Controls
 {
@@ -71,6 +72,11 @@ namespace windows_client.Controls
         {
             llsStickerCategory.Visibility = Visibility.Collapsed;
             stLoading.Visibility = Visibility.Collapsed;
+            if (_category == StickerHelper.CATEGORY_RECENT)
+                txtNoSticker.Text = AppResources.RecentSticker_Default_Txt;
+            else
+                txtNoSticker.Text = AppResources.No_Stickers_Downloaded_Txt;
+
             stNoStickers.Visibility = Visibility.Visible;
             stRetry.Visibility = Visibility.Collapsed;
         }
