@@ -14,6 +14,7 @@ using System.Net;
 using System.Diagnostics;
 using System.Windows;
 using windows_client.Languages;
+using System.Threading;
 
 namespace windows_client.FileTransfers
 {
@@ -28,7 +29,7 @@ namespace windows_client.FileTransfers
         public static int MaxBlockSize;
 
         int BlockSize = 1024;
-        int AttemptFactor = 1;
+        int ChunkFactor = 1;
         
         public int BytesTransfered
         {
@@ -190,6 +191,46 @@ namespace windows_client.FileTransfers
             }
         }
 
+        bool retry = true;
+        short retryAttempts = 0;
+        short MAX_RETRY_ATTEMPTS = 5;
+        int reconnectTime = 0;
+        int MAX_RECONNECT_TIME = 30; // in seconds
+
+        bool ShouldRetry()
+        {
+            if (retry && retryAttempts < MAX_RETRY_ATTEMPTS)
+            {
+                // make first attempt within first 5 seconds
+                if (reconnectTime == 0)
+                {
+                    Random random = new Random();
+                    reconnectTime = random.Next(5) + 1;
+                }
+                else
+                {
+                    reconnectTime *= 2;
+                }
+
+                reconnectTime = reconnectTime > MAX_RECONNECT_TIME ? MAX_RECONNECT_TIME : reconnectTime;
+                
+                try
+                {
+                    Thread.Sleep(reconnectTime);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e);
+                }
+
+                retryAttempts++;
+                
+                return true;
+            }
+            else
+                return false;
+        }
+
         public void Start(object obj)
         {
             var req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + FileName)) as HttpWebRequest;
@@ -248,29 +289,6 @@ namespace windows_client.FileTransfers
             }
         }
 
-        public void WriteChunkToIsolatedStorage(byte[] bytes, int position)
-        {
-            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
-            string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
-            if (bytes != null)
-            {
-                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    if (!myIsolatedStorage.DirectoryExists(fileDirectory))
-                        myIsolatedStorage.CreateDirectory(fileDirectory);
-
-                    using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(filePath, FileMode.OpenOrCreate, myIsolatedStorage))
-                    {
-                        using (BinaryWriter writer = new BinaryWriter(fileStream))
-                        {
-                            writer.Seek(position, SeekOrigin.Begin);
-                            writer.Write(bytes, 0, bytes.Length);
-                        }
-                    }
-                }
-            }
-        }
-
         async void ProcessDownloadGetResponse(Stream responseStream, HttpStatusCode responseCode)
         {
             if (FileState == FileTransferState.CANCELED)
@@ -293,16 +311,16 @@ namespace windows_client.FileTransfers
                         WriteChunkToIsolatedStorage(newBytes, CurrentHeaderPosition);
                         CurrentHeaderPosition += newBytes.Length;
 
-                        var newSize = (AttemptFactor + AttemptFactor) * DefaultBlockSize;
+                        var newSize = (ChunkFactor + ChunkFactor) * DefaultBlockSize;
 
                         if (newSize <= MaxBlockSize)
                         {
-                            AttemptFactor += AttemptFactor;
-                            BlockSize = AttemptFactor * DefaultBlockSize;
+                            ChunkFactor += ChunkFactor;
+                            BlockSize = ChunkFactor * DefaultBlockSize;
                         }
                         else
                         {
-                            AttemptFactor /= 2;
+                            ChunkFactor /= 2;
                             BlockSize = MaxBlockSize;
                         }
 
@@ -323,11 +341,17 @@ namespace windows_client.FileTransfers
                     }
                     else if (newBytes.Length == 0)
                     {
-                        // retry here
-                        FileState = FileTransferState.PAUSED;
+                        if (ShouldRetry())
+                        {
+                            Start(null);
+                        }
+                        else
+                        {
+                            FileState = FileTransferState.PAUSED;
 
-                        if (StatusChanged != null)
-                            StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+                            if (StatusChanged != null)
+                                StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+                        }
                     }
                 }
             }
@@ -345,14 +369,41 @@ namespace windows_client.FileTransfers
             }
             else
             {
-                //retry
-                if (App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
-                    FileState = FileTransferState.FAILED;
+                if (ShouldRetry())
+                {
+                    Start(null);
+                }
                 else
-                    FileState = FileTransferState.PAUSED;
+                {
+                    FileState = FileTransferState.FAILED;
 
-                if (StatusChanged != null)
-                    StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+                    if (StatusChanged != null)
+                        StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+                }
+            }
+        }
+
+        public void WriteChunkToIsolatedStorage(byte[] bytes, int position)
+        {
+            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
+            string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
+
+            if (bytes != null)
+            {
+                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!myIsolatedStorage.DirectoryExists(fileDirectory))
+                        myIsolatedStorage.CreateDirectory(fileDirectory);
+
+                    using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(filePath, FileMode.OpenOrCreate, myIsolatedStorage))
+                    {
+                        using (BinaryWriter writer = new BinaryWriter(fileStream))
+                        {
+                            writer.Seek(position, SeekOrigin.Begin);
+                            writer.Write(bytes, 0, bytes.Length);
+                        }
+                    }
+                }
             }
         }
 

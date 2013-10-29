@@ -12,6 +12,7 @@ using windows_client.utils;
 using System.IO.IsolatedStorage;
 using System.Net;
 using System.Diagnostics;
+using System.Threading;
 
 namespace windows_client.FileTransfers
 {
@@ -28,7 +29,7 @@ namespace windows_client.FileTransfers
         string _boundary = "----------V2ymHFg03ehbqgZCaKO6jy";
 
         int BlockSize = 1024;
-        int AttemptFactor = 1;
+        int ChunkFactor = 1;
         
         public int BytesTransfered
         {
@@ -219,6 +220,46 @@ namespace windows_client.FileTransfers
                     System.Diagnostics.Debug.WriteLine("FileUploader :: Delete Upload From IS, Exception : " + ex.StackTrace);
                 }
             }
+        }
+
+        bool retry = true;
+        short retryAttempts = 0;
+        short MAX_RETRY_ATTEMPTS = 5;
+        int reconnectTime = 0;
+        int MAX_RECONNECT_TIME = 30; // in seconds
+
+        bool ShouldRetry()
+        {
+            if (retry && retryAttempts < MAX_RETRY_ATTEMPTS)
+            {
+                // make first attempt within first 5 seconds
+                if (reconnectTime == 0)
+                {
+                    Random random = new Random();
+                    reconnectTime = random.Next(5) + 1;
+                }
+                else
+                {
+                    reconnectTime *= 2;
+                }
+
+                reconnectTime = reconnectTime > MAX_RECONNECT_TIME ? MAX_RECONNECT_TIME : reconnectTime;
+
+                try
+                {
+                    Thread.Sleep(reconnectTime);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e);
+                }
+
+                retryAttempts++;
+
+                return true;
+            }
+            else
+                return false;
         }
 
         public void Start(object obj)
@@ -497,22 +538,22 @@ namespace windows_client.FileTransfers
 
                     if (FileState == FileTransferState.STARTED)
                     {
-                        var newSize = (AttemptFactor + AttemptFactor) * DefaultBlockSize;
+                        var newSize = (ChunkFactor + ChunkFactor) * DefaultBlockSize;
 
                         if (newSize <= MaxBlockSize)
                         {
-                            AttemptFactor += AttemptFactor;
-                            BlockSize = AttemptFactor * DefaultBlockSize;
+                            ChunkFactor += ChunkFactor;
+                            BlockSize = ChunkFactor * DefaultBlockSize;
                         }
                         else
                         {
-                            AttemptFactor /= 2;
+                            ChunkFactor /= 2;
                             BlockSize = MaxBlockSize;
                         }
                     }
                     else
                     {
-                        AttemptFactor = 1;
+                        ChunkFactor = 1;
                         BlockSize = DefaultBlockSize;
                     }
 
@@ -532,11 +573,17 @@ namespace windows_client.FileTransfers
             }
             else
             {
-                //retry here
-                FileState = FileTransferState.PAUSED;
+                if (ShouldRetry())
+                {
+                    Start(null);
+                }
+                else
+                {
+                    FileState = FileTransferState.PAUSED;
 
-                if (StatusChanged != null)
-                    StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+                    if (StatusChanged != null)
+                        StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+                }
             }
         }
 
