@@ -12,6 +12,8 @@ using windows_client.utils;
 using System.IO.IsolatedStorage;
 using System.Net;
 using System.Diagnostics;
+using System.Windows;
+using windows_client.Languages;
 
 namespace windows_client.FileTransfers
 {
@@ -321,6 +323,7 @@ namespace windows_client.FileTransfers
                     }
                     else if (newBytes.Length == 0)
                     {
+                        // retry here
                         FileState = FileTransferState.PAUSED;
 
                         if (StatusChanged != null)
@@ -332,10 +335,17 @@ namespace windows_client.FileTransfers
             {
                 FileState = FileTransferState.FAILED;
 
-                //Deployment.Current.Dispatcher.BeginInvoke(() =>
-                //{
-                //    MessageBox.Show(AppResources.File_Not_Exist_Message, AppResources.File_Not_Exist_Caption, MessageBoxButton.OK);
-                //});
+                if (StatusChanged != null)
+                    StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+            }
+            else if (responseCode == HttpStatusCode.NotFound)
+            {
+                FileState = FileTransferState.FAILED;
+
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show(AppResources.File_Not_Exist_Message, AppResources.File_Not_Exist_Caption, MessageBoxButton.OK);
+                });
 
                 if (StatusChanged != null)
                     StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));

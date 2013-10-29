@@ -51,7 +51,7 @@
                 <toolkit:ToggleSwitch  Margin="0 0 0 -15" Grid.Row="4" x:Name="locationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_LocationToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="locationToggle_Checked" Unchecked="locationToggle_Unchecked"/>
                 <toolkit:ToggleSwitch  Margin="0 0 0 -15" Grid.Row="5" x:Name="enterToSendToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
-                                          Header="{Binding Path= LocalizedResources.Settings_LocationToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="enterToSendToggle_Checked" Unchecked="enterToSendToggle_Unchecked"/>
+                                          Header="{Binding Path= LocalizedResources.Settings_EnterToSendToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="enterToSendToggle_Checked" Unchecked="enterToSendToggle_Unchecked"/>
                 <Button Grid.Row="6" Content="{Binding Path= LocalizedResources.Settings_LockScreenNotifications, Source={StaticResource LocalizedStrings}}" Tap="btnGoToLockSettings_Click" />
             </Grid>
         </ScrollViewer>

@@ -532,7 +532,7 @@ namespace windows_client.FileTransfers
             }
             else
             {
-                //app suspension and disconnected case
+                //retry here
                 FileState = FileTransferState.PAUSED;
 
                 if (StatusChanged != null)

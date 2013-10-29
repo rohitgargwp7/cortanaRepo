@@ -164,7 +164,7 @@ namespace windows_client.View
             App.appSettings.Remove(App.AUTO_DOWNLOAD_SETTING);
             App.appSettings.Save();
 
-            FileTransfers.FileTransferManager.Instance.StartTask();
+            FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
         }
 
         private void autoDownloadToggle_Unchecked(object sender, RoutedEventArgs e)
@@ -187,7 +187,7 @@ namespace windows_client.View
             App.appSettings.Remove(App.AUTO_UPLOAD_SETTING);
             App.appSettings.Save();
 
-            FileTransfers.FileTransferManager.Instance.StartTask();
+            FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
         }
 
         private void autoUploadToggle_Unchecked(object sender, RoutedEventArgs e)

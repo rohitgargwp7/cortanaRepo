@@ -430,6 +430,7 @@ namespace windows_client.DbUtils
                             }
                             else if (fInfo.FileState == FileTransferState.FAILED)
                             {
+                                FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
                                 convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
                                 NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
                             }
