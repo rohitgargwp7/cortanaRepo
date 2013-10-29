@@ -350,10 +350,12 @@ namespace windows_client.FileTransfers
             if (e.IsStateChanged)
                 App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, e.FileInfo);
 
+            if (e.FileInfo.FileState != FileTransferState.STARTED && e.FileInfo.FileState != FileTransferState.COMPLETED)
+                TaskMap.Remove(e.FileInfo.MessageId);
+
             if (e.FileInfo.FileState == FileTransferState.PAUSED && !PendingTasks.Contains(e.FileInfo))
             {
                 PendingTasks.Enqueue(e.FileInfo);
-
                 StartTask();
             }
         }
@@ -493,7 +495,8 @@ namespace windows_client.FileTransfers
 
         void SaveTaskData(IFileInfo fileInfo)
         {
-            fileInfo.Save();
+            if (App.MSISDN != null)
+                fileInfo.Save();
         }
 
         public event EventHandler<FileTransferSatatusChangedEventArgs> UpdateTaskStatusOnUI;

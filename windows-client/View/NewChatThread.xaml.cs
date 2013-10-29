@@ -5985,6 +5985,22 @@ namespace windows_client.View
             App.ViewModel.HideToolTip(LayoutRoot, 1);
             App.ViewModel.HideToolTip(LayoutRoot, 2);
 
+            if (App.ViewModel.DictInAppTip != null)
+            {
+                HikeToolTip toolTip;
+                App.ViewModel.DictInAppTip.TryGetValue(2, out toolTip);
+                if (toolTip != null)
+                {
+                    toolTip.IsCurrentlyShown = false;
+
+                    int index = 2;
+                    byte currentShown;
+                    App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
+                    currentShown &= (byte)~(1 << index);
+                    App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
+                }
+            }
+
             attachmentMenu.Visibility = Visibility.Collapsed;
             emoticonPanel.Visibility = Visibility.Collapsed;
 

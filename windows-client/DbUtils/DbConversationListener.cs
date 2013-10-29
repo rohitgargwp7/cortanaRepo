@@ -337,7 +337,7 @@ namespace windows_client.DbUtils
 
                         convMessage.FileAttachment = attachment;
 
-                        if (App.newChatThreadPage != null && convMessage.Msisdn != App.newChatThreadPage.mContactNumber)
+                        if (App.newChatThreadPage == null || convMessage.Msisdn != App.newChatThreadPage.mContactNumber)
                         {
                             Attachment.AttachmentState state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
 

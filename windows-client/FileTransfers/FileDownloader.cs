@@ -335,13 +335,6 @@ namespace windows_client.FileTransfers
             {
                 FileState = FileTransferState.FAILED;
 
-                if (StatusChanged != null)
-                    StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
-            }
-            else if (responseCode == HttpStatusCode.NotFound)
-            {
-                FileState = FileTransferState.FAILED;
-
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     MessageBox.Show(AppResources.File_Not_Exist_Message, AppResources.File_Not_Exist_Caption, MessageBoxButton.OK);
@@ -352,6 +345,7 @@ namespace windows_client.FileTransfers
             }
             else
             {
+                //retry
                 if (App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
                     FileState = FileTransferState.FAILED;
                 else
