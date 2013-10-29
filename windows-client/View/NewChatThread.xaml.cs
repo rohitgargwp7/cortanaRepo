@@ -1713,19 +1713,11 @@ namespace windows_client.View
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 NetworkManager.turnOffNetworkManager = false;
-                //if (listDownload.Count > 0)
-                //{
-                //    BackgroundWorker bw = new BackgroundWorker();
-                //    bw.DoWork += (s, e) =>
-                //        {
-                //            foreach (ConvMessage conv in listDownload)
-                //            {
-                //                FileTransfers.FileTransferManager.Instance.AddFileToUploadDownloadTask(conv.Msisdn, conv.MessageId.ToString(), conv.FileAttachment.FileKey, conv.FileAttachment.ContentType, null, true);
-                //            }
-                //            listDownload.Clear();
-                //        };
-                //    bw.RunWorkerAsync();
-                //}
+                if (_isHikeBot && mContactNumber == HikeConstants.FTUE_HIKEBOT_MSISDN)
+                {
+                    if (ocMessages.Count > 0)
+                        llsMessages.ScrollTo(ocMessages[0]);
+                }
             });
         }
 
