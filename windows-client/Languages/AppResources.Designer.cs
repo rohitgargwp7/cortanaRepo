@@ -3758,6 +3758,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter sends a message.
+        /// </summary>
+        public static string Settings_LocationToggleSwiSettings_EnterToSendToggleSwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_LocationToggleSwiSettings_EnterToSendToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use location service.
         /// </summary>
         public static string Settings_LocationToggleSwitchHeader {

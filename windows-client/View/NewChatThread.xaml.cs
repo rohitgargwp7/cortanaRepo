@@ -40,6 +40,7 @@ using windows_client.ViewModel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using windows_client.FileTransfers;
+using System.Windows.Input;
 
 namespace windows_client.View
 {
@@ -2076,7 +2077,7 @@ namespace windows_client.View
 
             if (!isContextMenuTapped)
             {
-                if (!isGroupChat && convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                if (!isGroupChat && !_isHikeBot && convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
                     PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                     NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
@@ -3140,6 +3141,11 @@ namespace windows_client.View
 
         private void sendMsgBtn_Click(object sender, EventArgs e)
         {
+            SendMsg();
+        }
+
+        private void SendMsg()
+        {
             if (mUserIsBlocked)
                 return;
 
@@ -3168,7 +3174,6 @@ namespace windows_client.View
             sendMsg(convMessage, false);
 
             spSmsCharCounter.Visibility = Visibility.Collapsed;
-
         }
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
@@ -6682,6 +6687,13 @@ namespace windows_client.View
             }
         }
 
+        private void MsgCharTapped(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (!App.appSettings.Contains(App.ENTER_TO_SEND) && (e.Key == Key.Enter || e.PlatformKeyCode == 0x0A))
+            {
+                SendMsg();
+            }
+        }
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector

@@ -1961,4 +1961,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="RecentEmoticons_DefaultText" xml:space="preserve">
     <value>Emoticons that you recently used, would show up here.</value>
   </data>
+  <data name="Settings_LocationToggleSwiSettings_EnterToSendToggleSwitchHeader" xml:space="preserve">
+    <value>Enter sends a message</value>
+  </data>
 </root>
