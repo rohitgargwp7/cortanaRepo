@@ -133,7 +133,7 @@ namespace windows_client.FileTransfers
                 try
                 {
                     string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + MessageId;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
                             store.CreateDirectory(FILE_TRANSFER_DIRECTORY_NAME);
@@ -171,7 +171,7 @@ namespace windows_client.FileTransfers
                 {
                     string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + MessageId;
 
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
                             return;

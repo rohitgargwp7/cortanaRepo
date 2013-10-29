@@ -5991,9 +5991,15 @@ namespace windows_client.View
                 App.ViewModel.DictInAppTip.TryGetValue(2, out toolTip);
                 if (toolTip != null)
                 {
+                    toolTip.IsShown = true;
                     toolTip.IsCurrentlyShown = false;
 
                     int index = 2;
+                    byte shownByte;
+                    App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out shownByte);
+                    shownByte &= (byte)~(1 << index);
+                    App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, shownByte);
+
                     byte currentShown;
                     App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
                     currentShown &= (byte)~(1 << index);

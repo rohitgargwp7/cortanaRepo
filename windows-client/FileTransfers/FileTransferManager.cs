@@ -73,7 +73,7 @@ namespace windows_client.FileTransfers
 
             string fileName = null;
 
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
             {
                 if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
                     return false;
@@ -122,7 +122,7 @@ namespace windows_client.FileTransfers
 
             string fileName = null;
 
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
             {
                 if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
                     return false;
@@ -378,7 +378,7 @@ namespace windows_client.FileTransfers
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
                             return;
@@ -420,7 +420,7 @@ namespace windows_client.FileTransfers
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
                             return;
@@ -490,6 +490,27 @@ namespace windows_client.FileTransfers
                 fInfo.FileState = FileTransferState.CANCELED;
                 fInfo.Delete();
                 TaskMap.Remove(id);
+            }
+            else
+            {
+                // remove file from both upload and download directory if file was not transfering when it was deleted.
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                {
+                    if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
+                        return;
+
+                    if (store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME))
+                    {
+                        if (store.FileExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + id))
+                            store.DeleteFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + id);
+                    }
+
+                    if (store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME))
+                    {
+                        if (store.FileExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + id))
+                            store.DeleteFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + id);
+                    }
+                }
             }
         }
 

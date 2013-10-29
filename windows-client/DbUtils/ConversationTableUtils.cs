@@ -277,7 +277,7 @@ namespace windows_client.DbUtils
             }
             lock (readWriteLock)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                 {
                     string FileName = CONVERSATIONS_DIRECTORY + "\\" + "_Convs";
                     try
@@ -361,7 +361,7 @@ namespace windows_client.DbUtils
             Dictionary<string, ConversationListObject> convMap = App.ViewModel.ConvMap;
             lock (readWriteLock)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                 {
                     string FileName = CONVERSATIONS_DIRECTORY + "\\" + "_Convs";
                     using (var file = store.OpenFile(FileName, FileMode.Create, FileAccess.Write))
@@ -399,7 +399,7 @@ namespace windows_client.DbUtils
             lock (readWriteLock)
             {
                 string FileName = CONVERSATIONS_DIRECTORY + "\\" + msisdn;
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                 {
                     using (var file = store.OpenFile(FileName, FileMode.Create, FileAccess.Write))
                     {
@@ -575,7 +575,7 @@ namespace windows_client.DbUtils
         {
             if (cObjList == null)
                 return;
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
             {
                 for (int i = 0; i < cObjList.Count; i++)
                 {

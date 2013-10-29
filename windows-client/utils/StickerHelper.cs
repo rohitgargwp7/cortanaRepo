@@ -207,7 +207,7 @@ namespace windows_client.utils
 
             try
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                 {
                     string fileName = StickerCategory.STICKERS_DIR + "\\" + (isHighres ? StickerCategory.HIGH_RESOLUTION_DIR : StickerCategory.LOW_RESOLUTION_DIR) + "\\" + category + "\\" + stickerId;
                     if (store.FileExists(fileName))
@@ -348,7 +348,7 @@ namespace windows_client.utils
         {
             lock (readWriteLock)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                 {
                     string fileName = StickerCategory.STICKERS_DIR + "\\" + RECENTS_FILE;
                     if (store.FileExists(fileName))
@@ -394,7 +394,7 @@ namespace windows_client.utils
             {
                 await Task.Delay(1);
 
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                 {
                     if (!store.DirectoryExists(StickerCategory.STICKERS_DIR))
                     {

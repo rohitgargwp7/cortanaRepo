@@ -192,7 +192,7 @@ namespace windows_client.DbUtils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (!store.DirectoryExists(PROFILE_PICS))
                             store.CreateDirectory(PROFILE_PICS);
@@ -300,7 +300,7 @@ namespace windows_client.DbUtils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (isUpdated && store.FileExists(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX))
                         {
@@ -398,7 +398,7 @@ namespace windows_client.DbUtils
             msisdn = msisdn.Replace(":", "_");
             string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
             string fileName = fileDirectory + "/" + messageId;
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
             {
                 if (!store.DirectoryExists(fileDirectory))
                 {
