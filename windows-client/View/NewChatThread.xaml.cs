@@ -2068,7 +2068,7 @@ namespace windows_client.View
 
             if (!isContextMenuTapped)
             {
-                if (!isGroupChat && convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                if (!isGroupChat && !_isHikeBot && convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
                     PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                     NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
@@ -2141,7 +2141,7 @@ namespace windows_client.View
                         {
                             if (FileTransferManager.Instance.TaskMap.Keys.Contains(convMessage.MessageId.ToString()))
                                 FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString());
-                            else 
+                            else
                             {
                                 // upgrade from older builds, if user taps, they wont bepresent in the tranfer manager map
                                 if (convMessage.IsSent)
@@ -4943,7 +4943,7 @@ namespace windows_client.View
         //TODO - MG try to use sametap event for header n statusBubble
         private void statusBubble_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            if (!isContextMenuTapped && !isGroupChat && _isHikeBot)
+            if (!isContextMenuTapped && !isGroupChat && !_isHikeBot)
             {
                 PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
