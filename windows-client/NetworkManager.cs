@@ -637,7 +637,7 @@ namespace windows_client
 
                                                         this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
                                                     }
-                                                   
+
                                                     if (thrAreFavs)
                                                         this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV, null);
                                                 });
@@ -1327,7 +1327,7 @@ namespace windows_client
                             {
                                 int.TryParse(moodId_String, out moodId);
                                 moodId = MoodsInitialiser.GetRecieverMoodId(moodId);
-                                if (moodId > 0)
+                                if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null)
                                     tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
                             }
                         }
