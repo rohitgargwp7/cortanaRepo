@@ -3,7 +3,7 @@ using System.IO;
 
 namespace windows_client.FileTransfers
 {
-    public interface IFileInfo
+    public abstract class IFileInfo
     {
         int BytesTransfered { get; }
         double PercentageTransfer { get; }
@@ -22,5 +22,7 @@ namespace windows_client.FileTransfers
         void Save();
         void Delete();
         void Start(object obj);
+
+        bool ShouldRetry();
     }
 }
