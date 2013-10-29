@@ -8,7 +8,7 @@ namespace windows_client.FileTransfers
         int BytesTransfered { get; }
         double PercentageTransfer { get; }
         int TotalBytes { get; set; }
-        string Id { get; set; }
+        string MessageId { get; set; }
         int CurrentHeaderPosition { get; set; }
         string ContentType { get; set; }
         string FileName { get; set; }

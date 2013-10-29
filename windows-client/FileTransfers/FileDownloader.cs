@@ -43,7 +43,7 @@ namespace windows_client.FileTransfers
             }
         }
         public int TotalBytes { get; set; }
-        public string Id { get; set; }
+        public string MessageId { get; set; }
         public int CurrentHeaderPosition { get; set; }
         public string ContentType { get; set; }
         public string FileName { get; set; }
@@ -54,10 +54,10 @@ namespace windows_client.FileTransfers
         {
         }
 
-        public FileDownloader(string msisdn, string key, string fileName, string contentType)
+        public FileDownloader(string msisdn, string messageId, string fileName, string contentType)
         {
             Msisdn = msisdn;
-            Id = key;
+            MessageId = messageId;
             FileName = fileName;
             ContentType = contentType;
             FileState = FileTransferState.NOT_STARTED;
@@ -70,10 +70,10 @@ namespace windows_client.FileTransfers
             else
                 writer.WriteStringBytes(Msisdn);
 
-            if (Id == null)
+            if (MessageId == null)
                 writer.WriteStringBytes("*@N@*");
             else
-                writer.WriteStringBytes(Id);
+                writer.WriteStringBytes(MessageId);
 
             writer.Write(CurrentHeaderPosition);
 
@@ -100,9 +100,9 @@ namespace windows_client.FileTransfers
                 Msisdn = null;
 
             count = reader.ReadInt32();
-            Id = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-            if (Id == "*@N@*")
-                Id = null;
+            MessageId = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (MessageId == "*@N@*")
+                MessageId = null;
 
             CurrentHeaderPosition = reader.ReadInt32();
 
@@ -118,7 +118,7 @@ namespace windows_client.FileTransfers
 
             FileState = (FileTransferState)reader.ReadInt32();
 
-            if (App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileState == FileTransferState.STARTED)
+            if (App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING) && FileState == FileTransferState.STARTED)
                 FileState = FileTransferState.PAUSED;
 
             TotalBytes = reader.ReadInt32();
@@ -130,7 +130,7 @@ namespace windows_client.FileTransfers
             {
                 try
                 {
-                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + Id;
+                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + MessageId;
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
                         if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
@@ -167,7 +167,7 @@ namespace windows_client.FileTransfers
             {
                 try
                 {
-                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + Id;
+                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + MessageId;
 
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
@@ -248,7 +248,7 @@ namespace windows_client.FileTransfers
 
         public void WriteChunkToIsolatedStorage(byte[] bytes, int position)
         {
-            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + Id;
+            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
             string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
             if (bytes != null)
             {

@@ -49,6 +49,7 @@ namespace windows_client.FileTransfers
             get;
             set;
         }
+        public string MessageId { get; set; }
         public string Id { get; set; }
         public int CurrentHeaderPosition { get; set; }
         public string ContentType { get; set; }
@@ -62,10 +63,11 @@ namespace windows_client.FileTransfers
         {
         }
 
-        public FileUploader(string msisdn, string key, int size, string fileName, string contentType)
+        public FileUploader(string msisdn, string messageId, int size, string fileName, string contentType)
         {
+            Id = Guid.NewGuid().ToString();
             Msisdn = msisdn;
-            Id = key;
+            MessageId = messageId;
             TotalBytes = size;
             FileName = fileName;
             ContentType = contentType;
@@ -74,15 +76,20 @@ namespace windows_client.FileTransfers
 
         public void Write(BinaryWriter writer)
         {
+            if (Id == null)
+                writer.WriteStringBytes("*@N@*");
+            else
+                writer.WriteStringBytes(Id);
+
             if (Msisdn == null)
                 writer.WriteStringBytes("*@N@*");
             else
                 writer.WriteStringBytes(Msisdn);
 
-            if (Id == null)
+            if (MessageId == null)
                 writer.WriteStringBytes("*@N@*");
             else
-                writer.WriteStringBytes(Id);
+                writer.WriteStringBytes(MessageId);
 
             writer.Write(CurrentHeaderPosition);
 
@@ -109,14 +116,19 @@ namespace windows_client.FileTransfers
         public void Read(BinaryReader reader)
         {
             int count = reader.ReadInt32();
+            Id = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (Id == "*@N@*")
+                Id = null; 
+            
+            count = reader.ReadInt32();
             Msisdn = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
             if (Msisdn == "*@N@*")
                 Msisdn = null;
 
             count = reader.ReadInt32();
-            Id = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-            if (Id == "*@N@*")
-                Id = null;
+            MessageId = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (MessageId == "*@N@*")
+                MessageId = null;
 
             CurrentHeaderPosition = reader.ReadInt32();
 
@@ -151,7 +163,7 @@ namespace windows_client.FileTransfers
             {
                 try
                 {
-                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + Id;
+                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + MessageId;
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
                         if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
@@ -188,7 +200,7 @@ namespace windows_client.FileTransfers
             {
                 try
                 {
-                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + Id;
+                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + MessageId;
 
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
@@ -530,7 +542,7 @@ namespace windows_client.FileTransfers
 
         public byte[] ReadChunkFromIsolatedStorage(int position, int size)
         {
-            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + Id;
+            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
             string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
             byte[] bytes = new byte[size];
 

@@ -273,7 +273,7 @@ namespace windows_client.View
         void FileTransferStatusUpdated(object sender, FileTransferSatatusChangedEventArgs e)
         {
             IFileInfo fInfo = e.FileInfo;
-            var id = Convert.ToInt64(fInfo.Id);
+            var id = Convert.ToInt64(fInfo.MessageId);
 
             if (msgMap.ContainsKey(id))
             {
@@ -326,7 +326,7 @@ namespace windows_client.View
 
                 if (fInfo is FileDownloader)
                 {
-                    MiscDBUtil.UpdateFileAttachmentState(fInfo.Msisdn, fInfo.Id, state);
+                    MiscDBUtil.UpdateFileAttachmentState(fInfo.Msisdn, fInfo.MessageId, state);
 
                     if (fInfo.FileState == FileTransferState.COMPLETED)
                     {
@@ -2105,7 +2105,7 @@ namespace windows_client.View
                             {
                                 if (FileTransferManager.Instance.PendingTasks.Count < FileTransferManager.MaxQueueCount)
                                 {
-                                    FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString());
+                                    FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent);
                                     taskPlaced = true;
                                 }
                             }
@@ -2148,9 +2148,7 @@ namespace windows_client.View
                             MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
                         else
                         {
-                            if (FileTransferManager.Instance.TaskMap.Keys.Contains(convMessage.MessageId.ToString()))
-                                FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString());
-                            else 
+                            if (!FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
                             {
                                 // upgrade from older builds, if user taps, they wont bepresent in the tranfer manager map
                                 if (convMessage.IsSent)
@@ -2572,7 +2570,7 @@ namespace windows_client.View
                                 msgMap.Add(convMessage.MessageId, convMessage);
 
                                 IFileInfo fInfo;
-                                if (FileTransferManager.Instance.TaskMap.TryGetValue(convMessage.MessageId.ToString(), out fInfo))
+                                if (FileTransferManager.Instance.GetAttachmentStatus(convMessage.MessageId.ToString(), convMessage.IsSent, out fInfo))
                                     UpdateFileTransferProgresInConvMessage(fInfo, convMessage, true);
                             }
                         }
@@ -3511,7 +3509,7 @@ namespace windows_client.View
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
             }
 
-            FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString());
+            FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent);
         }
 
         private void MenuItem_Click_SendAsSMS(object sender, RoutedEventArgs e)
