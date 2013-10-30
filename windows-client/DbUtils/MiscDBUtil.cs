@@ -22,6 +22,7 @@ namespace windows_client.DbUtils
         private static object pendingReadWriteLock = new object();
         private static object profilePicLock = new object();
         private static object statusImageLock = new object();
+        private static object saveAttachmentLock = new object();
 
         public static string FAVOURITES_FILE = "favFile";
         public static string MISC_DIR = "Misc_Dir";
@@ -395,25 +396,35 @@ namespace windows_client.DbUtils
 
         public static void saveAttachmentObject(Attachment obj, string msisdn, long messageId)
         {
-            msisdn = msisdn.Replace(":", "_");
-            string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
-            string fileName = fileDirectory + "/" + messageId;
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+            lock (saveAttachmentLock)
             {
-                if (!store.DirectoryExists(fileDirectory))
+                try
                 {
-                    store.CreateDirectory(fileDirectory);
-                }
-                if (store.FileExists(fileName))
-                {
-                    store.DeleteFile(fileName);
-                }
-                using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write))
-                {
-                    using (var writer = new BinaryWriter(file))
+                    msisdn = msisdn.Replace(":", "_");
+                    string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
+                    string fileName = fileDirectory + "/" + messageId;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        obj.Write(writer);
+                        if (!store.DirectoryExists(fileDirectory))
+                        {
+                            store.CreateDirectory(fileDirectory);
+                        }
+                        if (store.FileExists(fileName))
+                        {
+                            store.DeleteFile(fileName);
+                        }
+                        using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write))
+                        {
+                            using (var writer = new BinaryWriter(file))
+                            {
+                                obj.Write(writer);
+                            }
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("MiscDbUtil :: saveAttachmentObject : saveAttachmentObject, Exception : " + ex.StackTrace);
                 }
             }
         }

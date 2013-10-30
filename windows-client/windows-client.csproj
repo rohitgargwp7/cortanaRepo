@@ -180,7 +180,7 @@
     <Compile Include="DbUtils\StatusMsgsTable.cs" />
     <Compile Include="DbUtils\UsersTableUtils.cs" />
     <Compile Include="FileTransfers\FileDownloader.cs" />
-    <Compile Include="FileTransfers\IFileInfo.cs" />
+    <Compile Include="FileTransfers\FileInfoBase.cs" />
     <Compile Include="FileTransfers\FileTransferManager.cs" />
     <Compile Include="FileTransfers\FileUploader.cs" />
     <Compile Include="FileTransfers\FileTransferState.cs" />

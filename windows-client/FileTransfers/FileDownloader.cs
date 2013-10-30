@@ -18,55 +18,21 @@ using System.Threading;
 
 namespace windows_client.FileTransfers
 {
-    public class FileDownloader : IFileInfo
+    public class FileDownloader : FileInfoBase
     {
-        const string FILE_TRANSFER_DIRECTORY_NAME = "FileTransfer";
-        const string FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME = "Download";
-        const int DefaultBlockSize = 1024;
-
         static object readWriteLock = new object();
-       
-        public static int MaxBlockSize;
-
-        int BlockSize = 1024;
-        int ChunkFactor = 1;
-        
-        public int BytesTransfered
-        {
-            get
-            {
-                return CurrentHeaderPosition == 0 ? 0 : CurrentHeaderPosition - 1;
-            }
-        }
-        public double PercentageTransfer
-        {
-            get
-            {
-                return TotalBytes == 0 ? 0 : ((double)BytesTransfered / TotalBytes) * 100;
-            }
-        }
-        public int TotalBytes { get; set; }
-        public string MessageId { get; set; }
-        public int CurrentHeaderPosition { get; set; }
-        public string ContentType { get; set; }
-        public string FileName { get; set; }
-        public string Msisdn { get; set; }
-        public FileTransferState FileState { get; set; }
 
         public FileDownloader()
+            : base()
         {
         }
 
         public FileDownloader(string msisdn, string messageId, string fileName, string contentType)
+            : base(msisdn, messageId, 0, fileName, contentType)
         {
-            Msisdn = msisdn;
-            MessageId = messageId;
-            FileName = fileName;
-            ContentType = contentType;
-            FileState = FileTransferState.NOT_STARTED;
         }
 
-        public void Write(BinaryWriter writer)
+        public override void Write(BinaryWriter writer)
         {
             if (Msisdn == null)
                 writer.WriteStringBytes("*@N@*");
@@ -95,7 +61,7 @@ namespace windows_client.FileTransfers
             writer.Write(TotalBytes);
         }
 
-        public void Read(BinaryReader reader)
+        public override void Read(BinaryReader reader)
         {
             int count = reader.ReadInt32();
             Msisdn = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
@@ -127,14 +93,14 @@ namespace windows_client.FileTransfers
             TotalBytes = reader.ReadInt32();
         }
 
-        public void Save()
+        public override void Save()
         {
             lock (readWriteLock)
             {
                 try
                 {
                     string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + MessageId;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
                             store.CreateDirectory(FILE_TRANSFER_DIRECTORY_NAME);
@@ -164,7 +130,7 @@ namespace windows_client.FileTransfers
             }
         }
 
-        public void Delete()
+        public override void Delete()
         {
             lock (readWriteLock)
             {
@@ -172,7 +138,7 @@ namespace windows_client.FileTransfers
                 {
                     string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + MessageId;
 
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
                             return;
@@ -191,47 +157,7 @@ namespace windows_client.FileTransfers
             }
         }
 
-        bool retry = true;
-        short retryAttempts = 0;
-        short MAX_RETRY_ATTEMPTS = 5;
-        int reconnectTime = 0;
-        int MAX_RECONNECT_TIME = 30; // in seconds
-
-        bool ShouldRetry()
-        {
-            if (retry && retryAttempts < MAX_RETRY_ATTEMPTS)
-            {
-                // make first attempt within first 5 seconds
-                if (reconnectTime == 0)
-                {
-                    Random random = new Random();
-                    reconnectTime = random.Next(5) + 1;
-                }
-                else
-                {
-                    reconnectTime *= 2;
-                }
-
-                reconnectTime = reconnectTime > MAX_RECONNECT_TIME ? MAX_RECONNECT_TIME : reconnectTime;
-                
-                try
-                {
-                    Thread.Sleep(reconnectTime);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e);
-                }
-
-                retryAttempts++;
-                
-                return true;
-            }
-            else
-                return false;
-        }
-
-        public void Start(object obj)
+        public override void Start(object obj)
         {
             var req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + FileName)) as HttpWebRequest;
             req.AllowReadStreamBuffering = false;
@@ -280,9 +206,7 @@ namespace windows_client.FileTransfers
                         TotalBytes = (int)response.ContentLength;
 
                     FileState = FileTransferState.STARTED;
-
-                    if (StatusChanged != null)
-                        StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+                    OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 }
 
                 ProcessDownloadGetResponse(responseStream, responseCode);
@@ -324,8 +248,7 @@ namespace windows_client.FileTransfers
                             BlockSize = MaxBlockSize;
                         }
 
-                        if (StatusChanged != null)
-                            StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, false));
+                        OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, false));
                     }
 
                     if (FileState == FileTransferState.CANCELED)
@@ -335,9 +258,7 @@ namespace windows_client.FileTransfers
                     else if (BytesTransfered == TotalBytes - 1)
                     {
                         FileState = FileTransferState.COMPLETED;
-
-                        if (StatusChanged != null)
-                            StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+                        OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                     }
                     else if (newBytes.Length == 0)
                     {
@@ -348,9 +269,7 @@ namespace windows_client.FileTransfers
                         else
                         {
                             FileState = FileTransferState.PAUSED;
-
-                            if (StatusChanged != null)
-                                StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+                            OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                         }
                     }
                 }
@@ -364,8 +283,7 @@ namespace windows_client.FileTransfers
                     MessageBox.Show(AppResources.File_Not_Exist_Message, AppResources.File_Not_Exist_Caption, MessageBoxButton.OK);
                 });
 
-                if (StatusChanged != null)
-                    StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+                OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
             }
             else
             {
@@ -376,9 +294,7 @@ namespace windows_client.FileTransfers
                 else
                 {
                     FileState = FileTransferState.FAILED;
-
-                    if (StatusChanged != null)
-                        StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+                    OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 }
             }
         }
@@ -407,6 +323,10 @@ namespace windows_client.FileTransfers
             }
         }
 
-        public event EventHandler<FileTransferSatatusChangedEventArgs> StatusChanged;
+        protected override void OnStatusChanged(FileTransferSatatusChangedEventArgs e)
+        {
+            // Call the base class event invocation method. 
+            base.OnStatusChanged(e);
+        }
     }
 }

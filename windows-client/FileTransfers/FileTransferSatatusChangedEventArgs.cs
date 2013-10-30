@@ -8,13 +8,13 @@ namespace windows_client.FileTransfers
 {
     public class FileTransferSatatusChangedEventArgs : EventArgs
     {
-        public FileTransferSatatusChangedEventArgs(IFileInfo fileInfo, bool isStateChanged)
+        public FileTransferSatatusChangedEventArgs(FileInfoBase fileInfo, bool isStateChanged)
         {
             FileInfo = fileInfo;
             IsStateChanged = isStateChanged;
         }
 
-        public IFileInfo FileInfo { get; private set; }
+        public FileInfoBase FileInfo { get; private set; }
         public bool IsStateChanged { get; private set; }
     }
 }

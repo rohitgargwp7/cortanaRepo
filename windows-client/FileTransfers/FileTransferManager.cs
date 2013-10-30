@@ -33,13 +33,13 @@ namespace windows_client.FileTransfers
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static object readWriteLock = new object();
 
-        public Queue<IFileInfo> PendingTasks = new Queue<IFileInfo>();
+        public Queue<FileInfoBase> PendingTasks = new Queue<FileInfoBase>();
 
         /// <summary>
         /// only started and completed transfers will be present in TaskMap. 
         /// Once transfer is completed, the entry will be removed from DBUtils.
         /// </summary>
-        public Dictionary<string, IFileInfo> TaskMap = new Dictionary<string, IFileInfo>();
+        public Dictionary<string, FileInfoBase> TaskMap = new Dictionary<string, FileInfoBase>();
 
         public static FileTransferManager Instance
         {
@@ -64,11 +64,16 @@ namespace windows_client.FileTransfers
             ThreadPool.SetMaxThreads(NoOfParallelRequest, NoOfParallelRequest);
         }
 
-        public bool GetAttachmentStatus(string id, bool isSent, out IFileInfo fileInfo)
+        public void ChangeMaxUploadBuffer(NetworkInterfaceSubType type)
+        {
+            FileInfoBase.MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE || type == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
+        }
+
+        public bool GetAttachmentStatus(string id, bool isSent, out FileInfoBase fileInfo)
         {
             fileInfo = null;
 
-            if (!IsTransferOld(id, isSent))
+            if (!DoesTransferExist(id, isSent))
                 return false;
 
             string fileName = null;
@@ -116,48 +121,7 @@ namespace windows_client.FileTransfers
             return true;
         }
 
-        public bool GetAttachmentStatus(string id, out IFileInfo fileInfo)
-        {
-            fileInfo = null;
-
-            string fileName = null;
-
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
-            {
-                if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
-                    return false;
-
-                if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME))
-                    return false;
-
-                fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + id;
-
-                if (store.FileExists(fileName))
-                    fileInfo = new FileUploader();
-                else
-                {
-                    fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + id;
-
-                    if (store.FileExists(fileName))
-                        fileInfo = new FileDownloader();
-                    else
-                        return false;
-                }
-
-                using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    using (BinaryReader reader = new BinaryReader(file))
-                    {
-                        fileInfo.Read(reader);
-                        reader.Close();
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        bool IsTransferOld(string id, bool isSent)
+        bool DoesTransferExist(string id, bool isSent)
         {
             string fileName = isSent ?
                 FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + id :
@@ -215,15 +179,9 @@ namespace windows_client.FileTransfers
             return true;
         }
 
-        public void ChangeMaxUploadBuffer(NetworkInterfaceSubType type)
-        {
-            FileUploader.MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE || type == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
-            FileDownloader.MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE || type == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
-        }
-
         public bool ResumeTask(string key, bool isSent)
         {
-            IFileInfo fInfo = null;
+            FileInfoBase fInfo = null;
          
             if (GetAttachmentStatus(key, isSent, out fInfo) && !TaskMap.ContainsKey(key))
             {
@@ -252,7 +210,7 @@ namespace windows_client.FileTransfers
         {
             if (PendingTasks.Count > 0)
             {
-                IFileInfo fileInfo = PendingTasks.Dequeue();
+                FileInfoBase fileInfo = PendingTasks.Dequeue();
 
                 if (fileInfo.FileState == FileTransferState.CANCELED)
                 {
@@ -305,7 +263,7 @@ namespace windows_client.FileTransfers
             return TaskMap.Keys.Count > 0;
         }
 
-        void FailTask(IFileInfo fInfo)
+        void FailTask(FileInfoBase fInfo)
         {
             fInfo.FileState = FileTransferState.FAILED;
             
@@ -317,7 +275,7 @@ namespace windows_client.FileTransfers
             App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fInfo);
         }
 
-        Boolean BeginThreadTask(IFileInfo fileInfo)
+        Boolean BeginThreadTask(FileInfoBase fileInfo)
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
@@ -337,26 +295,6 @@ namespace windows_client.FileTransfers
                 fileInfo.StatusChanged -= File_StatusChanged;
                 fileInfo.StatusChanged += File_StatusChanged;
                 return ThreadPool.QueueUserWorkItem(fileInfo.Start, null);
-            }
-        }
-
-        void File_StatusChanged(object sender, FileTransferSatatusChangedEventArgs e)
-        {
-            SaveTaskData(e.FileInfo);
-
-            if (UpdateTaskStatusOnUI != null)
-                UpdateTaskStatusOnUI(null, e);
-
-            if (e.IsStateChanged)
-                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, e.FileInfo);
-
-            if (e.FileInfo.FileState != FileTransferState.STARTED && e.FileInfo.FileState != FileTransferState.COMPLETED)
-                TaskMap.Remove(e.FileInfo.MessageId);
-
-            if (e.FileInfo.FileState == FileTransferState.PAUSED && !PendingTasks.Contains(e.FileInfo))
-            {
-                PendingTasks.Enqueue(e.FileInfo);
-                StartTask();
             }
         }
 
@@ -459,7 +397,7 @@ namespace windows_client.FileTransfers
 
         public void PauseTask(string id)
         {
-            IFileInfo fInfo;
+            FileInfoBase fInfo;
 
             if (TaskMap.TryGetValue(id, out fInfo))
             {
@@ -471,7 +409,7 @@ namespace windows_client.FileTransfers
 
         public void CancelTask(string id)
         {
-            IFileInfo fInfo;
+            FileInfoBase fInfo;
 
             if (TaskMap.TryGetValue(id, out fInfo))
             {
@@ -483,7 +421,7 @@ namespace windows_client.FileTransfers
 
         public void DeleteTask(string id)
         {
-            IFileInfo fInfo;
+            FileInfoBase fInfo;
 
             if (TaskMap.TryGetValue(id, out fInfo))
             {
@@ -514,10 +452,30 @@ namespace windows_client.FileTransfers
             }
         }
 
-        void SaveTaskData(IFileInfo fileInfo)
+        void SaveTaskData(FileInfoBase fileInfo)
         {
             if (App.MSISDN != null)
                 fileInfo.Save();
+        }
+
+        void File_StatusChanged(object sender, FileTransferSatatusChangedEventArgs e)
+        {
+            SaveTaskData(e.FileInfo);
+
+            if (UpdateTaskStatusOnUI != null)
+                UpdateTaskStatusOnUI(null, e);
+
+            if (e.IsStateChanged)
+                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, e.FileInfo);
+
+            if (e.FileInfo.FileState != FileTransferState.STARTED && e.FileInfo.FileState != FileTransferState.COMPLETED)
+                TaskMap.Remove(e.FileInfo.MessageId);
+
+            if (e.FileInfo.FileState == FileTransferState.PAUSED && !PendingTasks.Contains(e.FileInfo))
+            {
+                PendingTasks.Enqueue(e.FileInfo);
+                StartTask();
+            }
         }
 
         public event EventHandler<FileTransferSatatusChangedEventArgs> UpdateTaskStatusOnUI;

@@ -272,7 +272,7 @@ namespace windows_client.View
 
         void FileTransferStatusUpdated(object sender, FileTransferSatatusChangedEventArgs e)
         {
-            IFileInfo fInfo = e.FileInfo;
+            FileInfoBase fInfo = e.FileInfo;
             var id = Convert.ToInt64(fInfo.MessageId);
 
             if (msgMap.ContainsKey(id))
@@ -282,7 +282,7 @@ namespace windows_client.View
             }
         }
 
-        private void UpdateFileTransferProgresInConvMessage(IFileInfo fInfo, ConvMessage convMessage, bool isStateChanged)
+        private void UpdateFileTransferProgresInConvMessage(FileInfoBase fInfo, ConvMessage convMessage, bool isStateChanged)
         {
             if (convMessage == null)
                 return;
@@ -2569,7 +2569,7 @@ namespace windows_client.View
                             {
                                 msgMap.Add(convMessage.MessageId, convMessage);
 
-                                IFileInfo fInfo;
+                                FileInfoBase fInfo;
                                 if (FileTransferManager.Instance.GetAttachmentStatus(convMessage.MessageId.ToString(), convMessage.IsSent, out fInfo))
                                     UpdateFileTransferProgresInConvMessage(fInfo, convMessage, true);
                             }

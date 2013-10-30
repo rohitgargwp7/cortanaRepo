@@ -319,7 +319,7 @@ namespace windows_client.DbUtils
             }
             else if (type == HikePubSub.FILE_STATE_CHANGED)
             {
-                var fInfo = obj as IFileInfo;
+                var fInfo = obj as FileInfoBase;
 
                 using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
                 {
