@@ -150,8 +150,6 @@ namespace windows_client
                     {
                         if (FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType))
                             MiscDBUtil.UpdateFileAttachmentState(convMessage.Msisdn.Replace(":", "_"), convMessage.MessageId.ToString(), Attachment.AttachmentState.STARTED);
-                        else
-                            MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
                     }
                     if (obj == null)
                         return;

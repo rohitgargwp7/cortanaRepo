@@ -360,14 +360,6 @@ namespace windows_client.DbUtils
                         convMessage.SetAttachmentState(state);
 
                         if (fInfo is FileDownloader)
-                            MiscDBUtil.UpdateFileAttachmentState(fInfo.Msisdn, fInfo.MessageId, state);
-                        else
-                        {
-                            convMessage.SetAttachmentState(state);
-                            MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                        }
-
-                        if (fInfo is FileDownloader)
                         {
                             if (fInfo.FileState == FileTransferState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.MessageId))
                             {
@@ -432,6 +424,8 @@ namespace windows_client.DbUtils
                                 NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
                             }
                         }
+
+                        MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     }
                     catch (Exception e)
                     {

@@ -26,14 +26,14 @@ namespace windows_client.FileTransfers
         const int WifiBuffer =  1048576;
         const int MobileBuffer =  102400;
         const int NoOfParallelRequest = 20;
-        public static int MaxQueueCount = 30;
+        static int MaxQueueCount = 30;
 
         private static volatile FileTransferManager instance = null;
 
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static object readWriteLock = new object();
 
-        public Queue<FileInfoBase> PendingTasks = new Queue<FileInfoBase>();
+        Queue<FileInfoBase> PendingTasks = new Queue<FileInfoBase>();
 
         /// <summary>
         /// only started and completed transfers will be present in TaskMap. 
@@ -141,9 +141,7 @@ namespace windows_client.FileTransfers
             if (PendingTasks.Count >= MaxQueueCount)
                 return false;
 
-            var isResumed = ResumeTask(messageId, false);
-
-            if (!isResumed)
+            if (!DoesTransferExist(messageId, false))
             {
                 FileDownloader fInfo = new FileDownloader(msisdn, messageId, fileName, contentType);
 
@@ -152,15 +150,15 @@ namespace windows_client.FileTransfers
 
                 StartTask();
             }
+            else
+                return ResumeTask(messageId, false);
 
             return true;
         }
 
         public bool UploadFile(string msisdn, string messageId, string fileName, string contentType, int size)
         {
-            var isResumed = ResumeTask(messageId, true);
-
-            if (!isResumed)
+            if (!DoesTransferExist(messageId, false))
             {
                 FileUploader fInfo = new FileUploader(msisdn, messageId, size, fileName, contentType);
 
@@ -175,12 +173,17 @@ namespace windows_client.FileTransfers
                 PendingTasks.Enqueue(fInfo);
                 StartTask();
             }
+            else
+                return ResumeTask(messageId, false);
 
             return true;
         }
 
         public bool ResumeTask(string key, bool isSent)
         {
+            if (PendingTasks.Count >= MaxQueueCount)
+                return false;
+
             FileInfoBase fInfo = null;
          
             if (GetAttachmentStatus(key, isSent, out fInfo) && !TaskMap.ContainsKey(key))

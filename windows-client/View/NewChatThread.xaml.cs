@@ -2093,14 +2093,8 @@ namespace windows_client.View
 
                             if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
                                 taskPlaced = FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType);
-                            else
-                            {
-                                if (FileTransferManager.Instance.PendingTasks.Count < FileTransferManager.MaxQueueCount)
-                                {
-                                    FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent);
-                                    taskPlaced = true;
-                                }
-                            }
+                            else if (FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
+                                taskPlaced = true;
 
                             if (taskPlaced)
                                 convMessage.UserTappedDownload = true;
@@ -2136,28 +2130,28 @@ namespace windows_client.View
                                 "/" + convMessage.FileAttachment.FileKey;
                         }
 
-                        if (FileTransferManager.Instance.PendingTasks.Count >= FileTransferManager.MaxQueueCount)
-                            MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
-                        else
+                        bool transferPlaced = FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent);
+
+                        if (!transferPlaced)
                         {
-                            if (!FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
+                            // upgrade from older builds, if user taps, they wont bepresent in the tranfer manager map
+                            if (convMessage.IsSent)
                             {
-                                // upgrade from older builds, if user taps, they wont bepresent in the tranfer manager map
-                                if (convMessage.IsSent)
-                                {
-                                    byte[] fileBytes = null;
+                                byte[] fileBytes = null;
 
-                                    if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                                        fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
-                                    else
-                                        MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + convMessage.MessageId, out fileBytes);
-
-                                    FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
-                                }
+                                if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                                    fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
                                 else
-                                    FileTransferManager.Instance.DownloadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType);
+                                    MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + convMessage.MessageId, out fileBytes);
+
+                                transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
                             }
+                            else
+                                transferPlaced = FileTransferManager.Instance.DownloadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType);
                         }
+
+                        if (transferPlaced)
+                            MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
                     }
                 }
                 else
@@ -3489,19 +3483,13 @@ namespace windows_client.View
 
         private void ResumeTransfer(ConvMessage convMessage)
         {
-            if (FileTransferManager.Instance.PendingTasks.Count >= FileTransferManager.MaxQueueCount)
-            {
-                MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
-                return;
-            }
-
-            if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.PAUSED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
+            if (FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
             {
                 convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
             }
-
-            FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent);
+            else
+                MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
         }
 
         private void MenuItem_Click_SendAsSMS(object sender, RoutedEventArgs e)
