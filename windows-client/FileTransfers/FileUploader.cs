@@ -510,7 +510,7 @@ namespace windows_client.FileTransfers
                 if (!myIsolatedStorage.FileExists(filePath))
                     return null;
 
-                using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(filePath, FileMode.OpenOrCreate, myIsolatedStorage))
+                using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(filePath, FileMode.Open, myIsolatedStorage))
                 {
                     fileStream.Seek(position, SeekOrigin.Begin);
 

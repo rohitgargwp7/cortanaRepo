@@ -26,7 +26,7 @@ namespace windows_client.FileTransfers
         const int WifiBuffer =  1048576;
         const int MobileBuffer =  102400;
         const int NoOfParallelRequest = 20;
-        public static int MaxQueueCount = 10;
+        public static int MaxQueueCount = 30;
 
         private static volatile FileTransferManager instance = null;
 
