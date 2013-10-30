@@ -490,7 +490,7 @@ namespace windows_client.FileTransfers
                 }
                 else
                 {
-                    FileState = FileTransferState.PAUSED;
+                    FileState = FileTransferState.FAILED;
                     OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 }
             }

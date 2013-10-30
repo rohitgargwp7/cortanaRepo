@@ -337,37 +337,34 @@ namespace windows_client.DbUtils
 
                         convMessage.FileAttachment = attachment;
 
-                        if (App.newChatThreadPage == null || convMessage.Msisdn != App.newChatThreadPage.mContactNumber)
+                        Attachment.AttachmentState state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+
+                        if (fInfo.FileState == FileTransferState.CANCELED)
+                            state = Attachment.AttachmentState.CANCELED;
+                        else if (fInfo.FileState == FileTransferState.COMPLETED)
+                            state = Attachment.AttachmentState.COMPLETED;
+                        else if (fInfo.FileState == FileTransferState.PAUSED)
+                            state = Attachment.AttachmentState.PAUSED;
+                        else if (fInfo.FileState == FileTransferState.MANUAL_PAUSED)
+                            state = Attachment.AttachmentState.MANUAL_PAUSED;
+                        else if (fInfo.FileState == FileTransferState.FAILED)
+                            state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                        else if (fInfo.FileState == FileTransferState.STARTED)
+                            state = Attachment.AttachmentState.STARTED;
+                        else if (fInfo.FileState == FileTransferState.NOT_STARTED)
+                            state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+
+                        if (fInfo.FileState == FileTransferState.COMPLETED)
+                            convMessage.ProgressBarValue = 100;
+
+                        convMessage.SetAttachmentState(state);
+
+                        if (fInfo is FileDownloader)
+                            MiscDBUtil.UpdateFileAttachmentState(fInfo.Msisdn, fInfo.MessageId, state);
+                        else
                         {
-                            Attachment.AttachmentState state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
-
-                            if (fInfo.FileState == FileTransferState.CANCELED)
-                                state = Attachment.AttachmentState.CANCELED;
-                            else if (fInfo.FileState == FileTransferState.COMPLETED)
-                                state = Attachment.AttachmentState.COMPLETED;
-                            else if (fInfo.FileState == FileTransferState.PAUSED)
-                                state = Attachment.AttachmentState.PAUSED;
-                            else if (fInfo.FileState == FileTransferState.MANUAL_PAUSED)
-                                state = Attachment.AttachmentState.MANUAL_PAUSED;
-                            else if (fInfo.FileState == FileTransferState.FAILED)
-                                state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
-                            else if (fInfo.FileState == FileTransferState.STARTED)
-                                state = Attachment.AttachmentState.STARTED;
-                            else if (fInfo.FileState == FileTransferState.NOT_STARTED)
-                                state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
-
-                            if (fInfo.FileState == FileTransferState.COMPLETED)
-                                convMessage.ProgressBarValue = 100;
-
                             convMessage.SetAttachmentState(state);
-
-                            if (fInfo is FileDownloader)
-                                MiscDBUtil.UpdateFileAttachmentState(fInfo.Msisdn, fInfo.MessageId, state);
-                            else
-                            {
-                                convMessage.SetAttachmentState(state);
-                                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                            }
+                            MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                         }
 
                         if (fInfo is FileDownloader)

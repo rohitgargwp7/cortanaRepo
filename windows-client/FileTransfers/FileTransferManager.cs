@@ -294,7 +294,7 @@ namespace windows_client.FileTransfers
             {
                 fileInfo.StatusChanged -= File_StatusChanged;
                 fileInfo.StatusChanged += File_StatusChanged;
-                return ThreadPool.QueueUserWorkItem(fileInfo.Start, null);
+                return ThreadPool.QueueUserWorkItem(fileInfo.Start);
             }
         }
 

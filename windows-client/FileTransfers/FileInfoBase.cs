@@ -96,7 +96,7 @@ namespace windows_client.FileTransfers
 
                 try
                 {
-                    Thread.Sleep(reconnectTime);
+                    Thread.Sleep(reconnectTime * 1000);
                 }
                 catch (Exception e)
                 {
