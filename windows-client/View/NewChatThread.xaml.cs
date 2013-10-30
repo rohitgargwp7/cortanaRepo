@@ -1713,19 +1713,11 @@ namespace windows_client.View
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 NetworkManager.turnOffNetworkManager = false;
-                //if (listDownload.Count > 0)
-                //{
-                //    BackgroundWorker bw = new BackgroundWorker();
-                //    bw.DoWork += (s, e) =>
-                //        {
-                //            foreach (ConvMessage conv in listDownload)
-                //            {
-                //                FileTransfers.FileTransferManager.Instance.AddFileToUploadDownloadTask(conv.Msisdn, conv.MessageId.ToString(), conv.FileAttachment.FileKey, conv.FileAttachment.ContentType, null, true);
-                //            }
-                //            listDownload.Clear();
-                //        };
-                //    bw.RunWorkerAsync();
-                //}
+                if (_isHikeBot && mContactNumber == HikeConstants.FTUE_HIKEBOT_MSISDN)
+                {
+                    if (ocMessages.Count > 0)
+                        llsMessages.ScrollTo(ocMessages[0]);
+                }
             });
         }
 
@@ -2076,7 +2068,7 @@ namespace windows_client.View
 
             if (!isContextMenuTapped)
             {
-                if (!isGroupChat && convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                if (!isGroupChat && !_isHikeBot && convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
                     PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                     NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
@@ -2149,7 +2141,7 @@ namespace windows_client.View
                         {
                             if (FileTransferManager.Instance.TaskMap.Keys.Contains(convMessage.MessageId.ToString()))
                                 FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString());
-                            else 
+                            else
                             {
                                 // upgrade from older builds, if user taps, they wont bepresent in the tranfer manager map
                                 if (convMessage.IsSent)
@@ -4951,7 +4943,7 @@ namespace windows_client.View
         //TODO - MG try to use sametap event for header n statusBubble
         private void statusBubble_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            if (!isContextMenuTapped && !isGroupChat && _isHikeBot)
+            if (!isContextMenuTapped && !isGroupChat && !_isHikeBot)
             {
                 PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
