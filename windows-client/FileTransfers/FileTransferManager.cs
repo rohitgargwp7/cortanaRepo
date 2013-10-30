@@ -26,16 +26,20 @@ namespace windows_client.FileTransfers
         const int WifiBuffer =  1048576;
         const int MobileBuffer =  102400;
         const int NoOfParallelRequest = 20;
-        public static int MaxQueueCount = 4;
+        static int MaxQueueCount = 30;
 
         private static volatile FileTransferManager instance = null;
 
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static object readWriteLock = new object();
 
-        public Queue<IFileInfo> PendingTasks = new Queue<IFileInfo>();
+        Queue<FileInfoBase> PendingTasks = new Queue<FileInfoBase>();
 
-        public Dictionary<string, IFileInfo> TaskMap = new Dictionary<string, IFileInfo>();
+        /// <summary>
+        /// only started and completed transfers will be present in TaskMap. 
+        /// Once transfer is completed, the entry will be removed from DBUtils.
+        /// </summary>
+        public Dictionary<string, FileInfoBase> TaskMap = new Dictionary<string, FileInfoBase>();
 
         public static FileTransferManager Instance
         {
@@ -60,40 +64,105 @@ namespace windows_client.FileTransfers
             ThreadPool.SetMaxThreads(NoOfParallelRequest, NoOfParallelRequest);
         }
 
-        public bool DownloadFile(string msisdn, string key, string fileName, string contentType)
+        public void ChangeMaxUploadBuffer(NetworkInterfaceSubType type)
         {
-            if (PendingTasks.Count >= MaxQueueCount)
+            FileInfoBase.MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE || type == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
+        }
+
+        public bool GetAttachmentStatus(string id, bool isSent, out FileInfoBase fileInfo)
+        {
+            fileInfo = null;
+
+            if (!DoesTransferExist(id, isSent))
                 return false;
 
-            if (TaskMap.ContainsKey(key))
-                ResumeTask(key);
-            else
+            string fileName = null;
+
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
             {
-                FileDownloader fInfo = new FileDownloader(msisdn, key, fileName, contentType);
+                if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
+                    return false;
 
-                PendingTasks.Enqueue(fInfo);
-                TaskMap.Add(fInfo.Id, fInfo);
-                SaveTaskData(fInfo);
+                if (isSent)
+                {
+                    if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME))
+                        return false;
 
-                StartTask();
+                    fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + id;
+
+                    if (!store.FileExists(fileName))
+                        return false;
+
+                    fileInfo = new FileUploader();
+                }
+                else
+                {
+                    if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME))
+                        return false;
+
+                    fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + id;
+
+                    if (!store.FileExists(fileName))
+                        return false;
+
+                    fileInfo = new FileDownloader();
+                }
+
+                using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    using (BinaryReader reader = new BinaryReader(file))
+                    {
+                        fileInfo.Read(reader);
+                        reader.Close();
+                    }
+                }
             }
 
             return true;
         }
 
-        public bool UploadFile(string msisdn, string key, string fileName, string contentType, int size)
+        bool DoesTransferExist(string id, bool isSent)
         {
-            if (TaskMap.ContainsKey(key))
+            string fileName = isSent ?
+                FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + id :
+                FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + id;
+
+            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                ResumeTask(key);
-                return true;
+                if (myIsolatedStorage.FileExists(fileName))
+                    return true;
             }
-            else
+
+            return false;
+        }
+
+        public bool DownloadFile(string msisdn, string messageId, string fileName, string contentType)
+        {
+            if (PendingTasks.Count >= MaxQueueCount)
+                return false;
+
+            if (!DoesTransferExist(messageId, false))
             {
-                FileUploader fInfo = new FileUploader(msisdn, key, size, fileName, contentType);
+                FileDownloader fInfo = new FileDownloader(msisdn, messageId, fileName, contentType);
 
                 PendingTasks.Enqueue(fInfo);
-                TaskMap.Add(fInfo.Id, fInfo);
+                SaveTaskData(fInfo);
+
+                StartTask();
+            }
+            else
+                return ResumeTask(messageId, false);
+
+            return true;
+        }
+
+        public bool UploadFile(string msisdn, string messageId, string fileName, string contentType, int size)
+        {
+            if (!DoesTransferExist(messageId, false))
+            {
+                FileUploader fInfo = new FileUploader(msisdn, messageId, size, fileName, contentType);
+
+                SaveTaskData(fInfo);
 
                 if (PendingTasks.Count >= MaxQueueCount)
                 {
@@ -101,24 +170,26 @@ namespace windows_client.FileTransfers
                     return false;
                 }
 
-                SaveTaskData(fInfo);
+                PendingTasks.Enqueue(fInfo);
                 StartTask();
-                return true;
             }
+            else
+                return ResumeTask(messageId, false);
+
+            return true;
         }
 
-        public void ChangeMaxUploadBuffer(NetworkInterfaceSubType type)
+        public bool ResumeTask(string key, bool isSent)
         {
-            FileUploader.MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE || type == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
-            FileDownloader.MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE || type == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
-        }
+            if (PendingTasks.Count >= MaxQueueCount)
+                return false;
 
-        public void ResumeTask(string key)
-        {
-            IFileInfo fInfo = null;
-            if (TaskMap.TryGetValue(key, out fInfo))
+            FileInfoBase fInfo = null;
+         
+            if (GetAttachmentStatus(key, isSent, out fInfo) && !TaskMap.ContainsKey(key))
             {
-                fInfo.FileState = FileTransferState.STARTED;
+                if (fInfo.FileState != FileTransferState.COMPLETED)
+                    fInfo.FileState = FileTransferState.STARTED;
 
                 if (!PendingTasks.Contains(fInfo))
                     PendingTasks.Enqueue(fInfo);
@@ -131,18 +202,22 @@ namespace windows_client.FileTransfers
                 App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fInfo);
 
                 StartTask();
+
+                return true;
             }
+
+            return false;
         }
 
         public void StartTask()
         {
             if (PendingTasks.Count > 0)
             {
-                IFileInfo fileInfo = PendingTasks.Dequeue();
+                FileInfoBase fileInfo = PendingTasks.Dequeue();
 
                 if (fileInfo.FileState == FileTransferState.CANCELED)
                 {
-                    TaskMap.Remove(fileInfo.Id);
+                    TaskMap.Remove(fileInfo.MessageId);
                     fileInfo.Delete();
                     fileInfo = null;
                     return;
@@ -151,21 +226,34 @@ namespace windows_client.FileTransfers
                 {
                     fileInfo.FileState = FileTransferState.COMPLETED;
                     SaveTaskData(fileInfo);
-                 
+
                     if (UpdateTaskStatusOnUI != null)
                         UpdateTaskStatusOnUI(null, new FileTransferSatatusChangedEventArgs(fileInfo, true));
 
                     App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
                 }
-                else if (fileInfo is FileUploader && fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) || fileInfo.FileState != FileTransferState.PAUSED))
+                else
                 {
-                    if (!BeginThreadTask(fileInfo))
-                        PendingTasks.Enqueue(fileInfo);
-                }
-                else if (fileInfo is FileDownloader && fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING) || fileInfo.FileState != FileTransferState.PAUSED))
-                {
-                    if (!BeginThreadTask(fileInfo))
-                        PendingTasks.Enqueue(fileInfo);
+                    var shouldTransfer = fileInfo is FileUploader ? !App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) : !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING);
+
+                    if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (shouldTransfer || fileInfo.FileState != FileTransferState.PAUSED))
+                    {
+                        if (BeginThreadTask(fileInfo))
+                        {
+                            fileInfo.FileState = FileTransferState.STARTED;
+                            TaskMap.Add(fileInfo.MessageId, fileInfo);
+                            SaveTaskData(fileInfo);
+
+                            if (UpdateTaskStatusOnUI != null)
+                                UpdateTaskStatusOnUI(null, new FileTransferSatatusChangedEventArgs(fileInfo, true));
+
+                            App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
+                        }
+                        else
+                            PendingTasks.Enqueue(fileInfo);
+                    }
+                    else if (fileInfo.FileState != FileTransferState.STARTED)
+                        TaskMap.Remove(fileInfo.MessageId);
                 }
             }
 
@@ -175,16 +263,10 @@ namespace windows_client.FileTransfers
 
         public bool IsBusy()
         {
-            foreach (var key in TaskMap.Keys)
-            {
-                if (TaskMap[key].FileState == FileTransferState.STARTED)
-                    return true;
-            }
-
-            return false;
+            return TaskMap.Keys.Count > 0;
         }
 
-        void FailTask(IFileInfo fInfo)
+        void FailTask(FileInfoBase fInfo)
         {
             fInfo.FileState = FileTransferState.FAILED;
             
@@ -196,12 +278,13 @@ namespace windows_client.FileTransfers
             App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fInfo);
         }
 
-        private Boolean BeginThreadTask(IFileInfo fileInfo)
+        Boolean BeginThreadTask(FileInfoBase fileInfo)
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 fileInfo.FileState = FileTransferState.FAILED;
                 SaveTaskData(fileInfo);
+                TaskMap.Remove(fileInfo.MessageId);
 
                 if (UpdateTaskStatusOnUI != null)
                     UpdateTaskStatusOnUI(null, new FileTransferSatatusChangedEventArgs(fileInfo, true));
@@ -214,32 +297,17 @@ namespace windows_client.FileTransfers
             {
                 fileInfo.StatusChanged -= File_StatusChanged;
                 fileInfo.StatusChanged += File_StatusChanged;
-                return ThreadPool.QueueUserWorkItem(fileInfo.Start, null);
-            }
-        }
-
-        void File_StatusChanged(object sender, FileTransferSatatusChangedEventArgs e)
-        {
-            SaveTaskData(e.FileInfo);
-
-            if (UpdateTaskStatusOnUI != null)
-                UpdateTaskStatusOnUI(null, e);
-
-            if (e.IsStateChanged)
-                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, e.FileInfo);
-
-            if (e.FileInfo.FileState == FileTransferState.PAUSED && !PendingTasks.Contains(e.FileInfo))
-            {
-                PendingTasks.Enqueue(e.FileInfo);
-
-                StartTask();
+                return ThreadPool.QueueUserWorkItem(fileInfo.Start);
             }
         }
 
         public void PopulatePreviousTasks()
         {
-            PopulateUploads();
-            PopulateDownloads();
+            if (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING))
+                PopulateUploads();
+
+            if (!App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
+                PopulateDownloads();
 
             if (PendingTasks.Count > 0)
                 StartTask();
@@ -251,7 +319,7 @@ namespace windows_client.FileTransfers
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
                             return;
@@ -263,18 +331,20 @@ namespace windows_client.FileTransfers
 
                         foreach (var fileName in fileNames)
                         {
-                            FileUploader fileInfo = new FileUploader();
-                            using (var file = store.OpenFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            if (!TaskMap.ContainsKey(fileName))
                             {
-                                using (BinaryReader reader = new BinaryReader(file))
+                                FileUploader fileInfo = new FileUploader();
+                                using (var file = store.OpenFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                                 {
-                                    fileInfo.Read(reader);
-                                    reader.Close();
+                                    using (BinaryReader reader = new BinaryReader(file))
+                                    {
+                                        fileInfo.Read(reader);
+                                        reader.Close();
+                                    }
                                 }
-                            }
 
-                            TaskMap.Add(fileName, fileInfo);
-                            PendingTasks.Enqueue(fileInfo);
+                                PendingTasks.Enqueue(fileInfo);
+                            }
                         }
                     }
                 }
@@ -291,7 +361,7 @@ namespace windows_client.FileTransfers
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
                             return;
@@ -303,19 +373,21 @@ namespace windows_client.FileTransfers
 
                         foreach (var fileName in fileNames)
                         {
-                            FileDownloader fileInfo = new FileDownloader();
-
-                            using (var file = store.OpenFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            if (!TaskMap.ContainsKey(fileName))
                             {
-                                using (BinaryReader reader = new BinaryReader(file))
-                                {
-                                    fileInfo.Read(reader);
-                                    reader.Close();
-                                }
-                            }
+                                FileDownloader fileInfo = new FileDownloader();
 
-                            TaskMap.Add(fileName, fileInfo);
-                            PendingTasks.Enqueue(fileInfo);
+                                using (var file = store.OpenFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                                {
+                                    using (BinaryReader reader = new BinaryReader(file))
+                                    {
+                                        fileInfo.Read(reader);
+                                        reader.Close();
+                                    }
+                                }
+
+                                PendingTasks.Enqueue(fileInfo);
+                            }
                         }
                     }
                 }
@@ -328,40 +400,85 @@ namespace windows_client.FileTransfers
 
         public void PauseTask(string id)
         {
-            IFileInfo fInfo;
+            FileInfoBase fInfo;
 
             if (TaskMap.TryGetValue(id, out fInfo))
             {
                 fInfo.FileState = FileTransferState.MANUAL_PAUSED;
                 SaveTaskData(fInfo);
+                TaskMap.Remove(id);
             }
         }
 
         public void CancelTask(string id)
         {
-            IFileInfo fInfo;
-
-            if (TaskMap.TryGetValue(id, out fInfo))
-            {
-                fInfo.FileState = FileTransferState.CANCELED;
-                SaveTaskData(fInfo);
-            }
-        }
-
-        public void DeleteTask(string id)
-        {
-            IFileInfo fInfo;
+            FileInfoBase fInfo;
 
             if (TaskMap.TryGetValue(id, out fInfo))
             {
                 fInfo.FileState = FileTransferState.CANCELED;
                 fInfo.Delete();
+                TaskMap.Remove(id);
             }
         }
 
-        void SaveTaskData(IFileInfo fileInfo)
+        public void DeleteTask(string id)
         {
-            fileInfo.Save();
+            FileInfoBase fInfo;
+
+            if (TaskMap.TryGetValue(id, out fInfo))
+            {
+                fInfo.FileState = FileTransferState.CANCELED;
+                fInfo.Delete();
+                TaskMap.Remove(id);
+            }
+            else
+            {
+                // remove file from both upload and download directory if file was not transfering when it was deleted.
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                {
+                    if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
+                        return;
+
+                    if (store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME))
+                    {
+                        if (store.FileExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + id))
+                            store.DeleteFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + id);
+                    }
+
+                    if (store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME))
+                    {
+                        if (store.FileExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + id))
+                            store.DeleteFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + id);
+                    }
+                }
+            }
+        }
+
+        void SaveTaskData(FileInfoBase fileInfo)
+        {
+            if (App.MSISDN != null)
+                fileInfo.Save();
+        }
+
+        void File_StatusChanged(object sender, FileTransferSatatusChangedEventArgs e)
+        {
+            SaveTaskData(e.FileInfo);
+
+            if (UpdateTaskStatusOnUI != null)
+                UpdateTaskStatusOnUI(null, e);
+
+            if (e.IsStateChanged)
+                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, e.FileInfo);
+
+            if (e.FileInfo.FileState != FileTransferState.STARTED && e.FileInfo.FileState != FileTransferState.COMPLETED)
+                TaskMap.Remove(e.FileInfo.MessageId);
+
+            if (e.FileInfo.FileState == FileTransferState.PAUSED && !PendingTasks.Contains(e.FileInfo))
+            {
+                PendingTasks.Enqueue(e.FileInfo);
+                StartTask();
+            }
         }
 
         public event EventHandler<FileTransferSatatusChangedEventArgs> UpdateTaskStatusOnUI;

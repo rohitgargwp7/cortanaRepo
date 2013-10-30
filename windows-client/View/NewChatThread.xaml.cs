@@ -40,6 +40,7 @@ using windows_client.ViewModel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using windows_client.FileTransfers;
+using System.Windows.Input;
 
 namespace windows_client.View
 {
@@ -271,8 +272,8 @@ namespace windows_client.View
 
         void FileTransferStatusUpdated(object sender, FileTransferSatatusChangedEventArgs e)
         {
-            IFileInfo fInfo = e.FileInfo;
-            var id = Convert.ToInt64(fInfo.Id);
+            FileInfoBase fInfo = e.FileInfo;
+            var id = Convert.ToInt64(fInfo.MessageId);
 
             if (msgMap.ContainsKey(id))
             {
@@ -281,7 +282,7 @@ namespace windows_client.View
             }
         }
 
-        private void UpdateFileTransferProgresInConvMessage(IFileInfo fInfo, ConvMessage convMessage, bool isStateChanged)
+        private void UpdateFileTransferProgresInConvMessage(FileInfoBase fInfo, ConvMessage convMessage, bool isStateChanged)
         {
             if (convMessage == null)
                 return;
@@ -325,7 +326,7 @@ namespace windows_client.View
 
                 if (fInfo is FileDownloader)
                 {
-                    MiscDBUtil.UpdateFileAttachmentState(fInfo.Msisdn, fInfo.Id, state);
+                    MiscDBUtil.UpdateFileAttachmentState(fInfo.Msisdn, fInfo.MessageId, state);
 
                     if (fInfo.FileState == FileTransferState.COMPLETED)
                     {
@@ -2092,14 +2093,8 @@ namespace windows_client.View
 
                             if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
                                 taskPlaced = FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType);
-                            else
-                            {
-                                if (FileTransferManager.Instance.PendingTasks.Count < FileTransferManager.MaxQueueCount)
-                                {
-                                    FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString());
-                                    taskPlaced = true;
-                                }
-                            }
+                            else if (FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
+                                taskPlaced = true;
 
                             if (taskPlaced)
                                 convMessage.UserTappedDownload = true;
@@ -2135,30 +2130,28 @@ namespace windows_client.View
                                 "/" + convMessage.FileAttachment.FileKey;
                         }
 
-                        if (FileTransferManager.Instance.PendingTasks.Count >= FileTransferManager.MaxQueueCount)
-                            MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
-                        else
+                        bool transferPlaced = FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent);
+
+                        if (!transferPlaced)
                         {
-                            if (FileTransferManager.Instance.TaskMap.Keys.Contains(convMessage.MessageId.ToString()))
-                                FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString());
-                            else
+                            // upgrade from older builds, if user taps, they wont bepresent in the tranfer manager map
+                            if (convMessage.IsSent)
                             {
-                                // upgrade from older builds, if user taps, they wont bepresent in the tranfer manager map
-                                if (convMessage.IsSent)
-                                {
-                                    byte[] fileBytes = null;
+                                byte[] fileBytes = null;
 
-                                    if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                                        fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
-                                    else
-                                        MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + convMessage.MessageId, out fileBytes);
-
-                                    FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
-                                }
+                                if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                                    fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
                                 else
-                                    FileTransferManager.Instance.DownloadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType);
+                                    MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + convMessage.MessageId, out fileBytes);
+
+                                transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
                             }
+                            else
+                                transferPlaced = FileTransferManager.Instance.DownloadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType);
                         }
+
+                        if (transferPlaced)
+                            MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
                     }
                 }
                 else
@@ -2562,8 +2555,8 @@ namespace windows_client.View
                             {
                                 msgMap.Add(convMessage.MessageId, convMessage);
 
-                                IFileInfo fInfo;
-                                if (FileTransferManager.Instance.TaskMap.TryGetValue(convMessage.MessageId.ToString(), out fInfo))
+                                FileInfoBase fInfo;
+                                if (FileTransferManager.Instance.GetAttachmentStatus(convMessage.MessageId.ToString(), convMessage.IsSent, out fInfo))
                                     UpdateFileTransferProgresInConvMessage(fInfo, convMessage, true);
                             }
                         }
@@ -3132,6 +3125,11 @@ namespace windows_client.View
 
         private void sendMsgBtn_Click(object sender, EventArgs e)
         {
+            SendMsg();
+        }
+
+        private void SendMsg()
+        {
             if (mUserIsBlocked)
                 return;
 
@@ -3160,7 +3158,6 @@ namespace windows_client.View
             sendMsg(convMessage, false);
 
             spSmsCharCounter.Visibility = Visibility.Collapsed;
-
         }
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
@@ -3486,19 +3483,13 @@ namespace windows_client.View
 
         private void ResumeTransfer(ConvMessage convMessage)
         {
-            if (FileTransferManager.Instance.PendingTasks.Count >= FileTransferManager.MaxQueueCount)
-            {
-                MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
-                return;
-            }
-
-            if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.PAUSED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
+            if (FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
             {
                 convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
             }
-
-            FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString());
+            else
+                MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
         }
 
         private void MenuItem_Click_SendAsSMS(object sender, RoutedEventArgs e)
@@ -5974,6 +5965,28 @@ namespace windows_client.View
             App.ViewModel.HideToolTip(LayoutRoot, 1);
             App.ViewModel.HideToolTip(LayoutRoot, 2);
 
+            if (App.ViewModel.DictInAppTip != null)
+            {
+                HikeToolTip toolTip;
+                App.ViewModel.DictInAppTip.TryGetValue(2, out toolTip);
+                if (toolTip != null)
+                {
+                    toolTip.IsShown = true;
+                    toolTip.IsCurrentlyShown = false;
+
+                    int index = 2;
+                    byte shownByte;
+                    App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out shownByte);
+                    shownByte &= (byte)~(1 << index);
+                    App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, shownByte);
+
+                    byte currentShown;
+                    App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
+                    currentShown &= (byte)~(1 << index);
+                    App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
+                }
+            }
+
             attachmentMenu.Visibility = Visibility.Collapsed;
             emoticonPanel.Visibility = Visibility.Collapsed;
 
@@ -6674,6 +6687,13 @@ namespace windows_client.View
             }
         }
 
+        private void MsgCharTapped(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (!App.appSettings.Contains(App.ENTER_TO_SEND) && (e.Key == Key.Enter || e.PlatformKeyCode == 0x0A))
+            {
+                SendMsg();
+            }
+        }
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector

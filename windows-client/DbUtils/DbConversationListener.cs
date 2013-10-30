@@ -319,11 +319,11 @@ namespace windows_client.DbUtils
             }
             else if (type == HikePubSub.FILE_STATE_CHANGED)
             {
-                var fInfo = obj as IFileInfo;
+                var fInfo = obj as FileInfoBase;
 
                 using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
                 {
-                    var id = Convert.ToInt64(fInfo.Id);
+                    var id = Convert.ToInt64(fInfo.MessageId);
                     ConvMessage convMessage = DbCompiledQueries.GetMessagesForMsgId(context, id).FirstOrDefault<ConvMessage>();
 
                     if (convMessage == null)
@@ -331,7 +331,7 @@ namespace windows_client.DbUtils
 
                     try
                     {
-                        var attachment = MiscDBUtil.getFileAttachment(fInfo.Msisdn, fInfo.Id);
+                        var attachment = MiscDBUtil.getFileAttachment(fInfo.Msisdn, fInfo.MessageId);
                         if (attachment == null)
                             return;
 
@@ -357,13 +357,15 @@ namespace windows_client.DbUtils
                         if (fInfo.FileState == FileTransferState.COMPLETED)
                             convMessage.ProgressBarValue = 100;
 
+                        convMessage.SetAttachmentState(state);
+
                         if (fInfo is FileDownloader)
                         {
-                            if (fInfo.FileState == FileTransferState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.Id))
+                            if (fInfo.FileState == FileTransferState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.MessageId))
                             {
                                 if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
                                 {
-                                    string destinationPath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.Id;
+                                    string destinationPath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
                                     string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));
 
                                     using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
@@ -375,12 +377,9 @@ namespace windows_client.DbUtils
                                     }
                                 }
 
-                                FileTransferManager.Instance.TaskMap.Remove(fInfo.Id);
+                                FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
                                 fInfo.Delete();
                             }
-
-                            convMessage.SetAttachmentState(state);
-                            MiscDBUtil.UpdateFileAttachmentState(fInfo.Msisdn, fInfo.Id, state);
                         }
                         else
                         {
@@ -415,20 +414,20 @@ namespace windows_client.DbUtils
 
                                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
 
-                                FileTransferManager.Instance.TaskMap.Remove(fInfo.Id);
+                                FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
                                 fInfo.Delete();
                             }
                             else if (fInfo.FileState == FileTransferState.FAILED)
                             {
+                                FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
                                 convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
                                 NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
                             }
-
-                            convMessage.SetAttachmentState(state);
-                            MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                         }
+
+                        MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Debug.WriteLine("DbConversationListener :: FILE_STATE_CHANGED : FILE_STATE_CHANGED, Exception : " + e.StackTrace);
                     }

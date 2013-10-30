@@ -179,7 +179,7 @@ namespace windows_client.Model
             string filePath = HikeConstants.ANALYTICS_OBJECT_DIRECTORY + "/" + HikeConstants.ANALYTICS_OBJECT_FILE;
             if (eventMap != null && eventMap.Count > 0)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                 {
                     if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
                     {
@@ -199,7 +199,7 @@ namespace windows_client.Model
         private void readObject()
         {
             string filePath = HikeConstants.ANALYTICS_OBJECT_DIRECTORY + "/" + HikeConstants.ANALYTICS_OBJECT_FILE;
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
             {
                 if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY) || !store.FileExists(filePath))
                 {

@@ -164,7 +164,7 @@ namespace windows_client.DbUtils
             {
                 lock (readWriteLock)
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         string fileName = LAST_STATUS_FILENAME;
                         try
@@ -207,7 +207,7 @@ namespace windows_client.DbUtils
             int retMoodId = -1;
             lock (readWriteLock)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                 {
                     try
                     {
@@ -241,7 +241,7 @@ namespace windows_client.DbUtils
         {
             lock (readWriteLock)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                 {
                     try
                     {
@@ -298,7 +298,7 @@ namespace windows_client.DbUtils
             {
                 lock (refreshLock)
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         string fileName = UNREAD_COUNT_FILE;
                         try
@@ -367,7 +367,7 @@ namespace windows_client.DbUtils
 
             lock (refreshLock)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                 {
                     try
                     {
@@ -408,7 +408,7 @@ namespace windows_client.DbUtils
         {
             lock (refreshLock)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                 {
                     try
                     {

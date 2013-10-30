@@ -3749,6 +3749,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter sends a message.
+        /// </summary>
+        public static string Settings_EnterToSendToggleSwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_EnterToSendToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Send free SMS to India.
         /// </summary>
         public static string Settings_FreeSMSToggleSwitchHeader {

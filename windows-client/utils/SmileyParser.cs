@@ -594,7 +594,7 @@ namespace windows_client
             {
                 _emoticonImagesForRecent = new List<Emoticon>();
 
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                 {
                     string fileName = RECENTS_EMOTICONS_FOLDER + "\\" + RECENTS_FILE;
                     if (store.FileExists(fileName))
@@ -624,7 +624,7 @@ namespace windows_client
 
             lock (readWriteLock)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                 {
                     string fileName = RECENTS_EMOTICONS_FOLDER + "\\" + RECENTS_FILE;
                     if (store.FileExists(fileName))
@@ -659,7 +659,7 @@ namespace windows_client
             {
                 await Task.Delay(1);
 
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                 {
                     if (!store.DirectoryExists(RECENTS_EMOTICONS_FOLDER))
                     {

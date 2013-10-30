@@ -81,6 +81,12 @@ namespace windows_client.View
                 autoUpload = true;
             autoUploadToggle.IsChecked = autoUpload;
             this.autoUploadToggle.Content = autoUpload ? AppResources.On : AppResources.Off;
+
+            bool enterToSend;
+            if (!App.appSettings.TryGetValue(App.ENTER_TO_SEND, out enterToSend))
+                enterToSend = true;
+            enterToSendToggle.IsChecked = enterToSend;
+            this.enterToSendToggle.Content = enterToSend ? AppResources.On : AppResources.Off;
         }
 
         private void showFreeSMSToggle_Checked(object sender, RoutedEventArgs e)
@@ -158,7 +164,7 @@ namespace windows_client.View
             App.appSettings.Remove(App.AUTO_DOWNLOAD_SETTING);
             App.appSettings.Save();
 
-            FileTransfers.FileTransferManager.Instance.StartTask();
+            FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
         }
 
         private void autoDownloadToggle_Unchecked(object sender, RoutedEventArgs e)
@@ -181,13 +187,27 @@ namespace windows_client.View
             App.appSettings.Remove(App.AUTO_UPLOAD_SETTING);
             App.appSettings.Save();
 
-            FileTransfers.FileTransferManager.Instance.StartTask();
+            FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
         }
 
         private void autoUploadToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.autoUploadToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.AUTO_UPLOAD_SETTING, false);
+            App.appSettings.Save();
+        }
+
+        private void enterToSendToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.enterToSendToggle.Content = AppResources.On;
+            App.appSettings.Remove(App.ENTER_TO_SEND);
+            App.appSettings.Save();
+        }
+
+        private void enterToSendToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.enterToSendToggle.Content = AppResources.Off;
+            App.WriteToIsoStorageSettings(App.ENTER_TO_SEND, false);
             App.appSettings.Save();
         }
 

@@ -130,7 +130,7 @@ namespace windows_client.utils
                     try
                     {
                         string folder = STICKERS_DIR + "\\" + HIGH_RESOLUTION_DIR + "\\" + _category;
-                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                         {
                             if (!store.DirectoryExists(STICKERS_DIR))
                             {
@@ -188,7 +188,7 @@ namespace windows_client.utils
                     {
                         string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + _category;
 
-                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                         {
                             if (!store.DirectoryExists(STICKERS_DIR))
                             {
@@ -258,7 +258,7 @@ namespace windows_client.utils
                 try
                 {
                     string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + _category;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (!store.DirectoryExists(STICKERS_DIR))
                         {
@@ -316,7 +316,7 @@ namespace windows_client.utils
             {
                 lock (readWriteLock)
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         string fileName = StickerCategory.STICKERS_DIR + "\\" + StickerCategory.HIGH_RESOLUTION_DIR + "\\" + sticker.Category + "\\" + sticker.Id;
                         if (store.FileExists(fileName))
@@ -348,7 +348,7 @@ namespace windows_client.utils
             {
                 string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
 
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                 {
                     if (!store.DirectoryExists(STICKERS_DIR))
                     {
@@ -374,7 +374,7 @@ namespace windows_client.utils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR;
                         string[] folders = store.GetDirectoryNames(folder + "\\*");
@@ -433,7 +433,7 @@ namespace windows_client.utils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
 
@@ -481,7 +481,7 @@ namespace windows_client.utils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
 
@@ -517,7 +517,7 @@ namespace windows_client.utils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
 
@@ -567,7 +567,7 @@ namespace windows_client.utils
                 try
                 {
                     string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (!store.DirectoryExists(STICKERS_DIR))
                         {
@@ -625,7 +625,7 @@ namespace windows_client.utils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         string categoryFolder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR;
                         string[] folders = store.GetDirectoryNames(categoryFolder + "\\*");

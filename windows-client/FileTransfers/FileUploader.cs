@@ -12,77 +12,44 @@ using windows_client.utils;
 using System.IO.IsolatedStorage;
 using System.Net;
 using System.Diagnostics;
+using System.Threading;
 
 namespace windows_client.FileTransfers
 {
-    public class FileUploader : IFileInfo
+    public class FileUploader : FileInfoBase
     {
-        const string FILE_TRANSFER_DIRECTORY_NAME = "FileTransfer";
-        const string FILE_TRANSFER_UPLOAD_DIRECTORY_NAME = "Upload";
-        const int DefaultBlockSize = 1024;
-
         static object readWriteLock = new object();
-
-        public static int MaxBlockSize;
-
         string _boundary = "----------V2ymHFg03ehbqgZCaKO6jy";
-
-        int BlockSize = 1024;
-        int AttemptFactor = 1;
-        
-        public int BytesTransfered
-        {
-            get
-            {
-                return CurrentHeaderPosition == 0 ? 0 : CurrentHeaderPosition - 1;
-            }
-        }
-        public double PercentageTransfer
-        {
-            get
-            {
-                return ((double)BytesTransfered / TotalBytes) * 100;
-            }
-        }
-        public int TotalBytes
-        {
-            get;
-            set;
-        }
         public string Id { get; set; }
-        public int CurrentHeaderPosition { get; set; }
-        public string ContentType { get; set; }
-        public string FileName { get; set; }
-        public string Msisdn { get; set; }
         public JObject SuccessObj { get; set; }
 
-        public FileTransferState FileState { get; set; }
-
         public FileUploader()
+            : base()
         {
         }
 
-        public FileUploader(string msisdn, string key, int size, string fileName, string contentType)
+        public FileUploader(string msisdn, string messageId, int size, string fileName, string contentType)
+            : base(msisdn, messageId, size, fileName, contentType)
         {
-            Msisdn = msisdn;
-            Id = key;
-            TotalBytes = size;
-            FileName = fileName;
-            ContentType = contentType;
-            FileState = FileTransferState.NOT_STARTED;
+            Id = Guid.NewGuid().ToString();
         }
 
-        public void Write(BinaryWriter writer)
+        public override void Write(BinaryWriter writer)
         {
+            if (Id == null)
+                writer.WriteStringBytes("*@N@*");
+            else
+                writer.WriteStringBytes(Id);
+
             if (Msisdn == null)
                 writer.WriteStringBytes("*@N@*");
             else
                 writer.WriteStringBytes(Msisdn);
 
-            if (Id == null)
+            if (MessageId == null)
                 writer.WriteStringBytes("*@N@*");
             else
-                writer.WriteStringBytes(Id);
+                writer.WriteStringBytes(MessageId);
 
             writer.Write(CurrentHeaderPosition);
 
@@ -106,17 +73,22 @@ namespace windows_client.FileTransfers
             writer.Write(TotalBytes);
         }
 
-        public void Read(BinaryReader reader)
+        public override void Read(BinaryReader reader)
         {
             int count = reader.ReadInt32();
+            Id = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (Id == "*@N@*")
+                Id = null;
+
+            count = reader.ReadInt32();
             Msisdn = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
             if (Msisdn == "*@N@*")
                 Msisdn = null;
 
             count = reader.ReadInt32();
-            Id = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-            if (Id == "*@N@*")
-                Id = null;
+            MessageId = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (MessageId == "*@N@*")
+                MessageId = null;
 
             CurrentHeaderPosition = reader.ReadInt32();
 
@@ -145,14 +117,14 @@ namespace windows_client.FileTransfers
             TotalBytes = reader.ReadInt32();
         }
 
-        public void Save()
+        public override void Save()
         {
             lock (readWriteLock)
             {
                 try
                 {
-                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + Id;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + MessageId;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
                             store.CreateDirectory(FILE_TRANSFER_DIRECTORY_NAME);
@@ -182,15 +154,15 @@ namespace windows_client.FileTransfers
             }
         }
 
-        public void Delete()
+        public override void Delete()
         {
             lock (readWriteLock)
             {
                 try
                 {
-                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + Id;
+                    string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + MessageId;
 
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
                             return;
@@ -209,7 +181,7 @@ namespace windows_client.FileTransfers
             }
         }
 
-        public void Start(object obj)
+        public override void Start(object obj)
         {
             var req = HttpWebRequest.Create(new Uri(HikeConstants.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
 
@@ -276,16 +248,14 @@ namespace windows_client.FileTransfers
                 {
                     FileState = FileTransferState.COMPLETED;
 
-                    if (StatusChanged != null)
-                        StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+                    OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 }
                 else
                 {
                     CurrentHeaderPosition = index + 1;
                     FileState = FileTransferState.STARTED;
 
-                    if (StatusChanged != null)
-                        StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+                    OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
 
                     BeginUploadPostRequest();
                 }
@@ -296,8 +266,7 @@ namespace windows_client.FileTransfers
                 CurrentHeaderPosition = index;
                 FileState = FileTransferState.STARTED;
 
-                if (StatusChanged != null)
-                    StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+                OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
 
                 BeginUploadPostRequest();
             }
@@ -449,6 +418,12 @@ namespace windows_client.FileTransfers
 
         void ProcessUploadPostResponse(string data, HttpStatusCode code)
         {
+            if (FileState == FileTransferState.CANCELED)
+            {
+                Delete();
+                return;
+            } 
+
             JObject jObject = null;
 
             if (code == HttpStatusCode.OK)
@@ -469,68 +444,61 @@ namespace windows_client.FileTransfers
                         stateUpdated = true;
                     }
 
-                    if (StatusChanged != null)
-                        StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, stateUpdated));
+                    OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, stateUpdated));
                 }
             }
             else if (code == HttpStatusCode.Created)
             {
-                if (FileState == FileTransferState.CANCELED)
-                {
-                    Delete();                    
-                }
-                else
-                {
-                    CurrentHeaderPosition += BlockSize;
+                CurrentHeaderPosition += BlockSize;
 
-                    if (FileState == FileTransferState.STARTED)
+                if (FileState == FileTransferState.STARTED)
+                {
+                    var newSize = (ChunkFactor + ChunkFactor) * DefaultBlockSize;
+
+                    if (newSize <= MaxBlockSize)
                     {
-                        var newSize = (AttemptFactor + AttemptFactor) * DefaultBlockSize;
-
-                        if (newSize <= MaxBlockSize)
-                        {
-                            AttemptFactor += AttemptFactor;
-                            BlockSize = AttemptFactor * DefaultBlockSize;
-                        }
-                        else
-                        {
-                            AttemptFactor /= 2;
-                            BlockSize = MaxBlockSize;
-                        }
+                        ChunkFactor += ChunkFactor;
+                        BlockSize = ChunkFactor * DefaultBlockSize;
                     }
                     else
                     {
-                        AttemptFactor = 1;
-                        BlockSize = DefaultBlockSize;
+                        ChunkFactor /= 2;
+                        BlockSize = MaxBlockSize;
                     }
-
-                    if (FileState == FileTransferState.STARTED || (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
-                        BeginUploadPostRequest();
-
-                    if (StatusChanged != null)
-                        StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, false));
                 }
+                else
+                {
+                    ChunkFactor = 1;
+                    BlockSize = DefaultBlockSize;
+                }
+
+                if (FileState == FileTransferState.STARTED || (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
+                    BeginUploadPostRequest();
+
+                OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, false));
             }
             else if (code == HttpStatusCode.BadRequest)
             {
                 FileState = FileTransferState.FAILED;
-
-                if (StatusChanged != null)
-                    StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+                OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
             }
             else
             {
-                //app suspension and disconnected case
-                FileState = FileTransferState.PAUSED;
-
-                if (StatusChanged != null)
-                    StatusChanged(this, new FileTransferSatatusChangedEventArgs(this, true));
+                if (ShouldRetry())
+                {
+                    Start(null);
+                }
+                else
+                {
+                    FileState = FileTransferState.FAILED;
+                    OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                }
             }
         }
 
         public byte[] ReadChunkFromIsolatedStorage(int position, int size)
         {
-            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + Id;
+            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
             string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
             byte[] bytes = new byte[size];
 
@@ -542,7 +510,7 @@ namespace windows_client.FileTransfers
                 if (!myIsolatedStorage.FileExists(filePath))
                     return null;
 
-                using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(filePath, FileMode.OpenOrCreate, myIsolatedStorage))
+                using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(filePath, FileMode.Open, myIsolatedStorage))
                 {
                     fileStream.Seek(position, SeekOrigin.Begin);
 
@@ -552,10 +520,14 @@ namespace windows_client.FileTransfers
                     }
                 }
             }
-         
+
             return bytes;
         }
 
-        public event EventHandler<FileTransferSatatusChangedEventArgs> StatusChanged;
+        protected override void OnStatusChanged(FileTransferSatatusChangedEventArgs e)
+        {
+            // Call the base class event invocation method. 
+            base.OnStatusChanged(e);
+        }
     }
 }
