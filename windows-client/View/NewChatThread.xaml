@@ -263,7 +263,7 @@
                                                     <Image Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="1" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
                                                 </Grid>
                                                 <Grid Grid.Row="1">
-                                                    <TextBlock Text="{Binding FileSize}" HorizontalAlignment="Left" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"/>
+                                                    <TextBlock Text="{Binding FileSize}" Visibility="{Binding FileSizeVisibility}" HorizontalAlignment="Left" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"/>
                                                     <TextBlock Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"/>
                                                 </Grid>
                                             </Grid>
@@ -380,7 +380,7 @@
                                                     </Grid>
                                                 </Grid>
                                                 <Grid Grid.Row="1">
-                                                    <TextBlock Text="{Binding FileSize}" HorizontalAlignment="Left" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"/>
+                                                    <TextBlock Text="{Binding FileSize}" Visibility="{Binding FileSizeVisibility}" HorizontalAlignment="Left" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"/>
                                                     <TextBlock Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"/>
                                                 </Grid>
                                             </Grid>

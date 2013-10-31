@@ -804,6 +804,7 @@ namespace windows_client.Model
                 NotifyPropertyChanging("PlayIconVisibility");
                 NotifyPropertyChanging("PlayIconImage");
                 NotifyPropertyChanged("ProgressBarVisibility");
+                NotifyPropertyChanged("FileSizeVisibility");
                 NotifyPropertyChanged("ProgressBarValue");
                 NotifyPropertyChanged("ProgressText");
             }
@@ -838,6 +839,17 @@ namespace windows_client.Model
                 }
                 else
                     return Visibility.Collapsed;
+            }
+        }
+
+        public Visibility FileSizeVisibility
+        {
+            get
+            {
+                if (FileAttachment != null && (FileAttachment.FileSize <= 0 || FileAttachment.FileState == Attachment.AttachmentState.COMPLETED))
+                    return Visibility.Collapsed;
+                else
+                    return Visibility.Visible;
             }
         }
 
@@ -1768,6 +1780,7 @@ namespace windows_client.Model
             NotifyPropertyChanged("SdrImage");
             NotifyPropertyChanged("PlayIconVisibility");
             NotifyPropertyChanged("PlayIconImage");
+            NotifyPropertyChanged("FileSizeVisibility");
 
             SdrImageVisibility = attachmentState != Attachment.AttachmentState.STARTED
                 && attachmentState != Attachment.AttachmentState.PAUSED
