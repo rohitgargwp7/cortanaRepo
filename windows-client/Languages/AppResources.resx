@@ -971,15 +971,15 @@ Download it now http://hike.in and join the fun!</value>
     <value>Your profile has been updated.</value>
   </data>
   <data name="Help_AppVersionTitle" xml:space="preserve">
-    <value>Version</value>
+    <value>version</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_ContactUsText" xml:space="preserve">
-    <value>Contact our support team for help</value>
+    <value>contact our support team for help</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_ContactUsTitle" xml:space="preserve">
-    <value>Contact Us</value>
+    <value>contact us</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_EmailCarrier" xml:space="preserve">
@@ -1011,15 +1011,15 @@ Download it now http://hike.in and join the fun!</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_FAQsTxt" xml:space="preserve">
-    <value>Frequently asked questions</value>
+    <value>frequently asked questions</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_LegalText" xml:space="preserve">
-    <value>Read Terms of service and privacy policy</value>
+    <value>read terms of service and privacy policy</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_LegalTitle" xml:space="preserve">
-    <value>Legal</value>
+    <value>legal</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_WalkthroughText" xml:space="preserve">
@@ -1031,11 +1031,11 @@ Download it now http://hike.in and join the fun!</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_RateAppText" xml:space="preserve">
-    <value>Rate and review hike on the marketplace</value>
+    <value>rate and review hike on the marketplace</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_RateAppTitle" xml:space="preserve">
-    <value>Rate the App</value>
+    <value>rate the app</value>
     <comment>xaml</comment>
   </data>
   <data name="Off" xml:space="preserve">
@@ -1289,10 +1289,10 @@ Download it now http://hike.in and join the fun!</value>
     <value>You</value>
   </data>
   <data name="Help_System_Health_Text" xml:space="preserve">
-    <value>Check hike status on Twitter</value>
+    <value>check hike status on Twitter</value>
   </data>
   <data name="Help_System_Health_Title" xml:space="preserve">
-    <value>System Health</value>
+    <value>system health</value>
   </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
     <value>Contact Info</value>

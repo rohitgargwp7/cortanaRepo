@@ -1904,7 +1904,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version.
+        ///   Looks up a localized string similar to version.
         /// </summary>
         public static string Help_AppVersionTitle {
             get {
@@ -1913,7 +1913,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Contact our support team for help.
+        ///   Looks up a localized string similar to contact our support team for help.
         /// </summary>
         public static string Help_ContactUsText {
             get {
@@ -1922,7 +1922,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Contact Us.
+        ///   Looks up a localized string similar to contact us.
         /// </summary>
         public static string Help_ContactUsTitle {
             get {
@@ -1994,7 +1994,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Frequently asked questions.
+        ///   Looks up a localized string similar to frequently asked questions.
         /// </summary>
         public static string Help_FAQsTxt {
             get {
@@ -2003,7 +2003,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Read Terms of service and privacy policy.
+        ///   Looks up a localized string similar to read terms of service and privacy policy.
         /// </summary>
         public static string Help_LegalText {
             get {
@@ -2012,7 +2012,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Legal.
+        ///   Looks up a localized string similar to legal.
         /// </summary>
         public static string Help_LegalTitle {
             get {
@@ -2021,7 +2021,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rate and review hike on the marketplace.
+        ///   Looks up a localized string similar to rate and review hike on the marketplace.
         /// </summary>
         public static string Help_RateAppText {
             get {
@@ -2030,7 +2030,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rate the App.
+        ///   Looks up a localized string similar to rate the app.
         /// </summary>
         public static string Help_RateAppTitle {
             get {
@@ -2039,7 +2039,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check hike status on Twitter.
+        ///   Looks up a localized string similar to check hike status on Twitter.
         /// </summary>
         public static string Help_System_Health_Text {
             get {
@@ -2048,7 +2048,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to System Health.
+        ///   Looks up a localized string similar to system health.
         /// </summary>
         public static string Help_System_Health_Title {
             get {
