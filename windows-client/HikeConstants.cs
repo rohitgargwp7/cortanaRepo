@@ -43,6 +43,7 @@ namespace windows_client
         public static readonly string APP_ID = "appID";
 
 
+        public static readonly string LAST_NOTIFICATION_TIME = "lastNotTime";
         public static readonly string SOUND_PREF = "soundPref";
         public static readonly string VIBRATE_PREF = "vibratePref";
         public static readonly string HIKEBOT = "TD-HIKE";
