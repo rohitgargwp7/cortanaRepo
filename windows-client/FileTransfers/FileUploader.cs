@@ -185,6 +185,12 @@ namespace windows_client.FileTransfers
         {
             var req = HttpWebRequest.Create(new Uri(HikeConstants.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
 
+            if (!App.appSettings.Contains(App.UID_SETTING))
+            {
+                Delete();
+                return;
+            }
+
             AccountUtils.addToken(req);
 
             req.Method = "GET";
@@ -275,6 +281,12 @@ namespace windows_client.FileTransfers
         void BeginUploadPostRequest()
         {
             var req = HttpWebRequest.Create(new Uri(HikeConstants.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
+
+            if (!App.appSettings.Contains(App.UID_SETTING))
+            {
+                Delete();
+                return;
+            }
 
             AccountUtils.addToken(req);
 

@@ -457,7 +457,7 @@ namespace windows_client.FileTransfers
 
         void SaveTaskData(FileInfoBase fileInfo)
         {
-            if (App.MSISDN != null)
+            if (App.appSettings.Contains(App.UID_SETTING))
                 fileInfo.Save();
         }
 
