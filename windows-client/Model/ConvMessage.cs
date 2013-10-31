@@ -817,7 +817,7 @@ namespace windows_client.Model
         {
             get
             {
-                if ((_progressBarValue <= 0 || _progressBarValue >= 100) && FileAttachment.FileSize <= 0)
+                if ((_progressBarValue <= 0 || _progressBarValue >= 100) && FileAttachment!=null && FileAttachment.FileSize <= 0)
                 {
                     return Visibility.Collapsed;
                 }
