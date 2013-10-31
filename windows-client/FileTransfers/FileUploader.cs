@@ -351,7 +351,6 @@ namespace windows_client.FileTransfers
             byte[] dataBytes = (byte[])vars[1];
             postStream.Write(dataBytes, 0, dataBytes.Length);
             postStream.Close();
-            postStream.Close();
             req.BeginGetResponse(UploadPostResponseCallback, new object[] { req });
         }
 
