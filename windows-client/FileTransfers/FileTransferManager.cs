@@ -343,7 +343,8 @@ namespace windows_client.FileTransfers
                                     }
                                 }
 
-                                PendingTasks.Enqueue(fileInfo);
+                                if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && fileInfo.FileState != FileTransferState.FAILED)
+                                    PendingTasks.Enqueue(fileInfo);
                             }
                         }
                     }
@@ -386,7 +387,8 @@ namespace windows_client.FileTransfers
                                     }
                                 }
 
-                                PendingTasks.Enqueue(fileInfo);
+                                if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && fileInfo.FileState != FileTransferState.FAILED)
+                                    PendingTasks.Enqueue(fileInfo);
                             }
                         }
                     }

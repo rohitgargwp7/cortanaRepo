@@ -296,7 +296,6 @@ namespace windows_client.FileTransfers
 
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = FileName;
-            req.Headers["X-Thumbnail-Required"] = "0";
             req.Headers["X-SESSION-ID"] = Id;
 
             var bytesLeft = TotalBytes - CurrentHeaderPosition;
