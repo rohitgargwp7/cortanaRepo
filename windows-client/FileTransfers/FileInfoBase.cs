@@ -26,7 +26,7 @@ namespace windows_client.FileTransfers
         {
             get
             {
-                return ((double)BytesTransfered / TotalBytes) * 100;
+                return TotalBytes == 0 ? 0 : ((double)BytesTransfered / TotalBytes) * 100;
             }
         }
         public int TotalBytes { get; set; }

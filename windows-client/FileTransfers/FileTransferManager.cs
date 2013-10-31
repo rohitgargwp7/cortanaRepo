@@ -457,8 +457,27 @@ namespace windows_client.FileTransfers
 
         void SaveTaskData(FileInfoBase fileInfo)
         {
-            if (App.MSISDN != null)
+            if (App.appSettings.Contains(App.UID_SETTING))
                 fileInfo.Save();
+        }
+
+        public void ClearTasks()
+        {
+            foreach (var key in TaskMap.Keys)
+            {
+                TaskMap[key].FileState = FileTransferState.CANCELED;
+                TaskMap[key].Delete();
+            }
+
+            TaskMap.Clear();
+
+            foreach (var task in PendingTasks)
+            {
+                task.FileState = FileTransferState.CANCELED;
+                task.Delete();
+            }
+            
+            PendingTasks.Clear();
         }
 
         void File_StatusChanged(object sender, FileTransferSatatusChangedEventArgs e)

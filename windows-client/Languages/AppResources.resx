@@ -847,7 +847,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>General Text</comment>
   </data>
   <data name="Messaging_Txt" xml:space="preserve">
-    <value>Messaging</value>
+    <value>messaging</value>
     <comment>General Text</comment>
   </data>
   <data name="NamingConvention_Txt" xml:space="preserve">
@@ -1963,5 +1963,14 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Settings_EnterToSendToggleSwitchHeader" xml:space="preserve">
     <value>Enter sends a message</value>
+  </data>
+  <data name="Email_Header_Txt" xml:space="preserve">
+    <value>email</value>
+  </data>
+  <data name="Free_SMS_Txt" xml:space="preserve">
+    <value>FREE SMS</value>
+  </data>
+  <data name="Invite_Header_Txt" xml:space="preserve">
+    <value>invite</value>
   </data>
 </root>
