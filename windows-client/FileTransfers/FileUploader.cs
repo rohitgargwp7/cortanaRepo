@@ -28,8 +28,8 @@ namespace windows_client.FileTransfers
         {
         }
 
-        public FileUploader(string msisdn, string messageId, int size, string fileName, string contentType)
-            : base(msisdn, messageId, size, fileName, contentType)
+        public FileUploader(string msisdn, string messageId, string fileName, string contentType, int size)
+            : base(msisdn, messageId, fileName, contentType, size)
         {
             Id = Guid.NewGuid().ToString();
         }

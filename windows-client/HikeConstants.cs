@@ -56,6 +56,7 @@ namespace windows_client
         public static readonly string FILE_NAME = "fn";
         public static readonly string FILE_RESPONSE_DATA = "data";
         public static readonly string FILE_KEY = "fk";
+        public static readonly string FILE_SIZE = "fs";
         public static readonly string FILE_THUMBNAIL = "tn";
         public static readonly string FILE_CONTENT_TYPE = "ct";
         public static readonly string FILES_DATA = "files";

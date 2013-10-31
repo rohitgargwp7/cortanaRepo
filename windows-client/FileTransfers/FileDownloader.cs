@@ -27,8 +27,8 @@ namespace windows_client.FileTransfers
         {
         }
 
-        public FileDownloader(string msisdn, string messageId, string fileName, string contentType)
-            : base(msisdn, messageId, 0, fileName, contentType)
+        public FileDownloader(string msisdn, string messageId, string fileName, string contentType, int size)
+            : base(msisdn, messageId, fileName, contentType, size)
         {
         }
 

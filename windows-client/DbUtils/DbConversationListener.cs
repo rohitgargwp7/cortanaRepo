@@ -388,6 +388,11 @@ namespace windows_client.DbUtils
                                 JObject data = (fInfo as FileUploader).SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
                                 var fileKey = data[HikeConstants.FILE_KEY].ToString();
 
+                                int fileSize = 0;
+                                JToken fs;
+                                if (data.TryGetValue(HikeConstants.FILE_SIZE, out fs))
+                                    fileSize = Convert.ToInt32(fs.ToString());
+
                                 if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
                                 {
                                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
@@ -409,6 +414,7 @@ namespace windows_client.DbUtils
                                         "/" + fileKey;
                                 }
 
+                                convMessage.FileAttachment.FileSize = fileSize;
                                 convMessage.FileAttachment.FileKey = fileKey;
                                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 

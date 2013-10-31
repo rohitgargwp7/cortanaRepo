@@ -2091,7 +2091,7 @@ namespace windows_client.View
                             bool taskPlaced = false;
 
                             if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
-                                taskPlaced = FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType);
+                                taskPlaced = FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
                             else if (FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
                                 taskPlaced = true;
 
@@ -2146,7 +2146,7 @@ namespace windows_client.View
                                 transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
                             }
                             else
-                                transferPlaced = FileTransferManager.Instance.DownloadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType);
+                                transferPlaced = FileTransferManager.Instance.DownloadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
                         }
 
                         if (transferPlaced)
@@ -3224,17 +3224,18 @@ namespace windows_client.View
                 else
                     fileName = fileName.Substring(fileName.LastIndexOf("/") + 1) + ".jpg";
 
-                convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.STARTED);
-                convMessage.FileAttachment.ContentType = HikeConstants.IMAGE;
-                convMessage.Message = AppResources.Image_Txt;
-
-                AddNewMessageToUI(convMessage, false);
-
                 using (var msLargeImage = new MemoryStream())
                 {
                     writeableBitmap.SaveJpeg(msLargeImage, imageWidth, imageHeight, 0, 65);
                     fileBytes = msLargeImage.ToArray();
                 }
+
+                convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.STARTED, fileBytes.Length);
+                convMessage.FileAttachment.ContentType = HikeConstants.IMAGE;
+                convMessage.Message = AppResources.Image_Txt;
+
+                AddNewMessageToUI(convMessage, false);
+
                 object[] vals = new object[3];
                 vals[0] = convMessage;
                 vals[1] = fileBytes;
@@ -4694,7 +4695,7 @@ namespace windows_client.View
                     MetaDataString = locationJSONString
                 };
 
-                convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED);
+                convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED, locationBytes.Length);
                 convMessage.FileAttachment.ContentType = HikeConstants.LOCATION_CONTENT_TYPE;
 
                 AddNewMessageToUI(convMessage, false);
@@ -4752,7 +4753,7 @@ namespace windows_client.View
                 if (isAudio)
                 {
                     fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp3";
-                    convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
+                    convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED, fileBytes.Length);
                     convMessage.FileAttachment.ContentType = "audio/voice";
 
                     var fileInfo = new JObject();
@@ -4771,7 +4772,7 @@ namespace windows_client.View
                 else
                 {
                     fileName = "vid_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp4";
-                    convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.STARTED);
+                    convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.STARTED, fileBytes.Length);
                     convMessage.FileAttachment.ContentType = "video/mp4";
                     convMessage.Message = AppResources.Video_Txt;
                 }
@@ -4800,7 +4801,7 @@ namespace windows_client.View
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
 
-                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
+                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED, 0);
                 convMessage.FileAttachment.ContentType = HikeConstants.CT_CONTACT;
                 convMessage.Message = AppResources.ContactTransfer_Text;
                 convMessage.MetaDataString = contactJson.ToString(Newtonsoft.Json.Formatting.None);

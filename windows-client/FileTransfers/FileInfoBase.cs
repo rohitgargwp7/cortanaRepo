@@ -41,7 +41,7 @@ namespace windows_client.FileTransfers
         {
         }
 
-        public FileInfoBase(string msisdn, string messageId, int size, string fileName, string contentType)
+        public FileInfoBase(string msisdn, string messageId, string fileName, string contentType, int size)
         {
             Msisdn = msisdn;
             MessageId = messageId;
