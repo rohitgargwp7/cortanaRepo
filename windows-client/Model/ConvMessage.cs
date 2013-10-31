@@ -846,10 +846,15 @@ namespace windows_client.Model
         {
             get
             {
-                if (FileAttachment != null && (FileAttachment.FileSize <= 0 || FileAttachment.FileState == Attachment.AttachmentState.COMPLETED))
-                    return Visibility.Collapsed;
+                if (FileAttachment != null)
+                {
+                    if (FileAttachment.FileSize <= 0 || FileAttachment.FileState == Attachment.AttachmentState.COMPLETED)
+                        return Visibility.Collapsed;
+                    else
+                        return Visibility.Visible;
+                }
                 else
-                    return Visibility.Visible;
+                    return Visibility.Collapsed;
             }
         }
 
