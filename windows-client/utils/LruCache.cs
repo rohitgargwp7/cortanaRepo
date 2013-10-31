@@ -106,10 +106,8 @@ namespace windows_client.utils
         {
             lock (lruLinkedList)
             {
-                foreach (NodeInfo node in lruLinkedList)
-                {
-                    Delete(node);
-                }
+                lruLinkedList.Clear();
+                cachedNodesDictionary.Clear();
             }
         }
         private void RemoveExpiredElements(object stateInfo)

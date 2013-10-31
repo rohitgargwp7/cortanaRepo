@@ -1833,9 +1833,8 @@ namespace windows_client.View
                 if (this.ocMessages.Count > 0 && (!IsMute || this.ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
                 {
                     JumpToBottomGrid.Visibility = Visibility.Collapsed;
-
                     if (vScrollBar != null && llsViewPort != null && ((vScrollBar.Maximum - vScrollBar.Value) < 2000))
-                        llsViewPort.SetViewportOrigin(new System.Windows.Point(0, vScrollBar.Maximum));
+                        llsViewPort.SetViewportOrigin(new System.Windows.Point(0, llsViewPort.Bounds.Height));
                     else
                         llsMessages.ScrollTo(ocMessages[ocMessages.Count - 1]);
 
