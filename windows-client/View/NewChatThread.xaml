@@ -262,7 +262,10 @@
                                                     <Image Grid.Row="1" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
                                                     <Image Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" Grid.Row="1" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
                                                 </Grid>
-                                                <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                                <Grid Grid.Row="1">
+                                                    <TextBlock Text="{Binding FileSize}" HorizontalAlignment="Left" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"/>
+                                                    <TextBlock Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"/>
+                                                </Grid>
                                             </Grid>
                                         </Grid>
                                         <Button Grid.Column="1" Style="{StaticResource ButtonNoStyle}" HorizontalAlignment="Left" Margin="10,2,-12,0" Visibility="{Binding PauseResumeImageVisibility}" VerticalAlignment="Center" Click="PauseResume_Tapped" Tag="{Binding MessageId}">
@@ -275,7 +278,7 @@
                                                     </Grid.RowDefinitions>
                                                     <Image Source="{Binding PauseResumeImage}" Height="20" VerticalAlignment="Center" Stretch="Uniform" HorizontalAlignment="Left" Margin="0,5,0,0"/>
                                                     <ProgressBar Value="{Binding ProgressBarValue}" Margin="-12,5,0,0" Width="170" Background="#e1e1e1" Foreground="#adadad" Minimum="0" Maximum="100" Grid.Row="1"/>
-                                                    <TextBlock Text="{Binding ProgressText}" Margin="0,5,0,0" Foreground="{StaticResource PhoneForegroundBrush}" FontSize="14" VerticalAlignment="Center" Grid.Row="2"/>
+                                                    <TextBlock Text="{Binding ProgressText}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Foreground="{StaticResource PhoneForegroundBrush}" FontSize="14" VerticalAlignment="Center" Grid.Row="2"/>
                                                 </Grid>
                                             </Button.Content>
                                         </Button>
@@ -376,7 +379,10 @@
                                                         </Grid>
                                                     </Grid>
                                                 </Grid>
-                                                <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"  />
+                                                <Grid Grid.Row="1">
+                                                    <TextBlock Text="{Binding FileSize}" HorizontalAlignment="Left" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"/>
+                                                    <TextBlock Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding TimeStampForeGround}"/>
+                                                </Grid>
                                             </Grid>
                                         </Grid>
                                         <Button Grid.Column="1" Style="{StaticResource ButtonNoStyle}" HorizontalAlignment="Left" Margin="10,2,-12,0" Visibility="{Binding PauseResumeImageVisibility}" VerticalAlignment="Center" Click="PauseResume_Tapped" Tag="{Binding MessageId}">
@@ -389,7 +395,7 @@
                                                     </Grid.RowDefinitions>
                                                     <Image Source="{Binding PauseResumeImage}" Height="20" VerticalAlignment="Center" Stretch="Uniform" HorizontalAlignment="Left" Margin="0,5,0,0"/>
                                                     <ProgressBar Value="{Binding ProgressBarValue}" Margin="-12,5,0,0" Width="170" Background="#e1e1e1" Foreground="#adadad" Minimum="0" Maximum="100" Grid.Row="1"/>
-                                                    <TextBlock Text="{Binding ProgressText}" Margin="0,5,0,0" Foreground="{StaticResource PhoneForegroundBrush}" FontSize="14" VerticalAlignment="Center" Grid.Row="2"/>
+                                                    <TextBlock Text="{Binding ProgressText}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Foreground="{StaticResource PhoneForegroundBrush}" FontSize="14" VerticalAlignment="Center" Grid.Row="2"/>
                                                 </Grid>
                                             </Button.Content>
                                         </Button>

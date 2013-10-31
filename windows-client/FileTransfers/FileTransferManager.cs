@@ -136,14 +136,14 @@ namespace windows_client.FileTransfers
             return false;
         }
 
-        public bool DownloadFile(string msisdn, string messageId, string fileName, string contentType)
+        public bool DownloadFile(string msisdn, string messageId, string fileName, string contentType, int size)
         {
             if (PendingTasks.Count >= MaxQueueCount)
                 return false;
 
             if (!DoesTransferExist(messageId, false))
             {
-                FileDownloader fInfo = new FileDownloader(msisdn, messageId, fileName, contentType);
+                FileDownloader fInfo = new FileDownloader(msisdn, messageId, fileName, contentType, size);
 
                 PendingTasks.Enqueue(fInfo);
                 SaveTaskData(fInfo);
@@ -160,7 +160,7 @@ namespace windows_client.FileTransfers
         {
             if (!DoesTransferExist(messageId, false))
             {
-                FileUploader fInfo = new FileUploader(msisdn, messageId, size, fileName, contentType);
+                FileUploader fInfo = new FileUploader(msisdn, messageId, fileName, contentType, size);
 
                 SaveTaskData(fInfo);
 

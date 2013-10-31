@@ -617,6 +617,7 @@ namespace windows_client.Model
             set
             {
                 imageDownloadFailed = value;
+                NotifyPropertyChanged("FileSize");
                 NotifyPropertyChanged("MessageImage");
                 NotifyPropertyChanged("ShowForwardMenu");
                 NotifyPropertyChanged("IsStickerVisible");
@@ -816,7 +817,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (_progressBarValue <= 0 || _progressBarValue >= 100)
+                if ((_progressBarValue <= 0 || _progressBarValue >= 100) && FileAttachment!=null && FileAttachment.FileSize <= 0)
                 {
                     return Visibility.Collapsed;
                 }
@@ -984,6 +985,17 @@ namespace windows_client.Model
             set
             {
                 _groupMemeberName = value;
+            }
+        }
+
+        public String FileSize
+        {
+            get
+            {
+                if (FileAttachment != null && FileAttachment.FileSize != 0)
+                    return Utils.ConvertToStorageSizeString(FileAttachment.FileSize);
+                else
+                    return String.Empty;
             }
         }
 
@@ -1242,6 +1254,7 @@ namespace windows_client.Model
                         else
                             singleFileInfo = new JObject();
                         singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
+                        singleFileInfo[HikeConstants.FILE_SIZE] = FileAttachment.FileSize;
                         singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                         singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
 
@@ -1270,6 +1283,7 @@ namespace windows_client.Model
                         {
                             singleFileInfo = JObject.Parse(this.MetaDataString);
                         }
+                        singleFileInfo[HikeConstants.FILE_SIZE] = FileAttachment.FileSize;
                         singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                         singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
                         singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
@@ -1486,11 +1500,18 @@ namespace windows_client.Model
                         JToken fileKey;
                         JToken thumbnail;
                         JToken contentType;
+                        JToken fileSize;
+
+                        int fs = 0;
 
                         fileObject.TryGetValue(HikeConstants.FILE_CONTENT_TYPE, out contentType);
                         fileObject.TryGetValue(HikeConstants.FILE_NAME, out fileName);
                         fileObject.TryGetValue(HikeConstants.FILE_KEY, out fileKey);
                         fileObject.TryGetValue(HikeConstants.FILE_THUMBNAIL, out thumbnail);
+                       
+                        if( fileObject.TryGetValue(HikeConstants.FILE_SIZE, out fileSize))
+                           fs = Convert.ToInt32(fileSize.ToString());
+                        
                         this.HasAttachment = true;
 
                         byte[] base64Decoded = null;
@@ -1500,7 +1521,7 @@ namespace windows_client.Model
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
                             this.FileAttachment = new Attachment(fileName == null ? AppResources.Location_Txt : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
-                        contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                        contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED, fs);
 
                             JObject locationFile = new JObject();
                             locationFile[HikeConstants.LATITUDE] = fileObject[HikeConstants.LATITUDE];
@@ -1514,7 +1535,7 @@ namespace windows_client.Model
                         else
                         {
                             this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
-                           contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                           contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED, fs);
                         }
 
                         if (contentType.ToString().Contains(HikeConstants.CONTACT) || contentType.ToString().Contains(HikeConstants.AUDIO))
