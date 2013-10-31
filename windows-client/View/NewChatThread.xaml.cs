@@ -3814,6 +3814,9 @@ namespace windows_client.View
 
         private void changeInviteButtonVisibility()
         {
+            if (appBar == null || appBar.MenuItems == null || appBar.MenuItems.Count == 0)
+                return;
+
             if (isOnHike)
             {
                 if (inviteMenuItem != null && appBar.MenuItems.Contains(inviteMenuItem))
