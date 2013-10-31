@@ -17,6 +17,7 @@ namespace windows_client.utils
 {
     public class Utils
     {
+        private static long MIN_TIME_BETWEEN_NOTIFICATIONS = 5 * 1000;
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
         public static void savedAccountCredentials(JObject obj)
@@ -580,6 +581,14 @@ namespace windows_client.utils
             data.Add(HikeConstants.Extras.SEND_BOT, true);
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
+
+        public static bool ShowNotificationAlert()
+        {
+            long lastNotificationTime = 0;
+            appSettings.TryGetValue(HikeConstants.LAST_NOTIFICATION_TIME, out lastNotificationTime);
+
+            return lastNotificationTime == 0 || ((DateTime.Now.Ticks - lastNotificationTime) / TimeSpan.TicksPerMillisecond > MIN_TIME_BETWEEN_NOTIFICATIONS);
         }
     }
 }
