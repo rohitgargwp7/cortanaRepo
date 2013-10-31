@@ -817,11 +817,27 @@ namespace windows_client.Model
         {
             get
             {
-                if ((_progressBarValue <= 0 || _progressBarValue >= 100) && FileAttachment!=null && FileAttachment.FileSize <= 0)
+                if (FileAttachment != null)
                 {
-                    return Visibility.Collapsed;
+                    if (FileAttachment.ContentType.Contains(HikeConstants.LOCATION) || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                    {
+                        if (_progressBarValue <= 0 || _progressBarValue >= 100)
+                            return Visibility.Collapsed;
+                        else
+                            return Visibility.Visible;
+                    }
+                    else
+                    {
+                        if ((_progressBarValue <= 0 || _progressBarValue >= 100) && FileAttachment.FileSize <= 0)
+                        {
+                            return Visibility.Collapsed;
+                        }
+                        else
+                            return Visibility.Visible;
+                    }
                 }
-                return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
             }
         }
 
