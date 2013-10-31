@@ -19,12 +19,11 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="646"/>
-            <RowDefinition/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="{Binding Path= LocalizedResources.Invite_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP Semibold" FontSize="23" FontStretch="Expanded"  Margin="25,25,0,0"/>
-    
+        <TextBlock Text="{Binding Path= LocalizedResources.Invite_Header_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="68" Margin="25,0,0,0"/>
+        
         <Grid Grid.Row="1" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -32,10 +31,10 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Width="430" HorizontalAlignment="Left" Tap="Messaging_Tap"  Grid.Row="0" Text="{Binding Path= LocalizedResources.Messaging_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,55,0,0"/>
+            <TextBlock Width="430" HorizontalAlignment="Left" Tap="Messaging_Tap"  Grid.Row="0" Text="{Binding Path= LocalizedResources.Messaging_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,20,0,0"/>
             <TextBlock Width="430" HorizontalAlignment="Left" Tap="Facebook_tap" Grid.Row="1" Text="{Binding Path= LocalizedResources.FreeSMS_fbConnStatus_TxtBlk, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,50,0,0"/>
             <TextBlock Width="430" HorizontalAlignment="Left" Tap="Twitter_Tap" Grid.Row="2" Text="{Binding Path= LocalizedResources.FreeSMS_twConnStatus_TxtBlk, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,50,0,0"/>
-            <TextBlock Width="430" HorizontalAlignment="Left" Tap="Email_Tap" Grid.Row="3" Text="{Binding Path= LocalizedResources.Email_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,55,0,0"/>
+            <TextBlock Width="430" HorizontalAlignment="Left" Tap="Email_Tap" Grid.Row="3" Text="{Binding Path= LocalizedResources.Email_Header_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,55,0,0"/>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

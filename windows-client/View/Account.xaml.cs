@@ -21,6 +21,7 @@ using windows_client.Controls;
 using Facebook;
 using windows_client.ViewModel;
 using System.Net.NetworkInformation;
+using windows_client.FileTransfers;
 
 namespace windows_client.View
 {
@@ -165,6 +166,7 @@ namespace windows_client.View
             MiscDBUtil.clearDatabase();
             PushHelper.Instance.closePushnotifications();
             SmileyParser.Instance.CleanRecentEmoticons();
+            FileTransferManager.Instance.ClearTasks();
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
@@ -187,8 +189,6 @@ namespace windows_client.View
                     Debug.WriteLine("Privacy.xaml :: DeleteLocalStorage,Navigate, Exception : " + ex.StackTrace);
                 }
             });
-
-
         }
 
         private void LogOutFb()

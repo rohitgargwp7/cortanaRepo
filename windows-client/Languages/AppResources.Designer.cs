@@ -1141,6 +1141,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to email.
+        /// </summary>
+        public static string Email_Header_Txt {
+            get {
+                return ResourceManager.GetString("Email_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hi, 
         ///
         ///I just got the awesome new hike messenger, it&apos;s faster, simpler and even more beautiful!
@@ -1468,6 +1477,15 @@ namespace windows_client.Languages {
         public static string Forward_Txt {
             get {
                 return ResourceManager.GetString("Forward_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FREE SMS.
+        /// </summary>
+        public static string Free_SMS_Txt {
+            get {
+                return ResourceManager.GetString("Free_SMS_Txt", resourceCulture);
             }
         }
         
@@ -2183,6 +2201,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to invite.
+        /// </summary>
+        public static string Invite_Header_Txt {
+            get {
+                return ResourceManager.GetString("Invite_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to send invite..
         /// </summary>
         public static string Invite_Not_Sent {
@@ -2381,7 +2408,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Messaging.
+        ///   Looks up a localized string similar to messaging.
         /// </summary>
         public static string Messaging_Txt {
             get {
