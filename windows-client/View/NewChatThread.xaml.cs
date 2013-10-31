@@ -4795,13 +4795,15 @@ namespace windows_client.View
                 ContactCompleteDetails con = ContactCompleteDetails.GetContactDetails(contact);
                 JObject contactJson = con.SerialiseToJobject();
 
+                var bytes = Encoding.UTF8.GetBytes(contactJson.ToString(Newtonsoft.Json.Formatting.None));
+
                 string fileName = string.IsNullOrEmpty(con.Name) ? "Contact" : con.Name;
 
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
 
-                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED, 0);
+                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED, bytes.Length);
                 convMessage.FileAttachment.ContentType = HikeConstants.CT_CONTACT;
                 convMessage.Message = AppResources.ContactTransfer_Text;
                 convMessage.MetaDataString = contactJson.ToString(Newtonsoft.Json.Formatting.None);
@@ -4810,7 +4812,7 @@ namespace windows_client.View
 
                 object[] vals = new object[3];
                 vals[0] = convMessage;
-                vals[1] = Encoding.UTF8.GetBytes(contactJson.ToString(Newtonsoft.Json.Formatting.None));
+                vals[1] = bytes;
                 App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
             }
         }
