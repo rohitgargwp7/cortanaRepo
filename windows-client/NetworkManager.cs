@@ -141,6 +141,9 @@ namespace windows_client
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
 
+                    if (obj == null)
+                        return;
+
                     if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT)
                         || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
                     {
@@ -151,8 +154,7 @@ namespace windows_client
                         if (FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize))
                             MiscDBUtil.UpdateFileAttachmentState(convMessage.Msisdn.Replace(":", "_"), convMessage.MessageId.ToString(), Attachment.AttachmentState.STARTED);
                     }
-                    if (obj == null)
-                        return;
+                    
                     if (convMessage.FileAttachment != null)
                     {
                         MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
