@@ -17,7 +17,7 @@ namespace windows_client.utils
 {
     public class Utils
     {
-        private static long MIN_TIME_BETWEEN_NOTIFICATIONS = 5 * 1000;
+        private static long MIN_TIME_BETWEEN_NOTIFICATIONS = 5000; //in msecs
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
         public static void savedAccountCredentials(JObject obj)
