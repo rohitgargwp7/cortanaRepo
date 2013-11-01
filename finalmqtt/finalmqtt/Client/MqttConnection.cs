@@ -514,7 +514,12 @@ namespace finalmqtt.Client
             msg.setMessageId(getNextMessageId());
             sendCallbackMessage(msg, cb);
         }
-
+        public void subscribe(List<String> listTopics, List<QoS> listQos, Callback cb) //throws IOException 
+        {
+            SubscribeMessage msg = new SubscribeMessage(listTopics, listQos, this);
+            msg.setMessageId(getNextMessageId());
+            sendCallbackMessage(msg, cb);
+        }
         public void unsubscribe(String topic, Callback cb) //throws IOException 
         {
             UnsubscribeMessage msg = new UnsubscribeMessage(topic, this);
