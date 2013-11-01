@@ -44,7 +44,7 @@ namespace windows_client
         public static readonly string LAST_SEEN_SEETING = "lstSeenSet";
         public static readonly string USE_LOCATION_SETTING = "locationSet";
         public static readonly string AUTO_DOWNLOAD_SETTING = "autoDownload";
-        public static readonly string AUTO_UPLOAD_SETTING = "autoUpload";
+        public static readonly string AUTO_RESUME_SETTING = "autoResume";
         public static readonly string ENTER_TO_SEND = "enterToSend";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
