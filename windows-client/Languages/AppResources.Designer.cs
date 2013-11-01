@@ -205,7 +205,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto download file.
+        ///   Looks up a localized string similar to Media auto-download.
         /// </summary>
         public static string Auto_Download_Settings_Header {
             get {
@@ -214,7 +214,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto resume file uploads.
+        ///   Looks up a localized string similar to Media auto-resume.
         /// </summary>
         public static string Auto_Upload_Settings_Header {
             get {

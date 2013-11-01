@@ -1944,10 +1944,10 @@ Download it now http://hike.in and join the fun!</value>
     <value>I just got the new hike messenger! It's simpler, faster with hilarious new stickers! Download it now and lets chat for free http://hike.in</value>
   </data>
   <data name="Auto_Download_Settings_Header" xml:space="preserve">
-    <value>Auto download file</value>
+    <value>Media auto-download</value>
   </data>
   <data name="Auto_Upload_Settings_Header" xml:space="preserve">
-    <value>Auto resume file uploads</value>
+    <value>Media auto-resume</value>
   </data>
   <data name="FileTransfer_InProgress" xml:space="preserve">
     <value>Confirm</value>

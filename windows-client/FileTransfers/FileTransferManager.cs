@@ -234,9 +234,7 @@ namespace windows_client.FileTransfers
                 }
                 else
                 {
-                    var shouldTransfer = fileInfo is FileUploader ? !App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) : !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING);
-
-                    if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (shouldTransfer || fileInfo.FileState != FileTransferState.PAUSED))
+                    if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_RESUME_SETTING) || fileInfo.FileState != FileTransferState.PAUSED))
                     {
                         if (BeginThreadTask(fileInfo))
                         {
@@ -252,7 +250,7 @@ namespace windows_client.FileTransfers
                         else
                             PendingTasks.Enqueue(fileInfo);
                     }
-                    else if (fileInfo.FileState != FileTransferState.STARTED)
+                    else
                         TaskMap.Remove(fileInfo.MessageId);
                 }
             }
@@ -303,14 +301,14 @@ namespace windows_client.FileTransfers
 
         public void PopulatePreviousTasks()
         {
-            if (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING))
+            if (!App.appSettings.Contains(App.AUTO_RESUME_SETTING))
+            {
                 PopulateUploads();
-
-            if (!App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
                 PopulateDownloads();
 
-            if (PendingTasks.Count > 0)
-                StartTask();
+                if (PendingTasks.Count > 0)
+                    StartTask();
+            }
         }
 
         void PopulateUploads()

@@ -111,7 +111,7 @@ namespace windows_client.FileTransfers
 
             FileState = (FileTransferState)reader.ReadInt32();
 
-            if (App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileState == FileTransferState.STARTED)
+            if (App.appSettings.Contains(App.AUTO_RESUME_SETTING) && FileState == FileTransferState.STARTED)
                 FileState = FileTransferState.PAUSED;
 
             TotalBytes = reader.ReadInt32();
@@ -482,7 +482,7 @@ namespace windows_client.FileTransfers
                     BlockSize = DefaultBlockSize;
                 }
 
-                if (FileState == FileTransferState.STARTED || (!App.appSettings.Contains(App.AUTO_UPLOAD_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
+                if (FileState == FileTransferState.STARTED || (!App.appSettings.Contains(App.AUTO_RESUME_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
                     BeginUploadPostRequest();
 
                 OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, false));

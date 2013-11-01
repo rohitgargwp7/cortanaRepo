@@ -77,10 +77,10 @@ namespace windows_client.View
             this.autoDownloadToggle.Content = autoDownload ? AppResources.On : AppResources.Off;
 
             bool autoUpload;
-            if (!App.appSettings.TryGetValue(App.AUTO_UPLOAD_SETTING, out autoUpload))
+            if (!App.appSettings.TryGetValue(App.AUTO_RESUME_SETTING, out autoUpload))
                 autoUpload = true;
-            autoUploadToggle.IsChecked = autoUpload;
-            this.autoUploadToggle.Content = autoUpload ? AppResources.On : AppResources.Off;
+            autoResumeToggle.IsChecked = autoUpload;
+            this.autoResumeToggle.Content = autoUpload ? AppResources.On : AppResources.Off;
 
             bool enterToSend;
             if (!App.appSettings.TryGetValue(App.ENTER_TO_SEND, out enterToSend))
@@ -163,8 +163,6 @@ namespace windows_client.View
             this.autoDownloadToggle.Content = AppResources.On;
             App.appSettings.Remove(App.AUTO_DOWNLOAD_SETTING);
             App.appSettings.Save();
-
-            FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
         }
 
         private void autoDownloadToggle_Unchecked(object sender, RoutedEventArgs e)
@@ -176,24 +174,24 @@ namespace windows_client.View
 
         private void autoUploadToggle_Loaded(object sender, RoutedEventArgs e)
         {
-            autoUploadToggle.Loaded -= autoUploadToggle_Loaded;
-            autoUploadToggle.Checked += autoUploadToggle_Checked;
-            autoUploadToggle.Unchecked += autoUploadToggle_Unchecked;
+            autoResumeToggle.Loaded -= autoUploadToggle_Loaded;
+            autoResumeToggle.Checked += autoResumeToggle_Checked;
+            autoResumeToggle.Unchecked += autoResumeToggle_Unchecked;
         }
 
-        private void autoUploadToggle_Checked(object sender, RoutedEventArgs e)
+        private void autoResumeToggle_Checked(object sender, RoutedEventArgs e)
         {
-            this.autoUploadToggle.Content = AppResources.On;
-            App.appSettings.Remove(App.AUTO_UPLOAD_SETTING);
+            this.autoResumeToggle.Content = AppResources.On;
+            App.appSettings.Remove(App.AUTO_RESUME_SETTING);
             App.appSettings.Save();
 
             FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
         }
 
-        private void autoUploadToggle_Unchecked(object sender, RoutedEventArgs e)
+        private void autoResumeToggle_Unchecked(object sender, RoutedEventArgs e)
         {
-            this.autoUploadToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.AUTO_UPLOAD_SETTING, false);
+            this.autoResumeToggle.Content = AppResources.Off;
+            App.WriteToIsoStorageSettings(App.AUTO_RESUME_SETTING, false);
             App.appSettings.Save();
         }
 
