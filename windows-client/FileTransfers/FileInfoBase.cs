@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.IsolatedStorage;
 using System.Threading;
+using System.Threading.Tasks;
+using windows_client.utils;
 
 namespace windows_client.FileTransfers
 {

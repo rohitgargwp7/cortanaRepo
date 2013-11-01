@@ -222,16 +222,6 @@ namespace windows_client.FileTransfers
                     fileInfo = null;
                     return;
                 }
-                else if (fileInfo.BytesTransfered == fileInfo.TotalBytes - 1 && fileInfo.FileState == FileTransferState.STARTED)
-                {
-                    fileInfo.FileState = FileTransferState.COMPLETED;
-                    SaveTaskData(fileInfo);
-
-                    if (UpdateTaskStatusOnUI != null)
-                        UpdateTaskStatusOnUI(null, new FileTransferSatatusChangedEventArgs(fileInfo, true));
-
-                    App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
-                }
                 else
                 {
                     if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_RESUME_SETTING) || fileInfo.FileState != FileTransferState.PAUSED))
@@ -305,7 +295,7 @@ namespace windows_client.FileTransfers
             {
                 PopulateUploads();
                 PopulateDownloads();
-
+             
                 if (PendingTasks.Count > 0)
                     StartTask();
             }
@@ -482,8 +472,6 @@ namespace windows_client.FileTransfers
 
         void File_StatusChanged(object sender, FileTransferSatatusChangedEventArgs e)
         {
-            SaveTaskData(e.FileInfo);
-
             if (UpdateTaskStatusOnUI != null)
                 UpdateTaskStatusOnUI(null, e);
 

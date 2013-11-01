@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Windows;
 using windows_client.Languages;
 using System.Threading;
+using System.Net.Http;
 
 namespace windows_client.FileTransfers
 {
@@ -226,7 +227,7 @@ namespace windows_client.FileTransfers
                 {
                     while (BytesTransfered != TotalBytes && FileState == FileTransferState.STARTED)
                     {
-                        await Task.Delay(100);
+                        await Task.Delay(1);
 
                         newBytes = br.ReadBytes(BlockSize);
                         if (newBytes.Length == 0)
@@ -257,8 +258,20 @@ namespace windows_client.FileTransfers
                     }
                     else if (BytesTransfered == TotalBytes - 1)
                     {
-                        FileState = FileTransferState.COMPLETED;
-                        OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                        var result = await CheckForCRC(FileName);
+
+                        if (result)
+                        {
+                            FileState = FileTransferState.COMPLETED;
+                            OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                            Save();
+                        }
+                        else
+                        {
+                            FileState = FileTransferState.FAILED;
+                            OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                            Delete();
+                        }
                     }
                     else if (newBytes.Length == 0)
                     {
@@ -270,6 +283,7 @@ namespace windows_client.FileTransfers
                         {
                             FileState = FileTransferState.FAILED;
                             OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                            Save();
                         }
                     }
                 }
@@ -284,6 +298,7 @@ namespace windows_client.FileTransfers
                 });
 
                 OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                Delete();
             }
             else
             {
@@ -295,11 +310,12 @@ namespace windows_client.FileTransfers
                 {
                     FileState = FileTransferState.FAILED;
                     OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                    Save();
                 }
             }
         }
 
-        public void WriteChunkToIsolatedStorage(byte[] bytes, int position)
+        void WriteChunkToIsolatedStorage(byte[] bytes, int position)
         {
             string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
             string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
@@ -321,6 +337,35 @@ namespace windows_client.FileTransfers
                     }
                 }
             }
+        }
+
+        async Task<bool> CheckForCRC(string key)
+        {
+            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
+            byte[] bytes;
+            MiscDBUtil.readFileFromIsolatedStorage(filePath, out bytes);
+
+            var md5 = MD5CryptoServiceProvider.GetMd5String(bytes);
+
+            string result = String.Empty;
+
+            try
+            {
+
+                HttpClient httpClient = new HttpClient();
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, new Uri(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + key));
+
+                HttpResponseMessage response = await httpClient.SendAsync(request);
+
+                result = response.Headers.GetValues("Etag").First().ToString();
+            }
+            catch
+            {
+                result = String.Empty;
+            }
+
+            return md5 == result ? true : false;
         }
 
         protected override void OnStatusChanged(FileTransferSatatusChangedEventArgs e)
