@@ -73,9 +73,9 @@ namespace windows_client.FileTransfers
 
         bool retry = true;
         short retryAttempts = 0;
-        short MAX_RETRY_ATTEMPTS = 5;
+        const short MAX_RETRY_ATTEMPTS = 5;
         int reconnectTime = 0;
-        int MAX_RECONNECT_TIME = 30; // in seconds
+        const int MAX_RECONNECT_TIME = 30; // in seconds
 
         protected bool ShouldRetry()
         {
