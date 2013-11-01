@@ -236,11 +236,15 @@ namespace windows_client.Mqtt
                 // don't have a connection
                 return;
             }
-
+            List<string> listTopics = new List<string>();
+            List<QoS> listQos=new List<QoS>();
             for (int i = 0; i < topics.Length; i++)
             {
-                mqttConnection.subscribe(topics[i].Name, topics[i].qos, new SubscribeCB(this));
+                listTopics.Add(topics[i].Name);
+                listQos.Add(topics[i].qos);
             }
+            mqttConnection.subscribe(listTopics,listQos, new SubscribeCB(this));
+
         }
 
         /*
