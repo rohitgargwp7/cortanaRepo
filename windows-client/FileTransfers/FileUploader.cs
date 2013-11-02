@@ -462,7 +462,7 @@ namespace windows_client.FileTransfers
             }
         }
 
-        async void ProcessUploadPostResponse(string data, HttpStatusCode code)
+        void ProcessUploadPostResponse(string data, HttpStatusCode code)
         {
             if (FileState == FileTransferState.CANCELED)
             {
