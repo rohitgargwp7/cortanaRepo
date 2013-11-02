@@ -169,6 +169,24 @@ namespace windows_client.FileTransfers
             req.BeginGetResponse(DownloadGetResponseCallback, new object[] { req });
         }
 
+        public async override void CheckIfComplete()
+        {
+            var result = await CheckForCRC(FileName);
+
+            if (result)
+            {
+                FileState = FileTransferState.COMPLETED;
+                OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                Save();
+            }
+            else
+            {
+                FileState = FileTransferState.FAILED;
+                OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                Delete();
+            }
+        }
+
         void DownloadGetResponseCallback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
@@ -214,7 +232,7 @@ namespace windows_client.FileTransfers
             }
         }
 
-        async void ProcessDownloadGetResponse(Stream responseStream, HttpStatusCode responseCode)
+        void ProcessDownloadGetResponse(Stream responseStream, HttpStatusCode responseCode)
         {
             if (FileState == FileTransferState.CANCELED)
             {
@@ -256,20 +274,7 @@ namespace windows_client.FileTransfers
                     }
                     else if (BytesTransfered == TotalBytes - 1)
                     {
-                        var result = await CheckForCRC(FileName);
-
-                        if (result)
-                        {
-                            FileState = FileTransferState.COMPLETED;
-                            OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
-                            Save();
-                        }
-                        else
-                        {
-                            FileState = FileTransferState.FAILED;
-                            OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
-                            Delete();
-                        }
+                        CheckIfComplete();
                     }
                     else if (newBytes.Length == 0)
                     {

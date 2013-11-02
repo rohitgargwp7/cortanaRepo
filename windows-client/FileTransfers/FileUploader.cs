@@ -205,6 +205,28 @@ namespace windows_client.FileTransfers
             req.BeginGetResponse(UploadGetResponseCallback, new object[] { req });
         }
 
+        public async override void CheckIfComplete()
+        {
+            if (SuccessObj != null)
+            {
+                var jData = SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
+                var fileKey = jData[HikeConstants.FILE_KEY].ToString();
+                var result = await CheckForCRC(fileKey);
+
+                if (result)
+                {
+                    FileState = FileTransferState.COMPLETED;
+                    Save();
+                    OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                    return;
+                }
+            }
+
+            FileState = FileTransferState.FAILED;
+            Delete();
+            OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+        }
+
         void UploadGetResponseCallback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
@@ -460,31 +482,11 @@ namespace windows_client.FileTransfers
                     SuccessObj = jObject;
                     CurrentHeaderPosition = TotalBytes;
                     Save();
-                    var stateUpdated = false;
 
                     if (FileState == FileTransferState.STARTED)
-                    {
-                        var jData = jObject[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
-                        var fileKey = jData[HikeConstants.FILE_KEY].ToString();
-                        var result = await CheckForCRC(fileKey);
-
-                        if (result)
-                        {
-                            FileState = FileTransferState.COMPLETED;
-                            Save();
-                            OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
-                        }
-                        else
-                        {
-                            FileState = FileTransferState.FAILED;
-                            Delete();
-                            OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
-                        }
-
-                        stateUpdated = true;
-                    }
-
-                    OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, stateUpdated));
+                        CheckIfComplete();   
+                    else
+                        OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, false));
                 }
             }
             else if (code == HttpStatusCode.Created)
