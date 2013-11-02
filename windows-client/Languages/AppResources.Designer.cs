@@ -2183,6 +2183,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Now you can send a message using the enter key. This can be configured in the app settings..
+        /// </summary>
+        public static string In_App_Tip_8 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Installed.
         /// </summary>
         public static string Installed_Txt {

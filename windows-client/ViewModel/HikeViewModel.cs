@@ -469,8 +469,9 @@ namespace windows_client.ViewModel
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 30, 0), FullTipMargin = new Thickness(10, 0, 10, 55) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 60, 10, 0) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 65, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_7, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_8, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 230, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
         }
 
         /// <summary>
@@ -482,7 +483,7 @@ namespace windows_client.ViewModel
             App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked); //initilaized in upgrade logic
             App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentlyShowing); //initilaized in upgrade logic
 
-            if (marked == 127 && currentlyShowing == 0)//0x7f
+            if (marked == 255 && currentlyShowing == 0)//0xff
                 return;
 
             if (_toolTipsList == null) 
@@ -542,7 +543,7 @@ namespace windows_client.ViewModel
                 Canvas.SetZIndex(inAppTipUC, 3);
                 inAppTipUC.Visibility = Visibility.Visible;
 
-                if (index == 0 || index == 1 || index == 2 || index == 5)
+                if (index == 0 || index == 1 || index == 2 || index == 5 || index == 7)
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 3);
                 else if (index == 3)
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 2);
