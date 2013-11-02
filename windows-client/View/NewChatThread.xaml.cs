@@ -46,7 +46,6 @@ namespace windows_client.View
 {
     public partial class NewChatThread : PhoneApplicationPage, HikePubSub.Listener, INotifyPropertyChanged
     {
-
         #region CONSTANTS AND PAGE OBJECTS
 
         private readonly string ON_HIKE_TEXT = AppResources.SelectUser_FreeMsg_Txt;
@@ -121,6 +120,8 @@ namespace windows_client.View
 
         public bool isMessageLoaded;
         public ObservableCollection<ConvMessage> ocMessages;
+
+        bool isInAppTipVisible = false;
 
         public int ResolutionId
         {
@@ -1184,6 +1185,7 @@ namespace windows_client.View
             {
                 App.ViewModel.DisplayTip(LayoutRoot, 1);
                 chatThreadMainPage.ApplicationBar = appBar;
+                isInAppTipVisible = true;
             }
             else
             {
@@ -1199,7 +1201,10 @@ namespace windows_client.View
                             App.ViewModel.DictInAppTip.TryGetValue(0, out tip);
 
                             if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                            {
                                 App.ViewModel.DisplayTip(LayoutRoot, 0);
+                                isInAppTipVisible = true;
+                            }
                             else
                                 chatThreadCount++;
 
@@ -1210,14 +1215,34 @@ namespace windows_client.View
                             App.ViewModel.DictInAppTip.TryGetValue(2, out tip);
 
                             if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                            {
                                 App.ViewModel.DisplayTip(LayoutRoot, 2);
+                                isInAppTipVisible = true;
+                            }
                             else
                                 chatThreadCount++;
 
                             chatThreadMainPage.ApplicationBar = appBar;
                         }
-                        else
+                        else if (chatThreadCount == 2)
+                        {
                             showNudgeTute();
+                            chatThreadCount++;
+                        }
+                        else
+                        {
+                            App.ViewModel.DictInAppTip.TryGetValue(7, out tip);
+
+                            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                            {
+                                App.ViewModel.DisplayTip(LayoutRoot, 7);
+                                isInAppTipVisible = true;
+                            }
+                            else
+                                chatThreadCount++;
+
+                            chatThreadMainPage.ApplicationBar = appBar;
+                        }
 
                         App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
                     }
@@ -2869,7 +2894,7 @@ namespace windows_client.View
                     }
                     #endregion
 
-                    if (App.ViewModel.DictInAppTip != null)
+                    if (App.ViewModel.DictInAppTip != null && !isInAppTipVisible)
                     {
                         HikeToolTip tip;
                         App.ViewModel.DictInAppTip.TryGetValue(4, out tip);
@@ -2895,6 +2920,8 @@ namespace windows_client.View
                             App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
                             currentShown |= (byte)(1 << 4);
                             App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
+
+                            isInAppTipVisible = true;
                         }
                     }
                 }
@@ -3264,6 +3291,8 @@ namespace windows_client.View
 
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
+            App.ViewModel.HideToolTip(LayoutRoot, 7);
+
             sendMsgTxtbox.Background = UI_Utils.Instance.TextBoxBackground;
             sendMsgTxtbox.Hint = string.Empty;//done intentionally as hint is shown if text is changed
             sendMsgTxtbox.Hint = hintText;
@@ -3587,6 +3616,7 @@ namespace windows_client.View
             App.ViewModel.HideToolTip(LayoutRoot, 0);
             App.ViewModel.HideToolTip(LayoutRoot, 1);
             App.ViewModel.HideToolTip(LayoutRoot, 2);
+            App.ViewModel.HideToolTip(LayoutRoot, 7);
 
             attachmentMenu.Visibility = Visibility.Collapsed;
             this.Focus();
@@ -3640,6 +3670,7 @@ namespace windows_client.View
             App.ViewModel.HideToolTip(LayoutRoot, 0);
             App.ViewModel.HideToolTip(LayoutRoot, 1);
             App.ViewModel.HideToolTip(LayoutRoot, 2);
+            App.ViewModel.HideToolTip(LayoutRoot, 7);
 
             if (attachmentMenu.Visibility == Visibility.Collapsed)
                 attachmentMenu.Visibility = Visibility.Visible;
@@ -5182,6 +5213,7 @@ namespace windows_client.View
                 App.ViewModel.HideToolTip(LayoutRoot, 0);
                 App.ViewModel.HideToolTip(LayoutRoot, 1);
                 App.ViewModel.HideToolTip(LayoutRoot, 5);
+                App.ViewModel.HideToolTip(LayoutRoot, 7);
             }
         }
         #endregion
@@ -6430,7 +6462,7 @@ namespace windows_client.View
                      {
                          var indexToInsert = ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
 
-                         if (App.ViewModel.DictInAppTip != null)
+                         if (App.ViewModel.DictInAppTip != null && !isInAppTipVisible)
                          {
                              HikeToolTip tip;
                              App.ViewModel.DictInAppTip.TryGetValue(6, out tip);
@@ -6458,6 +6490,8 @@ namespace windows_client.View
 
                                  if (indexToInsert == ocMessages.Count - 1)
                                      ScrollToBottom();
+
+                                 isInAppTipVisible = true;
 
                                  return;
                              }
@@ -6595,8 +6629,11 @@ namespace windows_client.View
                     userName.FontSize = 36;
                     lastSeenPannel.Visibility = Visibility.Visible;
 
-                    if (isShowTip)
+                    if (isShowTip && !isInAppTipVisible)
+                    {
                         App.ViewModel.DisplayTip(LayoutRoot, 5);
+                        isInAppTipVisible = true;
+                    }
                 }
             }), status, showTip);
         }
