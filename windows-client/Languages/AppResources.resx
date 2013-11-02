@@ -161,10 +161,6 @@
     <value>free SMS</value>
     <comment>Profile (xaml)</comment>
   </data>
-  <data name="Conversations_HikeContacts_Btn" xml:space="preserve">
-    <value>Hike Contacts</value>
-    <comment>Fav (xaml)</comment>
-  </data>
   <data name="Conversations_NewChat_AppBar_Btn" xml:space="preserve">
     <value>new chat</value>
     <comment>AppBar Btn (cs)</comment>
@@ -1130,7 +1126,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>General Text</comment>
   </data>
   <data name="FileTransfer_ErrorMsgBoxText" xml:space="preserve">
-    <value>Overload</value>
+    <value>Unable to download file.</value>
     <comment>cs. Text in message box followed by exception message</comment>
   </data>
   <data name="SelectUser_HideSmsContacts_Txt" xml:space="preserve">
@@ -1412,7 +1408,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>FRIENDS</value>
   </data>
   <data name="Conversations_Contacts_on_hike" xml:space="preserve">
-    <value>CONTACTS ON HIKE</value>
+    <value>PEOPLE ON HIKE</value>
   </data>
   <data name="Profile_BlockedUser_Blk1" xml:space="preserve">
     <value>You have blocked</value>
@@ -1938,7 +1934,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Earn free SMS for every friend who joins hike because of you</value>
   </data>
   <data name="FT_MaxFiles_Txt" xml:space="preserve">
-    <value>Unable to process file transfer request.</value>
+    <value>There are 20 files currently being transferred in your hike app. Please try again later.</value>
   </data>
   <data name="sms_invite_message" xml:space="preserve">
     <value>I just got the new hike messenger! It's simpler, faster with hilarious new stickers! Download it now and lets chat for free http://hike.in</value>
@@ -1975,5 +1971,8 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="In_App_Tip_8" xml:space="preserve">
     <value>Now you can send a message using the enter key. This can be configured in the app settings.</value>
+  </data>
+  <data name="FileTransfer_LimitReached" xml:space="preserve">
+    <value>Limit Exceeded</value>
   </data>
 </root>

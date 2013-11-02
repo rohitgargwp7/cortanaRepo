@@ -502,7 +502,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CONTACTS ON HIKE.
+        ///   Looks up a localized string similar to PEOPLE ON HIKE.
         /// </summary>
         public static string Conversations_Contacts_on_hike {
             get {
@@ -615,15 +615,6 @@ namespace windows_client.Languages {
         public static string Conversations_FreeSms_Txt {
             get {
                 return ResourceManager.GetString("Conversations_FreeSms_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hike Contacts.
-        /// </summary>
-        public static string Conversations_HikeContacts_Btn {
-            get {
-                return ResourceManager.GetString("Conversations_HikeContacts_Btn", resourceCulture);
             }
         }
         
@@ -1445,7 +1436,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Overload.
+        ///   Looks up a localized string similar to Unable to download file..
         /// </summary>
         public static string FileTransfer_ErrorMsgBoxText {
             get {
@@ -1468,6 +1459,15 @@ namespace windows_client.Languages {
         public static string FileTransfer_InProgress_Msg {
             get {
                 return ResourceManager.GetString("FileTransfer_InProgress_Msg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Limit Exceeded.
+        /// </summary>
+        public static string FileTransfer_LimitReached {
+            get {
+                return ResourceManager.GetString("FileTransfer_LimitReached", resourceCulture);
             }
         }
         
@@ -1706,7 +1706,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to process file transfer request..
+        ///   Looks up a localized string similar to There are 20 files currently being transferred in your hike app. Please try again later..
         /// </summary>
         public static string FT_MaxFiles_Txt {
             get {
