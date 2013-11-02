@@ -1,7 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.IsolatedStorage;
+using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
+using windows_client.DbUtils;
+using windows_client.utils;
+using System.Linq;
 
 namespace windows_client.FileTransfers
 {
@@ -109,6 +115,34 @@ namespace windows_client.FileTransfers
             }
             else
                 return false;
+        }
+
+        protected async Task<bool> CheckForCRC(string key)
+        {
+            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
+            byte[] bytes;
+            MiscDBUtil.readFileFromIsolatedStorage(filePath, out bytes);
+
+            var md5 = MD5CryptoServiceProvider.GetMd5String(bytes);
+
+            string result = String.Empty;
+
+            try
+            {
+                HttpClient httpClient = new HttpClient();
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, new Uri(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + key));
+
+                HttpResponseMessage response = await httpClient.SendAsync(request);
+
+                result = response.Headers.GetValues("Etag").First().ToString();
+            }
+            catch
+            {
+                result = String.Empty;
+            }
+
+            return md5 == result;
         }
     }
 }
