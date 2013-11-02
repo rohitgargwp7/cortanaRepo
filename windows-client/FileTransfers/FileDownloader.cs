@@ -227,8 +227,6 @@ namespace windows_client.FileTransfers
                 {
                     while (BytesTransfered != TotalBytes && FileState == FileTransferState.STARTED)
                     {
-                        await Task.Delay(1);
-
                         newBytes = br.ReadBytes(BlockSize);
                         if (newBytes.Length == 0)
                             break;

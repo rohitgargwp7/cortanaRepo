@@ -142,7 +142,7 @@ namespace windows_client.FileTransfers
                 result = String.Empty;
             }
 
-            return md5 == result ? true : false;
+            return md5 == result;
         }
     }
 }
