@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Windows;
 using windows_client.Languages;
 using System.Threading;
+using System.Net.Http;
 
 namespace windows_client.FileTransfers
 {
@@ -226,8 +227,6 @@ namespace windows_client.FileTransfers
                 {
                     while (BytesTransfered != TotalBytes && FileState == FileTransferState.STARTED)
                     {
-                        await Task.Delay(100);
-
                         newBytes = br.ReadBytes(BlockSize);
                         if (newBytes.Length == 0)
                             break;
@@ -257,8 +256,20 @@ namespace windows_client.FileTransfers
                     }
                     else if (BytesTransfered == TotalBytes - 1)
                     {
-                        FileState = FileTransferState.COMPLETED;
-                        OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                        var result = await CheckForCRC(FileName);
+
+                        if (result)
+                        {
+                            FileState = FileTransferState.COMPLETED;
+                            OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                            Save();
+                        }
+                        else
+                        {
+                            FileState = FileTransferState.FAILED;
+                            OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                            Delete();
+                        }
                     }
                     else if (newBytes.Length == 0)
                     {
@@ -270,6 +281,7 @@ namespace windows_client.FileTransfers
                         {
                             FileState = FileTransferState.FAILED;
                             OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                            Save();
                         }
                     }
                 }
@@ -284,6 +296,7 @@ namespace windows_client.FileTransfers
                 });
 
                 OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                Delete();
             }
             else
             {
@@ -295,11 +308,12 @@ namespace windows_client.FileTransfers
                 {
                     FileState = FileTransferState.FAILED;
                     OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                    Save();
                 }
             }
         }
 
-        public void WriteChunkToIsolatedStorage(byte[] bytes, int position)
+        void WriteChunkToIsolatedStorage(byte[] bytes, int position)
         {
             string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
             string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
