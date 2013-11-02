@@ -2123,7 +2123,7 @@ namespace windows_client.View
                             if (taskPlaced)
                                 convMessage.UserTappedDownload = true;
                             else
-                                MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
+                                MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                         }
                         else
                             MessageBox.Show(AppResources.No_Network_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
@@ -2175,7 +2175,7 @@ namespace windows_client.View
                         }
 
                         if (transferPlaced)
-                            MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
+                            MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                     }
                 }
                 else
@@ -3518,7 +3518,7 @@ namespace windows_client.View
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
             }
             else
-                MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
+                MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
         }
 
         private void MenuItem_Click_SendAsSMS(object sender, RoutedEventArgs e)
