@@ -459,7 +459,7 @@ namespace windows_client.FileTransfers
                 {
                     SuccessObj = jObject;
                     CurrentHeaderPosition = TotalBytes;
-
+                    Save();
                     var stateUpdated = false;
 
                     if (FileState == FileTransferState.STARTED)

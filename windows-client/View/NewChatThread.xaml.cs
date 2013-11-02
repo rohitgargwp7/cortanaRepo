@@ -2174,7 +2174,7 @@ namespace windows_client.View
                                 transferPlaced = FileTransferManager.Instance.DownloadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
                         }
 
-                        if (transferPlaced)
+                        if (!transferPlaced)
                             MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                     }
                 }
