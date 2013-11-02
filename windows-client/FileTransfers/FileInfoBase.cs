@@ -76,6 +76,7 @@ namespace windows_client.FileTransfers
         public abstract void Save();
         public abstract void Delete();
         public abstract void Start(object obj);
+        public abstract void CheckIfComplete();
 
         bool retry = true;
         short retryAttempts = 0;

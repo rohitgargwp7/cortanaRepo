@@ -209,7 +209,7 @@ namespace windows_client.FileTransfers
             return false;
         }
 
-        public void StartTask()
+        public async void StartTask()
         {
             if (PendingTasks.Count > 0)
             {
@@ -222,27 +222,30 @@ namespace windows_client.FileTransfers
                     fileInfo = null;
                     return;
                 }
-                else
+                else if (fileInfo.BytesTransfered == fileInfo.TotalBytes - 1 && fileInfo.FileState == FileTransferState.STARTED)
                 {
-                    if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_RESUME_SETTING) || fileInfo.FileState != FileTransferState.PAUSED))
+                    fileInfo.StatusChanged -= File_StatusChanged;
+                    fileInfo.StatusChanged += File_StatusChanged;
+                    fileInfo.CheckIfComplete();
+                }
+                else if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_RESUME_SETTING) || fileInfo.FileState != FileTransferState.PAUSED))
+                {
+                    if (BeginThreadTask(fileInfo))
                     {
-                        if (BeginThreadTask(fileInfo))
-                        {
-                            fileInfo.FileState = FileTransferState.STARTED;
-                            TaskMap.Add(fileInfo.MessageId, fileInfo);
-                            SaveTaskData(fileInfo);
+                        fileInfo.FileState = FileTransferState.STARTED;
+                        TaskMap.Add(fileInfo.MessageId, fileInfo);
+                        SaveTaskData(fileInfo);
 
-                            if (UpdateTaskStatusOnUI != null)
-                                UpdateTaskStatusOnUI(null, new FileTransferSatatusChangedEventArgs(fileInfo, true));
+                        if (UpdateTaskStatusOnUI != null)
+                            UpdateTaskStatusOnUI(null, new FileTransferSatatusChangedEventArgs(fileInfo, true));
 
-                            App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
-                        }
-                        else
-                            PendingTasks.Enqueue(fileInfo);
+                        App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
                     }
                     else
-                        TaskMap.Remove(fileInfo.MessageId);
+                        PendingTasks.Enqueue(fileInfo);
                 }
+                else
+                    TaskMap.Remove(fileInfo.MessageId);
             }
 
             if (PendingTasks.Count > 0)
