@@ -721,8 +721,8 @@ namespace windows_client
         private static void instantiateClasses(bool initInUpgradePage)
         {
             #region Enter to send
-            
-            if (Utils.compareVersion(_currentVersion, "2.3.0.4") < 0)
+
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.3.0.4") < 0)
                 App.WriteToIsoStorageSettings(App.ENTER_TO_SEND, false);
             
             #endregion
