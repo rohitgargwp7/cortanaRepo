@@ -118,7 +118,7 @@ namespace windows_client.View
                 return;
             }
 
-            MessageBoxResult result = MessageBox.Show(AppResources.Privacy_DeleteAccounConfirmMsgBxText, AppResources.Privacy_DeleteAccountHeader, MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show(AppResources.Privacy_DeleteAccounWarningMsgBxText, AppResources.Privacy_DeleteAccountWarningHeader, MessageBoxButton.OKCancel);
             if (result != MessageBoxResult.OK)
                 return;
 
