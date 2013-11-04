@@ -2183,7 +2183,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Now you can send a message using the enter key. This can be configured in the app settings..
+        ///   Looks up a localized string similar to Tap the &quot;Enter&quot; key on your keyboard to to quickly send a message. You can Turn On/Off this option from the app settings..
         /// </summary>
         public static string In_App_Tip_8 {
             get {
@@ -3065,7 +3065,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to delete your hike account permanently?.
+        ///   Looks up a localized string similar to Are you sure you want to delete your account? This action is irreversible..
         /// </summary>
         public static string Privacy_DeleteAccounConfirmMsgBxText {
             get {
@@ -3074,7 +3074,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete Account.
+        ///   Looks up a localized string similar to Confirmation.
         /// </summary>
         public static string Privacy_DeleteAccountHeader {
             get {
@@ -3097,6 +3097,24 @@ namespace windows_client.Languages {
         public static string Privacy_DeleteAccountText {
             get {
                 return ResourceManager.GetString("Privacy_DeleteAccountText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning!.
+        /// </summary>
+        public static string Privacy_DeleteAccountWarningHeader {
+            get {
+                return ResourceManager.GetString("Privacy_DeleteAccountWarningHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleting your account will delete all your data, free SMS and any hike rewards..
+        /// </summary>
+        public static string Privacy_DeleteAccounWarningMsgBxText {
+            get {
+                return ResourceManager.GetString("Privacy_DeleteAccounWarningMsgBxText", resourceCulture);
             }
         }
         

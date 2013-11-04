@@ -1042,12 +1042,12 @@ Download it now http://hike.in and join the fun!</value>
     <value>On</value>
     <comment>used on settings page</comment>
   </data>
-  <data name="Privacy_DeleteAccounConfirmMsgBxText" xml:space="preserve">
-    <value>Are you sure you want to delete your hike account permanently?</value>
+  <data name="Privacy_DeleteAccounWarningMsgBxText" xml:space="preserve">
+    <value>Deleting your account will delete all your data, free SMS and any hike rewards.</value>
     <comment>cs. Message box while deleting account</comment>
   </data>
-  <data name="Privacy_DeleteAccountHeader" xml:space="preserve">
-    <value>Delete Account</value>
+  <data name="Privacy_DeleteAccountWarningHeader" xml:space="preserve">
+    <value>Warning!</value>
     <comment>xaml + cs (mesg box caption)</comment>
   </data>
   <data name="Privacy_DeleteAccountProgress" xml:space="preserve">
@@ -1970,9 +1970,15 @@ Download it now http://hike.in and join the fun!</value>
     <value>invite</value>
   </data>
   <data name="In_App_Tip_8" xml:space="preserve">
-    <value>Now you can send a message using the enter key. This can be configured in the app settings.</value>
+    <value>Tap the "Enter" key on your keyboard to to quickly send a message. You can Turn On/Off this option from the app settings.</value>
   </data>
   <data name="FileTransfer_LimitReached" xml:space="preserve">
     <value>Limit Exceeded</value>
+  </data>
+  <data name="Privacy_DeleteAccounConfirmMsgBxText" xml:space="preserve">
+    <value>Are you sure you want to delete your account? This action is irreversible.</value>
+  </data>
+  <data name="Privacy_DeleteAccountHeader" xml:space="preserve">
+    <value>Confirmation</value>
   </data>
 </root>

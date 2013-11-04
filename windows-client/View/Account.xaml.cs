@@ -86,7 +86,7 @@ namespace windows_client.View
             }
 
             MessageBoxResult result = MessageBox.Show(AppResources.Privacy_UnlinkConfirmMsgBxText, AppResources.Privacy_UnlinkAccountHeader, MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.Cancel)
+            if (result != MessageBoxResult.OK)
                 return;
 
             if (progress == null)
@@ -119,7 +119,11 @@ namespace windows_client.View
             }
 
             MessageBoxResult result = MessageBox.Show(AppResources.Privacy_DeleteAccounConfirmMsgBxText, AppResources.Privacy_DeleteAccountHeader, MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.Cancel)
+            if (result != MessageBoxResult.OK)
+                return;
+
+            result = MessageBox.Show(AppResources.Privacy_DeleteAccounConfirmMsgBxText, AppResources.Privacy_DeleteAccountHeader, MessageBoxButton.OKCancel);
+            if (result != MessageBoxResult.OK)
                 return;
 
             if (progress == null)
