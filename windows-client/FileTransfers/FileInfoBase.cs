@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using windows_client.DbUtils;
 using windows_client.utils;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client.FileTransfers
 {
@@ -128,19 +129,34 @@ namespace windows_client.FileTransfers
 
             string result = String.Empty;
 
-            try
+            if (this is FileDownloader)
             {
-                HttpClient httpClient = new HttpClient();
+                try
+                {
+                    HttpClient httpClient = new HttpClient();
 
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, new Uri(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + key));
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, new Uri(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + key));
 
-                HttpResponseMessage response = await httpClient.SendAsync(request);
+                    HttpResponseMessage response = await httpClient.SendAsync(request);
 
-                result = response.Headers.GetValues("Etag").First().ToString();
+                    result = response.Headers.GetValues("Etag").First().ToString();
+                }
+                catch
+                {
+                    result = String.Empty;
+                }
             }
-            catch
+            else
             {
-                result = String.Empty;
+                try
+                {
+                    var jData = (this as FileUploader).SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
+                    result = jData[HikeConstants.MD5_BEFORE_CONVERSION].ToString();
+                }
+                catch
+                {
+                    result = String.Empty;
+                }
             }
 
             return md5 == result;
