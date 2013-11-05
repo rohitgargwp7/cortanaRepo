@@ -840,7 +840,7 @@ namespace windows_client.View
         private void MenuItem_Tap_RemoveMember(object sender, System.Windows.Input.GestureEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(AppResources.RemoveFromGrpConfirmation_Txt, AppResources.Remove_From_grp_txt, MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.Cancel)
+            if (result != MessageBoxResult.OK)
                 return;
 
             if (!NetworkInterface.GetIsNetworkAvailable())
@@ -903,7 +903,7 @@ namespace windows_client.View
                 {
                     var text = String.Format(AppResources.Conversations_RemFromFav_Confirm_Txt, gp.Name);
                     MessageBoxResult result = MessageBox.Show(text, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
-                    if (result == MessageBoxResult.Cancel)
+                    if (result != MessageBoxResult.OK)
                         return;
                     gp.IsFav = false;
                     ConversationListObject favObj = App.ViewModel.GetFav(gp.Msisdn);

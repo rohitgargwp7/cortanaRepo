@@ -218,7 +218,7 @@ namespace windows_client.View
             if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
             {
                 MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkFacebook_MsgBxCaptn, MessageBoxButton.OKCancel);
-                if (res == MessageBoxResult.Cancel)
+                if (res != MessageBoxResult.OK)
                     return;
             }
             PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
@@ -262,7 +262,7 @@ namespace windows_client.View
             if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
             {
                 MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkTwitter_MsgBxCaptn, MessageBoxButton.OKCancel);
-                if (res == MessageBoxResult.Cancel)
+                if (res != MessageBoxResult.OK)
                     return;
                 else
                 {
@@ -402,7 +402,7 @@ namespace windows_client.View
                 if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
                 {
                     MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkTwitter_MsgBxCaptn, MessageBoxButton.OKCancel);
-                    if (res == MessageBoxResult.Cancel)
+                    if (res != MessageBoxResult.OK)
                         return;
                     else
                     {
@@ -425,7 +425,7 @@ namespace windows_client.View
                 if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
                 {
                     MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkFacebook_MsgBxCaptn, MessageBoxButton.OKCancel);
-                    if (res == MessageBoxResult.Cancel)
+                    if (res != MessageBoxResult.OK)
                         return;
                 }
                 PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;

@@ -598,7 +598,7 @@ namespace windows_client.View
         private void deleteAllConvs_Click(object sender, EventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chats_Confirmation, AppResources.Conversations_DelAllChats_Txt, MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.Cancel)
+            if (result != MessageBoxResult.OK)
                 return;
             isDeleteAllChats = true;
             shellProgress.IsVisible = true;
@@ -1597,7 +1597,7 @@ namespace windows_client.View
         private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chat_Confirmation, AppResources.Conversations_DelChat_Txt, MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.Cancel)
+            if (result != MessageBoxResult.OK)
                 return;
             ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
             if (convObj != null)
@@ -1614,7 +1614,7 @@ namespace windows_client.View
             {
                 var text = String.Format(AppResources.Conversations_RemFromFav_Confirm_Txt, convObj.NameToShow);
                 MessageBoxResult result = MessageBox.Show(text, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
-                if (result == MessageBoxResult.Cancel)
+                if (result != MessageBoxResult.OK)
                     return;
                 convObj.IsFav = false;
                 App.ViewModel.FavList.Remove(convObj);
@@ -2057,7 +2057,7 @@ namespace windows_client.View
             {
                 var text = String.Format(AppResources.Conversations_RemFromFav_Confirm_Txt, convObj.NameToShow);
                 MessageBoxResult result = MessageBox.Show(text, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
-                if (result == MessageBoxResult.Cancel)
+                if (result != MessageBoxResult.OK)
                     return;
 
                 convObj.IsFav = false;

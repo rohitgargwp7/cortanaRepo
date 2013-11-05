@@ -86,7 +86,7 @@ namespace windows_client.View
             }
 
             MessageBoxResult result = MessageBox.Show(AppResources.Privacy_UnlinkConfirmMsgBxText, AppResources.Privacy_UnlinkAccountHeader, MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.Cancel)
+            if (result != MessageBoxResult.OK)
                 return;
 
             if (progress == null)
@@ -118,17 +118,35 @@ namespace windows_client.View
                 return;
             }
 
-            MessageBoxResult result = MessageBox.Show(AppResources.Privacy_DeleteAccounConfirmMsgBxText, AppResources.Privacy_DeleteAccountHeader, MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.Cancel)
-                return;
-
-            if (progress == null)
+            CustomMessageBox msgBox = new CustomMessageBox()
             {
-                progress = new ProgressIndicatorControl();
+                Message = AppResources.Privacy_DeleteAccounWarningMsgBxText,
+                Caption = AppResources.Privacy_DeleteAccountWarningHeader,
+                LeftButtonContent = AppResources.Cancel_Txt,
+                RightButtonContent = AppResources.Continue_txt
+            };
+
+            msgBox.Dismissed += msgBox_Dismissed;
+
+            msgBox.Show();
+        }
+
+        void msgBox_Dismissed(object sender, DismissedEventArgs e)
+        {
+            if (e.Result == CustomMessageBoxResult.RightButton)
+            {
+                MessageBoxResult result = MessageBox.Show(AppResources.Privacy_DeleteAccounConfirmMsgBxText, AppResources.Privacy_DeleteAccountHeader, MessageBoxButton.OKCancel);
+                if (result != MessageBoxResult.OK)
+                    return;
+
+                if (progress == null)
+                {
+                    progress = new ProgressIndicatorControl();
+                }
+                progress.Show(LayoutRoot, AppResources.Privacy_DeleteAccountProgress);
+                canGoBack = false;
+                AccountUtils.deleteRequest(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback), AccountUtils.BASE + "/account");
             }
-            progress.Show(LayoutRoot, AppResources.Privacy_DeleteAccountProgress);
-            canGoBack = false;
-            AccountUtils.deleteRequest(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback), AccountUtils.BASE + "/account");
         }
 
         private void deleteAccountResponse_Callback(JObject obj)

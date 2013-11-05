@@ -42,7 +42,6 @@ namespace windows_client
         public static readonly string LATEST = "latest";
         public static readonly string APP_ID = "appID";
 
-
         public static readonly string LAST_NOTIFICATION_TIME = "lastNotTime";
         public static readonly string SOUND_PREF = "soundPref";
         public static readonly string VIBRATE_PREF = "vibratePref";
@@ -76,7 +75,6 @@ namespace windows_client
         public static readonly string FILES_ATTACHMENT = FILE_TRANSFER_LOCATION + "/Attachments";
         public static readonly string TEMP_VIDEO_RECORDED = FILE_TRANSFER_LOCATION + "/TempVideo";
         public static readonly string TEMP_VIDEO_NAME = "CameraMovie.mp4";
-
 
         public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
         public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.FILE_TRANSFER_BASE + "/user/ft";
@@ -136,7 +134,6 @@ namespace windows_client
         public static readonly string PENDING = "pending";
         public static readonly string REQUEST_PENDING = "requestpending";
         public static readonly string FULL_VIEW_IMAGE_PREFIX = "_fullView";
-
 
         //CS prefix for contactsharing
         public static readonly string CS_PHONE_NUMBERS = "phone_numbers";
