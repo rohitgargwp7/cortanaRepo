@@ -1981,4 +1981,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Privacy_DeleteAccountHeader" xml:space="preserve">
     <value>Please Confirm</value>
   </data>
+  <data name="Continue_txt" xml:space="preserve">
+    <value>continue</value>
+  </data>
 </root>

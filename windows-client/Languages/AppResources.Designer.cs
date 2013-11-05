@@ -457,6 +457,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to continue.
+        /// </summary>
+        public static string Continue_txt {
+            get {
+                return ResourceManager.GetString("Continue_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to added you as friend. Would you like to do the same?.
         /// </summary>
         public static string Conversations_AddedYouToFav_Txt {
