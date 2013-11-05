@@ -77,7 +77,6 @@ namespace windows_client.View
         private bool mUserIsBlocked;
         private bool isOnHike;
         private bool animatedOnce = false;
-        private bool endTypingSent = true;
         private bool isTypingNotificationActive = false;
         private bool isTypingNotificationEnabled = true;
         private bool isReshowTypingNotification = false;
@@ -89,6 +88,7 @@ namespace windows_client.View
 
         private int mCredits;
         private long lastTextChangedTime;
+        private long lastTypingNotificationSentTime;
         private long lastTypingNotificationShownTime;
 
         private HikePubSub mPubSub;
@@ -3113,13 +3113,9 @@ namespace windows_client.View
             }
             lastText = msgText;
             lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
-            scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(5));
+            scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(HikeConstants.SEND_END_TYPING_TIMER));
 
-            if (endTypingSent)
-            {
-                endTypingSent = false;
-                sendTypingNotification(true);
-            }
+            sendStartTypingNotification();
 
             if (!isOnHike && msgText.Length > 130)
             {
@@ -3176,7 +3172,6 @@ namespace windows_client.View
             if (message == "" || (!isOnHike && mCredits <= 0))
                 return;
 
-            endTypingSent = true;
             sendTypingNotification(false);
 
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
@@ -4013,6 +4008,7 @@ namespace windows_client.View
             {
                 if (notificationType)
                 {
+
                     obj.Add(HikeConstants.TYPE, NetworkManager.START_TYPING);
 
                 }
@@ -4036,13 +4032,21 @@ namespace windows_client.View
         private void sendEndTypingNotification()
         {
             long currentTime = TimeUtils.getCurrentTimeStamp();
-            if (currentTime - lastTextChangedTime >= 5 && endTypingSent == false)
+            if (currentTime - lastTextChangedTime >= HikeConstants.SEND_END_TYPING_TIMER)
             {
-                endTypingSent = true;
                 sendTypingNotification(false);
             }
         }
-
+   
+        private void sendStartTypingNotification()
+        {
+            if (TimeUtils.getCurrentTimeStamp() - lastTypingNotificationSentTime > HikeConstants.SEND_START_TYPING_TIMER)
+            {
+                lastTypingNotificationSentTime = TimeUtils.getCurrentTimeStamp();
+                sendTypingNotification(true);
+            }
+        }
+        
         private void ShowTypingNotification()
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
