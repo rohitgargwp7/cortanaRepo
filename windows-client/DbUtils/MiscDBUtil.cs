@@ -621,17 +621,20 @@ namespace windows_client.DbUtils
             attachmentPaths[1] = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                string[] fileNames = store.GetFileNames(attachmentPaths[0] + "/*");
-                foreach (string fileName in fileNames)
+                if (store.DirectoryExists(attachmentPaths[0]))
                 {
-                    FileTransfers.FileTransferManager.Instance.DeleteTask(fileName);
+                    string[] fileNames = store.GetFileNames(attachmentPaths[0] + "/*");
+                    foreach (string fileName in fileNames)
+                    {
+                        FileTransfers.FileTransferManager.Instance.DeleteTask(fileName);
+                    }
                 }
 
                 foreach (string attachmentPath in attachmentPaths)
                 {
                     if (store.DirectoryExists(attachmentPath))
                     {
-                        fileNames = store.GetFileNames(attachmentPath + "/*");
+                        string[] fileNames = store.GetFileNames(attachmentPath + "/*");
                         foreach (string fileName in fileNames)
                         {
                             store.DeleteFile(attachmentPath + "/" + fileName);
