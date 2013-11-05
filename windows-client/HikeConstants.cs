@@ -42,7 +42,6 @@ namespace windows_client
         public static readonly string LATEST = "latest";
         public static readonly string APP_ID = "appID";
 
-
         public static readonly string LAST_NOTIFICATION_TIME = "lastNotTime";
         public static readonly string SOUND_PREF = "soundPref";
         public static readonly string VIBRATE_PREF = "vibratePref";
@@ -77,7 +76,6 @@ namespace windows_client
         public static readonly string TEMP_VIDEO_RECORDED = FILE_TRANSFER_LOCATION + "/TempVideo";
         public static readonly string TEMP_VIDEO_NAME = "CameraMovie.mp4";
 
-
         public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
         public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.FILE_TRANSFER_BASE + "/user/ft";
         public static readonly string FILE_TRANSFER_COPY_BASE_URL = "http://hike.in/f";
@@ -100,7 +98,7 @@ namespace windows_client
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
-        public static readonly int TYPING_NOTIFICATION_AUTOHIDE = 3; //seconds
+        public static readonly int TYPING_NOTIFICATION_AUTOHIDE = 20; //seconds
         public static readonly int MAX_CHATBUBBLE_SIZE = 1400;//chars
 
         public static readonly int ANALYTICS_POST_TIME = 12;//hours on prod and minutes on staging
@@ -136,7 +134,6 @@ namespace windows_client
         public static readonly string PENDING = "pending";
         public static readonly string REQUEST_PENDING = "requestpending";
         public static readonly string FULL_VIEW_IMAGE_PREFIX = "_fullView";
-
 
         //CS prefix for contactsharing
         public static readonly string CS_PHONE_NUMBERS = "phone_numbers";
