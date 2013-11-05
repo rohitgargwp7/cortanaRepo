@@ -151,7 +151,7 @@ namespace windows_client.FileTransfers
                 try
                 {
                     var jData = (this as FileUploader).SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
-                    result = jData[HikeConstants.MD5_BEFORE_CONVERSION].ToString();
+                    result = jData[HikeConstants.MD5_ORIGINAL].ToString();
                 }
                 catch
                 {
