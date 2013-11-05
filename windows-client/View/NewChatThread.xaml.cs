@@ -3113,7 +3113,7 @@ namespace windows_client.View
             }
             lastText = msgText;
             lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
-            scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(5));
+            scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE));
 
             if (endTypingSent)
             {
@@ -4036,7 +4036,7 @@ namespace windows_client.View
         private void sendEndTypingNotification()
         {
             long currentTime = TimeUtils.getCurrentTimeStamp();
-            if (currentTime - lastTextChangedTime >= 5 && endTypingSent == false)
+            if (currentTime - lastTextChangedTime >= HikeConstants.TYPING_NOTIFICATION_AUTOHIDE && endTypingSent == false)
             {
                 endTypingSent = true;
                 sendTypingNotification(false);

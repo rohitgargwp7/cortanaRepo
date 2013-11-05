@@ -100,7 +100,7 @@ namespace windows_client
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
-        public static readonly int TYPING_NOTIFICATION_AUTOHIDE = 20; //seconds
+        public static readonly int TYPING_NOTIFICATION_AUTOHIDE = 3; //seconds
         public static readonly int MAX_CHATBUBBLE_SIZE = 1400;//chars
 
         public static readonly int ANALYTICS_POST_TIME = 12;//hours on prod and minutes on staging

@@ -3074,7 +3074,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirmation.
+        ///   Looks up a localized string similar to Please Confirm.
         /// </summary>
         public static string Privacy_DeleteAccountHeader {
             get {
@@ -3101,7 +3101,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warning!.
+        ///   Looks up a localized string similar to Are you sure?.
         /// </summary>
         public static string Privacy_DeleteAccountWarningHeader {
             get {

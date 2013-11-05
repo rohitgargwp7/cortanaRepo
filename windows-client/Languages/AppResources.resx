@@ -1047,7 +1047,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>cs. Message box while deleting account</comment>
   </data>
   <data name="Privacy_DeleteAccountWarningHeader" xml:space="preserve">
-    <value>Warning!</value>
+    <value>Are you sure?</value>
     <comment>xaml + cs (mesg box caption)</comment>
   </data>
   <data name="Privacy_DeleteAccountProgress" xml:space="preserve">
@@ -1979,6 +1979,6 @@ Download it now http://hike.in and join the fun!</value>
     <value>Are you sure you want to delete your account? This action is irreversible.</value>
   </data>
   <data name="Privacy_DeleteAccountHeader" xml:space="preserve">
-    <value>Confirmation</value>
+    <value>Please Confirm</value>
   </data>
 </root>
