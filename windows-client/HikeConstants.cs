@@ -60,7 +60,7 @@ namespace windows_client
         public static readonly string FILE_CONTENT_TYPE = "ct";
         public static readonly string FILES_DATA = "files";
         public static readonly string FILE_PLAY_TIME = "pt";
-        public static readonly string MD5_ORIGINAL = "md5_original ";
+        public static readonly string MD5_ORIGINAL = "md5_original";
 
         public static readonly string LATITUDE = "lat";
         public static readonly string LONGITUDE = "long";
