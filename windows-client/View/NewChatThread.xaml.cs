@@ -3759,9 +3759,9 @@ namespace windows_client.View
             emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
-        private void emotListRecent_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void emotListRecent_Tap(object sender, SelectionChangedEventArgs e)
         {
-            LongListSelector llsStickerCategory = (sender as LongListSelector);
+            ListBox llsStickerCategory = (sender as ListBox);
             SmileyParser.Emoticon emoticon = llsStickerCategory.SelectedItem as SmileyParser.Emoticon;
             llsStickerCategory.SelectedItem = null;
             if (emoticon == null)
@@ -4037,7 +4037,7 @@ namespace windows_client.View
                 sendTypingNotification(false);
             }
         }
-   
+
         private void sendStartTypingNotification()
         {
             if (TimeUtils.getCurrentTimeStamp() - lastTypingNotificationSentTime > HikeConstants.SEND_START_TYPING_TIMER)
@@ -4046,7 +4046,7 @@ namespace windows_client.View
                 sendTypingNotification(true);
             }
         }
-        
+
         private void ShowTypingNotification()
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -4926,7 +4926,7 @@ namespace windows_client.View
                         gridNoRecents.Visibility = Visibility.Collapsed;
                         gridShowRecents.Visibility = Visibility.Visible;
                         emotListRecent.ItemsSource = null;
-                        emotListRecent.ItemsSource = imagePathsForListRecent;
+                        emotListRecent.ItemsSource = new List<SmileyParser.Emoticon>(imagePathsForListRecent); 
                     }
                     else
                     {
@@ -6740,6 +6740,7 @@ namespace windows_client.View
                 SendMsg();
             }
         }
+
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector
