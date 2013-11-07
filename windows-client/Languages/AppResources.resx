@@ -1969,8 +1969,8 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Invite_Header_Txt" xml:space="preserve">
     <value>invite</value>
   </data>
-  <data name="In_App_Tip_8" xml:space="preserve">
-    <value>Tap the "Enter" key on your keyboard to to quickly send a message. You can Turn On/Off this option from the app settings.</value>
+  <data name="In_App_Tip_8_1" xml:space="preserve">
+    <value>Now you can send a message using the enter key. This can be changed from app settings anytime.</value>
   </data>
   <data name="FileTransfer_LimitReached" xml:space="preserve">
     <value>Limit Exceeded</value>
@@ -1983,5 +1983,8 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Continue_txt" xml:space="preserve">
     <value>continue</value>
+  </data>
+  <data name="In_App_Tip_8_2" xml:space="preserve">
+    <value>Now you can send a message using the enter key. This can be enabled from app settings anytime.</value>
   </data>
 </root>

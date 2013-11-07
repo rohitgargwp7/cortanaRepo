@@ -2192,11 +2192,20 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap the &quot;Enter&quot; key on your keyboard to to quickly send a message. You can Turn On/Off this option from the app settings..
+        ///   Looks up a localized string similar to Now you can send a message using the enter key. This can be changed from app settings anytime..
         /// </summary>
-        public static string In_App_Tip_8 {
+        public static string In_App_Tip_8_1 {
             get {
-                return ResourceManager.GetString("In_App_Tip_8", resourceCulture);
+                return ResourceManager.GetString("In_App_Tip_8_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Now you can send a message using the enter key. This can be enabled from app settings anytime..
+        /// </summary>
+        public static string In_App_Tip_8_2 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_8_2", resourceCulture);
             }
         }
         
