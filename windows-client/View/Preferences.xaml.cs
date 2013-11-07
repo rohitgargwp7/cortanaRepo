@@ -20,7 +20,6 @@ namespace windows_client.View
 {
     public partial class Preferences : PhoneApplicationPage
     {
-        bool showStatusUpdatesSettings = false;
         public Preferences()
         {
             InitializeComponent();

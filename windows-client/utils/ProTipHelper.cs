@@ -230,6 +230,9 @@ namespace windows_client.utils
             {
                 try
                 {
+                    if (!store.DirectoryExists(PROTIPS_DIRECTORY))
+                        return;
+
                     var fileNames = store.GetFileNames(PROTIPS_DIRECTORY + "\\*");
 
                     if (CurrentProTip != null)
