@@ -4916,6 +4916,8 @@ namespace windows_client.View
             emotHeaderRect3.Background = UI_Utils.Instance.TappedCategoryColor;
             emoticonPivot.SelectedIndex = 4;
         }
+
+        List<SmileyParser.Emoticon> listTemp = new List<SmileyParser.Emoticon>();
         private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             switch (emoticonPivot.SelectedIndex)
@@ -4926,7 +4928,9 @@ namespace windows_client.View
                         gridNoRecents.Visibility = Visibility.Collapsed;
                         gridShowRecents.Visibility = Visibility.Visible;
                         emotListRecent.ItemsSource = null;
-                        emotListRecent.ItemsSource = new List<SmileyParser.Emoticon>(imagePathsForListRecent); 
+                        listTemp.Clear();
+                        listTemp.AddRange(imagePathsForListRecent);
+                        emotListRecent.ItemsSource = listTemp;
                     }
                     else
                     {
