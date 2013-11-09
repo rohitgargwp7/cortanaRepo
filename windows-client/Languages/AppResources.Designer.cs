@@ -1472,7 +1472,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Limit Exceeded.
+        ///   Looks up a localized string similar to File Limit Exceeded.
         /// </summary>
         public static string FileTransfer_LimitReached {
             get {
@@ -1715,7 +1715,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are 20 files currently being transferred in your hike app. Please try again later..
+        ///   Looks up a localized string similar to There are more than 50 file transfers pending. Please retry again later..
         /// </summary>
         public static string FT_MaxFiles_Txt {
             get {

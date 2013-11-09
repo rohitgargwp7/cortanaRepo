@@ -1934,7 +1934,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Earn free SMS for every friend who joins hike because of you</value>
   </data>
   <data name="FT_MaxFiles_Txt" xml:space="preserve">
-    <value>There are 20 files currently being transferred in your hike app. Please try again later.</value>
+    <value>There are more than 50 file transfers pending. Please retry again later.</value>
   </data>
   <data name="sms_invite_message" xml:space="preserve">
     <value>I just got the new hike messenger! It's simpler, faster with hilarious new stickers! Download it now and lets chat for free http://hike.in</value>
@@ -1973,7 +1973,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Now you can send a message using the enter key. This can be changed from app settings anytime.</value>
   </data>
   <data name="FileTransfer_LimitReached" xml:space="preserve">
-    <value>Limit Exceeded</value>
+    <value>File Limit Exceeded</value>
   </data>
   <data name="Privacy_DeleteAccounConfirmMsgBxText" xml:space="preserve">
     <value>Are you sure you want to delete your account? This action is irreversible.</value>
