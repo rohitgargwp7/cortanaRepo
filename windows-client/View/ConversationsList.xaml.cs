@@ -205,9 +205,10 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 launchPagePivot.SelectedIndex = 3;
 
-            JObject obj;
-            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, out obj))
+            String updateObj;
+            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, out updateObj))
             {
+                JObject obj = JObject.Parse(updateObj);
 
                 var currentVersion = App.appSettings[HikeConstants.FILE_SYSTEM_VERSION].ToString();
                 var version = (string)obj[HikeConstants.VERSION];
@@ -1619,7 +1620,7 @@ namespace windows_client.View
 
         #endregion
 
-        #region Update Available
+        #region App Update Available
 
         void ShowAppUpdateAvailableMessage(string version, string message, bool isCritical)
         {
@@ -1865,123 +1866,6 @@ namespace windows_client.View
         }
 
         #endregion
-
-        #region IN APP UPDATE
-
-        //private bool isAppEnabled = true;
-        private string latestVersionString = "";
-
-        public void checkForUpdates()
-        {
-            long lastTimeStamp = -1;
-            App.appSettings.TryGetValue<long>(App.LAST_UPDATE_CHECK_TIME, out lastTimeStamp);
-
-            if (lastTimeStamp == -1 || TimeUtils.isUpdateTimeElapsed(lastTimeStamp))
-            {
-                AccountUtils.createGetRequest(HikeConstants.UPDATE_URL, new AccountUtils.postResponseFunction(checkUpdate_Callback), false);
-            }
-            else
-                checkForRateApp();
-        }
-
-        public void checkUpdate_Callback(JObject obj)
-        {
-            bool isUpdateShown = false;
-            try
-            {
-                if (obj != null)
-                {
-                    string critical = obj[HikeConstants.CRITICAL].ToString();
-                    string latest = obj[HikeConstants.LATEST].ToString();
-                    string current = Utils.getAppVersion();
-                    latestVersionString = latest;
-                    string lastDismissedUpdate = "";
-                    App.appSettings.TryGetValue<string>(App.LAST_DISMISSED_UPDATE_VERSION, out lastDismissedUpdate);
-                    string appID = obj[HikeConstants.APP_ID].ToString();
-                    if (!String.IsNullOrEmpty(appID))
-                    {
-                        App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_UPDATE, appID);
-                    }
-                    if (Utils.compareVersion(critical, current) == 1)
-                    {
-                        App.WriteToIsoStorageSettings(App.LAST_CRITICAL_VERSION, critical);
-                        showCriticalUpdateMessage();//critical update
-                        isUpdateShown = true;
-                    }
-                    else if ((Utils.compareVersion(latest, current) == 1) && (String.IsNullOrEmpty(lastDismissedUpdate) ||
-                        (Utils.compareVersion(latest, lastDismissedUpdate) == 1)))
-                    {
-                        showNormalUpdateMessage();//normal update
-                        isUpdateShown = true;
-                    }
-                    App.WriteToIsoStorageSettings(App.LAST_UPDATE_CHECK_TIME, TimeUtils.getCurrentTimeStamp());
-                }
-                if (!isUpdateShown)
-                {
-                    checkForRateApp();
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("ConversationList ::  checkUpdate_Callback , checkUpdate_Callback, Exception : " + ex.StackTrace);
-            }
-        }
-
-        private void showCriticalUpdateMessage()
-        {
-            if (!Guide.IsVisible)
-            {
-                Guide.BeginShowMessageBox(AppResources.CRITICAL_UPDATE_HEADING, AppResources.CRITICAL_UPDATE_TEXT,
-                     new List<string> { AppResources.Update_Txt }, 0, MessageBoxIcon.Alert,
-                     asyncResult =>
-                     {
-                         int? returned = Guide.EndShowMessageBox(asyncResult);
-                         if (returned != null && returned == 0)
-                         {
-                             openMarketPlace();
-                         }
-                         else
-                         {
-                             criticalUpdateMessageBoxReturned(returned);
-                         }
-
-                     }, null);
-            }
-        }
-
-        private void showNormalUpdateMessage()
-        {
-            if (!Guide.IsVisible)
-            {
-                Guide.BeginShowMessageBox(AppResources.NORMAL_UPDATE_HEADING, AppResources.NORMAL_UPDATE_TEXT,
-                     new List<string> { AppResources.Update_Txt, AppResources.Ignore_Txt }, 0, MessageBoxIcon.Alert,
-                     asyncResult =>
-                     {
-                         int? returned = Guide.EndShowMessageBox(asyncResult);
-                         if (returned != null && returned == 0)
-                         {
-                             openMarketPlace();
-                         }
-                         else if (returned == null || returned == 1)
-                         {
-                             App.WriteToIsoStorageSettings(App.LAST_DISMISSED_UPDATE_VERSION, latestVersionString);
-                         }
-                     }, null);
-            }
-        }
-
-        private void criticalUpdateMessageBoxReturned(int? ret)
-        {
-            if (ret == null)
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    LayoutRoot.IsHitTestVisible = false;
-                    appBar.IsMenuEnabled = false;
-                    composeIconButton.IsEnabled = false;
-                });
-            }
-        }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {

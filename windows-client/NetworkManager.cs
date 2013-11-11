@@ -1594,7 +1594,7 @@ namespace windows_client
                     obj.Add(HikeConstants.CRITICAL, isCritical);
                     obj.Add(HikeConstants.TEXT_UPDATE_MSG, message);
                     obj.Add(HikeConstants.VERSION, version);
-                    App.appSettings.Add(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, obj);
+                    App.appSettings.Add(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, obj.ToString(Newtonsoft.Json.Formatting.None));
 
                     object[] vals = new object[3];
 

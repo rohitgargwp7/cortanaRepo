@@ -889,24 +889,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Important update.
-        /// </summary>
-        public static string CRITICAL_UPDATE_HEADING {
-            get {
-                return ResourceManager.GetString("CRITICAL_UPDATE_HEADING", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To continue using hike, an update is required..
-        /// </summary>
-        public static string CRITICAL_UPDATE_TEXT {
-            get {
-                return ResourceManager.GetString("CRITICAL_UPDATE_TEXT", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0}/{1}.
         /// </summary>
         public static string CT_CharCount_Sms_User {
@@ -2863,24 +2845,6 @@ namespace windows_client.Languages {
         public static string NoInfoForTask_Txt {
             get {
                 return ResourceManager.GetString("NoInfoForTask_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update available.
-        /// </summary>
-        public static string NORMAL_UPDATE_HEADING {
-            get {
-                return ResourceManager.GetString("NORMAL_UPDATE_HEADING", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update to the new version of hike to discover amazing new ways to message.
-        /// </summary>
-        public static string NORMAL_UPDATE_TEXT {
-            get {
-                return ResourceManager.GetString("NORMAL_UPDATE_TEXT", resourceCulture);
             }
         }
         
