@@ -91,19 +91,6 @@ namespace windows_client.View
             int tipCount;
             App.appSettings.TryGetValue(App.PRO_TIP_COUNT, out tipCount);
             ProTipCount = tipCount;
-
-            // Timer to simulate the XNA game loop (SoundEffect class is from the XNA Framework)
-            GameTimer gameTimer = new GameTimer();
-            gameTimer.UpdateInterval = TimeSpan.FromMilliseconds(33);
-
-            // Call FrameworkDispatcher.Update to update the XNA Framework internals.
-            gameTimer.Update += delegate { try { FrameworkDispatcher.Update(); } catch { } };
-
-            // Start the GameTimer running.
-            gameTimer.Start();
-
-            // Prime the pump or we'll get an exception.
-            FrameworkDispatcher.Update();
         }
 
         void Instance_ShowProTip(object sender, EventArgs e)
@@ -134,6 +121,8 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+
             if (launchPagePivot.SelectedIndex == 3)
             {
                 TotalUnreadStatuses = 0;
@@ -220,6 +209,9 @@ namespace windows_client.View
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 launchPagePivot.SelectedIndex = 3;
+
+            FrameworkDispatcher.Update();
+
         }
 
         private async void BindFriendsAsync()
@@ -2709,13 +2701,14 @@ namespace windows_client.View
         }
 
         bool resumeMediaPlayerAfterDone = false;
-        bool playAudio = false;
 
         private void PlayAudio()
         {
 
             Dispatcher.BeginInvoke(() =>
                 {
+                    FrameworkDispatcher.Update();
+                   
                     if (!MediaPlayer.GameHasControl)
                     {
                         MediaPlayer.Pause();
