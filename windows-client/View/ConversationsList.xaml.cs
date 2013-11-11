@@ -1617,7 +1617,10 @@ namespace windows_client.View
                 var currentVersion = App.appSettings[HikeConstants.FILE_SYSTEM_VERSION].ToString();
                 var version = (string)obj[HikeConstants.VERSION];
                 if (Utils.compareVersion(version, currentVersion) <= 0)
+                {
                     App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
+                    return;
+                }
 
                 var message = (string)obj[HikeConstants.TEXT_UPDATE_MSG];
                 _isCriticalUpdate = (bool)obj[HikeConstants.CRITICAL];
