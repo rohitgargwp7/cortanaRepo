@@ -204,6 +204,21 @@ namespace windows_client.View
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 launchPagePivot.SelectedIndex = 3;
+
+            JObject obj;
+            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, out obj))
+            {
+
+                var currentVersion = App.appSettings[HikeConstants.FILE_SYSTEM_VERSION].ToString();
+                var version = (string)obj[HikeConstants.VERSION];
+                if (Utils.compareVersion(version, currentVersion) <= 0)
+                    App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
+
+                var message = (string)obj[HikeConstants.TEXT_UPDATE_MSG];
+                var isCritical = (bool)obj[HikeConstants.CRITICAL];
+
+                ShowAppUpdateAvailableMessage(version, message, isCritical);
+            }
         }
 
         private async void BindFriendsAsync()
@@ -1588,6 +1603,36 @@ namespace windows_client.View
                 }
             }
             #endregion
+            #region UPDATE AVAILABLE
+            else if (type == HikePubSub.APP_UPDATE_AVAILABLE)
+            {
+                var vals = (object[])obj;
+
+                var version = (string)vals[0];
+                var msg = (string)vals[1];
+                var isCritical = (bool)vals[2];
+
+                ShowAppUpdateAvailableMessage(version, msg, isCritical);
+            }
+            #endregion
+        }
+
+        #endregion
+
+        #region Update Available
+
+        void ShowAppUpdateAvailableMessage(string version, string message, bool isCritical)
+        {
+            var caption = String.Format(AppResources.App_Update_Caption, version);
+            var result = MessageBox.Show(message, caption, MessageBoxButton.OK);
+
+            if (result == MessageBoxResult.OK)
+            {
+                MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
+                marketplaceDetailTask.Show();
+            }
+            else if (isCritical)
+                ShowAppUpdateAvailableMessage(version, message, isCritical);
         }
 
         #endregion

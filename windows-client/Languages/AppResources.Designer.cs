@@ -97,6 +97,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update to {0}.
+        /// </summary>
+        public static string App_Update_Caption {
+            get {
+                return ResourceManager.GetString("App_Update_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An update is available for your app. Please update now..
+        /// </summary>
+        public static string App_Update_Msg {
+            get {
+                return ResourceManager.GetString("App_Update_Msg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to done.
         /// </summary>
         public static string AppBar_Done_Btn {

@@ -169,6 +169,8 @@ namespace windows_client
         public const string FTUE_HIKEBOT_MSISDN = "+hike1+";
         public const string FTUE_GAMING_MSISDN = "+hike2+";
 
+        public static readonly string VERSION = "version";
+
         public static string FAQS_LINK
         {
             get
@@ -305,7 +307,6 @@ namespace windows_client
         public static string UNREAD_FRIEND_REQUESTS = "urFr";
         public static string REFRESH_BAR = "refBar";
 
-
         public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
         public static string PROFILE_NAME_CHANGED = "ProfileNameChanged";
 
@@ -399,6 +400,7 @@ namespace windows_client
             public static readonly string PRO_TIPS = "pt";
             public static readonly string APP_INFO = "app";
             public static readonly string FORCE_SMS = "fsms";
+            public static readonly string APP_UPDATE = "update";
         }
 
         public static class AppSettings
@@ -413,6 +415,7 @@ namespace windows_client
             public static readonly string APP_LAUNCH_COUNT = "App_Launch_Count";
             public static readonly string TIME_DIFF_EPOCH = "serverEpochTime";
             public static readonly string REMOVE_EMMA = "removeEmma";
+            public static readonly string NEW_UPDATE_AVAILABLE = "New_Update_Available";
         }
 
         public static class NokiaHere

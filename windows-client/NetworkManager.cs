@@ -1551,6 +1551,65 @@ namespace windows_client
             }
 
             #endregion
+            #region App Update
+            
+            else if (HikeConstants.MqttMessageTypes.APP_UPDATE == type)
+            {
+                JObject data = null;
+
+                try
+                {
+                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    var devType = (string)data[HikeConstants.DEVICE_TYPE_KEY];
+
+                    if (devType != "windows")
+                        return;
+
+                    var version = (string)data[HikeConstants.VERSION];
+                    
+                    if (Utils.compareVersion(version, App.CURRENT_VERSION) <= 0)
+                        return;
+
+                    var message = "";
+                    try
+                    {
+                        message = (string)data[HikeConstants.TEXT_UPDATE_MSG];
+                    }
+                    catch
+                    {
+                        message = AppResources.App_Update_Msg;
+                    }
+
+                    bool isCritical = false;
+                    try
+                    {
+                        isCritical = (bool)data[HikeConstants.CRITICAL];
+                    }
+                    catch
+                    {
+                        isCritical = false;
+                    }
+
+                    JObject obj = new JObject();
+                    obj.Add(HikeConstants.CRITICAL, isCritical);
+                    obj.Add(HikeConstants.TEXT_UPDATE_MSG, message);
+                    obj.Add(HikeConstants.VERSION, version);
+                    App.appSettings.Add(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, obj);
+
+                    object[] vals = new object[3];
+
+                    vals[0] = version;
+                    vals[1] = message;
+                    vals[2] = isCritical;
+                    pubSub.publish(HikePubSub.APP_UPDATE_AVAILABLE, vals);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Network Manager:: APP UPDATE, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                }
+            }
+            
+            #endregion
             #region OTHER
             else
             {
