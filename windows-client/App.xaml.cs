@@ -722,7 +722,7 @@ namespace windows_client
         {
             #region Enter to send
 
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.3.0.3") < 0)
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.3.0.4") < 0)
                 App.WriteToIsoStorageSettings(App.ENTER_TO_SEND, false);
             
             #endregion
