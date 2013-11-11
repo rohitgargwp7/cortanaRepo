@@ -29,6 +29,9 @@ using Coding4Fun.Phone.Controls;
 using System.Windows.Media;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Phone.BackgroundAudio;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework;
 
 namespace windows_client.View
 {
@@ -88,6 +91,19 @@ namespace windows_client.View
             int tipCount;
             App.appSettings.TryGetValue(App.PRO_TIP_COUNT, out tipCount);
             ProTipCount = tipCount;
+
+            // Timer to simulate the XNA game loop (SoundEffect class is from the XNA Framework)
+            GameTimer gameTimer = new GameTimer();
+            gameTimer.UpdateInterval = TimeSpan.FromMilliseconds(33);
+
+            // Call FrameworkDispatcher.Update to update the XNA Framework internals.
+            gameTimer.Update += delegate { try { FrameworkDispatcher.Update(); } catch { } };
+
+            // Start the GameTimer running.
+            gameTimer.Start();
+
+            // Prime the pump or we'll get an exception.
+            FrameworkDispatcher.Update();
         }
 
         void Instance_ShowProTip(object sender, EventArgs e)
@@ -978,15 +994,25 @@ namespace windows_client.View
                         }
                     });
                 }
-                bool isVibrateEnabled = true;
-                App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
 
-                if (isVibrateEnabled && Utils.ShowNotificationAlert())
+
+                if (Utils.ShowNotificationAlert())
                 {
                     if (App.newChatThreadPage == null && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute))
                     {
-                        VibrateController vibrate = VibrateController.Default;
-                        vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
+                        bool isVibrateEnabled = true;
+                        App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
+                        if (isVibrateEnabled)
+                        {
+                            VibrateController vibrate = VibrateController.Default;
+                            vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
+                        }
+                        bool isHikeJingleEnabled = true;
+                        App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
+                        if (isHikeJingleEnabled)
+                        {
+                            PlayAudio();
+                        }
                         appSettings[HikeConstants.LAST_NOTIFICATION_TIME] = DateTime.Now.Ticks;
                     }
                 }
@@ -1756,6 +1782,7 @@ namespace windows_client.View
 
         private void FreeSMS_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+
             App.AnalyticsInstance.addEvent(Analytics.FREE_SMS);
             NavigationService.Navigate(new Uri("/View/FreeSMS.xaml", UriKind.Relative));
         }
@@ -2679,6 +2706,47 @@ namespace windows_client.View
 
             string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+        }
+
+        bool resumeMediaPlayerAfterDone = false;
+        bool playAudio = false;
+
+        private void PlayAudio()
+        {
+
+            Dispatcher.BeginInvoke(() =>
+                {
+                    if (!MediaPlayer.GameHasControl)
+                    {
+                        MediaPlayer.Pause();
+                        resumeMediaPlayerAfterDone = true;
+                    }
+                    if (App.GlobalMediaElement.Source == null)
+                    {
+                        App.GlobalMediaElement.Source = new Uri("Audio/v1.mp3", UriKind.Relative);
+
+                        App.GlobalMediaElement.MediaOpened += MediaElement_MediaOpened;//it shows file has been loaded
+                        App.GlobalMediaElement.MediaEnded += mediaElement_MediaEnded;
+                    }
+                    else
+                    {
+                        App.GlobalMediaElement.Play();
+                    }
+                });
+        }
+
+        private void MediaElement_MediaOpened(object sender, RoutedEventArgs e)
+        {
+            App.GlobalMediaElement.Play();
+        }
+
+        void mediaElement_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            if (resumeMediaPlayerAfterDone)
+            {
+                MediaPlayer.Resume();
+                resumeMediaPlayerAfterDone = false;
+            }
         }
     }
 }

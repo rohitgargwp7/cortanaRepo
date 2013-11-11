@@ -18,6 +18,7 @@ using System.Net.NetworkInformation;
 using Microsoft.Phone.Net.NetworkInformation;
 using System.Globalization;
 using Newtonsoft.Json.Linq;
+using System.Windows.Controls;
 
 namespace windows_client
 {
@@ -74,6 +75,7 @@ namespace windows_client
         public static string EMAIL = "email";
         public static string GENDER = "gender";
         public static readonly string VIBRATE_PREF = "vibratePref";
+        public static readonly string HIKEJINGLE_PREF = "jinglePref";
         public static readonly string LAST_UPDATE_CHECK_TIME = "lastUpdateTime";
         public static readonly string LAST_DISMISSED_UPDATE_VERSION = "lastDismissedUpdate";
         public static readonly string LAST_CRITICAL_VERSION = "lastCriticalVersion";
@@ -312,6 +314,7 @@ namespace windows_client
 
             // Phone-specific initialization
             InitializePhoneApplication();
+
             //CreateURIMapping();
             // Show graphics profiling information while debugging.
             if (System.Diagnostics.Debugger.IsAttached)
@@ -724,7 +727,7 @@ namespace windows_client
 
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.3.0.4") < 0)
                 App.WriteToIsoStorageSettings(App.ENTER_TO_SEND, false);
-            
+
             #endregion
             #region ProTips 2.3.0.0
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.3.0.0") < 0)
@@ -942,6 +945,7 @@ namespace windows_client
             PostLocaleInfo();
             #endregion
             #region HIKE BOT
+            //todo: do on new install
             WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
             #endregion
         }
@@ -1175,5 +1179,11 @@ namespace windows_client
             if (App.HikePubSubInstance != null)
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
+
+        public static MediaElement GlobalMediaElement
+        {
+            get { return Current.Resources["GlobalMedia"] as MediaElement; }
+        }
+
     }
 }
