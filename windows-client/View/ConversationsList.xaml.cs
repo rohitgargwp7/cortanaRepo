@@ -139,9 +139,6 @@ namespace windows_client.View
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
 
-            if (Utils.isCriticalUpdatePending())
-                showCriticalUpdateMessage();
-
             if (firstLoad)
             {
                 shellProgress.IsVisible = true;
@@ -215,10 +212,7 @@ namespace windows_client.View
                 if (Utils.compareVersion(version, currentVersion) <= 0)
                     App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
 
-                var message = (string)obj[HikeConstants.TEXT_UPDATE_MSG];
-                var isCritical = (bool)obj[HikeConstants.CRITICAL];
-
-                ShowAppUpdateAvailableMessage(version, message, isCritical);
+                ShowAppUpdateAvailableMessage();
             }
         }
 
@@ -361,12 +355,6 @@ namespace windows_client.View
                 App.RemoveKeyFromAppSettings(HikeConstants.IS_NEW_INSTALLATION);
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE);
             }
-
-            // move to seperate thread later
-            #region CHECK UPDATES
-            //rate the app is handled within this
-            checkForUpdates();
-            #endregion
 
             postAnalytics();
         }
@@ -1607,13 +1595,8 @@ namespace windows_client.View
             #region UPDATE AVAILABLE
             else if (type == HikePubSub.APP_UPDATE_AVAILABLE)
             {
-                var vals = (object[])obj;
-
-                var version = (string)vals[0];
-                var msg = (string)vals[1];
-                var isCritical = (bool)vals[2];
-
-                ShowAppUpdateAvailableMessage(version, msg, isCritical);
+                _isCriticalUpdate = (bool)obj;
+                ShowAppUpdateAvailableMessage();
             }
             #endregion
         }
@@ -1622,18 +1605,67 @@ namespace windows_client.View
 
         #region App Update Available
 
-        void ShowAppUpdateAvailableMessage(string version, string message, bool isCritical)
-        {
-            var caption = String.Format(AppResources.App_Update_Caption, version);
-            var result = MessageBox.Show(message, caption, MessageBoxButton.OK);
+        bool _isCriticalUpdate = false;
 
-            if (result == MessageBoxResult.OK)
+        void ShowAppUpdateAvailableMessage()
+        {
+            String updateObj;
+            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, out updateObj))
+            {
+                JObject obj = JObject.Parse(updateObj);
+
+                var currentVersion = App.appSettings[HikeConstants.FILE_SYSTEM_VERSION].ToString();
+                var version = (string)obj[HikeConstants.VERSION];
+                if (Utils.compareVersion(version, currentVersion) <= 0)
+                    App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
+
+                var message = (string)obj[HikeConstants.TEXT_UPDATE_MSG];
+                _isCriticalUpdate = (bool)obj[HikeConstants.CRITICAL];
+                
+                var caption = String.Format(AppResources.App_Update_Caption, version);
+            
+                CustomMessageBox msgBox = new CustomMessageBox()
+                {
+                    Message = message,
+                    Caption = caption,
+                    LeftButtonContent = AppResources.Update_Now_Txt
+                };
+
+                msgBox.Dismissed+=msgBox_Dismissed;
+
+                msgBox.Show();
+            }
+        }
+
+        void msgBox_Dismissed(object sender, DismissedEventArgs e)
+        {
+ 	        if(e.Result == CustomMessageBoxResult.LeftButton)
+            {
+                openMarketPlace();
+            }
+            else if (_isCriticalUpdate)
+                ShowAppUpdateAvailableMessage();
+        }
+
+        private void openMarketPlace()
+        {
+            string appID;
+            App.appSettings.TryGetValue<string>(App.APP_ID_FOR_LAST_UPDATE, out appID);
+            if (!String.IsNullOrEmpty(appID))
             {
                 MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
-                marketplaceDetailTask.Show();
+                //                marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
+                marketplaceDetailTask.ContentIdentifier = appID;
+                marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
+                try
+                {
+                    marketplaceDetailTask.Show();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("ConversationList ::  openMarketPlace, openMarketPlace  , Exception : " + ex.StackTrace);
+                }
             }
-            else if (isCritical)
-                ShowAppUpdateAvailableMessage(version, message, isCritical);
         }
 
         #endregion
@@ -1891,31 +1923,6 @@ namespace windows_client.View
             }
             base.OnBackKeyPress(e);
         }
-
-        private void openMarketPlace()
-        {
-
-            //keep the code below for final. it is commented for testing
-            string appID;
-            App.appSettings.TryGetValue<string>(App.APP_ID_FOR_LAST_UPDATE, out appID);
-            if (!String.IsNullOrEmpty(appID))
-            {
-                MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
-                //                marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
-                marketplaceDetailTask.ContentIdentifier = appID;
-                marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
-                try
-                {
-                    marketplaceDetailTask.Show();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("ConversationList ::  openMarketPlace, openMarketPlace  , Exception : " + ex.StackTrace);
-                }
-            }
-        }
-
-        #endregion
 
         #region RATE THE APP
         private void checkForRateApp()

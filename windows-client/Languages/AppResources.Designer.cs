@@ -4406,20 +4406,20 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to update now.
+        /// </summary>
+        public static string Update_Now_Txt {
+            get {
+                return ResourceManager.GetString("Update_Now_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Updated profile picture.
         /// </summary>
         public static string Update_Profile_Pic_txt {
             get {
                 return ResourceManager.GetString("Update_Profile_Pic_txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update.
-        /// </summary>
-        public static string Update_Txt {
-            get {
-                return ResourceManager.GetString("Update_Txt", resourceCulture);
             }
         }
         

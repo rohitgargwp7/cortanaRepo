@@ -349,10 +349,6 @@
     <value>Oops, something went wrong!</value>
     <comment>General text used in different files</comment>
   </data>
-  <data name="Update_Txt" xml:space="preserve">
-    <value>Update</value>
-    <comment>General text used in different files</comment>
-  </data>
   <data name="Walkthrough_FreeMsgToIndia_Txt" xml:space="preserve">
     <value>*Free SMS can only be sent to India</value>
     <comment>Pivot 2 (xaml)</comment>
@@ -1980,5 +1976,8 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="App_Update_Msg" xml:space="preserve">
     <value>An update is available for your app. Please update now.</value>
+  </data>
+  <data name="Update_Now_Txt" xml:space="preserve">
+    <value>update now</value>
   </data>
 </root>

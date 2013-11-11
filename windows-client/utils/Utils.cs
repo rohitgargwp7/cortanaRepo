@@ -163,23 +163,6 @@ namespace windows_client.utils
 
         }
 
-        public static bool isCriticalUpdatePending()
-        {
-            try
-            {
-                string lastCriticalVersion = "";
-                App.appSettings.TryGetValue<string>(App.LAST_CRITICAL_VERSION, out lastCriticalVersion);
-                if (String.IsNullOrEmpty(lastCriticalVersion))
-                    return false;
-                string currentVersion = Utils.getAppVersion();
-                return compareVersion(lastCriticalVersion, currentVersion) == 1;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
         public static void AdjustAspectRatio(int width, int height, bool isThumbnail, out int adjustedWidth, out int adjustedHeight)
         {
             int maxHeight, maxWidth;

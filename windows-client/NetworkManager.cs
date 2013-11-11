@@ -1596,12 +1596,7 @@ namespace windows_client
                     obj.Add(HikeConstants.VERSION, version);
                     App.appSettings.Add(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, obj.ToString(Newtonsoft.Json.Formatting.None));
 
-                    object[] vals = new object[3];
-
-                    vals[0] = version;
-                    vals[1] = message;
-                    vals[2] = isCritical;
-                    pubSub.publish(HikePubSub.APP_UPDATE_AVAILABLE, vals);
+                    pubSub.publish(HikePubSub.APP_UPDATE_AVAILABLE, isCritical);
                 }
                 catch (Exception ex)
                 {
