@@ -202,18 +202,8 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 launchPagePivot.SelectedIndex = 3;
 
-            String updateObj;
-            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, out updateObj))
-            {
-                JObject obj = JObject.Parse(updateObj);
-
-                var currentVersion = App.appSettings[HikeConstants.FILE_SYSTEM_VERSION].ToString();
-                var version = (string)obj[HikeConstants.VERSION];
-                if (Utils.compareVersion(version, currentVersion) <= 0)
-                    App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
-
+            if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
                 ShowAppUpdateAvailableMessage();
-            }
         }
 
         private async void BindFriendsAsync()
