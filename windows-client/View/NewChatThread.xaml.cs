@@ -3483,34 +3483,17 @@ namespace windows_client.View
         private void MenuItem_Click_Cancel(object sender, RoutedEventArgs e)
         {
             ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
-            if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
-            {
-                convMessage.SetAttachmentState(Attachment.AttachmentState.CANCELED);
-                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
-            }
-
             FileTransfers.FileTransferManager.Instance.CancelTask(convMessage.MessageId.ToString());
         }
 
         private void PauseTransfer(ConvMessage convMessage)
         {
-            if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
-            {
-                convMessage.SetAttachmentState(Attachment.AttachmentState.MANUAL_PAUSED);
-                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
-            }
-
             FileTransfers.FileTransferManager.Instance.PauseTask(convMessage.MessageId.ToString());
         }
 
         private void ResumeTransfer(ConvMessage convMessage)
         {
-            if (FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
-            {
-                convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
-                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
-            }
-            else
+            if (!FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
                 MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
         }
 
