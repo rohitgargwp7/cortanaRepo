@@ -572,5 +572,10 @@ namespace windows_client.utils
 
             return lastNotificationTime == 0 || ((DateTime.Now.Ticks - lastNotificationTime) / TimeSpan.TicksPerMillisecond > MIN_TIME_BETWEEN_NOTIFICATIONS);
         }
+
+        public static string ToLower(String str)
+        {
+            return str.ToLower();
+        }
     }
 }

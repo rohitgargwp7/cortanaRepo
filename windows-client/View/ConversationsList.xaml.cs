@@ -1615,14 +1615,21 @@ namespace windows_client.View
                 var message = (string)obj[HikeConstants.TEXT_UPDATE_MSG];
                 _isCriticalUpdate = (bool)obj[HikeConstants.CRITICAL];
                 
-                var caption = String.Format(AppResources.App_Update_Caption, version);
-            
-                CustomMessageBox msgBox = new CustomMessageBox()
+                CustomMessageBox msgBox = new CustomMessageBox();
+
+                if (_isCriticalUpdate)
                 {
-                    Message = message,
-                    Caption = caption,
-                    LeftButtonContent = AppResources.Update_Now_Txt
-                };
+                    msgBox.Message = message;
+                    msgBox.Caption = AppResources.CRITICAL_UPDATE_HEADING;
+                    msgBox.LeftButtonContent = Utils.ToLower(AppResources.Conversations_Dismiss_Tip);
+                    msgBox.RightButtonContent = Utils.ToLower(AppResources.Update_Now_Txt);
+                }
+                else
+                {
+                    msgBox.Message = message;
+                    msgBox.Caption = AppResources.NORMAL_UPDATE_HEADING;
+                    msgBox.LeftButtonContent = Utils.ToLower(AppResources.Update_Now_Txt);
+                }
 
                 msgBox.Dismissed+=msgBox_Dismissed;
 
@@ -1632,12 +1639,18 @@ namespace windows_client.View
 
         void msgBox_Dismissed(object sender, DismissedEventArgs e)
         {
- 	        if(e.Result == CustomMessageBoxResult.LeftButton)
+            if (e.Result == CustomMessageBoxResult.LeftButton)
             {
-                openMarketPlace();
+                if (_isCriticalUpdate)
+                    openMarketPlace();
             }
-            else if (_isCriticalUpdate)
-                ShowAppUpdateAvailableMessage();
+            else
+            {
+                if (_isCriticalUpdate)
+                    ShowAppUpdateAvailableMessage();
+                else
+                    openMarketPlace();
+            }
         }
 
         private void openMarketPlace()

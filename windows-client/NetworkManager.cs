@@ -1570,16 +1570,6 @@ namespace windows_client
                     if (Utils.compareVersion(version, App.CURRENT_VERSION) <= 0)
                         return;
 
-                    var message = "";
-                    try
-                    {
-                        message = (string)data[HikeConstants.TEXT_UPDATE_MSG];
-                    }
-                    catch
-                    {
-                        message = AppResources.App_Update_Msg;
-                    }
-
                     bool isCritical = false;
                     try
                     {
@@ -1588,6 +1578,16 @@ namespace windows_client
                     catch
                     {
                         isCritical = false;
+                    } 
+                    
+                    var message = "";
+                    try
+                    {
+                        message = (string)data[HikeConstants.TEXT_UPDATE_MSG];
+                    }
+                    catch
+                    {
+                        message = isCritical ? AppResources.CRITICAL_UPDATE_TEXT : AppResources.NORMAL_UPDATE_TEXT;
                     }
 
                     JObject obj = new JObject();

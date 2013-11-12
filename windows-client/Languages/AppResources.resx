@@ -1971,13 +1971,19 @@ Download it now http://hike.in and join the fun!</value>
   <data name="In_App_Tip_8_2" xml:space="preserve">
     <value>Now you can send a message using the enter key. This can be enabled from app settings anytime.</value>
   </data>
-  <data name="App_Update_Caption" xml:space="preserve">
-    <value>Update to {0}</value>
+  <data name="CRITICAL_UPDATE_HEADING" xml:space="preserve">
+    <value>Critical update!</value>
   </data>
-  <data name="App_Update_Msg" xml:space="preserve">
-    <value>An update is available for your app. Please update now.</value>
+  <data name="CRITICAL_UPDATE_TEXT" xml:space="preserve">
+    <value>To continue using hike, an update is required.</value>
+  </data>
+  <data name="NORMAL_UPDATE_HEADING" xml:space="preserve">
+    <value>Important update!</value>
+  </data>
+  <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
+    <value>An important update is available for hike.</value>
   </data>
   <data name="Update_Now_Txt" xml:space="preserve">
-    <value>update now</value>
+    <value>Update now</value>
   </data>
 </root>

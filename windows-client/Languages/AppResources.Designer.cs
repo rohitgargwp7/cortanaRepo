@@ -97,24 +97,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update to {0}.
-        /// </summary>
-        public static string App_Update_Caption {
-            get {
-                return ResourceManager.GetString("App_Update_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An update is available for your app. Please update now..
-        /// </summary>
-        public static string App_Update_Msg {
-            get {
-                return ResourceManager.GetString("App_Update_Msg", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to done.
         /// </summary>
         public static string AppBar_Done_Btn {
@@ -885,6 +867,24 @@ namespace windows_client.Languages {
         public static string CREDITS_EARNED {
             get {
                 return ResourceManager.GetString("CREDITS_EARNED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Critical update!.
+        /// </summary>
+        public static string CRITICAL_UPDATE_HEADING {
+            get {
+                return ResourceManager.GetString("CRITICAL_UPDATE_HEADING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To continue using hike, an update is required..
+        /// </summary>
+        public static string CRITICAL_UPDATE_TEXT {
+            get {
+                return ResourceManager.GetString("CRITICAL_UPDATE_TEXT", resourceCulture);
             }
         }
         
@@ -2849,6 +2849,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Important update!.
+        /// </summary>
+        public static string NORMAL_UPDATE_HEADING {
+            get {
+                return ResourceManager.GetString("NORMAL_UPDATE_HEADING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An important update is available for hike..
+        /// </summary>
+        public static string NORMAL_UPDATE_TEXT {
+            get {
+                return ResourceManager.GetString("NORMAL_UPDATE_TEXT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to notifications.
         /// </summary>
         public static string Notifications_Header_Txt {
@@ -4406,7 +4424,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to update now.
+        ///   Looks up a localized string similar to Update now.
         /// </summary>
         public static string Update_Now_Txt {
             get {
