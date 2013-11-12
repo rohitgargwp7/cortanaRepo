@@ -34,7 +34,6 @@ using windows_client.Languages;
 using System.Net.NetworkInformation;
 using System.Windows.Controls.Primitives;
 using System.Windows.Navigation;
-using Microsoft.Phone.BackgroundAudio;
 using System.Collections.ObjectModel;
 using windows_client.ViewModel;
 using System.Text.RegularExpressions;
@@ -268,7 +267,6 @@ namespace windows_client.View
                 JumpToBottomGrid.Opacity = 0.85;
                 jumpToBottomBorder.Background = UI_Utils.Instance.BlackBorderBrush;
             }
-
         }
 
         void FileTransferStatusUpdated(object sender, FileTransferSatatusChangedEventArgs e)

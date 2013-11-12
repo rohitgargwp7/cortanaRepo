@@ -45,6 +45,14 @@ namespace windows_client.View
             else
                 this.vibrate.Content = AppResources.Off;
 
+            bool isHikeJingleEnabled = true;
+            App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
+            this.hikeJingle.IsChecked = isHikeJingleEnabled;
+            if (isHikeJingleEnabled)
+                this.hikeJingle.Content = AppResources.On;
+            else
+                this.hikeJingle.Content = AppResources.Off;
+
             List<string> listSettingsValue = new List<string>();
             //by default immediate is to be shown
             listSettingsValue.Add(AppResources.Settings_StatusUpdate_Immediate_Txt);
@@ -109,12 +117,22 @@ namespace windows_client.View
             App.WriteToIsoStorageSettings(App.VIBRATE_PREF, true);
         }
 
+        private void hikeJingle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.hikeJingle.Content = AppResources.Off;
+            App.WriteToIsoStorageSettings(App.HIKEJINGLE_PREF, false);
+        }
+        private void hikeJingle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.hikeJingle.Content = AppResources.On;
+            App.WriteToIsoStorageSettings(App.HIKEJINGLE_PREF, true);
+        }
+
         private void vibrate_Unchecked(object sender, RoutedEventArgs e)
         {
             this.vibrate.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.VIBRATE_PREF, false);
         }
-
         private void statusUpdateNotification_Checked(object sender, RoutedEventArgs e)
         {
             this.statusUpdateNotificationToggle.Content = AppResources.On;

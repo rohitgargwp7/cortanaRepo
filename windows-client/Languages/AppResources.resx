@@ -1987,4 +1987,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="In_App_Tip_8_2" xml:space="preserve">
     <value>Now you can send a message using the enter key. This can be enabled from app settings anytime.</value>
   </data>
+  <data name="Settings_HikeJingleToggleSwitchHeader" xml:space="preserve">
+    <value>hike jingle</value>
+  </data>
 </root>
