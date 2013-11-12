@@ -1621,14 +1621,14 @@ namespace windows_client.View
                 {
                     msgBox.Message = message;
                     msgBox.Caption = AppResources.CRITICAL_UPDATE_HEADING;
-                    msgBox.LeftButtonContent = Utils.ToLower(AppResources.Conversations_Dismiss_Tip);
-                    msgBox.RightButtonContent = Utils.ToLower(AppResources.Update_Now_Txt);
+                    msgBox.LeftButtonContent = AppResources.Conversations_Dismiss_Tip.ToLower();
+                    msgBox.RightButtonContent = AppResources.Update_Now_Txt.ToLower();
                 }
                 else
                 {
                     msgBox.Message = message;
                     msgBox.Caption = AppResources.NORMAL_UPDATE_HEADING;
-                    msgBox.LeftButtonContent = Utils.ToLower(AppResources.Update_Now_Txt);
+                    msgBox.LeftButtonContent = AppResources.Update_Now_Txt.ToLower();
                 }
 
                 msgBox.Dismissed+=msgBox_Dismissed;
