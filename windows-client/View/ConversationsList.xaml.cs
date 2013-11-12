@@ -943,7 +943,7 @@ namespace windows_client.View
 
         #region PUBSUB
 
-        public void onEventReceived(string type, object obj)
+        public async void onEventReceived(string type, object obj)
         {
             if (obj == null)
             {
@@ -982,18 +982,19 @@ namespace windows_client.View
 
                 if (App.newChatThreadPage == null && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute) && Utils.ShowNotificationAlert())
                 {
+                    bool isHikeJingleEnabled = true;
+                    App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
+                    if (isHikeJingleEnabled)
+                    {
+                        PlayAudio();
+                    }
+                    await Task.Delay(500);
                     bool isVibrateEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
                     if (isVibrateEnabled)
                     {
                         VibrateController vibrate = VibrateController.Default;
                         vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
-                    }
-                    bool isHikeJingleEnabled = true;
-                    App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
-                    if (isHikeJingleEnabled)
-                    {
-                        PlayAudio();
                     }
                     appSettings[HikeConstants.LAST_NOTIFICATION_TIME] = DateTime.Now.Ticks;
                 }
@@ -2641,10 +2642,8 @@ namespace windows_client.View
 
         private void PlayAudio()
         {
-
             Dispatcher.BeginInvoke(() =>
                 {
-
                     if (!MediaPlayer.GameHasControl)
                     {
                         FrameworkDispatcher.Update();
