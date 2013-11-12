@@ -3839,6 +3839,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to hike jingle.
+        /// </summary>
+        public static string Settings_HikeJingleToggleSwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_HikeJingleToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use location service.
         /// </summary>
         public static string Settings_LocationToggleSwitchHeader {

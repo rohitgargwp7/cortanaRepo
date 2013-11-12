@@ -30,6 +30,7 @@ namespace windows_client.utils
             appSettings[App.SMS_SETTING] = (int)obj[NetworkManager.SMS_CREDITS];
             appSettings[App.IS_PUSH_ENABLED] = (bool)true;
             appSettings[App.VIBRATE_PREF] = (bool)true;
+            appSettings[App.HIKEJINGLE_PREF] = (bool)true;
             appSettings[App.LAST_ANALYTICS_POST_TIME] = (long)TimeUtils.getCurrentTimeStamp();
             appSettings.Save();
         }

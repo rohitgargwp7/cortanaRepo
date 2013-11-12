@@ -1986,4 +1986,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Update_Now_Txt" xml:space="preserve">
     <value>Update now</value>
   </data>
+  <data name="Settings_HikeJingleToggleSwitchHeader" xml:space="preserve">
+    <value>hike jingle</value>
+  </data>
 </root>

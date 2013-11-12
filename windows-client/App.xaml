@@ -9,7 +9,7 @@
     <!--Application Resources-->
     <Application.Resources>
         <local:LocalizedStrings xmlns:local="clr-namespace:windows_client.Languages" x:Key="LocalizedStrings"/>
-
+        <MediaElement x:Key="GlobalMedia" AutoPlay="False" />
         <ControlTemplate x:Key="PhoneProgressBarSliderThumb" TargetType="Thumb">
             <Rectangle Fill="{TemplateBinding Foreground}" Height="45" IsHitTestVisible="False" Width="24"/>
         </ControlTemplate>
