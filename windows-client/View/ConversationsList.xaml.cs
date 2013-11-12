@@ -987,26 +987,22 @@ namespace windows_client.View
                     });
                 }
 
-
-                if (Utils.ShowNotificationAlert())
+                if (App.newChatThreadPage == null && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute) && Utils.ShowNotificationAlert())
                 {
-                    if (App.newChatThreadPage == null && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute))
+                    bool isVibrateEnabled = true;
+                    App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
+                    if (isVibrateEnabled)
                     {
-                        bool isVibrateEnabled = true;
-                        App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
-                        if (isVibrateEnabled)
-                        {
-                            VibrateController vibrate = VibrateController.Default;
-                            vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
-                        }
-                        bool isHikeJingleEnabled = true;
-                        App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
-                        if (isHikeJingleEnabled)
-                        {
-                            PlayAudio();
-                        }
-                        appSettings[HikeConstants.LAST_NOTIFICATION_TIME] = DateTime.Now.Ticks;
+                        VibrateController vibrate = VibrateController.Default;
+                        vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
                     }
+                    bool isHikeJingleEnabled = true;
+                    App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
+                    if (isHikeJingleEnabled)
+                    {
+                        PlayAudio();
+                    }
+                    appSettings[HikeConstants.LAST_NOTIFICATION_TIME] = DateTime.Now.Ticks;
                 }
             }
             #endregion
@@ -2707,10 +2703,10 @@ namespace windows_client.View
 
             Dispatcher.BeginInvoke(() =>
                 {
-                    FrameworkDispatcher.Update();
-                   
+
                     if (!MediaPlayer.GameHasControl)
                     {
+                        FrameworkDispatcher.Update();
                         MediaPlayer.Pause();
                         resumeMediaPlayerAfterDone = true;
                     }
@@ -2737,6 +2733,7 @@ namespace windows_client.View
         {
             if (resumeMediaPlayerAfterDone)
             {
+                FrameworkDispatcher.Update();
                 MediaPlayer.Resume();
                 resumeMediaPlayerAfterDone = false;
             }
