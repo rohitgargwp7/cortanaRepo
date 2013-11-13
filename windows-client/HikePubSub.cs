@@ -138,6 +138,8 @@ namespace windows_client
 
         public static readonly string LAST_SEEN = "lastSeen";
 
+        public static readonly string APP_UPDATE_AVAILABLE = "appUpdateAvailable";
+
         // TODO : USE ADDREM FROM FAV instead
         public static readonly string ADD_REMOVE_FAV = "addRemFP";
         public static readonly string REMOVE_FRIENDS = "remFriends";
