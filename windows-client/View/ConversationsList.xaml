@@ -43,6 +43,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <local:Overlay x:Name="customOverlay" IsEnabled="True" Title="Invite Friends, Earn Rewards" Message="Invite friends for free and get Rs 20 for every friend that joins" Grid.RowSpan="2" IsVisible="False" LeftButtonContent="Ignore" RightButtonContent="Invite Now" Canvas.ZIndex="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VisibilityChanged="OverlayVisibilityChaned"/>
+
         <Grid Grid.Row="0" Margin="20,-20,0, 0" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

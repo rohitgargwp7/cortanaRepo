@@ -125,6 +125,8 @@ namespace windows_client.utils
         private BitmapImage resumeFTR;
         private BitmapImage pausedFTR;
 
+        private BitmapImage overlayRupeeImage;
+
         #endregion
 
         #region STATUS UPDATE CUSTOM CONTROLS
@@ -494,6 +496,16 @@ namespace windows_client.utils
                 if (notOnHikeImage == null)
                     notOnHikeImage = new BitmapImage(new Uri("/View/images/chat_invited_green.png", UriKind.Relative));
                 return notOnHikeImage;
+            }
+        }
+
+        public BitmapImage OverlayRupeeImage
+        {
+            get
+            {
+                if (overlayRupeeImage == null)
+                    overlayRupeeImage = new BitmapImage(new Uri("/View/images/rupee.png", UriKind.Relative));
+                return overlayRupeeImage;
             }
         }
 
