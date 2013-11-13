@@ -579,6 +579,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            ResumeBackgroundAudio();//in case of video playback
 
             if (e.NavigationMode == NavigationMode.Back)
             {
@@ -751,6 +752,7 @@ namespace windows_client.View
                 ContactTransfer();
             }
             #endregion
+
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -2213,6 +2215,7 @@ namespace windows_client.View
                 mediaPlayerLauncher.Orientation = MediaPlayerOrientation.Landscape;
                 try
                 {
+                    PauseBackgroundAudio();
                     mediaPlayerLauncher.Show();
                 }
                 catch (Exception ex)
