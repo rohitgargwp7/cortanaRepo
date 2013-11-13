@@ -1644,6 +1644,64 @@ namespace windows_client.View
             }
         }
 
+        private void showCriticalUpdateMessage(string message)
+        {
+            if (!Guide.IsVisible)
+            {
+                Guide.BeginShowMessageBox(AppResources.CRITICAL_UPDATE_HEADING, message,
+                     new List<string> { AppResources.Update_Now_Txt.ToLower() }, 0, MessageBoxIcon.Alert,
+                     asyncResult =>
+                     {
+                         int? returned = Guide.EndShowMessageBox(asyncResult);
+                         if (returned != null && returned == 0)
+                         {
+                             openMarketPlace();
+                         }
+                         else
+                         {
+                             criticalUpdateMessageBoxReturned(returned);
+                         }
+
+                     }, null);
+            }
+        }
+
+        private void showNormalUpdateMessage(string message)
+        {
+            if (!Guide.IsVisible)
+            {
+                Guide.BeginShowMessageBox(AppResources.NORMAL_UPDATE_HEADING, message,
+                     new List<string> { AppResources.Conversations_Dismiss_Tip.ToLower(), AppResources.Update_Now_Txt.ToLower() }, 0, MessageBoxIcon.Alert,
+                     asyncResult =>
+                     {
+                         int? returned = Guide.EndShowMessageBox(asyncResult);
+                         if (returned != null)
+                         {
+                             if (returned == 1)
+                                 openMarketPlace();
+                             else
+                                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
+                         }
+
+                     }, null);
+            }
+        }
+
+        private void criticalUpdateMessageBoxReturned(int? ret)
+        {
+            if (ret == null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    LayoutRoot.IsHitTestVisible = false;
+                    appBar.IsMenuEnabled = false;
+                    composeIconButton.IsEnabled = false;
+                    postStatusIconButton.IsEnabled = false;
+                    groupChatIconButton.IsEnabled = false;
+                });
+            }
+        }
+
         private void openMarketPlace()
         {
             string appID;
@@ -1892,68 +1950,6 @@ namespace windows_client.View
                     App.AnalyticsInstance.clearObject();
                 }
                 App.WriteToIsoStorageSettings(App.LAST_ANALYTICS_POST_TIME, TimeUtils.getCurrentTimeStamp());
-            }
-        }
-
-        #endregion
-
-        #region IN APP UPDATE
-
-        private void showCriticalUpdateMessage(string message)
-        {
-            if (!Guide.IsVisible)
-            {
-                Guide.BeginShowMessageBox(AppResources.CRITICAL_UPDATE_HEADING, message,
-                     new List<string> { AppResources.Update_Now_Txt.ToLower() }, 0, MessageBoxIcon.Alert,
-                     asyncResult =>
-                     {
-                         int? returned = Guide.EndShowMessageBox(asyncResult);
-                         if (returned != null && returned == 0)
-                         {
-                             openMarketPlace();
-                         }
-                         else
-                         {
-                             criticalUpdateMessageBoxReturned(returned);
-                         }
-
-                     }, null);
-            }
-        }
-
-        private void showNormalUpdateMessage(string message)
-        {
-            if (!Guide.IsVisible)
-            {
-                Guide.BeginShowMessageBox(AppResources.NORMAL_UPDATE_HEADING, message,
-                     new List<string> { AppResources.Conversations_Dismiss_Tip.ToLower(), AppResources.Update_Now_Txt.ToLower() }, 0, MessageBoxIcon.Alert,
-                     asyncResult =>
-                     {
-                         int? returned = Guide.EndShowMessageBox(asyncResult);
-                         if (returned != null)
-                         {
-                             if (returned == 1)
-                                 openMarketPlace();
-                             else
-                                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
-                         }
-
-                     }, null);
-            }
-        }
-
-        private void criticalUpdateMessageBoxReturned(int? ret)
-        {
-            if (ret == null)
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    LayoutRoot.IsHitTestVisible = false;
-                    appBar.IsMenuEnabled = false;
-                    composeIconButton.IsEnabled = false;
-                    postStatusIconButton.IsEnabled = false;
-                    groupChatIconButton.IsEnabled = false;
-                });
             }
         }
 
