@@ -1635,11 +1635,11 @@ namespace windows_client.View
 
                 if (_isCriticalUpdate)
                 {
-                    showCriticalUpdateMessage();
+                    showCriticalUpdateMessage(message);
                 }
                 else
                 {
-                    showNormalUpdateMessage();
+                    showNormalUpdateMessage(message);
                 }
             }
         }
@@ -1899,12 +1899,12 @@ namespace windows_client.View
 
         #region IN APP UPDATE
 
-        private void showCriticalUpdateMessage()
+        private void showCriticalUpdateMessage(string message)
         {
             if (!Guide.IsVisible)
             {
-                Guide.BeginShowMessageBox(AppResources.CRITICAL_UPDATE_HEADING, AppResources.CRITICAL_UPDATE_TEXT,
-                     new List<string> { AppResources.Update_Now_Txt }, 0, MessageBoxIcon.Alert,
+                Guide.BeginShowMessageBox(AppResources.CRITICAL_UPDATE_HEADING, message,
+                     new List<string> { AppResources.Update_Now_Txt.ToLower() }, 0, MessageBoxIcon.Alert,
                      asyncResult =>
                      {
                          int? returned = Guide.EndShowMessageBox(asyncResult);
@@ -1921,12 +1921,12 @@ namespace windows_client.View
             }
         }
 
-        private void showNormalUpdateMessage()
+        private void showNormalUpdateMessage(string message)
         {
             if (!Guide.IsVisible)
             {
-                Guide.BeginShowMessageBox(AppResources.NORMAL_UPDATE_HEADING, AppResources.NORMAL_UPDATE_TEXT,
-                     new List<string> { AppResources.Conversations_Dismiss_Tip, AppResources.Update_Now_Txt }, 0, MessageBoxIcon.Alert,
+                Guide.BeginShowMessageBox(AppResources.NORMAL_UPDATE_HEADING, message,
+                     new List<string> { AppResources.Conversations_Dismiss_Tip.ToLower(), AppResources.Update_Now_Txt.ToLower() }, 0, MessageBoxIcon.Alert,
                      asyncResult =>
                      {
                          int? returned = Guide.EndShowMessageBox(asyncResult);
