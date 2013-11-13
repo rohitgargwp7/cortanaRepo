@@ -31,7 +31,6 @@ namespace windows_client.utils
             appSettings[App.IS_PUSH_ENABLED] = (bool)true;
             appSettings[App.VIBRATE_PREF] = (bool)true;
             appSettings[App.HIKEJINGLE_PREF] = (bool)true;
-            appSettings[App.LAST_UPDATE_CHECK_TIME] = (long)-1;
             appSettings[App.LAST_ANALYTICS_POST_TIME] = (long)TimeUtils.getCurrentTimeStamp();
             appSettings.Save();
         }
@@ -163,23 +162,6 @@ namespace windows_client.utils
                 return 1;
             return -1;
 
-        }
-
-        public static bool isCriticalUpdatePending()
-        {
-            try
-            {
-                string lastCriticalVersion = "";
-                App.appSettings.TryGetValue<string>(App.LAST_CRITICAL_VERSION, out lastCriticalVersion);
-                if (String.IsNullOrEmpty(lastCriticalVersion))
-                    return false;
-                string currentVersion = Utils.getAppVersion();
-                return compareVersion(lastCriticalVersion, currentVersion) == 1;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
 
         public static void AdjustAspectRatio(int width, int height, bool isThumbnail, out int adjustedWidth, out int adjustedHeight)

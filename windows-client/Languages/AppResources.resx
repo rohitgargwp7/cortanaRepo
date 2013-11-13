@@ -349,10 +349,6 @@
     <value>Oops, something went wrong!</value>
     <comment>General text used in different files</comment>
   </data>
-  <data name="Update_Txt" xml:space="preserve">
-    <value>Update</value>
-    <comment>General text used in different files</comment>
-  </data>
   <data name="Walkthrough_FreeMsgToIndia_Txt" xml:space="preserve">
     <value>*Free SMS can only be sent to India</value>
     <comment>Pivot 2 (xaml)</comment>
@@ -753,12 +749,6 @@
     <value>Contact Scanning failed. Try Later!!</value>
     <comment>Contact Utils</comment>
   </data>
-  <data name="CRITICAL_UPDATE_HEADING" xml:space="preserve">
-    <value>Important update</value>
-  </data>
-  <data name="CRITICAL_UPDATE_TEXT" xml:space="preserve">
-    <value>To continue using hike, an update is required.</value>
-  </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
     <value>Hi, 
 
@@ -849,12 +839,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="NamingConvention_Txt" xml:space="preserve">
     <value>{0} and {1} others</value>
     <comment>Used at many places like GroupManager</comment>
-  </data>
-  <data name="NORMAL_UPDATE_HEADING" xml:space="preserve">
-    <value>Update available</value>
-  </data>
-  <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
-    <value>Update to the new version of hike to discover amazing new ways to message</value>
   </data>
   <data name="Owner_Txt" xml:space="preserve">
     <value>owner</value>
@@ -1934,7 +1918,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Earn free SMS for every friend who joins hike because of you</value>
   </data>
   <data name="FT_MaxFiles_Txt" xml:space="preserve">
-    <value>There are 20 files currently being transferred in your hike app. Please try again later.</value>
+    <value>There are more than 50 file transfers pending. Please retry again later.</value>
   </data>
   <data name="sms_invite_message" xml:space="preserve">
     <value>I just got the new hike messenger! It's simpler, faster with hilarious new stickers! Download it now and lets chat for free http://hike.in</value>
@@ -1973,7 +1957,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Now you can send a message using the enter key. This can be changed from app settings anytime.</value>
   </data>
   <data name="FileTransfer_LimitReached" xml:space="preserve">
-    <value>Limit Exceeded</value>
+    <value>File Limit Exceeded</value>
   </data>
   <data name="Privacy_DeleteAccounConfirmMsgBxText" xml:space="preserve">
     <value>Are you sure you want to delete your account? This action is irreversible.</value>
@@ -1986,6 +1970,21 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="In_App_Tip_8_2" xml:space="preserve">
     <value>Now you can send a message using the enter key. This can be enabled from app settings anytime.</value>
+  </data>
+  <data name="CRITICAL_UPDATE_HEADING" xml:space="preserve">
+    <value>Critical update!</value>
+  </data>
+  <data name="CRITICAL_UPDATE_TEXT" xml:space="preserve">
+    <value>To continue using hike, an update is required.</value>
+  </data>
+  <data name="NORMAL_UPDATE_HEADING" xml:space="preserve">
+    <value>Important update!</value>
+  </data>
+  <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
+    <value>An important update is available for hike.</value>
+  </data>
+  <data name="Update_Now_Txt" xml:space="preserve">
+    <value>Update now</value>
   </data>
   <data name="Settings_HikeJingleToggleSwitchHeader" xml:space="preserve">
     <value>hike jingle</value>

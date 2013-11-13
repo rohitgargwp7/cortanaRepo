@@ -122,7 +122,6 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-
             if (launchPagePivot.SelectedIndex == 3)
             {
                 TotalUnreadStatuses = 0;
@@ -143,9 +142,6 @@ namespace windows_client.View
 
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
-
-            if (Utils.isCriticalUpdatePending())
-                showCriticalUpdateMessage();
 
             if (firstLoad)
             {
@@ -174,6 +170,9 @@ namespace windows_client.View
                     gridBasicTutorial.Visibility = Visibility.Visible;
                     launchPagePivot.IsHitTestVisible = false;
                 }
+
+                if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
+                    ShowAppUpdateAvailableMessage();
             }
             // this should be called only if its not first load as it will get called in first load section
             else if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -211,7 +210,6 @@ namespace windows_client.View
                 launchPagePivot.SelectedIndex = 3;
 
             FrameworkDispatcher.Update();
-
         }
 
         private async void BindFriendsAsync()
@@ -354,12 +352,6 @@ namespace windows_client.View
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE);
             }
 
-            // move to seperate thread later
-            #region CHECK UPDATES
-            //rate the app is handled within this
-            checkForUpdates();
-            #endregion
-
             postAnalytics();
         }
 
@@ -496,6 +488,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
             mPubSub.addListener(HikePubSub.CONTACT_ADDED, this);
             mPubSub.addListener(HikePubSub.ADDRESSBOOK_UPDATED, this);
+            mPubSub.addListener(HikePubSub.APP_UPDATE_AVAILABLE, this);
         }
 
         private void removeListeners()
@@ -521,6 +514,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
                 mPubSub.removeListener(HikePubSub.CONTACT_ADDED, this);
                 mPubSub.removeListener(HikePubSub.ADDRESSBOOK_UPDATED, this);
+                mPubSub.removeListener(HikePubSub.APP_UPDATE_AVAILABLE, this);
             }
             catch (Exception ex)
             {
@@ -950,7 +944,7 @@ namespace windows_client.View
 
         #region PUBSUB
 
-        public void onEventReceived(string type, object obj)
+        public async void onEventReceived(string type, object obj)
         {
             if (obj == null)
             {
@@ -989,18 +983,19 @@ namespace windows_client.View
 
                 if (App.newChatThreadPage == null && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute) && Utils.ShowNotificationAlert())
                 {
+                    bool isHikeJingleEnabled = true;
+                    App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
+                    if (isHikeJingleEnabled)
+                    {
+                        PlayAudio();
+                    }
+                    await Task.Delay(500);
                     bool isVibrateEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
                     if (isVibrateEnabled)
                     {
                         VibrateController vibrate = VibrateController.Default;
                         vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
-                    }
-                    bool isHikeJingleEnabled = true;
-                    App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
-                    if (isHikeJingleEnabled)
-                    {
-                        PlayAudio();
                     }
                     appSettings[HikeConstants.LAST_NOTIFICATION_TIME] = DateTime.Now.Ticks;
                 }
@@ -1602,6 +1597,121 @@ namespace windows_client.View
                 }
             }
             #endregion
+            #region UPDATE AVAILABLE
+            else if (type == HikePubSub.APP_UPDATE_AVAILABLE)
+            {
+                ShowAppUpdateAvailableMessage();
+            }
+            #endregion
+        }
+
+        #endregion
+
+        #region App Update Available
+
+        
+        void ShowAppUpdateAvailableMessage()
+        {
+            String updateObj;
+            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, out updateObj))
+            {
+                JObject obj = JObject.Parse(updateObj);
+
+                var currentVersion = App.appSettings[HikeConstants.FILE_SYSTEM_VERSION].ToString();
+                var version = (string)obj[HikeConstants.VERSION];
+                if (Utils.compareVersion(version, currentVersion) <= 0)
+                {
+                    App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
+                    return;
+                }
+
+                var message = (string)obj[HikeConstants.TEXT_UPDATE_MSG];
+                bool isCriticalUpdate = (bool)obj[HikeConstants.CRITICAL];
+
+                if (isCriticalUpdate)
+                    showCriticalUpdateMessage(message);
+                else
+                    showNormalUpdateMessage(message);
+            }
+        }
+
+        private void showCriticalUpdateMessage(string message)
+        {
+            if (!Guide.IsVisible)
+            {
+                Guide.BeginShowMessageBox(AppResources.CRITICAL_UPDATE_HEADING, message,
+                     new List<string> { AppResources.Update_Now_Txt.ToLower() }, 0, MessageBoxIcon.Alert,
+                     asyncResult =>
+                     {
+                         int? returned = Guide.EndShowMessageBox(asyncResult);
+                         if (returned != null && returned == 0)
+                         {
+                             openMarketPlace();
+                         }
+                         else
+                         {
+                             criticalUpdateMessageBoxReturned(returned);
+                         }
+
+                     }, null);
+            }
+        }
+
+        private void showNormalUpdateMessage(string message)
+        {
+            if (!Guide.IsVisible)
+            {
+                Guide.BeginShowMessageBox(AppResources.NORMAL_UPDATE_HEADING, message,
+                     new List<string> { AppResources.Conversations_Dismiss_Tip.ToLower(), AppResources.Update_Now_Txt.ToLower() }, 0, MessageBoxIcon.Alert,
+                     asyncResult =>
+                     {
+                         int? returned = Guide.EndShowMessageBox(asyncResult);
+                         if (returned != null)
+                         {
+                             if (returned == 1)
+                                 openMarketPlace();
+                             else
+                                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
+                         }
+
+                     }, null);
+            }
+        }
+
+        private void criticalUpdateMessageBoxReturned(int? ret)
+        {
+            if (ret == null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    LayoutRoot.IsHitTestVisible = false;
+                    appBar.IsMenuEnabled = false;
+                    composeIconButton.IsEnabled = false;
+                    postStatusIconButton.IsEnabled = false;
+                    groupChatIconButton.IsEnabled = false;
+                });
+            }
+        }
+
+        private void openMarketPlace()
+        {
+            string appID;
+            App.appSettings.TryGetValue<string>(App.APP_ID_FOR_LAST_UPDATE, out appID);
+            if (!String.IsNullOrEmpty(appID))
+            {
+                MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
+                //                marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
+                marketplaceDetailTask.ContentIdentifier = appID;
+                marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
+                try
+                {
+                    marketplaceDetailTask.Show();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("ConversationList ::  openMarketPlace, openMarketPlace  , Exception : " + ex.StackTrace);
+                }
+            }
         }
 
         #endregion
@@ -1836,123 +1946,6 @@ namespace windows_client.View
 
         #endregion
 
-        #region IN APP UPDATE
-
-        //private bool isAppEnabled = true;
-        private string latestVersionString = "";
-
-        public void checkForUpdates()
-        {
-            long lastTimeStamp = -1;
-            App.appSettings.TryGetValue<long>(App.LAST_UPDATE_CHECK_TIME, out lastTimeStamp);
-
-            if (lastTimeStamp == -1 || TimeUtils.isUpdateTimeElapsed(lastTimeStamp))
-            {
-                AccountUtils.createGetRequest(HikeConstants.UPDATE_URL, new AccountUtils.postResponseFunction(checkUpdate_Callback), false);
-            }
-            else
-                checkForRateApp();
-        }
-
-        public void checkUpdate_Callback(JObject obj)
-        {
-            bool isUpdateShown = false;
-            try
-            {
-                if (obj != null)
-                {
-                    string critical = obj[HikeConstants.CRITICAL].ToString();
-                    string latest = obj[HikeConstants.LATEST].ToString();
-                    string current = Utils.getAppVersion();
-                    latestVersionString = latest;
-                    string lastDismissedUpdate = "";
-                    App.appSettings.TryGetValue<string>(App.LAST_DISMISSED_UPDATE_VERSION, out lastDismissedUpdate);
-                    string appID = obj[HikeConstants.APP_ID].ToString();
-                    if (!String.IsNullOrEmpty(appID))
-                    {
-                        App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_UPDATE, appID);
-                    }
-                    if (Utils.compareVersion(critical, current) == 1)
-                    {
-                        App.WriteToIsoStorageSettings(App.LAST_CRITICAL_VERSION, critical);
-                        showCriticalUpdateMessage();//critical update
-                        isUpdateShown = true;
-                    }
-                    else if ((Utils.compareVersion(latest, current) == 1) && (String.IsNullOrEmpty(lastDismissedUpdate) ||
-                        (Utils.compareVersion(latest, lastDismissedUpdate) == 1)))
-                    {
-                        showNormalUpdateMessage();//normal update
-                        isUpdateShown = true;
-                    }
-                    App.WriteToIsoStorageSettings(App.LAST_UPDATE_CHECK_TIME, TimeUtils.getCurrentTimeStamp());
-                }
-                if (!isUpdateShown)
-                {
-                    checkForRateApp();
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("ConversationList ::  checkUpdate_Callback , checkUpdate_Callback, Exception : " + ex.StackTrace);
-            }
-        }
-
-        private void showCriticalUpdateMessage()
-        {
-            if (!Guide.IsVisible)
-            {
-                Guide.BeginShowMessageBox(AppResources.CRITICAL_UPDATE_HEADING, AppResources.CRITICAL_UPDATE_TEXT,
-                     new List<string> { AppResources.Update_Txt }, 0, MessageBoxIcon.Alert,
-                     asyncResult =>
-                     {
-                         int? returned = Guide.EndShowMessageBox(asyncResult);
-                         if (returned != null && returned == 0)
-                         {
-                             openMarketPlace();
-                         }
-                         else
-                         {
-                             criticalUpdateMessageBoxReturned(returned);
-                         }
-
-                     }, null);
-            }
-        }
-
-        private void showNormalUpdateMessage()
-        {
-            if (!Guide.IsVisible)
-            {
-                Guide.BeginShowMessageBox(AppResources.NORMAL_UPDATE_HEADING, AppResources.NORMAL_UPDATE_TEXT,
-                     new List<string> { AppResources.Update_Txt, AppResources.Ignore_Txt }, 0, MessageBoxIcon.Alert,
-                     asyncResult =>
-                     {
-                         int? returned = Guide.EndShowMessageBox(asyncResult);
-                         if (returned != null && returned == 0)
-                         {
-                             openMarketPlace();
-                         }
-                         else if (returned == null || returned == 1)
-                         {
-                             App.WriteToIsoStorageSettings(App.LAST_DISMISSED_UPDATE_VERSION, latestVersionString);
-                         }
-                     }, null);
-            }
-        }
-
-        private void criticalUpdateMessageBoxReturned(int? ret)
-        {
-            if (ret == null)
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    LayoutRoot.IsHitTestVisible = false;
-                    appBar.IsMenuEnabled = false;
-                    composeIconButton.IsEnabled = false;
-                });
-            }
-        }
-
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
             if (FileTransfers.FileTransferManager.Instance.IsBusy())
@@ -1977,31 +1970,6 @@ namespace windows_client.View
             }
             base.OnBackKeyPress(e);
         }
-
-        private void openMarketPlace()
-        {
-
-            //keep the code below for final. it is commented for testing
-            string appID;
-            App.appSettings.TryGetValue<string>(App.APP_ID_FOR_LAST_UPDATE, out appID);
-            if (!String.IsNullOrEmpty(appID))
-            {
-                MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
-                //                marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
-                marketplaceDetailTask.ContentIdentifier = appID;
-                marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
-                try
-                {
-                    marketplaceDetailTask.Show();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("ConversationList ::  openMarketPlace, openMarketPlace  , Exception : " + ex.StackTrace);
-                }
-            }
-        }
-
-        #endregion
 
         #region RATE THE APP
         private void checkForRateApp()
@@ -2700,10 +2668,8 @@ namespace windows_client.View
 
         private void PlayAudio()
         {
-
             Dispatcher.BeginInvoke(() =>
                 {
-
                     if (!MediaPlayer.GameHasControl)
                     {
                         FrameworkDispatcher.Update();
