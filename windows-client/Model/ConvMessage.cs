@@ -515,6 +515,8 @@ namespace windows_client.Model
             get { return String.IsNullOrEmpty(DispMessage) ? Visibility.Collapsed : Visibility.Visible; }
         }
 
+        public bool ChangingState { get; set; }
+
         public BitmapImage PauseResumeImage
         {
             get
@@ -1793,6 +1795,8 @@ namespace windows_client.Model
                 ? Visibility.Visible : Visibility.Collapsed;
 
             NotifyPropertyChanged("SdrImageVisibility");
+
+            ChangingState = false;
         }
 
         public void UpdateVisibilitySdrImage()

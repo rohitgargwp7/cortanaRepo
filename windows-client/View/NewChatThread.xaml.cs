@@ -2115,7 +2115,7 @@ namespace windows_client.View
 
                             if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
                                 taskPlaced = FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
-                            else if (FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
+                            else if (ResumeTransfer(convMessage))
                                 taskPlaced = true;
 
                             if (taskPlaced)
@@ -3483,18 +3483,29 @@ namespace windows_client.View
         private void MenuItem_Click_Cancel(object sender, RoutedEventArgs e)
         {
             ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
-            FileTransfers.FileTransferManager.Instance.CancelTask(convMessage.MessageId.ToString());
+            convMessage.ChangingState = FileTransfers.FileTransferManager.Instance.CancelTask(convMessage.MessageId.ToString());
         }
 
         private void PauseTransfer(ConvMessage convMessage)
         {
-            FileTransfers.FileTransferManager.Instance.PauseTask(convMessage.MessageId.ToString());
+            if (convMessage.ChangingState)
+                return;
+
+            convMessage.ChangingState = FileTransfers.FileTransferManager.Instance.PauseTask(convMessage.MessageId.ToString());
         }
 
-        private void ResumeTransfer(ConvMessage convMessage)
+        private bool ResumeTransfer(ConvMessage convMessage)
         {
-            if (!FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
-                MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
+            if (convMessage.ChangingState)
+                return false;
+
+            convMessage.ChangingState = true;
+
+            if (FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
+                return true;
+
+            convMessage.ChangingState = false;
+            return false;
         }
 
         private void MenuItem_Click_SendAsSMS(object sender, RoutedEventArgs e)

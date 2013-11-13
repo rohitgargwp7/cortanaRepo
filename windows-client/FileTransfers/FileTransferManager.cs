@@ -365,7 +365,7 @@ namespace windows_client.FileTransfers
             }
         }
 
-        public void PauseTask(string id)
+        public bool PauseTask(string id)
         {
             FileInfoBase fInfo;
 
@@ -373,10 +373,13 @@ namespace windows_client.FileTransfers
             {
                 fInfo.FileState = FileTransferState.MANUAL_PAUSED;
                 TaskMap.Remove(id);
+                return true;
             }
+            else
+                return false;
         }
 
-        public void CancelTask(string id)
+        public bool CancelTask(string id)
         {
             FileInfoBase fInfo;
 
@@ -385,7 +388,10 @@ namespace windows_client.FileTransfers
                 fInfo.FileState = FileTransferState.CANCELED;
                 fInfo.Delete();
                 TaskMap.Remove(id);
+                return true;
             }
+            else
+                return false;
         }
 
         public void DeleteTask(string id)
