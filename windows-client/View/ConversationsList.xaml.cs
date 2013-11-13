@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using Microsoft.Phone.BackgroundAudio;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework;
+using System.Windows.Threading;
 
 namespace windows_client.View
 {
@@ -122,7 +123,6 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-
             if (launchPagePivot.SelectedIndex == 3)
             {
                 TotalUnreadStatuses = 0;
@@ -171,6 +171,9 @@ namespace windows_client.View
                     gridBasicTutorial.Visibility = Visibility.Visible;
                     launchPagePivot.IsHitTestVisible = false;
                 }
+
+                if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
+                    ShowAppUpdateAvailableMessage();
             }
             // this should be called only if its not first load as it will get called in first load section
             else if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -207,9 +210,6 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 launchPagePivot.SelectedIndex = 3;
 
-            if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
-                ShowAppUpdateAvailableMessage();
-       
             FrameworkDispatcher.Update();
         }
 
@@ -489,6 +489,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
             mPubSub.addListener(HikePubSub.CONTACT_ADDED, this);
             mPubSub.addListener(HikePubSub.ADDRESSBOOK_UPDATED, this);
+            mPubSub.addListener(HikePubSub.APP_UPDATE_AVAILABLE, this);
         }
 
         private void removeListeners()
@@ -514,6 +515,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
                 mPubSub.removeListener(HikePubSub.CONTACT_ADDED, this);
                 mPubSub.removeListener(HikePubSub.ADDRESSBOOK_UPDATED, this);
+                mPubSub.removeListener(HikePubSub.APP_UPDATE_AVAILABLE, this);
             }
             catch (Exception ex)
             {
@@ -1610,6 +1612,7 @@ namespace windows_client.View
         #region App Update Available
 
         bool _isCriticalUpdate = false;
+        CustomMessageBox updateMessageBox;
 
         void ShowAppUpdateAvailableMessage()
         {
@@ -1628,42 +1631,17 @@ namespace windows_client.View
 
                 var message = (string)obj[HikeConstants.TEXT_UPDATE_MSG];
                 _isCriticalUpdate = (bool)obj[HikeConstants.CRITICAL];
-                
-                CustomMessageBox msgBox = new CustomMessageBox();
+
+                updateMessageBox = new CustomMessageBox();
 
                 if (_isCriticalUpdate)
                 {
-                    msgBox.Message = message;
-                    msgBox.Caption = AppResources.CRITICAL_UPDATE_HEADING;
-                    msgBox.LeftButtonContent = AppResources.Conversations_Dismiss_Tip.ToLower();
-                    msgBox.RightButtonContent = AppResources.Update_Now_Txt.ToLower();
+                    showCriticalUpdateMessage();
                 }
                 else
                 {
-                    msgBox.Message = message;
-                    msgBox.Caption = AppResources.NORMAL_UPDATE_HEADING;
-                    msgBox.LeftButtonContent = AppResources.Update_Now_Txt.ToLower();
+                    showNormalUpdateMessage();
                 }
-
-                msgBox.Dismissed+=msgBox_Dismissed;
-
-                msgBox.Show();
-            }
-        }
-
-        void msgBox_Dismissed(object sender, DismissedEventArgs e)
-        {
-            if (e.Result == CustomMessageBoxResult.LeftButton)
-            {
-                if (_isCriticalUpdate)
-                    openMarketPlace();
-            }
-            else
-            {
-                if (_isCriticalUpdate)
-                    ShowAppUpdateAvailableMessage();
-                else
-                    openMarketPlace();
             }
         }
 
@@ -1915,6 +1893,66 @@ namespace windows_client.View
                     App.AnalyticsInstance.clearObject();
                 }
                 App.WriteToIsoStorageSettings(App.LAST_ANALYTICS_POST_TIME, TimeUtils.getCurrentTimeStamp());
+            }
+        }
+
+        #endregion
+
+        #region IN APP UPDATE
+
+        private void showCriticalUpdateMessage()
+        {
+            if (!Guide.IsVisible)
+            {
+                Guide.BeginShowMessageBox(AppResources.CRITICAL_UPDATE_HEADING, AppResources.CRITICAL_UPDATE_TEXT,
+                     new List<string> { AppResources.Update_Now_Txt }, 0, MessageBoxIcon.Alert,
+                     asyncResult =>
+                     {
+                         int? returned = Guide.EndShowMessageBox(asyncResult);
+                         if (returned != null && returned == 0)
+                         {
+                             openMarketPlace();
+                         }
+                         else
+                         {
+                             criticalUpdateMessageBoxReturned(returned);
+                         }
+
+                     }, null);
+            }
+        }
+
+        private void showNormalUpdateMessage()
+        {
+            if (!Guide.IsVisible)
+            {
+                Guide.BeginShowMessageBox(AppResources.NORMAL_UPDATE_HEADING, AppResources.NORMAL_UPDATE_TEXT,
+                     new List<string> { AppResources.Conversations_Dismiss_Tip, AppResources.Update_Now_Txt }, 0, MessageBoxIcon.Alert,
+                     asyncResult =>
+                     {
+                         int? returned = Guide.EndShowMessageBox(asyncResult);
+                         if (returned != null && returned == 1)
+                         {
+                             openMarketPlace();
+                         }
+                         else
+                             App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
+                     }, null);
+            }
+        }
+
+        private void criticalUpdateMessageBoxReturned(int? ret)
+        {
+            if (ret == null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    LayoutRoot.IsHitTestVisible = false;
+                    appBar.IsMenuEnabled = false;
+                    composeIconButton.IsEnabled = false;
+                    postStatusIconButton.IsEnabled = false;
+                    groupChatIconButton.IsEnabled = false;
+                });
             }
         }
 

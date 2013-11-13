@@ -76,7 +76,6 @@ namespace windows_client
         public static string GENDER = "gender";
         public static readonly string VIBRATE_PREF = "vibratePref";
         public static readonly string HIKEJINGLE_PREF = "jinglePref";
-        public static readonly string LAST_DISMISSED_UPDATE_VERSION = "lastDismissedUpdate";
         public static readonly string APP_ID_FOR_LAST_UPDATE = "appID";
         public static readonly string LAST_ANALYTICS_POST_TIME = "analyticsTime";
 
