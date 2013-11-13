@@ -1930,12 +1930,14 @@ namespace windows_client.View
                      asyncResult =>
                      {
                          int? returned = Guide.EndShowMessageBox(asyncResult);
-                         if (returned != null && returned == 1)
+                         if (returned != null)
                          {
-                             openMarketPlace();
+                             if (returned == 1)
+                                 openMarketPlace();
+                             else
+                                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
                          }
-                         else
-                             App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
+
                      }, null);
             }
         }
