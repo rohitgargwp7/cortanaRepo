@@ -1596,7 +1596,7 @@ namespace windows_client
                     obj.Add(HikeConstants.VERSION, version);
                     App.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, obj.ToString(Newtonsoft.Json.Formatting.None));
 
-                    pubSub.publish(HikePubSub.APP_UPDATE_AVAILABLE, isCritical);
+                    pubSub.publish(HikePubSub.APP_UPDATE_AVAILABLE, null); // no need of any arguments
                 }
                 catch (Exception ex)
                 {

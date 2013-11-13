@@ -1600,7 +1600,6 @@ namespace windows_client.View
             #region UPDATE AVAILABLE
             else if (type == HikePubSub.APP_UPDATE_AVAILABLE)
             {
-                _isCriticalUpdate = (bool)obj;
                 ShowAppUpdateAvailableMessage();
             }
             #endregion
@@ -1610,9 +1609,7 @@ namespace windows_client.View
 
         #region App Update Available
 
-        bool _isCriticalUpdate = false;
-        CustomMessageBox updateMessageBox;
-
+        
         void ShowAppUpdateAvailableMessage()
         {
             String updateObj;
@@ -1629,18 +1626,12 @@ namespace windows_client.View
                 }
 
                 var message = (string)obj[HikeConstants.TEXT_UPDATE_MSG];
-                _isCriticalUpdate = (bool)obj[HikeConstants.CRITICAL];
+                bool isCriticalUpdate = (bool)obj[HikeConstants.CRITICAL];
 
-                updateMessageBox = new CustomMessageBox();
-
-                if (_isCriticalUpdate)
-                {
+                if (isCriticalUpdate)
                     showCriticalUpdateMessage(message);
-                }
                 else
-                {
                     showNormalUpdateMessage(message);
-                }
             }
         }
 
