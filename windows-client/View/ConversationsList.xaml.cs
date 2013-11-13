@@ -32,7 +32,6 @@ using System.Threading.Tasks;
 using Microsoft.Phone.BackgroundAudio;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework;
-using System.Windows.Threading;
 
 namespace windows_client.View
 {
