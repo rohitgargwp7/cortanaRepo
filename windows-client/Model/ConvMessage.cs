@@ -649,7 +649,7 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null)
                 {
-                    if (!IsSent && _fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
+                    if (!IsSent && (_fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED || _fileAttachment.FileState == Attachment.AttachmentState.CANCELED))
                         return UI_Utils.Instance.DownloadIcon;
                     else if (_fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
                         return UI_Utils.Instance.BlankBitmapImage;

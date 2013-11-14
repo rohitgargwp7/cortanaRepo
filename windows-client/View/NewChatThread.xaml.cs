@@ -294,7 +294,12 @@ namespace windows_client.View
                 Attachment.AttachmentState state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
 
                 if (fInfo.FileState == FileTransferState.CANCELED)
+                {
                     state = Attachment.AttachmentState.CANCELED;
+
+                    if (convMessage.IsSent)
+                        convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                }
                 else if (fInfo.FileState == FileTransferState.COMPLETED)
                 {
                     state = Attachment.AttachmentState.COMPLETED;
@@ -2111,15 +2116,18 @@ namespace windows_client.View
                     {
                         if (NetworkInterface.GetIsNetworkAvailable())
                         {
-                            bool taskPlaced = false;
+                            if (FileTransferManager.Instance.IsTransferPossible())
+                            {
+                                bool taskPlaced = false;
 
-                            if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
-                                taskPlaced = FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
-                            else if (ResumeTransfer(convMessage))
-                                taskPlaced = true;
+                                if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.CANCELED)
+                                    taskPlaced = FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                                else if (ResumeTransfer(convMessage))
+                                    taskPlaced = true;
 
-                            if (taskPlaced)
-                                convMessage.UserTappedDownload = true;
+                                if (taskPlaced)
+                                    convMessage.UserTappedDownload = true;
+                            }
                             else
                                 MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                         }
@@ -2172,7 +2180,7 @@ namespace windows_client.View
                                 transferPlaced = FileTransferManager.Instance.DownloadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
                         }
 
-                        if (!transferPlaced)
+                        if (!transferPlaced && !FileTransferManager.Instance.IsTransferPossible())
                             MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                     }
                 }
@@ -3501,7 +3509,7 @@ namespace windows_client.View
 
             convMessage.ChangingState = true;
 
-            if (FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
+            if (FileTransferManager.Instance.IsTransferPossible() && FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
                 return true;
 
             convMessage.ChangingState = false;

@@ -143,7 +143,9 @@ namespace windows_client.DbUtils
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
-                    if(!FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length))
+                    if (FileTransferManager.Instance.IsTransferPossible())
+                        FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
+                    else
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                 });
             }
@@ -171,7 +173,9 @@ namespace windows_client.DbUtils
                     convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
-                    if(!FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length))
+                    if (FileTransferManager.Instance.IsTransferPossible())
+                        FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
+                    else
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                 });
             }
@@ -340,7 +344,12 @@ namespace windows_client.DbUtils
                         Attachment.AttachmentState state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
 
                         if (fInfo.FileState == FileTransferState.CANCELED)
+                        {
                             state = Attachment.AttachmentState.CANCELED;
+                            
+                            if(convMessage.IsSent)
+                                convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                        }
                         else if (fInfo.FileState == FileTransferState.COMPLETED)
                             state = Attachment.AttachmentState.COMPLETED;
                         else if (fInfo.FileState == FileTransferState.PAUSED)

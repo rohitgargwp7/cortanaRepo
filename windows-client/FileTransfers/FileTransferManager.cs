@@ -138,9 +138,6 @@ namespace windows_client.FileTransfers
 
         public bool DownloadFile(string msisdn, string messageId, string fileName, string contentType, int size)
         {
-            if (PendingTasks.Count >= MaxQueueCount)
-                return false;
-
             if (!DoesTransferExist(messageId, false))
             {
                 FileDownloader fInfo = new FileDownloader(msisdn, messageId, fileName, contentType, size);
@@ -158,7 +155,7 @@ namespace windows_client.FileTransfers
             if (!DoesTransferExist(messageId, false))
             {
                 FileUploader fInfo = new FileUploader(msisdn, messageId, fileName, contentType, size);
-                if (PendingTasks.Count >= MaxQueueCount)
+                if (!IsTransferPossible())
                 {
                     FailTask(fInfo);
                     return false;
@@ -175,7 +172,7 @@ namespace windows_client.FileTransfers
 
         public bool ResumeTask(string key, bool isSent)
         {
-            if (PendingTasks.Count >= MaxQueueCount)
+            if (!IsTransferPossible())
                 return false;
 
             FileInfoBase fInfo = null;
@@ -194,6 +191,14 @@ namespace windows_client.FileTransfers
             }
 
             return false;
+        }
+
+        public bool IsTransferPossible()
+        {
+            if (PendingTasks.Count >= MaxQueueCount)
+                return false;
+
+            return true;
         }
 
         public async void StartTask()
@@ -217,13 +222,16 @@ namespace windows_client.FileTransfers
                 }
                 else if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_RESUME_SETTING) || fileInfo.FileState != FileTransferState.PAUSED))
                 {
-                    if (BeginThreadTask(fileInfo))
+                    if (!TaskMap.ContainsKey(fileInfo.MessageId))
                     {
-                        fileInfo.FileState = FileTransferState.STARTED;
-                        TaskMap.Add(fileInfo.MessageId, fileInfo);
+                        if (BeginThreadTask(fileInfo))
+                        {
+                            fileInfo.FileState = FileTransferState.STARTED;
+                            TaskMap.Add(fileInfo.MessageId, fileInfo);
+                        }
+                        else
+                            PendingTasks.Enqueue(fileInfo);
                     }
-                    else
-                        PendingTasks.Enqueue(fileInfo);
                 }
                 else
                     TaskMap.Remove(fileInfo.MessageId);
@@ -388,6 +396,12 @@ namespace windows_client.FileTransfers
                 fInfo.FileState = FileTransferState.CANCELED;
                 fInfo.Delete();
                 TaskMap.Remove(id);
+
+                if (UpdateTaskStatusOnUI != null)
+                    UpdateTaskStatusOnUI(null, new FileTransferSatatusChangedEventArgs(fInfo, true));
+
+                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fInfo);
+
                 return true;
             }
             else
