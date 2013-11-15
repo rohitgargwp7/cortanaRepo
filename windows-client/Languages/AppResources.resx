@@ -1042,28 +1042,28 @@ Download it now http://hike.in and join the fun!</value>
     <value>permanently delete your hike account</value>
     <comment>xaml</comment>
   </data>
-  <data name="Privacy_UnlinkAccountHeader" xml:space="preserve">
-    <value>Unlink Account</value>
+  <data name="Privacy_LogoutAccountHeader" xml:space="preserve">
+    <value>Logout Account</value>
     <comment>xaml + cs (mesg box caption)</comment>
   </data>
-  <data name="Privacy_UnlinkAccountProgress" xml:space="preserve">
-    <value>Unlinking Account...</value>
+  <data name="Privacy_LogoutAccountProgress" xml:space="preserve">
+    <value>Logging out account...</value>
     <comment>cs. unlink account progress</comment>
   </data>
-  <data name="Privacy_UnlinkAccountText" xml:space="preserve">
+  <data name="Privacy_LogoutAccountText" xml:space="preserve">
     <value>logout your account from this device</value>
     <comment>xaml</comment>
   </data>
-  <data name="Privacy_UnlinkConfirmMsgBxText" xml:space="preserve">
-    <value>Are you sure you want to unlink your hike account from this device?</value>
+  <data name="Privacy_LogoutConfirmMsgBxText" xml:space="preserve">
+    <value>Are you sure you want to logout of your hike account from this device?</value>
     <comment>cs. Message box while unlinking account</comment>
   </data>
-  <data name="Privacy_UnlinkErrMsgBxCaptn" xml:space="preserve">
-    <value>Account not unlinked</value>
+  <data name="Privacy_LogoutErrMsgBxCaptn" xml:space="preserve">
+    <value>Account not logged out</value>
     <comment>cs. Message box Caption error while unlinking</comment>
   </data>
-  <data name="Privacy_UnlinkErrMsgBxText" xml:space="preserve">
-    <value>hike couldn't unlink your account. Please try again.</value>
+  <data name="Privacy_LogoutErrMsgBxText" xml:space="preserve">
+    <value>hike couldn't logout your account. Please try again.</value>
     <comment>cs. Message box error while unlinking</comment>
   </data>
   <data name="Settings_FreeSMSToggleSwitchHeader" xml:space="preserve">
@@ -1331,8 +1331,8 @@ Download it now http://hike.in and join the fun!</value>
     <value>delete</value>
     <comment>Privacy page (xaml)</comment>
   </data>
-  <data name="Unlink_Txt" xml:space="preserve">
-    <value>unlink</value>
+  <data name="Logout_Txt" xml:space="preserve">
+    <value>logout</value>
     <comment>Privacy page (xaml)</comment>
   </data>
   <data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
