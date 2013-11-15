@@ -941,8 +941,8 @@ namespace windows_client
             PostLocaleInfo();
             #endregion
             #region HIKE BOT
-            //todo: do on new install
-            WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
+            if (isNewInstall)
+                WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
             #endregion
         }
 

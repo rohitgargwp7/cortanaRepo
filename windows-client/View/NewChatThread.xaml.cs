@@ -584,6 +584,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            ResumeBackgroundAudio();//in case of video playback
 
             if (e.NavigationMode == NavigationMode.Back)
             {
@@ -756,6 +757,7 @@ namespace windows_client.View
                 ContactTransfer();
             }
             #endregion
+
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -779,6 +781,7 @@ namespace windows_client.View
 
                     CompositionTarget.Rendering -= CompositionTarget_Rendering;
                     mediaElement.Stop();
+                    ResumeBackgroundAudio();
                     mediaElement.Source = null;
                 }
             }
@@ -790,6 +793,7 @@ namespace windows_client.View
                     {
                         PhoneApplicationService.Current.State[HikeConstants.PLAYER_TIMER] = mediaElement.Position;
                         mediaElement.Pause();
+                        ResumeBackgroundAudio();
 
                         currentAudioMessage.IsStopped = false;
                         currentAudioMessage.IsPlaying = false;
@@ -820,6 +824,7 @@ namespace windows_client.View
                 {
                     CompositionTarget.Rendering -= CompositionTarget_Rendering;
                     mediaElement.Stop();
+                    ResumeBackgroundAudio();
 
                     if (currentAudioMessage != null)
                     {
@@ -886,6 +891,7 @@ namespace windows_client.View
             {
                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 mediaElement.Stop();
+                ResumeBackgroundAudio();
             }
 
             if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
@@ -2217,6 +2223,7 @@ namespace windows_client.View
                 mediaPlayerLauncher.Orientation = MediaPlayerOrientation.Landscape;
                 try
                 {
+                    PauseBackgroundAudio();
                     mediaPlayerLauncher.Show();
                 }
                 catch (Exception ex)
@@ -2243,6 +2250,7 @@ namespace windows_client.View
                                 {
                                     currentAudioMessage.IsPlaying = false;
                                     mediaElement.Pause();
+                                    ResumeBackgroundAudio();
                                 }
                                 else
                                 {
@@ -2251,6 +2259,7 @@ namespace windows_client.View
 
                                     currentAudioMessage.IsPlaying = true;
                                     currentAudioMessage.IsStopped = false;
+                                    PauseBackgroundAudio();
                                     mediaElement.Play();
                                 }
                             }
@@ -2264,6 +2273,7 @@ namespace windows_client.View
                                     currentAudioMessage = convMessage;
                                     currentAudioMessage.IsPlaying = true;
                                     currentAudioMessage.IsStopped = false;
+                                    PauseBackgroundAudio();
                                     mediaElement.Play();
                                 }
                             }
@@ -2273,7 +2283,7 @@ namespace windows_client.View
                             try
                             {
                                 mediaElement.Source = null;
-
+                                PauseBackgroundAudio();
                                 using (var store = IsolatedStorageFile.GetUserStoreForApplication())
                                 {
                                     if (store.FileExists(fileLocation))
@@ -2334,7 +2344,7 @@ namespace windows_client.View
 
                                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                                 CompositionTarget.Rendering += CompositionTarget_Rendering;
-
+                                PauseBackgroundAudio();
                                 mediaElement.Play();
                                 currentAudioMessage.IsStopped = false;
                                 currentAudioMessage.IsPlaying = true;
@@ -2378,7 +2388,7 @@ namespace windows_client.View
 
                                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                                 CompositionTarget.Rendering += CompositionTarget_Rendering;
-
+                                PauseBackgroundAudio();
                                 mediaElement.Play();
 
                                 if (currentAudioMessage != null)
@@ -2434,6 +2444,7 @@ namespace windows_client.View
                         CompositionTarget.Rendering -= CompositionTarget_Rendering;
                         CompositionTarget.Rendering += CompositionTarget_Rendering;
 
+                        PauseBackgroundAudio();
                         mediaElement.Play();
                     }
                     catch (Exception ex) //Code should never reach here
@@ -2509,7 +2520,7 @@ namespace windows_client.View
             }
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            mediaElement.Stop();
+            ResumeBackgroundAudio();
         }
 
         void mediaPlayback_MediaEnded(object sender, RoutedEventArgs e)
@@ -2524,7 +2535,7 @@ namespace windows_client.View
             }
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            mediaElement.Stop();
+            ResumeBackgroundAudio();
         }
 
         private void AddNewMessageToUI(ConvMessage convMessage, bool insertAtTop, bool isReceived = false)
@@ -3387,6 +3398,7 @@ namespace windows_client.View
                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 currentAudioMessage = null;
                 mediaElement.Stop();
+                ResumeBackgroundAudio();
             }
 
             if (msg.FileAttachment != null && msg.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
@@ -6056,6 +6068,7 @@ namespace windows_client.View
                 {
                     currentAudioMessage.IsPlaying = false;
                     mediaElement.Pause();
+                    ResumeBackgroundAudio();
                 }
             }
 
@@ -6742,6 +6755,26 @@ namespace windows_client.View
             if (!App.appSettings.Contains(App.ENTER_TO_SEND) && (e.Key == Key.Enter || e.PlatformKeyCode == 0x0A))
             {
                 SendMsg();
+            }
+        }
+
+        bool resumeMediaPlayerAfterDone = false;
+
+        void PauseBackgroundAudio()
+        {
+            if (!MediaPlayer.GameHasControl)
+            {
+                MediaPlayer.Pause();
+                resumeMediaPlayerAfterDone = true;
+            }
+        }
+
+        void ResumeBackgroundAudio()
+        {
+            if (resumeMediaPlayerAfterDone)
+            {
+                MediaPlayer.Resume();
+                resumeMediaPlayerAfterDone = false;
             }
         }
 
