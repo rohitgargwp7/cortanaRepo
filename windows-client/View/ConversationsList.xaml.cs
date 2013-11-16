@@ -210,6 +210,9 @@ namespace windows_client.View
                 launchPagePivot.SelectedIndex = 3;
 
             FrameworkDispatcher.Update();
+
+            customOverlay.DisplayImage = UI_Utils.Instance.OverlayRupeeImage;
+            customOverlay.SetVisibility(true);
         }
 
         private async void BindFriendsAsync()
@@ -2704,5 +2707,18 @@ namespace windows_client.View
                 resumeMediaPlayerAfterDone = false;
             }
         }
+
+        #region Overlay
+
+        private void OverlayVisibilityChaned(object sender, EventArgs e)
+        {
+            if (e == null) // visibility collapsed
+                this.ApplicationBar.IsVisible = true;
+            else
+                this.ApplicationBar.IsVisible = false;
+
+        }
+        
+        #endregion
     }
 }

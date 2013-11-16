@@ -157,6 +157,9 @@
       <DependentUpon>InAppTipUC.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\MyRichTextBox.cs" />
+    <Compile Include="Controls\Overlay.xaml.cs">
+      <DependentUpon>Overlay.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ProgressIndicator.cs" />
     <Compile Include="Controls\StatusUpdate\DefaultStatusUpdateUC.xaml.cs">
       <DependentUpon>DefaultStatusUpdateUC.xaml</DependentUpon>
@@ -350,6 +353,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\Overlay.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\StatusUpdate\DefaultStatusUpdateUC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -507,6 +513,7 @@
     <Content Include="ApplicationIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Application_IconImage_62x62.png" />
     <Content Include="Assets\LockImage.png" />
     <Content Include="Audio\v1.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -514,6 +521,7 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\images\rupee.png" />
     <Content Include="View\images\icon_sticker.png" />
     <Content Include="View\images\recent_icon.png" />
     <Content Include="hike_small.png" />
