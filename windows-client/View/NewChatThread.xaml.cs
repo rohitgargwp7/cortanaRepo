@@ -2166,7 +2166,7 @@ namespace windows_client.View
                                 "/" + convMessage.FileAttachment.FileKey;
                         }
 
-                        bool transferPlaced = FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent);
+                        bool transferPlaced = ResumeTransfer(convMessage);
 
                         if (!transferPlaced)
                         {
