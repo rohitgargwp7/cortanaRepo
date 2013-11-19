@@ -322,6 +322,21 @@ namespace windows_client.View
                     state = Attachment.AttachmentState.STARTED;
                 else if (fInfo.FileState == FileTransferState.NOT_STARTED)
                     state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                else if (fInfo.FileState == FileTransferState.DOES_NOT_EXIST)
+                {
+                    if (convMessage.UserTappedDownload)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            MessageBox.Show(AppResources.File_Not_Exist_Message, AppResources.File_Not_Exist_Caption, MessageBoxButton.OK);
+                        });
+                    }
+
+                    state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+
+                    if (fInfo is FileUploader)
+                        convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                }
 
                 if (fInfo.FileState == FileTransferState.COMPLETED)
                     convMessage.ProgressBarValue = 100;
@@ -2166,7 +2181,7 @@ namespace windows_client.View
                                 "/" + convMessage.FileAttachment.FileKey;
                         }
 
-                        bool transferPlaced = FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent);
+                        bool transferPlaced = ResumeTransfer(convMessage);
 
                         if (!transferPlaced)
                         {
