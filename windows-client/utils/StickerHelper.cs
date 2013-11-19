@@ -291,25 +291,25 @@ namespace windows_client.utils
             {
                 if (_isHighRes)
                 {
-                    BitmapImage _stickerImage = App.newChatThreadPage.lruStickerCache.GetObject(_category + "_" + Id);
-                    if (_stickerImage == null)
+                    BitmapImage stickerImage = App.newChatThreadPage != null ? App.newChatThreadPage.lruStickerCache.GetObject(_category + "_" + Id) : null;
+                    if (stickerImage == null)
                     {
-                        _stickerImage = new BitmapImage();
-                        HikeViewModel.stickerHelper.GetSticker(_stickerImage, _category, _id, _stickerImageBytes, true);
+                        stickerImage = new BitmapImage();
+                        HikeViewModel.stickerHelper.GetSticker(stickerImage, _category, _id, _stickerImageBytes, true);
                     }
 
-                    return _stickerImage;
+                    return stickerImage;
                 }
                 else
                 {
-                    BitmapImage _stickerImage = HikeViewModel.stickerHelper.lruStickers.GetObject(_category + "_" + Id);
-                    if (_stickerImage == null)
+                    BitmapImage stickerImage = HikeViewModel.stickerHelper.lruStickers.GetObject(_category + "_" + Id);
+                    if (stickerImage == null)
                     {
-                        _stickerImage = new BitmapImage();
-                        HikeViewModel.stickerHelper.GetSticker(_stickerImage, _category, _id, _stickerImageBytes, false);
+                        stickerImage = new BitmapImage();
+                        HikeViewModel.stickerHelper.GetSticker(stickerImage, _category, _id, _stickerImageBytes, false);
                     }
 
-                    return _stickerImage;
+                    return stickerImage;
                 }
             }
         }

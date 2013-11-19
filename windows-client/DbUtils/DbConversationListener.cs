@@ -140,6 +140,8 @@ namespace windows_client.DbUtils
                         return;
 
                     MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
+                    convMessage.SetAttachmentState(Attachment.AttachmentState.NOT_STARTED);
+                    MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
                     if (FileTransferManager.Instance.IsTransferPossible())
                         FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
@@ -168,6 +170,8 @@ namespace windows_client.DbUtils
                     //send attachment message (new attachment - upload case)
 
                     MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
+                    convMessage.SetAttachmentState(Attachment.AttachmentState.NOT_STARTED);
+                    MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
                     if (FileTransferManager.Instance.IsTransferPossible())
                         FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
@@ -337,7 +341,7 @@ namespace windows_client.DbUtils
 
                         convMessage.FileAttachment = attachment;
 
-                        Attachment.AttachmentState state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                        Attachment.AttachmentState state = Attachment.AttachmentState.FAILED;
 
                         if (fInfo.FileState == FileTransferState.CANCELED)
                         {
@@ -359,7 +363,7 @@ namespace windows_client.DbUtils
                             state = Attachment.AttachmentState.MANUAL_PAUSED;
                         else if (fInfo.FileState == FileTransferState.FAILED)
                         {
-                            state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                            state = Attachment.AttachmentState.FAILED;
 
                             if (fInfo is FileUploader)
                                 convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
@@ -367,9 +371,9 @@ namespace windows_client.DbUtils
                         else if (fInfo.FileState == FileTransferState.STARTED)
                             state = Attachment.AttachmentState.STARTED;
                         else if (fInfo.FileState == FileTransferState.NOT_STARTED)
-                            state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                            state = Attachment.AttachmentState.NOT_STARTED;
                         else if (fInfo.FileState == FileTransferState.DOES_NOT_EXIST)
-                            state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                            state = Attachment.AttachmentState.FAILED;
                         
                         if (fInfo.FileState == FileTransferState.COMPLETED)
                             convMessage.ProgressBarValue = 100;
