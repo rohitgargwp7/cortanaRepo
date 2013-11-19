@@ -85,14 +85,14 @@ namespace windows_client.View
                 return;
             }
 
-            MessageBoxResult result = MessageBox.Show(AppResources.Privacy_UnlinkConfirmMsgBxText, AppResources.Privacy_UnlinkAccountHeader, MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show(AppResources.Privacy_LogoutConfirmMsgBxText, AppResources.Privacy_LogoutAccountHeader, MessageBoxButton.OKCancel);
             if (result != MessageBoxResult.OK)
                 return;
 
             if (progress == null)
                 progress = new ProgressIndicatorControl();
 
-            progress.Show(LayoutRoot, AppResources.Privacy_UnlinkAccountProgress);
+            progress.Show(LayoutRoot, AppResources.Privacy_LogoutAccountProgress);
             canGoBack = false;
             AccountUtils.unlinkAccount(new AccountUtils.postResponseFunction(unlinkAccountResponse_Callback));
 

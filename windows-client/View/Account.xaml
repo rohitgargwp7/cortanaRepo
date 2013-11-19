@@ -50,8 +50,8 @@
                 </Grid.ColumnDefinitions>
                 <Image x:Name="unlinkAccount" Width="32" Source="/View/images/unlink_account_white.png" VerticalAlignment="Top" Margin="0,10,0,0"/>
                 <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                    <TextBlock Name="unlinkTxtBlk" Text="{Binding Path= LocalizedResources.Unlink_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="{Binding Path= LocalizedResources.Privacy_UnlinkAccountText, Source={StaticResource LocalizedStrings}}" FontSize="19"/>
+                    <TextBlock Name="unlinkTxtBlk" Text="{Binding Path= LocalizedResources.Logout_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Privacy_LogoutAccountText, Source={StaticResource LocalizedStrings}}" FontSize="19"/>
                 </StackPanel>
             </Grid>
         </Grid>
