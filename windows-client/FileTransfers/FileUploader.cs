@@ -33,6 +33,8 @@ namespace windows_client.FileTransfers
             : base(msisdn, messageId, fileName, contentType, size)
         {
             Id = Guid.NewGuid().ToString();
+
+            Save();
         }
 
         public override void Write(BinaryWriter writer)
@@ -122,6 +124,9 @@ namespace windows_client.FileTransfers
         {
             lock (readWriteLock)
             {
+                if (FileState == FileTransferState.CANCELED)
+                    return;
+
                 try
                 {
                     string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + MessageId;
@@ -198,7 +203,6 @@ namespace windows_client.FileTransfers
 
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = FileName;
-            req.Headers["X-Thumbnail-Required"] = "0";
             req.Headers["X-SESSION-ID"] = Id;
             req.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
 
@@ -275,6 +279,8 @@ namespace windows_client.FileTransfers
 
                 if (TotalBytes - 1 == index)
                 {
+                    // if the task was paused on the last chunk. This condition will be triggered on resume
+                    // check for successful upload
                     if (SuccessObj != null)
                     {
                         var jData = SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
@@ -290,12 +296,15 @@ namespace windows_client.FileTransfers
                         }
                     }
                  
+                    // if not uploaded succssfully, need to start from begining
+                    // mark as failed and delete the data to restart the upload next time.
                     FileState = FileTransferState.FAILED;
                     Delete();
                     OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 }
                 else
                 {
+                    // resume upload from last position and update state
                     CurrentHeaderPosition = index + 1;
                     FileState = FileTransferState.STARTED;
                     Save();
@@ -345,6 +354,14 @@ namespace windows_client.FileTransfers
             var partialDataBytes = new byte[endPosition - CurrentHeaderPosition + 1];
 
             partialDataBytes = ReadChunkFromIsolatedStorage(CurrentHeaderPosition, endPosition - CurrentHeaderPosition + 1);
+
+            if (partialDataBytes == null)
+            {
+                FileState = FileTransferState.FAILED;
+                Delete();
+                OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                return;
+            }
 
             var param = new Dictionary<string, string>();
             param.Add("Cookie", req.Headers["Cookie"]);
@@ -482,11 +499,13 @@ namespace windows_client.FileTransfers
                     SuccessObj = jObject;
                     CurrentHeaderPosition = TotalBytes;
                     Save();
-
+                    
+                    // if state is started then mark it as complete
+                    // else update file state with respective state
                     if (FileState == FileTransferState.STARTED)
                         CheckIfComplete();   
                     else
-                        OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, false));
+                        OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 }
             }
             else if (code == HttpStatusCode.Created)
@@ -515,12 +534,18 @@ namespace windows_client.FileTransfers
                 }
 
                 Save();
-                OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, false));
+
+                // If state is started - dont update file state as its done before
+                // Else update file state with new state
+                if (FileState == FileTransferState.STARTED)
+                    OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, false));
+                else
+                    OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
 
                 if (FileState == FileTransferState.STARTED || (!App.appSettings.Contains(App.AUTO_RESUME_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
                     BeginUploadPostRequest();
             }
-            else if (code == HttpStatusCode.BadRequest)
+            else if (code == HttpStatusCode.BadRequest) // server error during upload
             {
                 FileState = FileTransferState.FAILED;
                 Delete();
@@ -532,7 +557,7 @@ namespace windows_client.FileTransfers
                 {
                     Start(null);
                 }
-                else
+                else // Bad Network and retry timed out
                 {
                     FileState = FileTransferState.FAILED;
                     Save();

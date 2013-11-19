@@ -515,6 +515,8 @@ namespace windows_client.Model
             get { return String.IsNullOrEmpty(DispMessage) ? Visibility.Collapsed : Visibility.Visible; }
         }
 
+        public bool ChangingState { get; set; }
+
         public BitmapImage PauseResumeImage
         {
             get
@@ -647,7 +649,7 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null)
                 {
-                    if (!IsSent && _fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
+                    if (!IsSent && (_fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED || _fileAttachment.FileState == Attachment.AttachmentState.CANCELED))
                         return UI_Utils.Instance.DownloadIcon;
                     else if (_fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
                         return UI_Utils.Instance.BlankBitmapImage;
@@ -1793,6 +1795,8 @@ namespace windows_client.Model
                 ? Visibility.Visible : Visibility.Collapsed;
 
             NotifyPropertyChanged("SdrImageVisibility");
+
+            ChangingState = false;
         }
 
         public void UpdateVisibilitySdrImage()

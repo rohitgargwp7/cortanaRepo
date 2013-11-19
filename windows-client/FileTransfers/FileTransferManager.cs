@@ -138,16 +138,10 @@ namespace windows_client.FileTransfers
 
         public bool DownloadFile(string msisdn, string messageId, string fileName, string contentType, int size)
         {
-            if (PendingTasks.Count >= MaxQueueCount)
-                return false;
-
             if (!DoesTransferExist(messageId, false))
             {
                 FileDownloader fInfo = new FileDownloader(msisdn, messageId, fileName, contentType, size);
-
                 PendingTasks.Enqueue(fInfo);
-                SaveTaskData(fInfo);
-
                 StartTask();
             }
             else
@@ -161,10 +155,7 @@ namespace windows_client.FileTransfers
             if (!DoesTransferExist(messageId, false))
             {
                 FileUploader fInfo = new FileUploader(msisdn, messageId, fileName, contentType, size);
-
-                SaveTaskData(fInfo);
-
-                if (PendingTasks.Count >= MaxQueueCount)
+                if (!IsTransferPossible())
                 {
                     FailTask(fInfo);
                     return false;
@@ -181,7 +172,7 @@ namespace windows_client.FileTransfers
 
         public bool ResumeTask(string key, bool isSent)
         {
-            if (PendingTasks.Count >= MaxQueueCount)
+            if (!IsTransferPossible())
                 return false;
 
             FileInfoBase fInfo = null;
@@ -194,19 +185,20 @@ namespace windows_client.FileTransfers
                 if (!PendingTasks.Contains(fInfo))
                     PendingTasks.Enqueue(fInfo);
 
-                SaveTaskData(fInfo);
-
-                if (UpdateTaskStatusOnUI != null)
-                    UpdateTaskStatusOnUI(null, new FileTransferSatatusChangedEventArgs(fInfo, true));
-
-                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fInfo);
-
                 StartTask();
 
                 return true;
             }
 
             return false;
+        }
+
+        public bool IsTransferPossible()
+        {
+            if (PendingTasks.Count >= MaxQueueCount)
+                return false;
+
+            return true;
         }
 
         public async void StartTask()
@@ -230,19 +222,16 @@ namespace windows_client.FileTransfers
                 }
                 else if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_RESUME_SETTING) || fileInfo.FileState != FileTransferState.PAUSED))
                 {
-                    if (BeginThreadTask(fileInfo))
+                    if (!TaskMap.ContainsKey(fileInfo.MessageId))
                     {
-                        fileInfo.FileState = FileTransferState.STARTED;
-                        TaskMap.Add(fileInfo.MessageId, fileInfo);
-                        SaveTaskData(fileInfo);
-
-                        if (UpdateTaskStatusOnUI != null)
-                            UpdateTaskStatusOnUI(null, new FileTransferSatatusChangedEventArgs(fileInfo, true));
-
-                        App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
+                        if (BeginThreadTask(fileInfo))
+                        {
+                            fileInfo.FileState = FileTransferState.STARTED;
+                            TaskMap.Add(fileInfo.MessageId, fileInfo);
+                        }
+                        else
+                            PendingTasks.Enqueue(fileInfo);
                     }
-                    else
-                        PendingTasks.Enqueue(fileInfo);
                 }
                 else
                     TaskMap.Remove(fileInfo.MessageId);
@@ -260,8 +249,8 @@ namespace windows_client.FileTransfers
         void FailTask(FileInfoBase fInfo)
         {
             fInfo.FileState = FileTransferState.FAILED;
-            
-            SaveTaskData(fInfo);
+
+            fInfo.Save();
 
             if (UpdateTaskStatusOnUI != null)
                 UpdateTaskStatusOnUI(null, new FileTransferSatatusChangedEventArgs(fInfo, true));
@@ -273,15 +262,8 @@ namespace windows_client.FileTransfers
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                fileInfo.FileState = FileTransferState.FAILED;
-                SaveTaskData(fileInfo);
+                FailTask(fileInfo);
                 TaskMap.Remove(fileInfo.MessageId);
-
-                if (UpdateTaskStatusOnUI != null)
-                    UpdateTaskStatusOnUI(null, new FileTransferSatatusChangedEventArgs(fileInfo, true));
-
-                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fileInfo);
-
                 return true;
             }
             else
@@ -391,19 +373,21 @@ namespace windows_client.FileTransfers
             }
         }
 
-        public void PauseTask(string id)
+        public bool PauseTask(string id)
         {
             FileInfoBase fInfo;
 
             if (TaskMap.TryGetValue(id, out fInfo))
             {
                 fInfo.FileState = FileTransferState.MANUAL_PAUSED;
-                SaveTaskData(fInfo);
                 TaskMap.Remove(id);
+                return true;
             }
+            else
+                return false;
         }
 
-        public void CancelTask(string id)
+        public bool CancelTask(string id)
         {
             FileInfoBase fInfo;
 
@@ -412,7 +396,16 @@ namespace windows_client.FileTransfers
                 fInfo.FileState = FileTransferState.CANCELED;
                 fInfo.Delete();
                 TaskMap.Remove(id);
+
+                if (UpdateTaskStatusOnUI != null)
+                    UpdateTaskStatusOnUI(null, new FileTransferSatatusChangedEventArgs(fInfo, true));
+
+                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fInfo);
+
+                return true;
             }
+            else
+                return false;
         }
 
         public void DeleteTask(string id)
@@ -446,12 +439,6 @@ namespace windows_client.FileTransfers
                     }
                 }
             }
-        }
-
-        void SaveTaskData(FileInfoBase fileInfo)
-        {
-            if (App.appSettings.Contains(App.UID_SETTING))
-                fileInfo.Save();
         }
 
         public void ClearTasks()
