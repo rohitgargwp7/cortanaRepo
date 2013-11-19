@@ -310,12 +310,7 @@ namespace windows_client.FileTransfers
             else if (responseCode == HttpStatusCode.BadRequest)
             {
                 // file does not exist on server
-                FileState = FileTransferState.FAILED;
-
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    MessageBox.Show(AppResources.File_Not_Exist_Message, AppResources.File_Not_Exist_Caption, MessageBoxButton.OK);
-                });
+                FileState = FileTransferState.DOES_NOT_EXIST;
 
                 OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 Delete();

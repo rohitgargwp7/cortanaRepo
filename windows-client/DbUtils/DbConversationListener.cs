@@ -140,7 +140,7 @@ namespace windows_client.DbUtils
                         return;
 
                     MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
-                    convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
+                    convMessage.SetAttachmentState(Attachment.AttachmentState.NOT_STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
                     if (FileTransferManager.Instance.IsTransferPossible())
@@ -170,7 +170,7 @@ namespace windows_client.DbUtils
                     //send attachment message (new attachment - upload case)
 
                     MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
-                    convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
+                    convMessage.SetAttachmentState(Attachment.AttachmentState.NOT_STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
                     if (FileTransferManager.Instance.IsTransferPossible())
@@ -341,7 +341,7 @@ namespace windows_client.DbUtils
 
                         convMessage.FileAttachment = attachment;
 
-                        Attachment.AttachmentState state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                        Attachment.AttachmentState state = Attachment.AttachmentState.FAILED;
 
                         if (fInfo.FileState == FileTransferState.CANCELED)
                         {
@@ -351,18 +351,30 @@ namespace windows_client.DbUtils
                                 convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
                         }
                         else if (fInfo.FileState == FileTransferState.COMPLETED)
+                        {
                             state = Attachment.AttachmentState.COMPLETED;
+
+                            if (fInfo is FileUploader)
+                                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                        }
                         else if (fInfo.FileState == FileTransferState.PAUSED)
                             state = Attachment.AttachmentState.PAUSED;
                         else if (fInfo.FileState == FileTransferState.MANUAL_PAUSED)
                             state = Attachment.AttachmentState.MANUAL_PAUSED;
                         else if (fInfo.FileState == FileTransferState.FAILED)
-                            state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                        {
+                            state = Attachment.AttachmentState.FAILED;
+
+                            if (fInfo is FileUploader)
+                                convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                        }
                         else if (fInfo.FileState == FileTransferState.STARTED)
                             state = Attachment.AttachmentState.STARTED;
                         else if (fInfo.FileState == FileTransferState.NOT_STARTED)
-                            state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
-
+                            state = Attachment.AttachmentState.NOT_STARTED;
+                        else if (fInfo.FileState == FileTransferState.DOES_NOT_EXIST)
+                            state = Attachment.AttachmentState.FAILED;
+                        
                         if (fInfo.FileState == FileTransferState.COMPLETED)
                             convMessage.ProgressBarValue = 100;
 
@@ -377,12 +389,19 @@ namespace windows_client.DbUtils
                                     string destinationPath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
                                     string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));
 
-                                    using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
+                                    try
                                     {
-                                        IsolatedStorageFileStream myFileStream = isoStore.OpenFile(destinationPath, FileMode.Open, FileAccess.Read);
-                                        MediaLibrary library = new MediaLibrary();
-                                        library.SavePicture(convMessage.FileAttachment.FileName, myFileStream);
-                                        myFileStream.Close();
+                                        using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
+                                        {
+                                            IsolatedStorageFileStream myFileStream = isoStore.OpenFile(destinationPath, FileMode.Open, FileAccess.Read);
+                                            MediaLibrary library = new MediaLibrary();
+                                            library.SavePicture(convMessage.FileAttachment.FileName, myFileStream);
+                                            myFileStream.Close();
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Debug.WriteLine("DbConversationListener :: Error on Saving file : " + destinationPath + ", Exception : " + e.StackTrace);
                                     }
                                 }
 

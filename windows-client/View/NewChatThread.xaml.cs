@@ -291,7 +291,7 @@ namespace windows_client.View
 
             if (isStateChanged)
             {
-                Attachment.AttachmentState state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                Attachment.AttachmentState state = Attachment.AttachmentState.FAILED;
 
                 if (fInfo.FileState == FileTransferState.CANCELED)
                 {
@@ -313,7 +313,7 @@ namespace windows_client.View
                     state = Attachment.AttachmentState.MANUAL_PAUSED;
                 else if (fInfo.FileState == FileTransferState.FAILED)
                 {
-                    state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                    state = Attachment.AttachmentState.FAILED;
 
                     if (fInfo is FileUploader)
                         convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
@@ -321,7 +321,22 @@ namespace windows_client.View
                 else if (fInfo.FileState == FileTransferState.STARTED)
                     state = Attachment.AttachmentState.STARTED;
                 else if (fInfo.FileState == FileTransferState.NOT_STARTED)
-                    state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                    state = Attachment.AttachmentState.NOT_STARTED;
+                else if (fInfo.FileState == FileTransferState.DOES_NOT_EXIST)
+                {
+                    if (convMessage.UserTappedDownload)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            MessageBox.Show(AppResources.File_Not_Exist_Message, AppResources.File_Not_Exist_Caption, MessageBoxButton.OK);
+                        });
+                    }
+
+                    state = Attachment.AttachmentState.FAILED;
+
+                    if (fInfo is FileUploader)
+                        convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                }
 
                 if (fInfo.FileState == FileTransferState.COMPLETED)
                     convMessage.ProgressBarValue = 100;
@@ -2126,7 +2141,7 @@ namespace windows_client.View
                             {
                                 bool taskPlaced = false;
 
-                                if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.CANCELED)
+                                if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.CANCELED)
                                     taskPlaced = FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
                                 else if (ResumeTransfer(convMessage))
                                     taskPlaced = true;
@@ -3269,7 +3284,7 @@ namespace windows_client.View
                     fileBytes = msLargeImage.ToArray();
                 }
 
-                convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.STARTED, fileBytes.Length);
+                convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
                 convMessage.FileAttachment.ContentType = HikeConstants.IMAGE;
                 convMessage.Message = AppResources.Image_Txt;
 
@@ -4742,7 +4757,7 @@ namespace windows_client.View
                     MetaDataString = locationJSONString
                 };
 
-                convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED, locationBytes.Length);
+                convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.NOT_STARTED, locationBytes.Length);
                 convMessage.FileAttachment.ContentType = HikeConstants.LOCATION_CONTENT_TYPE;
 
                 AddNewMessageToUI(convMessage, false);
@@ -4800,7 +4815,7 @@ namespace windows_client.View
                 if (isAudio)
                 {
                     fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp3";
-                    convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED, fileBytes.Length);
+                    convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
                     convMessage.FileAttachment.ContentType = "audio/voice";
 
                     var fileInfo = new JObject();
@@ -4819,7 +4834,7 @@ namespace windows_client.View
                 else
                 {
                     fileName = "vid_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp4";
-                    convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.STARTED, fileBytes.Length);
+                    convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
                     convMessage.FileAttachment.ContentType = "video/mp4";
                     convMessage.Message = AppResources.Video_Txt;
                 }
@@ -4850,7 +4865,7 @@ namespace windows_client.View
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
 
-                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED, bytes.Length);
+                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.NOT_STARTED, bytes.Length);
                 convMessage.FileAttachment.ContentType = HikeConstants.CT_CONTACT;
                 convMessage.Message = AppResources.ContactTransfer_Text;
                 convMessage.MetaDataString = contactJson.ToString(Newtonsoft.Json.Formatting.None);
