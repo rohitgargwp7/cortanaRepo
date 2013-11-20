@@ -152,6 +152,8 @@ namespace windows_client.utils
                 return true;
             }
 
+            System.Diagnostics.Debug.WriteLine("AddToken :: Null Token - " + req.RequestUri.OriginalString);
+
             return false;
         }
 
