@@ -18,13 +18,16 @@ namespace windows_client.utils
 
     public class StickerHelper
     {
+        //to:do confirm category names with server
         public const string CATEGORY_RECENT = "recent";
         public const string CATEGORY_HUMANOID = "humanoid";
+        public const string CATEGORY_HUMANOID2 = "humanoid2";
         public const string CATEGORY_DOGGY = "doggy";
         public const string CATEGORY_KITTY = "kitty";
         public const string CATEGORY_EXPRESSIONS = "expressions";
         public const string CATEGORY_BOLLYWOOD = "bollywood";
         public const string CATEGORY_TROLL = "rageface";
+        public const string CATEGORY_AVATARS = "avatars";
 
         public const string _stickerWVGAPath = "/View/images/stickers/WVGA/{0}/{1}";
         public const string _sticker720path = "/View/images/stickers/720p/{0}/{1}";
@@ -162,6 +165,8 @@ namespace windows_client.utils
             StickerCategory.CreateCategory(CATEGORY_EXPRESSIONS);
             StickerCategory.CreateCategory(CATEGORY_BOLLYWOOD);
             StickerCategory.CreateCategory(CATEGORY_TROLL);
+            StickerCategory.CreateCategory(CATEGORY_AVATARS);
+            StickerCategory.CreateCategory(CATEGORY_HUMANOID2);
         }
 
         /// <summary>

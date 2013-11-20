@@ -69,31 +69,35 @@ namespace windows_client.utils
         private BitmapImage facebookEnabledIcon;
         private BitmapImage twitterDisabledIcon;
         private BitmapImage twitterEnabledIcon;
-        private BitmapImage moodDisabledIcon;
-        private BitmapImage moodEnabledIcon;
         private BitmapImage userProfileLockImage;
         private BitmapImage userProfileInviteImage;
         private BitmapImage userProfileStockImage;
         private BitmapImage loadingImage;
         private BitmapImage lastSeenClockImage;
         private BitmapImage humanoidOverlay;
+        private BitmapImage humanoid2Overlay;
         private BitmapImage doggyOverlay;
         private BitmapImage kittyOverlay;
         private BitmapImage bollywoodOverlay;
         private BitmapImage trollOverlay;
         private BitmapImage expressionsOverlay;
+        private BitmapImage avatarsOverlay;
         private BitmapImage humanoidInactive;
+        private BitmapImage humanoid2Inactive;
         private BitmapImage doggyInactive;
         private BitmapImage kittyInactive;
         private BitmapImage bollywoodInactive;
         private BitmapImage trollInactive;
         private BitmapImage expressionsInactive;
+        private BitmapImage avatarsInactive;
         private BitmapImage humanoidActive;
+        private BitmapImage humanoid2Active;
         private BitmapImage doggyActive;
         private BitmapImage kittyActive;
         private BitmapImage bollywoodActive;
         private BitmapImage trollActive;
         private BitmapImage expressionsActive;
+        private BitmapImage avatarsActive;
         private BitmapImage muteIcon;
         private BitmapImage muteIconForConversationView;
         private BitmapImage unmuteIcon;
@@ -1094,6 +1098,7 @@ namespace windows_client.utils
                 }
             }
         }
+
         public BitmapImage HumanoidOverlay
         {
             get
@@ -1105,6 +1110,19 @@ namespace windows_client.utils
                 return humanoidOverlay;
             }
         }
+
+        public BitmapImage Humanoid2Overlay
+        {
+            get
+            {
+                if (humanoid2Overlay == null)
+                {
+                    humanoid2Overlay = new BitmapImage(new Uri("/View/images/humanoid2_overlay.png", UriKind.Relative));
+                }
+                return humanoid2Overlay;
+            }
+        }
+
         public BitmapImage DoggyOverlay
         {
             get
@@ -1116,6 +1134,7 @@ namespace windows_client.utils
                 return doggyOverlay;
             }
         }
+
         public BitmapImage KittyOverlay
         {
             get
@@ -1127,6 +1146,7 @@ namespace windows_client.utils
                 return kittyOverlay;
             }
         }
+
         public BitmapImage BollywoodOverlay
         {
             get
@@ -1138,6 +1158,7 @@ namespace windows_client.utils
                 return bollywoodOverlay;
             }
         }
+
         public BitmapImage TrollOverlay
         {
             get
@@ -1149,6 +1170,19 @@ namespace windows_client.utils
                 return trollOverlay;
             }
         }
+
+        public BitmapImage AvatarsOverlay
+        {
+            get
+            {
+                if (avatarsOverlay == null)
+                {
+                    avatarsOverlay = new BitmapImage(new Uri("/View/images/avatars_overlay.png", UriKind.Relative));
+                }
+                return avatarsOverlay;
+            }
+        }
+
         public BitmapImage ExpressionsOverlay
         {
             get
@@ -1160,6 +1194,7 @@ namespace windows_client.utils
                 return expressionsOverlay;
             }
         }
+
         public BitmapImage HumanoidInactive
         {
             get
@@ -1169,6 +1204,18 @@ namespace windows_client.utils
                     humanoidInactive = new BitmapImage(new Uri("/View/images/humanoid_icon_inactive.png", UriKind.Relative));
                 }
                 return humanoidInactive;
+            }
+        }
+
+        public BitmapImage Humanoid2Inactive
+        {
+            get
+            {
+                if (humanoid2Inactive == null)
+                {
+                    humanoid2Inactive = new BitmapImage(new Uri("/View/images/humanoid2_icon_inactive.png", UriKind.Relative));
+                }
+                return humanoid2Inactive;
             }
         }
 
@@ -1183,6 +1230,7 @@ namespace windows_client.utils
                 return doggyInactive;
             }
         }
+
         public BitmapImage KittyInactive
         {
             get
@@ -1194,6 +1242,7 @@ namespace windows_client.utils
                 return kittyInactive;
             }
         }
+
         public BitmapImage BollywoodInactive
         {
             get
@@ -1205,6 +1254,7 @@ namespace windows_client.utils
                 return bollywoodInactive;
             }
         }
+
         public BitmapImage TrollInactive
         {
             get
@@ -1216,6 +1266,7 @@ namespace windows_client.utils
                 return trollInactive;
             }
         }
+
         public BitmapImage ExpressionsInactive
         {
             get
@@ -1227,6 +1278,19 @@ namespace windows_client.utils
                 return expressionsInactive;
             }
         }
+
+        public BitmapImage AvatarsInactive
+        {
+            get
+            {
+                if (avatarsInactive == null)
+                {
+                    avatarsInactive = new BitmapImage(new Uri("/View/images/avatars_i.png", UriKind.Relative));
+                }
+                return avatarsInactive;
+            }
+        }
+
         public BitmapImage HumanoidActive
         {
             get
@@ -1238,6 +1302,19 @@ namespace windows_client.utils
                 return humanoidActive;
             }
         }
+
+        public BitmapImage Humanoid2Active
+        {
+            get
+            {
+                if (humanoid2Active == null)
+                {
+                    humanoid2Active = new BitmapImage(new Uri("/View/images/humanoid2_icon.png", UriKind.Relative));
+                }
+                return humanoid2Active;
+            }
+        }
+
         public BitmapImage DoggyActive
         {
             get
@@ -1260,6 +1337,7 @@ namespace windows_client.utils
                 return kittyActive;
             }
         }
+
         public BitmapImage BollywoodActive
         {
             get
@@ -1271,6 +1349,7 @@ namespace windows_client.utils
                 return bollywoodActive;
             }
         }
+
         public BitmapImage TrollActive
         {
             get
@@ -1291,6 +1370,18 @@ namespace windows_client.utils
                     expressionsActive = new BitmapImage(new Uri("/View/images/expressions.png", UriKind.Relative));
                 }
                 return expressionsActive;
+            }
+        }
+
+        public BitmapImage AvatarsActive
+        {
+            get
+            {
+                if (avatarsActive == null)
+                {
+                    avatarsActive = new BitmapImage(new Uri("/View/images/avatars.png", UriKind.Relative));
+                }
+                return avatarsActive;
             }
         }
 
