@@ -197,7 +197,8 @@ namespace windows_client.FileTransfers
                 return;
             }
 
-            AccountUtils.addToken(req);
+            if (!AccountUtils.AddToken(req))
+                return;
 
             req.Method = "GET";
 
@@ -333,7 +334,8 @@ namespace windows_client.FileTransfers
                 return;
             }
 
-            AccountUtils.addToken(req);
+            if (!AccountUtils.AddToken(req))
+                return;
 
             req.Method = "POST";
 
