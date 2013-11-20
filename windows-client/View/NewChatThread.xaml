@@ -1054,6 +1054,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Grid  Grid.Column="0" Tap="CategoryRecent_Tap">
                                 <Border BorderBrush="#f08221" Width="75" Height="50" Name="stCategoryRecent" Background="#1ba1e2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Canvas.ZIndex="-1"/>
