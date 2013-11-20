@@ -81,6 +81,7 @@ namespace windows_client.utils
         private BitmapImage bollywoodOverlay;
         private BitmapImage trollOverlay;
         private BitmapImage expressionsOverlay;
+        private BitmapImage smileyExpressionsOverlay;
         private BitmapImage avatarsOverlay;
         private BitmapImage humanoidInactive;
         private BitmapImage humanoid2Inactive;
@@ -89,6 +90,7 @@ namespace windows_client.utils
         private BitmapImage bollywoodInactive;
         private BitmapImage trollInactive;
         private BitmapImage expressionsInactive;
+        private BitmapImage smileyExpressionsInactive;
         private BitmapImage avatarsInactive;
         private BitmapImage humanoidActive;
         private BitmapImage humanoid2Active;
@@ -97,6 +99,7 @@ namespace windows_client.utils
         private BitmapImage bollywoodActive;
         private BitmapImage trollActive;
         private BitmapImage expressionsActive;
+        private BitmapImage smileyExpressionsActive;
         private BitmapImage avatarsActive;
         private BitmapImage muteIcon;
         private BitmapImage muteIconForConversationView;
@@ -1194,6 +1197,18 @@ namespace windows_client.utils
                 return expressionsOverlay;
             }
         }
+        
+        public BitmapImage SmileyExpressionsOverlay
+        {
+            get
+            {
+                if (smileyExpressionsOverlay == null)
+                {
+                    smileyExpressionsOverlay = new BitmapImage(new Uri("/View/images/smileyExpressions_overlay.png", UriKind.Relative));
+                }
+                return smileyExpressionsOverlay;
+            }
+        }
 
         public BitmapImage HumanoidInactive
         {
@@ -1279,6 +1294,18 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage SmileyExpressionsInactive
+        {
+            get
+            {
+                if (smileyExpressionsInactive == null)
+                {
+                    smileyExpressionsInactive = new BitmapImage(new Uri("/View/images/smileyExpressions_i.png", UriKind.Relative));
+                }
+                return smileyExpressionsInactive;
+            }
+        }
+
         public BitmapImage AvatarsInactive
         {
             get
@@ -1361,6 +1388,7 @@ namespace windows_client.utils
                 return trollActive;
             }
         }
+        
         public BitmapImage ExpressionsActive
         {
             get
@@ -1370,6 +1398,18 @@ namespace windows_client.utils
                     expressionsActive = new BitmapImage(new Uri("/View/images/expressions.png", UriKind.Relative));
                 }
                 return expressionsActive;
+            }
+        }
+        
+        public BitmapImage SmileyExpressionsActive
+        {
+            get
+            {
+                if (smileyExpressionsActive == null)
+                {
+                    smileyExpressionsActive = new BitmapImage(new Uri("/View/images/smileyExpressions.png", UriKind.Relative));
+                }
+                return smileyExpressionsActive;
             }
         }
 

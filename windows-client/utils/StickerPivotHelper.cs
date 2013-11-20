@@ -73,16 +73,22 @@ namespace windows_client.utils
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_HUMANOID2;
                     pivotIndex++;
                 }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
+                {
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
+                    dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_EXPRESSIONS;
+                    pivotIndex++;
+                } 
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_AVATARS;
                     pivotIndex++;
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
-                    dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_EXPRESSIONS;
+                    dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_SMILEY_EXPRESSIONS;
                     pivotIndex++;
                 }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)

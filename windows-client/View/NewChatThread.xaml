@@ -1071,23 +1071,27 @@
                                 <Border BorderBrush="#f08221" Width="75" Height="50" Name="stCategory6" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" Canvas.ZIndex="-1"/>
                                 <Image Name="imgHumanoid2" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Grid>
-                            <Grid  Grid.Column="4" Tap="Category7_Tap" Margin="2,0,0,0">
-                                <Border BorderBrush="#f08221" Width="75" Height="50" Name="stCategory7" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" Canvas.ZIndex="-1"/>
-                                <Image Name="imgAvatars" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Grid>
-                            <Grid  Grid.Column="5" Tap="Category3_Tap" Margin="2,0,0,0">
+                            <Grid  Grid.Column="4" Tap="Category3_Tap" Margin="2,0,0,0">
                                 <Border BorderBrush="#f08221" Width="75" Height="50" Name="stCategory3" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" Canvas.ZIndex="-1"/>
                                 <Image Name="imgExpressions" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Grid>
-                            <Grid  Grid.Column="6" Tap="Category4_Tap" Margin="2,0,0,0">
+                            <Grid  Grid.Column="5" Tap="Category7_Tap" Margin="2,0,0,0">
+                                <Border BorderBrush="#f08221" Width="75" Height="50" Name="stCategory7" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" Canvas.ZIndex="-1"/>
+                                <Image Name="imgAvatars" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                            <Grid  Grid.Column="6" Tap="Category8_Tap" Margin="2,0,0,0">
+                                <Border BorderBrush="#f08221" Width="75" Height="50" Name="stCategory8" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" Canvas.ZIndex="-1"/>
+                                <Image Name="imgSmileyExpressions" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                            <Grid  Grid.Column="7" Tap="Category4_Tap" Margin="2,0,0,0">
                                 <Border BorderBrush="#f08221" Width="75" Height="50" Name="stCategory4" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Visibility="Collapsed" Canvas.ZIndex="-1"/>
                                 <Image Name="imgBolly" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Grid>
-                            <Grid  Grid.Column="7" Tap="Category5_Tap" Margin="2,0,0,0">
+                            <Grid  Grid.Column="8" Tap="Category5_Tap" Margin="2,0,0,0">
                                 <Border BorderBrush="#f08221" Width="75" Height="50" Name="stCategory5" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" Canvas.ZIndex="-1"/>
                                 <Image Name="imgTroll" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Grid>
-                            <Grid  Grid.Column="8" Tap="Category2_Tap" Margin="2,0,0,0">
+                            <Grid  Grid.Column="9" Tap="Category2_Tap" Margin="2,0,0,0">
                                 <Border BorderBrush="#f08221" Width="75" Height="50" Name="stCategory2" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" Canvas.ZIndex="-1"/>
                                 <Image Name="imgKitty" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Grid>

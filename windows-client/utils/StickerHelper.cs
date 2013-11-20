@@ -25,6 +25,7 @@ namespace windows_client.utils
         public const string CATEGORY_DOGGY = "doggy";
         public const string CATEGORY_KITTY = "kitty";
         public const string CATEGORY_EXPRESSIONS = "expressions";
+        public const string CATEGORY_SMILEY_EXPRESSIONS = "smileyExpressions";
         public const string CATEGORY_BOLLYWOOD = "bollywood";
         public const string CATEGORY_TROLL = "rageface";
         public const string CATEGORY_AVATARS = "avatars";
@@ -167,6 +168,7 @@ namespace windows_client.utils
             StickerCategory.CreateCategory(CATEGORY_TROLL);
             StickerCategory.CreateCategory(CATEGORY_AVATARS);
             StickerCategory.CreateCategory(CATEGORY_HUMANOID2);
+            StickerCategory.CreateCategory(CATEGORY_SMILEY_EXPRESSIONS);
         }
 
         /// <summary>

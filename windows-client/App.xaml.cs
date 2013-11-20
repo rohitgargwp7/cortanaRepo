@@ -791,8 +791,11 @@ namespace windows_client
                 if (Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
                     StickerCategory.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
 
+                StickerHelper.CreateDefaultCategories();
+
                 StickerCategory.UpdateHasMoreMessages(StickerHelper.CATEGORY_AVATARS, true, true);
-                StickerCategory.UpdateHasMoreMessages(StickerHelper.CATEGORY_HUMANOID2, true, true); StickerHelper.CreateDefaultCategories();
+                StickerCategory.UpdateHasMoreMessages(StickerHelper.CATEGORY_HUMANOID2, true, true); 
+                StickerCategory.UpdateHasMoreMessages(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS, true, true);
             }
             #endregion
             #region TUTORIAL

@@ -517,6 +517,9 @@
     <Content Include="View\images\avatars.png" />
     <Content Include="View\images\avatars_i.png" />
     <Content Include="View\images\avatars_overlay.png" />
+    <Content Include="View\images\smileyExpressions.png" />
+    <Content Include="View\images\smileyExpressions_i.png" />
+    <Content Include="View\images\smileyExpressions_overlay.png" />
     <Content Include="View\images\humanoid2_overlay.png" />
     <Content Include="View\images\humanoid2_icon.png" />
     <Content Include="View\images\humanoid2_icon_inactive.png" />
