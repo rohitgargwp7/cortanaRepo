@@ -5792,6 +5792,12 @@ namespace windows_client.View
                     case StickerHelper.CATEGORY_TROLL:
                         stCategory5.BorderThickness = zeroThickness;
                         break;
+                    case StickerHelper.CATEGORY_HUMANOID2:
+                        stCategory6.BorderThickness = zeroThickness;
+                        break;
+                    case StickerHelper.CATEGORY_AVATARS:
+                        stCategory7.BorderThickness = zeroThickness;
+                        break;
                 }
                 if (updateFile)
                 {
