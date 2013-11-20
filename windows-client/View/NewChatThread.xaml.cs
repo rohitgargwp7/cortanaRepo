@@ -3670,43 +3670,42 @@ namespace windows_client.View
             {
                 String category;
                 if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category))
-                 {
-                     switch (category)
-                     {
-                         case StickerHelper.CATEGORY_RECENT:
-                             if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
-                                 CategoryRecent_Tap(null, null);
-                             else
-                                 Category0_Tap(null, null);
-                             break;
-                         case StickerHelper.CATEGORY_HUMANOID:
-                             Category0_Tap(null, null);
-                             break;
-                         case StickerHelper.CATEGORY_DOGGY:
-                             Category1_Tap(null, null);
-                             break;
-                         case StickerHelper.CATEGORY_KITTY:
-                             Category2_Tap(null, null);
-                             break;
-                         case StickerHelper.CATEGORY_EXPRESSIONS:
-                             Category3_Tap(null, null);
-                             break;
-                         case StickerHelper.CATEGORY_BOLLYWOOD:
-                             Category4_Tap(null, null);
-                             break;
-                         case StickerHelper.CATEGORY_TROLL:
-                             Category5_Tap(null, null);
-                             break;
-                     }
-                 }
-                  else
-                     Category0_Tap(null, null);
-                 {
-                     if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
-                         CategoryRecent_Tap(null, null);
-                     else
-                         Category0_Tap(null, null);
-                 }
+                {
+                    switch (category)
+                    {
+                        case StickerHelper.CATEGORY_RECENT:
+                            if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
+                                CategoryRecent_Tap(null, null);
+                            else
+                                Category0_Tap(null, null);
+                            break;
+                        case StickerHelper.CATEGORY_HUMANOID:
+                            Category0_Tap(null, null);
+                            break;
+                        case StickerHelper.CATEGORY_DOGGY:
+                            Category1_Tap(null, null);
+                            break;
+                        case StickerHelper.CATEGORY_KITTY:
+                            Category2_Tap(null, null);
+                            break;
+                        case StickerHelper.CATEGORY_EXPRESSIONS:
+                            Category3_Tap(null, null);
+                            break;
+                        case StickerHelper.CATEGORY_BOLLYWOOD:
+                            Category4_Tap(null, null);
+                            break;
+                        case StickerHelper.CATEGORY_TROLL:
+                            Category5_Tap(null, null);
+                            break;
+                    }
+                }
+                else
+                {
+                    if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
+                        CategoryRecent_Tap(null, null);
+                    else
+                        Category0_Tap(null, null);
+                }
 
                 isStickersLoaded = true;
             }
