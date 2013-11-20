@@ -187,7 +187,7 @@ namespace windows_client.utils
 
         private void postTokenToServer()
         {
-            if (!string.IsNullOrEmpty(_latestPushToken) && NetworkInterface.GetIsNetworkAvailable())
+            if (App.appSettings.Contains(App.UID_SETTING) && !string.IsNullOrEmpty(_latestPushToken) && NetworkInterface.GetIsNetworkAvailable())
                 AccountUtils.postPushNotification(_latestPushToken, new AccountUtils.postResponseFunction(postPushNotification_Callback));
         }
     }
