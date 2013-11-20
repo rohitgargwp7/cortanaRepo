@@ -331,13 +331,21 @@ namespace windows_client.DbUtils
                     ConvMessage convMessage = DbCompiledQueries.GetMessagesForMsgId(context, id).FirstOrDefault<ConvMessage>();
 
                     if (convMessage == null)
+                    {
+                        FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
+                        fInfo.Delete();
                         return;
+                    }
 
                     try
                     {
                         var attachment = MiscDBUtil.getFileAttachment(fInfo.Msisdn, fInfo.MessageId);
                         if (attachment == null)
+                        {
+                            FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
+                            fInfo.Delete();
                             return;
+                        }
 
                         convMessage.FileAttachment = attachment;
 
