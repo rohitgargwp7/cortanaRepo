@@ -152,7 +152,10 @@ namespace windows_client.utils
                 return true;
             }
 
-            System.Diagnostics.Debug.WriteLine("AddToken :: Null Token - " + req.RequestUri.OriginalString);
+            if (req.RequestUri != null)
+                System.Diagnostics.Debug.WriteLine("AddToken :: Null Token - " + req.RequestUri.OriginalString);
+            else
+                System.Diagnostics.Debug.WriteLine("AddToken :: Null Token - add token call bedore uri set");
 
             return false;
         }
