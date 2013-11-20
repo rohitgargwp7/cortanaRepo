@@ -346,7 +346,8 @@ namespace windows_client
         public static readonly string VIDEO_RESOLUTION = "videoResolution";
         public static readonly string VIDEO_FRAME_BYTES = "videoFrameBytes";
 
-        public static readonly string LAST_STICKER_CATEGORY = "selectedStickerCategory";
+        public static readonly string LAST_SELECTED_STICKER_CATEGORY = "lastSelectedStickerCategory";
+        public static readonly string LAST_SELECTED_EMOTICON_CATEGORY = "lastSelectedEmoticonCategory";
 
         public static class Extras
         {

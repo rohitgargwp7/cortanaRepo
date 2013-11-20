@@ -3650,7 +3650,13 @@ namespace windows_client.View
             gridStickers.Visibility = Visibility.Collapsed;
             if (!isEmoticonLoaded)
             {
-                emoticonPivot.SelectedIndex = imagePathsForListRecent.Count > 0 ? 0 : 1;
+                int index = 0;
+
+                if (App.appSettings.TryGetValue(HikeConstants.LAST_SELECTED_EMOTICON_CATEGORY, out index))
+                    emoticonPivot.SelectedIndex = index == 0 && imagePathsForListRecent.Count == 0 ? 1 : index;
+                else
+                    emoticonPivot.SelectedIndex = imagePathsForListRecent.Count > 0 ? 0 : 1;
+                
                 isEmoticonLoaded = true;
             }
         }
@@ -3664,7 +3670,7 @@ namespace windows_client.View
             if (!isStickersLoaded)
             {
                 String category;
-                if (App.appSettings.TryGetValue(HikeConstants.LAST_STICKER_CATEGORY, out category))
+                if (App.appSettings.TryGetValue(HikeConstants.LAST_SELECTED_STICKER_CATEGORY, out category))
                 {
                     switch (category)
                     {
@@ -4987,6 +4993,8 @@ namespace windows_client.View
         List<SmileyParser.Emoticon> listTemp = new List<SmileyParser.Emoticon>();
         private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            App.WriteToIsoStorageSettings(HikeConstants.LAST_SELECTED_EMOTICON_CATEGORY, emoticonPivot.SelectedIndex);
+
             switch (emoticonPivot.SelectedIndex)
             {
                 case 0:
@@ -5411,7 +5419,7 @@ namespace windows_client.View
             string category;
             if (StickerPivotHelper.Instance.dictPivotCategory.TryGetValue(pivotStickers.SelectedIndex, out category))
             {
-                App.WriteToIsoStorageSettings(HikeConstants.LAST_STICKER_CATEGORY, category);
+                App.WriteToIsoStorageSettings(HikeConstants.LAST_SELECTED_STICKER_CATEGORY, category);
 
                 switch (category)
                 {
