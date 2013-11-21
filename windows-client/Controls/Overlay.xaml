@@ -21,31 +21,29 @@
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot">
-        <Border Background="{StaticResource PhoneBackgroundBrush}" Opacity="0.6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-        <Border x:Name="content" VerticalAlignment="Center" Background="White" Margin="24">
-            <Grid>
+        <Border Background="Black" Opacity="0.6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Border x:Name="content" VerticalAlignment="Center" Background="White" Margin="40">
+            <Grid Margin="25">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Border BorderBrush="{StaticResource PhoneAccentBrush}" BorderThickness="0,0,0,2">
-                    <TextBlock x:Name="title" Margin="12" HorizontalAlignment="Center"  TextAlignment="Center"
-                   Style="{StaticResource PhoneTextTitle2Style}" FontWeight="Bold" TextWrapping="Wrap"  Foreground="Black"/>
-                </Border>
-                <Image x:Name="image" Grid.Row="1" MaxWidth="120" MaxHeight="120" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" Margin="12"/>
-                <TextBlock x:Name="message" Grid.Row="2" Margin="12,12,12,12" HorizontalAlignment="Center" TextAlignment="Center"
-                   Style="{StaticResource PhoneTextNormalStyle}" TextWrapping="Wrap"  Foreground="Black" Visibility="Collapsed"/>
-                <Grid Grid.Row="3">
+                <TextBlock x:Name="title" HorizontalAlignment="Center"  TextAlignment="Center"
+                  FontFamily="SegoeWP Semibold" FontSize="28" TextWrapping="Wrap"  Foreground="Black"/>
+                <Image x:Name="image" Margin="0 20 0 0" Grid.Row="1" MaxWidth="100" MaxHeight="100" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
+                <TextBlock x:Name="message" Margin="6 20 6 0" Grid.Row="2" HorizontalAlignment="Center" TextAlignment="Center"
+                   FontFamily="SegoeWP Regular" FontSize="24"  TextWrapping="Wrap"  Foreground="Black" Visibility="Collapsed"/>
+                <Grid Grid.Row="3" Margin="12 40 12 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="yesButton" BorderBrush="LightGray" BorderThickness="0,2,1,0" Foreground="Black" Visibility="Collapsed" Click="yesButton_Click" Margin="-12,0,-12,-12"/>
-                    <Button x:Name="noButton"  BorderBrush="LightGray" BorderThickness="1,2,0,0" Grid.Row="2" Grid.Column="1" Foreground="Black" Visibility="Collapsed" Click="noButton_Click" Margin="-12,0,-12,-12"/>
+                    <Button x:Name="yesButton" Background="#2e91d3" Foreground="White" Height="50" Style="{StaticResource ButtonWithNoPaddingStyle}" BorderThickness="2"  Visibility="Collapsed" Click="yesButton_Click" Margin="0 0 12 0" FontFamily="SegoeWP Semibold" FontSize="24"/>
+                    <Button x:Name="noButton" Background="#e9ecee" Foreground="#595959" Height="50" Style="{StaticResource ButtonWithNoPaddingStyle}" BorderThickness="2"  Grid.Row="2"  Grid.Column="1" Visibility="Collapsed" Click="noButton_Click" Margin="12 0 0 0" FontFamily="SegoeWP" FontSize="24"/>
                 </Grid>
-               </Grid>
+            </Grid>
             <Border.Projection>
                 <PlaneProjection x:Name="xProjection" />
             </Border.Projection>

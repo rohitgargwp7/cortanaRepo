@@ -126,6 +126,7 @@ namespace windows_client.utils
         private BitmapImage pausedFTR;
 
         private BitmapImage overlayRupeeImage;
+        private BitmapImage overlaySmsImage;
 
         #endregion
 
@@ -509,6 +510,15 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage OverlaySmsImage
+        {
+            get
+            {
+                if (overlaySmsImage == null)
+                    overlaySmsImage = new BitmapImage(new Uri("/View/images/icon_sms.png", UriKind.Relative));
+                return overlaySmsImage;
+            }
+        }
         public BitmapImage ChatAcceptedImage
         {
             get

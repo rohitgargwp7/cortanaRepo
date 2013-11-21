@@ -19,6 +19,7 @@ namespace windows_client
         public static readonly string SUBTYPE_NEW_JOIN = "nu";
         public static readonly string SUBTYPE_REJOIN = "ru";
         public static readonly string TAG = "tag";
+        public static readonly string UPGRADE = "upgrade";
 
         public static readonly string ADD_STICKER = "addStk";
         public static readonly string ADD_CATEGORY = "addCat";
@@ -345,6 +346,29 @@ namespace windows_client
         public static readonly string IS_PRIMARY_CAM = "isPrimaryCam";
         public static readonly string VIDEO_RESOLUTION = "videoResolution";
         public static readonly string VIDEO_FRAME_BYTES = "videoFrameBytes";
+
+
+        public static readonly string FREE_INVITE_POPUP_TITLE = "free_invite_popup_title";
+        public static readonly string FREE_INVITE_POPUP_TEXT = "free_invite_popup_text";
+        public static readonly string SHOW_FREE_INVITES = "show_free_invites";
+        public static readonly string INVITE_POPUP_UNIQUEID = "invite_popup_uniqueid";
+        public static readonly string SHOW_POPUP = "show_popup";
+
+        #region ANALYTICS EVENTS KEYS
+
+        public static readonly string INVITE_FRIENDS_FROM_POPUP_FREE_SMS = "inviteFriendsFromPopupFreeSMS";
+        public static readonly string INVITE_FRIENDS_FROM_POPUP_REWARDS = "inviteFriendsFromPopupRewards";
+        public static readonly string INVITE_SMS_SCREEN_FROM_INVITE = "inviteSMSScreenFromInvite";
+        public static readonly string INVITE_SMS_SCREEN_FROM_CREDIT = "inviteSMSScreenFromCredit";
+        public static readonly string SELECT_ALL_INVITE = "selectAllInvite";
+
+        public static readonly string EVENT_TYPE = "et";
+        public static readonly string EVENT_KEY = "ek";
+        public static readonly string EVENT_TYPE_CLICK = "click";
+        public static readonly string TAG_MOBILE = "mob";
+
+
+        #endregion
 
         public static class Extras
         {

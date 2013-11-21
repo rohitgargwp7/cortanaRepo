@@ -2309,6 +2309,51 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Now invite friends via sms for free. No charges apply.:).
+        /// </summary>
+        public static string InvitePopUp_FreeSMS_Message {
+            get {
+                return ResourceManager.GetString("InvitePopUp_FreeSMS_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Free SMS Invites.
+        /// </summary>
+        public static string InvitePopUp_FreeSMS_Title {
+            get {
+                return ResourceManager.GetString("InvitePopUp_FreeSMS_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to learn more.
+        /// </summary>
+        public static string InvitePopUp_LearnMore_Btn_Text {
+            get {
+                return ResourceManager.GetString("InvitePopUp_LearnMore_Btn_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invite friends for free and get Rs 20 for every friend that joins..
+        /// </summary>
+        public static string InvitePopUp_Rewards_Message {
+            get {
+                return ResourceManager.GetString("InvitePopUp_Rewards_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invite Friends, Earn Rewards.
+        /// </summary>
+        public static string InvitePopUp_Rewards_Title {
+            get {
+                return ResourceManager.GetString("InvitePopUp_Rewards_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Friends Invited.
         /// </summary>
         public static string InviteUsers_FriendsInvited_Txt {

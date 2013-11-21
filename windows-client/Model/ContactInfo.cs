@@ -190,6 +190,7 @@ namespace windows_client.Model
                         {
                             currentPage.CheckBox_Tap(this);
                         }
+                        NotifyPropertyChanged("IsFav");
                     }
                     else
                         NotifyPropertyChanged("BlockUnblockText");

@@ -15,6 +15,9 @@ using System.Windows.Media.Imaging;
 
 namespace windows_client.Controls
 {
+    /// <summary>
+    /// Page elements tapping should be controlled by page itself
+    /// </summary>
     public partial class Overlay : UserControl
     {
         // Use this from XAML to control whether animation is on or off
@@ -137,15 +140,14 @@ namespace windows_client.Controls
             {
                 if (overlay.noButton.Visibility == Visibility.Visible)
                 {
-                    overlay.yesButton.BorderThickness = new Thickness(0, 2, 1, 0);
-                    overlay.yesButton.SetValue(Grid.ColumnSpanProperty, 1); 
-                    overlay.noButton.BorderThickness = new Thickness(1, 2, 0, 0);
+                    overlay.yesButton.SetValue(Grid.ColumnSpanProperty, 1);
+                    overlay.noButton.BorderThickness = new Thickness(2, 2, 2, 2);
                     overlay.noButton.SetValue(Grid.ColumnSpanProperty, 1);
                     overlay.noButton.SetValue(Grid.ColumnProperty, 1);
                 }
                 else
                 {
-                    overlay.yesButton.BorderThickness = new Thickness(0, 2, 0, 0);
+                    overlay.yesButton.BorderThickness = new Thickness(2, 2, 2, 2);
                     overlay.yesButton.SetValue(Grid.ColumnSpanProperty, 2);
                 }
             }
@@ -153,7 +155,7 @@ namespace windows_client.Controls
             {
                 if (overlay.noButton.Visibility == Visibility.Visible)
                 {
-                    overlay.noButton.BorderThickness = new Thickness(0, 2, 0, 0);
+                    overlay.noButton.BorderThickness = new Thickness(2, 2, 2, 2);
                     overlay.noButton.SetValue(Grid.ColumnSpanProperty, 2);
                     overlay.noButton.SetValue(Grid.ColumnProperty, 0);
                 }
@@ -240,7 +242,6 @@ namespace windows_client.Controls
         private void Overlay_Loaded(object sender, RoutedEventArgs e)
         {
             this.AttachBackKeyPressed();
-
             if (Overlay.GetEnableAnimation(this))
             {
                 this.LayoutRoot.Opacity = 0;
@@ -300,6 +301,8 @@ namespace windows_client.Controls
         {
             if (Overlay.GetEnableAnimation(this))
                 this.hideContent.Begin();
+            else
+                this.SetVisibility(false);
         }
 
         public void SetVisibility(bool visible)
