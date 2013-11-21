@@ -3524,6 +3524,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to select all.
+        /// </summary>
+        public static string SelectAll_Txt {
+            get {
+                return ResourceManager.GetString("SelectAll_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to add user.
         /// </summary>
         public static string SelectUser_AddUser_Txt {

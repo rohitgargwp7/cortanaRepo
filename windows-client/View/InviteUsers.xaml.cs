@@ -145,73 +145,56 @@ namespace windows_client.View
         {
             if ((bool)SelectAll_Chkbx.IsChecked)
                 Analytics.SendClickEvent(HikeConstants.SELECT_ALL_INVITE);
+
+            string msisdns = string.Empty, toNum = String.Empty;
+            int count = 0;
+            JObject obj = new JObject();
+            JArray numlist = new JArray();
+            JObject data = new JObject();
+
+            foreach (string key in contactsList.Keys)
+            {
+                if (key != App.MSISDN)
+                {
+                    msisdns += key + ";";
+                    toNum = key;
+                    numlist.Add(key);
+                }
+
+                count++;
+            }
+
+            var smsString = AppResources.sms_invite_message;
+            var ts = TimeUtils.getCurrentTimeStamp();
+
+            if (count == 1)
+            {
+                obj[HikeConstants.TO] = toNum;
+                data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.HIKE_MESSAGE] = smsString;
+                data[HikeConstants.TIMESTAMP] = ts;
+                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+            }
+            else
+            {
+                data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.INVITE_LIST] = numlist;
+                obj[HikeConstants.TIMESTAMP] = ts;
+                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
+            }
+
+            obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+            App.MqttManagerInstance.mqttPublishToServer(obj);
+
             if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
             {
-                string inviteToken = "";
-                //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-                int count = 0;
-                foreach (string key in contactsList.Keys)
-                {
-                    if (key == App.MSISDN)
-                        continue;
-                    JObject obj = new JObject();
-                    JObject data = new JObject();
-                    data[HikeConstants.SMS_MESSAGE] = AppResources.sms_invite_message;
-                    data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
-                    data[HikeConstants.MESSAGE_ID] = -1;
-                    obj[HikeConstants.TO] = key;
-                    obj[HikeConstants.DATA] = data;
-                    obj[HikeConstants.TYPE] = NetworkManager.INVITE;
-                    App.MqttManagerInstance.mqttPublishToServer(obj);
-                    count++;
-                }
                 if (count > 0)
                     MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
             }
             else
             {
-                string msisdns = string.Empty, toNum = String.Empty;
-                int count = 0;
-                JObject obj = new JObject();
-                JArray numlist = new JArray();
-                JObject data = new JObject();
-
-                foreach (string key in contactsList.Keys)
-                {
-                    if (key != App.MSISDN)
-                    {
-                        msisdns += key + ";";
-                        toNum = key;
-                        numlist.Add(key);
-                    }
-
-                    count++;
-                }
-
-                var smsString = AppResources.sms_invite_message;
-                var ts = TimeUtils.getCurrentTimeStamp();
-
-                if (count == 1)
-                {
-                    obj[HikeConstants.TO] = toNum;
-                    data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                    data[HikeConstants.HIKE_MESSAGE] = smsString;
-                    data[HikeConstants.TIMESTAMP] = ts;
-                    obj[HikeConstants.DATA] = data;
-                    obj[HikeConstants.TYPE] = NetworkManager.INVITE;
-                }
-                else
-                {
-                    data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                    data[HikeConstants.INVITE_LIST] = numlist;
-                    obj[HikeConstants.TIMESTAMP] = ts;
-                    obj[HikeConstants.DATA] = data;
-                    obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
-                }
-
-                obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
-
-                App.MqttManagerInstance.mqttPublishToServer(obj);
                 SmsComposeTask smsComposeTask = new SmsComposeTask();
                 smsComposeTask.To = msisdns;
                 smsComposeTask.Body = smsString;

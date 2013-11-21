@@ -98,9 +98,9 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <CheckBox Name="SelectAll_Chkbx" Tap="SelectAll_Tap" Margin="12 0 0 0" />
-                <TextBlock Grid.Column="1" Text="Select All" FontSize="42" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" />
-            </Grid>
-                <phone:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="24,15,0,10"
+                <TextBlock Grid.Column="1" Text="{Binding Path= LocalizedResources.SelectAll_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="0 0 0 10" />
+            </Grid> 
+            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="24,15,0,10"
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
                           IsGroupingEnabled="True" LayoutMode="List" HideEmptyGroups="True"

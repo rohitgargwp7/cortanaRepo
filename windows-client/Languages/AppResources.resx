@@ -2005,4 +2005,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="InvitePopUp_Rewards_Title" xml:space="preserve">
     <value>Invite Friends, Earn Rewards</value>
   </data>
+  <data name="SelectAll_Txt" xml:space="preserve">
+    <value>select all</value>
+  </data>
 </root>
