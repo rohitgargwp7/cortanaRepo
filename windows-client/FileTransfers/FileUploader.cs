@@ -197,8 +197,7 @@ namespace windows_client.FileTransfers
                 return;
             }
 
-            AccountUtils.addToken(req);
-
+            AccountUtils.AddToken(req);
             req.Method = "GET";
 
             req.Headers["Connection"] = "Keep-Alive";
@@ -333,12 +332,10 @@ namespace windows_client.FileTransfers
                 return;
             }
 
-            AccountUtils.addToken(req);
+            AccountUtils.AddToken(req);
 
             req.Method = "POST";
-
             req.ContentType = string.Format("multipart/form-data; boundary={0}", _boundary);
-
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = FileName;
             req.Headers["X-SESSION-ID"] = Id;
