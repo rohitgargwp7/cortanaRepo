@@ -66,6 +66,8 @@ namespace windows_client.View
                 jumpList = getGroupedList(allContactsList);
                 contactsListBox.ItemsSource = jumpList;
                 shellProgress.IsVisible = false;
+                if (allContactsList != null && allContactsList.Count > 0)
+                    gridSelectAll.Visibility = Visibility.Visible;
             };
             initPage();
         }
@@ -73,7 +75,6 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
-            PhoneApplicationService.Current.State.Remove("HIKE_FRIENDS");
         }
 
         private void initPage()
@@ -106,7 +107,7 @@ namespace windows_client.View
                 ContactInfo c = allContactsList[i];
                 if (c.Msisdn == App.MSISDN) // don't show own number in any chat.
                     continue;
-                
+
                 string ch = GetCaptionGroup(c);
                 // calculate the index into the list
                 int index = (ch == "#") ? 26 : ch[0] - 'a';
@@ -142,6 +143,8 @@ namespace windows_client.View
 
         private void Invite_Or_Fav_Click(object sender, EventArgs e)
         {
+            if ((bool)SelectAll_Chkbx.IsChecked)
+                Analytics.SendClickEvent(HikeConstants.SELECT_ALL_INVITE);
             if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
             {
                 string inviteToken = "";
@@ -432,5 +435,36 @@ namespace windows_client.View
                 return list;
             return glistFiltered;
         }
+
+        private void SelectAll_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            CheckBox chkbbox = sender as CheckBox;
+            bool checkedValue = (bool)chkbbox.IsChecked;
+            if (contactsListBox.ItemsSource == null)
+                return;
+            List<Group<ContactInfo>> list = contactsListBox.ItemsSource as List<Group<ContactInfo>>;
+
+            if (checkedValue)
+            {
+                foreach (Group<ContactInfo> grp in list)
+                {
+                    foreach (ContactInfo cinfo in grp)
+                    {
+                        cinfo.IsFav = true;
+                    }
+                }
+            }
+            else
+            {
+                foreach (Group<ContactInfo> grp in list)
+                {
+                    foreach (ContactInfo cinfo in grp)
+                    {
+                        cinfo.IsFav = false;
+                    }
+                }
+            }
+        }
+
     }
 }

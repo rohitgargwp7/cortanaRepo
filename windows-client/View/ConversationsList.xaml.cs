@@ -53,7 +53,7 @@ namespace windows_client.View
         //ApplicationBarIconButton addFriendIconButton;
         private bool isStatusUpdatesMute;
         private bool isStatusMessagesLoaded = false;
-
+        private bool showFreeMessageOverlay;
         public bool ConversationListUpdated
         {
             get;
@@ -143,6 +143,8 @@ namespace windows_client.View
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
 
+
+
             if (firstLoad)
             {
                 shellProgress.IsVisible = true;
@@ -163,16 +165,18 @@ namespace windows_client.View
                 App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
                 firstLoad = false;
 
-                if (appSettings.Contains(App.SHOW_BASIC_TUTORIAL))
+
+                if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
+                    ShowAppUpdateAvailableMessage();
+                else if (appSettings.Contains(App.SHOW_BASIC_TUTORIAL))
                 {
                     overlay.Visibility = Visibility.Visible;
                     overlay.Tap += DismissTutorial_Tap;
                     gridBasicTutorial.Visibility = Visibility.Visible;
                     launchPagePivot.IsHitTestVisible = false;
                 }
-
-                if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
-                    ShowAppUpdateAvailableMessage();
+                else
+                    ShowInvitePopups();
             }
             // this should be called only if its not first load as it will get called in first load section
             else if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -286,6 +290,7 @@ namespace windows_client.View
             gridBasicTutorial.Visibility = Visibility.Collapsed;
             launchPagePivot.IsHitTestVisible = true;
             App.RemoveKeyFromAppSettings(App.SHOW_BASIC_TUTORIAL);
+            ShowInvitePopups();
         }
         #endregion
 
@@ -332,9 +337,9 @@ namespace windows_client.View
                 emptyScreenTip.Opacity = 0;
             }
 
-            appBar.Mode = ApplicationBarMode.Default;
-            appBar.IsMenuEnabled = true;
-            appBar.Opacity = 1;
+            if (delConvsMenu != null)
+                delConvsMenu.IsEnabled = true;
+
             if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
             {
                 NetworkManager.turnOffNetworkManager = false;
@@ -408,6 +413,9 @@ namespace windows_client.View
             //appBar.Opacity = 0;
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = false;
+            appBar.Mode = ApplicationBarMode.Default;
+            appBar.IsMenuEnabled = true;
+            appBar.Opacity = 1;
 
             /* Add icons */
             groupChatIconButton = new ApplicationBarIconButton();
@@ -431,15 +439,10 @@ namespace windows_client.View
             postStatusIconButton.IsEnabled = true;
             appBar.Buttons.Add(postStatusIconButton);
 
-            //addFriendIconButton = new ApplicationBarIconButton();
-            //addFriendIconButton.IconUri = new Uri("/View/images/appbar_addfriend.png", UriKind.Relative);
-            //addFriendIconButton.Text = AppResources.Favorites_AddMore;
-            //addFriendIconButton.Click += addFriend_Click;
-            //addFriendIconButton.IsEnabled = true;
-
             delConvsMenu = new ApplicationBarMenuItem();
             delConvsMenu.Text = AppResources.Conversations_DelAllChats_Txt;
             delConvsMenu.Click += new EventHandler(deleteAllConvs_Click);
+            delConvsMenu.IsEnabled = false;//it will be enabled after loading of all conversations
             appBar.MenuItems.Add(delConvsMenu);
 
             //toggleStatusUpdatesMenu = new ApplicationBarMenuItem();
@@ -654,12 +657,6 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 
-        private void addFriend_Click(object sender, EventArgs e)
-        {
-            PhoneApplicationService.Current.State["HIKE_FRIENDS"] = true;
-            string uri = "/View/InviteUsers.xaml";
-            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
-        }
 
         private void ToggleStatusUpdateNotification(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -722,15 +719,6 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
             }
             mPubSub.publish(HikePubSub.DELETE_CONVERSATION, convObj.Msisdn);
-        }
-
-        private void inviteUsers_Click(object sender, EventArgs e)
-        {
-            Uri nextPage = new Uri("/View/InviteUsers.xaml", UriKind.Relative);
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                NavigationService.Navigate(nextPage);
-            });
         }
 
         bool isContactListLoaded = false;
@@ -1609,7 +1597,7 @@ namespace windows_client.View
 
         #region App Update Available
 
-        
+
         void ShowAppUpdateAvailableMessage()
         {
             String updateObj;
@@ -2704,5 +2692,77 @@ namespace windows_client.View
                 resumeMediaPlayerAfterDone = false;
             }
         }
+
+        #region Overlay
+        void ShowInvitePopups()
+        {
+            Object[] obj;
+            if (App.appSettings.TryGetValue(HikeConstants.SHOW_POPUP, out obj))
+            {
+                showFreeMessageOverlay = obj == null;
+                if (!showFreeMessageOverlay)
+                {
+                    Object[] popupDataobj = obj as Object[];
+                    customOverlay.Title = popupDataobj[0] == null ? AppResources.InvitePopUp_Rewards_Title : (string)popupDataobj[0];
+                    customOverlay.Message = popupDataobj[1] == null ? AppResources.InvitePopUp_Rewards_Message : (string)popupDataobj[1];
+                    customOverlay.DisplayImage = UI_Utils.Instance.OverlayRupeeImage;
+                }
+                else
+                {
+                    customOverlay.Title = AppResources.InvitePopUp_FreeSMS_Title;
+                    customOverlay.Message = AppResources.InvitePopUp_FreeSMS_Message;
+                    customOverlay.DisplayImage = UI_Utils.Instance.OverlaySmsImage;
+                }
+                customOverlay.LeftButtonContent = AppResources.FreeSMS_InviteNow_Btn.ToLower();
+                customOverlay.RightButtonContent = AppResources.InvitePopUp_LearnMore_Btn_Text;
+
+                customOverlay.LeftClicked += customOverlay_LeftClicked;
+                customOverlay.RightClicked += customOverlay_RightClicked;
+                customOverlay.VisibilityChanged += customOverlay_VisibilityChanged;
+                customOverlay.SetVisibility(true);
+            }
+        }
+        void customOverlay_VisibilityChanged(object sender, EventArgs e)
+        {
+            if (sender is Overlay)
+            {
+                Overlay overlay = sender as Overlay;
+                if (overlay.Visibility == Visibility.Collapsed)
+                {
+                    foreach (ApplicationBarIconButton button in appBar.Buttons)
+                    {
+                        button.IsEnabled = true;
+                    }
+                    appBar.IsMenuEnabled = true;
+                    launchPagePivot.IsHitTestVisible = true;
+                    App.RemoveKeyFromAppSettings(HikeConstants.SHOW_POPUP);
+                }
+                else
+                {
+                    foreach (ApplicationBarIconButton button in appBar.Buttons)
+                    {
+                        button.IsEnabled = false;
+                    }
+                    appBar.IsMenuEnabled = false;
+                    launchPagePivot.IsHitTestVisible = false;
+                }
+            }
+        }
+
+        void customOverlay_RightClicked(object sender, EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+        }
+
+        void customOverlay_LeftClicked(object sender, EventArgs e)
+        {
+            if (showFreeMessageOverlay)
+                Analytics.SendClickEvent(HikeConstants.INVITE_FRIENDS_FROM_POPUP_FREE_SMS);
+            else
+                Analytics.SendClickEvent(HikeConstants.INVITE_FRIENDS_FROM_POPUP_REWARDS);
+
+            NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
+        }
+        #endregion
     }
 }

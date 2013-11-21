@@ -179,7 +179,7 @@ namespace windows_client.Model
             string filePath = HikeConstants.ANALYTICS_OBJECT_DIRECTORY + "/" + HikeConstants.ANALYTICS_OBJECT_FILE;
             if (eventMap != null && eventMap.Count > 0)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
                     {
@@ -199,7 +199,7 @@ namespace windows_client.Model
         private void readObject()
         {
             string filePath = HikeConstants.ANALYTICS_OBJECT_DIRECTORY + "/" + HikeConstants.ANALYTICS_OBJECT_FILE;
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
                 if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY) || !store.FileExists(filePath))
                 {
@@ -213,6 +213,27 @@ namespace windows_client.Model
                     }
                 }
             }
+        }
+
+        public static void SendClickEvent(string key)
+        {
+            if (string.IsNullOrEmpty(key))
+                return;
+
+            JObject metadataObject = new JObject();
+            metadataObject.Add(HikeConstants.EVENT_TYPE, HikeConstants.EVENT_TYPE_CLICK);
+            metadataObject.Add(HikeConstants.EVENT_KEY, key);
+
+            JObject dataObj = new JObject();
+            dataObj.Add(HikeConstants.METADATA, metadataObject);
+            dataObj.Add(HikeConstants.TAG, HikeConstants.TAG_MOBILE);
+            dataObj.Add(HikeConstants.SUB_TYPE, HikeConstants.UI_EVENT);
+
+            JObject analyticObj = new JObject();
+            analyticObj.Add(HikeConstants.DATA, dataObj);
+            analyticObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
+
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
         }
     }
 }
