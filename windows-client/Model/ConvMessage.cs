@@ -515,6 +515,8 @@ namespace windows_client.Model
             get { return String.IsNullOrEmpty(DispMessage) ? Visibility.Collapsed : Visibility.Visible; }
         }
 
+        public bool ChangingState { get; set; }
+
         public BitmapImage PauseResumeImage
         {
             get
@@ -647,7 +649,7 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null)
                 {
-                    if (!IsSent && _fileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
+                    if (!IsSent && (_fileAttachment.FileState == Attachment.AttachmentState.FAILED || _fileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED || _fileAttachment.FileState == Attachment.AttachmentState.CANCELED))
                         return UI_Utils.Instance.DownloadIcon;
                     else if (_fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
                         return UI_Utils.Instance.BlankBitmapImage;
@@ -1554,7 +1556,7 @@ namespace windows_client.Model
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
                             this.FileAttachment = new Attachment(fileName == null ? AppResources.Location_Txt : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
-                        contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED, fs);
+                        contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
 
                             JObject locationFile = new JObject();
                             locationFile[HikeConstants.LATITUDE] = fileObject[HikeConstants.LATITUDE];
@@ -1568,7 +1570,7 @@ namespace windows_client.Model
                         else
                         {
                             this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
-                           contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED, fs);
+                           contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
                         }
 
                         if (contentType.ToString().Contains(HikeConstants.CONTACT) || contentType.ToString().Contains(HikeConstants.AUDIO))
@@ -1775,7 +1777,7 @@ namespace windows_client.Model
         public void SetAttachmentState(Attachment.AttachmentState attachmentState)
         {
             this.FileAttachment.FileState = attachmentState;
-            if (FileAttachment.FileState == Attachment.AttachmentState.CANCELED || FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
+            if (FileAttachment.FileState == Attachment.AttachmentState.CANCELED || FileAttachment.FileState == Attachment.AttachmentState.FAILED || FileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED)
                 ProgressBarValue = 0;
             NotifyPropertyChanged("ShowCancelMenu");
             NotifyPropertyChanged("ShowForwardMenu");
@@ -1790,9 +1792,12 @@ namespace windows_client.Model
             SdrImageVisibility = attachmentState != Attachment.AttachmentState.STARTED
                 && attachmentState != Attachment.AttachmentState.PAUSED
                 && attachmentState != Attachment.AttachmentState.MANUAL_PAUSED
+                && attachmentState != Attachment.AttachmentState.NOT_STARTED
                 ? Visibility.Visible : Visibility.Collapsed;
 
             NotifyPropertyChanged("SdrImageVisibility");
+
+            ChangingState = false;
         }
 
         public void UpdateVisibilitySdrImage()

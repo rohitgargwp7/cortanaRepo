@@ -31,6 +31,7 @@ namespace windows_client.FileTransfers
         public FileDownloader(string msisdn, string messageId, string fileName, string contentType, int size)
             : base(msisdn, messageId, fileName, contentType, size)
         {
+            Save();
         }
 
         public override void Write(BinaryWriter writer)
@@ -98,6 +99,9 @@ namespace windows_client.FileTransfers
         {
             lock (readWriteLock)
             {
+                if (FileState == FileTransferState.CANCELED)
+                    return; 
+                
                 try
                 {
                     string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + MessageId;
@@ -224,6 +228,7 @@ namespace windows_client.FileTransfers
                     if (TotalBytes == 0)
                         TotalBytes = (int)response.ContentLength;
 
+                    // download is starting. mark as started and update file and ui elements
                     FileState = FileTransferState.STARTED;
                     OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 }
@@ -236,6 +241,7 @@ namespace windows_client.FileTransfers
         {
             if (FileState == FileTransferState.CANCELED)
             {
+                // if state was cancelled before download began delete the data
                 Delete();
             }
             else if (responseStream != null && (responseCode == HttpStatusCode.PartialContent || responseCode == HttpStatusCode.OK))
@@ -265,11 +271,14 @@ namespace windows_client.FileTransfers
                             BlockSize = MaxBlockSize;
                         }
 
+                        // dont update ui as its still downloading, only update .
                         OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, false));
+                        Save();
                     }
 
                     if (FileState == FileTransferState.CANCELED)
                     {
+                        // if state was cancelled during download delete the data
                         Delete();
                     }
                     else if (BytesTransfered == TotalBytes - 1)
@@ -284,21 +293,24 @@ namespace windows_client.FileTransfers
                         }
                         else
                         {
+                            //retry timed out. mark as failed
                             FileState = FileTransferState.FAILED;
                             OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                             Save();
                         }
                     }
+                    else
+                    {
+                        //update ui and file state as transfer state was changed to other than started
+                        OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                        Save();
+                    }
                 }
             }
             else if (responseCode == HttpStatusCode.BadRequest)
             {
-                FileState = FileTransferState.FAILED;
-
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    MessageBox.Show(AppResources.File_Not_Exist_Message, AppResources.File_Not_Exist_Caption, MessageBoxButton.OK);
-                });
+                // file does not exist on server
+                FileState = FileTransferState.DOES_NOT_EXIST;
 
                 OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 Delete();
@@ -311,6 +323,7 @@ namespace windows_client.FileTransfers
                 }
                 else
                 {
+                    //retry timed out. mark as failed
                     FileState = FileTransferState.FAILED;
                     OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                     Save();

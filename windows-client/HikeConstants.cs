@@ -171,7 +171,7 @@ namespace windows_client
         public const string FTUE_GAMING_MSISDN = "+hike2+";
 
         public static readonly string VERSION = "version";
-
+        
         public static string FAQS_LINK
         {
             get
@@ -440,6 +440,8 @@ namespace windows_client
             public static readonly string TIME_DIFF_EPOCH = "serverEpochTime";
             public static readonly string REMOVE_EMMA = "removeEmma";
             public static readonly string NEW_UPDATE_AVAILABLE = "New_Update_Available";
+            public static readonly string LAST_SELECTED_STICKER_CATEGORY = "lastSelectedStickerCategory";
+            public static readonly string LAST_SELECTED_EMOTICON_CATEGORY = "lastSelectedEmoticonCategory";
         }
 
         public static class NokiaHere

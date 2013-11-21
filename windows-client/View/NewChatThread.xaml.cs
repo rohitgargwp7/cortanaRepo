@@ -291,10 +291,15 @@ namespace windows_client.View
 
             if (isStateChanged)
             {
-                Attachment.AttachmentState state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                Attachment.AttachmentState state = Attachment.AttachmentState.FAILED;
 
                 if (fInfo.FileState == FileTransferState.CANCELED)
+                {
                     state = Attachment.AttachmentState.CANCELED;
+
+                    if (convMessage.IsSent)
+                        convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                }
                 else if (fInfo.FileState == FileTransferState.COMPLETED)
                 {
                     state = Attachment.AttachmentState.COMPLETED;
@@ -308,7 +313,7 @@ namespace windows_client.View
                     state = Attachment.AttachmentState.MANUAL_PAUSED;
                 else if (fInfo.FileState == FileTransferState.FAILED)
                 {
-                    state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                    state = Attachment.AttachmentState.FAILED;
 
                     if (fInfo is FileUploader)
                         convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
@@ -316,7 +321,22 @@ namespace windows_client.View
                 else if (fInfo.FileState == FileTransferState.STARTED)
                     state = Attachment.AttachmentState.STARTED;
                 else if (fInfo.FileState == FileTransferState.NOT_STARTED)
-                    state = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                    state = Attachment.AttachmentState.NOT_STARTED;
+                else if (fInfo.FileState == FileTransferState.DOES_NOT_EXIST)
+                {
+                    if (convMessage.UserTappedDownload)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            MessageBox.Show(AppResources.File_Not_Exist_Message, AppResources.File_Not_Exist_Caption, MessageBoxButton.OK);
+                        });
+                    }
+
+                    state = Attachment.AttachmentState.FAILED;
+
+                    if (fInfo is FileUploader)
+                        convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                }
 
                 if (fInfo.FileState == FileTransferState.COMPLETED)
                     convMessage.ProgressBarValue = 100;
@@ -2117,15 +2137,18 @@ namespace windows_client.View
                     {
                         if (NetworkInterface.GetIsNetworkAvailable())
                         {
-                            bool taskPlaced = false;
+                            if (FileTransferManager.Instance.IsTransferPossible())
+                            {
+                                bool taskPlaced = false;
 
-                            if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
-                                taskPlaced = FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
-                            else if (FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
-                                taskPlaced = true;
+                                if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.CANCELED)
+                                    taskPlaced = FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                                else if (ResumeTransfer(convMessage))
+                                    taskPlaced = true;
 
-                            if (taskPlaced)
-                                convMessage.UserTappedDownload = true;
+                                if (taskPlaced)
+                                    convMessage.UserTappedDownload = true;
+                            }
                             else
                                 MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                         }
@@ -2158,7 +2181,7 @@ namespace windows_client.View
                                 "/" + convMessage.FileAttachment.FileKey;
                         }
 
-                        bool transferPlaced = FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent);
+                        bool transferPlaced = ResumeTransfer(convMessage);
 
                         if (!transferPlaced)
                         {
@@ -2178,7 +2201,7 @@ namespace windows_client.View
                                 transferPlaced = FileTransferManager.Instance.DownloadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
                         }
 
-                        if (!transferPlaced)
+                        if (!transferPlaced && !FileTransferManager.Instance.IsTransferPossible())
                             MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                     }
                 }
@@ -3261,7 +3284,7 @@ namespace windows_client.View
                     fileBytes = msLargeImage.ToArray();
                 }
 
-                convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.STARTED, fileBytes.Length);
+                convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
                 convMessage.FileAttachment.ContentType = HikeConstants.IMAGE;
                 convMessage.Message = AppResources.Image_Txt;
 
@@ -3495,35 +3518,29 @@ namespace windows_client.View
         private void MenuItem_Click_Cancel(object sender, RoutedEventArgs e)
         {
             ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
-            if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
-            {
-                convMessage.SetAttachmentState(Attachment.AttachmentState.CANCELED);
-                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
-            }
-
-            FileTransfers.FileTransferManager.Instance.CancelTask(convMessage.MessageId.ToString());
+            convMessage.ChangingState = FileTransfers.FileTransferManager.Instance.CancelTask(convMessage.MessageId.ToString());
         }
 
         private void PauseTransfer(ConvMessage convMessage)
         {
-            if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
-            {
-                convMessage.SetAttachmentState(Attachment.AttachmentState.MANUAL_PAUSED);
-                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
-            }
+            if (convMessage.ChangingState)
+                return;
 
-            FileTransfers.FileTransferManager.Instance.PauseTask(convMessage.MessageId.ToString());
+            convMessage.ChangingState = FileTransfers.FileTransferManager.Instance.PauseTask(convMessage.MessageId.ToString());
         }
 
-        private void ResumeTransfer(ConvMessage convMessage)
+        private bool ResumeTransfer(ConvMessage convMessage)
         {
-            if (FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
-            {
-                convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
-                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
-            }
-            else
-                MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
+            if (convMessage.ChangingState)
+                return false;
+
+            convMessage.ChangingState = true;
+
+            if (FileTransferManager.Instance.IsTransferPossible() && FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
+                return true;
+
+            convMessage.ChangingState = false;
+            return false;
         }
 
         private void MenuItem_Click_SendAsSMS(object sender, RoutedEventArgs e)
@@ -3633,11 +3650,16 @@ namespace windows_client.View
             gridStickers.Visibility = Visibility.Collapsed;
             if (!isEmoticonLoaded)
             {
-                emoticonPivot.SelectedIndex = imagePathsForListRecent.Count > 0 ? 0 : 1;
+                int index = 0;
+
+                if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_EMOTICON_CATEGORY, out index))
+                    emoticonPivot.SelectedIndex = index == 0 && imagePathsForListRecent.Count == 0 ? 1 : index;
+                else
+                    emoticonPivot.SelectedIndex = imagePathsForListRecent.Count > 0 ? 0 : 1;
+
                 isEmoticonLoaded = true;
             }
         }
-
 
         private void ShowStickerPallet()
         {
@@ -3646,10 +3668,44 @@ namespace windows_client.View
 
             if (!isStickersLoaded)
             {
-                if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
-                    CategoryRecent_Tap(null, null);
+                String category;
+                if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category))
+                {
+                    switch (category)
+                    {
+                        case StickerHelper.CATEGORY_RECENT:
+                            if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
+                                CategoryRecent_Tap(null, null);
+                            else
+                                Category0_Tap(null, null);
+                            break;
+                        case StickerHelper.CATEGORY_HUMANOID:
+                            Category0_Tap(null, null);
+                            break;
+                        case StickerHelper.CATEGORY_DOGGY:
+                            Category1_Tap(null, null);
+                            break;
+                        case StickerHelper.CATEGORY_KITTY:
+                            Category2_Tap(null, null);
+                            break;
+                        case StickerHelper.CATEGORY_EXPRESSIONS:
+                            Category3_Tap(null, null);
+                            break;
+                        case StickerHelper.CATEGORY_BOLLYWOOD:
+                            Category4_Tap(null, null);
+                            break;
+                        case StickerHelper.CATEGORY_TROLL:
+                            Category5_Tap(null, null);
+                            break;
+                    }
+                }
                 else
-                    Category0_Tap(null, null);
+                {
+                    if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
+                        CategoryRecent_Tap(null, null);
+                    else
+                        Category0_Tap(null, null);
+                }
 
                 isStickersLoaded = true;
             }
@@ -4740,7 +4796,7 @@ namespace windows_client.View
                     MetaDataString = locationJSONString
                 };
 
-                convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED, locationBytes.Length);
+                convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.NOT_STARTED, locationBytes.Length);
                 convMessage.FileAttachment.ContentType = HikeConstants.LOCATION_CONTENT_TYPE;
 
                 AddNewMessageToUI(convMessage, false);
@@ -4798,7 +4854,7 @@ namespace windows_client.View
                 if (isAudio)
                 {
                     fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp3";
-                    convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED, fileBytes.Length);
+                    convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
                     convMessage.FileAttachment.ContentType = "audio/voice";
 
                     var fileInfo = new JObject();
@@ -4817,7 +4873,7 @@ namespace windows_client.View
                 else
                 {
                     fileName = "vid_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp4";
-                    convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.STARTED, fileBytes.Length);
+                    convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
                     convMessage.FileAttachment.ContentType = "video/mp4";
                     convMessage.Message = AppResources.Video_Txt;
                 }
@@ -4848,7 +4904,7 @@ namespace windows_client.View
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
 
-                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED, bytes.Length);
+                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.NOT_STARTED, bytes.Length);
                 convMessage.FileAttachment.ContentType = HikeConstants.CT_CONTACT;
                 convMessage.Message = AppResources.ContactTransfer_Text;
                 convMessage.MetaDataString = contactJson.ToString(Newtonsoft.Json.Formatting.None);
@@ -4930,6 +4986,8 @@ namespace windows_client.View
         List<SmileyParser.Emoticon> listTemp = new List<SmileyParser.Emoticon>();
         private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_EMOTICON_CATEGORY, emoticonPivot.SelectedIndex);
+
             switch (emoticonPivot.SelectedIndex)
             {
                 case 0:
@@ -5354,6 +5412,8 @@ namespace windows_client.View
             string category;
             if (StickerPivotHelper.Instance.dictPivotCategory.TryGetValue(pivotStickers.SelectedIndex, out category))
             {
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, category);
+
                 switch (category)
                 {
                     case StickerHelper.CATEGORY_RECENT:

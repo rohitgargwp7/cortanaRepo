@@ -610,7 +610,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_FreeMsg_Txt" xml:space="preserve">
-    <value>Hike Message</value>
+    <value>hike message</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_Txt" xml:space="preserve">
@@ -670,7 +670,7 @@
     <comment>xaml</comment>
   </data>
   <data name="SelectUser_TxtBoxHint_Txt" xml:space="preserve">
-    <value> Search or Enter Phone #...</value>
+    <value> search or enter phone number</value>
     <comment>textbox hint (xaml)</comment>
   </data>
   <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
@@ -971,7 +971,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailHikeVersion" xml:space="preserve">
-    <value>Hike Version:</value>
+    <value>hike Version:</value>
     <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailOSVersion" xml:space="preserve">
@@ -1296,7 +1296,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Invite {0} to continue hiking.</value>
   </data>
   <data name="SelectUser_GroupMsg_Txt" xml:space="preserve">
-    <value>Group Message</value>
+    <value>group message</value>
   </data>
   <data name="HappyMessaging_Txt" xml:space="preserve">
     <value>Happy Messaging!</value>
@@ -1342,7 +1342,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Ask Me Later</value>
   </data>
   <data name="Love_Using_Hike_Txt" xml:space="preserve">
-    <value>Love using Hike?</value>
+    <value>Love using hike?</value>
   </data>
   <data name="Rate_Now_Txt" xml:space="preserve">
     <value>Rate Now</value>
@@ -1360,7 +1360,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Do you want to stop contact scanning?</value>
   </data>
   <data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
-    <value>Message {0} on Hike</value>
+    <value>Message {0} on hike</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
@@ -1419,7 +1419,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>{0} replaced by user name</comment>
   </data>
   <data name="Conversations_EmptyStatus_TeamHike_Txt" xml:space="preserve">
-    <value>Team Hike</value>
+    <value>Team hike</value>
   </data>
   <data name="Update_Profile_Pic_txt" xml:space="preserve">
     <value>Updated profile picture</value>
@@ -1803,7 +1803,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Use location service</value>
   </data>
   <data name="ShareLocation_LocationSettingsNotEnabled_Txt" xml:space="preserve">
-    <value>Hike Location Setting is disabled. Would you like to turn it ON?</value>
+    <value>hike Location Setting is disabled. Would you like to turn it ON?</value>
   </data>
   <data name="ViewMessage_Title_txt" xml:space="preserve">
     <value>message</value>
@@ -1834,7 +1834,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>View full message</value>
   </data>
   <data name="In_App_Tip_7" xml:space="preserve">
-    <value>You can now send messages to your hike contacts who are Offline! Long Press the message to send as a Hike SMS</value>
+    <value>You can now send messages to your hike contacts who are Offline! Long Press the message to send as a hike SMS</value>
   </data>
   <data name="File_Not_Exist_Caption" xml:space="preserve">
     <value>File Expired</value>

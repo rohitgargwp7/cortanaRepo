@@ -8,6 +8,7 @@
         COMPLETED,
         CANCELED,
         PAUSED,
-        MANUAL_PAUSED
+        MANUAL_PAUSED,
+        DOES_NOT_EXIST
     }
 }
