@@ -43,6 +43,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <local:Overlay x:Name="customOverlay" IsEnabled="True" Grid.RowSpan="2" IsVisible="False" Canvas.ZIndex="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" EnableAnimation="False" Visibility="Collapsed"/>
+
         <Grid Grid.Row="0" Margin="20,-20,0, 0" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

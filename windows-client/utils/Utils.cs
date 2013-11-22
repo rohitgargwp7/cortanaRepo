@@ -97,7 +97,10 @@ namespace windows_client.utils
             JObject requestAccountInfo = new JObject();
             try
             {
+                JObject upgradeJobj=new JObject();
+                upgradeJobj.Add(HikeConstants.UPGRADE,true);
                 requestAccountInfo.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
+                requestAccountInfo.Add(HikeConstants.DATA, upgradeJobj);
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, requestAccountInfo);
             }
             catch (Exception e)
