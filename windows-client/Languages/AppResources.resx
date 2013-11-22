@@ -454,8 +454,8 @@
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_InviteNow_Btn" xml:space="preserve">
-    <value>Invite Now</value>
-    <comment>xaml</comment>
+    <value>invite now</value>
+    <comment>Maximum Chars(12)</comment>
   </data>
   <data name="FreeSMS_InviteSMS_TxtBlk" xml:space="preserve">
     <value>Invite via SMS</value>
@@ -1988,5 +1988,24 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Settings_HikeJingleToggleSwitchHeader" xml:space="preserve">
     <value>hike jingle</value>
+  </data>
+  <data name="InvitePopUp_FreeSMS_Message" xml:space="preserve">
+    <value>Now invite friends via sms for free. No charges apply.:)</value>
+  </data>
+  <data name="InvitePopUp_FreeSMS_Title" xml:space="preserve">
+    <value>Free SMS Invites</value>
+  </data>
+  <data name="InvitePopUp_LearnMore_Btn_Text" xml:space="preserve">
+    <value>learn more</value>
+    <comment>maximum chars(12)</comment>
+  </data>
+  <data name="InvitePopUp_Rewards_Message" xml:space="preserve">
+    <value>Invite friends for free and get Rs 20 for every friend that joins.</value>
+  </data>
+  <data name="InvitePopUp_Rewards_Title" xml:space="preserve">
+    <value>Invite Friends, Earn Rewards</value>
+  </data>
+  <data name="SelectAll_Txt" xml:space="preserve">
+    <value>select all</value>
   </data>
 </root>

@@ -12,6 +12,7 @@ using System.Text;
 using windows_client.Misc;
 using windows_client.Languages;
 using windows_client.ViewModel;
+using Microsoft.Phone.Shell;
 
 namespace windows_client
 {
@@ -153,7 +154,7 @@ namespace windows_client
                     {
                         FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
                     }
-                    
+
                     if (convMessage.FileAttachment != null)
                     {
                         MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
@@ -540,6 +541,11 @@ namespace windows_client
                 {
                     data = (JObject)jsonObj[HikeConstants.DATA];
                     Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString());
+                    JToken jtoken;
+                    if (data.TryGetValue(HikeConstants.SHOW_FREE_INVITES, out jtoken) && (bool)jtoken)
+                    {
+                        App.appSettings[HikeConstants.SHOW_POPUP] = null;//to show it is free sms pop up.
+                    }
                     KeyValuePair<string, JToken> kv;
                     IEnumerator<KeyValuePair<string, JToken>> keyVals = data.GetEnumerator();
                     while (keyVals.MoveNext())
@@ -826,6 +832,30 @@ namespace windows_client
                         //appsetting would ever be stored
                         bool showMoods = rew.ToObject<bool>();
                         App.WriteToIsoStorageSettings(App.HIDE_CRICKET_MOODS, !showMoods);
+                    }
+                    #endregion
+                    #region Invite pop up
+                    JToken jtokenMessageId;
+                    if (data.TryGetValue(HikeConstants.MESSAGE_ID, out jtokenMessageId))
+                    {
+                        JToken jtokenShowFreeInvites;
+                        string previousId;
+                        if ((!App.appSettings.TryGetValue(HikeConstants.INVITE_POPUP_UNIQUEID, out previousId) || previousId != ((string)jtokenMessageId)) && data.TryGetValue(HikeConstants.SHOW_FREE_INVITES, out jtokenShowFreeInvites))
+                        {
+                            App.WriteToIsoStorageSettings(HikeConstants.INVITE_POPUP_UNIQUEID, (string)jtokenMessageId);
+                            bool showInvite = (bool)jtokenShowFreeInvites;
+
+                            if (showInvite)
+                            {
+                                JToken jtoken;
+                                Object[] popupDataobj = new object[2];
+                                //add title to zero place;
+                                popupDataobj[0] = data.TryGetValue(HikeConstants.FREE_INVITE_POPUP_TITLE, out jtoken) ? (string)jtoken : null;
+                                //add text to first place;
+                                popupDataobj[1] = data.TryGetValue(HikeConstants.FREE_INVITE_POPUP_TEXT, out jtoken) ? (string)jtoken : null;
+                                App.appSettings[HikeConstants.SHOW_POPUP] = popupDataobj;
+                            }
+                        }
                     }
                     #endregion
                 }
@@ -1551,7 +1581,7 @@ namespace windows_client
 
             #endregion
             #region App Update
-            
+
             else if (HikeConstants.MqttMessageTypes.APP_UPDATE == type)
             {
                 JObject data = null;
@@ -1565,7 +1595,7 @@ namespace windows_client
                         return;
 
                     var version = (string)data[HikeConstants.VERSION];
-                    
+
                     if (Utils.compareVersion(version, App.CURRENT_VERSION) <= 0)
                         return;
 
@@ -1577,8 +1607,8 @@ namespace windows_client
                     catch
                     {
                         isCritical = false;
-                    } 
-                    
+                    }
+
                     var message = "";
                     try
                     {
@@ -1602,7 +1632,7 @@ namespace windows_client
                     Debug.WriteLine("Network Manager:: APP UPDATE, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
                 }
             }
-            
+
             #endregion
             #region OTHER
             else
