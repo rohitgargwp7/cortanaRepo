@@ -2713,7 +2713,7 @@ namespace windows_client.View
                     customOverlay.Message = AppResources.InvitePopUp_FreeSMS_Message;
                     customOverlay.DisplayImage = UI_Utils.Instance.OverlaySmsImage;
                 }
-                customOverlay.LeftButtonContent = AppResources.FreeSMS_InviteNow_Btn.ToLower();
+                customOverlay.LeftButtonContent = AppResources.FreeSMS_InviteNow_Btn;
                 customOverlay.RightButtonContent = AppResources.InvitePopUp_LearnMore_Btn_Text;
 
                 customOverlay.LeftClicked += customOverlay_LeftClicked;
@@ -2724,28 +2724,25 @@ namespace windows_client.View
         }
         void customOverlay_VisibilityChanged(object sender, EventArgs e)
         {
-            if (sender is Overlay)
+            Overlay overlay = sender as Overlay;
+            if (overlay.Visibility == Visibility.Collapsed)
             {
-                Overlay overlay = sender as Overlay;
-                if (overlay.Visibility == Visibility.Collapsed)
+                foreach (ApplicationBarIconButton button in appBar.Buttons)
                 {
-                    foreach (ApplicationBarIconButton button in appBar.Buttons)
-                    {
-                        button.IsEnabled = true;
-                    }
-                    appBar.IsMenuEnabled = true;
-                    launchPagePivot.IsHitTestVisible = true;
-                    App.RemoveKeyFromAppSettings(HikeConstants.SHOW_POPUP);
+                    button.IsEnabled = true;
                 }
-                else
+                appBar.IsMenuEnabled = true;
+                launchPagePivot.IsHitTestVisible = true;
+                App.RemoveKeyFromAppSettings(HikeConstants.SHOW_POPUP);
+            }
+            else
+            {
+                foreach (ApplicationBarIconButton button in appBar.Buttons)
                 {
-                    foreach (ApplicationBarIconButton button in appBar.Buttons)
-                    {
-                        button.IsEnabled = false;
-                    }
-                    appBar.IsMenuEnabled = false;
-                    launchPagePivot.IsHitTestVisible = false;
+                    button.IsEnabled = false;
                 }
+                appBar.IsMenuEnabled = false;
+                launchPagePivot.IsHitTestVisible = false;
             }
         }
 

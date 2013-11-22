@@ -835,17 +835,19 @@ namespace windows_client
                     }
                     #endregion
                     #region Invite pop up
-                    JToken jtoken;
-                    if (data.TryGetValue(HikeConstants.MESSAGE_ID, out jtoken))
+                    JToken jtokenMessageId;
+                    if (data.TryGetValue(HikeConstants.MESSAGE_ID, out jtokenMessageId))
                     {
+                        JToken jtokenShowFreeInvites;
                         string previousId;
-                        if (!(App.appSettings.TryGetValue(HikeConstants.INVITE_POPUP_UNIQUEID, out previousId) && previousId == ((string)jtoken)) && data.TryGetValue(HikeConstants.SHOW_FREE_INVITES, out jtoken))
+                        if ((!App.appSettings.TryGetValue(HikeConstants.INVITE_POPUP_UNIQUEID, out previousId) || previousId != ((string)jtokenMessageId)) && data.TryGetValue(HikeConstants.SHOW_FREE_INVITES, out jtokenShowFreeInvites))
                         {
-                            App.WriteToIsoStorageSettings(HikeConstants.INVITE_POPUP_UNIQUEID, (string)jtoken);
-                            bool showInvite = (bool)jtoken;
+                            App.WriteToIsoStorageSettings(HikeConstants.INVITE_POPUP_UNIQUEID, (string)jtokenMessageId);
+                            bool showInvite = (bool)jtokenShowFreeInvites;
 
                             if (showInvite)
                             {
+                                JToken jtoken;
                                 Object[] popupDataobj = new object[2];
                                 //add title to zero place;
                                 popupDataobj[0] = data.TryGetValue(HikeConstants.FREE_INVITE_POPUP_TITLE, out jtoken) ? (string)jtoken : null;

@@ -454,7 +454,7 @@
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_InviteNow_Btn" xml:space="preserve">
-    <value>Invite Now</value>
+    <value>invite now</value>
     <comment>Maximum Chars(12)</comment>
   </data>
   <data name="FreeSMS_InviteSMS_TxtBlk" xml:space="preserve">

@@ -1598,7 +1598,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invite Now.
+        ///   Looks up a localized string similar to invite now.
         /// </summary>
         public static string FreeSMS_InviteNow_Btn {
             get {
