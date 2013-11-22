@@ -243,8 +243,11 @@ namespace windows_client.FileTransfers
             {
                 // if state was cancelled before download began delete the data
                 Delete();
+                OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                return;
             }
-            else if (responseStream != null && (responseCode == HttpStatusCode.PartialContent || responseCode == HttpStatusCode.OK))
+            
+            if (responseStream != null && (responseCode == HttpStatusCode.PartialContent || responseCode == HttpStatusCode.OK))
             {
                 byte[] newBytes = null;
                 using (BinaryReader br = new BinaryReader(responseStream))
@@ -280,6 +283,7 @@ namespace windows_client.FileTransfers
                     {
                         // if state was cancelled during download delete the data
                         Delete();
+                        OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                     }
                     else if (BytesTransfered == TotalBytes - 1)
                     {

@@ -271,6 +271,14 @@ namespace windows_client.FileTransfers
 
         async void ProcessUploadGetResponse(string data, HttpStatusCode responseCode)
         {
+            if (FileState == FileTransferState.CANCELED)
+            {
+                // if state was cancelled before download began delete the data
+                Delete();
+                OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                return;
+            }
+
             int index = 0;
             if (responseCode == HttpStatusCode.OK)
             {
@@ -481,6 +489,7 @@ namespace windows_client.FileTransfers
             if (FileState == FileTransferState.CANCELED)
             {
                 Delete();
+                OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 return;
             } 
 

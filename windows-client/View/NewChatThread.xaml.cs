@@ -2135,6 +2135,8 @@ namespace windows_client.View
                 {
                     if (!convMessage.IsSent)
                     {
+                        //Downloads
+
                         if (NetworkInterface.GetIsNetworkAvailable())
                         {
                             if (FileTransferManager.Instance.IsTransferPossible())
@@ -2157,6 +2159,8 @@ namespace windows_client.View
                     }
                     else
                     {
+                        // Uploads
+                        // dont need to check for network available as they will be failed by file transfer manager
                         if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                         {
                             convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
@@ -2181,26 +2185,23 @@ namespace windows_client.View
                                 "/" + convMessage.FileAttachment.FileKey;
                         }
 
+                        // check if the message can be resumed
                         bool transferPlaced = ResumeTransfer(convMessage);
 
+                        // if message cannot be resumed try to fresh upload
                         if (!transferPlaced)
                         {
-                            // upgrade from older builds, if user taps, they wont bepresent in the tranfer manager map
-                            if (convMessage.IsSent)
-                            {
-                                byte[] fileBytes = null;
+                            byte[] fileBytes = null;
 
-                                if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                                    fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
-                                else
-                                    MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + convMessage.MessageId, out fileBytes);
-
-                                transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
-                            }
+                            if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                                fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
                             else
-                                transferPlaced = FileTransferManager.Instance.DownloadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                                MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + convMessage.MessageId, out fileBytes);
+
+                            transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
                         }
 
+                        // if transfer was not placed because of queue limit reached then display limit reached message
                         if (!transferPlaced && !FileTransferManager.Instance.IsTransferPossible())
                             MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                     }
