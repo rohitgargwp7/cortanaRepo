@@ -10,6 +10,7 @@ using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
 using windows_client.Languages;
 using System.Windows.Documents;
+using windows_client.Model;
 
 namespace windows_client.View
 {
@@ -205,6 +206,7 @@ namespace windows_client.View
         {
             try
             {
+                Analytics.SendClickEvent(HikeConstants.INVITE_SMS_SCREEN_FROM_CREDIT);
                 NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
             }
             catch (Exception ex)
