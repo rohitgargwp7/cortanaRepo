@@ -190,7 +190,7 @@ namespace windows_client.Model
                         {
                             currentPage.CheckBox_Tap(this);
                         }
-                        NotifyPropertyChanged("IsFav");
+                        NotifyPropertyChanged("IsFav");//it is binded with two way checkbox, so to update ui
                     }
                     else
                         NotifyPropertyChanged("BlockUnblockText");
