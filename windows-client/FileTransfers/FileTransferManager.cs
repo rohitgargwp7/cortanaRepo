@@ -406,6 +406,7 @@ namespace windows_client.FileTransfers
             if (TaskMap.TryGetValue(id, out fInfo))
             {
                 fInfo.FileState = FileTransferState.CANCELED;
+                fInfo.Delete();
                 TaskMap.Remove(id);
 
                 // User can cancel only ongoing file transfers and not those which are paused.
@@ -425,6 +426,7 @@ namespace windows_client.FileTransfers
             if (TaskMap.TryGetValue(id, out fInfo))
             {
                 fInfo.FileState = FileTransferState.CANCELED;
+                fInfo.Delete();
                 TaskMap.Remove(id);
 
                 // User can delete an ongoing file transfers by deleting the message or the conversation list.
@@ -440,6 +442,7 @@ namespace windows_client.FileTransfers
                     // Only change the state. Data will be deleted by their respective threads
                     fInfo = taskList.First();
                     fInfo.FileState = FileTransferState.CANCELED;
+                    fInfo.Delete();
                 }
                 else
                 {
