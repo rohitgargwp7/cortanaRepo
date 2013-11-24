@@ -179,6 +179,10 @@ namespace windows_client.FileTransfers
          
             if (GetAttachmentStatus(key, isSent, out fInfo) && !TaskMap.ContainsKey(key))
             {
+                // if file was cancelled, prevent resume
+                if (fInfo.FileState == FileTransferState.CANCELED)
+                    return false;
+
                 if (fInfo.FileState != FileTransferState.COMPLETED)
                     fInfo.FileState = FileTransferState.STARTED;
 
@@ -209,8 +213,11 @@ namespace windows_client.FileTransfers
 
                 if (fileInfo.FileState == FileTransferState.CANCELED)
                 {
+                    // should not reach here as only ongoing tasks can be cancelled and not pending tasks
+                    // but keeping a fail check as a preventive measure
                     TaskMap.Remove(fileInfo.MessageId);
                     fileInfo.Delete();
+                    NotifyUI(new FileTransferSatatusChangedEventArgs(fileInfo, true));
                     fileInfo = null;
                     return;
                 }
@@ -224,6 +231,7 @@ namespace windows_client.FileTransfers
                 {
                     if (!TaskMap.ContainsKey(fileInfo.MessageId))
                     {
+                        //If in progress add to map else queue it to pending task
                         if (BeginThreadTask(fileInfo))
                         {
                             fileInfo.FileState = FileTransferState.STARTED;
@@ -234,7 +242,7 @@ namespace windows_client.FileTransfers
                     }
                 }
                 else
-                    TaskMap.Remove(fileInfo.MessageId);
+                    TaskMap.Remove(fileInfo.MessageId); // stale state file. Remove from taskmap to prevent any possible error
             }
 
             if (PendingTasks.Count > 0)
@@ -379,6 +387,10 @@ namespace windows_client.FileTransfers
 
             if (TaskMap.TryGetValue(id, out fInfo))
             {
+                //prevent pause action for cancelled task
+                if (fInfo.FileState == FileTransferState.CANCELED)
+                    return false;
+
                 fInfo.FileState = FileTransferState.MANUAL_PAUSED;
                 TaskMap.Remove(id);
                 return true;
@@ -397,10 +409,9 @@ namespace windows_client.FileTransfers
                 fInfo.Delete();
                 TaskMap.Remove(id);
 
-                if (UpdateTaskStatusOnUI != null)
-                    UpdateTaskStatusOnUI(null, new FileTransferSatatusChangedEventArgs(fInfo, true));
-
-                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fInfo);
+                // User can cancel only ongoing file transfers and not those which are paused.
+                // Hence they will always be in TaskMap Dict
+                // Only change the state. Data will be deleted and UI will be notified by their respective threads
 
                 return true;
             }
@@ -417,32 +428,53 @@ namespace windows_client.FileTransfers
                 fInfo.FileState = FileTransferState.CANCELED;
                 fInfo.Delete();
                 TaskMap.Remove(id);
+
+                // User can delete an ongoing file transfers by deleting the message or the conversation list.
+                // They will always be in TaskMap Dict
+                // Only change the state. Data will be deleted by their respective threads
             }
             else
             {
-                // remove file from both upload and download directory if file was not transfering when it was deleted.
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                // If they are not in TaskMap Dict. But in Pending queue.
+                var taskList = PendingTasks.Count > 0 ? PendingTasks.Where(t => t.MessageId == id) : null;
+                if (taskList != null && taskList.Count() > 0)
                 {
-                    if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
-                        return;
-
-                    if (store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME))
+                    // Only change the state. Data will be deleted by their respective threads
+                    fInfo = taskList.First();
+                    fInfo.FileState = FileTransferState.CANCELED;
+                    fInfo.Delete();
+                }
+                else
+                {
+                    // remove file from both upload and download directory if file was not transfering when it was deleted.
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        if (store.FileExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + id))
-                            store.DeleteFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + id);
-                    }
+                        if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
+                            return;
 
-                    if (store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME))
-                    {
-                        if (store.FileExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + id))
-                            store.DeleteFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + id);
+                        if (store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME))
+                        {
+                            if (store.FileExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + id))
+                                store.DeleteFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + id);
+                        }
+
+                        if (store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME))
+                        {
+                            if (store.FileExists(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + id))
+                                store.DeleteFile(FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_UPLOAD_DIRECTORY_NAME + "\\" + id);
+                        }
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Clear all file transfers. In case of unlink or delete
+        /// </summary>
         public void ClearTasks()
         {
+            //Cancel all files and delete them. Dont rely on other threads for deletion.
+
             foreach (var key in TaskMap.Keys)
             {
                 TaskMap[key].FileState = FileTransferState.CANCELED;
@@ -461,6 +493,11 @@ namespace windows_client.FileTransfers
         }
 
         void File_StatusChanged(object sender, FileTransferSatatusChangedEventArgs e)
+        {
+            NotifyUI(e);
+        }
+
+        private void NotifyUI(FileTransferSatatusChangedEventArgs e)
         {
             if (UpdateTaskStatusOnUI != null)
                 UpdateTaskStatusOnUI(null, e);

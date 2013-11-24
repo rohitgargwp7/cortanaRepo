@@ -2008,4 +2008,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="SelectAll_Txt" xml:space="preserve">
     <value>select all</value>
   </data>
+  <data name="Search_Hint_Txt" xml:space="preserve">
+    <value>search</value>
+  </data>
 </root>

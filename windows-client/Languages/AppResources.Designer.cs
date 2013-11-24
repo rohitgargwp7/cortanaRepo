@@ -3524,6 +3524,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to search.
+        /// </summary>
+        public static string Search_Hint_Txt {
+            get {
+                return ResourceManager.GetString("Search_Hint_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to select all.
         /// </summary>
         public static string SelectAll_Txt {
