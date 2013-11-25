@@ -276,7 +276,7 @@
                                                         <RowDefinition Height="Auto"/>
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
-                                                    <Image Source="{Binding PauseResumeImage}" Opacity="{Binding PauseResumeImageOpacity}" Height="20" VerticalAlignment="Center" Stretch="Uniform" HorizontalAlignment="Left" Margin="0,5,0,0"/>
+                                                    <Image Source="{Binding PauseResumeImage}" Opacity="{Binding PauseResumeImageOpacity}" Height="25" VerticalAlignment="Center" Stretch="Uniform" HorizontalAlignment="Left" Margin="0,5,0,0"/>
                                                     <ProgressBar Value="{Binding ProgressBarValue}" Margin="-12,5,0,0" Width="170" Background="#e1e1e1" Foreground="#adadad" Minimum="0" Maximum="100" Grid.Row="1"/>
                                                     <TextBlock Text="{Binding ProgressText}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Foreground="{StaticResource PhoneForegroundBrush}" FontSize="16" VerticalAlignment="Center" Grid.Row="2"/>
                                                 </Grid>
@@ -393,7 +393,7 @@
                                                         <RowDefinition Height="Auto"/>
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
-                                                    <Image Source="{Binding PauseResumeImage}" Opacity="{Binding PauseResumeImageOpacity}" Height="20" VerticalAlignment="Center" Stretch="Uniform" HorizontalAlignment="Left" Margin="0,5,0,0"/>
+                                                    <Image Source="{Binding PauseResumeImage}" Opacity="{Binding PauseResumeImageOpacity}" Height="25" VerticalAlignment="Center" Stretch="Uniform" HorizontalAlignment="Left" Margin="0,5,0,0"/>
                                                     <ProgressBar Value="{Binding ProgressBarValue}" Margin="-12,5,0,0" Width="170" Background="#e1e1e1" Foreground="#adadad" Minimum="0" Maximum="100" Grid.Row="1"/>
                                                     <TextBlock Text="{Binding ProgressText}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Foreground="{StaticResource PhoneForegroundBrush}" FontSize="16" VerticalAlignment="Center" Grid.Row="2"/>
                                                 </Grid>
@@ -630,7 +630,7 @@
                                                             <RowDefinition Height="Auto"/>
                                                             <RowDefinition Height="Auto"/>
                                                         </Grid.RowDefinitions>
-                                                        <Image Source="{Binding PauseResumeImage}" Opacity="{Binding PauseResumeImageOpacity}" Height="20" VerticalAlignment="Center" Stretch="Uniform" HorizontalAlignment="Right" Margin="0,5,0,0"/>
+                                                        <Image Source="{Binding PauseResumeImage}" Opacity="{Binding PauseResumeImageOpacity}" Height="25" VerticalAlignment="Center" Stretch="Uniform" HorizontalAlignment="Right" Margin="0,5,0,0"/>
                                                         <ProgressBar Value="{Binding ProgressBarValue}" Margin="0,5,-10,0" Width="170" Background="#e1e1e1" Foreground="#adadad" Minimum="0" Maximum="100" HorizontalAlignment="Right" Grid.Row="1"/>
                                                         <TextBlock Text="{Binding ProgressText}" Margin="0,5,0,0" Foreground="{StaticResource PhoneForegroundBrush}" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="2"/>
                                                     </Grid>
@@ -683,7 +683,7 @@
                                                             <RowDefinition Height="Auto"/>
                                                             <RowDefinition Height="Auto"/>
                                                         </Grid.RowDefinitions>
-                                                        <Image Source="{Binding PauseResumeImage}" Opacity="{Binding PauseResumeImageOpacity}" Height="20" VerticalAlignment="Center" Stretch="Uniform" HorizontalAlignment="Right" Margin="0,5,0,0"/>
+                                                        <Image Source="{Binding PauseResumeImage}" Opacity="{Binding PauseResumeImageOpacity}" Height="25" VerticalAlignment="Center" Stretch="Uniform" HorizontalAlignment="Right" Margin="0,5,0,0"/>
                                                         <ProgressBar Value="{Binding ProgressBarValue}" Margin="0,5,-10,0" Width="170" Background="#e1e1e1" Foreground="#adadad" Minimum="0" Maximum="100" HorizontalAlignment="Right" Grid.Row="1"/>
                                                         <TextBlock Text="{Binding ProgressText}" Margin="0,5,0,0" Foreground="{StaticResource PhoneForegroundBrush}" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="2"/>
                                                     </Grid>

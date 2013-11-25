@@ -674,7 +674,7 @@ namespace windows_client.Model
                 {
                     if (!IsSent && (_fileAttachment.FileState == Attachment.AttachmentState.FAILED || _fileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED || _fileAttachment.FileState == Attachment.AttachmentState.CANCELED))
                         return UI_Utils.Instance.DownloadIcon;
-                    else if (_fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
+                    else if (_fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED)
                         return UI_Utils.Instance.BlankBitmapImage;
                     else if (_fileAttachment.ContentType.Contains(HikeConstants.AUDIO) && IsPlaying)
                         return UI_Utils.Instance.PauseIcon;
