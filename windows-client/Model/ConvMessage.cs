@@ -515,7 +515,30 @@ namespace windows_client.Model
             get { return String.IsNullOrEmpty(DispMessage) ? Visibility.Collapsed : Visibility.Visible; }
         }
 
-        public bool ChangingState { get; set; }
+        bool _changingState;
+        public bool ChangingState
+        {
+            get
+            {
+                return _changingState;
+            }
+            set
+            {
+                if (value != _changingState)
+                {
+                    _changingState = value;
+                    NotifyPropertyChanged("PauseResumeImageOpacity");
+                }
+            }
+        }
+
+        public double PauseResumeImageOpacity
+        {
+            get
+            {
+                return ChangingState ? 0.4 : 1;
+            }
+        }
 
         public BitmapImage PauseResumeImage
         {
