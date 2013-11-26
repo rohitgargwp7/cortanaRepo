@@ -2363,7 +2363,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Total invites sent : {0}.
+        ///   Looks up a localized string similar to Invites sent.
         /// </summary>
         public static string InviteUsers_TotalInvitesSent_Txt {
             get {
@@ -4334,7 +4334,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap here to invite.
+        ///   Looks up a localized string similar to tap here to invite.
         /// </summary>
         public static string Tap_To_Invite_Txt {
             get {

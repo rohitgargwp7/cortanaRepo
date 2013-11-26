@@ -825,7 +825,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>cs</comment>
   </data>
   <data name="InviteUsers_TotalInvitesSent_Txt" xml:space="preserve">
-    <value>Total invites sent : {0}</value>
+    <value>Invites sent</value>
     <comment>cs</comment>
   </data>
   <data name="Invite_Txt" xml:space="preserve">
@@ -1153,8 +1153,8 @@ Download it now http://hike.in and join the fun!</value>
     <comment>Rewards Text</comment>
   </data>
   <data name="Tap_To_Invite_Txt" xml:space="preserve">
-    <value>Tap here to invite</value>
-    <comment>Tap to invite text</comment>
+    <value>tap here to invite</value>
+    <comment>tap to invite text</comment>
   </data>
   <data name="SelectUser_TapMsg_Grp_Txt" xml:space="preserve">
     <value>Tap here to add this person</value>
