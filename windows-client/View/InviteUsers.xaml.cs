@@ -29,6 +29,7 @@ namespace windows_client.View
         public List<Group<ContactInfo>> jumpList = null; // list that will contain the complete jump list
         private List<ContactInfo> allContactsList = null; // contacts list
         private Dictionary<string, byte> contactsList = new Dictionary<string, byte>(); // this will work as a hashset and will be used in invite
+        //used value as byte so that if two contacts have same msisdn then they must be treated as two different contacts
         ContactInfo defaultContact = new ContactInfo(); // this is used to store default phone number 
         private ApplicationBar appBar;
         private ApplicationBarIconButton doneIconButton = null;
@@ -225,7 +226,7 @@ namespace windows_client.View
                 if (cn.IsFav) // this will be true when checkbox is not checked initially and u clicked it
                 {
                     byte count;
-                    if (contactsList.TryGetValue(msisdn, out count) && isDefaultContact)
+                    if (contactsList.TryGetValue(msisdn, out count) && isDefaultContact)//to ignore unsaved contact saving state
                         return;
                     checkedContactCount++;
                     contactsList[msisdn] = ++count;
