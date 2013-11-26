@@ -22,20 +22,18 @@ namespace windows_client.View
     {
 
         private bool xyz;
-        private bool isClicked = false;
         private string charsEntered;
         private List<Group<ContactInfo>> defaultJumpList = null;
         List<Group<ContactInfo>> glistFiltered = null;
         Dictionary<string, List<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, List<Group<ContactInfo>>>();
         public List<Group<ContactInfo>> jumpList = null; // list that will contain the complete jump list
         private List<ContactInfo> allContactsList = null; // contacts list
-        private Dictionary<string, bool> contactsList = new Dictionary<string, bool>(); // this will work as a hashset and will be used in invite
-        private List<ContactInfo> hikeFavList = null;
+        private Dictionary<string, byte> contactsList = new Dictionary<string, byte>(); // this will work as a hashset and will be used in invite
+        //used value as byte so that if two contacts have same msisdn then they must be treated as two different contacts
         ContactInfo defaultContact = new ContactInfo(); // this is used to store default phone number 
-
         private ApplicationBar appBar;
         private ApplicationBarIconButton doneIconButton = null;
-
+        string defaultMsg = AppResources.Tap_To_Invite_Txt;
         public class Group<T> : List<T>
         {
             public Group(string name, List<T> items)
@@ -191,7 +189,7 @@ namespace windows_client.View
             if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
             {
                 if (count > 0)
-                    MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.InviteUsers_TotalInvitesSent_Txt, AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
             }
             else
             {
@@ -208,26 +206,48 @@ namespace windows_client.View
             contactsListBox.Focus();
         }
 
+        private int checkedContactCount = 0;
+
         public void CheckBox_Tap(ContactInfo cn)
         {
             //checked for null because after binding to listbox if select unselect then add in selected contacts
             if (contactsListBox.ItemsSource != null)
             {
                 string msisdn;
-                if (cn.Msisdn.Equals(cn.Name)) // represents this is for unadded number
+                bool isDefaultContact = false;
+                if (cn.Msisdn.Equals(defaultMsg)) // represents this is for unadded number
                 {
                     msisdn = Utils.NormalizeNumber(cn.Name);
                     cn = GetContactIfExists(cn);
+                    isDefaultContact = true;
                 }
                 else
                     msisdn = cn.Msisdn;
                 if (cn.IsFav) // this will be true when checkbox is not checked initially and u clicked it
                 {
-                    contactsList[msisdn] = true;
+                    byte count;
+                    if (contactsList.TryGetValue(msisdn, out count) && isDefaultContact)//to ignore unsaved contact saving state
+                        return;
+                    checkedContactCount++;
+                    contactsList[msisdn] = ++count;
+                    txtSelectedCounter.Text = string.Format("({0})", checkedContactCount);
+                    txtSelectedCounter.Visibility = Visibility.Visible;
                 }
                 else // this will be true when checkbox is checked initially and u clicked it to make it uncheck
                 {
-                    contactsList.Remove(msisdn);
+                    byte count;
+                    if (contactsList.TryGetValue(msisdn, out count))
+                    {
+                        checkedContactCount--;
+                        if (count > 1)
+                            contactsList[msisdn] = --count;
+                        else
+                            contactsList.Remove(msisdn);
+                        if (checkedContactCount > 0)
+                            txtSelectedCounter.Text = string.Format("({0})", checkedContactCount);
+                        else
+                            txtSelectedCounter.Visibility = Visibility.Collapsed;
+                    }
                 }
 
                 if (contactsList.Count > 0)
@@ -291,6 +311,15 @@ namespace windows_client.View
                 {
                     gl[26][0].Name = charsEntered;
                     string num = Utils.NormalizeNumber(charsEntered);
+                    if (charsEntered.Length >= 1 && charsEntered.Length <= 15)
+                    {
+                        gl[26][0].Msisdn = defaultMsg;
+                    }
+                    else
+                    {
+                        gl[26][0].Msisdn = AppResources.SelectUser_EnterValidNo_Txt;
+                    }
+
                     if (contactsList.ContainsKey(num))
                     {
                         gl[26][0].IsFav = true;
@@ -298,14 +327,6 @@ namespace windows_client.View
                     else
                     {
                         gl[26][0].IsFav = false;
-                    }
-                    if (charsEntered.Length >= 1 && charsEntered.Length <= 15)
-                    {
-                        gl[26][0].Msisdn = charsEntered;
-                    }
-                    else
-                    {
-                        gl[26][0].Msisdn = AppResources.SelectUser_EnterValidNo_Txt;
                     }
                 }
                 contactsListBox.ItemsSource = null;
@@ -404,7 +425,7 @@ namespace windows_client.View
                 list[26][0].Name = charsEntered;
                 if (Utils.IsNumberValid(charsEntered))
                 {
-                    list[26][0].Msisdn = charsEntered;
+                    list[26][0].Msisdn = defaultMsg;
                 }
                 else
                 {
@@ -419,35 +440,30 @@ namespace windows_client.View
             return glistFiltered;
         }
 
-        private void SelectAll_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void Sender_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            CheckBox chkbbox = sender as CheckBox;
-            bool checkedValue = (bool)chkbbox.IsChecked;
-            if (contactsListBox.ItemsSource == null)
+            StackPanel sp = sender as StackPanel;
+            if (sp.DataContext == null)
                 return;
-            List<Group<ContactInfo>> list = contactsListBox.ItemsSource as List<Group<ContactInfo>>;
 
-            if (checkedValue)
-            {
-                foreach (Group<ContactInfo> grp in list)
-                {
-                    foreach (ContactInfo cinfo in grp)
-                    {
-                        cinfo.IsFav = true;
-                    }
-                }
-            }
-            else
-            {
-                foreach (Group<ContactInfo> grp in list)
-                {
-                    foreach (ContactInfo cinfo in grp)
-                    {
-                        cinfo.IsFav = false;
-                    }
-                }
-            }
+            ContactInfo cinfo = sp.DataContext as ContactInfo;
+            cinfo.IsFav = !cinfo.IsFav;
+
         }
 
+        bool isSelectAllChecked = false;
+        private void gridSelectAll_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (allContactsList == null)
+                return;
+
+            isSelectAllChecked = !isSelectAllChecked;
+            SelectAll_Chkbx.IsChecked = isSelectAllChecked;
+
+            foreach (ContactInfo cinfo in allContactsList)
+            {
+                cinfo.IsFav = isSelectAllChecked;
+            }
+        }
     }
 }
