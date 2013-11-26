@@ -515,7 +515,30 @@ namespace windows_client.Model
             get { return String.IsNullOrEmpty(DispMessage) ? Visibility.Collapsed : Visibility.Visible; }
         }
 
-        public bool ChangingState { get; set; }
+        bool _changingState;
+        public bool ChangingState
+        {
+            get
+            {
+                return _changingState;
+            }
+            set
+            {
+                if (value != _changingState)
+                {
+                    _changingState = value;
+                    NotifyPropertyChanged("PauseResumeImageOpacity");
+                }
+            }
+        }
+
+        public double PauseResumeImageOpacity
+        {
+            get
+            {
+                return ChangingState ? 0.4 : 1;
+            }
+        }
 
         public BitmapImage PauseResumeImage
         {
@@ -651,7 +674,7 @@ namespace windows_client.Model
                 {
                     if (!IsSent && (_fileAttachment.FileState == Attachment.AttachmentState.FAILED || _fileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED || _fileAttachment.FileState == Attachment.AttachmentState.CANCELED))
                         return UI_Utils.Instance.DownloadIcon;
-                    else if (_fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
+                    else if (_fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED)
                         return UI_Utils.Instance.BlankBitmapImage;
                     else if (_fileAttachment.ContentType.Contains(HikeConstants.AUDIO) && IsPlaying)
                         return UI_Utils.Instance.PauseIcon;
