@@ -522,6 +522,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="View\images\icon_sms.png" />
+    <Content Include="View\images\pause_black_ftr.png" />
+    <Content Include="View\images\pause_white_ftr.png" />
     <Content Include="View\images\rupee.png" />
     <Content Include="View\images\icon_sticker.png" />
     <Content Include="View\images\recent_icon.png" />
@@ -684,9 +686,7 @@
     <Content Include="View\images\MyLocation.png" />
     <Content Include="View\images\notification_read.png" />
     <Content Include="View\images\notification_unread.png" />
-    <Content Include="View\images\pause_black_ftr.png" />
     <Content Include="View\images\pause_icon.png" />
-    <Content Include="View\images\pause_white_ftr.png" />
     <Content Include="View\images\places_icon.png" />
     <Content Include="View\images\profile_header_stock.png" />
     <Content Include="View\images\profile_header_stock_dark.png" />
