@@ -183,16 +183,19 @@ namespace windows_client.View
                 obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
             }
 
-            obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
-            App.MqttManagerInstance.mqttPublishToServer(obj);
+            
 
             if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
             {
+                App.MqttManagerInstance.mqttPublishToServer(obj);
                 if (count > 0)
                     MessageBox.Show(AppResources.InviteUsers_TotalInvitesSent_Txt, AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
             }
             else
             {
+                obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+                App.MqttManagerInstance.mqttPublishToServer(obj);
+
                 SmsComposeTask smsComposeTask = new SmsComposeTask();
                 smsComposeTask.To = msisdns;
                 smsComposeTask.Body = smsString;
