@@ -424,6 +424,9 @@ namespace windows_client.DbUtils
                                 JObject data = (fInfo as FileUploader).SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
                                 var fileKey = data[HikeConstants.FILE_KEY].ToString();
 
+                                //send the content type which is sent by server
+                                fInfo.ContentType = data[HikeConstants.FILE_CONTENT_TYPE].ToString();
+
                                 int fileSize = 0;
                                 JToken fs;
                                 if (data.TryGetValue(HikeConstants.FILE_SIZE, out fs))
@@ -450,6 +453,7 @@ namespace windows_client.DbUtils
                                         "/" + fileKey;
                                 }
 
+                                convMessage.FileAttachment.ContentType = fInfo.ContentType;
                                 convMessage.FileAttachment.FileSize = fileSize;
                                 convMessage.FileAttachment.FileKey = fileKey;
                                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;

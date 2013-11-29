@@ -406,7 +406,10 @@ namespace windows_client.FileTransfers
             foreach (var keyValue in param)
                 res += "Content-Disposition: form-data; name=\"" + keyValue.Key + "\"\r\n" + "\r\n" + keyValue.Value + "\r\n" + "--" + _boundary + "\r\n";
 
-            res += "Content-Disposition: form-data; name=\"file\"; filename=\"" + FileName + "\"\r\n" + "Content-Type: " + ContentType + "\r\n\r\n";
+            // keep ct empty since we are not sure about content type for images and video
+            var ct = ContentType.Contains(HikeConstants.IMAGE) || ContentType.Contains(HikeConstants.VIDEO) ? "" : ContentType;
+
+            res += "Content-Disposition: form-data; name=\"file\"; filename=\"" + FileName + "\"\r\n" + "Content-Type: " + ct + "\r\n\r\n";
 
             return res;
         }
