@@ -943,6 +943,20 @@ namespace windows_client
             #region HIKE BOT
             if (isNewInstall)
                 WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
+            else if (Utils.compareVersion(_currentVersion, "2.3.0.7") < 0)
+            {
+                if (_viewModel != null)
+                {
+                    foreach (ConversationListObject convlist in _viewModel.ConvMap.Values)
+                    {
+                        if (Utils.IsHikeBotMsg(convlist.Msisdn))
+                        {
+                            convlist.ContactName = Utils.GetHikeBotName(convlist.Msisdn);
+                            ConversationTableUtils.saveConvObject(convlist, convlist.Msisdn.Replace(":", "_"));
+                        }
+                    }
+                }
+            }
             #endregion
         }
 
