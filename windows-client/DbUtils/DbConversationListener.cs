@@ -450,6 +450,7 @@ namespace windows_client.DbUtils
                                         "/" + fileKey;
                                 }
 
+                                convMessage.FileAttachment.ContentType = fInfo.ContentType;
                                 convMessage.FileAttachment.FileSize = fileSize;
                                 convMessage.FileAttachment.FileKey = fileKey;
                                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
