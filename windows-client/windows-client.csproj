@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -521,6 +521,15 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\images\avatars.png" />
+    <Content Include="View\images\avatars_i.png" />
+    <Content Include="View\images\avatars_overlay.png" />
+    <Content Include="View\images\smileyExpressions.png" />
+    <Content Include="View\images\smileyExpressions_i.png" />
+    <Content Include="View\images\smileyExpressions_overlay.png" />
+    <Content Include="View\images\humanoid2_overlay.png" />
+    <Content Include="View\images\humanoid2_icon.png" />
+    <Content Include="View\images\humanoid2_icon_inactive.png" />
     <Content Include="View\images\icon_sms.png" />
     <Content Include="View\images\pause_black_ftr.png" />
     <Content Include="View\images\pause_white_ftr.png" />

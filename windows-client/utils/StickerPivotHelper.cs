@@ -61,28 +61,36 @@ namespace windows_client.utils
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_HUMANOID;
                     pivotIndex++;
                 }
-
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_DOGGY;
                     pivotIndex++;
                 }
-
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
-                    dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_KITTY;
+                    dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_HUMANOID2;
                     pivotIndex++;
                 }
-
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_EXPRESSIONS;
                     pivotIndex++;
+                } 
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
+                {
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
+                    dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_AVATARS;
+                    pivotIndex++;
                 }
-
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS)) != null)
+                {
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
+                    dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_SMILEY_EXPRESSIONS;
+                    pivotIndex++;
+                }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
@@ -93,6 +101,12 @@ namespace windows_client.utils
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_TROLL;
+                    pivotIndex++;
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
+                {
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
+                    dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_KITTY;
                 }
                 isInitialised = true;
             }

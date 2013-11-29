@@ -3698,6 +3698,15 @@ namespace windows_client.View
                         case StickerHelper.CATEGORY_TROLL:
                             Category5_Tap(null, null);
                             break;
+                        case StickerHelper.CATEGORY_HUMANOID2:
+                            Category6_Tap(null, null);
+                            break;
+                        case StickerHelper.CATEGORY_AVATARS:
+                            Category7_Tap(null, null);
+                            break;
+                        case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
+                            Category8_Tap(null, null);
+                            break;
                     }
                 }
                 else
@@ -5438,6 +5447,15 @@ namespace windows_client.View
                     case StickerHelper.CATEGORY_TROLL:
                         Category5_Tap(null, null);
                         break;
+                    case StickerHelper.CATEGORY_HUMANOID2:
+                        Category6_Tap(null, null);
+                        break;
+                    case StickerHelper.CATEGORY_AVATARS:
+                        Category7_Tap(null, null);
+                        break;
+                    case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
+                        Category8_Tap(null, null);
+                        break;
                 }
             }
         }
@@ -5458,8 +5476,12 @@ namespace windows_client.View
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory6.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory7.Background = UI_Utils.Instance.UntappedCategoryColor;
 
             imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
+            imgHumanoid2.Source = UI_Utils.Instance.Humanoid2Inactive;
+            imgAvatars.Source = UI_Utils.Instance.AvatarsInactive;
             imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
             imgKitty.Source = UI_Utils.Instance.KittyInactive;
             imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
@@ -5485,6 +5507,9 @@ namespace windows_client.View
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory6.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory7.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory8.Background = UI_Utils.Instance.UntappedCategoryColor;
 
             imghumanoid.Source = UI_Utils.Instance.HumanoidActive;
             imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
@@ -5492,6 +5517,9 @@ namespace windows_client.View
             imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
             imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
             imgTroll.Source = UI_Utils.Instance.TrollInactive;
+            imgHumanoid2.Source = UI_Utils.Instance.Humanoid2Inactive;
+            imgAvatars.Source = UI_Utils.Instance.AvatarsInactive;
+            imgSmileyExpressions.Source = UI_Utils.Instance.SmileyExpressionsInactive;
 
             CategoryTap(_selectedCategory);
         }
@@ -5513,6 +5541,9 @@ namespace windows_client.View
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory6.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory7.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory8.Background = UI_Utils.Instance.UntappedCategoryColor;
 
             imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
             imgDoggy.Source = UI_Utils.Instance.DoggyActive;
@@ -5520,6 +5551,9 @@ namespace windows_client.View
             imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
             imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
             imgTroll.Source = UI_Utils.Instance.TrollInactive;
+            imgHumanoid2.Source = UI_Utils.Instance.Humanoid2Inactive;
+            imgAvatars.Source = UI_Utils.Instance.AvatarsInactive;
+            imgSmileyExpressions.Source = UI_Utils.Instance.SmileyExpressionsInactive;
 
             CategoryTap(_selectedCategory);
         }
@@ -5537,6 +5571,9 @@ namespace windows_client.View
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory6.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory7.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory8.Background = UI_Utils.Instance.UntappedCategoryColor;
 
             imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
             imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
@@ -5544,6 +5581,9 @@ namespace windows_client.View
             imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
             imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
             imgTroll.Source = UI_Utils.Instance.TrollInactive;
+            imgHumanoid2.Source = UI_Utils.Instance.Humanoid2Inactive;
+            imgAvatars.Source = UI_Utils.Instance.AvatarsInactive;
+            imgSmileyExpressions.Source = UI_Utils.Instance.SmileyExpressionsInactive;
 
             CategoryTap(StickerHelper.CATEGORY_KITTY);
         }
@@ -5560,6 +5600,9 @@ namespace windows_client.View
             stCategory3.Background = UI_Utils.Instance.TappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory6.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory7.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory8.Background = UI_Utils.Instance.UntappedCategoryColor;
 
             imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
             imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
@@ -5567,6 +5610,9 @@ namespace windows_client.View
             imgExpressions.Source = UI_Utils.Instance.ExpressionsActive;
             imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
             imgTroll.Source = UI_Utils.Instance.TrollInactive;
+            imgHumanoid2.Source = UI_Utils.Instance.Humanoid2Inactive;
+            imgAvatars.Source = UI_Utils.Instance.AvatarsInactive;
+            imgSmileyExpressions.Source = UI_Utils.Instance.SmileyExpressionsInactive;
 
             CategoryTap(StickerHelper.CATEGORY_EXPRESSIONS);
         }
@@ -5584,6 +5630,9 @@ namespace windows_client.View
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.TappedCategoryColor;
+            stCategory6.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory7.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory8.Background = UI_Utils.Instance.UntappedCategoryColor;
 
             imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
             imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
@@ -5591,6 +5640,9 @@ namespace windows_client.View
             imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
             imgBolly.Source = UI_Utils.Instance.BollywoodActive;
             imgTroll.Source = UI_Utils.Instance.TrollInactive;
+            imgHumanoid2.Source = UI_Utils.Instance.Humanoid2Inactive;
+            imgAvatars.Source = UI_Utils.Instance.AvatarsInactive;
+            imgSmileyExpressions.Source = UI_Utils.Instance.SmileyExpressionsInactive;
 
             CategoryTap(StickerHelper.CATEGORY_BOLLYWOOD);
         }
@@ -5608,6 +5660,9 @@ namespace windows_client.View
             stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
             stCategory5.Background = UI_Utils.Instance.TappedCategoryColor;
+            stCategory6.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory7.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory8.Background = UI_Utils.Instance.UntappedCategoryColor;
 
             imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
             imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
@@ -5615,8 +5670,101 @@ namespace windows_client.View
             imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
             imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
             imgTroll.Source = UI_Utils.Instance.TrollActive;
+            imgHumanoid2.Source = UI_Utils.Instance.Humanoid2Inactive;
+            imgAvatars.Source = UI_Utils.Instance.AvatarsInactive;
+            imgSmileyExpressions.Source = UI_Utils.Instance.SmileyExpressionsInactive;
 
             CategoryTap(StickerHelper.CATEGORY_TROLL);
+        }
+
+        private void Category6_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (_selectedCategory == StickerHelper.CATEGORY_HUMANOID2)
+                return;
+            _selectedCategory = StickerHelper.CATEGORY_HUMANOID2;
+
+            stCategoryRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory6.Background = UI_Utils.Instance.TappedCategoryColor;
+            stCategory7.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory8.Background = UI_Utils.Instance.UntappedCategoryColor;
+
+            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
+            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
+            imgKitty.Source = UI_Utils.Instance.KittyInactive;
+            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
+            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
+            imgTroll.Source = UI_Utils.Instance.TrollInactive;
+            imgHumanoid2.Source = UI_Utils.Instance.Humanoid2Active;
+            imgAvatars.Source = UI_Utils.Instance.AvatarsInactive;
+            imgSmileyExpressions.Source = UI_Utils.Instance.SmileyExpressionsInactive;
+
+            CategoryTap(StickerHelper.CATEGORY_HUMANOID2);
+        }
+
+        private void Category7_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (_selectedCategory == StickerHelper.CATEGORY_AVATARS)
+                return;
+            _selectedCategory = StickerHelper.CATEGORY_AVATARS;
+
+            stCategoryRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory6.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory7.Background = UI_Utils.Instance.TappedCategoryColor;
+            stCategory8.Background = UI_Utils.Instance.UntappedCategoryColor;
+
+            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
+            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
+            imgKitty.Source = UI_Utils.Instance.KittyInactive;
+            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
+            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
+            imgTroll.Source = UI_Utils.Instance.TrollInactive;
+            imgHumanoid2.Source = UI_Utils.Instance.Humanoid2Inactive;
+            imgAvatars.Source = UI_Utils.Instance.AvatarsActive;
+            imgSmileyExpressions.Source = UI_Utils.Instance.SmileyExpressionsInactive;
+
+            CategoryTap(StickerHelper.CATEGORY_AVATARS);
+        }
+
+        private void Category8_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (_selectedCategory == StickerHelper.CATEGORY_SMILEY_EXPRESSIONS)
+                return;
+            _selectedCategory = StickerHelper.CATEGORY_SMILEY_EXPRESSIONS;
+
+            stCategoryRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory6.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory7.Background = UI_Utils.Instance.UntappedCategoryColor;
+            stCategory8.Background = UI_Utils.Instance.TappedCategoryColor;
+
+            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
+            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
+            imgKitty.Source = UI_Utils.Instance.KittyInactive;
+            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
+            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
+            imgTroll.Source = UI_Utils.Instance.TrollInactive;
+            imgHumanoid2.Source = UI_Utils.Instance.Humanoid2Inactive;
+            imgAvatars.Source = UI_Utils.Instance.AvatarsInactive;
+            imgSmileyExpressions.Source = UI_Utils.Instance.SmileyExpressionsActive;
+
+            CategoryTap(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS);
         }
 
         private void CategoryTap(string category)
@@ -5696,6 +5844,15 @@ namespace windows_client.View
                     case StickerHelper.CATEGORY_TROLL:
                         stCategory5.BorderThickness = zeroThickness;
                         break;
+                    case StickerHelper.CATEGORY_HUMANOID2:
+                        stCategory6.BorderThickness = zeroThickness;
+                        break;
+                    case StickerHelper.CATEGORY_AVATARS:
+                        stCategory7.BorderThickness = zeroThickness;
+                        break;
+                    case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
+                        stCategory8.BorderThickness = zeroThickness;
+                        break;
                 }
                 if (updateFile)
                 {
@@ -5728,6 +5885,15 @@ namespace windows_client.View
                         break;
                     case StickerHelper.CATEGORY_TROLL:
                         stCategory5.BorderThickness = newCategoryThickness;
+                        break;
+                    case StickerHelper.CATEGORY_HUMANOID2:
+                        stCategory6.BorderThickness = newCategoryThickness;
+                        break;
+                    case StickerHelper.CATEGORY_AVATARS:
+                        stCategory7.BorderThickness = newCategoryThickness;
+                        break;
+                    case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
+                        stCategory8.BorderThickness = newCategoryThickness;
                         break;
                 }
             }
@@ -5974,6 +6140,15 @@ namespace windows_client.View
                     case StickerHelper.CATEGORY_TROLL:
                         downloadDialogueImage.Source = UI_Utils.Instance.TrollOverlay;
                         break;
+                    case StickerHelper.CATEGORY_HUMANOID2:
+                        downloadDialogueImage.Source = UI_Utils.Instance.Humanoid2Overlay;
+                        break;
+                    case StickerHelper.CATEGORY_AVATARS:
+                        downloadDialogueImage.Source = UI_Utils.Instance.AvatarsOverlay;
+                        break;
+                    case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
+                        downloadDialogueImage.Source = UI_Utils.Instance.ExpressionsOverlay;
+                        break;
                 }
                 overlayRectangle.Tap += overlayRectangle_Tap_1;
                 overlayRectangle.Visibility = Visibility.Visible;
@@ -6062,7 +6237,28 @@ namespace windows_client.View
                     ShowNewStickerUi(stickerCategory);
             }
 
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null)
+            {
+                stCategory6.Visibility = Visibility.Visible;
+                if (stickerCategory.HasNewStickers || stickerCategory.HasMoreStickers)
+                    ShowNewStickerUi(stickerCategory);
+            }
+
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
+            {
+                stCategory7.Visibility = Visibility.Visible;
+                if (stickerCategory.HasNewStickers || stickerCategory.HasMoreStickers)
+                    ShowNewStickerUi(stickerCategory);
+            }
+
+            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS)) != null)
+            {
+                stCategory8.Visibility = Visibility.Visible;
+                if (stickerCategory.HasNewStickers || stickerCategory.HasMoreStickers)
+                    ShowNewStickerUi(stickerCategory);
+            }
         }
+
         private void CreateStickerPivot()
         {
             StickerPivotHelper.Instance.InitialiseStickerPivot();
