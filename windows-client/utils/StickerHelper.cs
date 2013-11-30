@@ -25,7 +25,7 @@ namespace windows_client.utils
         public const string CATEGORY_DOGGY = "doggy";
         public const string CATEGORY_KITTY = "kitty";
         public const string CATEGORY_EXPRESSIONS = "expressions";
-        public const string CATEGORY_SMILEY_EXPRESSIONS = "smileyExpressions";
+        public const string CATEGORY_SMILEY_EXPRESSIONS = "smileyexpressions";
         public const string CATEGORY_BOLLYWOOD = "bollywood";
         public const string CATEGORY_TROLL = "rageface";
         public const string CATEGORY_AVATARS = "avatars";

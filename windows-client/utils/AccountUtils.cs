@@ -21,7 +21,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static readonly bool IS_PRODUCTION = false;
+        private static readonly bool IS_PRODUCTION = true;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 

@@ -598,8 +598,8 @@ namespace windows_client.utils
                         pausedFTR = new BitmapImage(new Uri("/View/images/pause_white_ftr.png", UriKind.Relative));
                     else
                         pausedFTR = new BitmapImage(new Uri("/View/images/pause_black_ftr.png", UriKind.Relative));
-                } 
-                
+                }
+
                 return pausedFTR;
             }
         }
@@ -1219,7 +1219,7 @@ namespace windows_client.utils
                 return expressionsOverlay;
             }
         }
-        
+
         public BitmapImage SmileyExpressionsOverlay
         {
             get
@@ -1410,7 +1410,7 @@ namespace windows_client.utils
                 return trollActive;
             }
         }
-        
+
         public BitmapImage ExpressionsActive
         {
             get
@@ -1422,7 +1422,7 @@ namespace windows_client.utils
                 return expressionsActive;
             }
         }
-        
+
         public BitmapImage SmileyExpressionsActive
         {
             get
@@ -1504,7 +1504,8 @@ namespace windows_client.utils
             }
         }
 
-
+        public Thickness ZeroThickness = new Thickness(0, 0, 0, 0);
+        public Thickness NewCategoryThickness = new Thickness(0, 5, 0, 0);
         #endregion
 
         #region DEFAULT AVATARS
