@@ -1308,13 +1308,13 @@
     <value>без hike с помощью бесплатных SMS</value>
   </data>
   <data name="MessagingHikeFriendsFree_Txt" xml:space="preserve">
-    <value>Бесплатный и неограниченный чат с друзьями по hike. #hikeerror &amp;</value>
+    <value>Бесплатный и неограниченный чат с друзьями по hike.</value>
   </data>
   <data name="ReadyToHike_Txt" xml:space="preserve">
     <value>Готов(а) общаться по hike...</value>
   </data>
   <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
-    <value>Поделиться в Facebook и Твиттере #hikeerror &amp;</value>
+    <value>Поделиться в Facebook и Твиттере</value>
   </data>
   <data name="FB_Connect_Txt" xml:space="preserve">
     <value>Подключиться с Facebook</value>

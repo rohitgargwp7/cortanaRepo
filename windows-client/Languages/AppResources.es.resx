@@ -1307,13 +1307,13 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
     <value>estén en hike con SMS de hike gratuitos</value>
   </data>
   <data name="MessagingHikeFriendsFree_Txt" xml:space="preserve">
-    <value>Enviar mensajes a tus amigos de hike es gratuito y sin límites. #hikeerror &amp;</value>
+    <value>Enviar mensajes a tus amigos de hike es gratuito y sin límites.</value>
   </data>
   <data name="ReadyToHike_Txt" xml:space="preserve">
     <value>Prepárate para usar hike...</value>
   </data>
   <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
-    <value>Compartir en Facebook y Twitter #hikeerror &amp;</value>
+    <value>Compartir en Facebook y Twitter</value>
   </data>
   <data name="FB_Connect_Txt" xml:space="preserve">
     <value>Conectar con Facebook</value>
