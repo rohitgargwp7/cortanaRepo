@@ -83,6 +83,7 @@ namespace windows_client.utils
         private BitmapImage expressionsOverlay;
         private BitmapImage smileyExpressionsOverlay;
         private BitmapImage avatarsOverlay;
+        private BitmapImage recentIcon;
         private BitmapImage humanoidInactive;
         private BitmapImage humanoid2Inactive;
         private BitmapImage doggyInactive;
@@ -1232,6 +1233,17 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage RecentIcon
+        {
+            get
+            {
+                if (recentIcon == null)
+                {
+                    recentIcon = new BitmapImage(new Uri("/View/images/recent_icon.png", UriKind.Relative));
+                }
+                return recentIcon;
+            }
+        }
         public BitmapImage HumanoidInactive
         {
             get

@@ -3675,11 +3675,9 @@ namespace windows_client.View
                     if (category == StickerHelper.CATEGORY_RECENT)
                     {
                         if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
-                            CategoryRecent_Tap(null, null);
+                            StickerCategoryTapped(StickerHelper.CATEGORY_RECENT);
                         else
-                        {
                             StickerCategoryTapped(StickerHelper.CATEGORY_HUMANOID);
-                        }
                     }
                     else
                     {
@@ -3689,7 +3687,7 @@ namespace windows_client.View
                 else
                 {
                     if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
-                        CategoryRecent_Tap(null, null);
+                        StickerCategoryTapped(StickerHelper.CATEGORY_RECENT);
                     else
                         StickerCategoryTapped(StickerHelper.CATEGORY_HUMANOID);
                 }
@@ -5394,51 +5392,12 @@ namespace windows_client.View
 
         private void PivotStickers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (pivotStickers.SelectedIndex == 0)
+            if (listStickerCategories.Count > pivotStickers.SelectedIndex)
             {
-                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, StickerHelper.CATEGORY_RECENT);
-                CategoryRecent_Tap(null, null);
+                lbStickerCategories.SelectedIndex = pivotStickers.SelectedIndex;
+                lbStickerCategories.ScrollIntoView(listStickerCategories[pivotStickers.SelectedIndex]);
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, listStickerCategories[pivotStickers.SelectedIndex].Category);
             }
-            else
-            {
-                int selectedCategoryIndex = pivotStickers.SelectedIndex - 1;
-                if (listStickerCategories.Count > selectedCategoryIndex)
-                {
-                    lbStickerCategories.SelectedIndex = pivotStickers.SelectedIndex - 1;
-                    lbStickerCategories.ScrollIntoView(listStickerCategories[pivotStickers.SelectedIndex - 1]);
-                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, listStickerCategories[pivotStickers.SelectedIndex - 1].Category);
-                }
-            }
-        }
-
-        private void CategoryRecent_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (_selectedCategory == StickerHelper.CATEGORY_RECENT)
-                return;
-            _selectedCategory = StickerHelper.CATEGORY_RECENT;
-
-            StickerPivotItem stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[StickerHelper.CATEGORY_RECENT];
-            pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
-
-            stCategoryRecent.Background = UI_Utils.Instance.TappedCategoryColor;
-
-            foreach (StickerCategory stCategory in listStickerCategories)
-            {
-                stCategory.IsSelected = false;
-            }
-
-            foreach (KeyValuePair<string, StickerPivotItem> kvp in StickerPivotHelper.Instance.dictStickersPivot)
-            {
-                if (kvp.Key != _selectedCategory)
-                {
-                    kvp.Value.SetLlsSource(null);
-                }
-            }
-            stickerPivot.SetLlsSourceList(HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers);
-            if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count == 0)
-                stickerPivot.ShowNoStickers();
-            else
-                stickerPivot.ShowStickers();
         }
 
         private void StickerCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -5460,8 +5419,6 @@ namespace windows_client.View
         }
         private void StickerCategoryTapped(StickerCategory stickerCategory)
         {
-            stCategoryRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-
             if (_selectedCategory == stickerCategory.Category)
                 return;
             _selectedCategory = stickerCategory.Category;
@@ -5481,8 +5438,16 @@ namespace windows_client.View
                     kvp.Value.SetLlsSource(null);
                 }
             }
-
-            stickerPivot.SetLlsSource(stickerCategory.ListStickers);
+            if (_selectedCategory == StickerHelper.CATEGORY_RECENT)
+            {
+                stickerPivot.SetLlsSourceList(HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers);
+                if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count == 0)
+                    stickerPivot.ShowNoStickers();
+                else
+                    stickerPivot.ShowStickers();
+            }
+            else
+                stickerPivot.SetLlsSource(stickerCategory.ListStickers);
 
             if (stickerCategory.ShowDownloadMessage)
             {
@@ -5815,6 +5780,10 @@ namespace windows_client.View
             {
                 listStickerCategories = new List<StickerCategory>();
                 StickerCategory stickerCategory;
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_RECENT)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);

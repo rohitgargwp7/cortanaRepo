@@ -124,6 +124,8 @@ namespace windows_client.utils
             {
                 switch (_category)
                 {
+                    case StickerHelper.CATEGORY_RECENT:
+                        return UI_Utils.Instance.RecentIcon;
                     case StickerHelper.CATEGORY_HUMANOID:
                         return _isSelected ? UI_Utils.Instance.HumanoidActive : UI_Utils.Instance.HumanoidInactive;
                     case StickerHelper.CATEGORY_DOGGY:
