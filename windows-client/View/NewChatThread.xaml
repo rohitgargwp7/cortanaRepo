@@ -901,7 +901,7 @@
             </StackPanel>
 
             <Grid Margin="0,0,0,0" Visibility="Collapsed"  x:Name="emoticonPanel" MaxHeight="350" Background="#323232">
-                <Grid Name="gridEmoticons" Margin="12,12,12,0" Visibility="Collapsed">
+                <Grid Name="gridEmoticons" Margin="12,0,12,0" Visibility="Collapsed">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
@@ -1036,7 +1036,7 @@
                         </Button>
                     </Grid>
                 </Grid>
-                <Grid Name="gridStickers" Visibility="Collapsed"  Background="#313334" Margin="0 12 0 0">
+                <Grid Name="gridStickers" Visibility="Collapsed"  Background="#313334" Margin="0 0 0 0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
