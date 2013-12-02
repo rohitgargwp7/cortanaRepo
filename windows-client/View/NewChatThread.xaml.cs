@@ -632,7 +632,7 @@ namespace windows_client.View
                 bw.RunWorkerCompleted += (s, ee) =>
                 {
                     CreateStickerPivot();
-                    CreateStickerCategoriesPallete();
+                    CreateStickerCategories();
                 };
                 bw.RunWorkerAsync();
                 App.newChatThreadPage = this;
@@ -3672,53 +3672,36 @@ namespace windows_client.View
                 String category;
                 if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category))
                 {
-                    switch (category)
+                    if (category == StickerHelper.CATEGORY_RECENT)
                     {
-                        case StickerHelper.CATEGORY_RECENT:
-                            if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
-                                CategoryRecent_Tap(null, null);
-                            else
-                                Category0_Tap(null, null);
-                            break;
-                        case StickerHelper.CATEGORY_HUMANOID:
-                            Category0_Tap(null, null);
-                            break;
-                        case StickerHelper.CATEGORY_DOGGY:
-                            Category1_Tap(null, null);
-                            break;
-                        case StickerHelper.CATEGORY_KITTY:
-                            Category2_Tap(null, null);
-                            break;
-                        case StickerHelper.CATEGORY_EXPRESSIONS:
-                            Category3_Tap(null, null);
-                            break;
-                        case StickerHelper.CATEGORY_BOLLYWOOD:
-                            Category4_Tap(null, null);
-                            break;
-                        case StickerHelper.CATEGORY_TROLL:
-                            Category5_Tap(null, null);
-                            break;
+                        if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
+                            StickerCategoryTapped(StickerHelper.CATEGORY_RECENT);
+                        else
+                            StickerCategoryTapped(StickerHelper.CATEGORY_HUMANOID);
+                    }
+                    else
+                    {
+                        StickerCategoryTapped(category);
                     }
                 }
                 else
                 {
                     if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
-                        CategoryRecent_Tap(null, null);
+                        StickerCategoryTapped(StickerHelper.CATEGORY_RECENT);
                     else
-                        Category0_Tap(null, null);
+                        StickerCategoryTapped(StickerHelper.CATEGORY_HUMANOID);
                 }
-
                 isStickersLoaded = true;
             }
 
-            if (pivotStickers.SelectedIndex > 0)
-            {
-                string category;
-                if (StickerPivotHelper.Instance.dictPivotCategory.TryGetValue(pivotStickers.SelectedIndex, out category))
-                {
-                    CategoryTap(category);
-                }
-            }
+            //if (pivotStickers.SelectedIndex > 0)
+            //{
+            //    string category;
+            //    if (StickerPivotHelper.Instance.dictPivotCategory.TryGetValue(pivotStickers.SelectedIndex, out category))
+            //    {
+            //        StickerCategoryTapped(category);
+            //    }
+            //}
         }
 
         private void fileTransferButton_Click(object sender, EventArgs e)
@@ -5388,8 +5371,7 @@ namespace windows_client.View
 
         bool isStickersLoaded = false;
         private string _selectedCategory = string.Empty;
-        Thickness zeroThickness = new Thickness(0, 0, 0, 0);
-        Thickness newCategoryThickness = new Thickness(0, 5, 0, 0);
+
 
         /// <summary>
         /// 
@@ -5410,244 +5392,62 @@ namespace windows_client.View
 
         private void PivotStickers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string category;
-            if (StickerPivotHelper.Instance.dictPivotCategory.TryGetValue(pivotStickers.SelectedIndex, out category))
+            if (listStickerCategories.Count > pivotStickers.SelectedIndex)
             {
-                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, category);
-
-                switch (category)
-                {
-                    case StickerHelper.CATEGORY_RECENT:
-                        CategoryRecent_Tap(null, null);
-                        break;
-                    case StickerHelper.CATEGORY_HUMANOID:
-                        Category0_Tap(null, null);
-                        break;
-                    case StickerHelper.CATEGORY_DOGGY:
-                        Category1_Tap(null, null);
-                        break;
-                    case StickerHelper.CATEGORY_KITTY:
-                        Category2_Tap(null, null);
-                        break;
-                    case StickerHelper.CATEGORY_EXPRESSIONS:
-                        Category3_Tap(null, null);
-                        break;
-                    case StickerHelper.CATEGORY_BOLLYWOOD:
-                        Category4_Tap(null, null);
-                        break;
-                    case StickerHelper.CATEGORY_TROLL:
-                        Category5_Tap(null, null);
-                        break;
-                }
+                lbStickerCategories.SelectedIndex = pivotStickers.SelectedIndex;
+                lbStickerCategories.ScrollIntoView(listStickerCategories[pivotStickers.SelectedIndex]);
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, listStickerCategories[pivotStickers.SelectedIndex].Category);
             }
         }
 
-        private void CategoryRecent_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void StickerCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (_selectedCategory == StickerHelper.CATEGORY_RECENT)
+            ListBox lbStickerCategory = sender as ListBox;
+            if (lbStickerCategory.SelectedItem == null)
                 return;
-            _selectedCategory = StickerHelper.CATEGORY_RECENT;
 
-            StickerPivotItem stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[StickerHelper.CATEGORY_RECENT];
+            StickerCategory stickerCategory = lbStickerCategory.SelectedItem as StickerCategory;
+            lbStickerCategories.SelectedItem = null;
+            StickerCategoryTapped(stickerCategory);
+        }
+
+        private void StickerCategoryTapped(string selectedCategory)
+        {
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(selectedCategory);
+            if (stickerCategory != null)
+                StickerCategoryTapped(stickerCategory);
+        }
+        private void StickerCategoryTapped(StickerCategory stickerCategory)
+        {
+            if (_selectedCategory == stickerCategory.Category)
+                return;
+            _selectedCategory = stickerCategory.Category;
+
+            StickerPivotItem stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[stickerCategory.Category];
             pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
 
-            stCategoryRecent.Background = UI_Utils.Instance.TappedCategoryColor;
-            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            foreach (StickerCategory stCategory in listStickerCategories)
+            {
+                stCategory.IsSelected = stCategory.Category == _selectedCategory;
+            }
 
-            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
-            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
-            imgKitty.Source = UI_Utils.Instance.KittyInactive;
-            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
-            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
-            imgTroll.Source = UI_Utils.Instance.TrollInactive;
-
-            CategoryTap(_selectedCategory);
-        }
-
-        private void Category0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (_selectedCategory == StickerHelper.CATEGORY_HUMANOID)
-                return;
-            _selectedCategory = StickerHelper.CATEGORY_HUMANOID;
-
-            StickerPivotItem stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[StickerHelper.CATEGORY_HUMANOID];
-            pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
-
-            stCategoryRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory0.Background = UI_Utils.Instance.TappedCategoryColor;
-            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
-
-            imghumanoid.Source = UI_Utils.Instance.HumanoidActive;
-            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
-            imgKitty.Source = UI_Utils.Instance.KittyInactive;
-            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
-            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
-            imgTroll.Source = UI_Utils.Instance.TrollInactive;
-
-            CategoryTap(_selectedCategory);
-        }
-
-        private void Category1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (_selectedCategory == StickerHelper.CATEGORY_DOGGY)
-                return;
-            _selectedCategory = StickerHelper.CATEGORY_DOGGY;
-
-            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY);
-            StickerPivotItem stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[StickerHelper.CATEGORY_DOGGY];
-            pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
-
-            stCategoryRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory1.Background = UI_Utils.Instance.TappedCategoryColor;
-            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
-
-            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
-            imgDoggy.Source = UI_Utils.Instance.DoggyActive;
-            imgKitty.Source = UI_Utils.Instance.KittyInactive;
-            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
-            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
-            imgTroll.Source = UI_Utils.Instance.TrollInactive;
-
-            CategoryTap(_selectedCategory);
-        }
-
-        private void Category2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (_selectedCategory == StickerHelper.CATEGORY_KITTY)
-                return;
-            _selectedCategory = StickerHelper.CATEGORY_KITTY;
-
-            stCategoryRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory2.Background = UI_Utils.Instance.TappedCategoryColor;
-            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
-
-            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
-            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
-            imgKitty.Source = UI_Utils.Instance.KittyActive;
-            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
-            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
-            imgTroll.Source = UI_Utils.Instance.TrollInactive;
-
-            CategoryTap(StickerHelper.CATEGORY_KITTY);
-        }
-
-        private void Category3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (_selectedCategory == StickerHelper.CATEGORY_EXPRESSIONS)
-                return;
-            _selectedCategory = StickerHelper.CATEGORY_EXPRESSIONS;
-            stCategoryRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory3.Background = UI_Utils.Instance.TappedCategoryColor;
-            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
-
-            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
-            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
-            imgKitty.Source = UI_Utils.Instance.KittyInactive;
-            imgExpressions.Source = UI_Utils.Instance.ExpressionsActive;
-            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
-            imgTroll.Source = UI_Utils.Instance.TrollInactive;
-
-            CategoryTap(StickerHelper.CATEGORY_EXPRESSIONS);
-        }
-
-        private void Category4_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (_selectedCategory == StickerHelper.CATEGORY_BOLLYWOOD)
-                return;
-            _selectedCategory = StickerHelper.CATEGORY_BOLLYWOOD;
-
-            stCategoryRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory4.Background = UI_Utils.Instance.TappedCategoryColor;
-
-            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
-            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
-            imgKitty.Source = UI_Utils.Instance.KittyInactive;
-            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
-            imgBolly.Source = UI_Utils.Instance.BollywoodActive;
-            imgTroll.Source = UI_Utils.Instance.TrollInactive;
-
-            CategoryTap(StickerHelper.CATEGORY_BOLLYWOOD);
-        }
-
-        private void Category5_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (_selectedCategory == StickerHelper.CATEGORY_TROLL)
-                return;
-            _selectedCategory = StickerHelper.CATEGORY_TROLL;
-
-            stCategoryRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory5.Background = UI_Utils.Instance.TappedCategoryColor;
-
-            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
-            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
-            imgKitty.Source = UI_Utils.Instance.KittyInactive;
-            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
-            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
-            imgTroll.Source = UI_Utils.Instance.TrollActive;
-
-            CategoryTap(StickerHelper.CATEGORY_TROLL);
-        }
-
-        private void CategoryTap(string category)
-        {
-            StickerPivotItem stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[category];
-            pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
-
-            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
             foreach (KeyValuePair<string, StickerPivotItem> kvp in StickerPivotHelper.Instance.dictStickersPivot)
             {
-                if (kvp.Key != category)
+                if (kvp.Key != _selectedCategory)
                 {
                     kvp.Value.SetLlsSource(null);
                 }
             }
-            if (category == StickerHelper.CATEGORY_RECENT)
+            if (_selectedCategory == StickerHelper.CATEGORY_RECENT)
             {
                 stickerPivot.SetLlsSourceList(HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers);
                 if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count == 0)
                     stickerPivot.ShowNoStickers();
                 else
                     stickerPivot.ShowStickers();
-                return;
             }
             else
                 stickerPivot.SetLlsSource(stickerCategory.ListStickers);
-
-            if (!stickerCategory.HasNewStickers && !stickerCategory.HasMoreStickers)
-            {
-                HideNewStickerUI(stickerCategory, true);
-            }
 
             if (stickerCategory.ShowDownloadMessage)
             {
@@ -5672,66 +5472,7 @@ namespace windows_client.View
             }
         }
 
-        private void HideNewStickerUI(StickerCategory stickerCategory, bool updateFile)
-        {
-            if (stickerCategory != null)
-            {
-                switch (stickerCategory.Category)
-                {
-                    case StickerHelper.CATEGORY_HUMANOID:
-                        stCategory0.BorderThickness = zeroThickness;
-                        break;
-                    case StickerHelper.CATEGORY_DOGGY:
-                        stCategory1.BorderThickness = zeroThickness;
-                        break;
-                    case StickerHelper.CATEGORY_KITTY:
-                        stCategory2.BorderThickness = zeroThickness;
-                        break;
-                    case StickerHelper.CATEGORY_EXPRESSIONS:
-                        stCategory3.BorderThickness = zeroThickness;
-                        break;
-                    case StickerHelper.CATEGORY_BOLLYWOOD:
-                        stCategory4.BorderThickness = zeroThickness;
-                        break;
-                    case StickerHelper.CATEGORY_TROLL:
-                        stCategory5.BorderThickness = zeroThickness;
-                        break;
-                }
-                if (updateFile)
-                {
-                    //use bw
-                    StickerCategory.UpdateHasMoreMessages(_selectedCategory, stickerCategory.HasMoreStickers, false);
-                }
-            }
-        }
-
-        private void ShowNewStickerUi(StickerCategory stickerCategory)
-        {
-            if (stickerCategory != null)
-            {
-                switch (stickerCategory.Category)
-                {
-                    case StickerHelper.CATEGORY_HUMANOID:
-                        stCategory0.BorderThickness = newCategoryThickness;
-                        break;
-                    case StickerHelper.CATEGORY_DOGGY:
-                        stCategory1.BorderThickness = newCategoryThickness;
-                        break;
-                    case StickerHelper.CATEGORY_KITTY:
-                        stCategory2.BorderThickness = newCategoryThickness;
-                        break;
-                    case StickerHelper.CATEGORY_EXPRESSIONS:
-                        stCategory3.BorderThickness = newCategoryThickness;
-                        break;
-                    case StickerHelper.CATEGORY_BOLLYWOOD:
-                        stCategory4.BorderThickness = newCategoryThickness;
-                        break;
-                    case StickerHelper.CATEGORY_TROLL:
-                        stCategory5.BorderThickness = newCategoryThickness;
-                        break;
-                }
-            }
-        }
+        List<StickerCategory> listStickerCategories;
 
         public void PostRequestForBatchStickers(StickerCategory stickerCategory)
         {
@@ -5881,14 +5622,11 @@ namespace windows_client.View
                         if (!isDisabled)
                         {
                             stickerCategory.HasNewStickers = true;
-                            ShowNewStickerUi(stickerCategory);
                         }
                     }
                     else
                     {
                         stickerCategory.HasNewStickers = false;
-                        if (!hasMoreStickers)
-                            HideNewStickerUI(stickerCategory, false);
                     }
                     if (!isDisabled)
                         stickerCategory.WriteLowResToFile(listLowResStickersBytes, hasMoreStickers);
@@ -5974,6 +5712,15 @@ namespace windows_client.View
                     case StickerHelper.CATEGORY_TROLL:
                         downloadDialogueImage.Source = UI_Utils.Instance.TrollOverlay;
                         break;
+                    case StickerHelper.CATEGORY_HUMANOID2:
+                        downloadDialogueImage.Source = UI_Utils.Instance.Humanoid2Overlay;
+                        break;
+                    case StickerHelper.CATEGORY_AVATARS:
+                        downloadDialogueImage.Source = UI_Utils.Instance.AvatarsOverlay;
+                        break;
+                    case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
+                        downloadDialogueImage.Source = UI_Utils.Instance.ExpressionsOverlay;
+                        break;
                 }
                 overlayRectangle.Tap += overlayRectangle_Tap_1;
                 overlayRectangle.Visibility = Visibility.Visible;
@@ -6017,52 +5764,6 @@ namespace windows_client.View
             PostRequestForBatchStickers(stickerCategory);
         }
 
-        private void CreateStickerCategoriesPallete()
-        {
-            StickerCategory stickerCategory;
-            //done thos way to maintain order of insertion
-            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID)) != null)
-            {
-                if (stickerCategory.HasNewStickers || stickerCategory.HasMoreStickers)
-                    ShowNewStickerUi(stickerCategory);
-            }
-
-            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
-            {
-                stCategory1.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewStickers || stickerCategory.HasMoreStickers)
-                    ShowNewStickerUi(stickerCategory);
-            }
-
-            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
-            {
-                stCategory2.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewStickers || stickerCategory.HasMoreStickers)
-                    ShowNewStickerUi(stickerCategory);
-            }
-
-            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
-            {
-                stCategory3.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewStickers || stickerCategory.HasMoreStickers)
-                    ShowNewStickerUi(stickerCategory);
-            }
-
-            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
-            {
-                stCategory4.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewStickers || stickerCategory.HasMoreStickers)
-                    ShowNewStickerUi(stickerCategory);
-            }
-
-            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
-            {
-                stCategory5.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewStickers || stickerCategory.HasMoreStickers)
-                    ShowNewStickerUi(stickerCategory);
-            }
-
-        }
         private void CreateStickerPivot()
         {
             StickerPivotHelper.Instance.InitialiseStickerPivot();
@@ -6071,6 +5772,56 @@ namespace windows_client.View
             pivotStickers.MaxHeight = 240;
             pivotStickers.SetValue(Grid.RowProperty, 0);
             gridStickers.Children.Add(pivotStickers);
+        }
+
+        private void CreateStickerCategories()
+        {
+            if (listStickerCategories == null)
+            {
+                listStickerCategories = new List<StickerCategory>();
+                StickerCategory stickerCategory;
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_RECENT)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                lbStickerCategories.ItemsSource = listStickerCategories;
+            }
         }
         #endregion
 
@@ -6836,7 +6587,6 @@ namespace windows_client.View
                 resumeMediaPlayerAfterDone = false;
             }
         }
-
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector
