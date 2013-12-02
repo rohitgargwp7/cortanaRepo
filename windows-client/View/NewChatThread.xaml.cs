@@ -2602,6 +2602,10 @@ namespace windows_client.View
                         {
                             convMessage.FileAttachment = attachments[convMessage.MessageId];
                             attachments.Remove(convMessage.MessageId);
+
+                            // due to perception fix message status would have been changed to read. Need to change it back to unconfirmed.
+                            if (convMessage.IsSent && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                         }
 
                         if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.CANCELED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
