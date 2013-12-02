@@ -223,7 +223,7 @@ namespace windows_client.utils
 
             if (App.ViewModel.SelectedBackground == null)
             {
-                LastIndex = 3;
+                LastIndex = 10;
 
                 BackgroundOC.Clear();
                 var list = BackgroundList.Take(LastIndex);
@@ -280,7 +280,7 @@ namespace windows_client.utils
             for (int i = LastIndex; i < LastIndex + 3 && i < BackgroundList.Count; i++)
                 BackgroundOC.Add(BackgroundList[i]);
 
-            LastIndex += 3;
+            LastIndex += 10;
         }
 
         /// <summary>
