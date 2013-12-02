@@ -133,8 +133,9 @@ namespace windows_client.DbUtils
             App.appSettings[App.PRO_TIP_COUNT] = 2; // reset value of protip count for next new user
             #endregion
             #region DELETE CATEGORIES, RECENT STICKERS
-            StickerCategory.DeleteAllCategories();
+            StickerCategory.DeleteAllCategories();//deletes all categories + downloaded stickers
             RecentStickerHelper.DeleteRecents();
+            StickerHelper.CreateDefaultCategories();//after unlink if user doesn't quit app then default categories must be created
             #endregion
             #region RESET IN APP TIPS
             App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
