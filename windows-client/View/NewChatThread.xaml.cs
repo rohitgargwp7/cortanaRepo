@@ -5719,7 +5719,7 @@ namespace windows_client.View
                         downloadDialogueImage.Source = UI_Utils.Instance.AvatarsOverlay;
                         break;
                     case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
-                        downloadDialogueImage.Source = UI_Utils.Instance.ExpressionsOverlay;
+                        downloadDialogueImage.Source = UI_Utils.Instance.SmileyExpressionsOverlay;
                         break;
                 }
                 overlayRectangle.Tap += overlayRectangle_Tap_1;
