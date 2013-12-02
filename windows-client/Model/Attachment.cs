@@ -2,25 +2,29 @@
 using System.Runtime.Serialization;
 using windows_client.Misc;
 using System.IO;
+using System;
 
 namespace windows_client.Model
 {
     [DataContract]
     public class Attachment : IBinarySerializable
     {
+        private int _fileSize;
         private string _fileKey;
         private string _fileName;
         private string _contentType;
         private byte[] _thumbnail;
         private volatile AttachmentState _fileState;
 
-
         public enum AttachmentState
         {
-            FAILED_OR_NOT_STARTED = 0,  /* message sent to server */
+            FAILED = 0,  /* message sent to server */
             STARTED, /* message could not be sent, manually retry */
             COMPLETED, /* message received by server */
-            CANCELED
+            CANCELED,
+            PAUSED,
+            MANUAL_PAUSED,
+            NOT_STARTED
         }
 
         [DataMember]
@@ -35,6 +39,22 @@ namespace windows_client.Model
                 if (_fileKey != value)
                 {
                     _fileKey = value;
+                }
+            }
+        }
+
+        [DataMember]
+        public int FileSize
+        {
+            get
+            {
+                return _fileSize;
+            }
+            set
+            {
+                if (_fileSize != value)
+                {
+                    _fileSize = value;
                 }
             }
         }
@@ -104,20 +124,22 @@ namespace windows_client.Model
         }
 
         //newly received messages
-        public Attachment(string fileName, string fileKey, byte[] thumbnailBytes, string contentType, AttachmentState attachmentState)
+        public Attachment(string fileName, string fileKey, byte[] thumbnailBytes, string contentType, AttachmentState attachmentState, int fileSize)
         {
             this.FileName = fileName;
             this.FileKey = fileKey;
             this.Thumbnail = thumbnailBytes;
             this.ContentType = contentType;
             this.FileState = attachmentState;
+            this.FileSize = fileSize;
         }
 
-        public Attachment(string fileName, byte[] thumbnailBytes, AttachmentState attachmentState)
+        public Attachment(string fileName, byte[] thumbnailBytes, AttachmentState attachmentState, int fileSize)
         {
             this.FileName = fileName;
             this.Thumbnail = thumbnailBytes;
             this.FileState = attachmentState;
+            this.FileSize = fileSize;
         }
 
         public Attachment()
@@ -134,6 +156,7 @@ namespace windows_client.Model
             if(_thumbnail != null)
                 writer.Write(Thumbnail);
             writer.Write((int)FileState);
+            writer.Write(FileSize);
         }
 
         public void Read(BinaryReader reader)
@@ -147,6 +170,14 @@ namespace windows_client.Model
             else
                 _thumbnail = null;
             _fileState = (AttachmentState)reader.ReadInt32();
+            try
+            {
+                _fileSize = reader.ReadInt32();
+            }
+            catch
+            {
+                _fileSize = 0;
+            }
         }
     }
 }

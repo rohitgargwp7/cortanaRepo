@@ -86,7 +86,7 @@ namespace windows_client.utils
                 {
                     string FileName = PROTIPS_DIRECTORY + "\\" + CURRENT_PROTIP_IMAGE;
 
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (store.FileExists(FileName))
                             store.DeleteFile(FileName);
@@ -120,7 +120,7 @@ namespace windows_client.utils
                 {
                     string FileName = PROTIPS_DIRECTORY + "\\" + CURRENT_PROTIP_IMAGE;
 
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (!store.FileExists(FileName))
                             return null;
@@ -152,7 +152,7 @@ namespace windows_client.utils
                 try
                 {
                     string fileName = PROTIPS_DIRECTORY + "\\" + CurrentProTip._id;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (!store.DirectoryExists(PROTIPS_DIRECTORY))
                             store.CreateDirectory(PROTIPS_DIRECTORY);
@@ -186,7 +186,7 @@ namespace windows_client.utils
                 try
                 {
                     string fileName = PROTIPS_DIRECTORY + "\\" + id;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (!store.DirectoryExists(PROTIPS_DIRECTORY))
                             return;
@@ -230,6 +230,9 @@ namespace windows_client.utils
             {
                 try
                 {
+                    if (!store.DirectoryExists(PROTIPS_DIRECTORY))
+                        return;
+
                     var fileNames = store.GetFileNames(PROTIPS_DIRECTORY + "\\*");
 
                     if (CurrentProTip != null)

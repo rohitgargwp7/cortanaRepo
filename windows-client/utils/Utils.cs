@@ -17,6 +17,7 @@ namespace windows_client.utils
 {
     public class Utils
     {
+        private static long MIN_TIME_BETWEEN_NOTIFICATIONS = 5000; //in msecs
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
         public static void savedAccountCredentials(JObject obj)
@@ -29,7 +30,7 @@ namespace windows_client.utils
             appSettings[App.SMS_SETTING] = (int)obj[NetworkManager.SMS_CREDITS];
             appSettings[App.IS_PUSH_ENABLED] = (bool)true;
             appSettings[App.VIBRATE_PREF] = (bool)true;
-            appSettings[App.LAST_UPDATE_CHECK_TIME] = (long)-1;
+            appSettings[App.HIKEJINGLE_PREF] = (bool)true;
             appSettings[App.LAST_ANALYTICS_POST_TIME] = (long)TimeUtils.getCurrentTimeStamp();
             appSettings.Save();
         }
@@ -96,7 +97,10 @@ namespace windows_client.utils
             JObject requestAccountInfo = new JObject();
             try
             {
+                JObject upgradeJobj=new JObject();
+                upgradeJobj.Add(HikeConstants.UPGRADE,true);
                 requestAccountInfo.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
+                requestAccountInfo.Add(HikeConstants.DATA, upgradeJobj);
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, requestAccountInfo);
             }
             catch (Exception e)
@@ -161,23 +165,6 @@ namespace windows_client.utils
                 return 1;
             return -1;
 
-        }
-
-        public static bool isCriticalUpdatePending()
-        {
-            try
-            {
-                string lastCriticalVersion = "";
-                App.appSettings.TryGetValue<string>(App.LAST_CRITICAL_VERSION, out lastCriticalVersion);
-                if (String.IsNullOrEmpty(lastCriticalVersion))
-                    return false;
-                string currentVersion = Utils.getAppVersion();
-                return compareVersion(lastCriticalVersion, currentVersion) == 1;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
 
         public static void AdjustAspectRatio(int width, int height, bool isThumbnail, out int adjustedWidth, out int adjustedHeight)
@@ -402,6 +389,23 @@ namespace windows_client.utils
             return msisdn.Contains("hike");
         }
 
+        public static string GetHikeBotName(string msisdn)
+        {
+            if (string.IsNullOrEmpty(msisdn))
+                return string.Empty;
+            switch (msisdn)
+            {
+                case HikeConstants.FTUE_HIKEBOT_MSISDN:
+                    return "Emma from hike";
+                case HikeConstants.FTUE_TEAMHIKE_MSISDN:
+                    return "team hike";
+                case HikeConstants.FTUE_GAMING_MSISDN:
+                    return "Games on hike";
+                default:
+                    return string.Empty;
+            }
+        }
+
         public static bool IsWP8
         {
             get
@@ -538,6 +542,39 @@ namespace windows_client.utils
             JObject obj = new JObject();
             obj[HikeConstants.TYPE] = HikeConstants.REQUEST_SERVER_TIME;
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
+
+        public static string ConvertToStorageSizeString(long sizeInBytes)
+        {
+            string[] suffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+            int i = 0;
+            double dValue = (double)sizeInBytes;
+
+            while (Math.Round(dValue / 1024) >= 1)
+            {
+                dValue /= 1024;
+                i++;
+            }
+
+            return string.Format("{0,2:n1} {1}", dValue, suffixes[i]);
+        }
+
+        public static void RequestHikeBot()
+        {
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
+            JObject data = new JObject();
+            data.Add(HikeConstants.Extras.SEND_BOT, true);
+            obj.Add(HikeConstants.DATA, data);
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
+
+        public static bool ShowNotificationAlert()
+        {
+            long lastNotificationTime = 0;
+            appSettings.TryGetValue(HikeConstants.LAST_NOTIFICATION_TIME, out lastNotificationTime);
+
+            return lastNotificationTime == 0 || ((DateTime.Now.Ticks - lastNotificationTime) / TimeSpan.TicksPerMillisecond > MIN_TIME_BETWEEN_NOTIFICATIONS);
         }
     }
 }

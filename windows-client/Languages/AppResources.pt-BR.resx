@@ -161,10 +161,6 @@
     <value>SMS grátis</value>
     <comment>Profile (xaml)</comment>
   </data>
-  <data name="Conversations_HikeContacts_Btn" xml:space="preserve">
-    <value>Contatos do hike</value>
-    <comment>Fav (xaml)</comment>
-  </data>
   <data name="Conversations_NewChat_AppBar_Btn" xml:space="preserve">
     <value>nova conversa</value>
     <comment>AppBar Btn (cs)</comment>
@@ -202,11 +198,11 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Quer mesmo remover {0} de sua lista de amigos?</value>
+    <value>Você quer mesmo remover {0} da sua lista de amigos?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>remover de sua lista de amigos</value>
+    <value>remover da lista de amigos</value>
     <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
@@ -353,10 +349,6 @@
     <value>Ops, algo está errado!</value>
     <comment>General text used in different files</comment>
   </data>
-  <data name="Update_Txt" xml:space="preserve">
-    <value>Atualizar</value>
-    <comment>General text used in different files</comment>
-  </data>
   <data name="Walkthrough_FreeMsgToIndia_Txt" xml:space="preserve">
     <value>*Os SMS grátis só podem ser enviados para a Índia</value>
     <comment>Pivot 2 (xaml)</comment>
@@ -429,18 +421,6 @@
     <value>salvar</value>
     <comment>cs</comment>
   </data>
-  <data name="FreeSMS_EarnFreeSMS_TxtBlk1" xml:space="preserve">
-    <value>Ganhe </value>
-    <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
-  </data>
-  <data name="FreeSMS_EarnFreeSMS_TxtBlk2" xml:space="preserve">
-    <value>{0} SMS grátis extra(s)</value>
-    <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
-  </data>
-  <data name="FreeSMS_EarnFreeSMS_TxtBlk3" xml:space="preserve">
-    <value>por mês a cada amigo que entrar indicado por você.</value>
-    <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
-  </data>
   <data name="FreeSMS_fbConnStatus_TxtBlk" xml:space="preserve">
     <value>Facebook</value>
   </data>
@@ -474,8 +454,8 @@
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_InviteNow_Btn" xml:space="preserve">
-    <value>Convidar agora</value>
-    <comment>xaml</comment>
+    <value>convidar agora</value>
+    <comment>Maximum Chars(12)</comment>
   </data>
   <data name="FreeSMS_InviteSMS_TxtBlk" xml:space="preserve">
     <value>Convide por SMS</value>
@@ -630,7 +610,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_FreeMsg_Txt" xml:space="preserve">
-    <value>Mensagem do hike</value>
+    <value>mensagem do hike</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_Txt" xml:space="preserve">
@@ -690,7 +670,7 @@
     <comment>xaml</comment>
   </data>
   <data name="SelectUser_TxtBoxHint_Txt" xml:space="preserve">
-    <value> Procurar ou digitar nº telefone...</value>
+    <value> procurar ou digitar o número do telefone</value>
     <comment>textbox hint (xaml)</comment>
   </data>
   <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
@@ -769,21 +749,15 @@
     <value>Falha ao buscar contato. Tente mais tarde!</value>
     <comment>Contact Utils</comment>
   </data>
-  <data name="CRITICAL_UPDATE_HEADING" xml:space="preserve">
-    <value>Atualiz. importante</value>
-  </data>
-  <data name="CRITICAL_UPDATE_TEXT" xml:space="preserve">
-    <value>É preciso atualizar para continuar a usar o hike.</value>
-  </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Olá,
+    <value>Olá, 
 
-Eu tenho o novo e incrível app para mensagens hike: ele é mais simples, mais rápido e ainda mais bonito!
+Eu acabei de obter o novo e incrível hike messenger, que é mais rápido, mais simples e mais bonito!
+Veja os novos e engraçados adesivos: você nunca mais vai enviar outra mensagem sem graça!
 
-Com os adesivos novos e divertidos do hike, você nunca mais enviará outra mensagem sem graça!
-Com o hike você pode escolher a Privacidade com Visto pela última vez, para manter os amigos próximos ainda mais próximos
+Com o hike você pode escolher a Privacidade com os Vistos pela Última vez, para manter os amigos próximos mais próximos.
 
-Baixe-o agora http://hike.in e vamos conversar grátis!</value>
+Baixe-o agora http://hike.in e venha para a diversão!</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -851,7 +825,7 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <comment>cs</comment>
   </data>
   <data name="InviteUsers_TotalInvitesSent_Txt" xml:space="preserve">
-    <value>Total de convites enviados : {0}</value>
+    <value>Convites enviados</value>
     <comment>cs</comment>
   </data>
   <data name="Invite_Txt" xml:space="preserve">
@@ -859,18 +833,12 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <comment>General Text</comment>
   </data>
   <data name="Messaging_Txt" xml:space="preserve">
-    <value>Mensagens</value>
+    <value>enviar mensagens</value>
     <comment>General Text</comment>
   </data>
   <data name="NamingConvention_Txt" xml:space="preserve">
     <value>{0} e {1} outros</value>
     <comment>Used at many places like GroupManager</comment>
-  </data>
-  <data name="NORMAL_UPDATE_HEADING" xml:space="preserve">
-    <value>Atualiz. disponível</value>
-  </data>
-  <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
-    <value>Atualize para a nova versão do hike para descobrir novas formas incríveis de enviar mensagens</value>
   </data>
   <data name="Owner_Txt" xml:space="preserve">
     <value>dono</value>
@@ -983,15 +951,15 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <value>Seu perfil foi atualizado.</value>
   </data>
   <data name="Help_AppVersionTitle" xml:space="preserve">
-    <value>Versão</value>
+    <value>versão</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_ContactUsText" xml:space="preserve">
-    <value>Entre em contato com a equipe de suporte para obter ajuda</value>
+    <value>entre em contato com a equipe de suporte para obter ajuda</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_ContactUsTitle" xml:space="preserve">
-    <value>Entre em contato conosco</value>
+    <value>entre em contato</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_EmailCarrier" xml:space="preserve">
@@ -1023,15 +991,15 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_FAQsTxt" xml:space="preserve">
-    <value>Perguntas frequentes</value>
+    <value>perguntas mais frequentes</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_LegalText" xml:space="preserve">
-    <value>Ler os Termos de serviço e a política de privacidade</value>
+    <value>leia os termos de serviço e a política de privacidade</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_LegalTitle" xml:space="preserve">
-    <value>Legal</value>
+    <value>informações legais</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_WalkthroughText" xml:space="preserve">
@@ -1043,11 +1011,11 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_RateAppText" xml:space="preserve">
-    <value>Avaliar e comentar o hike no marketplace</value>
+    <value>avalie e comente o hike no Marketplace</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_RateAppTitle" xml:space="preserve">
-    <value>Avaliar o App</value>
+    <value>avaliar o aplicativo</value>
     <comment>xaml</comment>
   </data>
   <data name="Off" xml:space="preserve">
@@ -1058,12 +1026,12 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <value>Ligado</value>
     <comment>used on settings page</comment>
   </data>
-  <data name="Privacy_DeleteAccounConfirmMsgBxText" xml:space="preserve">
-    <value>Quer mesmo excluir definitivamente sua conta hike?</value>
+  <data name="Privacy_DeleteAccounWarningMsgBxText" xml:space="preserve">
+    <value>Ao excluir sua conta todos os seus dados, SMS grátis e recompensas do hike também serão excluídos.</value>
     <comment>cs. Message box while deleting account</comment>
   </data>
-  <data name="Privacy_DeleteAccountHeader" xml:space="preserve">
-    <value>Excluir conta</value>
+  <data name="Privacy_DeleteAccountWarningHeader" xml:space="preserve">
+    <value>Você tem certeza?</value>
     <comment>xaml + cs (mesg box caption)</comment>
   </data>
   <data name="Privacy_DeleteAccountProgress" xml:space="preserve">
@@ -1071,31 +1039,31 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <comment>cs. delete account progress</comment>
   </data>
   <data name="Privacy_DeleteAccountText" xml:space="preserve">
-    <value>Excluir definitivamente a conta do hike</value>
+    <value>excluir definitivamente a conta do hike</value>
     <comment>xaml</comment>
   </data>
-  <data name="Privacy_UnlinkAccountHeader" xml:space="preserve">
-    <value>Desvincular conta</value>
+  <data name="Privacy_LogoutAccountHeader" xml:space="preserve">
+    <value>Desconectar a conta</value>
     <comment>xaml + cs (mesg box caption)</comment>
   </data>
-  <data name="Privacy_UnlinkAccountProgress" xml:space="preserve">
-    <value>Desvinculando conta...</value>
+  <data name="Privacy_LogoutAccountProgress" xml:space="preserve">
+    <value>Desconectando a conta...</value>
     <comment>cs. unlink account progress</comment>
   </data>
-  <data name="Privacy_UnlinkAccountText" xml:space="preserve">
-    <value>Sair da sua conta neste dispositivo</value>
+  <data name="Privacy_LogoutAccountText" xml:space="preserve">
+    <value>desconectar a conta deste dispositivo</value>
     <comment>xaml</comment>
   </data>
-  <data name="Privacy_UnlinkConfirmMsgBxText" xml:space="preserve">
-    <value>Tem certeza de que quer desvincular a conta do hike deste dispositivo?</value>
+  <data name="Privacy_LogoutConfirmMsgBxText" xml:space="preserve">
+    <value>Tem certeza de que deseja desconectar a conta do hike deste dispositivo?</value>
     <comment>cs. Message box while unlinking account</comment>
   </data>
-  <data name="Privacy_UnlinkErrMsgBxCaptn" xml:space="preserve">
-    <value>Conta não desvinculada</value>
+  <data name="Privacy_LogoutErrMsgBxCaptn" xml:space="preserve">
+    <value>Conta não desconectada</value>
     <comment>cs. Message box Caption error while unlinking</comment>
   </data>
-  <data name="Privacy_UnlinkErrMsgBxText" xml:space="preserve">
-    <value>O hike não conseguiu desvincular sua conta. Tente novamente.</value>
+  <data name="Privacy_LogoutErrMsgBxText" xml:space="preserve">
+    <value>O hike não pôde desconectar a conta. Tente novamente.</value>
     <comment>cs. Message box error while unlinking</comment>
   </data>
   <data name="Settings_FreeSMSToggleSwitchHeader" xml:space="preserve">
@@ -1142,7 +1110,7 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <comment>General Text</comment>
   </data>
   <data name="FileTransfer_ErrorMsgBoxText" xml:space="preserve">
-    <value>Não foi possível baixar o arquivo. </value>
+    <value>Não foi possível baixar o arquivo.</value>
     <comment>cs. Text in message box followed by exception message</comment>
   </data>
   <data name="SelectUser_HideSmsContacts_Txt" xml:space="preserve">
@@ -1152,10 +1120,6 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
   <data name="SelectUser_ShowSmsContacts_Txt" xml:space="preserve">
     <value>mostrar contatos do sms</value>
     <comment>Text used in app menu bar</comment>
-  </data>
-  <data name="Favorites_TapToAdd" xml:space="preserve">
-    <value>Adicionar contatos ao seu círculo de amigos.</value>
-    <comment>xaml (below heart image)</comment>
   </data>
   <data name="Invited" xml:space="preserve">
     <value>Convidado</value>
@@ -1189,8 +1153,8 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <comment>Rewards Text</comment>
   </data>
   <data name="Tap_To_Invite_Txt" xml:space="preserve">
-    <value>Toque aqui para convidar</value>
-    <comment>Tap to invite text</comment>
+    <value>toque aqui para convidar</value>
+    <comment>tap to invite text</comment>
   </data>
   <data name="SelectUser_TapMsg_Grp_Txt" xml:space="preserve">
     <value>Toque aqui para adicionar</value>
@@ -1305,10 +1269,10 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <value>Você</value>
   </data>
   <data name="Help_System_Health_Text" xml:space="preserve">
-    <value>Verificar status do hike no Twitter</value>
+    <value>verificar o status do hike no Twitter</value>
   </data>
   <data name="Help_System_Health_Title" xml:space="preserve">
-    <value>Integrid. sistema</value>
+    <value>integridade do sistema</value>
   </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
     <value>Informações de contato</value>
@@ -1332,7 +1296,7 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <value>Convide {0} para continuar em contato.</value>
   </data>
   <data name="SelectUser_GroupMsg_Txt" xml:space="preserve">
-    <value>Mensagem em grupo</value>
+    <value>mensagem de grupo</value>
   </data>
   <data name="HappyMessaging_Txt" xml:space="preserve">
     <value>Boa mensagem!</value>
@@ -1364,11 +1328,11 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Delete_Txt_Caps" xml:space="preserve">
-    <value>Excluir</value>
+    <value>excluir</value>
     <comment>Privacy page (xaml)</comment>
   </data>
-  <data name="Unlink_Txt" xml:space="preserve">
-    <value>Desvinc.</value>
+  <data name="Logout_Txt" xml:space="preserve">
+    <value>desconectar</value>
     <comment>Privacy page (xaml)</comment>
   </data>
   <data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
@@ -1378,7 +1342,7 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <value>Pergunte-me depois</value>
   </data>
   <data name="Love_Using_Hike_Txt" xml:space="preserve">
-    <value>Gostou de usar o hike?</value>
+    <value>Gosta do hike?</value>
   </data>
   <data name="Rate_Now_Txt" xml:space="preserve">
     <value>Avalie agora</value>
@@ -1396,7 +1360,7 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <value>Você deseja parar de buscar os contatos?</value>
   </data>
   <data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
-    <value>Mensagem de {0} no hike</value>
+    <value>Mensagem {0} no hike</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
@@ -1428,7 +1392,7 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <value>AMIGOS</value>
   </data>
   <data name="Conversations_Contacts_on_hike" xml:space="preserve">
-    <value>CONTATOS NO HIKE</value>
+    <value>PESSOAS NO HIKE</value>
   </data>
   <data name="Profile_BlockedUser_Blk1" xml:space="preserve">
     <value>Você bloqueou</value>
@@ -1455,7 +1419,7 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <comment>{0} replaced by user name</comment>
   </data>
   <data name="Conversations_EmptyStatus_TeamHike_Txt" xml:space="preserve">
-    <value>Equipe do hike</value>
+    <value>Equipe hike</value>
   </data>
   <data name="Update_Profile_Pic_txt" xml:space="preserve">
     <value>Imagem do perfil atualizada</value>
@@ -1590,23 +1554,20 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
   <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
     <value>adicionar contato</value>
   </data>
-  <data name="SettingsSubtitle_Account_Txt" xml:space="preserve">
-    <value>Conta</value>
-  </data>
   <data name="SettingsSubtitle_Blocklist_Txt" xml:space="preserve">
-    <value>Bloqueios</value>
+    <value>lista de bloqueios</value>
   </data>
   <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
-    <value>Notificações</value>
+    <value>notificações</value>
   </data>
   <data name="Settings_AccountSettings_Txt" xml:space="preserve">
-    <value>Gerencie sua conta hike</value>
+    <value>gerenciar a conta do hike</value>
   </data>
   <data name="Settings_BlocklistSettings_Txt" xml:space="preserve">
-    <value>A lista de quem você bloqueou</value>
+    <value>uma lista de pessoas que você bloqueou</value>
   </data>
   <data name="Settings_NotificationSettings_Txt" xml:space="preserve">
-    <value>Preferências de notificações</value>
+    <value>preferências de notificações</value>
   </data>
   <data name="Blocklist_user_txt" xml:space="preserve">
     <value>usuário</value>
@@ -1661,7 +1622,7 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <value>Mostrar Visto pela última vez</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
-    <value>visto pela última vez {0}</value>
+    <value>Visto pela última vez às {0}</value>
   </data>
   <data name="Online" xml:space="preserve">
     <value>online</value>
@@ -1669,14 +1630,11 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
   <data name="Preferences_Header_Txt" xml:space="preserve">
     <value>preferências</value>
   </data>
-  <data name="SettingsSubtitle_Preferences_Txt" xml:space="preserve">
-    <value>Preferências</value>
-  </data>
   <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
-    <value>Suas preferências de conta</value>
+    <value>preferências da conta</value>
   </data>
   <data name="Drag_Here_To_Delete" xml:space="preserve">
-    <value>Arraste para excluir</value>
+    <value>Arraste aqui para excluir</value>
     <comment>Drag to a specified area to delete ongoing recording</comment>
   </data>
   <data name="Message_Cancelled" xml:space="preserve">
@@ -1688,7 +1646,7 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <comment>Message is too short to be sent</comment>
   </data>
   <data name="In_App_Tip_1" xml:space="preserve">
-    <value>Toque aqui para compartilhar adesivos e emoticons :)</value>
+    <value>Toque aqui para compartilhar nossos emoticons incríveis :)</value>
   </data>
   <data name="In_App_Tip_2" xml:space="preserve">
     <value>Novos adesivos!</value>
@@ -1697,7 +1655,7 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <value>Toque aqui para usar o novo Walkie Talkie do hike!</value>
   </data>
   <data name="In_App_Tip_4" xml:space="preserve">
-    <value>Toque aqui para anexar um humor incrível :)</value>
+    <value>Toque aqui para anexar um excelente humor :)</value>
   </data>
   <data name="In_App_Tip_5" xml:space="preserve">
     <value>Essa é uma atualização de status publicada por {0}</value>
@@ -1744,7 +1702,7 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
-    <value>seus amigos</value>
+    <value>seus amigos.</value>
     <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
@@ -1845,7 +1803,7 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
     <value>Usar serviço de localização</value>
   </data>
   <data name="ShareLocation_LocationSettingsNotEnabled_Txt" xml:space="preserve">
-    <value>O ajuste de localização do hike está desativado. Quer ativá-lo?</value>
+    <value>A configuração de localização do hike está desativada. Deseja ativá-la?</value>
   </data>
   <data name="ViewMessage_Title_txt" xml:space="preserve">
     <value>mensagem</value>
@@ -1874,6 +1832,9 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
   </data>
   <data name="ViewFullMessage_Txt" xml:space="preserve">
     <value>Ver mensagem completa</value>
+  </data>
+  <data name="In_App_Tip_7" xml:space="preserve">
+    <value>Agora você pode enviar mensagens para contatos do hike que estejam off-line! Pressione longamente a mensagem para enviá-la como um SMS do hike</value>
   </data>
   <data name="File_Not_Exist_Caption" xml:space="preserve">
     <value>Arquivo expirado</value>
@@ -1905,36 +1866,33 @@ Baixe-o agora http://hike.in e vamos conversar grátis!</value>
   <data name="Camera_Label" xml:space="preserve">
     <value>Câmera:</value>
   </data>
-  <data name="In_App_Tip_7" xml:space="preserve">
-    <value>Agora você pode enviar mensagens para contatos off-line do hike!
-Mantenha pressionada a mensagem para enviar como sms do hike</value>
-  </data>
   <data name="Reolution_Label" xml:space="preserve">
     <value>Resolução:</value>
   </data>
   <data name="Video_Settings" xml:space="preserve">
     <value>configurações de vídeo</value>
   </data>
-  <data name="Mood_Sick" xml:space="preserve">
-    <value>Doente</value>
-  </data>
-  <data name="StickersTut_TxtBlk0" xml:space="preserve">
-    <value>Os adesivos chegaram!</value>
-  </data>
   <data name="Video_High_Quality_Txt" xml:space="preserve">
-    <value>Qualidade alta (720p)</value>
+    <value>Alta qualidade (720p)</value>
+    <comment>(720p) is constant, Max limit 40</comment>
   </data>
   <data name="Video_Low_Quality_Txt" xml:space="preserve">
-    <value>Qualidade baixa (QVGA)</value>
+    <value>Baixa qualidade (QVGA)</value>
+    <comment>(QVGA) is constant, Max limit 40</comment>
   </data>
   <data name="Video_Standard_Quality_Txt" xml:space="preserve">
-    <value>Qualidade padrão (VGA)</value>
+    <value>Qualidade padrão (VGA) (padrão)</value>
+    <comment>(VGA) is constant, Max limit 40</comment>
   </data>
   <data name="Video_Very_High_Quality_Txt" xml:space="preserve">
     <value>Qualidade muito alta (1080p)</value>
+    <comment>(1080p) is constant, Max limit 40</comment>
   </data>
   <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
     <value>Bem-vindo ao hike</value>
+  </data>
+  <data name="StickersTut_TxtBlk0" xml:space="preserve">
+    <value>Os adesivos chegaram!</value>
   </data>
   <data name="Delete_Account_Failed" xml:space="preserve">
     <value>O hike não pôde excluir sua conta. Tente novamente.</value>
@@ -1942,19 +1900,115 @@ Mantenha pressionada a mensagem para enviar como sms do hike</value>
   <data name="Delete_Account_Heading" xml:space="preserve">
     <value>Conta não excluída</value>
   </data>
+  <data name="Mood_Sick" xml:space="preserve">
+    <value>Doente</value>
+  </data>
   <data name="Settings_LockScreenNotifications" xml:space="preserve">
     <value>definir notificações de bloqueio de tela</value>
   </data>
   <data name="Camera_Back" xml:space="preserve">
     <value>Voltar</value>
+    <comment>Back Camera</comment>
   </data>
   <data name="Camera_Front" xml:space="preserve">
     <value>Frente</value>
+    <comment>Front Camera</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
-    <value>Ganhe SMS grátis para cada amigo que se junta hike por causa de você</value>
+    <value>Ganhe SMS grátis para cada amigo que entrar no hike por sua causa.</value>
+  </data>
+  <data name="FT_MaxFiles_Txt" xml:space="preserve">
+    <value>Há mais de 50 transferências pendentes. Tente de novo mais tarde.</value>
   </data>
   <data name="sms_invite_message" xml:space="preserve">
-    <value>Eu tenho o novo app de mensagens hike! Ele é mais simples e mais rápido, com novos adesivos divertidos! Baixe-o agora e vamos conversar grátis http://hike.in</value>
+    <value>Eu acabei de obter o novo hike messenger! Ele é mais simples, mais rápido e tem novos adesivos divertidos! Baixe-o agora e vamos conversar de graça! http://hike.in</value>
+  </data>
+  <data name="Auto_Download_Settings_Header" xml:space="preserve">
+    <value>Download automático de mídia</value>
+  </data>
+  <data name="Auto_Upload_Settings_Header" xml:space="preserve">
+    <value>Retomada automática de mídia</value>
+  </data>
+  <data name="FileTransfer_InProgress" xml:space="preserve">
+    <value>Confirmar</value>
+  </data>
+  <data name="FileTransfer_InProgress_Msg" xml:space="preserve">
+    <value>Ao sair do aplicativo, as transferências de arquivo em andamento serão pausadas. Deseja continuar?</value>
+  </data>
+  <data name="RecentSticker_Default_Txt" xml:space="preserve">
+    <value>Os adesivos que você compartilhou recentemente são mostrados aqui.</value>
+  </data>
+  <data name="RecentEmoticons_DefaultText" xml:space="preserve">
+    <value>Os emoticons que você usou recentemente são mostrados aqui.</value>
+  </data>
+  <data name="Settings_EnterToSendToggleSwitchHeader" xml:space="preserve">
+    <value>Apertar enter envia uma mensagem</value>
+  </data>
+  <data name="Email_Header_Txt" xml:space="preserve">
+    <value>e-mail</value>
+  </data>
+  <data name="Free_SMS_Txt" xml:space="preserve">
+    <value>SMS GRÁTIS</value>
+  </data>
+  <data name="Invite_Header_Txt" xml:space="preserve">
+    <value>Convidar</value>
+  </data>
+  <data name="In_App_Tip_8_1" xml:space="preserve">
+    <value>Agora você pode enviar uma mensagem usando a tecla Enter. Isso pode ser alterado a qualquer momento nas configurações do aplicativo.</value>
+  </data>
+  <data name="FileTransfer_LimitReached" xml:space="preserve">
+    <value>Limite de arquivos ultrapassado</value>
+  </data>
+  <data name="Privacy_DeleteAccounConfirmMsgBxText" xml:space="preserve">
+    <value>Você quer mesmo excluir sua conta? Essa ação é irreversível.</value>
+  </data>
+  <data name="Privacy_DeleteAccountHeader" xml:space="preserve">
+    <value>Confirme</value>
+  </data>
+  <data name="Continue_txt" xml:space="preserve">
+    <value>continuar</value>
+  </data>
+  <data name="In_App_Tip_8_2" xml:space="preserve">
+    <value>Agora você pode enviar uma mensagem usando a tecla Enter. Isso pode ser ativado a qualquer momento nas configurações do aplicativo.</value>
+  </data>
+  <data name="CRITICAL_UPDATE_HEADING" xml:space="preserve">
+    <value>Atualização crítica!</value>
+  </data>
+  <data name="CRITICAL_UPDATE_TEXT" xml:space="preserve">
+    <value>É preciso atualizar para continuar a usar o hike.</value>
+  </data>
+  <data name="NORMAL_UPDATE_HEADING" xml:space="preserve">
+    <value>Atualização importante!</value>
+  </data>
+  <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
+    <value>Uma atualização importante está disponível para o hike.</value>
+  </data>
+  <data name="Update_Now_Txt" xml:space="preserve">
+    <value>Atualizar agora</value>
+  </data>
+  <data name="Settings_HikeJingleToggleSwitchHeader" xml:space="preserve">
+    <value>jingle do hike</value>
+  </data>
+  <data name="InvitePopUp_FreeSMS_Message" xml:space="preserve">
+    <value>Convide agora amigos via sms de graça. Nenhuma cobrança é aplicada. :)</value>
+  </data>
+  <data name="InvitePopUp_FreeSMS_Title" xml:space="preserve">
+    <value>Convites grátis de SMS</value>
+  </data>
+  <data name="InvitePopUp_LearnMore_Btn_Text" xml:space="preserve">
+    <value>saiba mais</value>
+    <comment>maximum chars(12)</comment>
+  </data>
+  <data name="InvitePopUp_Rewards_Message" xml:space="preserve">
+    <value>Convide amigos de graça de ganhe Rs 20 para cada amigo que se registrar.</value>
+  </data>
+  <data name="InvitePopUp_Rewards_Title" xml:space="preserve">
+    <value>Convide amigos, ganhe prêmios</value>
+  </data>
+  <data name="SelectAll_Txt" xml:space="preserve">
+    <value>selecionar todos</value>
+  </data>
+  <data name="Search_Hint_Txt" xml:space="preserve">
+    <value>pesquisar</value>
   </data>
 </root>

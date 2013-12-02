@@ -192,6 +192,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("MessageId");
                     _messageId = value;
+                    NotifyPropertyChanged("MessageId");
                 }
             }
         }
@@ -355,7 +356,10 @@ namespace windows_client.Model
             set
             {
                 if (_fileAttachment != value)
+                {
                     _fileAttachment = value;
+                    NotifyPropertyChanged("SdrImage");
+                }
             }
         }
 
@@ -488,6 +492,53 @@ namespace windows_client.Model
             get { return String.IsNullOrEmpty(DispMessage) ? Visibility.Collapsed : Visibility.Visible; }
         }
 
+        bool _changingState;
+        public bool ChangingState
+        {
+            get
+            {
+                return _changingState;
+            }
+            set
+            {
+                if (value != _changingState)
+                {
+                    _changingState = value;
+                    NotifyPropertyChanged("PauseResumeImageOpacity");
+                }
+            }
+        }
+
+        public double PauseResumeImageOpacity
+        {
+            get
+            {
+                return ChangingState ? 0.4 : 1;
+            }
+        }
+
+        public BitmapImage PauseResumeImage
+        {
+            get
+            {
+                if (FileAttachment.FileState == Attachment.AttachmentState.PAUSED || FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
+                    return UI_Utils.Instance.ResumeFTR;
+                else
+                    return UI_Utils.Instance.PausedFTR;
+            }
+        }
+
+        public Visibility PauseResumeImageVisibility
+        {
+            get
+            {
+                if (FileAttachment.FileState == Attachment.AttachmentState.PAUSED || FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED || FileAttachment.FileState == Attachment.AttachmentState.STARTED)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
         public BitmapImage SdrImage
         {
             get
@@ -519,6 +570,7 @@ namespace windows_client.Model
             get;
             set;
         }
+
         private PageOrientation _currentOrientation;
         public PageOrientation CurrentOrientation
         {
@@ -567,6 +619,7 @@ namespace windows_client.Model
             set
             {
                 imageDownloadFailed = value;
+                NotifyPropertyChanged("FileSize");
                 NotifyPropertyChanged("MessageImage");
                 NotifyPropertyChanged("ShowForwardMenu");
                 NotifyPropertyChanged("IsStickerVisible");
@@ -581,7 +634,7 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null && (_fileAttachment.FileState != Attachment.AttachmentState.COMPLETED || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO) || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
                 {
-                    if (IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                    if ((IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED) || _fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
                         return Visibility.Collapsed;
                     return Visibility.Visible;
                 }
@@ -596,8 +649,10 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null)
                 {
-                    if (_fileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
-                        return !IsSent ? UI_Utils.Instance.DownloadIcon : UI_Utils.Instance.BlankBitmapImage;
+                    if (!IsSent && (_fileAttachment.FileState == Attachment.AttachmentState.FAILED || _fileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED || _fileAttachment.FileState == Attachment.AttachmentState.CANCELED))
+                        return UI_Utils.Instance.DownloadIcon;
+                    else if (_fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED)
+                        return UI_Utils.Instance.BlankBitmapImage;
                     else if (_fileAttachment.ContentType.Contains(HikeConstants.AUDIO) && IsPlaying)
                         return UI_Utils.Instance.PauseIcon;
                     else
@@ -745,13 +800,15 @@ namespace windows_client.Model
                 _progressBarValue = value;
                 if (_progressBarValue >= 100)
                 {
-                    NotifyPropertyChanging("PlayIconVisibility");
-                    NotifyPropertyChanging("PlayIconImage");
                     SdrImageVisibility = Visibility.Visible;
                     NotifyPropertyChanged("SdrImageVisibility");
                 }
+                NotifyPropertyChanging("PlayIconVisibility");
+                NotifyPropertyChanging("PlayIconImage");
                 NotifyPropertyChanged("ProgressBarVisibility");
+                NotifyPropertyChanged("FileSizeVisibility");
                 NotifyPropertyChanged("ProgressBarValue");
+                NotifyPropertyChanged("ProgressText");
             }
             get
             {
@@ -763,11 +820,43 @@ namespace windows_client.Model
         {
             get
             {
-                if (_progressBarValue <= 0 || _progressBarValue >= 100)
+                if (FileAttachment != null)
                 {
-                    return Visibility.Collapsed;
+                    if (FileAttachment.ContentType.Contains(HikeConstants.LOCATION) || FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                    {
+                        if (_progressBarValue <= 0 || _progressBarValue >= 100)
+                            return Visibility.Collapsed;
+                        else
+                            return Visibility.Visible;
+                    }
+                    else
+                    {
+                        if ((_progressBarValue <= 0 || _progressBarValue >= 100) && FileAttachment.FileSize <= 0)
+                        {
+                            return Visibility.Collapsed;
+                        }
+                        else
+                            return Visibility.Visible;
+                    }
                 }
-                return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public Visibility FileSizeVisibility
+        {
+            get
+            {
+                if (FileAttachment != null)
+                {
+                    if (FileAttachment.FileSize <= 0 || FileAttachment.FileState == Attachment.AttachmentState.COMPLETED)
+                        return Visibility.Collapsed;
+                    else
+                        return Visibility.Visible;
+                }
+                else
+                    return Visibility.Collapsed;
             }
         }
 
@@ -931,6 +1020,17 @@ namespace windows_client.Model
             set
             {
                 _groupMemeberName = value;
+            }
+        }
+
+        public String FileSize
+        {
+            get
+            {
+                if (FileAttachment != null && FileAttachment.FileSize != 0)
+                    return Utils.ConvertToStorageSizeString(FileAttachment.FileSize);
+                else
+                    return String.Empty;
             }
         }
 
@@ -1099,6 +1199,18 @@ namespace windows_client.Model
             }
         }
 
+        public bool UserTappedDownload
+        {
+            get;
+            set;
+        }
+
+        public string ProgressText
+        {
+            get;
+            set;
+        }
+
         public ConvMessage(string message, string msisdn, long timestamp, State msgState, PageOrientation currentOrientation)
             : this(message, msisdn, timestamp, msgState, -1, -1, currentOrientation)
         {
@@ -1174,6 +1286,7 @@ namespace windows_client.Model
                         else
                             singleFileInfo = new JObject();
                         singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
+                        singleFileInfo[HikeConstants.FILE_SIZE] = FileAttachment.FileSize;
                         singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                         singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
 
@@ -1202,6 +1315,7 @@ namespace windows_client.Model
                         {
                             singleFileInfo = JObject.Parse(this.MetaDataString);
                         }
+                        singleFileInfo[HikeConstants.FILE_SIZE] = FileAttachment.FileSize;
                         singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                         singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
                         singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
@@ -1288,7 +1402,7 @@ namespace windows_client.Model
         // Used to notify that a property changed
         public void NotifyPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
+            if (PropertyChanged != null && !string.IsNullOrEmpty(propertyName))
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -1418,11 +1532,18 @@ namespace windows_client.Model
                         JToken fileKey;
                         JToken thumbnail;
                         JToken contentType;
+                        JToken fileSize;
+
+                        int fs = 0;
 
                         fileObject.TryGetValue(HikeConstants.FILE_CONTENT_TYPE, out contentType);
                         fileObject.TryGetValue(HikeConstants.FILE_NAME, out fileName);
                         fileObject.TryGetValue(HikeConstants.FILE_KEY, out fileKey);
                         fileObject.TryGetValue(HikeConstants.FILE_THUMBNAIL, out thumbnail);
+                       
+                        if( fileObject.TryGetValue(HikeConstants.FILE_SIZE, out fileSize))
+                           fs = Convert.ToInt32(fileSize.ToString());
+                        
                         this.HasAttachment = true;
 
                         byte[] base64Decoded = null;
@@ -1432,7 +1553,7 @@ namespace windows_client.Model
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
                             this.FileAttachment = new Attachment(fileName == null ? AppResources.Location_Txt : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
-                        contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                        contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
 
                             JObject locationFile = new JObject();
                             locationFile[HikeConstants.LATITUDE] = fileObject[HikeConstants.LATITUDE];
@@ -1446,7 +1567,7 @@ namespace windows_client.Model
                         else
                         {
                             this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
-                           contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                           contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
                         }
 
                         if (contentType.ToString().Contains(HikeConstants.CONTACT) || contentType.ToString().Contains(HikeConstants.AUDIO))
@@ -1653,16 +1774,27 @@ namespace windows_client.Model
         public void SetAttachmentState(Attachment.AttachmentState attachmentState)
         {
             this.FileAttachment.FileState = attachmentState;
-            if (FileAttachment.FileState == Attachment.AttachmentState.CANCELED || FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
+            if (FileAttachment.FileState == Attachment.AttachmentState.CANCELED || FileAttachment.FileState == Attachment.AttachmentState.FAILED || FileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED)
                 ProgressBarValue = 0;
             NotifyPropertyChanged("ShowCancelMenu");
             NotifyPropertyChanged("ShowForwardMenu");
             NotifyPropertyChanged("ShowDeleteMenu");
+            NotifyPropertyChanged("PauseResumeImage");
+            NotifyPropertyChanged("PauseResumeImageVisibility");
             NotifyPropertyChanged("SdrImage");
             NotifyPropertyChanged("PlayIconVisibility");
             NotifyPropertyChanged("PlayIconImage");
-            SdrImageVisibility = attachmentState != Attachment.AttachmentState.STARTED ? Visibility.Visible : Visibility.Collapsed;
+            NotifyPropertyChanged("FileSizeVisibility");
+
+            SdrImageVisibility = attachmentState != Attachment.AttachmentState.STARTED
+                && attachmentState != Attachment.AttachmentState.PAUSED
+                && attachmentState != Attachment.AttachmentState.MANUAL_PAUSED
+                && attachmentState != Attachment.AttachmentState.NOT_STARTED
+                ? Visibility.Visible : Visibility.Collapsed;
+
             NotifyPropertyChanged("SdrImageVisibility");
+
+            ChangingState = false;
         }
 
         public void UpdateVisibilitySdrImage()

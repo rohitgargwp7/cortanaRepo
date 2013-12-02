@@ -35,7 +35,7 @@ namespace windows_client.DbUtils
                 try
                 {
                     string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (!store.DirectoryExists(FRIENDS_DIRECTORY))
                         {
@@ -125,7 +125,7 @@ namespace windows_client.DbUtils
                 try
                 {
                     string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (store.FileExists(fileName))
                         {
@@ -157,7 +157,7 @@ namespace windows_client.DbUtils
                 try
                 {
                     string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (store.FileExists(fileName))
                         {
@@ -217,7 +217,7 @@ namespace windows_client.DbUtils
                 try
                 {
                     string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (store.FileExists(fileName))
                         {
@@ -260,7 +260,7 @@ namespace windows_client.DbUtils
                     long joinTime = 0;
                     FriendStatusEnum fStatus = FriendStatusEnum.NOT_SET;
                     string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (!store.DirectoryExists(FRIENDS_DIRECTORY))
                             store.CreateDirectory(FRIENDS_DIRECTORY);
@@ -378,7 +378,7 @@ namespace windows_client.DbUtils
                 try
                 {
                     string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (store.FileExists(fileName))
                         {
@@ -415,7 +415,7 @@ namespace windows_client.DbUtils
                     FriendStatusEnum friendStatusDb = FriendStatusEnum.NOT_SET;
                     long lsts=0;
                     string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (!store.DirectoryExists(FRIENDS_DIRECTORY))
                         {

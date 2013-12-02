@@ -120,7 +120,7 @@
             </Grid.RowDefinitions>
             <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Grid.Row="0" GotFocus="enterNameTxt_GotFocus" Margin="-10,5,0,0" Width="440" HorizontalAlignment="Stretch" 
                                   Hint="{Binding Path= LocalizedResources.SelectUser_TxtBoxHint_Txt, Source={StaticResource LocalizedStrings}}"
-                                 TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
+                                 TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged" MaxHeight="200"/>
 
             <phone:LongListSelector x:Name="contactsListBox" Grid.Row="1" Margin="28,10,0,10"
                           VerticalAlignment="Stretch" 

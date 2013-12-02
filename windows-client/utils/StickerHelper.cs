@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.IsolatedStorage;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using windows_client.Misc;
 using windows_client.ViewModel;
 
 namespace windows_client.utils
@@ -16,18 +18,24 @@ namespace windows_client.utils
 
     public class StickerHelper
     {
+        //to:do confirm category names with server
+        public const string CATEGORY_RECENT = "recent";
         public const string CATEGORY_HUMANOID = "humanoid";
+        public const string CATEGORY_HUMANOID2 = "humanoid2";
         public const string CATEGORY_DOGGY = "doggy";
         public const string CATEGORY_KITTY = "kitty";
         public const string CATEGORY_EXPRESSIONS = "expressions";
+        public const string CATEGORY_SMILEY_EXPRESSIONS = "smileyexpressions";
         public const string CATEGORY_BOLLYWOOD = "bollywood";
         public const string CATEGORY_TROLL = "rageface";
+        public const string CATEGORY_AVATARS = "avatars";
 
         public const string _stickerWVGAPath = "/View/images/stickers/WVGA/{0}/{1}";
         public const string _sticker720path = "/View/images/stickers/720p/{0}/{1}";
         public const string _stickerWXGApath = "/View/images/stickers/WXGA/{0}/{1}";
 
         public LruCache<string, BitmapImage> lruStickers = new LruCache<string, BitmapImage>(20, 0);
+        public RecentStickerHelper recentStickerHelper;
         public static string[] arrayDefaultHumanoidStickers = new string[]
         {
             "001_love1.png",
@@ -64,7 +72,21 @@ namespace windows_client.utils
             {
                 if (!_isInitialised)
                 {
+                    if (recentStickerHelper == null)
+                    {
+                        recentStickerHelper = new RecentStickerHelper();
+                        recentStickerHelper.LoadSticker();
+                    }
+
                     _dictStickersCategories = new Dictionary<string, StickerCategory>();
+
+                    StickerCategory stickerCategoryRecent = new StickerCategory(CATEGORY_RECENT);
+                    stickerCategoryRecent.HasMoreStickers = false;
+                    stickerCategoryRecent.HasNewStickers = false;
+                    stickerCategoryRecent.ShowDownloadMessage = false;
+                    //stickerCategoryRecent.ListStickers = recentStickerHelper.listRecentStickers;
+
+                    _dictStickersCategories[CATEGORY_RECENT] = stickerCategoryRecent;
 
                     InitialiseDefaultStickers(CATEGORY_HUMANOID, arrayDefaultHumanoidStickers);
 
@@ -81,8 +103,7 @@ namespace windows_client.utils
                                 stickerCategory.ListStickers.Add(sticker);
                             }
                             sc.ListStickers = stickerCategory.ListStickers;
-                        }
-                        _dictStickersCategories[sc.Category] = sc;
+                        } _dictStickersCategories[sc.Category] = sc;
                     }
 
                     _isInitialised = true;
@@ -145,6 +166,9 @@ namespace windows_client.utils
             StickerCategory.CreateCategory(CATEGORY_EXPRESSIONS);
             StickerCategory.CreateCategory(CATEGORY_BOLLYWOOD);
             StickerCategory.CreateCategory(CATEGORY_TROLL);
+            StickerCategory.CreateCategory(CATEGORY_AVATARS);
+            StickerCategory.CreateCategory(CATEGORY_HUMANOID2);
+            StickerCategory.CreateCategory(CATEGORY_SMILEY_EXPRESSIONS);
         }
 
         /// <summary>
@@ -155,13 +179,15 @@ namespace windows_client.utils
         /// <param name="stickerId"></param>
         /// <param name="stickerImageBytes">send null if no bytes available</param>
         /// <param name="isHighres"></param>
-        public void GetSticker(ref BitmapImage image, string category, string stickerId, byte[] stickerImageBytes, bool isHighres)
+        public async Task GetSticker(BitmapImage image, string category, string stickerId, byte[] stickerImageBytes, bool isHighres)
         {
+            if (!isHighres)
+                await Task.Delay(1);
             if (string.IsNullOrEmpty(stickerId) || string.IsNullOrEmpty(category))
                 return;
             if (stickerImageBytes != null && stickerImageBytes.Length > 0)
             {
-                image = UI_Utils.Instance.createImageFromBytes(stickerImageBytes);
+                UI_Utils.Instance.createImageFromBytes(stickerImageBytes, image);
                 if (isHighres)
                     App.newChatThreadPage.lruStickerCache.AddObject(category + "_" + stickerId, image);
                 else
@@ -188,7 +214,7 @@ namespace windows_client.utils
 
             try
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                 {
                     string fileName = StickerCategory.STICKERS_DIR + "\\" + (isHighres ? StickerCategory.HIGH_RESOLUTION_DIR : StickerCategory.LOW_RESOLUTION_DIR) + "\\" + category + "\\" + stickerId;
                     if (store.FileExists(fileName))
@@ -199,7 +225,7 @@ namespace windows_client.utils
                             {
                                 int imageBytesCount = reader.ReadInt32();
                                 Byte[] imageBytes = reader.ReadBytes(imageBytesCount);
-                                image = UI_Utils.Instance.createImageFromBytes(imageBytes);
+                                UI_Utils.Instance.createImageFromBytes(imageBytes, image);
                                 if (isHighres)
                                     App.newChatThreadPage.lruStickerCache.AddObject(category + "_" + stickerId, image);
                                 else
@@ -218,7 +244,7 @@ namespace windows_client.utils
         }
     }
 
-    public class Sticker
+    public class Sticker : IBinarySerializable
     {
         private string _id;
         private string _category;
@@ -272,29 +298,246 @@ namespace windows_client.utils
             {
                 if (_isHighRes)
                 {
-                    BitmapImage _stickerImage = App.newChatThreadPage.lruStickerCache.GetObject(_category + "_" + Id);
-                    if (_stickerImage == null)
+                    BitmapImage stickerImage = App.newChatThreadPage != null ? App.newChatThreadPage.lruStickerCache.GetObject(_category + "_" + Id) : null;
+                    if (stickerImage == null)
                     {
-                        _stickerImage = new BitmapImage();
-                        HikeViewModel.stickerHelper.GetSticker(ref _stickerImage, _category, _id, _stickerImageBytes, true);
+                        stickerImage = new BitmapImage();
+                        HikeViewModel.stickerHelper.GetSticker(stickerImage, _category, _id, _stickerImageBytes, true);
                     }
 
-                    return _stickerImage;
+                    return stickerImage;
                 }
                 else
                 {
-                    BitmapImage _stickerImage = HikeViewModel.stickerHelper.lruStickers.GetObject(_category + "_" + Id);
-                    if (_stickerImage == null)
+                    BitmapImage stickerImage = HikeViewModel.stickerHelper.lruStickers.GetObject(_category + "_" + Id);
+                    if (stickerImage == null)
                     {
-                        _stickerImage = new BitmapImage();
-                        HikeViewModel.stickerHelper.GetSticker(ref _stickerImage, _category, _id, _stickerImageBytes, false);
+                        stickerImage = new BitmapImage();
+                        HikeViewModel.stickerHelper.GetSticker(stickerImage, _category, _id, _stickerImageBytes, false);
                     }
 
-                    return _stickerImage;
+                    return stickerImage;
                 }
             }
         }
+
+        public void Write(BinaryWriter writer)
+        {
+        }
+        public void Read(BinaryReader reader)
+        {
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is Sticker))
+                return false;
+
+            Sticker compareTo = obj as Sticker;
+            if (_id == compareTo._id && _category == compareTo._category && _isHighRes == compareTo._isHighRes)
+                return true;
+            return base.Equals(obj);
+        }
     }
 
+    public class RecentStickerHelper
+    {
+        public const string RECENTS_FILE = "recents";
+        private const int maxStickersCount = 30;
+        private static object readWriteLock = new object();
+        public List<Sticker> listRecentStickers;
+        public RecentStickerHelper()
+        {
+            listRecentStickers = new List<Sticker>();
+        }
+
+        public void LoadSticker()
+        {
+            lock (readWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                {
+                    string fileName = StickerCategory.STICKERS_DIR + "\\" + RECENTS_FILE;
+                    if (store.FileExists(fileName))
+                    {
+                        using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
+                        {
+                            using (var reader = new BinaryReader(file))
+                            {
+                                int total = reader.ReadInt32();
+                                for (int i = 0; i < total; i++)
+                                {
+                                    int count = reader.ReadInt32();
+                                    string stickerId = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                                    count = reader.ReadInt32();
+                                    string category = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                                    listRecentStickers.Add(new Sticker(category, stickerId, null, false));
+                                }
+
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        public void AddSticker(Sticker currentSticker)
+        {
+            if (currentSticker == null)
+                return;
+            lock (readWriteLock)
+            {
+                if (!listRecentStickers.Remove(currentSticker))
+                    ShrinkToSize();
+                listRecentStickers.Insert(0, currentSticker);
+                UpdateRecentsFile();
+            }
+        }
+
+        public async Task UpdateRecentsFile()
+        {
+            try
+            {
+                await Task.Delay(1);
+
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                {
+                    if (!store.DirectoryExists(StickerCategory.STICKERS_DIR))
+                    {
+                        store.CreateDirectory(StickerCategory.STICKERS_DIR);
+                    }
+                    string fileName = StickerCategory.STICKERS_DIR + "\\" + RECENTS_FILE;
+
+                    try
+                    {
+                        if (store.FileExists(fileName))
+                            store.DeleteFile(fileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("RecentStickerHelper :: UpdateRecentsFile : DeletingFile , Exception : " + ex.StackTrace);
+                    }
+                    try
+                    {
+                        using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
+                        {
+                            using (BinaryWriter writer = new BinaryWriter(file))
+                            {
+                                writer.Seek(0, SeekOrigin.Begin);
+                                writer.Write(listRecentStickers.Count);
+                                foreach (Sticker sticker in listRecentStickers)
+                                {
+                                    writer.WriteStringBytes(sticker.Id);
+                                    writer.WriteStringBytes(sticker.Category);
+                                }
+                                writer.Flush();
+                                writer.Close();
+                            }
+                            file.Close();
+                            file.Dispose();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("RecentStickerHelper :: UpdateRecentsFile : WritingFile , Exception : " + ex.StackTrace);
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("RecentStickerHelper :: UpdateRecentsFile , Exception : " + ex.StackTrace);
+            }
+        }
+        private void ShrinkToSize()
+        {
+            if (this.listRecentStickers.Count > (maxStickersCount - 1))
+            {
+                listRecentStickers.RemoveAt(listRecentStickers.Count - 1);
+            }
+        }
+
+
+        public static void DeleteSticker(string categoryId, List<string> listStickers)
+        {
+            RecentStickerHelper recentSticker;
+            if (HikeViewModel.stickerHelper == null || HikeViewModel.stickerHelper.recentStickerHelper == null)
+            {
+                recentSticker = new RecentStickerHelper();
+                recentSticker.LoadSticker();
+            }
+            else
+                recentSticker = HikeViewModel.stickerHelper.recentStickerHelper;
+            bool isStickerInRecent = false;
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    foreach (string stickerId in listStickers)
+                    {
+                        if (recentSticker.listRecentStickers.Remove(new Sticker(categoryId, stickerId, null, false)))
+                            isStickerInRecent = true;
+                    }
+                    if (isStickerInRecent)
+                        recentSticker.UpdateRecentsFile();
+                });
+        }
+
+        public static void DeleteCategory(string category)
+        {
+            RecentStickerHelper recentSticker;
+            if (HikeViewModel.stickerHelper == null || HikeViewModel.stickerHelper.recentStickerHelper == null)
+            {
+                recentSticker = new RecentStickerHelper();
+                recentSticker.LoadSticker();
+            }
+            else
+                recentSticker = HikeViewModel.stickerHelper.recentStickerHelper;
+            bool isStickerInRecent = false;
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    for (int i = recentSticker.listRecentStickers.Count - 1; i >= 0; i--)
+                    {
+                        if (recentSticker.listRecentStickers[i].Category == category)
+                        {
+                            recentSticker.listRecentStickers.RemoveAt(i);
+                            isStickerInRecent = true;
+                        }
+                    }
+                    if (isStickerInRecent)
+                        recentSticker.UpdateRecentsFile();
+                });
+
+        }
+
+        public static void DeleteRecents()
+        {
+            lock (readWriteLock)
+            {
+                try
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+
+                        try
+                        {
+                            string filename = StickerCategory.STICKERS_DIR + "\\" + RECENTS_FILE;
+
+                            if (store.FileExists(filename))
+                                store.DeleteFile(filename);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("RecentStickerHelper :: DeleteRecents :Delete FIle: Exception :{0} , StackTrace:{1} ", ex.Message, ex.StackTrace);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("RecentStickerHelper :: DeleteRecents , Exception :{0} , StackTrace:{1} ", ex.Message, ex.StackTrace);
+                }
+            }
+        }
+
+    }
 }
 

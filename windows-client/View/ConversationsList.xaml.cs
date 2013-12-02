@@ -29,6 +29,9 @@ using Coding4Fun.Phone.Controls;
 using System.Windows.Media;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Phone.BackgroundAudio;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework;
 
 namespace windows_client.View
 {
@@ -50,7 +53,7 @@ namespace windows_client.View
         //ApplicationBarIconButton addFriendIconButton;
         private bool isStatusUpdatesMute;
         private bool isStatusMessagesLoaded = false;
-
+        private bool showFreeMessageOverlay;
         public bool ConversationListUpdated
         {
             get;
@@ -118,6 +121,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
             if (launchPagePivot.SelectedIndex == 3)
             {
                 TotalUnreadStatuses = 0;
@@ -139,8 +143,7 @@ namespace windows_client.View
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
 
-            if (Utils.isCriticalUpdatePending())
-                showCriticalUpdateMessage();
+
 
             if (firstLoad)
             {
@@ -162,13 +165,18 @@ namespace windows_client.View
                 App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
                 firstLoad = false;
 
-                if (appSettings.Contains(App.SHOW_BASIC_TUTORIAL))
+
+                if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
+                    ShowAppUpdateAvailableMessage();
+                else if (appSettings.Contains(App.SHOW_BASIC_TUTORIAL))
                 {
                     overlay.Visibility = Visibility.Visible;
                     overlay.Tap += DismissTutorial_Tap;
                     gridBasicTutorial.Visibility = Visibility.Visible;
                     launchPagePivot.IsHitTestVisible = false;
                 }
+                else
+                    ShowInvitePopups();
             }
             // this should be called only if its not first load as it will get called in first load section
             else if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -204,6 +212,8 @@ namespace windows_client.View
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 launchPagePivot.SelectedIndex = 3;
+
+            FrameworkDispatcher.Update();
         }
 
         private async void BindFriendsAsync()
@@ -280,6 +290,7 @@ namespace windows_client.View
             gridBasicTutorial.Visibility = Visibility.Collapsed;
             launchPagePivot.IsHitTestVisible = true;
             App.RemoveKeyFromAppSettings(App.SHOW_BASIC_TUTORIAL);
+            ShowInvitePopups();
         }
         #endregion
 
@@ -326,9 +337,9 @@ namespace windows_client.View
                 emptyScreenTip.Opacity = 0;
             }
 
-            appBar.Mode = ApplicationBarMode.Default;
-            appBar.IsMenuEnabled = true;
-            appBar.Opacity = 1;
+            if (delConvsMenu != null)
+                delConvsMenu.IsEnabled = true;
+
             if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
             {
                 NetworkManager.turnOffNetworkManager = false;
@@ -337,17 +348,14 @@ namespace windows_client.View
             App.MqttManagerInstance.connect();
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
-                Utils.requestAccountInfo();
+                if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION))
+                    Utils.RequestHikeBot();
+                else
+                    Utils.requestAccountInfo();
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
                 App.RemoveKeyFromAppSettings(HikeConstants.IS_NEW_INSTALLATION);
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE);
             }
-
-            // move to seperate thread later
-            #region CHECK UPDATES
-            //rate the app is handled within this
-            checkForUpdates();
-            #endregion
 
             postAnalytics();
         }
@@ -405,6 +413,9 @@ namespace windows_client.View
             //appBar.Opacity = 0;
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = false;
+            appBar.Mode = ApplicationBarMode.Default;
+            appBar.IsMenuEnabled = true;
+            appBar.Opacity = 1;
 
             /* Add icons */
             groupChatIconButton = new ApplicationBarIconButton();
@@ -428,15 +439,10 @@ namespace windows_client.View
             postStatusIconButton.IsEnabled = true;
             appBar.Buttons.Add(postStatusIconButton);
 
-            //addFriendIconButton = new ApplicationBarIconButton();
-            //addFriendIconButton.IconUri = new Uri("/View/images/appbar_addfriend.png", UriKind.Relative);
-            //addFriendIconButton.Text = AppResources.Favorites_AddMore;
-            //addFriendIconButton.Click += addFriend_Click;
-            //addFriendIconButton.IsEnabled = true;
-
             delConvsMenu = new ApplicationBarMenuItem();
             delConvsMenu.Text = AppResources.Conversations_DelAllChats_Txt;
             delConvsMenu.Click += new EventHandler(deleteAllConvs_Click);
+            delConvsMenu.IsEnabled = false;//it will be enabled after loading of all conversations
             appBar.MenuItems.Add(delConvsMenu);
 
             //toggleStatusUpdatesMenu = new ApplicationBarMenuItem();
@@ -485,6 +491,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
             mPubSub.addListener(HikePubSub.CONTACT_ADDED, this);
             mPubSub.addListener(HikePubSub.ADDRESSBOOK_UPDATED, this);
+            mPubSub.addListener(HikePubSub.APP_UPDATE_AVAILABLE, this);
         }
 
         private void removeListeners()
@@ -510,6 +517,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.DELETE_STATUS_AND_CONV, this);
                 mPubSub.removeListener(HikePubSub.CONTACT_ADDED, this);
                 mPubSub.removeListener(HikePubSub.ADDRESSBOOK_UPDATED, this);
+                mPubSub.removeListener(HikePubSub.APP_UPDATE_AVAILABLE, this);
             }
             catch (Exception ex)
             {
@@ -595,7 +603,7 @@ namespace windows_client.View
         private void deleteAllConvs_Click(object sender, EventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chats_Confirmation, AppResources.Conversations_DelAllChats_Txt, MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.Cancel)
+            if (result != MessageBoxResult.OK)
                 return;
             isDeleteAllChats = true;
             shellProgress.IsVisible = true;
@@ -649,12 +657,6 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 
-        private void addFriend_Click(object sender, EventArgs e)
-        {
-            PhoneApplicationService.Current.State["HIKE_FRIENDS"] = true;
-            string uri = "/View/InviteUsers.xaml";
-            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
-        }
 
         private void ToggleStatusUpdateNotification(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -717,15 +719,6 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
             }
             mPubSub.publish(HikePubSub.DELETE_CONVERSATION, convObj.Msisdn);
-        }
-
-        private void inviteUsers_Click(object sender, EventArgs e)
-        {
-            Uri nextPage = new Uri("/View/InviteUsers.xaml", UriKind.Relative);
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                NavigationService.Navigate(nextPage);
-            });
         }
 
         bool isContactListLoaded = false;
@@ -939,7 +932,7 @@ namespace windows_client.View
 
         #region PUBSUB
 
-        public void onEventReceived(string type, object obj)
+        public async void onEventReceived(string type, object obj)
         {
             if (obj == null)
             {
@@ -975,16 +968,24 @@ namespace windows_client.View
                         }
                     });
                 }
-                bool isVibrateEnabled = true;
-                App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
 
-                if (isVibrateEnabled)
+                if (App.newChatThreadPage == null && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute) && Utils.ShowNotificationAlert())
                 {
-                    if (App.newChatThreadPage == null && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute))
+                    bool isHikeJingleEnabled = true;
+                    App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
+                    if (isHikeJingleEnabled)
+                    {
+                        PlayAudio();
+                    }
+                    await Task.Delay(500);
+                    bool isVibrateEnabled = true;
+                    App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
+                    if (isVibrateEnabled)
                     {
                         VibrateController vibrate = VibrateController.Default;
                         vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
                     }
+                    appSettings[HikeConstants.LAST_NOTIFICATION_TIME] = DateTime.Now.Ticks;
                 }
             }
             #endregion
@@ -1033,9 +1034,9 @@ namespace windows_client.View
             #region ADD TO PENDING
             else if (HikePubSub.ADD_TO_PENDING == type)
             {
-
-                if (!App.ViewModel.IsPendingListLoaded)
+                if (!App.ViewModel.IsPendingListLoaded || !isStatusMessagesLoaded)
                     return;
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     ConversationListObject co = (ConversationListObject)obj;
@@ -1060,7 +1061,6 @@ namespace windows_client.View
                         {
                             UnreadFriendRequests++;
                         }
-
                     }
                 });
             }
@@ -1585,6 +1585,121 @@ namespace windows_client.View
                 }
             }
             #endregion
+            #region UPDATE AVAILABLE
+            else if (type == HikePubSub.APP_UPDATE_AVAILABLE)
+            {
+                ShowAppUpdateAvailableMessage();
+            }
+            #endregion
+        }
+
+        #endregion
+
+        #region App Update Available
+
+
+        void ShowAppUpdateAvailableMessage()
+        {
+            String updateObj;
+            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, out updateObj))
+            {
+                JObject obj = JObject.Parse(updateObj);
+
+                var currentVersion = App.appSettings[HikeConstants.FILE_SYSTEM_VERSION].ToString();
+                var version = (string)obj[HikeConstants.VERSION];
+                if (Utils.compareVersion(version, currentVersion) <= 0)
+                {
+                    App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
+                    return;
+                }
+
+                var message = (string)obj[HikeConstants.TEXT_UPDATE_MSG];
+                bool isCriticalUpdate = (bool)obj[HikeConstants.CRITICAL];
+
+                if (isCriticalUpdate)
+                    showCriticalUpdateMessage(message);
+                else
+                    showNormalUpdateMessage(message);
+            }
+        }
+
+        private void showCriticalUpdateMessage(string message)
+        {
+            if (!Guide.IsVisible)
+            {
+                Guide.BeginShowMessageBox(AppResources.CRITICAL_UPDATE_HEADING, message,
+                     new List<string> { AppResources.Update_Now_Txt.ToLower() }, 0, MessageBoxIcon.Alert,
+                     asyncResult =>
+                     {
+                         int? returned = Guide.EndShowMessageBox(asyncResult);
+                         if (returned != null && returned == 0)
+                         {
+                             openMarketPlace();
+                         }
+                         else
+                         {
+                             criticalUpdateMessageBoxReturned(returned);
+                         }
+
+                     }, null);
+            }
+        }
+
+        private void showNormalUpdateMessage(string message)
+        {
+            if (!Guide.IsVisible)
+            {
+                Guide.BeginShowMessageBox(AppResources.NORMAL_UPDATE_HEADING, message,
+                     new List<string> { AppResources.Conversations_Dismiss_Tip.ToLower(), AppResources.Update_Now_Txt.ToLower() }, 0, MessageBoxIcon.Alert,
+                     asyncResult =>
+                     {
+                         int? returned = Guide.EndShowMessageBox(asyncResult);
+                         if (returned != null)
+                         {
+                             if (returned == 1)
+                                 openMarketPlace();
+                             else
+                                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
+                         }
+
+                     }, null);
+            }
+        }
+
+        private void criticalUpdateMessageBoxReturned(int? ret)
+        {
+            if (ret == null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    LayoutRoot.IsHitTestVisible = false;
+                    appBar.IsMenuEnabled = false;
+                    composeIconButton.IsEnabled = false;
+                    postStatusIconButton.IsEnabled = false;
+                    groupChatIconButton.IsEnabled = false;
+                });
+            }
+        }
+
+        private void openMarketPlace()
+        {
+            string appID;
+            App.appSettings.TryGetValue<string>(App.APP_ID_FOR_LAST_UPDATE, out appID);
+            if (!String.IsNullOrEmpty(appID))
+            {
+                MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
+                //                marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
+                marketplaceDetailTask.ContentIdentifier = appID;
+                marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
+                try
+                {
+                    marketplaceDetailTask.Show();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("ConversationList ::  openMarketPlace, openMarketPlace  , Exception : " + ex.StackTrace);
+                }
+            }
         }
 
         #endregion
@@ -1594,7 +1709,7 @@ namespace windows_client.View
         private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chat_Confirmation, AppResources.Conversations_DelChat_Txt, MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.Cancel)
+            if (result != MessageBoxResult.OK)
                 return;
             ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
             if (convObj != null)
@@ -1611,7 +1726,7 @@ namespace windows_client.View
             {
                 var text = String.Format(AppResources.Conversations_RemFromFav_Confirm_Txt, convObj.NameToShow);
                 MessageBoxResult result = MessageBox.Show(text, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
-                if (result == MessageBoxResult.Cancel)
+                if (result != MessageBoxResult.OK)
                     return;
                 convObj.IsFav = false;
                 App.ViewModel.FavList.Remove(convObj);
@@ -1753,6 +1868,7 @@ namespace windows_client.View
 
         private void FreeSMS_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+
             App.AnalyticsInstance.addEvent(Analytics.FREE_SMS);
             NavigationService.Navigate(new Uri("/View/FreeSMS.xaml", UriKind.Relative));
         }
@@ -1818,125 +1934,19 @@ namespace windows_client.View
 
         #endregion
 
-        #region IN APP UPDATE
-
-        //private bool isAppEnabled = true;
-        private string latestVersionString = "";
-
-        public void checkForUpdates()
-        {
-            long lastTimeStamp = -1;
-            App.appSettings.TryGetValue<long>(App.LAST_UPDATE_CHECK_TIME, out lastTimeStamp);
-
-            if (lastTimeStamp == -1 || TimeUtils.isUpdateTimeElapsed(lastTimeStamp))
-            {
-                AccountUtils.createGetRequest(HikeConstants.UPDATE_URL, new AccountUtils.postResponseFunction(checkUpdate_Callback), false);
-            }
-            else
-                checkForRateApp();
-        }
-
-        public void checkUpdate_Callback(JObject obj)
-        {
-            bool isUpdateShown = false;
-            try
-            {
-                if (obj != null)
-                {
-                    string critical = obj[HikeConstants.CRITICAL].ToString();
-                    string latest = obj[HikeConstants.LATEST].ToString();
-                    string current = Utils.getAppVersion();
-                    latestVersionString = latest;
-                    string lastDismissedUpdate = "";
-                    App.appSettings.TryGetValue<string>(App.LAST_DISMISSED_UPDATE_VERSION, out lastDismissedUpdate);
-                    string appID = obj[HikeConstants.APP_ID].ToString();
-                    if (!String.IsNullOrEmpty(appID))
-                    {
-                        App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_UPDATE, appID);
-                    }
-                    if (Utils.compareVersion(critical, current) == 1)
-                    {
-                        App.WriteToIsoStorageSettings(App.LAST_CRITICAL_VERSION, critical);
-                        showCriticalUpdateMessage();//critical update
-                        isUpdateShown = true;
-                    }
-                    else if ((Utils.compareVersion(latest, current) == 1) && (String.IsNullOrEmpty(lastDismissedUpdate) ||
-                        (Utils.compareVersion(latest, lastDismissedUpdate) == 1)))
-                    {
-                        showNormalUpdateMessage();//normal update
-                        isUpdateShown = true;
-                    }
-                    App.WriteToIsoStorageSettings(App.LAST_UPDATE_CHECK_TIME, TimeUtils.getCurrentTimeStamp());
-                }
-                if (!isUpdateShown)
-                {
-                    checkForRateApp();
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("ConversationList ::  checkUpdate_Callback , checkUpdate_Callback, Exception : " + ex.StackTrace);
-            }
-        }
-
-        private void showCriticalUpdateMessage()
-        {
-            if (!Guide.IsVisible)
-            {
-                Guide.BeginShowMessageBox(AppResources.CRITICAL_UPDATE_HEADING, AppResources.CRITICAL_UPDATE_TEXT,
-                     new List<string> { AppResources.Update_Txt }, 0, MessageBoxIcon.Alert,
-                     asyncResult =>
-                     {
-                         int? returned = Guide.EndShowMessageBox(asyncResult);
-                         if (returned != null && returned == 0)
-                         {
-                             openMarketPlace();
-                         }
-                         else
-                         {
-                             criticalUpdateMessageBoxReturned(returned);
-                         }
-
-                     }, null);
-            }
-        }
-
-        private void showNormalUpdateMessage()
-        {
-            if (!Guide.IsVisible)
-            {
-                Guide.BeginShowMessageBox(AppResources.NORMAL_UPDATE_HEADING, AppResources.NORMAL_UPDATE_TEXT,
-                     new List<string> { AppResources.Update_Txt, AppResources.Ignore_Txt }, 0, MessageBoxIcon.Alert,
-                     asyncResult =>
-                     {
-                         int? returned = Guide.EndShowMessageBox(asyncResult);
-                         if (returned != null && returned == 0)
-                         {
-                             openMarketPlace();
-                         }
-                         else if (returned == null || returned == 1)
-                         {
-                             App.WriteToIsoStorageSettings(App.LAST_DISMISSED_UPDATE_VERSION, latestVersionString);
-                         }
-                     }, null);
-            }
-        }
-
-        private void criticalUpdateMessageBoxReturned(int? ret)
-        {
-            if (ret == null)
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    LayoutRoot.IsHitTestVisible = false;
-                    appBar.IsMenuEnabled = false;
-                    composeIconButton.IsEnabled = false;
-                });
-            }
-        }
-
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
+            if (FileTransfers.FileTransferManager.Instance.IsBusy())
+            {
+                var result = MessageBox.Show(AppResources.FileTransfer_InProgress_Msg, AppResources.FileTransfer_InProgress, MessageBoxButton.OKCancel);
+
+                if (result != MessageBoxResult.OK)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
             NetworkManager.turnOffNetworkManager = true;
             if (App.IS_VIEWMODEL_LOADED)
             {
@@ -1948,31 +1958,6 @@ namespace windows_client.View
             }
             base.OnBackKeyPress(e);
         }
-
-        private void openMarketPlace()
-        {
-
-            //keep the code below for final. it is commented for testing
-            string appID;
-            App.appSettings.TryGetValue<string>(App.APP_ID_FOR_LAST_UPDATE, out appID);
-            if (!String.IsNullOrEmpty(appID))
-            {
-                MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
-                //                marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
-                marketplaceDetailTask.ContentIdentifier = appID;
-                marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
-                try
-                {
-                    marketplaceDetailTask.Show();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("ConversationList ::  openMarketPlace, openMarketPlace  , Exception : " + ex.StackTrace);
-                }
-            }
-        }
-
-        #endregion
 
         #region RATE THE APP
         private void checkForRateApp()
@@ -2044,7 +2029,7 @@ namespace windows_client.View
             {
                 var text = String.Format(AppResources.Conversations_RemFromFav_Confirm_Txt, convObj.NameToShow);
                 MessageBoxResult result = MessageBox.Show(text, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
-                if (result == MessageBoxResult.Cancel)
+                if (result != MessageBoxResult.OK)
                     return;
 
                 convObj.IsFav = false;
@@ -2669,5 +2654,115 @@ namespace windows_client.View
             string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
+
+        bool resumeMediaPlayerAfterDone = false;
+
+        private void PlayAudio()
+        {
+            Dispatcher.BeginInvoke(() =>
+                {
+                    if (!MediaPlayer.GameHasControl)
+                    {
+                        FrameworkDispatcher.Update();
+                        MediaPlayer.Pause();
+                        resumeMediaPlayerAfterDone = true;
+                    }
+                    if (App.GlobalMediaElement.Source == null)
+                    {
+                        App.GlobalMediaElement.Source = new Uri("Audio/v1.mp3", UriKind.Relative);
+
+                        App.GlobalMediaElement.MediaOpened += MediaElement_MediaOpened;//it shows file has been loaded
+                        App.GlobalMediaElement.MediaEnded += mediaElement_MediaEnded;
+                    }
+                    else
+                    {
+                        App.GlobalMediaElement.Play();
+                    }
+                });
+        }
+
+        private void MediaElement_MediaOpened(object sender, RoutedEventArgs e)
+        {
+            App.GlobalMediaElement.Play();
+        }
+
+        void mediaElement_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            if (resumeMediaPlayerAfterDone)
+            {
+                FrameworkDispatcher.Update();
+                MediaPlayer.Resume();
+                resumeMediaPlayerAfterDone = false;
+            }
+        }
+
+        #region Overlay
+        void ShowInvitePopups()
+        {
+            Object[] obj;
+            if (App.appSettings.TryGetValue(HikeConstants.SHOW_POPUP, out obj))
+            {
+                showFreeMessageOverlay = obj == null;
+                if (!showFreeMessageOverlay)
+                {
+                    Object[] popupDataobj = obj as Object[];
+                    customOverlay.Title = popupDataobj[0] == null ? AppResources.InvitePopUp_Rewards_Title : (string)popupDataobj[0];
+                    customOverlay.Message = popupDataobj[1] == null ? AppResources.InvitePopUp_Rewards_Message : (string)popupDataobj[1];
+                    customOverlay.DisplayImage = UI_Utils.Instance.OverlayRupeeImage;
+                }
+                else
+                {
+                    customOverlay.Title = AppResources.InvitePopUp_FreeSMS_Title;
+                    customOverlay.Message = AppResources.InvitePopUp_FreeSMS_Message;
+                    customOverlay.DisplayImage = UI_Utils.Instance.OverlaySmsImage;
+                }
+                customOverlay.LeftButtonContent = AppResources.FreeSMS_InviteNow_Btn;
+                customOverlay.RightButtonContent = AppResources.InvitePopUp_LearnMore_Btn_Text;
+
+                customOverlay.LeftClicked += customOverlay_LeftClicked;
+                customOverlay.RightClicked += customOverlay_RightClicked;
+                customOverlay.VisibilityChanged += customOverlay_VisibilityChanged;
+                customOverlay.SetVisibility(true);
+            }
+        }
+        void customOverlay_VisibilityChanged(object sender, EventArgs e)
+        {
+            Overlay overlay = sender as Overlay;
+            if (overlay.Visibility == Visibility.Collapsed)
+            {
+                foreach (ApplicationBarIconButton button in appBar.Buttons)
+                {
+                    button.IsEnabled = true;
+                }
+                appBar.IsMenuEnabled = true;
+                launchPagePivot.IsHitTestVisible = true;
+                App.RemoveKeyFromAppSettings(HikeConstants.SHOW_POPUP);
+            }
+            else
+            {
+                foreach (ApplicationBarIconButton button in appBar.Buttons)
+                {
+                    button.IsEnabled = false;
+                }
+                appBar.IsMenuEnabled = false;
+                launchPagePivot.IsHitTestVisible = false;
+            }
+        }
+
+        void customOverlay_RightClicked(object sender, EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+        }
+
+        void customOverlay_LeftClicked(object sender, EventArgs e)
+        {
+            if (showFreeMessageOverlay)
+                Analytics.SendClickEvent(HikeConstants.INVITE_FRIENDS_FROM_POPUP_FREE_SMS);
+            else
+                Analytics.SendClickEvent(HikeConstants.INVITE_FRIENDS_FROM_POPUP_REWARDS);
+
+            NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
+        }
+        #endregion
     }
 }

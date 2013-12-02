@@ -11,6 +11,7 @@ using windows_client.Misc;
 using System.Collections.ObjectModel;
 using windows_client.ViewModel;
 using windows_client.utils;
+using System.Text;
 
 namespace windows_client.DbUtils
 {
@@ -21,6 +22,7 @@ namespace windows_client.DbUtils
         private static object pendingReadWriteLock = new object();
         private static object profilePicLock = new object();
         private static object statusImageLock = new object();
+        private static object saveAttachmentLock = new object();
 
         public static string FAVOURITES_FILE = "favFile";
         public static string MISC_DIR = "Misc_Dir";
@@ -124,18 +126,20 @@ namespace windows_client.DbUtils
                 context.SubmitChanges(ConflictMode.FailOnFirstConflict);
             }
             #endregion
-            #region DELETE FAVOURITES AND PENDING REQUESTS AND PROTIPS 
+            #region DELETE FAVOURITES AND PENDING REQUESTS AND PROTIPS
             DeleteFavourites();
             DeletePendingRequests();
             ProTipHelper.Instance.ClearProTips();
             App.appSettings[App.PRO_TIP_COUNT] = 2; // reset value of protip count for next new user
             #endregion
-            #region DELETE CATEGORIES
-            StickerCategory.DeleteAllCategories();
+            #region DELETE CATEGORIES, RECENT STICKERS
+            StickerCategory.DeleteAllCategories();//deletes all categories + downloaded stickers
+            RecentStickerHelper.DeleteRecents();
+            StickerHelper.CreateDefaultCategories();//after unlink if user doesn't quit app then default categories must be created
             #endregion
             #region RESET IN APP TIPS
             App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
-            App.appSettings[App.TIP_MARKED_KEY] = (byte)0; 
+            App.appSettings[App.TIP_MARKED_KEY] = (byte)0;
             App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0); // to keep a track of current showing keys
             App.ViewModel.LoadToolTipsDict();
             #endregion
@@ -190,7 +194,7 @@ namespace windows_client.DbUtils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         if (!store.DirectoryExists(PROFILE_PICS))
                             store.CreateDirectory(PROFILE_PICS);
@@ -290,33 +294,33 @@ namespace windows_client.DbUtils
 
         public static void saveAvatarImage(string msisdn, byte[] imageBytes, bool isUpdated)
         {
-                if (imageBytes == null)
-                    return;
-                msisdn = msisdn.Replace(":", "_");
-                string FileName = THUMBNAILS + "\\" + msisdn;
-                lock (lockObj)
+            if (imageBytes == null)
+                return;
+            msisdn = msisdn.Replace(":", "_");
+            string FileName = THUMBNAILS + "\\" + msisdn;
+            lock (lockObj)
+            {
+                try
                 {
-                    try
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
-                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                        if (isUpdated && store.FileExists(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX))
                         {
-                            if (isUpdated && store.FileExists(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX))
-                            {
-                                store.DeleteFile(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX);
-                            }
-                            using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, store))
-                            {
-                                stream.Write(imageBytes, 0, imageBytes.Length);
-                                stream.Flush();
-                                stream.Close();
-                            }
+                            store.DeleteFile(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX);
+                        }
+                        using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, store))
+                        {
+                            stream.Write(imageBytes, 0, imageBytes.Length);
+                            stream.Flush();
+                            stream.Close();
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("MiscDbUtil :: saveAvatarImage : saveAvatarImage, Exception : " + ex.StackTrace);
-                    }
                 }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("MiscDbUtil :: saveAvatarImage : saveAvatarImage, Exception : " + ex.StackTrace);
+                }
+            }
         }
 
         public static bool hasCustomProfileImage(string msisdn)
@@ -393,25 +397,35 @@ namespace windows_client.DbUtils
 
         public static void saveAttachmentObject(Attachment obj, string msisdn, long messageId)
         {
-            msisdn = msisdn.Replace(":", "_");
-            string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
-            string fileName = fileDirectory + "/" + messageId;
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+            lock (saveAttachmentLock)
             {
-                if (!store.DirectoryExists(fileDirectory))
+                try
                 {
-                    store.CreateDirectory(fileDirectory);
-                }
-                if (store.FileExists(fileName))
-                {
-                    store.DeleteFile(fileName);
-                }
-                using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write))
-                {
-                    using (var writer = new BinaryWriter(file))
+                    msisdn = msisdn.Replace(":", "_");
+                    string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
+                    string fileName = fileDirectory + "/" + messageId;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        obj.Write(writer);
+                        if (!store.DirectoryExists(fileDirectory))
+                        {
+                            store.CreateDirectory(fileDirectory);
+                        }
+                        if (store.FileExists(fileName))
+                        {
+                            store.DeleteFile(fileName);
+                        }
+                        using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write))
+                        {
+                            using (var writer = new BinaryWriter(file))
+                            {
+                                obj.Write(writer);
+                            }
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("MiscDbUtil :: saveAttachmentObject : saveAttachmentObject, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -437,10 +451,6 @@ namespace windows_client.DbUtils
                                 Attachment attachment = new Attachment();
                                 attachment.Read(reader);
                                 long messageId = Int64.Parse(msgId);
-                                if (attachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED && MessagesTableUtils.isUploadingOrDownloadingMessage(messageId))
-                                {
-                                    attachment.FileState = Attachment.AttachmentState.STARTED;
-                                }
                                 msgIdAttachmentMap.Add(Int64.Parse(msgId), attachment);
                             }
                         }
@@ -450,6 +460,72 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static Attachment getFileAttachment(string msisdn, string id)
+        {
+            if (msisdn == null) // this is imp as explicit handling of null is required to check exception
+                return null;
+
+            msisdn = msisdn.Replace(":", "_");
+
+            Attachment attachment = null;
+            string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
+            
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (store.DirectoryExists(fileDirectory))
+                {
+                    var fName = fileDirectory + "/" + id;
+                    if(store.FileExists(fName))
+                    {
+                        using (var file = store.OpenFile(fName, FileMode.Open, FileAccess.Read))
+                        {
+                            using (var reader = new BinaryReader(file))
+                            {
+                                attachment = new Attachment();
+                                attachment.Read(reader);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return attachment;
+        }
+
+        public static Attachment UpdateFileAttachmentState(string msisdn, string msgId, Attachment.AttachmentState fileState)
+        {
+            if (msisdn == null) // this is imp as explicit handling of null is required to check exception
+                return null;
+            msisdn = msisdn.Replace(":", "_");
+            string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
+            Attachment attachment = null;
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (store.DirectoryExists(fileDirectory))
+                {
+                    string fileName = fileDirectory + "/" + msgId;
+                    if (store.FileExists(fileName))
+                    {
+                        attachment = new Attachment();
+                        using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+                        {
+                            using (var reader = new BinaryReader(file, Encoding.UTF8, true))
+                            {
+
+                                attachment.Read(reader);
+                                attachment.FileState = fileState;
+                            }
+                            using (BinaryWriter writer = new BinaryWriter(file))
+                            {
+                                writer.Seek(0, SeekOrigin.Begin);
+                                attachment.Write(writer);
+                            }
+                        }
+                    }
+                }
+                return attachment;
+            }
+        }
         public static void readFileFromIsolatedStorage(string filePath, out byte[] imageBytes)
         {
             filePath = filePath.Replace(":", "_");
@@ -534,6 +610,8 @@ namespace windows_client.DbUtils
                 if (store.FileExists(attachmentFileBytes))
                     store.DeleteFile(attachmentFileBytes);
             }
+
+            FileTransfers.FileTransferManager.Instance.DeleteTask(messageId.ToString());
         }
 
         public static void deleteMsisdnData(string msisdn)
@@ -544,6 +622,15 @@ namespace windows_client.DbUtils
             attachmentPaths[1] = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
+                if (store.DirectoryExists(attachmentPaths[0]))
+                {
+                    string[] fileNames = store.GetFileNames(attachmentPaths[0] + "/*");
+                    foreach (string fileName in fileNames)
+                    {
+                        FileTransfers.FileTransferManager.Instance.DeleteTask(fileName);
+                    }
+                }
+
                 foreach (string attachmentPath in attachmentPaths)
                 {
                     if (store.DirectoryExists(attachmentPath))

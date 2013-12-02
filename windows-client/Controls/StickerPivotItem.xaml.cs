@@ -13,6 +13,7 @@ using windows_client.ViewModel;
 using System.Windows.Media;
 using System.Collections;
 using System.Windows.Controls.Primitives;
+using windows_client.Languages;
 
 namespace windows_client.Controls
 {
@@ -20,7 +21,7 @@ namespace windows_client.Controls
     {
         private int _pivotIndex;
         private string _category;
-        public StickerPivotItem(ObservableCollection<Sticker> listStickers, int pivotIndex, string category)
+        public StickerPivotItem(int pivotIndex, string category)
         {
             InitializeComponent();
             llsStickerCategory.Tap += Stickers_Tap;
@@ -33,7 +34,10 @@ namespace windows_client.Controls
         {
             llsStickerCategory.ItemsSource = listStickers;
         }
-
+        public void SetLlsSourceList(List<Sticker> listStickers)
+        {
+            llsStickerCategory.ItemsSource = listStickers;
+        }
         private void Stickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             LongListSelector llsStickerCategory = (sender as LongListSelector);
@@ -68,6 +72,11 @@ namespace windows_client.Controls
         {
             llsStickerCategory.Visibility = Visibility.Collapsed;
             stLoading.Visibility = Visibility.Collapsed;
+            if (_category == StickerHelper.CATEGORY_RECENT)
+                txtNoSticker.Text = AppResources.RecentSticker_Default_Txt;
+            else
+                txtNoSticker.Text = AppResources.No_Stickers_Downloaded_Txt;
+
             stNoStickers.Visibility = Visibility.Visible;
             stRetry.Visibility = Visibility.Collapsed;
         }
@@ -129,10 +138,11 @@ namespace windows_client.Controls
             vScrollBar = sender as ScrollBar;
             if (vScrollBar != null)
             {
-                if ((vScrollBar.Maximum - vScrollBar.Value) < 100 && vScrollBar.Value < vScrollBar.Maximum)
+                if ((vScrollBar.Maximum - vScrollBar.Value) < 100 && llsStickerCategory.ManipulationState != ManipulationState.Idle)
                 {
                     StickerCategory stickerCategory;
-                    if (App.newChatThreadPage != null && (stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_category)) != null && stickerCategory.HasMoreStickers && !stickerCategory.IsDownLoading)
+                    //if download message is shown that means user has not yet requested download
+                    if (App.newChatThreadPage != null && (stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_category)) != null && !stickerCategory.ShowDownloadMessage && stickerCategory.HasMoreStickers && !stickerCategory.IsDownLoading)
                     {
                         if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0)
                         {

@@ -18,7 +18,6 @@ namespace windows_client.utils
 
         private Pivot _stickerPivot;
         public Dictionary<string, StickerPivotItem> dictStickersPivot = new Dictionary<string, StickerPivotItem>();
-        public Dictionary<int, string> dictPivotCategory = new Dictionary<int, string>();
         Thickness zeroThickness = new Thickness(0, 0, 0, 0);
         Thickness newCategoryThickness = new Thickness(0, 1, 0, 0);
 
@@ -52,56 +51,63 @@ namespace windows_client.utils
                 StickerCategory stickerCategory;
                 int pivotIndex = 0;
                 //done thos way to maintain order of insertion
+                CreateStickerPivotItem(StickerHelper.CATEGORY_RECENT, pivotIndex);
+                pivotIndex++;
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID)) != null)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
-                    dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_HUMANOID;
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
-                    dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_DOGGY;
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
-                    dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_KITTY;
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
-                    dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_EXPRESSIONS;
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
+                    pivotIndex++;
+                } 
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
+                {
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS)) != null)
+                {
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
+                    pivotIndex++;
+                }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
-                    dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_BOLLYWOOD;
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
                 {
-                    CreateStickerPivotItem(stickerCategory.Category, stickerCategory.ListStickers, pivotIndex);
-                    dictPivotCategory[pivotIndex] = StickerHelper.CATEGORY_TROLL;
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
+                    pivotIndex++;
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
+                {
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                 }
                 isInitialised = true;
             }
         }
 
-        private void CreateStickerPivotItem(string category, ObservableCollection<Sticker> listSticker, int pivotIndex)
+        private void CreateStickerPivotItem(string category, int pivotIndex)
         {
             PivotItem pvt = new PivotItem();
             pvt.Margin = zeroThickness;
             pvt.BorderThickness = zeroThickness;
             pvt.Padding = zeroThickness;
-            StickerPivotItem stickerPivot = new StickerPivotItem( listSticker, pivotIndex, category);
+            StickerPivotItem stickerPivot = new StickerPivotItem(pivotIndex, category);
             StickerPivotHelper.Instance.dictStickersPivot[category] = stickerPivot;
             pvt.Content = stickerPivot;
             _stickerPivot.Items.Add(pvt);

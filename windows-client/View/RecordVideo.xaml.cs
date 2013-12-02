@@ -20,6 +20,7 @@ using Windows.Storage.Streams;
 using windows_client.DbUtils;
 using System.Threading.Tasks;
 using windows_client.Controls;
+using windows_client.utils;
 
 namespace windows_client.View
 {
@@ -92,7 +93,7 @@ namespace windows_client.View
             stopIconButton.IconUri = new Uri("/View/images/icon_stop_appbar.png", UriKind.Relative);
             stopIconButton.Text = AppResources.Stop_Txt;
             stopIconButton.Click += new EventHandler(StopPlaybackRecording_Click);
-            
+
             recordIconButton = new ApplicationBarIconButton();
             recordIconButton.IconUri = new Uri("/View/images/icon_record_appbar.png", UriKind.Relative);
             recordIconButton.Text = AppResources.Record_Txt;
@@ -125,7 +126,7 @@ namespace windows_client.View
                 return AppResources.Video_Standard_Quality_Txt;
             else if (height == 240)
                 return AppResources.Video_Low_Quality_Txt;
-                
+
             return String.Empty;
         }
 
@@ -328,22 +329,7 @@ namespace windows_client.View
                 StopVideoRecording();
         }
 
-        string ConvertToStorageSizeString(long size)
-        {
-            string[] suffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
-            int i = 0;
-            double dValue = (double)size;
 
-            while (Math.Round(dValue / 1024) >= 1)
-            {
-                Debug.WriteLine("Size: " + dValue);
-
-                dValue /= 1024;
-                i++;
-            }
-
-            return string.Format("{0,2:n1} {1}", dValue, suffixes[i]);
-        }
 
         Boolean _isGoingBack = false;
 
@@ -352,10 +338,10 @@ namespace windows_client.View
             if (SettingsGrid.Visibility == Visibility.Visible)
             {
                 loadingIndicator.IsIndeterminate = true;
-                
+
                 addOrRemoveAppBarButton(doneIconButton, false);
                 resolutionList.IsEnabled = false;
-                cameraList.IsEnabled = false; 
+                cameraList.IsEnabled = false;
                 UpdateRecordingSettings();
                 e.Cancel = true;
                 return;
@@ -392,7 +378,7 @@ namespace windows_client.View
                 SetUIFromResolution();
             }
 
-            if(videoCaptureDevice==null)
+            if (videoCaptureDevice == null)
                 await InitializeVideoRecorder();
 
             if (App.IS_TOMBSTONED)
@@ -404,10 +390,10 @@ namespace windows_client.View
 
                 if (State.TryGetValue(HikeConstants.IS_PRIMARY_CAM, out obj))
                     isPrimaryCam = (bool)obj;
-                
+
                 if (State.TryGetValue(HikeConstants.VIDEO_RESOLUTION, out obj))
                     selectedResolution = (Resolution)obj;
-                
+
                 if (State.TryGetValue(HikeConstants.VIDEO_THUMBNAIL, out obj))
                     thumbnail = (byte[])obj;
 
@@ -422,8 +408,8 @@ namespace windows_client.View
                 {
                     selectedResolution = resolutions.First();
                     resolutionList.SelectedItem = selectedResolution;
-                } 
-                
+                }
+
                 videoCaptureDevice = isPrimaryCam ? await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Back, selectedResolution.Size) : await AudioVideoCaptureDevice.OpenAsync(CameraSensorLocation.Front, selectedResolution.Size);
                 videoRecorderBrush.SetSource(videoCaptureDevice);
                 SetUIFromResolution();
@@ -568,7 +554,7 @@ namespace windows_client.View
                     default:
                         break;
                 }
-                
+
                 currentAppState = currentButtonState;
             });
         }
@@ -593,7 +579,7 @@ namespace windows_client.View
                         UpdateUI(ButtonState.CameraNotSupported);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
                 UpdateUI(ButtonState.CameraNotSupported);
@@ -628,7 +614,7 @@ namespace windows_client.View
                             }
 
                             int imageWidth, imageHeight;
-                            utils.Utils.AdjustAspectRatio(frameHeight,frameWidth, true, out imageWidth, out imageHeight);
+                            utils.Utils.AdjustAspectRatio(frameHeight, frameWidth, true, out imageWidth, out imageHeight);
 
                             MemoryStream stream = new MemoryStream();
                             wb.SaveJpeg(stream, imageWidth, imageHeight, 0, 60);
@@ -685,7 +671,7 @@ namespace windows_client.View
             try
             {
                 videoCaptureDevice.PreviewFrameAvailable -= videoCaptureDevice_PreviewFrameAvailable;
-                
+
                 if (currentAppState == ButtonState.Recording)
                 {
                     await videoCaptureDevice.StopRecordingAsync();
@@ -709,7 +695,7 @@ namespace windows_client.View
                 Byte[] fileBytes = null;
                 MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.TEMP_VIDEO_NAME, out fileBytes);
 
-                txtSize.Text = ConvertToStorageSizeString(fileBytes.Length);
+                txtSize.Text = Utils.ConvertToStorageSizeString(fileBytes.Length);
             }
             catch
             {
@@ -807,10 +793,10 @@ namespace windows_client.View
         {
             progressTimer.Stop();
             addOrRemoveAppBarButton(pauseIconButton, false);
-            
+
             if (VideoPlayer != null)
                 VideoPlayer.Pause();
-        
+
             UpdateUI(ButtonState.Paused);
         }
 
@@ -860,7 +846,7 @@ namespace windows_client.View
                             isPrimaryCam = true;
                         else
                             isPrimaryCam = false;
-                        
+
                         break;
                     }
                 }
@@ -876,7 +862,7 @@ namespace windows_client.View
 
             var list = sender as ListPicker;
             if (list != null && list.SelectedItem != null)
-                selectedResolution = (Resolution) list.SelectedItem;
+                selectedResolution = (Resolution)list.SelectedItem;
         }
 
         private void StartPlayback_Tap(object sender, System.Windows.Input.GestureEventArgs e)

@@ -322,7 +322,7 @@ namespace windows_client
                 return;
             }
             MessageBoxResult res = MessageBox.Show(phoneNumber, AppResources.EnterMsisdn_ConfirmNumber_Txt, MessageBoxButton.OKCancel);
-            if (res == MessageBoxResult.Cancel)
+            if (res != MessageBoxResult.OK)
                 return;
             txtEnterPhone.IsReadOnly = true;
             nextIconButton.IsEnabled = false;

@@ -70,31 +70,39 @@ namespace windows_client.utils
         private BitmapImage facebookEnabledIcon;
         private BitmapImage twitterDisabledIcon;
         private BitmapImage twitterEnabledIcon;
-        private BitmapImage moodDisabledIcon;
-        private BitmapImage moodEnabledIcon;
         private BitmapImage userProfileLockImage;
         private BitmapImage userProfileInviteImage;
         private BitmapImage userProfileStockImage;
         private BitmapImage loadingImage;
         private BitmapImage lastSeenClockImage;
         private BitmapImage humanoidOverlay;
+        private BitmapImage humanoid2Overlay;
         private BitmapImage doggyOverlay;
         private BitmapImage kittyOverlay;
         private BitmapImage bollywoodOverlay;
         private BitmapImage trollOverlay;
         private BitmapImage expressionsOverlay;
+        private BitmapImage smileyExpressionsOverlay;
+        private BitmapImage avatarsOverlay;
+        private BitmapImage recentIcon;
         private BitmapImage humanoidInactive;
+        private BitmapImage humanoid2Inactive;
         private BitmapImage doggyInactive;
         private BitmapImage kittyInactive;
         private BitmapImage bollywoodInactive;
         private BitmapImage trollInactive;
         private BitmapImage expressionsInactive;
+        private BitmapImage smileyExpressionsInactive;
+        private BitmapImage avatarsInactive;
         private BitmapImage humanoidActive;
+        private BitmapImage humanoid2Active;
         private BitmapImage doggyActive;
         private BitmapImage kittyActive;
         private BitmapImage bollywoodActive;
         private BitmapImage trollActive;
         private BitmapImage expressionsActive;
+        private BitmapImage smileyExpressionsActive;
+        private BitmapImage avatarsActive;
         private BitmapImage muteIcon;
         private BitmapImage muteIconForConversationView;
         private BitmapImage unmuteIcon;
@@ -122,6 +130,12 @@ namespace windows_client.utils
         private FontFamily groupChatMessageHeader;
         private FontFamily messageText;
         private BitmapImage myLocationPin;
+
+        private BitmapImage resumeFTR;
+        private BitmapImage pausedFTR;
+
+        private BitmapImage overlayRupeeImage;
+        private BitmapImage overlaySmsImage;
 
         #endregion
 
@@ -470,6 +484,25 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage OverlayRupeeImage
+        {
+            get
+            {
+                if (overlayRupeeImage == null)
+                    overlayRupeeImage = new BitmapImage(new Uri("/View/images/rupee.png", UriKind.Relative));
+                return overlayRupeeImage;
+            }
+        }
+
+        public BitmapImage OverlaySmsImage
+        {
+            get
+            {
+                if (overlaySmsImage == null)
+                    overlaySmsImage = new BitmapImage(new Uri("/View/images/icon_sms.png", UriKind.Relative));
+                return overlaySmsImage;
+            }
+        }
         public BitmapImage ChatAcceptedImage
         {
             get
@@ -529,6 +562,38 @@ namespace windows_client.utils
                 if (sent == null)
                     sent = new BitmapImage(new Uri("/View/images/ic_sent.png", UriKind.Relative));
                 return sent;
+            }
+        }
+
+        public BitmapImage PausedFTR
+        {
+            get
+            {
+                if (pausedFTR == null)
+                {
+                    if (Utils.isDarkTheme())
+                        pausedFTR = new BitmapImage(new Uri("/View/images/pause_white_ftr.png", UriKind.Relative));
+                    else
+                        pausedFTR = new BitmapImage(new Uri("/View/images/pause_black_ftr.png", UriKind.Relative));
+                }
+
+                return pausedFTR;
+            }
+        }
+
+        public BitmapImage ResumeFTR
+        {
+            get
+            {
+                if (resumeFTR == null)
+                {
+                    if (Utils.isDarkTheme())
+                        resumeFTR = new BitmapImage(new Uri("/View/images/resume_white_ftr.png", UriKind.Relative));
+                    else
+                        resumeFTR = new BitmapImage(new Uri("/View/images/resume_black_ftr.png", UriKind.Relative));
+                }
+
+                return resumeFTR;
             }
         }
 
@@ -1029,6 +1094,7 @@ namespace windows_client.utils
                 return Utils.isDarkTheme() ? CloseButtonBlackImage : CloseButtonWhiteImage;
             }
         }
+
         public BitmapImage HumanoidOverlay
         {
             get
@@ -1040,6 +1106,19 @@ namespace windows_client.utils
                 return humanoidOverlay;
             }
         }
+
+        public BitmapImage Humanoid2Overlay
+        {
+            get
+            {
+                if (humanoid2Overlay == null)
+                {
+                    humanoid2Overlay = new BitmapImage(new Uri("/View/images/humanoid2_overlay.png", UriKind.Relative));
+                }
+                return humanoid2Overlay;
+            }
+        }
+
         public BitmapImage DoggyOverlay
         {
             get
@@ -1051,6 +1130,7 @@ namespace windows_client.utils
                 return doggyOverlay;
             }
         }
+
         public BitmapImage KittyOverlay
         {
             get
@@ -1062,6 +1142,7 @@ namespace windows_client.utils
                 return kittyOverlay;
             }
         }
+
         public BitmapImage BollywoodOverlay
         {
             get
@@ -1073,6 +1154,7 @@ namespace windows_client.utils
                 return bollywoodOverlay;
             }
         }
+
         public BitmapImage TrollOverlay
         {
             get
@@ -1084,6 +1166,19 @@ namespace windows_client.utils
                 return trollOverlay;
             }
         }
+
+        public BitmapImage AvatarsOverlay
+        {
+            get
+            {
+                if (avatarsOverlay == null)
+                {
+                    avatarsOverlay = new BitmapImage(new Uri("/View/images/avatars_overlay.png", UriKind.Relative));
+                }
+                return avatarsOverlay;
+            }
+        }
+
         public BitmapImage ExpressionsOverlay
         {
             get
@@ -1093,6 +1188,30 @@ namespace windows_client.utils
                     expressionsOverlay = new BitmapImage(new Uri("/View/images/expressions_overlay.png", UriKind.Relative));
                 }
                 return expressionsOverlay;
+            }
+        }
+
+        public BitmapImage SmileyExpressionsOverlay
+        {
+            get
+            {
+                if (smileyExpressionsOverlay == null)
+                {
+                    smileyExpressionsOverlay = new BitmapImage(new Uri("/View/images/smileyExpressions_overlay.png", UriKind.Relative));
+                }
+                return smileyExpressionsOverlay;
+            }
+        }
+
+        public BitmapImage RecentIcon
+        {
+            get
+            {
+                if (recentIcon == null)
+                {
+                    recentIcon = new BitmapImage(new Uri("/View/images/recent_icon.png", UriKind.Relative));
+                }
+                return recentIcon;
             }
         }
         public BitmapImage HumanoidInactive
@@ -1107,6 +1226,18 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage Humanoid2Inactive
+        {
+            get
+            {
+                if (humanoid2Inactive == null)
+                {
+                    humanoid2Inactive = new BitmapImage(new Uri("/View/images/humanoid2_icon_inactive.png", UriKind.Relative));
+                }
+                return humanoid2Inactive;
+            }
+        }
+
         public BitmapImage DoggyInactive
         {
             get
@@ -1118,6 +1249,7 @@ namespace windows_client.utils
                 return doggyInactive;
             }
         }
+
         public BitmapImage KittyInactive
         {
             get
@@ -1129,6 +1261,7 @@ namespace windows_client.utils
                 return kittyInactive;
             }
         }
+
         public BitmapImage BollywoodInactive
         {
             get
@@ -1140,6 +1273,7 @@ namespace windows_client.utils
                 return bollywoodInactive;
             }
         }
+
         public BitmapImage TrollInactive
         {
             get
@@ -1151,6 +1285,7 @@ namespace windows_client.utils
                 return trollInactive;
             }
         }
+
         public BitmapImage ExpressionsInactive
         {
             get
@@ -1162,6 +1297,31 @@ namespace windows_client.utils
                 return expressionsInactive;
             }
         }
+
+        public BitmapImage SmileyExpressionsInactive
+        {
+            get
+            {
+                if (smileyExpressionsInactive == null)
+                {
+                    smileyExpressionsInactive = new BitmapImage(new Uri("/View/images/smileyExpressions_i.png", UriKind.Relative));
+                }
+                return smileyExpressionsInactive;
+            }
+        }
+
+        public BitmapImage AvatarsInactive
+        {
+            get
+            {
+                if (avatarsInactive == null)
+                {
+                    avatarsInactive = new BitmapImage(new Uri("/View/images/avatars_i.png", UriKind.Relative));
+                }
+                return avatarsInactive;
+            }
+        }
+
         public BitmapImage HumanoidActive
         {
             get
@@ -1173,6 +1333,19 @@ namespace windows_client.utils
                 return humanoidActive;
             }
         }
+
+        public BitmapImage Humanoid2Active
+        {
+            get
+            {
+                if (humanoid2Active == null)
+                {
+                    humanoid2Active = new BitmapImage(new Uri("/View/images/humanoid2_icon.png", UriKind.Relative));
+                }
+                return humanoid2Active;
+            }
+        }
+
         public BitmapImage DoggyActive
         {
             get
@@ -1195,6 +1368,7 @@ namespace windows_client.utils
                 return kittyActive;
             }
         }
+
         public BitmapImage BollywoodActive
         {
             get
@@ -1206,6 +1380,7 @@ namespace windows_client.utils
                 return bollywoodActive;
             }
         }
+
         public BitmapImage TrollActive
         {
             get
@@ -1217,6 +1392,7 @@ namespace windows_client.utils
                 return trollActive;
             }
         }
+
         public BitmapImage ExpressionsActive
         {
             get
@@ -1226,6 +1402,30 @@ namespace windows_client.utils
                     expressionsActive = new BitmapImage(new Uri("/View/images/expressions.png", UriKind.Relative));
                 }
                 return expressionsActive;
+            }
+        }
+
+        public BitmapImage SmileyExpressionsActive
+        {
+            get
+            {
+                if (smileyExpressionsActive == null)
+                {
+                    smileyExpressionsActive = new BitmapImage(new Uri("/View/images/smileyExpressions.png", UriKind.Relative));
+                }
+                return smileyExpressionsActive;
+            }
+        }
+
+        public BitmapImage AvatarsActive
+        {
+            get
+            {
+                if (avatarsActive == null)
+                {
+                    avatarsActive = new BitmapImage(new Uri("/View/images/avatars.png", UriKind.Relative));
+                }
+                return avatarsActive;
             }
         }
 
@@ -1275,7 +1475,8 @@ namespace windows_client.utils
             }
         }
 
-
+        public Thickness ZeroThickness = new Thickness(0, 0, 0, 0);
+        public Thickness NewCategoryThickness = new Thickness(0, 5, 0, 0);
         #endregion
 
         #region DEFAULT AVATARS
@@ -1463,7 +1664,25 @@ namespace windows_client.utils
             }
             return bitmapImage;
         }
-       
+        public void createImageFromBytes(byte[] imagebytes, BitmapImage bitmapImage)
+        {
+            if (imagebytes == null || imagebytes.Length == 0)
+                return;
+            try
+            {
+                using (var memStream = new MemoryStream(imagebytes))
+                {
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    if (bitmapImage == null)
+                        bitmapImage = new BitmapImage();
+                    bitmapImage.SetSource(memStream);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
+            }
+        }
         /// <summary>
         /// Call this function only if you want to cache the Bitmap Image
         /// </summary>

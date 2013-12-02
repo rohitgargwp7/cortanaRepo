@@ -103,6 +103,9 @@
     <Reference Include="Coding4Fun.Phone.Controls">
       <HintPath>lib\Coding4Fun.Phone.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="ConcurrentDictionary">
+      <HintPath>lib\ConcurrentDictionary.dll</HintPath>
+    </Reference>
     <Reference Include="Facebook, Version=6.0.10.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Facebook.6.1.4\lib\wp71\Facebook.dll</HintPath>
@@ -133,6 +136,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\sharpcompress.0.8.2\lib\sl3-wp\SharpCompress.WP7.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net.Http">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.15\lib\sl4-windowsphone71\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Extensions">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.15\lib\sl4-windowsphone71\System.Net.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Primitives">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.15\lib\sl4-windowsphone71\System.Net.Http.Primitives.dll</HintPath>
+    </Reference>
     <Reference Include="WriteableBitmapExWinPhone">
       <HintPath>lib\WriteableBitmapExWinPhone.dll</HintPath>
     </Reference>
@@ -145,6 +157,9 @@
       <DependentUpon>InAppTipUC.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\MyRichTextBox.cs" />
+    <Compile Include="Controls\Overlay.xaml.cs">
+      <DependentUpon>Overlay.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ProgressIndicator.cs" />
     <Compile Include="Controls\StatusUpdate\DefaultStatusUpdateUC.xaml.cs">
       <DependentUpon>DefaultStatusUpdateUC.xaml</DependentUpon>
@@ -176,7 +191,12 @@
     <Compile Include="DbUtils\MqttDBUtils.cs" />
     <Compile Include="DbUtils\StatusMsgsTable.cs" />
     <Compile Include="DbUtils\UsersTableUtils.cs" />
-    <Compile Include="FileTransfer.cs" />
+    <Compile Include="FileTransfers\FileDownloader.cs" />
+    <Compile Include="FileTransfers\FileInfoBase.cs" />
+    <Compile Include="FileTransfers\FileTransferManager.cs" />
+    <Compile Include="FileTransfers\FileUploader.cs" />
+    <Compile Include="FileTransfers\FileTransferState.cs" />
+    <Compile Include="FileTransfers\FileTransferSatatusChangedEventArgs.cs" />
     <Compile Include="HikeConstants.cs" />
     <Compile Include="HikePubSub.cs" />
     <Compile Include="Languages\AppResources.Designer.cs">
@@ -212,6 +232,7 @@
     <Compile Include="Model\ConversationListPage.cs" />
     <Compile Include="utils\ChatBackgroundHelper.cs" />
     <Compile Include="utils\LruCache.cs" />
+    <Compile Include="utils\MD5.cs" />
     <Compile Include="utils\StickerPivotHelper.cs" />
     <Compile Include="utils\ContactUtils.cs" />
     <Compile Include="utils\ImageLoader.cs" />
@@ -234,6 +255,9 @@
     </Compile>
     <Compile Include="View\ConversationsList.xaml.cs">
       <DependentUpon>ConversationsList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Preferences.xaml.cs">
+      <DependentUpon>Preferences.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\DisplayImage.xaml.cs">
       <DependentUpon>DisplayImage.xaml</DependentUpon>
@@ -289,8 +313,8 @@
     <Compile Include="View\NewSelectUserPage.xaml.cs">
       <DependentUpon>NewSelectUserPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Privacy.xaml.cs">
-      <DependentUpon>Privacy.xaml</DependentUpon>
+    <Compile Include="View\Account.xaml.cs">
+      <DependentUpon>Account.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\RecordMedia.xaml.cs">
       <DependentUpon>RecordMedia.xaml</DependentUpon>
@@ -331,6 +355,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\Overlay.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\StatusUpdate\DefaultStatusUpdateUC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -360,6 +387,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ConversationsList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Preferences.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -435,7 +466,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Privacy.xaml">
+    <Page Include="View\Account.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -484,12 +515,31 @@
     <Content Include="ApplicationIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Application_IconImage_62x62.png" />
     <Content Include="Assets\LockImage.png" />
     <Content Include="Assets\pattern.png" />
     <Content Include="View\images\ChangeBgPicture.png" />
+    <Content Include="Audio\v1.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\images\avatars.png" />
+    <Content Include="View\images\avatars_i.png" />
+    <Content Include="View\images\avatars_overlay.png" />
+    <Content Include="View\images\smileyExpressions.png" />
+    <Content Include="View\images\smileyExpressions_i.png" />
+    <Content Include="View\images\smileyExpressions_overlay.png" />
+    <Content Include="View\images\humanoid2_overlay.png" />
+    <Content Include="View\images\humanoid2_icon.png" />
+    <Content Include="View\images\humanoid2_icon_inactive.png" />
+    <Content Include="View\images\icon_sms.png" />
+    <Content Include="View\images\pause_black_ftr.png" />
+    <Content Include="View\images\pause_white_ftr.png" />
+    <Content Include="View\images\rupee.png" />
+    <Content Include="View\images\icon_sticker.png" />
+    <Content Include="View\images\recent_icon.png" />
     <Content Include="hike_small.png" />
     <Content Include="hike_medium.png" />
     <Content Include="hike_lock_bubble.png" />
@@ -521,9 +571,8 @@
     <Content Include="View\images\avatars\Sneakers.png" />
     <Content Include="View\images\avatars\Space.png" />
     <Content Include="View\images\avatars\TealPeople.png" />
-    <Content Include="View\images\back_button.png" />
     <Content Include="View\images\blocklist_holder.png" />
-    <Content Include="View\images\block_list_icon.png" />
+    <Content Include="View\images\block_list_icon_black.png" />
     <Content Include="View\images\block_list_icon_white.png" />
     <Content Include="View\images\bollywood_overlay.png" />
     <Content Include="View\images\call.png" />
@@ -585,8 +634,8 @@
     <Content Include="View\images\icon_cross.png" />
     <Content Include="View\images\icon_editprofile.png" />
     <Content Include="View\images\icon_group.png" />
-    <Content Include="View\images\icon_notification.png" />
-    <Content Include="View\images\icon_notification_black.png" />
+    <Content Include="View\images\notification_white.png" />
+    <Content Include="View\images\notification_black.png" />
     <Content Include="View\images\icon_pause.png" />
     <Content Include="View\images\icon_message.png" />
     <Content Include="View\images\icon_play.png" />
@@ -657,6 +706,8 @@
     <Content Include="View\images\profile_header_stock_dark.png" />
     <Content Include="View\images\refresh_bar_arrow.png" />
     <Content Include="View\images\remove_wt_icon.png" />
+    <Content Include="View\images\resume_black_ftr.png" />
+    <Content Include="View\images\resume_white_ftr.png" />
     <Content Include="View\images\rf_icon.png" />
     <Content Include="View\images\rf_i_icon.png" />
     <Content Include="View\images\search_icon.png" />
@@ -684,6 +735,10 @@
     <Content Include="View\images\stickers\WVGA\humanoid\008_shocked.png" />
     <Content Include="View\images\stickers\WVGA\humanoid\009_hurray.png" />
     <Content Include="View\images\stickers\WVGA\humanoid\010_yawning.png" />
+    <Content Include="View\images\account_white.png" />
+    <Content Include="View\images\notifications_black.png" />
+    <Content Include="View\images\notifications_white.png" />
+    <Content Include="View\images\account_black.png" />
     <Content Include="View\images\timeline_photo.png" />
     <Content Include="View\images\timeline_status_icon.png" />
     <Content Include="View\images\troll_overlay.png" />
@@ -903,9 +958,9 @@
     <Content Include="View\images\ic_delivered.png" />
     <Content Include="View\images\ic_read.png" />
     <Content Include="View\images\ic_sent.png" />
-    <Resource Include="View\images\privacy.png" />
+    <Resource Include="View\images\privacy_black.png" />
     <Content Include="View\images\play_icon.png" />
-    <Resource Include="View\images\privacy_dark.png" />
+    <Resource Include="View\images\privacy_white.png" />
     <Content Include="View\images\signup_logo.png" />
     <Resource Include="View\images\free_sms_dark.png" />
     <Content Include="View\images\ic_block_active.png" />
@@ -937,7 +992,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
@@ -948,4 +1002,9 @@
   </Target>
   -->
   <ProjectExtensions />
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.10\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.10\tools\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.10\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.10\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target>
 </Project>

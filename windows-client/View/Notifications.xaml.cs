@@ -29,13 +29,6 @@ namespace windows_client.View
 
         private void initializeBaseOnState()
         {
-            bool isLocationEnabled = true;
-            if (!App.appSettings.TryGetValue<bool>(App.USE_LOCATION_SETTING, out isLocationEnabled))
-                isLocationEnabled = true;
-
-            this.locationToggle.IsChecked = isLocationEnabled;
-            this.locationToggle.Content = isLocationEnabled ? AppResources.On : AppResources.Off;
-
             bool isPushEnabled = true;
             App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
             this.pushNotifications.IsChecked = isPushEnabled;
@@ -52,13 +45,13 @@ namespace windows_client.View
             else
                 this.vibrate.Content = AppResources.Off;
 
-            bool showFreeSMS = true;
-            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
-            this.showFreeSMSToggle.IsChecked = showFreeSMS;
-            if (showFreeSMS)
-                this.showFreeSMSToggle.Content = AppResources.On;
+            bool isHikeJingleEnabled = true;
+            App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
+            this.hikeJingle.IsChecked = isHikeJingleEnabled;
+            if (isHikeJingleEnabled)
+                this.hikeJingle.Content = AppResources.On;
             else
-                this.showFreeSMSToggle.Content = AppResources.Off;
+                this.hikeJingle.Content = AppResources.Off;
 
             List<string> listSettingsValue = new List<string>();
             //by default immediate is to be shown
@@ -79,12 +72,6 @@ namespace windows_client.View
                 else
                     listSettingsValue.Add(string.Format(AppResources.Settings_StatusUpdate_EveryXHour_txt, firstSetting));
             }
-
-            bool showlastSeen = true;
-            if (!App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out showlastSeen))
-                showlastSeen = true;
-            lastSeenTimeStampToggle.IsChecked = showlastSeen;
-            this.lastSeenTimeStampToggle.Content = showlastSeen ? AppResources.On : AppResources.Off;
 
             byte statusSettingsValue;
             if (App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue))
@@ -130,24 +117,22 @@ namespace windows_client.View
             App.WriteToIsoStorageSettings(App.VIBRATE_PREF, true);
         }
 
+        private void hikeJingle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.hikeJingle.Content = AppResources.Off;
+            App.WriteToIsoStorageSettings(App.HIKEJINGLE_PREF, false);
+        }
+        private void hikeJingle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.hikeJingle.Content = AppResources.On;
+            App.WriteToIsoStorageSettings(App.HIKEJINGLE_PREF, true);
+        }
+
         private void vibrate_Unchecked(object sender, RoutedEventArgs e)
         {
             this.vibrate.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.VIBRATE_PREF, false);
         }
-
-        private void showFreeSMSToggle_Checked(object sender, RoutedEventArgs e)
-        {
-            this.showFreeSMSToggle.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
-        }
-
-        private void showFreeSMSToggle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.showFreeSMSToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
-        }
-
         private void statusUpdateNotification_Checked(object sender, RoutedEventArgs e)
         {
             this.statusUpdateNotificationToggle.Content = AppResources.On;
@@ -201,64 +186,6 @@ namespace windows_client.View
             statusUpdateNotificationToggle.Loaded -= statusUpdateNotificationToggle_Loaded;
             statusUpdateNotificationToggle.Checked += statusUpdateNotification_Checked;
             statusUpdateNotificationToggle.Unchecked += statusUpdateNotification_Unchecked;
-        }
-
-        private void lastSeenTimeStampToggle_Loaded(object sender, RoutedEventArgs e)
-        {
-            lastSeenTimeStampToggle.Loaded -= lastSeenTimeStampToggle_Loaded;
-            lastSeenTimeStampToggle.Checked += lastSeenTimeStampToggle_Checked;
-            lastSeenTimeStampToggle.Unchecked += lastSeenTimeStampToggle_Unchecked;
-        }
-
-        private void lastSeenTimeStampToggle_Checked(object sender, RoutedEventArgs e)
-        {
-            this.lastSeenTimeStampToggle.Content = AppResources.On;
-            App.appSettings.Remove(App.LAST_SEEN_SEETING);
-            App.appSettings.Save();
-
-            JObject obj = new JObject();
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
-            JObject data = new JObject();
-            data.Add(HikeConstants.LASTSEENONOFF, true);
-            obj.Add(HikeConstants.DATA, data);
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-        }
-
-        private void lastSeenTimeStampToggle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.lastSeenTimeStampToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, false);
-
-            JObject obj = new JObject();
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
-            JObject data = new JObject();
-            data.Add(HikeConstants.LASTSEENONOFF, false);
-            obj.Add(HikeConstants.DATA, data);
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-        }
-
-        private void locationToggle_Checked(object sender, RoutedEventArgs e)
-        {
-            this.locationToggle.Content = AppResources.On;
-            App.appSettings.Remove(App.USE_LOCATION_SETTING);
-            App.appSettings.Save();
-
-            App.ViewModel.LoadCurrentLocation(); // load current location
-        }
-
-        private void locationToggle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.locationToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, false);
-
-            App.appSettings.Remove(HikeConstants.LOCATION_DEVICE_COORDINATE);
-            App.appSettings.Save();
-        }
-       
-        private async void btnGoToLockSettings_Click(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            // Launch URI for the lock screen settings screen.
-            var op = await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-lock:"));
         }
     }
 }

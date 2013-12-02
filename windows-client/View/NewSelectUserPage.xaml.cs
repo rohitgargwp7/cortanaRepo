@@ -825,6 +825,8 @@ namespace windows_client.View
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
                 contact.Msisdn = Utils.NormalizeNumber(contact.Name);
+                if (contact.Msisdn == App.MSISDN)
+                    return;
                 contact = GetContactIfExists(contact);
                 contact.Name = contact.Msisdn;
             }
@@ -1205,7 +1207,7 @@ namespace windows_client.View
                 if (cursorPosition < nameLength)
                 {
                     MessageBoxResult result = MessageBox.Show(string.Format(AppResources.SelectUser_ContactRemoved_Txt, contactsForgroup[k].Name, contactsForgroup[k].Msisdn), AppResources.SelectUser_RemoveContact_Txt, MessageBoxButton.OKCancel);
-                    if (result == MessageBoxResult.Cancel)
+                    if (result != MessageBoxResult.OK)
                     {
                         enterNameTxt.Select(enterNameTxt.Text.Length, 0);
                         return;

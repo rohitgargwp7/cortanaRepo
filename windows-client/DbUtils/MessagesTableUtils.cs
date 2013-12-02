@@ -19,54 +19,6 @@ namespace windows_client.DbUtils
     {
         private static object lockObj = new object();
 
-        //keep a set of currently uploading or downloading messages.
-        private static Dictionary<long, ConvMessage> uploadingOrDownloadingMessages = new Dictionary<long, ConvMessage>();
-
-        public static void addUploadingOrDownloadingMessage(long messageId, ConvMessage conMessage)
-        {
-            if (messageId == -1)
-                return;
-            lock (lockObj)
-            {
-                if (!uploadingOrDownloadingMessages.ContainsKey(messageId))
-                    uploadingOrDownloadingMessages.Add(messageId, conMessage);
-            }
-        }
-
-        public static void removeUploadingOrDownloadingMessage(long messageId)
-        {
-            if (messageId == -1)
-                return;
-            lock (lockObj)
-            {
-                if (uploadingOrDownloadingMessages.ContainsKey(messageId))
-                    uploadingOrDownloadingMessages.Remove(messageId);
-            }
-        }
-
-        public static bool isUploadingOrDownloadingMessage(long messageId)
-        {
-            lock (lockObj)
-            {
-                return uploadingOrDownloadingMessages.ContainsKey(messageId);
-            }
-        }
-
-        public static ConvMessage getUploadingOrDownloadingMessage(long messageId)
-        {
-            if (messageId == -1)
-                return null;
-            lock (lockObj)
-            {
-                if (uploadingOrDownloadingMessages.ContainsKey(messageId))
-                {
-                    return uploadingOrDownloadingMessages[messageId];
-                }
-                return null;
-            }
-        }
-
-
         //private static HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring); // use this chatsDbContext to improve performance
 
         /* This is shown on chat thread screen*/
@@ -560,7 +512,7 @@ namespace windows_client.DbUtils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         msisdn = msisdn.Replace(':', '_');
                         if (!store.DirectoryExists(LONG_MSG_DIRECTORY))
@@ -601,7 +553,7 @@ namespace windows_client.DbUtils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
                     {
                         msisdn = msisdn.Replace(':', '_');
                         string fileName = LONG_MSG_DIRECTORY + "\\" + msisdn + "\\" + timestamp;

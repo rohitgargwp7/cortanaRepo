@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Windows Phone
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConcurrentDictionary", "PhoneClassLibrary1\ConcurrentDictionary.csproj", "{044E8A95-5C0B-4784-8C9F-F17906A37927}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM = Debug|ARM
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|ARM = Release|ARM
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{044E8A95-5C0B-4784-8C9F-F17906A37927}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{044E8A95-5C0B-4784-8C9F-F17906A37927}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{044E8A95-5C0B-4784-8C9F-F17906A37927}.Debug|ARM.ActiveCfg = Debug|ARM
+		{044E8A95-5C0B-4784-8C9F-F17906A37927}.Debug|ARM.Build.0 = Debug|ARM
+		{044E8A95-5C0B-4784-8C9F-F17906A37927}.Debug|x86.ActiveCfg = Debug|x86
+		{044E8A95-5C0B-4784-8C9F-F17906A37927}.Debug|x86.Build.0 = Debug|x86
+		{044E8A95-5C0B-4784-8C9F-F17906A37927}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{044E8A95-5C0B-4784-8C9F-F17906A37927}.Release|Any CPU.Build.0 = Release|Any CPU
+		{044E8A95-5C0B-4784-8C9F-F17906A37927}.Release|ARM.ActiveCfg = Release|ARM
+		{044E8A95-5C0B-4784-8C9F-F17906A37927}.Release|ARM.Build.0 = Release|ARM
+		{044E8A95-5C0B-4784-8C9F-F17906A37927}.Release|x86.ActiveCfg = Release|x86
+		{044E8A95-5C0B-4784-8C9F-F17906A37927}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -18,6 +18,7 @@ using System.Net.NetworkInformation;
 using Microsoft.Phone.Net.NetworkInformation;
 using System.Globalization;
 using Newtonsoft.Json.Linq;
+using System.Windows.Controls;
 
 namespace windows_client
 {
@@ -43,6 +44,9 @@ namespace windows_client
         public static readonly string STATUS_UPDATE_SECOND_SETTING = "stUpSecSet";
         public static readonly string LAST_SEEN_SEETING = "lstSeenSet";
         public static readonly string USE_LOCATION_SETTING = "locationSet";
+        public static readonly string AUTO_DOWNLOAD_SETTING = "autoDownload";
+        public static readonly string AUTO_RESUME_SETTING = "autoResume";
+        public static readonly string ENTER_TO_SEND = "enterToSend";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
         public static readonly string SHOW_BASIC_TUTORIAL = "basicTut";
@@ -71,14 +75,11 @@ namespace windows_client
         public static string EMAIL = "email";
         public static string GENDER = "gender";
         public static readonly string VIBRATE_PREF = "vibratePref";
-        public static readonly string LAST_UPDATE_CHECK_TIME = "lastUpdateTime";
-        public static readonly string LAST_DISMISSED_UPDATE_VERSION = "lastDismissedUpdate";
-        public static readonly string LAST_CRITICAL_VERSION = "lastCriticalVersion";
+        public static readonly string HIKEJINGLE_PREF = "jinglePref";
         public static readonly string APP_ID_FOR_LAST_UPDATE = "appID";
         public static readonly string LAST_ANALYTICS_POST_TIME = "analyticsTime";
 
         public static readonly string CURRENT_LOCALE = "curLocale";
-
 
         #endregion
 
@@ -309,6 +310,7 @@ namespace windows_client
 
             // Phone-specific initialization
             InitializePhoneApplication();
+
             //CreateURIMapping();
             // Show graphics profiling information while debugging.
             if (System.Diagnostics.Debugger.IsAttached)
@@ -374,7 +376,7 @@ namespace windows_client
         {
             _isAppLaunched = false; // this means app is activated, could be tombstone or dormant state
             _isTombstoneLaunch = !e.IsApplicationInstancePreserved; //e.IsApplicationInstancePreserved  --> if this is true its dormant else tombstoned
-            
+
             if (_isTombstoneLaunch)
             {
                 try
@@ -408,7 +410,7 @@ namespace windows_client
         {
             NetworkManager.turnOffNetworkManager = true;
             sendAppBgStatusToServer();
-            
+
             if (App.AnalyticsInstance != null)
                 App.AnalyticsInstance.saveObject();
 
@@ -434,7 +436,7 @@ namespace windows_client
         {
             if (App.AnalyticsInstance != null)
                 App.AnalyticsInstance.saveObject(); //check for null
-            
+
             sendAppBgStatusToServer();
             //appDeinitialize();
         }
@@ -473,6 +475,10 @@ namespace windows_client
                     {
                         PushHelper.Instance.registerPushnotifications();
                     }
+
+
+                    FileTransfers.FileTransferManager.Instance.ChangeMaxUploadBuffer(e.NetworkInterface.InterfaceSubtype);
+                    FileTransfers.FileTransferManager.Instance.StartTask();
                 }
                 else
                 {
@@ -511,7 +517,7 @@ namespace windows_client
                     int idx = targetPage.IndexOf("?") + 1;
                     string param = targetPage.Substring(idx);
                     e.Cancel = true;
-                    
+
                     RootFrame.Dispatcher.BeginInvoke(delegate
                     {
                         RootFrame.Navigate(new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative));
@@ -718,6 +724,12 @@ namespace windows_client
                 ChatBackgroundHelper.Instance.LoadDefaultIdsToFile();
             }
 
+            #region Enter to send
+
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.3.0.8") < 0)
+                App.WriteToIsoStorageSettings(App.ENTER_TO_SEND, false);
+
+            #endregion
             #region ProTips 2.3.0.0
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.3.0.0") < 0)
             {
@@ -754,7 +766,7 @@ namespace windows_client
                             App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, false);
                     }
                 }
-                catch(InvalidCastException ex)
+                catch (InvalidCastException ex)
                 {
                     // will not reach here for new user & upgraded user.
                 }
@@ -779,9 +791,11 @@ namespace windows_client
             #endregion
             #region STCIKERS
             //todo:make it 2.2.2.0
-            if (isNewInstall || Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.3.0.8") < 0)
             {
-                StickerCategory.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
+                if (!isNewInstall && Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
+                    StickerCategory.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
+
                 StickerHelper.CreateDefaultCategories();
             }
             #endregion
@@ -933,7 +947,24 @@ namespace windows_client
             #region Post App Locale
             PostLocaleInfo();
             #endregion
-
+            #region HIKE BOT
+            if (isNewInstall)
+                WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
+            else if (Utils.compareVersion(_currentVersion, "2.3.0.8") < 0)
+            {
+                if (_viewModel != null)
+                {
+                    foreach (ConversationListObject convlist in _viewModel.ConvMap.Values)
+                    {
+                        if (Utils.IsHikeBotMsg(convlist.Msisdn))
+                        {
+                            convlist.ContactName = Utils.GetHikeBotName(convlist.Msisdn);
+                            ConversationTableUtils.saveConvObject(convlist, convlist.Msisdn.Replace(":", "_"));
+                        }
+                    }
+                }
+            }
+            #endregion
         }
 
         public static void createDatabaseAsync()
@@ -1165,5 +1196,11 @@ namespace windows_client
             if (App.HikePubSubInstance != null)
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
+
+        public static MediaElement GlobalMediaElement
+        {
+            get { return Current.Resources["GlobalMedia"] as MediaElement; }
+        }
+
     }
 }

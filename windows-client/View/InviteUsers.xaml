@@ -56,7 +56,7 @@
         <DataTemplate x:Key="ItemTemplate">
             <StackPanel Orientation="Horizontal" Margin="-11,0,0,0" Name="ItemStackPanel">
                 <CheckBox IsChecked="{Binding IsFav,Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="-5,6,0,2">
+                <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="-5,6,0,2" Tap="Sender_Tap">
                     <TextBlock Text="{Binding Name}" FontFamily="Segoe WP SemiLight" FontSize="42" />
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
@@ -86,19 +86,29 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Grid.Row="0" GotFocus="enterNameTxt_GotFocus" Margin="-10,5,0,0" Width="440" HorizontalAlignment="Stretch" 
                                   Hint="{Binding Path= LocalizedResources.SelectUser_TxtBoxHint_Txt, Source={StaticResource LocalizedStrings}}"
                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
-
-            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="1" Margin="24,15,0,10"
+            <Grid Grid.Row="1" Name="gridSelectAll" Visibility="Collapsed" Tap="gridSelectAll_Tap">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <CheckBox Name="SelectAll_Chkbx" Margin="12 0 0 0" />
+                <TextBlock Grid.Column="1" Text="{Binding Path= LocalizedResources.SelectAll_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="0 0 0 10" />
+                <TextBlock Name="txtSelectedCounter" Foreground="#2e91d3" Grid.Column="2" Text="(0)" Visibility="Collapsed" FontSize="42" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="5 0 24 10" />
+            </Grid>
+            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="24,15,0,10"
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
                           IsGroupingEnabled="True" LayoutMode="List" HideEmptyGroups="True"
                           ItemTemplate="{StaticResource ItemTemplate}"
                           GroupHeaderTemplate="{StaticResource GroupHeaderTemplate}"
-                          JumpListStyle="{StaticResource LongListSelectorJumpListStyle}"/>
+                          JumpListStyle="{StaticResource LongListSelectorJumpListStyle}" />
             <TextBlock x:Name="emptyHikeFriendsTxt" Visibility="Collapsed" Text="Bummer! None of your friends are on hike." FontSize="26" TextWrapping="Wrap" Grid.Row="2" Margin="24,20,24,0" />
         </Grid>
     </Grid>

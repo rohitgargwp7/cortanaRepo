@@ -13,6 +13,7 @@ using windows_client.Misc;
 using windows_client.Languages;
 using windows_client.ViewModel;
 using System.Linq;
+using Microsoft.Phone.Shell;
 
 namespace windows_client
 {
@@ -142,13 +143,19 @@ namespace windows_client
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
 
+                    if (obj == null)
+                        return;
+
                     if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT)
                         || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
                     {
                         convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
                     }
-                    if (obj == null)
-                        return;
+                    else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
+                    {
+                        FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                    }
+
                     if (convMessage.FileAttachment != null)
                     {
                         MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
@@ -535,6 +542,11 @@ namespace windows_client
                 {
                     data = (JObject)jsonObj[HikeConstants.DATA];
                     Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString());
+                    JToken jtoken;
+                    if (data.TryGetValue(HikeConstants.SHOW_FREE_INVITES, out jtoken) && (bool)jtoken)
+                    {
+                        App.appSettings[HikeConstants.SHOW_POPUP] = null;//to show it is free sms pop up.
+                    }
                     KeyValuePair<string, JToken> kv;
                     IEnumerator<KeyValuePair<string, JToken>> keyVals = data.GetEnumerator();
                     while (keyVals.MoveNext())
@@ -614,9 +626,24 @@ namespace windows_client
                                                         else
                                                             FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                                                         Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
-                                                        LoadFavAndPending(isFav, fkkvv.Key, name); // true for favs
+                                                        LoadFavAndPending(isFav, fkkvv.Key); // true for favs
                                                         thrAreFavs = true;
+
+                                                        ConversationListObject favObj;
+                                                        if (App.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
+                                                            favObj = App.ViewModel.ConvMap[fkkvv.Key];
+                                                        else
+                                                        {
+                                                            ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(fkkvv.Key);
+                                                            if (ci != null)
+                                                                name = ci.Name;
+
+                                                            favObj = new ConversationListObject(fkkvv.Key, name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(fkkvv.Key) : null);
+                                                        }
+
+                                                        this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
                                                     }
+
                                                     if (thrAreFavs)
                                                         this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV, null);
                                                 });
@@ -835,6 +862,30 @@ namespace windows_client
                         App.WriteToIsoStorageSettings(App.HIDE_CRICKET_MOODS, !showMoods);
                     }
                     #endregion
+                    #region Invite pop up
+                    JToken jtokenMessageId;
+                    if (data.TryGetValue(HikeConstants.MESSAGE_ID, out jtokenMessageId))
+                    {
+                        JToken jtokenShowFreeInvites;
+                        string previousId;
+                        if ((!App.appSettings.TryGetValue(HikeConstants.INVITE_POPUP_UNIQUEID, out previousId) || previousId != ((string)jtokenMessageId)) && data.TryGetValue(HikeConstants.SHOW_FREE_INVITES, out jtokenShowFreeInvites))
+                        {
+                            App.WriteToIsoStorageSettings(HikeConstants.INVITE_POPUP_UNIQUEID, (string)jtokenMessageId);
+                            bool showInvite = (bool)jtokenShowFreeInvites;
+
+                            if (showInvite)
+                            {
+                                JToken jtoken;
+                                Object[] popupDataobj = new object[2];
+                                //add title to zero place;
+                                popupDataobj[0] = data.TryGetValue(HikeConstants.FREE_INVITE_POPUP_TITLE, out jtoken) ? (string)jtoken : null;
+                                //add text to first place;
+                                popupDataobj[1] = data.TryGetValue(HikeConstants.FREE_INVITE_POPUP_TEXT, out jtoken) ? (string)jtoken : null;
+                                App.appSettings[HikeConstants.SHOW_POPUP] = popupDataobj;
+                            }
+                        }
+                    }
+                    #endregion
                 }
                 catch (Exception ex)
                 {
@@ -936,11 +987,6 @@ namespace windows_client
                 #region KICKEDOUT USER ADDED
                 else if (gcState == GroupChatState.KICKEDOUT_USER_ADDED)
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (!App.IS_MARKETPLACE) // remove this later , this is only for QA
-                            MessageBox.Show("GCJ came after adding knocked user!!");
-                    });
                     GroupTableUtils.SetGroupAlive(grpId);
                     convMessage = new ConvMessage(jsonObj, false, false); // this will be normal GCJ msg
                     this.pubSub.publish(HikePubSub.GROUP_ALIVE, grpId);
@@ -1338,7 +1384,7 @@ namespace windows_client
                             {
                                 int.TryParse(moodId_String, out moodId);
                                 moodId = MoodsInitialiser.GetRecieverMoodId(moodId);
-                                if (moodId > 0)
+                                if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null)
                                     tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
                             }
                         }
@@ -1503,11 +1549,14 @@ namespace windows_client
                             listStickers.Add((string)jarray[i]);
                         }
                         StickerCategory.DeleteSticker(category, listStickers);
+                        RecentStickerHelper.DeleteSticker(category, listStickers);
+
                     }
                     else if (subType == HikeConstants.REMOVE_CATEGORY)
                     {
                         string category = (string)jsonData[HikeConstants.CATEGORY_ID];
                         StickerCategory.DeleteCategory(category);
+                        RecentStickerHelper.DeleteCategory(category);
                     }
 
                 }
@@ -1628,6 +1677,60 @@ namespace windows_client
                 }
             }
             #endregion
+            #region App Update
+
+            else if (HikeConstants.MqttMessageTypes.APP_UPDATE == type)
+            {
+                JObject data = null;
+
+                try
+                {
+                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    var devType = (string)data[HikeConstants.DEVICE_TYPE_KEY];
+
+                    if (devType != "windows")
+                        return;
+
+                    var version = (string)data[HikeConstants.VERSION];
+
+                    if (Utils.compareVersion(version, App.CURRENT_VERSION) <= 0)
+                        return;
+
+                    bool isCritical = false;
+                    try
+                    {
+                        isCritical = (bool)data[HikeConstants.CRITICAL];
+                    }
+                    catch
+                    {
+                        isCritical = false;
+                    }
+
+                    var message = "";
+                    try
+                    {
+                        message = (string)data[HikeConstants.TEXT_UPDATE_MSG];
+                    }
+                    catch
+                    {
+                        message = isCritical ? AppResources.CRITICAL_UPDATE_TEXT : AppResources.NORMAL_UPDATE_TEXT;
+                    }
+
+                    JObject obj = new JObject();
+                    obj.Add(HikeConstants.CRITICAL, isCritical);
+                    obj.Add(HikeConstants.TEXT_UPDATE_MSG, message);
+                    obj.Add(HikeConstants.VERSION, version);
+                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, obj.ToString(Newtonsoft.Json.Formatting.None));
+
+                    pubSub.publish(HikePubSub.APP_UPDATE_AVAILABLE, null); // no need of any arguments
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Network Manager:: APP UPDATE, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                }
+            }
+
+            #endregion
             #region OTHER
             else
             {
@@ -1636,7 +1739,7 @@ namespace windows_client
             #endregion
         }
 
-        private void LoadFavAndPending(bool isFav, string msisdn, string name)
+        private void LoadFavAndPending(bool isFav, string msisdn)
         {
             if (msisdn == null)
                 return;

@@ -37,7 +37,6 @@ namespace windows_client.Model
         private int _muteVal = -1; // this is used to track mute (added in version 1.5.0.0)
         private BitmapImage empImage = null;
         private bool _isFav;
-
         #endregion
 
         #region Properties
@@ -238,7 +237,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (Utils.isGroupConversation(Msisdn))
+                if (Utils.isGroupConversation(Msisdn) || Utils.IsHikeBotMsg(_msisdn))
                     return Visibility.Collapsed;
                 else
                     return Visibility.Visible;
@@ -290,7 +289,7 @@ namespace windows_client.Model
                 }
             }
         }
-        
+
         public Visibility UnreadCircleVisibility
         {
             get
@@ -518,7 +517,7 @@ namespace windows_client.Model
             double defaultWidth = 17;
             var num = UnreadCounter;
 
-            while (num!=0)
+            while (num != 0)
             {
                 num /= 10;
                 defaultWidth += 8;
@@ -661,7 +660,6 @@ namespace windows_client.Model
                     else
                         _unreadCounter = 0;
                 }
-
             }
             catch (Exception ex)
             {

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.IsolatedStorage;
@@ -9,12 +10,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using windows_client.ViewModel;
 
 namespace windows_client.utils
 {
-    public class StickerCategory
+    public class StickerCategory : INotifyPropertyChanged
     {
         public const string STICKERS_DIR = "stickers";
         public const string HIGH_RESOLUTION_DIR = "highres";
@@ -27,6 +29,7 @@ namespace windows_client.utils
         private bool _hasNewStickers = false;
         private ObservableCollection<Sticker> _listStickers;
         private bool _isDownLoading;
+        private bool _isSelected;
         private static object readWriteLock = new object();
 
         public string Category
@@ -37,6 +40,9 @@ namespace windows_client.utils
             }
         }
 
+        /// <summary>
+        /// currenty request has been sent to server for download
+        /// </summary>
         public bool IsDownLoading
         {
             get
@@ -49,6 +55,9 @@ namespace windows_client.utils
             }
         }
 
+        /// <summary>
+        /// shows server has more stickers for download
+        /// </summary>
         public bool HasMoreStickers
         {
             get
@@ -58,9 +67,13 @@ namespace windows_client.utils
             set
             {
                 _hasMoreStickers = value;
+                NotifyPropertyChanged("BorderThickness");
             }
         }
 
+        /// <summary>
+        /// to show stickers download overlay
+        /// </summary>
         public bool ShowDownloadMessage
         {
             get
@@ -73,6 +86,9 @@ namespace windows_client.utils
             }
         }
 
+        /// <summary>
+        /// shows category has newly downloaded stickers
+        /// </summary>
         public bool HasNewStickers
         {
             get
@@ -82,9 +98,76 @@ namespace windows_client.utils
             set
             {
                 _hasNewStickers = value;
+                NotifyPropertyChanged("BorderThickness");
             }
         }
 
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                if (value != _isSelected)
+                {
+                    _isSelected = value;
+                    NotifyPropertyChanged("CategoryIcon");
+                    NotifyPropertyChanged("BackgroundColor");
+                }
+            }
+        }
+        public BitmapImage CategoryIcon
+        {
+            get
+            {
+                switch (_category)
+                {
+                    case StickerHelper.CATEGORY_RECENT:
+                        return UI_Utils.Instance.RecentIcon;
+                    case StickerHelper.CATEGORY_HUMANOID:
+                        return _isSelected ? UI_Utils.Instance.HumanoidActive : UI_Utils.Instance.HumanoidInactive;
+                    case StickerHelper.CATEGORY_DOGGY:
+                        return _isSelected ? UI_Utils.Instance.DoggyActive : UI_Utils.Instance.DoggyInactive;
+                    case StickerHelper.CATEGORY_KITTY:
+                        return _isSelected ? UI_Utils.Instance.KittyActive : UI_Utils.Instance.KittyInactive;
+                    case StickerHelper.CATEGORY_EXPRESSIONS:
+                        return _isSelected ? UI_Utils.Instance.ExpressionsActive : UI_Utils.Instance.ExpressionsInactive;
+                    case StickerHelper.CATEGORY_BOLLYWOOD:
+                        return _isSelected ? UI_Utils.Instance.BollywoodActive : UI_Utils.Instance.BollywoodInactive;
+                    case StickerHelper.CATEGORY_TROLL:
+                        return _isSelected ? UI_Utils.Instance.TrollActive : UI_Utils.Instance.TrollInactive;
+                    case StickerHelper.CATEGORY_HUMANOID2:
+                        return _isSelected ? UI_Utils.Instance.Humanoid2Active : UI_Utils.Instance.Humanoid2Inactive;
+                    case StickerHelper.CATEGORY_AVATARS:
+                        return _isSelected ? UI_Utils.Instance.AvatarsActive : UI_Utils.Instance.AvatarsInactive;
+                    case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
+                        return _isSelected ? UI_Utils.Instance.SmileyExpressionsActive : UI_Utils.Instance.SmileyExpressionsInactive;
+                    default:
+                        return new BitmapImage();
+                }
+            }
+        }
+
+        public SolidColorBrush BackgroundColor
+        {
+            get
+            {
+                return _isSelected ? UI_Utils.Instance.TappedCategoryColor : UI_Utils.Instance.UntappedCategoryColor;
+            }
+        }
+
+        public Thickness BorderThickness
+        {
+            get
+            {
+                if (_hasNewStickers || _hasMoreStickers)
+                    return UI_Utils.Instance.NewCategoryThickness;
+                else
+                    return UI_Utils.Instance.ZeroThickness;
+            }
+        }
         public ObservableCollection<Sticker> ListStickers
         {
             get
@@ -109,6 +192,26 @@ namespace windows_client.utils
         }
 
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // Used to notify that a property changed
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("StickerCategory :: NotifyPropertyChanged : NotifyPropertyChanged, Exception : " + ex.StackTrace);
+                    }
+                });
+            }
+        }
         public void WriteHighResToFile(List<KeyValuePair<string, Byte[]>> listStickersImageBytes)
         {
             lock (readWriteLock)
@@ -118,7 +221,7 @@ namespace windows_client.utils
                     try
                     {
                         string folder = STICKERS_DIR + "\\" + HIGH_RESOLUTION_DIR + "\\" + _category;
-                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                         {
                             if (!store.DirectoryExists(STICKERS_DIR))
                             {
@@ -176,7 +279,7 @@ namespace windows_client.utils
                     {
                         string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + _category;
 
-                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                         {
                             if (!store.DirectoryExists(STICKERS_DIR))
                             {
@@ -246,7 +349,7 @@ namespace windows_client.utils
                 try
                 {
                     string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + _category;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (!store.DirectoryExists(STICKERS_DIR))
                         {
@@ -304,7 +407,7 @@ namespace windows_client.utils
             {
                 lock (readWriteLock)
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         string fileName = StickerCategory.STICKERS_DIR + "\\" + StickerCategory.HIGH_RESOLUTION_DIR + "\\" + sticker.Category + "\\" + sticker.Id;
                         if (store.FileExists(fileName))
@@ -336,7 +439,7 @@ namespace windows_client.utils
             {
                 string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
 
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     if (!store.DirectoryExists(STICKERS_DIR))
                     {
@@ -362,7 +465,7 @@ namespace windows_client.utils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR;
                         string[] folders = store.GetDirectoryNames(folder + "\\*");
@@ -391,9 +494,7 @@ namespace windows_client.utils
                                                     }
                                                     else
                                                     {
-                                                        int imageBytesCount = reader.ReadInt32();
-                                                        Byte[] imageBytes = reader.ReadBytes(imageBytesCount);
-                                                        stickerCategory._listStickers.Add(new Sticker(category, stickerId, imageBytes, false));
+                                                        stickerCategory._listStickers.Add(new Sticker(category, stickerId, null, false));
                                                     }
                                                 }
                                                 catch (Exception ex)
@@ -423,7 +524,7 @@ namespace windows_client.utils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
 
@@ -471,7 +572,7 @@ namespace windows_client.utils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
 
@@ -507,7 +608,7 @@ namespace windows_client.utils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
 
@@ -557,7 +658,7 @@ namespace windows_client.utils
                 try
                 {
                     string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (!store.DirectoryExists(STICKERS_DIR))
                         {
@@ -615,7 +716,7 @@ namespace windows_client.utils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         string categoryFolder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR;
                         string[] folders = store.GetDirectoryNames(categoryFolder + "\\*");

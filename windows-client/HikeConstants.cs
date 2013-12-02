@@ -19,6 +19,7 @@ namespace windows_client
         public static readonly string SUBTYPE_NEW_JOIN = "nu";
         public static readonly string SUBTYPE_REJOIN = "ru";
         public static readonly string TAG = "tag";
+        public static readonly string UPGRADE = "upgrade";
 
         public static readonly string ADD_STICKER = "addStk";
         public static readonly string ADD_CATEGORY = "addCat";
@@ -37,12 +38,12 @@ namespace windows_client
         public static readonly string FILE_SYSTEM_VERSION = "File_System_Version";
         public static readonly string REQUEST_SERVER_TIME = "rsts";
         public static readonly string STATUS = "st";
-        
+
         public static readonly string CRITICAL = "critical";
         public static readonly string LATEST = "latest";
         public static readonly string APP_ID = "appID";
 
-
+        public static readonly string LAST_NOTIFICATION_TIME = "lastNotTime";
         public static readonly string SOUND_PREF = "soundPref";
         public static readonly string VIBRATE_PREF = "vibratePref";
         public static readonly string HIKEBOT = "TD-HIKE";
@@ -55,10 +56,12 @@ namespace windows_client
         public static readonly string FILE_NAME = "fn";
         public static readonly string FILE_RESPONSE_DATA = "data";
         public static readonly string FILE_KEY = "fk";
+        public static readonly string FILE_SIZE = "fs";
         public static readonly string FILE_THUMBNAIL = "tn";
         public static readonly string FILE_CONTENT_TYPE = "ct";
         public static readonly string FILES_DATA = "files";
         public static readonly string FILE_PLAY_TIME = "pt";
+        public static readonly string MD5_ORIGINAL = "md5_original";
 
         public static readonly string LATITUDE = "lat";
         public static readonly string LONGITUDE = "long";
@@ -67,7 +70,7 @@ namespace windows_client
         public static readonly string LOCATION_TITLE = "title";
         public static readonly string LOCATION_FILENAME = "Location";
         public static readonly string LOCATION_CONTENT_TYPE = "hikemap/location";
-        
+
         public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
         public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
         public static readonly string FILES_THUMBNAILS = FILE_TRANSFER_LOCATION + "/Thumbnails";
@@ -75,10 +78,10 @@ namespace windows_client
         public static readonly string TEMP_VIDEO_RECORDED = FILE_TRANSFER_LOCATION + "/TempVideo";
         public static readonly string TEMP_VIDEO_NAME = "CameraMovie.mp4";
 
-
         public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
         public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.FILE_TRANSFER_BASE + "/user/ft";
         public static readonly string FILE_TRANSFER_COPY_BASE_URL = "http://hike.in/f";
+        public static readonly string PARTIAL_FILE_TRANSFER_BASE_URL = AccountUtils.FILE_TRANSFER_BASE + "/user/pft/";
 
         public static readonly string pushNotificationChannelName = "HikeApp";
 
@@ -97,7 +100,9 @@ namespace windows_client
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
-        public static readonly int TYPING_NOTIFICATION_AUTOHIDE = 20; //seconds
+        public static readonly int TYPING_NOTIFICATION_AUTOHIDE = 3; //seconds
+        public static readonly int SEND_END_TYPING_TIMER = 3; //seconds
+        public static readonly int SEND_START_TYPING_TIMER = 2; //seconds
         public static readonly int MAX_CHATBUBBLE_SIZE = 1400;//chars
 
         public static readonly int ANALYTICS_POST_TIME = 12;//hours on prod and minutes on staging
@@ -134,7 +139,6 @@ namespace windows_client
         public static readonly string REQUEST_PENDING = "requestpending";
         public static readonly string FULL_VIEW_IMAGE_PREFIX = "_fullView";
 
-
         //CS prefix for contactsharing
         public static readonly string CS_PHONE_NUMBERS = "phone_numbers";
         public static readonly string CS_NAME = "name";
@@ -162,6 +166,12 @@ namespace windows_client
         public static readonly string CAMERA_FRONT = "Front";
         public static readonly string CAMERA_BACK = "Back";
 
+        public const string FTUE_TEAMHIKE_MSISDN = "+hike+";
+        public const string FTUE_HIKEBOT_MSISDN = "+hike1+";
+        public const string FTUE_GAMING_MSISDN = "+hike2+";
+
+        public static readonly string VERSION = "version";
+        
         public static string FAQS_LINK
         {
             get
@@ -340,6 +350,29 @@ namespace windows_client
         public static readonly string VIDEO_RESOLUTION = "videoResolution";
         public static readonly string VIDEO_FRAME_BYTES = "videoFrameBytes";
 
+
+        public static readonly string FREE_INVITE_POPUP_TITLE = "free_invite_popup_title";
+        public static readonly string FREE_INVITE_POPUP_TEXT = "free_invite_popup_text";
+        public static readonly string SHOW_FREE_INVITES = "show_free_invites";
+        public static readonly string INVITE_POPUP_UNIQUEID = "invite_popup_uniqueid";
+        public static readonly string SHOW_POPUP = "show_popup";
+
+        #region ANALYTICS EVENTS KEYS
+
+        public static readonly string INVITE_FRIENDS_FROM_POPUP_FREE_SMS = "inviteFriendsFromPopupFreeSMS";
+        public static readonly string INVITE_FRIENDS_FROM_POPUP_REWARDS = "inviteFriendsFromPopupRewards";
+        public static readonly string INVITE_SMS_SCREEN_FROM_INVITE = "inviteSMSScreenFromInvite";
+        public static readonly string INVITE_SMS_SCREEN_FROM_CREDIT = "inviteSMSScreenFromCredit";
+        public static readonly string SELECT_ALL_INVITE = "selectAllInvite";
+
+        public static readonly string EVENT_TYPE = "et";
+        public static readonly string EVENT_KEY = "ek";
+        public static readonly string EVENT_TYPE_CLICK = "click";
+        public static readonly string TAG_MOBILE = "mob";
+
+
+        #endregion
+
         public static class Extras
         {
             public static readonly string ANIMATED_ONCE = "animatedOnce";
@@ -363,6 +396,7 @@ namespace windows_client
             public static readonly string SCALE_UP = "scaleUpIfNeeded";
             public static readonly string UPDATE_AVAILABLE = "updateAvailable";
             public static readonly string KEEP_MESSAGE = "keepMessage";
+            public static readonly string SEND_BOT = "sendbot";
         }
 
         public static class MqttMessageTypes
@@ -373,11 +407,11 @@ namespace windows_client
             public static readonly string GROUP_CHAT_LEAVE = "gcl";
             public static readonly string GROUP_CHAT_END = "gce";
             public static readonly string GROUP_CHAT_NAME = "gcn";
-            public static readonly string REQUEST_ACCOUNT_INFO = "rai";
             public static readonly string DND_USER_IN_GROUP = "dugc";
 
             public static readonly string ACCOUNT_INFO = "ai";
             public static readonly string ACCOUNT_CONFIG = "ac";
+            public static readonly string REQUEST_ACCOUNT_INFO = "rai";
             public static readonly string GROUP_USER_JOINED_OR_WAITING = "gujow";
             public static readonly string USER_OPT_IN = "uo";
             public static readonly string USER_JOIN = "uj";
@@ -394,6 +428,7 @@ namespace windows_client
             public static readonly string CHAT_BACKGROUNDS = "cbg";
             public static readonly string APP_INFO = "app";
             public static readonly string FORCE_SMS = "fsms";
+            public static readonly string APP_UPDATE = "update";
         }
 
         public static class AppSettings
@@ -407,6 +442,10 @@ namespace windows_client
             public static readonly string NEW_UPDATE = "New_Update";
             public static readonly string APP_LAUNCH_COUNT = "App_Launch_Count";
             public static readonly string TIME_DIFF_EPOCH = "serverEpochTime";
+            public static readonly string REMOVE_EMMA = "removeEmma";
+            public static readonly string NEW_UPDATE_AVAILABLE = "New_Update_Available";
+            public static readonly string LAST_SELECTED_STICKER_CATEGORY = "lastSelectedStickerCategory";
+            public static readonly string LAST_SELECTED_EMOTICON_CATEGORY = "lastSelectedEmoticonCategory";
         }
 
         public static class NokiaHere

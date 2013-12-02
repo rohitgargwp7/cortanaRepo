@@ -34,17 +34,17 @@ using windows_client.Languages;
 using System.Net.NetworkInformation;
 using System.Windows.Controls.Primitives;
 using System.Windows.Navigation;
-using Microsoft.Phone.BackgroundAudio;
 using System.Collections.ObjectModel;
 using windows_client.ViewModel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using windows_client.FileTransfers;
+using System.Windows.Input;
 
 namespace windows_client.View
 {
     public partial class NewChatThread : PhoneApplicationPage, HikePubSub.Listener, INotifyPropertyChanged
     {
-
         #region CONSTANTS AND PAGE OBJECTS
 
         private readonly string ON_HIKE_TEXT = AppResources.SelectUser_FreeMsg_Txt;
@@ -76,7 +76,6 @@ namespace windows_client.View
         private bool mUserIsBlocked;
         private bool isOnHike;
         private bool animatedOnce = false;
-        private bool endTypingSent = true;
         private bool isTypingNotificationActive = false;
         private bool isTypingNotificationEnabled = true;
         private bool isReshowTypingNotification = false;
@@ -88,6 +87,7 @@ namespace windows_client.View
 
         private int mCredits;
         private long lastTextChangedTime;
+        private long lastTypingNotificationSentTime;
         private long lastTypingNotificationShownTime;
 
         private HikePubSub mPubSub;
@@ -105,12 +105,13 @@ namespace windows_client.View
         ApplicationBarMenuItem infoMenuItem;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
+        ApplicationBarIconButton stickersIconButton = null;
         ApplicationBarIconButton fileTransferIconButton = null;
         private PhotoChooserTask photoChooserTask;
         private CameraCaptureTask cameraCaptureTask;
         private object statusObject = null;
         private int _unreadMessageCounter = 0;
-
+        private bool _isHikeBot = false;
         private LastSeenHelper _lastSeenHelper;
         Boolean _isSendAllAsSMSVisible = false;
         //        private ObservableCollection<MyChatBubble> chatThreadPageCollection = new ObservableCollection<MyChatBubble>();
@@ -119,6 +120,8 @@ namespace windows_client.View
 
         public bool isMessageLoaded;
         public ObservableCollection<ConvMessage> ocMessages;
+
+        bool isInAppTipVisible = false;
 
         public int ResolutionId
         {
@@ -147,6 +150,13 @@ namespace windows_client.View
 
         private List<long> idsToUpdate = null; // this will store ids in perception fix case
 
+        private List<SmileyParser.Emoticon> imagePathsForListRecent
+        {
+            get
+            {
+                return SmileyParser.Instance._emoticonImagesForRecent;
+            }
+        }
         private BitmapImage[] imagePathsForList0
         {
             get
@@ -213,6 +223,8 @@ namespace windows_client.View
 
         public LruCache<string, BitmapImage> lruStickerCache;
 
+        public Dictionary<string, List<ConvMessage>> dictDownloadingSticker = new Dictionary<string, List<ConvMessage>>();
+
         #region PAGE BASED FUNCTIONS
 
         //        private ObservableCollection<UIElement> messagesCollection;
@@ -237,6 +249,7 @@ namespace windows_client.View
 
             ChatBackgroundHelper.Instance.UpdateChatBackground -= Instance_UpdateChatBackground;
             ChatBackgroundHelper.Instance.UpdateChatBackground += Instance_UpdateChatBackground;
+            FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI += FileTransferStatusUpdated;
 
             onlineStatus.Source = UI_Utils.Instance.LastSeenClockImage;
 
@@ -257,8 +270,102 @@ namespace windows_client.View
                 JumpToBottomGrid.Opacity = 0.85;
                 jumpToBottomBorder.Background = UI_Utils.Instance.BlackBorderBrush;
             }
+        }
 
-            _currentOrientation = this.Orientation;
+        void FileTransferStatusUpdated(object sender, FileTransferSatatusChangedEventArgs e)
+        {
+            FileInfoBase fInfo = e.FileInfo;
+            var id = Convert.ToInt64(fInfo.MessageId);
+
+            if (msgMap.ContainsKey(id))
+            {
+                var convMessage = msgMap[id];
+                UpdateFileTransferProgresInConvMessage(fInfo, convMessage, e.IsStateChanged);
+            }
+        }
+
+        private void UpdateFileTransferProgresInConvMessage(FileInfoBase fInfo, ConvMessage convMessage, bool isStateChanged)
+        {
+            if (convMessage == null)
+                return;
+
+            convMessage.ProgressBarValue = fInfo.PercentageTransfer;
+            convMessage.ProgressText = string.Format("{0}/{1}", Utils.ConvertToStorageSizeString(fInfo.BytesTransfered), Utils.ConvertToStorageSizeString(fInfo.TotalBytes));
+
+            if (isStateChanged)
+            {
+                Attachment.AttachmentState state = Attachment.AttachmentState.FAILED;
+
+                if (fInfo.FileState == FileTransferState.CANCELED)
+                {
+                    state = Attachment.AttachmentState.CANCELED;
+
+                    if (convMessage.IsSent)
+                        convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                }
+                else if (fInfo.FileState == FileTransferState.COMPLETED)
+                {
+                    state = Attachment.AttachmentState.COMPLETED;
+
+                    if (fInfo is FileUploader)
+                        convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                }
+                else if (fInfo.FileState == FileTransferState.PAUSED)
+                    state = Attachment.AttachmentState.PAUSED;
+                else if (fInfo.FileState == FileTransferState.MANUAL_PAUSED)
+                    state = Attachment.AttachmentState.MANUAL_PAUSED;
+                else if (fInfo.FileState == FileTransferState.FAILED)
+                {
+                    state = Attachment.AttachmentState.FAILED;
+
+                    if (fInfo is FileUploader)
+                        convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                }
+                else if (fInfo.FileState == FileTransferState.STARTED)
+                    state = Attachment.AttachmentState.STARTED;
+                else if (fInfo.FileState == FileTransferState.NOT_STARTED)
+                    state = Attachment.AttachmentState.NOT_STARTED;
+                else if (fInfo.FileState == FileTransferState.DOES_NOT_EXIST)
+                {
+                    if (convMessage.UserTappedDownload)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            MessageBox.Show(AppResources.File_Not_Exist_Message, AppResources.File_Not_Exist_Caption, MessageBoxButton.OK);
+                        });
+                    }
+
+                    state = Attachment.AttachmentState.FAILED;
+
+                    if (fInfo is FileUploader)
+                        convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                }
+
+                if (fInfo.FileState == FileTransferState.COMPLETED)
+                    convMessage.ProgressBarValue = 100;
+
+                convMessage.SetAttachmentState(state);
+
+                if (fInfo is FileDownloader)
+                {
+                    MiscDBUtil.UpdateFileAttachmentState(fInfo.Msisdn, fInfo.MessageId, state);
+
+                    if (fInfo.FileState == FileTransferState.COMPLETED)
+                    {
+                        msgMap.Remove(convMessage.MessageId);
+
+                        if (convMessage.UserTappedDownload)
+                        {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                displayAttachment(convMessage);
+                            });
+                        }
+                    }
+                }
+                else
+                    MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+            }
         }
 
         void Instance_UpdateChatBackground(object sender, ChatBackgroundEventArgs e)
@@ -499,6 +606,7 @@ namespace windows_client.View
                 NetworkManager.turnOffNetworkManager = false;
                 App.MqttManagerInstance.connect();
             };
+            emotListRecent.ItemsSource = imagePathsForListRecent;
             emotList0.ItemsSource = imagePathsForList0;
             emotList1.ItemsSource = imagePathsForList1;
             emotList2.ItemsSource = imagePathsForList2;
@@ -518,6 +626,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            ResumeBackgroundAudio();//in case of video playback
 
             if (e.NavigationMode == NavigationMode.Back)
             {
@@ -550,7 +659,7 @@ namespace windows_client.View
                 bw.RunWorkerCompleted += (s, ee) =>
                 {
                     CreateStickerPivot();
-                    CreateStickerCategoriesPallete();
+                    CreateStickerCategories();
                 };
                 bw.RunWorkerAsync();
                 App.newChatThreadPage = this;
@@ -562,9 +671,7 @@ namespace windows_client.View
             {
                 string msisdn = (this.NavigationContext.QueryString["msisdn"] as string).Trim();
                 this.NavigationContext.QueryString.Clear();
-                if (msisdn.Contains("hike"))
-                    msisdn = "+hike+";
-                else if (Char.IsDigit(msisdn[0]))
+                if (Char.IsDigit(msisdn[0]))
                     msisdn = "+" + msisdn;
 
                 //MessageBox.Show(msisdn, "NEW CHAT", MessageBoxButton.OK);
@@ -692,6 +799,7 @@ namespace windows_client.View
                 ContactTransfer();
             }
             #endregion
+
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -715,6 +823,7 @@ namespace windows_client.View
 
                     CompositionTarget.Rendering -= CompositionTarget_Rendering;
                     mediaElement.Stop();
+                    ResumeBackgroundAudio();
                     mediaElement.Source = null;
                 }
             }
@@ -726,6 +835,7 @@ namespace windows_client.View
                     {
                         PhoneApplicationService.Current.State[HikeConstants.PLAYER_TIMER] = mediaElement.Position;
                         mediaElement.Pause();
+                        ResumeBackgroundAudio();
 
                         currentAudioMessage.IsStopped = false;
                         currentAudioMessage.IsPlaying = false;
@@ -751,11 +861,12 @@ namespace windows_client.View
             {
                 base.OnRemovedFromJournal(e);
                 removeListeners();
-
+                RemoveEmmaBot();
                 if (mediaElement != null)
                 {
                     CompositionTarget.Rendering -= CompositionTarget_Rendering;
                     mediaElement.Stop();
+                    ResumeBackgroundAudio();
 
                     if (currentAudioMessage != null)
                     {
@@ -780,6 +891,9 @@ namespace windows_client.View
                 {
                     Debug.WriteLine("NewChatThread.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
                 }
+
+                FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI -= FileTransferStatusUpdated;
+
                 gridStickers.Children.Remove(pivotStickers);
                 ClearPageResources();
                 if (App.newChatThreadPage == this)
@@ -790,6 +904,7 @@ namespace windows_client.View
                 Debug.WriteLine(ex.Message);
             }
         }
+
 
         private void ClearPageResources()
         {
@@ -803,7 +918,6 @@ namespace windows_client.View
                 ShowDownloadOverlay(false);
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
                 emoticonPanel.Visibility = Visibility.Collapsed;
                 e.Cancel = true;
                 return;
@@ -825,6 +939,7 @@ namespace windows_client.View
             {
                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 mediaElement.Stop();
+                ResumeBackgroundAudio();
             }
 
             if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
@@ -840,6 +955,20 @@ namespace windows_client.View
             base.OnBackKeyPress(e);
         }
 
+        public void RemoveEmmaBot()
+        {
+            if (_isHikeBot && mContactNumber == HikeConstants.FTUE_HIKEBOT_MSISDN && App.appSettings.Contains(HikeConstants.AppSettings.REMOVE_EMMA))
+            {
+                ConversationListObject convObj;
+                if (App.ViewModel.ConvMap.TryGetValue(mContactNumber, out convObj))
+                {
+                    App.ViewModel.ConvMap.Remove(convObj.Msisdn);
+                    App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
+                    mPubSub.publish(HikePubSub.DELETE_CONVERSATION, convObj.Msisdn);
+                    mPubSub.publish(HikePubSub.DELETE_STATUS_AND_CONV, convObj);//to update ui of conversation list page
+                }
+            }
+        }
         #endregion
 
         #region INIT PAGE BASED ON STATE
@@ -1008,13 +1137,7 @@ namespace windows_client.View
             mUserIsBlocked = groupOwner != null ? App.ViewModel.BlockedHashset.Contains(groupOwner) : App.ViewModel.BlockedHashset.Contains(mContactNumber);
             userName.Text = mContactName;
 
-            // if hike bot msg disable appbar, textbox etc
-            if (Utils.IsHikeBotMsg(mContactNumber))
-            {
-                sendMsgTxtbox.IsEnabled = false;
-                WalkieTalkieMicIcon.IsHitTestVisible = false;
-                return;
-            }
+            _isHikeBot = Utils.IsHikeBotMsg(mContactNumber);
 
             initAppBar(isAddUser);
 
@@ -1122,47 +1245,86 @@ namespace windows_client.View
 
         private void ShowInAppTips()
         {
-            int chatThreadCount;
-
-            var keyExist = App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out chatThreadCount); //initilaized in upgrade logic
-            if (keyExist)
+            if (_isHikeBot)
             {
-                if (App.ViewModel.DictInAppTip != null)
+                this.ApplicationBar = appBar;
+                return;
+            }
+
+            HikeToolTip tip;
+
+            if (App.ViewModel.DictInAppTip != null && App.ViewModel.DictInAppTip.TryGetValue(1, out tip) && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+            {
+                App.ViewModel.DisplayTip(LayoutRoot, 1);
+                this.ApplicationBar = appBar;
+                isInAppTipVisible = true;
+            }
+            else
+            {
+                int chatThreadCount;
+
+                var keyExist = App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out chatThreadCount); //initilaized in upgrade logic
+                if (keyExist)
                 {
-                    HikeToolTip tip;
-
-                    if (chatThreadCount == 0)
+                    if (App.ViewModel.DictInAppTip != null)
                     {
-                        App.ViewModel.DictInAppTip.TryGetValue(0, out tip);
+                        if (chatThreadCount == 0)
+                        {
+                            App.ViewModel.DictInAppTip.TryGetValue(0, out tip);
 
-                        if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-                            App.ViewModel.DisplayTip(LayoutRoot, 0);
-                        else
+                            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                            {
+                                App.ViewModel.DisplayTip(LayoutRoot, 0);
+                                isInAppTipVisible = true;
+                            }
+                            else
+                                chatThreadCount++;
+
+                            this.ApplicationBar = appBar;
+                        }
+                        else if (chatThreadCount == 1)
+                        {
+                            App.ViewModel.DictInAppTip.TryGetValue(2, out tip);
+
+                            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                            {
+                                App.ViewModel.DisplayTip(LayoutRoot, 2);
+                                isInAppTipVisible = true;
+                            }
+                            else
+                                chatThreadCount++;
+
+                            this.ApplicationBar = appBar;
+                        }
+                        else if (chatThreadCount == 2)
+                        {
+                            showNudgeTute();
                             chatThreadCount++;
+                        }
+                        else
+                        {
+                            App.ViewModel.DictInAppTip.TryGetValue(7, out tip);
+
+                            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+                            {
+                                App.ViewModel.DisplayTip(LayoutRoot, 7);
+                                isInAppTipVisible = true;
+                            }
+                            else
+                                chatThreadCount++;
+
+                            this.ApplicationBar = appBar;
+                        }
 
                         this.ApplicationBar = appBar;
-                    }
-                    else if (chatThreadCount == 1)
-                    {
-                        App.ViewModel.DictInAppTip.TryGetValue(2, out tip);
-
-                        if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-                            App.ViewModel.DisplayTip(LayoutRoot, 2);
-                        else
-                            chatThreadCount++;
-
-                        this.ApplicationBar = appBar;
+                        App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
                     }
                     else
                         showNudgeTute();
-
-                    App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
                 }
                 else
-                    showNudgeTute();
+                    this.ApplicationBar = appBar;
             }
-            else
-                this.ApplicationBar = appBar;
         }
 
         private void GetUserLastSeen()
@@ -1443,6 +1605,14 @@ namespace windows_client.View
             sendIconButton.IsEnabled = false;
             appBar.Buttons.Add(sendIconButton);
 
+            //add icon for sticker
+            stickersIconButton = new ApplicationBarIconButton();
+            stickersIconButton.IconUri = new Uri("/View/images/icon_sticker.png", UriKind.Relative);
+            stickersIconButton.Text = AppResources.Sticker_Txt;
+            stickersIconButton.Click += new EventHandler(emoticonButton_Click);
+            stickersIconButton.IsEnabled = true;
+            appBar.Buttons.Add(stickersIconButton);
+
             //add icon for smiley
             emoticonsIconButton = new ApplicationBarIconButton();
             emoticonsIconButton.IconUri = new Uri("/View/images/icon_emoticon.png", UriKind.Relative);
@@ -1481,6 +1651,10 @@ namespace windows_client.View
                 leaveMenuItem.Text = AppResources.SelectUser_LeaveGrp_Txt;
                 leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
                 appBar.MenuItems.Add(leaveMenuItem);
+            }
+            else if (_isHikeBot)
+            {
+                userHeader.Tap += userImage_Tap;
             }
             else
             {
@@ -1607,7 +1781,6 @@ namespace windows_client.View
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-
                     AddMessageToOcMessages(cm, true, false, true);
                 });
             }
@@ -1657,6 +1830,11 @@ namespace windows_client.View
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 NetworkManager.turnOffNetworkManager = false;
+                if (_isHikeBot && mContactNumber == HikeConstants.FTUE_HIKEBOT_MSISDN)
+                {
+                    if (ocMessages.Count > 0)
+                        llsMessages.ScrollTo(ocMessages[0]);
+                }
             });
         }
 
@@ -1685,7 +1863,7 @@ namespace windows_client.View
                         string sourceMsisdn = (string)attachmentData[1];
                         long messageId = (long)attachmentData[2];
                         string metaDataString = (string)attachmentData[3];
-                        string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + messageId;
+                        string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn.Replace(":", "_") + "/" + messageId;
 
                         ConvMessage convMessage = new ConvMessage("", mContactNumber,
                             TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
@@ -1770,12 +1948,12 @@ namespace windows_client.View
             {
                 if (this.ocMessages.Count > 0 && (!IsMute || this.ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
                 {
-                    if (vScrollBar != null && llsViewPort != null && (vScrollBar.Maximum - vScrollBar.Value < 2000))
-                        llsViewPort.SetViewportOrigin(new System.Windows.Point(0, vScrollBar.Maximum));
+                    JumpToBottomGrid.Visibility = Visibility.Collapsed;
+                    if (vScrollBar != null && llsViewPort != null && ((vScrollBar.Maximum - vScrollBar.Value) < 2000))
+                        llsViewPort.SetViewportOrigin(new System.Windows.Point(0, llsViewPort.Bounds.Height));
                     else
                         llsMessages.ScrollTo(ocMessages[ocMessages.Count - 1]);
 
-                    JumpToBottomGrid.Visibility = Visibility.Collapsed;
                 }
             }
             catch (Exception ex)
@@ -1963,6 +2141,7 @@ namespace windows_client.View
                 {
                     App.ViewModel.BlockedHashset.Remove(mContactNumber);
                     mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
+                    stickersIconButton.IsEnabled = true;
                     emoticonsIconButton.IsEnabled = true;
                     enableSendMsgButton = true;
                     sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
@@ -1989,8 +2168,14 @@ namespace windows_client.View
 
         private void FileAttachmentMessage_Tap(object sender, SelectionChangedEventArgs e)
         {
+            if (_uploadProgressBarIsTapped)
+            {
+                _uploadProgressBarIsTapped = false;
+                llsMessages.SelectedItem = null;
+                return;
+            }
+
             emoticonPanel.Visibility = Visibility.Collapsed;
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
             attachmentMenu.Visibility = Visibility.Collapsed;
 
             ConvMessage convMessage = llsMessages.SelectedItem as ConvMessage;
@@ -2001,43 +2186,50 @@ namespace windows_client.View
 
             if (!isContextMenuTapped)
             {
-                if (!isGroupChat && convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                if (!isGroupChat && !_isHikeBot && convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
                     PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                     NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
                 }
-                if (convMessage.StickerObj != null && convMessage.StickerObj.StickerImage == null && convMessage.ImageDownloadFailed)
+                if (convMessage.StickerObj != null && !convMessage.StickerObj.IsStickerDownloaded && convMessage.ImageDownloadFailed)
                 {
-                    AccountUtils.GetSingleSticker(convMessage, ResolutionId, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
-                    convMessage.ImageDownloadFailed = false;
+                    GetHighResStickerForUi(convMessage);
                 }
                 else if (convMessage.FileAttachment == null || convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
-                    return;
+                {
+                    if (convMessage.FileAttachment != null)
+                        PauseTransfer(convMessage);
+                }
                 else if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.STARTED)
                 {
                     if (!convMessage.IsSent)
                     {
+                        //Downloads
+
                         if (NetworkInterface.GetIsNetworkAvailable())
                         {
-                            convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
-                            FileTransfer.Instance.downloadFile(convMessage, mContactNumber.Replace(":", "_"));
-                            MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId, convMessage);
+                            if (FileTransferManager.Instance.IsTransferPossible())
+                            {
+                                bool taskPlaced = false;
+
+                                if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.CANCELED)
+                                    taskPlaced = FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                                else if (ResumeTransfer(convMessage))
+                                    taskPlaced = true;
+
+                                if (taskPlaced)
+                                    convMessage.UserTappedDownload = true;
+                            }
+                            else
+                                MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                         }
                         else
-                        {
                             MessageBox.Show(AppResources.No_Network_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
-                        }
                     }
                     else
                     {
-                        //resend message
-                        //chatBubble.setAttachmentState(Attachment.AttachmentState.STARTED);
-                        //ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
-                        //convMessage.IsSms = !isOnHike;
-                        //convMessage.HasAttachment = true;
-                        //convMessage.MessageId = chatBubble.MessageId;
-                        //convMessage.FileAttachment = chatBubble.FileAttachment;
-                        convMessage.SetAttachmentState(Attachment.AttachmentState.STARTED);
+                        // Uploads
+                        // dont need to check for network available as they will be failed by file transfer manager
                         if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                         {
                             convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
@@ -2061,31 +2253,43 @@ namespace windows_client.View
                             convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                                 "/" + convMessage.FileAttachment.FileKey;
                         }
-                        //else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                        //{
-                        //    convMessage.MetaDataString = chatBubble.MetaDataString;
-                        //}
-                        object[] values = new object[2];
-                        values[0] = convMessage;
-                        // values[1] = chatBubble;
-                        mPubSub.publish(HikePubSub.ATTACHMENT_RESEND, values);
+
+                        // check if the message can be resumed
+                        bool transferPlaced = ResumeTransfer(convMessage);
+
+                        // if message cannot be resumed try to fresh upload
+                        if (!transferPlaced)
+                        {
+                            byte[] fileBytes = null;
+
+                            if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                                fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
+                            else
+                                MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + convMessage.MessageId, out fileBytes);
+
+                            transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
+                        }
+
+                        // if transfer was not placed because of queue limit reached then display limit reached message
+                        if (!transferPlaced && !FileTransferManager.Instance.IsTransferPossible())
+                            MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                     }
                 }
                 else
                 {
-                    displayAttachment(convMessage, false);
+                    displayAttachment(convMessage);
                 }
             }
+
             isContextMenuTapped = false;
+
+            llsMessages.SelectedItem = null;
         }
 
-        public void displayAttachment(ConvMessage convMessage, bool shouldUpdateAttachment)
+        public void displayAttachment(ConvMessage convMessage)
         {
             string contactNumberOrGroupId = mContactNumber.Replace(":", "_");
-            if (shouldUpdateAttachment)
-            {
-                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
-            }
+
             if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
             {
                 object[] fileTapped = new object[2];
@@ -2104,6 +2308,7 @@ namespace windows_client.View
                 mediaPlayerLauncher.Orientation = MediaPlayerOrientation.Landscape;
                 try
                 {
+                    PauseBackgroundAudio();
                     mediaPlayerLauncher.Show();
                 }
                 catch (Exception ex)
@@ -2130,6 +2335,7 @@ namespace windows_client.View
                                 {
                                     currentAudioMessage.IsPlaying = false;
                                     mediaElement.Pause();
+                                    ResumeBackgroundAudio();
                                 }
                                 else
                                 {
@@ -2138,6 +2344,7 @@ namespace windows_client.View
 
                                     currentAudioMessage.IsPlaying = true;
                                     currentAudioMessage.IsStopped = false;
+                                    PauseBackgroundAudio();
                                     mediaElement.Play();
                                 }
                             }
@@ -2151,6 +2358,7 @@ namespace windows_client.View
                                     currentAudioMessage = convMessage;
                                     currentAudioMessage.IsPlaying = true;
                                     currentAudioMessage.IsStopped = false;
+                                    PauseBackgroundAudio();
                                     mediaElement.Play();
                                 }
                             }
@@ -2160,7 +2368,7 @@ namespace windows_client.View
                             try
                             {
                                 mediaElement.Source = null;
-
+                                PauseBackgroundAudio();
                                 using (var store = IsolatedStorageFile.GetUserStoreForApplication())
                                 {
                                     if (store.FileExists(fileLocation))
@@ -2180,6 +2388,9 @@ namespace windows_client.View
                                     currentAudioMessage.PlayProgressBarValue = 0;
                                     currentAudioMessage = null;
                                 }
+
+                                CompositionTarget.Rendering -= CompositionTarget_Rendering;
+                                CompositionTarget.Rendering += CompositionTarget_Rendering;
 
                                 currentAudioMessage = convMessage;
 
@@ -2218,7 +2429,7 @@ namespace windows_client.View
 
                                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                                 CompositionTarget.Rendering += CompositionTarget_Rendering;
-
+                                PauseBackgroundAudio();
                                 mediaElement.Play();
                                 currentAudioMessage.IsStopped = false;
                                 currentAudioMessage.IsPlaying = true;
@@ -2262,7 +2473,7 @@ namespace windows_client.View
 
                                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                                 CompositionTarget.Rendering += CompositionTarget_Rendering;
-
+                                PauseBackgroundAudio();
                                 mediaElement.Play();
 
                                 if (currentAudioMessage != null)
@@ -2318,6 +2529,7 @@ namespace windows_client.View
                         CompositionTarget.Rendering -= CompositionTarget_Rendering;
                         CompositionTarget.Rendering += CompositionTarget_Rendering;
 
+                        PauseBackgroundAudio();
                         mediaElement.Play();
                     }
                     catch (Exception ex) //Code should never reach here
@@ -2393,7 +2605,7 @@ namespace windows_client.View
             }
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            mediaElement.Stop();
+            ResumeBackgroundAudio();
         }
 
         void mediaPlayback_MediaEnded(object sender, RoutedEventArgs e)
@@ -2408,7 +2620,7 @@ namespace windows_client.View
             }
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            mediaElement.Stop();
+            ResumeBackgroundAudio();
         }
 
         private void AddNewMessageToUI(ConvMessage convMessage, bool insertAtTop, bool isReceived = false)
@@ -2433,6 +2645,8 @@ namespace windows_client.View
       * it is scheduled
       */
 
+        List<ConvMessage> listDownload = new List<ConvMessage>();
+
         private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived, bool readFromDb = false)
         {
             if (_isSendAllAsSMSVisible && ocMessages != null && convMessage.IsSent)
@@ -2453,12 +2667,30 @@ namespace windows_client.View
                     ConvMessage chatBubble = null;
                     if (convMessage.HasAttachment)
                     {
-
                         if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
                         {
                             convMessage.FileAttachment = attachments[convMessage.MessageId];
                             attachments.Remove(convMessage.MessageId);
+
+                            // due to perception fix message status would have been changed to read. Need to change it back to unconfirmed.
+                            if (convMessage.IsSent && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                         }
+
+                        if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.CANCELED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                        {
+                            if (!convMessage.IsSent ||
+                                (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ) ||
+                                (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED))))
+                            {
+                                msgMap.Add(convMessage.MessageId, convMessage);
+
+                                FileInfoBase fInfo;
+                                if (FileTransferManager.Instance.GetAttachmentStatus(convMessage.MessageId.ToString(), convMessage.IsSent, out fInfo))
+                                    UpdateFileTransferProgresInConvMessage(fInfo, convMessage, true);
+                            }
+                        }
+
                         if (convMessage.FileAttachment == null)
                         {
                             //Done to avoid crash. Code should never reach here
@@ -2466,7 +2698,10 @@ namespace windows_client.View
                             return;
                         }
 
-                        chatBubble = MessagesTableUtils.getUploadingOrDownloadingMessage(convMessage.MessageId);
+                        if (convMessage.IsSent)
+                            chatBubble = convMessage;
+                        else if (chatBubble != null)
+                            chatBubble.GroupMemberName = isGroupChat ? GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                     }
 
                     if (chatBubble == null)
@@ -2475,21 +2710,7 @@ namespace windows_client.View
                         {
                             JObject meataDataJson = JObject.Parse(convMessage.MetaDataString);
                             convMessage.StickerObj = new Sticker((string)meataDataJson[HikeConstants.CATEGORY_ID], (string)meataDataJson[HikeConstants.STICKER_ID], null, true);
-                            string categoryStickerId = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
-                            BitmapImage image = lruStickerCache.GetObject(categoryStickerId);
-                            if (image != null)
-                                convMessage.StickerObj.IsStickerDownloaded = true;
-                            else
-                            {
-                                image = StickerCategory.GetHighResolutionSticker(convMessage.StickerObj);
-                                if (image == null)
-                                    AccountUtils.GetSingleSticker(convMessage, ResolutionId, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
-                                else
-                                {
-                                    lruStickerCache.AddObject(categoryStickerId, image);
-                                    convMessage.StickerObj.IsStickerDownloaded = true;
-                                }
-                            }
+                            GetHighResStickerForUi(convMessage);
                             chatBubble = convMessage;
                             if (!convMessage.IsSent)
                                 chatBubble.GroupMemberName = isGroupChat ?
@@ -2779,7 +3000,7 @@ namespace windows_client.View
                     }
                     #endregion
 
-                    if (App.ViewModel.DictInAppTip != null)
+                    if (App.ViewModel.DictInAppTip != null && !isInAppTipVisible)
                     {
                         HikeToolTip tip;
                         App.ViewModel.DictInAppTip.TryGetValue(4, out tip);
@@ -2805,6 +3026,8 @@ namespace windows_client.View
                             App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
                             currentShown |= (byte)(1 << 4);
                             App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
+
+                            isInAppTipVisible = true;
                         }
                     }
                 }
@@ -2835,6 +3058,41 @@ namespace windows_client.View
             catch (Exception e)
             {
                 Debug.WriteLine("NEW CHAT THREAD :: " + e.StackTrace);
+            }
+        }
+
+        private void GetHighResStickerForUi(ConvMessage convMessage)
+        {
+            if (convMessage.StickerObj == null)
+                return;
+            convMessage.ImageDownloadFailed = false;//to show loading sticker
+            string categoryStickerId = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
+            BitmapImage image = lruStickerCache.GetObject(categoryStickerId);
+            if (image != null)
+                convMessage.StickerObj.IsStickerDownloaded = true;
+            else
+            {
+                image = StickerCategory.GetHighResolutionSticker(convMessage.StickerObj);
+                if (image == null)
+                {
+                    List<ConvMessage> listDownloading;
+                    if (dictDownloadingSticker.TryGetValue(categoryStickerId, out listDownloading))
+                    {
+                        listDownloading.Add(convMessage);
+                    }
+                    else
+                    {
+                        listDownloading = new List<ConvMessage>();
+                        listDownloading.Add(convMessage);
+                        dictDownloadingSticker.Add(categoryStickerId, listDownloading);
+                        AccountUtils.GetSingleSticker(convMessage, ResolutionId, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack));
+                    }
+                }
+                else
+                {
+                    lruStickerCache.AddObject(categoryStickerId, image);
+                    convMessage.StickerObj.IsStickerDownloaded = true;
+                }
             }
         }
 
@@ -2970,13 +3228,9 @@ namespace windows_client.View
             }
             lastText = msgText;
             lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
-            scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(5));
+            scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(HikeConstants.SEND_END_TYPING_TIMER));
 
-            if (endTypingSent)
-            {
-                endTypingSent = false;
-                sendTypingNotification(true);
-            }
+            sendStartTypingNotification();
 
             if (!isOnHike && msgText.Length > 130)
             {
@@ -3008,6 +3262,11 @@ namespace windows_client.View
 
         private void sendMsgBtn_Click(object sender, EventArgs e)
         {
+            SendMsg();
+        }
+
+        private void SendMsg()
+        {
             if (mUserIsBlocked)
                 return;
 
@@ -3023,14 +3282,11 @@ namespace windows_client.View
             if (String.IsNullOrEmpty(message))
                 return;
 
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
-
             attachmentMenu.Visibility = Visibility.Collapsed;
 
             if (message == "" || (!isOnHike && mCredits <= 0))
                 return;
 
-            endTypingSent = true;
             sendTypingNotification(false);
 
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
@@ -3038,13 +3294,10 @@ namespace windows_client.View
             sendMsg(convMessage, false);
 
             spSmsCharCounter.Visibility = Visibility.Collapsed;
-
         }
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
-
             emoticonPanel.Visibility = Visibility.Collapsed;
 
             if ((!isOnHike && mCredits <= 0))
@@ -3108,17 +3361,18 @@ namespace windows_client.View
                 else
                     fileName = fileName.Substring(fileName.LastIndexOf("/") + 1) + ".jpg";
 
-                convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.STARTED);
-                convMessage.FileAttachment.ContentType = HikeConstants.IMAGE;
-                convMessage.Message = AppResources.Image_Txt;
-
-                AddNewMessageToUI(convMessage, false);
-
                 using (var msLargeImage = new MemoryStream())
                 {
                     writeableBitmap.SaveJpeg(msLargeImage, imageWidth, imageHeight, 0, 65);
                     fileBytes = msLargeImage.ToArray();
                 }
+
+                convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
+                convMessage.FileAttachment.ContentType = HikeConstants.IMAGE;
+                convMessage.Message = AppResources.Image_Txt;
+
+                AddNewMessageToUI(convMessage, false);
+
                 object[] vals = new object[3];
                 vals[0] = convMessage;
                 vals[1] = fileBytes;
@@ -3147,17 +3401,15 @@ namespace windows_client.View
 
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
+            App.ViewModel.HideToolTip(LayoutRoot, 7);
+
             sendMsgTxtbox.Background = UI_Utils.Instance.TextBoxBackground;
             sendMsgTxtbox.Hint = string.Empty;//done intentionally as hint is shown if text is changed
             sendMsgTxtbox.Hint = hintText;
             //this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
             //ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
-            {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
-
                 this.emoticonPanel.Visibility = Visibility.Collapsed;
-            }
 
             if (this.attachmentMenu.Visibility == Visibility.Visible)
                 this.attachmentMenu.Visibility = Visibility.Collapsed;
@@ -3244,6 +3496,7 @@ namespace windows_client.View
                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 currentAudioMessage = null;
                 mediaElement.Stop();
+                ResumeBackgroundAudio();
             }
 
             if (msg.FileAttachment != null && msg.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
@@ -3334,6 +3587,7 @@ namespace windows_client.View
                 App.ViewModel.MessageListPageCollection.Remove(obj); // removed from observable collection
                 App.ViewModel.ConvMap.Remove(mContactNumber);
                 // delete from db will be handled by dbconversation listener
+                mPubSub.publish(HikePubSub.DELETE_STATUS_AND_CONV, obj);//to update ui of conversation list page
                 delConv = true;
             }
 
@@ -3347,11 +3601,29 @@ namespace windows_client.View
         private void MenuItem_Click_Cancel(object sender, RoutedEventArgs e)
         {
             ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
-            if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
-            {
-                convMessage.SetAttachmentState(Attachment.AttachmentState.CANCELED);
-                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, mContactNumber, convMessage.MessageId);
-            }
+            convMessage.ChangingState = FileTransfers.FileTransferManager.Instance.CancelTask(convMessage.MessageId.ToString());
+        }
+
+        private void PauseTransfer(ConvMessage convMessage)
+        {
+            if (convMessage.ChangingState)
+                return;
+
+            convMessage.ChangingState = FileTransfers.FileTransferManager.Instance.PauseTask(convMessage.MessageId.ToString());
+        }
+
+        private bool ResumeTransfer(ConvMessage convMessage)
+        {
+            if (convMessage.ChangingState)
+                return false;
+
+            convMessage.ChangingState = true;
+
+            if (FileTransferManager.Instance.IsTransferPossible() && FileTransfers.FileTransferManager.Instance.ResumeTask(convMessage.MessageId.ToString(), convMessage.IsSent))
+                return true;
+
+            convMessage.ChangingState = false;
+            return false;
         }
 
         private void MenuItem_Click_SendAsSMS(object sender, RoutedEventArgs e)
@@ -3393,8 +3665,53 @@ namespace windows_client.View
             object s = e.OriginalSource;
         }
 
+        bool isEmoticonLoaded = false;
         private void emoticonButton_Click(object sender, EventArgs e)
         {
+            var appButton = sender as ApplicationBarIconButton;
+
+            if (appButton != null)
+            {
+                if (emoticonPanel.Visibility == Visibility.Collapsed)
+                {
+                    emoticonPanel.Visibility = Visibility.Visible;
+
+                    if (appButton.Text == AppResources.Sticker_Txt)
+                    {
+                        ShowStickerPallet();
+                    }
+                    else
+                    {
+                        ShowEmoticonPalette();
+                    }
+                }
+                else
+                {
+                    if (appButton.Text == AppResources.Sticker_Txt)
+                    {
+                        if (gridStickers.Visibility == Visibility.Collapsed)
+                        {
+                            ShowStickerPallet();
+                        }
+                        else
+                        {
+                            emoticonPanel.Visibility = Visibility.Collapsed;
+                        }
+                    }
+                    else
+                    {
+                        if (gridEmoticons.Visibility == Visibility.Collapsed)
+                        {
+                            ShowEmoticonPalette();
+                        }
+                        else
+                        {
+                            emoticonPanel.Visibility = Visibility.Collapsed;
+                        }
+                    }
+                }
+            }
+
             if (recordGrid.Visibility == Visibility.Visible)
             {
                 recordGrid.Visibility = Visibility.Collapsed;
@@ -3402,34 +3719,71 @@ namespace windows_client.View
             }
 
             App.ViewModel.HideToolTip(LayoutRoot, 0);
+            App.ViewModel.HideToolTip(LayoutRoot, 1);
             App.ViewModel.HideToolTip(LayoutRoot, 2);
-
-            if (emoticonPanel.Visibility == Visibility.Collapsed)
-            {
-                App.ViewModel.DisplayTip(LayoutRoot, 1);
-                emoticonPanel.Visibility = Visibility.Visible;
-
-                if (gridStickers.Visibility == Visibility.Visible)
-                {
-                    if (pivotStickers.SelectedIndex > 0)
-                    {
-                        string category;
-                        if (StickerPivotHelper.Instance.dictPivotCategory.TryGetValue(pivotStickers.SelectedIndex, out category))
-                        {
-                            CategoryTap(category);
-                        }
-                    }
-
-                }
-            }
-            else
-            {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
-                emoticonPanel.Visibility = Visibility.Collapsed;
-            }
+            App.ViewModel.HideToolTip(LayoutRoot, 7);
 
             attachmentMenu.Visibility = Visibility.Collapsed;
             this.Focus();
+        }
+
+        private void ShowEmoticonPalette()
+        {
+            gridEmoticons.Visibility = Visibility.Visible;
+            gridStickers.Visibility = Visibility.Collapsed;
+            if (!isEmoticonLoaded)
+            {
+                int index = 0;
+
+                if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_EMOTICON_CATEGORY, out index))
+                    emoticonPivot.SelectedIndex = index == 0 && imagePathsForListRecent.Count == 0 ? 1 : index;
+                else
+                    emoticonPivot.SelectedIndex = imagePathsForListRecent.Count > 0 ? 0 : 1;
+
+                isEmoticonLoaded = true;
+            }
+        }
+
+        private void ShowStickerPallet()
+        {
+            gridEmoticons.Visibility = Visibility.Collapsed;
+            gridStickers.Visibility = Visibility.Visible;
+
+            if (!isStickersLoaded)
+            {
+                String category;
+                if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category))
+                {
+                    if (category == StickerHelper.CATEGORY_RECENT)
+                    {
+                        if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
+                            StickerCategoryTapped(StickerHelper.CATEGORY_RECENT);
+                        else
+                            StickerCategoryTapped(StickerHelper.CATEGORY_HUMANOID);
+                    }
+                    else
+                    {
+                        StickerCategoryTapped(category);
+                    }
+                }
+                else
+                {
+                    if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
+                        StickerCategoryTapped(StickerHelper.CATEGORY_RECENT);
+                    else
+                        StickerCategoryTapped(StickerHelper.CATEGORY_HUMANOID);
+                }
+                isStickersLoaded = true;
+            }
+
+            //if (pivotStickers.SelectedIndex > 0)
+            //{
+            //    string category;
+            //    if (StickerPivotHelper.Instance.dictPivotCategory.TryGetValue(pivotStickers.SelectedIndex, out category))
+            //    {
+            //        StickerCategoryTapped(category);
+            //    }
+            //}
         }
 
         private void fileTransferButton_Click(object sender, EventArgs e)
@@ -3441,7 +3795,9 @@ namespace windows_client.View
             }
 
             App.ViewModel.HideToolTip(LayoutRoot, 0);
+            App.ViewModel.HideToolTip(LayoutRoot, 1);
             App.ViewModel.HideToolTip(LayoutRoot, 2);
+            App.ViewModel.HideToolTip(LayoutRoot, 7);
 
             if (attachmentMenu.Visibility == Visibility.Collapsed)
                 attachmentMenu.Visibility = Visibility.Visible;
@@ -3449,11 +3805,8 @@ namespace windows_client.View
                 attachmentMenu.Visibility = Visibility.Collapsed;
 
             if (emoticonPanel.Visibility == Visibility.Visible)
-            {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
-
                 emoticonPanel.Visibility = Visibility.Collapsed;
-            }
+
             this.Focus();
         }
 
@@ -3473,7 +3826,6 @@ namespace windows_client.View
         {
             try
             {
-
                 cameraCaptureTask.Show();
                 attachmentMenu.Visibility = Visibility.Collapsed;
             }
@@ -3534,17 +3886,22 @@ namespace windows_client.View
 
         }
 
-
-
         private void chatListBox_tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
-        private void emoticonPanel_LostFocus(object sender, RoutedEventArgs e)
+        private void emotListRecent_Tap(object sender, SelectionChangedEventArgs e)
         {
-            //emoticonPanel.Visibility = Visibility.Collapsed;
-
+            ListBox llsStickerCategory = (sender as ListBox);
+            SmileyParser.Emoticon emoticon = llsStickerCategory.SelectedItem as SmileyParser.Emoticon;
+            llsStickerCategory.SelectedItem = null;
+            if (emoticon == null)
+                return;
+            recordGrid.Visibility = Visibility.Collapsed;
+            sendMsgTxtbox.Visibility = Visibility.Visible;
+            sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[emoticon.Index];
+            SmileyParser.Instance.AddEmoticons(emoticon);
         }
 
         private void emotList0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3556,6 +3913,7 @@ namespace windows_client.View
             int index = emotList0.SelectedIndex;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emotList0.SelectedIndex = -1;
+            SmileyParser.Instance.AddEmoticons(index);
         }
 
         private void emotList1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3567,6 +3925,7 @@ namespace windows_client.View
             int index = emotList1.SelectedIndex + SmileyParser.Instance.emoticon0Size;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emotList1.SelectedIndex = -1;
+            SmileyParser.Instance.AddEmoticons(index);
         }
 
         private void emotList2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3578,6 +3937,8 @@ namespace windows_client.View
             int index = emotList2.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emotList2.SelectedIndex = -1;
+            SmileyParser.Instance.AddEmoticons(index);
+
         }
         private void emotList3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -3588,6 +3949,7 @@ namespace windows_client.View
             int index = emotList3.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size + SmileyParser.Instance.emoticon2Size;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emotList3.SelectedIndex = -1;
+            SmileyParser.Instance.AddEmoticons(index);
         }
         #endregion
 
@@ -3611,6 +3973,9 @@ namespace windows_client.View
 
         private void changeInviteButtonVisibility()
         {
+            if (appBar == null || appBar.MenuItems == null || appBar.MenuItems.Count == 0)
+                return;
+
             if (isOnHike)
             {
                 if (inviteMenuItem != null && appBar.MenuItems.Contains(inviteMenuItem))
@@ -3734,6 +4099,7 @@ namespace windows_client.View
                 llsMessages.IsHitTestVisible = false;
                 bottomPanel.IsHitTestVisible = false;
                 OverlayMessagePanel.Visibility = Visibility.Visible;
+                stickersIconButton.IsEnabled = false;
                 emoticonsIconButton.IsEnabled = false;
                 sendIconButton.IsEnabled = enableSendMsgButton = false;
                 fileTransferIconButton.IsEnabled = false;
@@ -3747,12 +4113,14 @@ namespace windows_client.View
                 OverlayMessagePanel.Visibility = Visibility.Collapsed;
                 if (isGroupChat && !isGroupAlive)
                 {
+                    stickersIconButton.IsEnabled = false;
                     emoticonsIconButton.IsEnabled = false;
                     sendIconButton.IsEnabled = enableSendMsgButton = false;
                     fileTransferIconButton.IsEnabled = false;
                 }
                 else if (!showNoSmsLeftOverlay)
                 {
+                    stickersIconButton.IsEnabled = true;
                     emoticonsIconButton.IsEnabled = true;
                     enableSendMsgButton = true;
                     sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
@@ -3772,6 +4140,7 @@ namespace windows_client.View
             {
                 if (notificationType)
                 {
+
                     obj.Add(HikeConstants.TYPE, NetworkManager.START_TYPING);
 
                 }
@@ -3795,10 +4164,18 @@ namespace windows_client.View
         private void sendEndTypingNotification()
         {
             long currentTime = TimeUtils.getCurrentTimeStamp();
-            if (currentTime - lastTextChangedTime >= 5 && endTypingSent == false)
+            if (currentTime - lastTextChangedTime >= HikeConstants.SEND_END_TYPING_TIMER)
             {
-                endTypingSent = true;
                 sendTypingNotification(false);
+            }
+        }
+
+        private void sendStartTypingNotification()
+        {
+            if (TimeUtils.getCurrentTimeStamp() - lastTypingNotificationSentTime > HikeConstants.SEND_START_TYPING_TIMER)
+            {
+                lastTypingNotificationSentTime = TimeUtils.getCurrentTimeStamp();
+                sendTypingNotification(true);
             }
         }
 
@@ -4093,20 +4470,19 @@ namespace windows_client.View
                         {
                             if (kv.Key < maxId)
                             {
-
                                 ConvMessage msg = kv.Value;
-                                if (msg.FileAttachment == null || (msg.FileAttachment.FileState == Attachment.AttachmentState.COMPLETED))
+                                if (msg.IsSent && (msg.FileAttachment == null || (msg.FileAttachment.FileState == Attachment.AttachmentState.COMPLETED)))
                                 {
                                     idsToUpdate.Add(kv.Key);
                                     msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
                                 }
-
                             }
-
                         }
+
                         // remove these ids from map
                         foreach (long id in idsToUpdate)
                             msgMap.Remove(id);
+
                         MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ);
                         idsToUpdate = null;
                     }
@@ -4477,6 +4853,7 @@ namespace windows_client.View
             sendMsgTxtbox.IsHitTestVisible = false;
             appBar.IsMenuEnabled = false;
             sendIconButton.IsEnabled = enableSendMsgButton = false;
+            stickersIconButton.IsEnabled = false;
             emoticonsIconButton.IsEnabled = false;
             fileTransferIconButton.IsEnabled = false;
         }
@@ -4488,6 +4865,7 @@ namespace windows_client.View
             appBar.IsMenuEnabled = true;
             enableSendMsgButton = true;
             sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
+            stickersIconButton.IsEnabled = true;
             emoticonsIconButton.IsEnabled = true;
             fileTransferIconButton.IsEnabled = true;
         }
@@ -4524,7 +4902,7 @@ namespace windows_client.View
                     MetaDataString = locationJSONString
                 };
 
-                convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED);
+                convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.NOT_STARTED, locationBytes.Length);
                 convMessage.FileAttachment.ContentType = HikeConstants.LOCATION_CONTENT_TYPE;
 
                 AddNewMessageToUI(convMessage, false);
@@ -4582,7 +4960,7 @@ namespace windows_client.View
                 if (isAudio)
                 {
                     fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp3";
-                    convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
+                    convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
                     convMessage.FileAttachment.ContentType = "audio/voice";
 
                     var fileInfo = new JObject();
@@ -4601,7 +4979,7 @@ namespace windows_client.View
                 else
                 {
                     fileName = "vid_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp4";
-                    convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.STARTED);
+                    convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
                     convMessage.FileAttachment.ContentType = "video/mp4";
                     convMessage.Message = AppResources.Video_Txt;
                 }
@@ -4624,13 +5002,15 @@ namespace windows_client.View
                 ContactCompleteDetails con = ContactCompleteDetails.GetContactDetails(contact);
                 JObject contactJson = con.SerialiseToJobject();
 
+                var bytes = Encoding.UTF8.GetBytes(contactJson.ToString(Newtonsoft.Json.Formatting.None));
+
                 string fileName = string.IsNullOrEmpty(con.Name) ? "Contact" : con.Name;
 
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
 
-                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
+                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.NOT_STARTED, bytes.Length);
                 convMessage.FileAttachment.ContentType = HikeConstants.CT_CONTACT;
                 convMessage.Message = AppResources.ContactTransfer_Text;
                 convMessage.MetaDataString = contactJson.ToString(Newtonsoft.Json.Formatting.None);
@@ -4639,7 +5019,7 @@ namespace windows_client.View
 
                 object[] vals = new object[3];
                 vals[0] = convMessage;
-                vals[1] = Encoding.UTF8.GetBytes(contactJson.ToString(Newtonsoft.Json.Formatting.None));
+                vals[1] = bytes;
                 App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
             }
         }
@@ -4659,64 +5039,108 @@ namespace windows_client.View
             }
         }
 
-        private void emotHeaderRect0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void emotHeaderRectRecent_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
+            emotHeaderRectRecent.Background = UI_Utils.Instance.TappedCategoryColor;
+            emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
             emoticonPivot.SelectedIndex = 0;
         }
 
+        private void emotHeaderRect0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
+            emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emoticonPivot.SelectedIndex = 1;
+        }
+
         private void emotHeaderRect1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.TappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emoticonPivot.SelectedIndex = 1;
+            emoticonPivot.SelectedIndex = 2;
 
         }
 
         private void emotHeaderRect2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.TappedCategoryColor;
             emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emoticonPivot.SelectedIndex = 2;
+            emoticonPivot.SelectedIndex = 3;
         }
         private void emotHeaderRect3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect3.Background = UI_Utils.Instance.TappedCategoryColor;
-            emoticonPivot.SelectedIndex = 3;
+            emoticonPivot.SelectedIndex = 4;
         }
+
+        List<SmileyParser.Emoticon> listTemp = new List<SmileyParser.Emoticon>();
         private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_EMOTICON_CATEGORY, emoticonPivot.SelectedIndex);
+
             switch (emoticonPivot.SelectedIndex)
             {
                 case 0:
-                    emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
+                    if (imagePathsForListRecent.Count > 0)
+                    {
+                        gridNoRecents.Visibility = Visibility.Collapsed;
+                        gridShowRecents.Visibility = Visibility.Visible;
+                        emotListRecent.ItemsSource = null;
+                        listTemp.Clear();
+                        listTemp.AddRange(imagePathsForListRecent);
+                        emotListRecent.ItemsSource = listTemp;
+                    }
+                    else
+                    {
+                        gridNoRecents.Visibility = Visibility.Visible;
+                        gridShowRecents.Visibility = Visibility.Collapsed;
+                    }
+
+                    emotHeaderRectRecent.Background = UI_Utils.Instance.TappedCategoryColor;
+                    emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
                     break;
                 case 1:
+                    emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
+                    emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    break;
+                case 2:
+                    emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.TappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
                     break;
-                case 2:
+                case 3:
+                    emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.TappedCategoryColor;
                     emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
                     break;
-                case 3:
+                case 4:
+                    emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
@@ -4728,7 +5152,7 @@ namespace windows_client.View
         //TODO - MG try to use sametap event for header n statusBubble
         private void statusBubble_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            if (!isContextMenuTapped && !isGroupChat)
+            if (!isContextMenuTapped && !isGroupChat && !_isHikeBot)
             {
                 PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
@@ -5176,10 +5600,8 @@ namespace windows_client.View
         }
 
         #region Orientation Handling
-        PageOrientation _currentOrientation;
         private void PhoneApplicationPage_OrientationChanged(object sender, OrientationChangedEventArgs e)
         {
-            _currentOrientation = this.Orientation;
             for (int i = 0; i < ocMessages.Count; i++)
             {
                 ConvMessage convMessage = ocMessages[i];
@@ -5199,6 +5621,7 @@ namespace windows_client.View
                 App.ViewModel.HideToolTip(LayoutRoot, 0);
                 App.ViewModel.HideToolTip(LayoutRoot, 1);
                 App.ViewModel.HideToolTip(LayoutRoot, 5);
+                App.ViewModel.HideToolTip(LayoutRoot, 7);
             }
 
             RotateImageAndApply();
@@ -5237,12 +5660,16 @@ namespace windows_client.View
         private void vScrollBar1_ValueChanged(Object sender, EventArgs e)
         {
             vScrollBar = sender as ScrollBar;
-            if (vScrollBar != null && vScrollBar.Maximum < 1000000 && _currentOrientation == this.Orientation)
+            if (vScrollBar != null && llsMessages.ManipulationState != ManipulationState.Idle)
             {
-                if ((vScrollBar.Maximum - vScrollBar.Value) < 100)
+                if ((vScrollBar.Maximum - vScrollBar.Value) < 200)
                 {
                     JumpToBottomGrid.Visibility = Visibility.Collapsed;
                     _unreadMessageCounter = 0;
+                }
+                else if ((vScrollBar.Maximum - vScrollBar.Value) > 2000 && JumpToBottomGrid.Visibility == Visibility.Collapsed)
+                {
+                    ShowJumpToBottom(false);
                 }
             }
         }
@@ -5271,9 +5698,11 @@ namespace windows_client.View
 
         private void ShowJumpToBottom(bool increaseUnreadCounter)
         {
+            if (_isHikeBot)
+                return;
             if (vScrollBar != null && (ocMessages != null && ocMessages.Count > 6) && vScrollBar.Maximum < 1000000)
             {
-                if ((vScrollBar.Maximum - vScrollBar.Value) > 300)
+                if ((vScrollBar.Maximum - vScrollBar.Value) > 500)
                 {
                     if (increaseUnreadCounter)
                         _unreadMessageCounter += 1;
@@ -5292,232 +5721,83 @@ namespace windows_client.View
 
         bool isStickersLoaded = false;
         private string _selectedCategory = string.Empty;
-        Thickness zeroThickness = new Thickness(0, 0, 0, 0);
-        Thickness newCategoryThickness = new Thickness(0, 5, 0, 0);
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sticker">low res sticker from pallette</param>
+        /// <param name="isRecent"></param>
         public void SendSticker(Sticker sticker)
         {
             ConvMessage conv = new ConvMessage(AppResources.Sticker_Txt, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
             conv.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
             conv.StickerObj = new Sticker(sticker.Category, sticker.Id, null, true);
             conv.MetaDataString = string.Format("{{{0}:'{1}',{2}:'{3}'}}", HikeConstants.STICKER_ID, sticker.Id, HikeConstants.CATEGORY_ID, sticker.Category);
-            //Stickers_tap is binded to pivot and cached so to update latest object this is done
             AddNewMessageToUI(conv, false);
+            HikeViewModel.stickerHelper.recentStickerHelper.AddSticker(sticker);
 
             mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
         }
 
-        private void StickersTab_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
-
-            gridEmoticons.Visibility = Visibility.Collapsed;
-            gridStickers.Visibility = Visibility.Visible;
-            if (!isStickersLoaded)
-            {
-                Category0_Tap(sender, e);
-                isStickersLoaded = true;
-            }
-        }
-
-
         private void PivotStickers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string category;
-            if (StickerPivotHelper.Instance.dictPivotCategory.TryGetValue(pivotStickers.SelectedIndex, out category))
+            if (listStickerCategories.Count > pivotStickers.SelectedIndex)
             {
-                switch (category)
-                {
-                    case StickerHelper.CATEGORY_HUMANOID:
-                        Category0_Tap(null, null);
-                        break;
-                    case StickerHelper.CATEGORY_DOGGY:
-                        Category1_Tap(null, null);
-                        break;
-                    case StickerHelper.CATEGORY_KITTY:
-                        Category2_Tap(null, null);
-                        break;
-                    case StickerHelper.CATEGORY_EXPRESSIONS:
-                        Category3_Tap(null, null);
-                        break;
-                    case StickerHelper.CATEGORY_BOLLYWOOD:
-                        Category4_Tap(null, null);
-                        break;
-                    case StickerHelper.CATEGORY_TROLL:
-                        Category5_Tap(null, null);
-                        break;
-                }
+                lbStickerCategories.SelectedIndex = pivotStickers.SelectedIndex;
+                lbStickerCategories.ScrollIntoView(listStickerCategories[pivotStickers.SelectedIndex]);
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, listStickerCategories[pivotStickers.SelectedIndex].Category);
             }
         }
 
-        private void StickersBack_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void StickerCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            gridEmoticons.Visibility = Visibility.Visible;
-            gridStickers.Visibility = Visibility.Collapsed;
+            ListBox lbStickerCategory = sender as ListBox;
+            if (lbStickerCategory.SelectedItem == null)
+                return;
+
+            StickerCategory stickerCategory = lbStickerCategory.SelectedItem as StickerCategory;
+            lbStickerCategories.SelectedItem = null;
+            StickerCategoryTapped(stickerCategory);
         }
 
-        private void Category0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void StickerCategoryTapped(string selectedCategory)
         {
-            if (_selectedCategory == StickerHelper.CATEGORY_HUMANOID)
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(selectedCategory);
+            if (stickerCategory != null)
+                StickerCategoryTapped(stickerCategory);
+        }
+        private void StickerCategoryTapped(StickerCategory stickerCategory)
+        {
+            if (_selectedCategory == stickerCategory.Category)
                 return;
-            _selectedCategory = StickerHelper.CATEGORY_HUMANOID;
+            _selectedCategory = stickerCategory.Category;
 
-            StickerPivotItem stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[StickerHelper.CATEGORY_HUMANOID];
+            StickerPivotItem stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[stickerCategory.Category];
             pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
 
-            stCategory0.Background = UI_Utils.Instance.TappedCategoryColor;
-            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
+            foreach (StickerCategory stCategory in listStickerCategories)
+            {
+                stCategory.IsSelected = stCategory.Category == _selectedCategory;
+            }
 
-            imghumanoid.Source = UI_Utils.Instance.HumanoidActive;
-            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
-            imgKitty.Source = UI_Utils.Instance.KittyInactive;
-            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
-            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
-            imgTroll.Source = UI_Utils.Instance.TrollInactive;
-
-            CategoryTap(_selectedCategory);
-        }
-
-        private void Category1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (_selectedCategory == StickerHelper.CATEGORY_DOGGY)
-                return;
-            _selectedCategory = StickerHelper.CATEGORY_DOGGY;
-
-            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY);
-            StickerPivotItem stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[StickerHelper.CATEGORY_DOGGY];
-            pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
-
-            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory1.Background = UI_Utils.Instance.TappedCategoryColor;
-            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
-
-            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
-            imgDoggy.Source = UI_Utils.Instance.DoggyActive;
-            imgKitty.Source = UI_Utils.Instance.KittyInactive;
-            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
-            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
-            imgTroll.Source = UI_Utils.Instance.TrollInactive;
-
-            CategoryTap(_selectedCategory);
-        }
-
-        private void Category2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (_selectedCategory == StickerHelper.CATEGORY_KITTY)
-                return;
-            _selectedCategory = StickerHelper.CATEGORY_KITTY;
-
-            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory2.Background = UI_Utils.Instance.TappedCategoryColor;
-            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
-
-            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
-            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
-            imgKitty.Source = UI_Utils.Instance.KittyActive;
-            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
-            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
-            imgTroll.Source = UI_Utils.Instance.TrollInactive;
-
-            CategoryTap(StickerHelper.CATEGORY_KITTY);
-        }
-
-        private void Category3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (_selectedCategory == StickerHelper.CATEGORY_EXPRESSIONS)
-                return;
-            _selectedCategory = StickerHelper.CATEGORY_EXPRESSIONS;
-            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory3.Background = UI_Utils.Instance.TappedCategoryColor;
-            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
-
-            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
-            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
-            imgKitty.Source = UI_Utils.Instance.KittyInactive;
-            imgExpressions.Source = UI_Utils.Instance.ExpressionsActive;
-            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
-            imgTroll.Source = UI_Utils.Instance.TrollInactive;
-
-            CategoryTap(StickerHelper.CATEGORY_EXPRESSIONS);
-        }
-
-        private void Category4_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (_selectedCategory == StickerHelper.CATEGORY_BOLLYWOOD)
-                return;
-            _selectedCategory = StickerHelper.CATEGORY_BOLLYWOOD;
-            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory5.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory4.Background = UI_Utils.Instance.TappedCategoryColor;
-
-            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
-            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
-            imgKitty.Source = UI_Utils.Instance.KittyInactive;
-            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
-            imgBolly.Source = UI_Utils.Instance.BollywoodActive;
-            imgTroll.Source = UI_Utils.Instance.TrollInactive;
-
-            CategoryTap(StickerHelper.CATEGORY_BOLLYWOOD);
-        }
-
-        private void Category5_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (_selectedCategory == StickerHelper.CATEGORY_TROLL)
-                return;
-            _selectedCategory = StickerHelper.CATEGORY_TROLL;
-
-            stCategory0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory3.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory4.Background = UI_Utils.Instance.UntappedCategoryColor;
-            stCategory5.Background = UI_Utils.Instance.TappedCategoryColor;
-
-            imghumanoid.Source = UI_Utils.Instance.HumanoidInactive;
-            imgDoggy.Source = UI_Utils.Instance.DoggyInactive;
-            imgKitty.Source = UI_Utils.Instance.KittyInactive;
-            imgExpressions.Source = UI_Utils.Instance.ExpressionsInactive;
-            imgBolly.Source = UI_Utils.Instance.BollywoodInactive;
-            imgTroll.Source = UI_Utils.Instance.TrollActive;
-
-            CategoryTap(StickerHelper.CATEGORY_TROLL);
-        }
-
-        private void CategoryTap(string category)
-        {
-            StickerPivotItem stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[category];
-            pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
-
-            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
             foreach (KeyValuePair<string, StickerPivotItem> kvp in StickerPivotHelper.Instance.dictStickersPivot)
             {
-                if (kvp.Key != category)
+                if (kvp.Key != _selectedCategory)
                 {
                     kvp.Value.SetLlsSource(null);
                 }
             }
-            stickerPivot.SetLlsSource(stickerCategory.ListStickers);
-
-            if (stickerCategory.ShowDownloadMessage || (stickerCategory.HasNewStickers && !stickerCategory.HasMoreStickers))
+            if (_selectedCategory == StickerHelper.CATEGORY_RECENT)
             {
-                HideNewStickerUI(stickerCategory, true);
+                stickerPivot.SetLlsSourceList(HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers);
+                if (HikeViewModel.stickerHelper.recentStickerHelper.listRecentStickers.Count == 0)
+                    stickerPivot.ShowNoStickers();
+                else
+                    stickerPivot.ShowStickers();
             }
+            else
+                stickerPivot.SetLlsSource(stickerCategory.ListStickers);
 
             if (stickerCategory.ShowDownloadMessage)
             {
@@ -5542,60 +5822,7 @@ namespace windows_client.View
             }
         }
 
-        private void HideNewStickerUI(StickerCategory stickerCategory, bool updateFile)
-        {
-            if (stickerCategory != null)
-            {
-                switch (stickerCategory.Category)
-                {
-                    case StickerHelper.CATEGORY_DOGGY:
-                        stCategory1.BorderThickness = zeroThickness;
-                        break;
-                    case StickerHelper.CATEGORY_KITTY:
-                        stCategory2.BorderThickness = zeroThickness;
-                        break;
-                    case StickerHelper.CATEGORY_EXPRESSIONS:
-                        stCategory3.BorderThickness = zeroThickness;
-                        break;
-                    case StickerHelper.CATEGORY_BOLLYWOOD:
-                        stCategory4.BorderThickness = zeroThickness;
-                        break;
-                    case StickerHelper.CATEGORY_TROLL:
-                        stCategory5.BorderThickness = zeroThickness;
-                        break;
-                }
-                if (updateFile)
-                {
-                    //use bw
-                    StickerCategory.UpdateHasMoreMessages(_selectedCategory, stickerCategory.HasMoreStickers, false);
-                }
-            }
-        }
-
-        private void ShowNewStickerUi(StickerCategory stickerCategory)
-        {
-            if (stickerCategory != null)
-            {
-                switch (stickerCategory.Category)
-                {
-                    case StickerHelper.CATEGORY_DOGGY:
-                        stCategory1.BorderThickness = newCategoryThickness;
-                        break;
-                    case StickerHelper.CATEGORY_KITTY:
-                        stCategory2.BorderThickness = newCategoryThickness;
-                        break;
-                    case StickerHelper.CATEGORY_EXPRESSIONS:
-                        stCategory3.BorderThickness = newCategoryThickness;
-                        break;
-                    case StickerHelper.CATEGORY_BOLLYWOOD:
-                        stCategory4.BorderThickness = newCategoryThickness;
-                        break;
-                    case StickerHelper.CATEGORY_TROLL:
-                        stCategory5.BorderThickness = newCategoryThickness;
-                        break;
-                }
-            }
-        }
+        List<StickerCategory> listStickerCategories;
 
         public void PostRequestForBatchStickers(StickerCategory stickerCategory)
         {
@@ -5648,6 +5875,16 @@ namespace windows_client.View
                 if (convMessage != null)
                 {
                     convMessage.ImageDownloadFailed = true;
+                    string key = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
+                    List<ConvMessage> listDownlaoding;
+                    if (dictDownloadingSticker.TryGetValue(key, out listDownlaoding))
+                    {
+                        foreach (ConvMessage conv in listDownlaoding)
+                        {
+                            conv.ImageDownloadFailed = true;
+                        }
+                        dictDownloadingSticker.Remove(key);
+                    }
                 }
 
                 return;
@@ -5710,9 +5947,17 @@ namespace windows_client.View
                         if (convMessage != null)
                         {
                             string key = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
-                            convMessage.ImageDownloadFailed = false;
-                            convMessage.StickerObj.IsStickerDownloaded = true;
-                            convMessage.StickerObj.StickerImageBytes = keyValuePair.Value;
+                            List<ConvMessage> listDownlaoding;
+                            if (dictDownloadingSticker.TryGetValue(key, out listDownlaoding))
+                            {
+                                foreach (ConvMessage conv in listDownlaoding)
+                                {
+                                    conv.ImageDownloadFailed = false;
+                                    conv.StickerObj.IsStickerDownloaded = true;
+                                    conv.StickerObj.StickerImageBytes = keyValuePair.Value;
+                                }
+                                dictDownloadingSticker.Remove(key);
+                            }
                             lruStickerCache.AddObject(key, highResImage);
                         }
                         if (!isDisabled)
@@ -5727,13 +5972,11 @@ namespace windows_client.View
                         if (!isDisabled)
                         {
                             stickerCategory.HasNewStickers = true;
-                            ShowNewStickerUi(stickerCategory);
                         }
                     }
                     else
                     {
                         stickerCategory.HasNewStickers = false;
-                        HideNewStickerUI(stickerCategory, false);
                     }
                     if (!isDisabled)
                         stickerCategory.WriteLowResToFile(listLowResStickersBytes, hasMoreStickers);
@@ -5771,6 +6014,16 @@ namespace windows_client.View
                 if (convMessage != null)
                 {
                     convMessage.ImageDownloadFailed = true;
+                    string key = convMessage.StickerObj.Category + "_" + convMessage.StickerObj.Id;
+                    List<ConvMessage> listDownlaoding;
+                    if (dictDownloadingSticker.TryGetValue(key, out listDownlaoding))
+                    {
+                        foreach (ConvMessage conv in listDownlaoding)
+                        {
+                            conv.ImageDownloadFailed = true;
+                        }
+                        dictDownloadingSticker.Remove(key);
+                    }
                 }
             }
         }
@@ -5778,6 +6031,7 @@ namespace windows_client.View
         public void ShowDownloadOverlay(bool show)
         {
             sendIconButton.IsEnabled = show ? sendMsgTxtbox.Text.Length > 0 : false;
+            stickersIconButton.IsEnabled = !show;
             emoticonsIconButton.IsEnabled = !show;
             fileTransferIconButton.IsEnabled = !show;
             if (show)
@@ -5807,6 +6061,15 @@ namespace windows_client.View
                         break;
                     case StickerHelper.CATEGORY_TROLL:
                         downloadDialogueImage.Source = UI_Utils.Instance.TrollOverlay;
+                        break;
+                    case StickerHelper.CATEGORY_HUMANOID2:
+                        downloadDialogueImage.Source = UI_Utils.Instance.Humanoid2Overlay;
+                        break;
+                    case StickerHelper.CATEGORY_AVATARS:
+                        downloadDialogueImage.Source = UI_Utils.Instance.AvatarsOverlay;
+                        break;
+                    case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
+                        downloadDialogueImage.Source = UI_Utils.Instance.SmileyExpressionsOverlay;
                         break;
                 }
                 overlayRectangle.Tap += overlayRectangle_Tap_1;
@@ -5851,61 +6114,64 @@ namespace windows_client.View
             PostRequestForBatchStickers(stickerCategory);
         }
 
-        private void CreateStickerCategoriesPallete()
-        {
-            StickerCategory stickerCategory;
-            //done thos way to maintain order of insertion
-            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID)) != null)
-            {
-                if (stickerCategory.HasNewStickers)
-                    ShowNewStickerUi(stickerCategory);
-            }
-
-            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
-            {
-                stCategory1.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewStickers)
-                    ShowNewStickerUi(stickerCategory);
-            }
-
-            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
-            {
-                stCategory2.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewStickers)
-                    ShowNewStickerUi(stickerCategory);
-            }
-
-            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
-            {
-                stCategory3.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewStickers)
-                    ShowNewStickerUi(stickerCategory);
-
-            }
-
-            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
-            {
-                stCategory4.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewStickers)
-                    ShowNewStickerUi(stickerCategory);
-            }
-
-            if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
-            {
-                stCategory5.Visibility = Visibility.Visible;
-                if (stickerCategory.HasNewStickers)
-                    ShowNewStickerUi(stickerCategory);
-            }
-
-        }
         private void CreateStickerPivot()
         {
             StickerPivotHelper.Instance.InitialiseStickerPivot();
             pivotStickers = StickerPivotHelper.Instance.StickerPivot;
             pivotStickers.SelectionChanged += PivotStickers_SelectionChanged;
-            pivotStickers.Height = 240;
+            pivotStickers.MaxHeight = 240;
             pivotStickers.SetValue(Grid.RowProperty, 0);
             gridStickers.Children.Add(pivotStickers);
+        }
+
+        private void CreateStickerCategories()
+        {
+            if (listStickerCategories == null)
+            {
+                listStickerCategories = new List<StickerCategory>();
+                StickerCategory stickerCategory;
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_RECENT)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                lbStickerCategories.ItemsSource = listStickerCategories;
+            }
         }
         #endregion
 
@@ -5913,9 +6179,30 @@ namespace windows_client.View
 
         private void Record_ActionIconTapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.ViewModel.HideToolTip(LayoutRoot, 1);
             App.ViewModel.HideToolTip(LayoutRoot, 2);
 
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
+            if (App.ViewModel.DictInAppTip != null)
+            {
+                HikeToolTip toolTip;
+                App.ViewModel.DictInAppTip.TryGetValue(2, out toolTip);
+                if (toolTip != null)
+                {
+                    toolTip.IsShown = true;
+                    toolTip.IsCurrentlyShown = false;
+
+                    int index = 2;
+                    byte shownByte;
+                    App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out shownByte);
+                    shownByte &= (byte)~(1 << index);
+                    App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, shownByte);
+
+                    byte currentShown;
+                    App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
+                    currentShown &= (byte)~(1 << index);
+                    App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
+                }
+            }
 
             attachmentMenu.Visibility = Visibility.Collapsed;
             emoticonPanel.Visibility = Visibility.Collapsed;
@@ -5941,6 +6228,7 @@ namespace windows_client.View
                 {
                     currentAudioMessage.IsPlaying = false;
                     mediaElement.Pause();
+                    ResumeBackgroundAudio();
                 }
             }
 
@@ -6355,7 +6643,7 @@ namespace windows_client.View
                      {
                          var indexToInsert = ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
 
-                         if (App.ViewModel.DictInAppTip != null)
+                         if (App.ViewModel.DictInAppTip != null && !isInAppTipVisible)
                          {
                              HikeToolTip tip;
                              App.ViewModel.DictInAppTip.TryGetValue(6, out tip);
@@ -6383,6 +6671,8 @@ namespace windows_client.View
 
                                  if (indexToInsert == ocMessages.Count - 1)
                                      ScrollToBottom();
+
+                                 isInAppTipVisible = true;
 
                                  return;
                              }
@@ -6520,8 +6810,11 @@ namespace windows_client.View
                     userName.FontSize = 36;
                     lastSeenPannel.Visibility = Visibility.Visible;
 
-                    if (isShowTip)
+                    if (isShowTip && !isInAppTipVisible)
+                    {
                         App.ViewModel.DisplayTip(LayoutRoot, 5);
+                        isInAppTipVisible = true;
+                    }
                 }
             }), status, showTip);
         }
@@ -6583,10 +6876,66 @@ namespace windows_client.View
                 ShowForceSMSOnUI();
             }
         }
+
         ViewportControl llsViewPort;
         private void ViewPortLoaded(object sender, RoutedEventArgs e)
         {
             llsViewPort = sender as ViewportControl;
+        }
+
+        bool _uploadProgressBarIsTapped = false;
+
+        private void PauseResume_Tapped(object sender, RoutedEventArgs e)
+        {
+            _uploadProgressBarIsTapped = true;
+
+            var button = sender as Button;
+            if (button != null)
+            {
+                var id = Convert.ToInt64(button.Tag);
+                if (msgMap.ContainsKey(id))
+                {
+                    var convMessage = msgMap[id];
+
+                    if (convMessage.FileAttachment != null)
+                    {
+                        if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
+                            PauseTransfer(convMessage);
+                        else if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.PAUSED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
+                            ResumeTransfer(convMessage);
+                    }
+                }
+                else
+                    _uploadProgressBarIsTapped = false;
+            }
+        }
+
+        private void MsgCharTapped(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (!App.appSettings.Contains(App.ENTER_TO_SEND) && (e.Key == Key.Enter || e.PlatformKeyCode == 0x0A))
+            {
+                SendMsg();
+            }
+        }
+
+        bool resumeMediaPlayerAfterDone = false;
+
+        void PauseBackgroundAudio()
+        {
+            if (!MediaPlayer.GameHasControl)
+            {
+                MediaPlayer.Pause();
+                resumeMediaPlayerAfterDone = true;
+            }
+        }
+
+        void ResumeBackgroundAudio()
+        {
+            if (resumeMediaPlayerAfterDone)
+            {
+                MediaPlayer.Resume();
+                resumeMediaPlayerAfterDone = false;
+            }
         }
     }
 

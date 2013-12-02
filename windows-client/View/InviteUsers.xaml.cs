@@ -22,20 +22,18 @@ namespace windows_client.View
     {
 
         private bool xyz;
-        private bool isClicked = false;
         private string charsEntered;
         private List<Group<ContactInfo>> defaultJumpList = null;
         List<Group<ContactInfo>> glistFiltered = null;
         Dictionary<string, List<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, List<Group<ContactInfo>>>();
         public List<Group<ContactInfo>> jumpList = null; // list that will contain the complete jump list
         private List<ContactInfo> allContactsList = null; // contacts list
-        private Dictionary<string, bool> contactsList = new Dictionary<string, bool>(); // this will work as a hashset and will be used in invite
-        private List<ContactInfo> hikeFavList = null;
+        private Dictionary<string, byte> contactsList = new Dictionary<string, byte>(); // this will work as a hashset and will be used in invite
+        //used value as byte so that if two contacts have same msisdn then they must be treated as two different contacts
         ContactInfo defaultContact = new ContactInfo(); // this is used to store default phone number 
-
         private ApplicationBar appBar;
         private ApplicationBarIconButton doneIconButton = null;
-
+        string defaultMsg = AppResources.Tap_To_Invite_Txt;
         public class Group<T> : List<T>
         {
             public Group(string name, List<T> items)
@@ -66,6 +64,8 @@ namespace windows_client.View
                 jumpList = getGroupedList(allContactsList);
                 contactsListBox.ItemsSource = jumpList;
                 shellProgress.IsVisible = false;
+                if (allContactsList != null && allContactsList.Count > 0)
+                    gridSelectAll.Visibility = Visibility.Visible;
             };
             initPage();
         }
@@ -73,7 +73,6 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
-            PhoneApplicationService.Current.State.Remove("HIKE_FRIENDS");
         }
 
         private void initPage()
@@ -106,7 +105,7 @@ namespace windows_client.View
                 ContactInfo c = allContactsList[i];
                 if (c.Msisdn == App.MSISDN) // don't show own number in any chat.
                     continue;
-                
+
                 string ch = GetCaptionGroup(c);
                 // calculate the index into the list
                 int index = (ch == "#") ? 26 : ch[0] - 'a';
@@ -142,73 +141,61 @@ namespace windows_client.View
 
         private void Invite_Or_Fav_Click(object sender, EventArgs e)
         {
-            if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
+            if ((bool)SelectAll_Chkbx.IsChecked)
+                Analytics.SendClickEvent(HikeConstants.SELECT_ALL_INVITE);
+
+            string msisdns = string.Empty, toNum = String.Empty;
+            int count = 0;
+            JObject obj = new JObject();
+            JArray numlist = new JArray();
+            JObject data = new JObject();
+
+            foreach (string key in contactsList.Keys)
             {
-                string inviteToken = "";
-                //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-                int count = 0;
-                foreach (string key in contactsList.Keys)
+                if (key != App.MSISDN)
                 {
-                    if (key == App.MSISDN)
-                        continue;
-                    JObject obj = new JObject();
-                    JObject data = new JObject();
-                    data[HikeConstants.SMS_MESSAGE] = AppResources.sms_invite_message;
-                    data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
-                    data[HikeConstants.MESSAGE_ID] = -1;
-                    obj[HikeConstants.TO] = key;
-                    obj[HikeConstants.DATA] = data;
-                    obj[HikeConstants.TYPE] = NetworkManager.INVITE;
-                    App.MqttManagerInstance.mqttPublishToServer(obj);
-                    count++;
+                    msisdns += key + ";";
+                    toNum = key;
+                    numlist.Add(key);
                 }
-                if (count > 0)
-                    MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
+
+                count++;
+            }
+
+            var smsString = AppResources.sms_invite_message;
+            var ts = TimeUtils.getCurrentTimeStamp();
+
+            if (count == 1)
+            {
+                obj[HikeConstants.TO] = toNum;
+                data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.HIKE_MESSAGE] = smsString;
+                data[HikeConstants.TIMESTAMP] = ts;
+                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.TYPE] = NetworkManager.INVITE;
             }
             else
             {
-                string msisdns = string.Empty, toNum = String.Empty;
-                int count = 0;
-                JObject obj = new JObject();
-                JArray numlist = new JArray();
-                JObject data = new JObject();
+                data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.INVITE_LIST] = numlist;
+                obj[HikeConstants.TIMESTAMP] = ts;
+                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
+            }
 
-                foreach (string key in contactsList.Keys)
-                {
-                    if (key != App.MSISDN)
-                    {
-                        msisdns += key + ";";
-                        toNum = key;
-                        numlist.Add(key);
-                    }
+            
 
-                    count++;
-                }
-
-                var smsString = AppResources.sms_invite_message;
-                var ts = TimeUtils.getCurrentTimeStamp();
-
-                if (count == 1)
-                {
-                    obj[HikeConstants.TO] = toNum;
-                    data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                    data[HikeConstants.HIKE_MESSAGE] = smsString;
-                    data[HikeConstants.TIMESTAMP] = ts;
-                    obj[HikeConstants.DATA] = data;
-                    obj[HikeConstants.TYPE] = NetworkManager.INVITE;
-                }
-                else
-                {
-                    data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                    data[HikeConstants.INVITE_LIST] = numlist;
-                    obj[HikeConstants.TIMESTAMP] = ts;
-                    obj[HikeConstants.DATA] = data;
-                    obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
-                }
-
-                obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
-
+            if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
+            {
                 App.MqttManagerInstance.mqttPublishToServer(obj);
+                if (count > 0)
+                    MessageBox.Show(AppResources.InviteUsers_TotalInvitesSent_Txt, AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
+            }
+            else
+            {
+                obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+                App.MqttManagerInstance.mqttPublishToServer(obj);
+
                 SmsComposeTask smsComposeTask = new SmsComposeTask();
                 smsComposeTask.To = msisdns;
                 smsComposeTask.Body = smsString;
@@ -222,26 +209,48 @@ namespace windows_client.View
             contactsListBox.Focus();
         }
 
+        private int checkedContactCount = 0;
+
         public void CheckBox_Tap(ContactInfo cn)
         {
             //checked for null because after binding to listbox if select unselect then add in selected contacts
             if (contactsListBox.ItemsSource != null)
             {
                 string msisdn;
-                if (cn.Msisdn.Equals(cn.Name)) // represents this is for unadded number
+                bool isDefaultContact = false;
+                if (cn.Msisdn.Equals(defaultMsg)) // represents this is for unadded number
                 {
                     msisdn = Utils.NormalizeNumber(cn.Name);
                     cn = GetContactIfExists(cn);
+                    isDefaultContact = true;
                 }
                 else
                     msisdn = cn.Msisdn;
                 if (cn.IsFav) // this will be true when checkbox is not checked initially and u clicked it
                 {
-                    contactsList[msisdn] = true;
+                    byte count;
+                    if (contactsList.TryGetValue(msisdn, out count) && isDefaultContact)//to ignore unsaved contact saving state
+                        return;
+                    checkedContactCount++;
+                    contactsList[msisdn] = ++count;
+                    txtSelectedCounter.Text = string.Format("({0})", checkedContactCount);
+                    txtSelectedCounter.Visibility = Visibility.Visible;
                 }
                 else // this will be true when checkbox is checked initially and u clicked it to make it uncheck
                 {
-                    contactsList.Remove(msisdn);
+                    byte count;
+                    if (contactsList.TryGetValue(msisdn, out count))
+                    {
+                        checkedContactCount--;
+                        if (count > 1)
+                            contactsList[msisdn] = --count;
+                        else
+                            contactsList.Remove(msisdn);
+                        if (checkedContactCount > 0)
+                            txtSelectedCounter.Text = string.Format("({0})", checkedContactCount);
+                        else
+                            txtSelectedCounter.Visibility = Visibility.Collapsed;
+                    }
                 }
 
                 if (contactsList.Count > 0)
@@ -305,6 +314,15 @@ namespace windows_client.View
                 {
                     gl[26][0].Name = charsEntered;
                     string num = Utils.NormalizeNumber(charsEntered);
+                    if (charsEntered.Length >= 1 && charsEntered.Length <= 15)
+                    {
+                        gl[26][0].Msisdn = defaultMsg;
+                    }
+                    else
+                    {
+                        gl[26][0].Msisdn = AppResources.SelectUser_EnterValidNo_Txt;
+                    }
+
                     if (contactsList.ContainsKey(num))
                     {
                         gl[26][0].IsFav = true;
@@ -312,14 +330,6 @@ namespace windows_client.View
                     else
                     {
                         gl[26][0].IsFav = false;
-                    }
-                    if (charsEntered.Length >= 1 && charsEntered.Length <= 15)
-                    {
-                        gl[26][0].Msisdn = charsEntered;
-                    }
-                    else
-                    {
-                        gl[26][0].Msisdn = AppResources.SelectUser_EnterValidNo_Txt;
                     }
                 }
                 contactsListBox.ItemsSource = null;
@@ -418,7 +428,7 @@ namespace windows_client.View
                 list[26][0].Name = charsEntered;
                 if (Utils.IsNumberValid(charsEntered))
                 {
-                    list[26][0].Msisdn = charsEntered;
+                    list[26][0].Msisdn = defaultMsg;
                 }
                 else
                 {
@@ -431,6 +441,32 @@ namespace windows_client.View
             if (areCharsNumber)
                 return list;
             return glistFiltered;
+        }
+
+        private void Sender_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            StackPanel sp = sender as StackPanel;
+            if (sp.DataContext == null)
+                return;
+
+            ContactInfo cinfo = sp.DataContext as ContactInfo;
+            cinfo.IsFav = !cinfo.IsFav;
+
+        }
+
+        bool isSelectAllChecked = false;
+        private void gridSelectAll_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (allContactsList == null)
+                return;
+
+            isSelectAllChecked = !isSelectAllChecked;
+            SelectAll_Chkbx.IsChecked = isSelectAllChecked;
+
+            foreach (ContactInfo cinfo in allContactsList)
+            {
+                cinfo.IsFav = isSelectAllChecked;
+            }
         }
     }
 }

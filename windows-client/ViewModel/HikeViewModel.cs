@@ -174,6 +174,8 @@ namespace windows_client.ViewModel
             _messageListPageCollection = new ObservableCollection<ConversationListObject>(listConversationBox);
 
             LoadViewModelObjects();
+            LoadToolTipsDict();
+            LoadCurrentLocation();
         }
 
         public HikeViewModel()
@@ -205,6 +207,7 @@ namespace windows_client.ViewModel
             LoadCurrentLocation();
 
             ChatBackgroundHelper.Instance.Instantiate();
+            FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
         }
 
         /// <summary>
@@ -464,13 +467,18 @@ namespace windows_client.ViewModel
         {
             _toolTipsList = new List<HikeToolTip>();
 
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 220, 0), FullTipMargin = new Thickness(10, 0, 10, 0), Background = UI_Utils.Instance.GreyTextForeGround, Foreground = UI_Utils.Instance.White });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 130, 0), FullTipMargin = new Thickness(10, 0, 10, 70), Background = UI_Utils.Instance.GreyTextForeGround, Foreground = UI_Utils.Instance.White });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70), Background = UI_Utils.Instance.GreyTextForeGround, Foreground = UI_Utils.Instance.White });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 180, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 262, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 30, 0), FullTipMargin = new Thickness(10, 0, 10, 55) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0), Background = UI_Utils.Instance.GreyTextForeGround, Foreground = UI_Utils.Instance.White });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 80, 10, 0), Background = UI_Utils.Instance.GreyTextForeGround, Foreground = UI_Utils.Instance.White });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_7, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0), Background = UI_Utils.Instance.GreyTextForeGround, Foreground = UI_Utils.Instance.White });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 65, 10, 0) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_7, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
+
+            if (!App.appSettings.Contains(App.ENTER_TO_SEND))
+                _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_8_1, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 230, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
+            else
+                _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_8_2, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 230, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
         }
 
         /// <summary>
@@ -482,7 +490,7 @@ namespace windows_client.ViewModel
             App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked); //initilaized in upgrade logic
             App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentlyShowing); //initilaized in upgrade logic
 
-            if (marked == 127 && currentlyShowing == 0)//0x7f
+            if (marked == 255 && currentlyShowing == 0)//0xff
                 return;
 
             if (_toolTipsList == null) 
@@ -542,7 +550,7 @@ namespace windows_client.ViewModel
                 Canvas.SetZIndex(inAppTipUC, 3);
                 inAppTipUC.Visibility = Visibility.Visible;
 
-                if (index == 0 || index == 1 || index == 2 || index == 5)
+                if (index == 0 || index == 1 || index == 2 || index == 5 || index == 7)
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 3);
                 else if (index == 3)
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 2);
