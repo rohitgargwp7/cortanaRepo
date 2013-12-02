@@ -73,6 +73,11 @@ namespace windows_client.FileTransfers
         {
             fileInfo = null;
 
+            // if its in task map populate fileInfo from there as it will be in started state
+            if (TaskMap.TryGetValue(id, out fileInfo))
+                return true;
+
+            // if its not in taskmap, it would be pending  or paused, get status from IS
             if (!DoesTransferExist(id, isSent))
                 return false;
 
