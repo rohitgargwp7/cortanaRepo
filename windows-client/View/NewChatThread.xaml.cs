@@ -5795,6 +5795,8 @@ namespace windows_client.View
                     stickerPivot.ShowNoStickers();
                 else
                     stickerPivot.ShowStickers();
+
+                return;
             }
             else
                 stickerPivot.SetLlsSource(stickerCategory.ListStickers);
