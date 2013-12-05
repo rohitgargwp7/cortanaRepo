@@ -623,7 +623,9 @@ namespace windows_client.View
             if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
             {
                 if (App.newChatThreadPage != null)
+                {
                     App.newChatThreadPage.gridStickers.Children.Remove(App.newChatThreadPage.pivotStickers);
+                }
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (s, ee) =>
                 {
@@ -3697,15 +3699,6 @@ namespace windows_client.View
                 }
                 isStickersLoaded = true;
             }
-
-            //if (pivotStickers.SelectedIndex > 0)
-            //{
-            //    string category;
-            //    if (StickerPivotHelper.Instance.dictPivotCategory.TryGetValue(pivotStickers.SelectedIndex, out category))
-            //    {
-            //        StickerCategoryTapped(category);
-            //    }
-            //}
         }
 
         private void fileTransferButton_Click(object sender, EventArgs e)
@@ -5394,12 +5387,22 @@ namespace windows_client.View
             mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
         }
 
+
         private void PivotStickers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateStickerPivot();
+        }
+
+        private void UpdateStickerPivot()
         {
             if (listStickerCategories.Count > pivotStickers.SelectedIndex)
             {
-                lbStickerCategories.SelectedIndex = pivotStickers.SelectedIndex;
-                lbStickerCategories.ScrollIntoView(listStickerCategories[pivotStickers.SelectedIndex]);
+                lbStickerCategories.SelectedItem = listStickerCategories[pivotStickers.SelectedIndex];
+                //using dispatcher so that it should create a delay for ui update
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    lbStickerCategories.ScrollIntoView(lbStickerCategories.SelectedItem);
+                });
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, listStickerCategories[pivotStickers.SelectedIndex].Category);
             }
         }
@@ -5411,7 +5414,6 @@ namespace windows_client.View
                 return;
 
             StickerCategory stickerCategory = lbStickerCategory.SelectedItem as StickerCategory;
-            lbStickerCategories.SelectedItem = null;
             StickerCategoryTapped(stickerCategory);
         }
 
@@ -5428,6 +5430,11 @@ namespace windows_client.View
             _selectedCategory = stickerCategory.Category;
 
             StickerPivotItem stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[stickerCategory.Category];
+
+            //so that after reopening of ct , if pivot index are same we need to update pivot selection explicitly 
+            if (pivotStickers.SelectedIndex == stickerPivot.PivotItemIndex)
+                UpdateStickerPivot();
+
             pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
 
             foreach (StickerCategory stCategory in listStickerCategories)
@@ -6593,6 +6600,7 @@ namespace windows_client.View
                 resumeMediaPlayerAfterDone = false;
             }
         }
+
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector
