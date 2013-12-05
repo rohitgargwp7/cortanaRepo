@@ -32,18 +32,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid Tap="Delete_Tap">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Image x:Name="deleteAccount" Width="28" Source="/View/images/delete_account_white.png" VerticalAlignment="Top" Margin="0,10,0,0"/>
-                <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                    <TextBlock Name="deleteTxtBlk" Text="{Binding Path= LocalizedResources.Delete_Txt_Caps, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="{Binding Path= LocalizedResources.Privacy_DeleteAccountText, Source={StaticResource LocalizedStrings}}" FontSize="19"/>
-                </StackPanel>
-            </Grid>
-            <Grid Grid.Row="1" Tap="Unlink_Tap" Margin="0,30,0,0">
+            <Grid  Tap="Unlink_Tap" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -52,6 +41,17 @@
                 <StackPanel Grid.Column="1" Margin="20,0,0,0">
                     <TextBlock Name="unlinkTxtBlk" Text="{Binding Path= LocalizedResources.Logout_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                     <TextBlock Text="{Binding Path= LocalizedResources.Privacy_LogoutAccountText, Source={StaticResource LocalizedStrings}}" FontSize="19"/>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="1" Tap="Delete_Tap" Margin="0,30,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image x:Name="deleteAccount" Width="28" Source="/View/images/delete_account_white.png" VerticalAlignment="Top" Margin="0,10,0,0"/>
+                <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                    <TextBlock Name="deleteTxtBlk" Text="{Binding Path= LocalizedResources.Delete_Txt_Caps, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Privacy_DeleteAccountText, Source={StaticResource LocalizedStrings}}" FontSize="19"/>
                 </StackPanel>
             </Grid>
         </Grid>

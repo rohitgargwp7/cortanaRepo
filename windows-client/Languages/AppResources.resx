@@ -658,7 +658,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
-    <value>Text Message</value>
+    <value>text message</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_TapMsg_Txt" xml:space="preserve">
