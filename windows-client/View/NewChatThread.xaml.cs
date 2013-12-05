@@ -2691,7 +2691,7 @@ namespace windows_client.View
                     if (vals.Length == 2)
                     {
                         ConvMessage dndChatBubble = new ConvMessage(vals[1], this.Orientation, convMessage);
-                        convMessage.NotificationType = ConvMessage.MessageType.WAITING;
+                        dndChatBubble.NotificationType = ConvMessage.MessageType.WAITING;
                         this.ocMessages.Insert(insertPosition, dndChatBubble);
                         insertPosition++;
                     }
