@@ -2800,7 +2800,7 @@ namespace windows_client.View
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.SMS_USER)
                 {
                     ConvMessage chatBubble = new ConvMessage(convMessage.Message, this.Orientation, convMessage);
-                    convMessage.NotificationType = ConvMessage.MessageType.SMS_PARTICIPANT_INVITED;
+                    chatBubble.NotificationType = ConvMessage.MessageType.SMS_PARTICIPANT_INVITED;
                     this.ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
