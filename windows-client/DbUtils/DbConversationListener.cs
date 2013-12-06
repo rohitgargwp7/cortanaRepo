@@ -392,7 +392,7 @@ namespace windows_client.DbUtils
                         {
                             if (fInfo.FileState == FileTransferState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.MessageId))
                             {
-                                if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
+                                if (fInfo.ContentType.Contains(HikeConstants.IMAGE) || fInfo.ContentType.Contains(HikeConstants.VIDEO))
                                 {
                                     string destinationPath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
                                     string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));
@@ -403,7 +403,7 @@ namespace windows_client.DbUtils
                                         {
                                             IsolatedStorageFileStream myFileStream = isoStore.OpenFile(destinationPath, FileMode.Open, FileAccess.Read);
                                             MediaLibrary library = new MediaLibrary();
-                                            library.SavePicture(convMessage.FileAttachment.FileName, myFileStream);
+                                            library.SavePictureToCameraRoll(convMessage.FileAttachment.FileName, myFileStream);
                                             myFileStream.Close();
                                         }
                                     }
