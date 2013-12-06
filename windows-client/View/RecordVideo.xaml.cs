@@ -357,11 +357,9 @@ namespace windows_client.View
 
             if (currentAppState == ButtonState.Recording)
             {
-                if (ApplicationBar != null)
-                    ApplicationBar.IsVisible = false;
-
-                await videoCaptureDevice.StopRecordingAsync();
-                videoStream.AsStream().Dispose();
+                StopVideoRecording();
+                e.Cancel = true;
+                return;
             }
 
             base.OnBackKeyPress(e);
@@ -703,6 +701,8 @@ namespace windows_client.View
             }
 
             StartVideoPreview();
+
+            _isGoingBack = false;
         }
 
         private async void StartVideoPreview()
