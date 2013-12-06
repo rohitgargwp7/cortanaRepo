@@ -118,9 +118,7 @@ namespace windows_client.View
 
         String getTitleFromSize(double height)
         {
-            if (height == 1080)
-                return AppResources.Video_Very_High_Quality_Txt;
-            else if (height == 720)
+            if (height == 720)
                 return AppResources.Video_High_Quality_Txt;
             else if (height == 480)
                 return AppResources.Video_Standard_Quality_Txt;
@@ -139,7 +137,7 @@ namespace windows_client.View
 
                 if (res != null && res.Count > 0)
                 {
-                    var resList = res.Where(r => (r.Height == 1080 || r.Height == 720 || (r.Height == 480 && r.Width == 640) || r.Height == 240)).ToList();
+                    var resList = res.Where(r => (r.Height == 720 || (r.Height == 480 && r.Width == 640) || r.Height == 240)).ToList();
 
                     if (resList != null && resList.Count > 0)
                     {
@@ -357,11 +355,9 @@ namespace windows_client.View
 
             if (currentAppState == ButtonState.Recording)
             {
-                if (ApplicationBar != null)
-                    ApplicationBar.IsVisible = false;
-
-                await videoCaptureDevice.StopRecordingAsync();
-                videoStream.AsStream().Dispose();
+                StopVideoRecording();
+                e.Cancel = true;
+                return;
             }
 
             base.OnBackKeyPress(e);
@@ -703,6 +699,8 @@ namespace windows_client.View
             }
 
             StartVideoPreview();
+
+            _isGoingBack = false;
         }
 
         private async void StartVideoPreview()

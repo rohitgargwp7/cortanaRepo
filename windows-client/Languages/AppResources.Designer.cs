@@ -4640,15 +4640,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Very High Quality (1080p).
-        /// </summary>
-        public static string Video_Very_High_Quality_Txt {
-            get {
-                return ResourceManager.GetString("Video_Very_High_Quality_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to View full message.
         /// </summary>
         public static string ViewFullMessage_Txt {
