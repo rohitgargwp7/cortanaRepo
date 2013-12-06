@@ -141,13 +141,11 @@ namespace windows_client.Controls
                 if (overlay.noButton.Visibility == Visibility.Visible)
                 {
                     overlay.yesButton.SetValue(Grid.ColumnSpanProperty, 1);
-                    overlay.noButton.BorderThickness = new Thickness(2, 2, 2, 2);
                     overlay.noButton.SetValue(Grid.ColumnSpanProperty, 1);
                     overlay.noButton.SetValue(Grid.ColumnProperty, 1);
                 }
                 else
                 {
-                    overlay.yesButton.BorderThickness = new Thickness(2, 2, 2, 2);
                     overlay.yesButton.SetValue(Grid.ColumnSpanProperty, 2);
                 }
             }
@@ -155,7 +153,6 @@ namespace windows_client.Controls
             {
                 if (overlay.noButton.Visibility == Visibility.Visible)
                 {
-                    overlay.noButton.BorderThickness = new Thickness(2, 2, 2, 2);
                     overlay.noButton.SetValue(Grid.ColumnSpanProperty, 2);
                     overlay.noButton.SetValue(Grid.ColumnProperty, 0);
                 }
