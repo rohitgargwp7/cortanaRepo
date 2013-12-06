@@ -183,7 +183,7 @@ namespace windows_client.View
                 obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
             }
 
-            
+
 
             if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
             {
@@ -213,51 +213,47 @@ namespace windows_client.View
 
         public void CheckBox_Tap(ContactInfo cn)
         {
-            //checked for null because after binding to listbox if select unselect then add in selected contacts
-            if (contactsListBox.ItemsSource != null)
+            string msisdn;
+            bool isDefaultContact = false;
+            if (cn.Msisdn.Equals(defaultMsg)) // represents this is for unadded number
             {
-                string msisdn;
-                bool isDefaultContact = false;
-                if (cn.Msisdn.Equals(defaultMsg)) // represents this is for unadded number
-                {
-                    msisdn = Utils.NormalizeNumber(cn.Name);
-                    cn = GetContactIfExists(cn);
-                    isDefaultContact = true;
-                }
-                else
-                    msisdn = cn.Msisdn;
-                if (cn.IsFav) // this will be true when checkbox is not checked initially and u clicked it
-                {
-                    byte count;
-                    if (contactsList.TryGetValue(msisdn, out count) && isDefaultContact)//to ignore unsaved contact saving state
-                        return;
-                    checkedContactCount++;
-                    contactsList[msisdn] = ++count;
-                    txtSelectedCounter.Text = string.Format("({0})", checkedContactCount);
-                    txtSelectedCounter.Visibility = Visibility.Visible;
-                }
-                else // this will be true when checkbox is checked initially and u clicked it to make it uncheck
-                {
-                    byte count;
-                    if (contactsList.TryGetValue(msisdn, out count))
-                    {
-                        checkedContactCount--;
-                        if (count > 1)
-                            contactsList[msisdn] = --count;
-                        else
-                            contactsList.Remove(msisdn);
-                        if (checkedContactCount > 0)
-                            txtSelectedCounter.Text = string.Format("({0})", checkedContactCount);
-                        else
-                            txtSelectedCounter.Visibility = Visibility.Collapsed;
-                    }
-                }
-
-                if (contactsList.Count > 0)
-                    doneIconButton.IsEnabled = true;
-                else
-                    doneIconButton.IsEnabled = false;
+                msisdn = Utils.NormalizeNumber(cn.Name);
+                cn = GetContactIfExists(cn);
+                isDefaultContact = true;
             }
+            else
+                msisdn = cn.Msisdn;
+            if (cn.IsFav) // this will be true when checkbox is not checked initially and u clicked it
+            {
+                byte count;
+                if (contactsList.TryGetValue(msisdn, out count) && isDefaultContact)//to ignore unsaved contact saving state
+                    return;
+                checkedContactCount++;
+                contactsList[msisdn] = ++count;
+                txtSelectedCounter.Text = string.Format("({0})", checkedContactCount);
+                txtSelectedCounter.Visibility = Visibility.Visible;
+            }
+            else // this will be true when checkbox is checked initially and u clicked it to make it uncheck
+            {
+                byte count;
+                if (contactsList.TryGetValue(msisdn, out count))
+                {
+                    checkedContactCount--;
+                    if (count > 1)
+                        contactsList[msisdn] = --count;
+                    else
+                        contactsList.Remove(msisdn);
+                    if (checkedContactCount > 0)
+                        txtSelectedCounter.Text = string.Format("({0})", checkedContactCount);
+                    else
+                        txtSelectedCounter.Visibility = Visibility.Collapsed;
+                }
+            }
+
+            if (contactsList.Count > 0)
+                doneIconButton.IsEnabled = true;
+            else
+                doneIconButton.IsEnabled = false;
         }
 
         private ContactInfo GetContactIfExists(ContactInfo contact)
