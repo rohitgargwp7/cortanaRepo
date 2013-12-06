@@ -473,7 +473,7 @@ namespace windows_client.View
             JArray numlist = new JArray();
             JObject data = new JObject();
             int i;
-
+            int smsUsersCount = 0;
             for (i = 0; i < GroupManager.Instance.GroupCache[groupId].Count; i++)
             {
                 GroupParticipant gp = GroupManager.Instance.GroupCache[groupId][i];
@@ -482,13 +482,14 @@ namespace windows_client.View
                     msisdns += gp.Msisdn + ";";
                     numlist.Add(gp.Msisdn);
                     toNum = gp.Msisdn;
+                    smsUsersCount++;
                 }
             }
 
             var ts = TimeUtils.getCurrentTimeStamp();
             var smsString = AppResources.sms_invite_message;
 
-            if (i == 1)
+            if (smsUsersCount == 1)
             {
                 obj[HikeConstants.TO] = toNum;
                 data[HikeConstants.MESSAGE_ID] = ts.ToString();
