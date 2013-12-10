@@ -109,7 +109,7 @@ namespace windows_client.Mqtt
             App.appSettings.TryGetValue<string>(App.MSISDN_SETTING, out clientId);
             uid = topic;
             if (!String.IsNullOrEmpty(clientId))
-                clientId += ":2";
+                clientId += ":2:true";//: Api version : Auto subscribe(true/false)
             return !(String.IsNullOrEmpty(password) || String.IsNullOrEmpty(clientId) || String.IsNullOrEmpty(topic));
         }
 
@@ -425,7 +425,6 @@ namespace windows_client.Mqtt
                 return;
             }
             setConnectionStatus(MQTTConnectionStatus.CONNECTED);
-            subscribeToTopics(getTopics());
             if (!isRecursivePingScheduled)
                 scheduler.Schedule(new Action<Action<TimeSpan>>(recursivePingSchedule), TimeSpan.FromSeconds(HikeConstants.RECURSIVE_PING_INTERVAL));
 
