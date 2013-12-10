@@ -64,7 +64,7 @@ namespace windows_client.utils
         private BitmapImage profilePicStatusImage;
         private BitmapImage noNewNotificationImage;
         private BitmapImage newNotificationImage;
-        private BitmapImage contactIcon;
+        private BitmapImage blackContactIcon;
         private BitmapImage whiteContactIcon;
         private BitmapImage facebookDisabledIcon;
         private BitmapImage facebookEnabledIcon;
@@ -131,8 +131,10 @@ namespace windows_client.utils
         private FontFamily messageText;
         private BitmapImage myLocationPin;
 
-        private BitmapImage resumeFTR;
-        private BitmapImage pausedFTR;
+        private BitmapImage resumeFTRWhite;
+        private BitmapImage resumeFTRBlack;
+        private BitmapImage pausedFTRWhite;
+        private BitmapImage pausedFTRBlack;
 
         private BitmapImage overlayRupeeImage;
         private BitmapImage overlaySmsImage;
@@ -565,35 +567,47 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage PausedFTR
+        public BitmapImage PausedFTRWHite
         {
             get
             {
-                if (pausedFTR == null)
-                {
-                    if (Utils.isDarkTheme())
-                        pausedFTR = new BitmapImage(new Uri("/View/images/pause_white_ftr.png", UriKind.Relative));
-                    else
-                        pausedFTR = new BitmapImage(new Uri("/View/images/pause_black_ftr.png", UriKind.Relative));
-                }
+                if (pausedFTRWhite == null)
+                    pausedFTRWhite = new BitmapImage(new Uri("/View/images/pause_white_ftr.png", UriKind.Relative));
 
-                return pausedFTR;
+                return pausedFTRWhite;
             }
         }
 
-        public BitmapImage ResumeFTR
+        public BitmapImage ResumeFTRWhite
         {
             get
             {
-                if (resumeFTR == null)
-                {
-                    if (Utils.isDarkTheme())
-                        resumeFTR = new BitmapImage(new Uri("/View/images/resume_white_ftr.png", UriKind.Relative));
-                    else
-                        resumeFTR = new BitmapImage(new Uri("/View/images/resume_black_ftr.png", UriKind.Relative));
-                }
+                if (resumeFTRWhite == null)
+                    resumeFTRWhite = new BitmapImage(new Uri("/View/images/resume_white_ftr.png", UriKind.Relative));
 
-                return resumeFTR;
+                return resumeFTRWhite;
+            }
+        }
+
+        public BitmapImage PausedFTRBlack
+        {
+            get
+            {
+                if (pausedFTRBlack == null)
+                    pausedFTRBlack = new BitmapImage(new Uri("/View/images/pause_black_ftr.png", UriKind.Relative));
+
+                return pausedFTRBlack;
+            }
+        }
+
+        public BitmapImage ResumeFTRBlack
+        {
+            get
+            {
+                if (resumeFTRBlack == null)
+                    resumeFTRBlack = new BitmapImage(new Uri("/View/images/resume_black_ftr.png", UriKind.Relative));
+
+                return resumeFTRBlack;
             }
         }
 
@@ -749,18 +763,14 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage ContactIcon
+        public BitmapImage BlackContactIcon
         {
             get
             {
-                if (contactIcon == null)
-                {
-                    if (Utils.isDarkTheme())
-                        contactIcon = WhiteContactIcon;
-                    else
-                        contactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon_black.png", UriKind.Relative));
-                }
-                return contactIcon;
+                if (blackContactIcon == null)
+                    blackContactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon_black.png", UriKind.Relative));
+
+                return blackContactIcon;
             }
         }
 
@@ -875,12 +885,8 @@ namespace windows_client.utils
             get
             {
                 if (lastSeenClockImage == null)
-                {
-                    if (Utils.isDarkTheme())
                         lastSeenClockImage = new BitmapImage(new Uri("/View/images/last_seen_clock_white.png", UriKind.Relative));
-                    else
-                        lastSeenClockImage = new BitmapImage(new Uri("/View/images/last_seen_clock_black.png", UriKind.Relative));
-                }
+
                 return lastSeenClockImage;
             }
         }
@@ -1084,14 +1090,6 @@ namespace windows_client.utils
                     closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
 
                 return closeButtonWhiteImage;
-            }
-        }
-
-        public BitmapImage CloseButtonImage
-        {
-            get
-            {
-                return Utils.isDarkTheme() ? CloseButtonBlackImage : CloseButtonWhiteImage;
             }
         }
 

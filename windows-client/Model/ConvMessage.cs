@@ -472,7 +472,7 @@ namespace windows_client.Model
         {
             get
             {
-                return UI_Utils.Instance.CloseButtonImage;
+                return UI_Utils.Instance.CloseButtonWhiteImage;
             }
         }
 
@@ -522,9 +522,19 @@ namespace windows_client.Model
             get
             {
                 if (FileAttachment.FileState == Attachment.AttachmentState.PAUSED || FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
-                    return UI_Utils.Instance.ResumeFTR;
+                {
+                    if (App.ViewModel.SelectedBackground.IsDefault)
+                        return UI_Utils.Instance.ResumeFTRBlack;
+                    else
+                        return UI_Utils.Instance.ResumeFTRWhite;
+                }
                 else
-                    return UI_Utils.Instance.PausedFTR;
+                {
+                    if (App.ViewModel.SelectedBackground.IsDefault)
+                        return UI_Utils.Instance.PausedFTRBlack;
+                    else
+                        return UI_Utils.Instance.PausedFTRWHite;
+                }
             }
         }
 
@@ -597,10 +607,7 @@ namespace windows_client.Model
 
                 if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                 {
-                    if (_isSent)
-                        return UI_Utils.Instance.WhiteContactIcon;
-                    else
-                        return UI_Utils.Instance.ContactIcon;
+                    return UI_Utils.Instance.BlackContactIcon;
                 }
                 else if (_fileAttachment != null && _fileAttachment.Thumbnail != null)
                 {
@@ -1185,6 +1192,8 @@ namespace windows_client.Model
             set
             {
                 NotifyPropertyChanged("MessageTextForeGround");
+                NotifyPropertyChanged("PauseResumeImage");
+                NotifyPropertyChanged("ChatForegroundColor");
             }
         }
 
@@ -1540,10 +1549,10 @@ namespace windows_client.Model
                         fileObject.TryGetValue(HikeConstants.FILE_NAME, out fileName);
                         fileObject.TryGetValue(HikeConstants.FILE_KEY, out fileKey);
                         fileObject.TryGetValue(HikeConstants.FILE_THUMBNAIL, out thumbnail);
-                       
-                        if( fileObject.TryGetValue(HikeConstants.FILE_SIZE, out fileSize))
-                           fs = Convert.ToInt32(fileSize.ToString());
-                        
+
+                        if (fileObject.TryGetValue(HikeConstants.FILE_SIZE, out fileSize))
+                            fs = Convert.ToInt32(fileSize.ToString());
+
                         this.HasAttachment = true;
 
                         byte[] base64Decoded = null;

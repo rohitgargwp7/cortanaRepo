@@ -98,7 +98,6 @@ namespace windows_client.View
         private byte[] avatar;
         private BitmapImage avatarImage;
         private ApplicationBar appBar;
-        ApplicationBarMenuItem changeBackground;
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
         public ApplicationBarMenuItem addUserMenuItem;
@@ -1592,7 +1591,7 @@ namespace windows_client.View
         /* Should run on UI thread, based on mUserIsBlocked*/
         private void initAppBar(bool isAddUser)
         {
-            appBar = new ApplicationBar();
+            appBar = new ApplicationBar() { ForegroundColor = Colors.White, BackgroundColor = Colors.Black};
             appBar.Mode = ApplicationBarMode.Default;
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = true;
@@ -5213,17 +5212,6 @@ namespace windows_client.View
             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
             cm.GroupParticipant = App.MSISDN;
 
-            JObject data = new JObject();
-            data[HikeConstants.IMAGE] = img;
-            data[HikeConstants.BACKGROUND_ID] = bgId;
-
-            JObject jo = new JObject();
-            jo[HikeConstants.FROM] = App.MSISDN;
-            jo[HikeConstants.TO] = mContactNumber;
-            jo[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp().ToString();
-            jo[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS;
-            jo[HikeConstants.DATA] = data;
-
             cm.Message = msg;
             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
             cm.MetaDataString = "{\"t\":\"cbg\"}";
@@ -5234,13 +5222,25 @@ namespace windows_client.View
                 // handle msgs
                 cobj.LastMessage = msg;
 
+                JObject data = new JObject();
+                data[HikeConstants.IMAGE] = img;
+                data[HikeConstants.BACKGROUND_ID] = bgId;
+                data[HikeConstants.MESSAGE_ID] = cm.MessageId;
+
+                JObject jo = new JObject();
+                jo[HikeConstants.FROM] = App.MSISDN;
+                jo[HikeConstants.TO] = mContactNumber;
+                jo[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp().ToString();
+                jo[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS;
+                jo[HikeConstants.DATA] = data; 
+                
                 object[] vs = new object[2];
                 vs[0] = cm;
                 vs[1] = cobj;
                 mPubSub.publish(HikePubSub.MESSAGE_RECEIVED, vs);
-            }
 
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, jo);
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, jo);
+            }
         }
 
         private void chatPaintCancel_Click(object sender, RoutedEventArgs e)
