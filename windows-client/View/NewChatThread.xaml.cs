@@ -922,9 +922,9 @@ namespace windows_client.View
                 e.Cancel = true;
                 return;
             }
-            if (chatBackgroundPopUp.IsOpen)
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
             {
-                chatBackgroundPopUp.IsOpen = false;
+                CancelBackgroundChange();
                 e.Cancel = true;
                 return;
             }
@@ -1143,7 +1143,7 @@ namespace windows_client.View
 
             if (isGroupChat)
                 lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Count + 1);
-            
+
             if (!isOnHike)
             {
                 sendMsgTxtbox.Hint = hintText = ON_SMS_TEXT;
@@ -1176,9 +1176,9 @@ namespace windows_client.View
             else
                 this.ApplicationBar = appBar;
 
-            chatBackgroundList.ItemsSource = ChatBackgroundHelper.Instance.BackgroundOC;
             ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(mContactNumber);
 
+            chatBackgroundList.ItemsSource = ChatBackgroundHelper.Instance.BackgroundOC;
             chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
 
             ChangeBackground(false);
@@ -1629,11 +1629,6 @@ namespace windows_client.View
             fileTransferIconButton.IsEnabled = true;
             appBar.Buttons.Add(fileTransferIconButton);
 
-            changeBackground = new ApplicationBarMenuItem();
-            changeBackground.Text = AppResources.Change_Background_Text;
-            changeBackground.Click += changeBackground_Click;
-            appBar.MenuItems.Add(changeBackground);
-
             if (isGroupChat)
             {
                 infoMenuItem = new ApplicationBarMenuItem();
@@ -1675,11 +1670,6 @@ namespace windows_client.View
                 infoMenuItem.Click += userHeader_Tap;
                 appBar.MenuItems.Add(infoMenuItem);
             }
-        }
-
-        void changeBackground_Click(object sender, EventArgs e)
-        {
-            chatBackgroundPopUp.IsOpen = !chatBackgroundPopUp.IsOpen;
         }
 
         private void initInviteMenuItem()
@@ -5222,7 +5212,7 @@ namespace windows_client.View
             ConvMessage cm = new ConvMessage(String.Empty, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
             cm.GroupParticipant = App.MSISDN;
-            
+
             JObject data = new JObject();
             data[HikeConstants.IMAGE] = img;
             data[HikeConstants.BACKGROUND_ID] = bgId;
@@ -5236,8 +5226,8 @@ namespace windows_client.View
 
             cm.Message = msg;
             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
-            cm.MetaDataString = "{\"t\":\"cbg\"}"; 
-            
+            cm.MetaDataString = "{\"t\":\"cbg\"}";
+
             ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, App.MSISDN);
             if (cobj != null)
             {
@@ -5253,29 +5243,56 @@ namespace windows_client.View
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, jo);
         }
 
-        void chatBackgroundImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void chatPaintCancel_Click(object sender, RoutedEventArgs e)
         {
-            PhotoChooserTask task = new PhotoChooserTask();
-            task.PixelHeight = 800;
-            task.PixelWidth = 480;
-            task.ShowCamera = true;
-            task.Completed += task_Completed;
-            task.Show();
+            CancelBackgroundChange();
         }
 
-        void chatPaint_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void CancelBackgroundChange()
         {
-            chatBackgroundPopUp.IsOpen = !chatBackgroundPopUp.IsOpen;
+            if (App.ViewModel.SelectedBackground.ID != App.ViewModel.LastSelectedBackground.ID)
+            {
+                App.ViewModel.SelectedBackground = App.ViewModel.LastSelectedBackground;
+                ChangeBackground();
+            }
+
+            chatBackgroundPopUp_Closed();
         }
 
-        void chatBackgroundPopUp_Closed(object sender, EventArgs e)
+        private void chatPaintSave_Click(object sender, RoutedEventArgs e)
         {
-            ApplicationBar.IsVisible = true;
+            if (App.ViewModel.SelectedBackground.ID != App.ViewModel.LastSelectedBackground.ID)
+            {
+                ChatBackgroundHelper.Instance.UpdateChatBackgorundMap(mContactNumber, App.ViewModel.SelectedBackground.ID, String.Empty);
+                SendBackgroundChangedPacket(App.ViewModel.SelectedBackground.ID, ChatBackgroundHelper.Instance.ChatBgMap[mContactNumber].BackgroundImageBase64);
+
+                App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
+            }
+
+            chatBackgroundPopUp_Closed();
+        }
+        
+        void chatPaint_Tap(object sender, RoutedEventArgs e)
+        {
+            App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
+
+            openChatBackgroundButton.Visibility = Visibility.Collapsed;
+            cancelChatBackgroundButton.Visibility = Visibility.Visible;
+
+            chatBackgroundPopUp_Opened();
         }
 
-        void chatBackgroundPopUp_Opened(object sender, EventArgs e)
+        void chatBackgroundPopUp_Closed()
         {
-            ApplicationBar.IsVisible = false;
+            chatBackgroundPopUp.Visibility = Visibility.Collapsed;
+
+            openChatBackgroundButton.Visibility = Visibility.Visible;
+            cancelChatBackgroundButton.Visibility = Visibility.Collapsed;
+        }
+
+        void chatBackgroundPopUp_Opened()
+        {
+            chatBackgroundPopUp.Visibility = Visibility.Visible;
 
             if (recordGrid.Visibility == Visibility.Visible)
             {
@@ -5296,37 +5313,17 @@ namespace windows_client.View
             this.Focus();
         }
 
-        void task_Completed(object sender, PhotoResult e)
-        {
-            if (e.TaskResult == TaskResult.OK)
-            {
-                BitmapImage image = new BitmapImage();
-                image.SetSource(e.ChosenPhoto);
-                var bytes = UI_Utils.Instance.ConvertToBytes(image);
-
-                chatBackground.Opacity = 0.5;
-                chatBackground.Source = image;
-
-                var img = Convert.ToBase64String(bytes);
-                ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(mContactNumber, App.ViewModel.SelectedBackground.ID, img);
-                SendBackgroundChangedPacket(App.ViewModel.SelectedBackground.ID, img);
-                ChangeBackground();
-            }
-        }
-
         WriteableBitmap _background;
 
         public void ChangeBackground(bool isBubbleColorChanged = true)
         {
             WriteableBitmap wb1;
-            
-            LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
-            var bg = ChatBackgroundHelper.Instance.ChatBgMap[mContactNumber];
+            LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
             if (isBubbleColorChanged)
             {
-                foreach(var msg in ocMessages)
+                foreach (var msg in ocMessages)
                 {
                     msg.MessageTextForeGround = null;
                     msg.BubbleBackGroundColor = null;
@@ -5342,35 +5339,15 @@ namespace windows_client.View
 
             WriteableBitmap source = null;
 
-            if (string.IsNullOrEmpty(bg.BackgroundImageBase64))
-            {
-                chatBackgroundImage.Source = UI_Utils.Instance.ChatBackgroundImage;
-                resetBackground.Visibility = Visibility.Collapsed;
-                chatBackgroundImage.Stretch = Stretch.None;
-                chatBackground.Opacity = 1;
+            chatBackground.Opacity = 1;
 
-                if (!string.IsNullOrEmpty(App.ViewModel.SelectedBackground.Pattern))
-                {
-                    byte[] imageBytes = System.Convert.FromBase64String(App.ViewModel.SelectedBackground.Pattern);
-                    source = new WriteableBitmap(UI_Utils.Instance.createImageFromBytes(imageBytes));
-                }
-                else
-                {
-                    source = null;
-                    _background = null;
-                    chatBackground.Source = null;
-                }
-            }
+            if (!string.IsNullOrEmpty(App.ViewModel.SelectedBackground.Pattern))
+                source = new WriteableBitmap(UI_Utils.Instance.createImageFromBytes(App.ViewModel.SelectedBackground.ImageBytes));
             else
             {
-                chatBackground.Opacity = 0.5;
-                resetBackground.Visibility = Visibility.Visible;
-
-                byte[] imageBytes = System.Convert.FromBase64String(bg.BackgroundImageBase64);
-                source = new WriteableBitmap(UI_Utils.Instance.createImageFromBytes(imageBytes));
-
-                chatBackgroundImage.Source = source.Crop(0, source.PixelHeight / 4, 480, 250);
-                chatBackgroundImage.Stretch = Stretch.None;
+                source = null;
+                _background = null;
+                chatBackground.Source = null;
             }
 
             if (source != null)
@@ -5407,23 +5384,22 @@ namespace windows_client.View
                 chatBackground.Source = _background.Rotate(90);
         }
 
-        void resetBackground_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(mContactNumber, App.ViewModel.SelectedBackground.ID, null);
-            SendBackgroundChangedPacket(App.ViewModel.SelectedBackground.ID, null); 
-            ChangeBackground();
-        }
-
         private void chatBackgroundList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if ((sender as ListBox).SelectedItem != null)
             {
                 var chatBg = (sender as ListBox).SelectedItem as ChatBackground;
-                if (chatBg != null && chatBg!= App.ViewModel.SelectedBackground)
+                if (chatBg != null && chatBg != App.ViewModel.SelectedBackground)
                 {
-                    ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(mContactNumber, chatBg.ID, ChatBackgroundHelper.Instance.ChatBgMap[mContactNumber].BackgroundImageBase64);
-                    SendBackgroundChangedPacket(chatBg.ID, ChatBackgroundHelper.Instance.ChatBgMap[mContactNumber].BackgroundImageBase64);
-                    ChangeBackground();
+                    try
+                    {
+                        App.ViewModel.SelectedBackground = ChatBackgroundHelper.Instance.BackgroundList.Where(b => b.ID == chatBg.ID).First();
+                        ChangeBackground();
+                    }
+                    catch
+                    {
+                        Debug.WriteLine("Background doesn't exist");
+                    }
                 }
             }
         }

@@ -383,6 +383,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Styles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\BlockListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

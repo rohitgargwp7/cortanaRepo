@@ -201,10 +201,8 @@ namespace windows_client.utils
 
         Random random = new Random();
 
-        public void SetSelectedChatBackgorund(string msisdn, string bgId, string image)
+        public void UpdateChatBackgorundMap(string msisdn, string bgId, string image)
         {
-            App.ViewModel.SelectedBackground = BackgroundList.Where(b => b.ID == bgId).First();
-
             ChatBgMap[msisdn] = new BackgroundImage()
             {
                 BackgroundId = bgId,
@@ -277,7 +275,7 @@ namespace windows_client.utils
             if (LastIndex >= BackgroundList.Count)
                 return;
 
-            for (int i = LastIndex; i < LastIndex + 3 && i < BackgroundList.Count; i++)
+            for (int i = LastIndex; i < LastIndex + 10 && i < BackgroundList.Count; i++)
                 BackgroundOC.Add(BackgroundList[i]);
 
             LastIndex += 10;
@@ -335,7 +333,8 @@ namespace windows_client.utils
 
             SaveMapToFile();
 
-            //make http request
+            //make http request if data for id is not present on client
+            // no support for v1
         }
 
         void postUpdateInfo_Callback(JObject obj)
@@ -755,6 +754,10 @@ namespace windows_client.utils
             }
         }
 
+        /// <summary>
+        /// Delete a background. When implementation is done on server in future, call this function
+        /// </summary>
+        /// <param name="id"></param>
         public void DeleteBackground(string id)
         {
             if (!BackgroundIdList.Contains(id))
@@ -765,12 +768,21 @@ namespace windows_client.utils
             WriteBackgroundIdsToFile();
         }
 
+        /// <summary>
+        /// Clear all data on unlink or delete
+        /// </summary>
         public void Clear()
         {
             ChatBgMap.Clear();
             SaveMapToFile();
         }
 
+        /// <summary>
+        /// Sort background on position id
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         int CompareBackground(ChatBackground x, ChatBackground y)
         {
             if (x == null)

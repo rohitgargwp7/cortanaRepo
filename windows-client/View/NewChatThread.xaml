@@ -65,29 +65,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-     
-        <Style x:Key="InfiniteListbox" TargetType="ListBox">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
-            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListBox">
-                        <ScrollViewer Style="{StaticResource VisualScrollViewer}" x:Name="ScrollViewer" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" Padding="{TemplateBinding Padding}">
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="ValidationStates"/>
-                            </VisualStateManager.VisualStateGroups>
-                            <ItemsPresenter/>
-                        </ScrollViewer>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <Style x:Name="llsMessagesStyle"  TargetType="phone:LongListSelector">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
@@ -133,6 +110,27 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="InfiniteListbox" TargetType="ListBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBox">
+                        <ScrollViewer Style="{StaticResource VisualScrollViewer}" x:Name="ScrollViewer" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" Padding="{TemplateBinding Padding}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="ValidationStates"/>
+                            </VisualStateManager.VisualStateGroups>
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </phone:PhoneApplicationPage.Resources>
     
 
@@ -154,53 +152,9 @@
             </Image>
         </Border>
 
-        <Popup x:Name="chatBackgroundPopUp" Grid.RowSpan="3" Height="800" Width="480" IsOpen="False" Opened="chatBackgroundPopUp_Opened" Closed="chatBackgroundPopUp_Closed">
-            <Grid x:Name="chatBackgroundMenu" Height="800" Width="480" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Grid>
-                    <StackPanel Grid.Row="0" Margin="12,17,0,28">
-                        <TextBlock Text="CHANGE" Style="{StaticResource PhoneTextNormalStyle}" Foreground="Black"/>
-                        <TextBlock Text="theme" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" Foreground="Black"/>
-                    </StackPanel>
-                </Grid>
-                <Grid Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid Background="#DBDBDB" Width="450" Height="250"  HorizontalAlignment="Center" VerticalAlignment="Center" Tap="chatBackgroundImage_Tap">
-                        <Image x:Name="resetBackground" Source="/view/images/close_black.png" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-25,-25,0" Canvas.ZIndex="1" Stretch="Uniform" Visibility="Collapsed" Height="50" Tap="resetBackground_Tap"/>
-                        <Image x:Name="chatBackgroundImage" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None"/>
-                    </Grid>
-                    <Grid Grid.Row="1" Background="#ffffff" Margin="1,0,0,0" HorizontalAlignment="Center">
-                        <ListBox x:Name="chatBackgroundList" Style="{StaticResource InfiniteListbox}" SelectionChanged="chatBackgroundList_SelectionChanged" Margin="5,12">
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <toolkit:WrapPanel ItemHeight="150" ItemWidth="150"/>
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Background="{Binding BackgroundColor}" Width="140" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="Black" BorderThickness="{Binding SelectedBgThickness}">
-                                        <TextBlock Text="{Binding Path= LocalizedResources.Default_Txt, Source={StaticResource LocalizedStrings}}" Canvas.ZIndex="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding DefaultTextVisibility}" Foreground="Black"/>
-                                    </Border>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
-                </Grid>
-            </Grid>
-        </Popup>
-        <!--<StackPanel Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Left" Margin="20,0,0, 0">
-            <Image x:Name="icon" Source="images\hike_header.png" Height="40" Margin="4,25,0,0"/>
-        </StackPanel>-->
-
         <!--TitlePanel contains the name of the application and page title-->
-        <Grid x:Name="HikeTitle" HorizontalAlignment="Stretch" Margin="0,0,0,5">
-            <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.5"/>
+        <Grid x:Name="HikeTitle" HorizontalAlignment="Stretch">
+            <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.4"/>
             <StackPanel Orientation="Vertical">
                 <Border HorizontalAlignment="Stretch" Height="45" BorderThickness="1" BorderBrush="#414141" Background="#414141" x:Name="gcMuteGrid" Visibility="Collapsed" Margin="0,0,0,10">
                     <Grid HorizontalAlignment="Stretch" Margin="12,0">
@@ -228,16 +182,35 @@
                             <TextBlock x:Name="lastSeenTxt" Text="" FontSize="18" Foreground="White" Opacity="0.75"/>
                         </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.Column="2">
-                        <Grid Tap="chatPaint_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                            <Image x:Name="chatPaint" Source="/view/images/paint.png" Height="60" Width="60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Grid>
-                    </StackPanel>
+                    <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.Column="2">
+                        <Button x:Name="openChatBackgroundButton" Style="{StaticResource ButtonWithImageNoPaddingStyle}" Click="chatPaint_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <Button.Content>
+                                <Image x:Name="chatPaint" Source="/view/images/paint.png" Height="60" Width="60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Button.Content>
+                        </Button>
+                        <Button Margin="-12,0,-20,0" BorderBrush="Transparent" Background="Black" Foreground="White" x:Name="cancelChatBackgroundButton" Visibility="Collapsed" Content="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="chatPaintCancel_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                    </Grid>
                 </Grid>
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Row="1">
+        <Grid x:Name="chatBackgroundPopUp" Canvas.ZIndex="1" Grid.Row="1" MaxHeight="280" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+            <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.9"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ListBox x:Name="chatBackgroundList" Style="{StaticResource InfiniteListbox}"
+                         ItemsPanel="{StaticResource chatThemeBackgroundListTemplate70x70}"
+                         ItemTemplate="{StaticResource chatThemeBackgroundItemTemplate70x70}"
+                         SelectionChanged="chatBackgroundList_SelectionChanged"
+                         Margin="0,12" HorizontalAlignment="Center" Height="150"/>
+                <Button Grid.Row="1" Margin="0,0,0,12" Height="80" Width="210" Content="{Binding Path= LocalizedResources.Save_ChatTheme_Txt, Source={StaticResource LocalizedStrings}}" Click="chatPaintSave_Click" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#e9ecee" Foreground="#595959"/>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="0,5,0,0">
             <phone:LongListSelector Name="llsMessages" Style="{StaticResource llsMessagesStyle}"  ItemUnrealized="llsMessages_ItemUnRealized" ItemRealized="llsMessages_ItemRealized" SelectionChanged="ChatMessageSelected" DoubleTap="MessageList_DoubleTap" HorizontalContentAlignment="Stretch" Margin="0,0,0,5" >
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>

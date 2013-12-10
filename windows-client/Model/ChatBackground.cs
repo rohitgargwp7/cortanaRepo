@@ -17,29 +17,21 @@ namespace windows_client.Model
 {
     public class ChatBackground : INotifyPropertyChanged
     {
-        Thickness _selectedBgThickness = new Thickness(0.5);
-        public Thickness SelectedBgThickness
+        public SolidColorBrush BorderColor
         {
             get
             {
-                return _selectedBgThickness;
-            }
-            set
-            {
-                if (value != _selectedBgThickness)
-                {
-                    _selectedBgThickness = value;
-                    NotifyPropertyChanged("SelectedBgThickness");
-                }
+                return IsSelected ? UI_Utils.Instance.White : UI_Utils.Instance.Transparent;
             }
         }
+
 
         SolidColorBrush _backgroundColor;
         public SolidColorBrush BackgroundColor
         {
             get
             {
-                if(_backgroundColor == null)
+                if (_backgroundColor == null)
                     _backgroundColor = UI_Utils.Instance.ConvertStringToColor(Background);
 
                 return _backgroundColor;
@@ -94,19 +86,78 @@ namespace windows_client.Model
             }
         }
 
+        Byte[] imageBytes;
+        public Byte[] ImageBytes
+        {
+            get
+            {
+                if (imageBytes == null)
+                    imageBytes = System.Convert.FromBase64String(Pattern);
+
+                return imageBytes;
+            }
+        }
+
+        BitmapImage _imagePattern;
         public BitmapImage ImagePattern
         {
             get
             {
-                return new BitmapImage(new Uri(Pattern,UriKind.Relative));
+                if (_imagePattern == null)
+                    _imagePattern = UI_Utils.Instance.createImageFromBytes(ImageBytes);
+
+                return _imagePattern;
             }
         }
 
-        public Visibility DefaultTextVisibility
+        public Visibility BackgroundVisibility
+        {
+            get
+            {
+                return IsDefault ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        public Visibility DefaultImageVisibility
         {
             get
             {
                 return IsDefault ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        Boolean _isSelected;
+        public Boolean IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                if (value != _isSelected)
+                {
+                    _isSelected = value;
+                    NotifyPropertyChanged("IsSelected");
+                    NotifyPropertyChanged("BorderColor");
+                }
+            }
+        }
+
+        Visibility _tickImageVisibility = Visibility.Collapsed;
+        public Visibility TickImageVisibility
+        {
+            get
+            {
+                return _tickImageVisibility;
+            }
+            set
+            {
+                if (_tickImageVisibility != value)
+                {
+                    _tickImageVisibility = value;
+                    NotifyPropertyChanged("TickImageVisibility");
+                }
             }
         }
 
@@ -145,12 +196,12 @@ namespace windows_client.Model
                     writer.WriteStringBytes("*@N@*");
                 else
                     writer.WriteStringBytes(SentBubbleBackground);
-               
+
                 if (ReceivedBubbleBackground == null)
                     writer.WriteStringBytes("*@N@*");
                 else
                     writer.WriteStringBytes(ReceivedBubbleBackground);
-               
+
                 if (BubbleForeground == null)
                     writer.WriteStringBytes("*@N@*");
                 else
@@ -185,7 +236,7 @@ namespace windows_client.Model
                 count = reader.ReadInt32();
                 Pattern = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (Pattern == "*@N@*")
-                    Pattern = null;
+                    Pattern = String.Empty;
 
                 IsDefault = reader.ReadBoolean();
                 IsTile = reader.ReadBoolean();
@@ -243,7 +294,7 @@ namespace windows_client.Model
                     }
                     catch (Exception ex)
                     {
-                       System.Diagnostics.Debug.WriteLine("ChatBackground Model :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
+                        System.Diagnostics.Debug.WriteLine("ChatBackground Model :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
                     }
                 });
             }

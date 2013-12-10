@@ -1926,10 +1926,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="People_In_Group" xml:space="preserve">
     <value>{0} people</value>
   </data>
-  <data name="Change_Background_Text" xml:space="preserve">
-    <value>change bg</value>
-    <comment>10 characters limit</comment>
-  </data>
   <data name="ChatBg_Changed_Text" xml:space="preserve">
     <value>{0} changed the background</value>
   </data>
@@ -2029,5 +2025,8 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Search_Hint_Txt" xml:space="preserve">
     <value>search</value>
+  </data>
+  <data name="Save_ChatTheme_Txt" xml:space="preserve">
+    <value>save theme</value>
   </data>
 </root>

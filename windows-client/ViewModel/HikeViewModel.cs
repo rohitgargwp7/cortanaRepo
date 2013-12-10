@@ -669,6 +669,28 @@ namespace windows_client.ViewModel
 
         #region ChatBackground
 
+        ChatBackground _lastSelectedBackground;
+        public ChatBackground LastSelectedBackground
+        {
+            get
+            {
+                return _lastSelectedBackground;
+            }
+            set
+            {
+                if (value != _lastSelectedBackground)
+                {
+                    if (_lastSelectedBackground != null)
+                        _lastSelectedBackground.TickImageVisibility = Visibility.Collapsed;
+
+                    _lastSelectedBackground = value;
+
+                    if (_lastSelectedBackground != null)
+                        _lastSelectedBackground.TickImageVisibility = Visibility.Visible;
+                }
+            }
+        }
+
         ChatBackground _selectedBackground;
         public ChatBackground SelectedBackground
         {
@@ -681,12 +703,12 @@ namespace windows_client.ViewModel
                 if (value != _selectedBackground)
                 {
                     if (_selectedBackground != null)
-                        _selectedBackground.SelectedBgThickness = new Thickness(0.5);
+                        _selectedBackground.IsSelected = false;
                     
                     _selectedBackground = value;
 
                     if (_selectedBackground != null)
-                        _selectedBackground.SelectedBgThickness = new Thickness(5);
+                        _selectedBackground.IsSelected = true;
                 }
             }
         }

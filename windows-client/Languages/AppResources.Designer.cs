@@ -358,15 +358,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to change bg.
-        /// </summary>
-        public static string Change_Background_Text {
-            get {
-                return ResourceManager.GetString("Change_Background_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} changed the background.
         /// </summary>
         public static string ChatBg_Changed_Text {
@@ -3574,6 +3565,15 @@ namespace windows_client.Languages {
         public static string Save_AppBar_Btn {
             get {
                 return ResourceManager.GetString("Save_AppBar_Btn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to save theme.
+        /// </summary>
+        public static string Save_ChatTheme_Txt {
+            get {
+                return ResourceManager.GetString("Save_ChatTheme_Txt", resourceCulture);
             }
         }
         
