@@ -236,8 +236,14 @@ namespace windows_client.FileTransfers
                 {
                     if (!TaskMap.ContainsKey(fileInfo.MessageId))
                     {
-                        //If in progress add to map else queue it to pending task
-                        if (BeginThreadTask(fileInfo))
+                        //If not netwrok mark it as failed and remove from taskmap
+                        if (!NetworkInterface.GetIsNetworkAvailable())
+                        {
+                            FailTask(fileInfo);
+                            TaskMap.Remove(fileInfo.MessageId);
+                        }
+                        //If allocated to a thread for upload/download, add to map else queue it to pending task
+                        else if (BeginThreadTask(fileInfo))
                         {
                             fileInfo.FileState = FileTransferState.STARTED;
                             TaskMap.Add(fileInfo.MessageId, fileInfo);
@@ -273,18 +279,9 @@ namespace windows_client.FileTransfers
 
         Boolean BeginThreadTask(FileInfoBase fileInfo)
         {
-            if (!NetworkInterface.GetIsNetworkAvailable())
-            {
-                FailTask(fileInfo);
-                TaskMap.Remove(fileInfo.MessageId);
-                return true;
-            }
-            else
-            {
-                fileInfo.StatusChanged -= File_StatusChanged;
-                fileInfo.StatusChanged += File_StatusChanged;
-                return ThreadPool.QueueUserWorkItem(fileInfo.Start);
-            }
+            fileInfo.StatusChanged -= File_StatusChanged;
+            fileInfo.StatusChanged += File_StatusChanged;
+            return ThreadPool.QueueUserWorkItem(fileInfo.Start);
         }
 
         public void PopulatePreviousTasks()

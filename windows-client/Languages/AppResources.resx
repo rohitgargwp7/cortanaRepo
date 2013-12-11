@@ -658,7 +658,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
-    <value>Text Message</value>
+    <value>text message</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_TapMsg_Txt" xml:space="preserve">
@@ -1883,10 +1883,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Video_Standard_Quality_Txt" xml:space="preserve">
     <value>Standard Quality (VGA) (default)</value>
     <comment>(VGA) is constant, Max limit 40</comment>
-  </data>
-  <data name="Video_Very_High_Quality_Txt" xml:space="preserve">
-    <value>Very High Quality (1080p)</value>
-    <comment>(1080p) is constant, Max limit 40</comment>
   </data>
   <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
     <value>Welcome to hike</value>

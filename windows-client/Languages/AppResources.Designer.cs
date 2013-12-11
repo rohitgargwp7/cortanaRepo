@@ -3812,7 +3812,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Text Message.
+        ///   Looks up a localized string similar to text message.
         /// </summary>
         public static string SelectUser_SmsMsg_Txt {
             get {
@@ -4699,15 +4699,6 @@ namespace windows_client.Languages {
         public static string Video_Txt {
             get {
                 return ResourceManager.GetString("Video_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Very High Quality (1080p).
-        /// </summary>
-        public static string Video_Very_High_Quality_Txt {
-            get {
-                return ResourceManager.GetString("Video_Very_High_Quality_Txt", resourceCulture);
             }
         }
         

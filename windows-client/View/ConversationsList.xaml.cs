@@ -1677,28 +1677,22 @@ namespace windows_client.View
                     composeIconButton.IsEnabled = false;
                     postStatusIconButton.IsEnabled = false;
                     groupChatIconButton.IsEnabled = false;
-                });
+                }); 
             }
         }
 
         private void openMarketPlace()
         {
-            string appID;
-            App.appSettings.TryGetValue<string>(App.APP_ID_FOR_LAST_UPDATE, out appID);
-            if (!String.IsNullOrEmpty(appID))
+            MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
+            marketplaceDetailTask.ContentIdentifier = "b4703e38-092f-4144-826a-3e3d41f50714";//app id to be used from our dev account
+            marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
+            try
             {
-                MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
-                //                marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
-                marketplaceDetailTask.ContentIdentifier = appID;
-                marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
-                try
-                {
-                    marketplaceDetailTask.Show();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("ConversationList ::  openMarketPlace, openMarketPlace  , Exception : " + ex.StackTrace);
-                }
+                marketplaceDetailTask.Show();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ConversationList ::  openMarketPlace, openMarketPlace  , Exception : " + ex.StackTrace);
             }
         }
 

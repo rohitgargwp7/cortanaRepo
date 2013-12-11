@@ -726,9 +726,11 @@ namespace windows_client
 
             #region Enter to send
 
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.3.0.8") < 0)
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.4.0.0") < 0)
+            {
+                appSettings[App.HIKEJINGLE_PREF] = (bool)true;
                 App.WriteToIsoStorageSettings(App.ENTER_TO_SEND, false);
-
+            }
             #endregion
             #region ProTips 2.3.0.0
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.3.0.0") < 0)
@@ -791,7 +793,7 @@ namespace windows_client
             #endregion
             #region STCIKERS
             //todo:make it 2.2.2.0
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.3.0.8") < 0)
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.4.0.0") < 0)
             {
                 if (!isNewInstall && Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
                     StickerCategory.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
@@ -950,7 +952,7 @@ namespace windows_client
             #region HIKE BOT
             if (isNewInstall)
                 WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
-            else if (Utils.compareVersion(_currentVersion, "2.3.0.8") < 0)
+            else if (Utils.compareVersion(_currentVersion, "2.4.0.0") < 0)
             {
                 if (_viewModel != null)
                 {
