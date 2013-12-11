@@ -75,7 +75,8 @@ namespace windows_client.utils
         private BitmapImage userProfileInviteImage;
         private BitmapImage userProfileStockImage;
         private BitmapImage loadingImage;
-        private BitmapImage lastSeenClockImage;
+        private BitmapImage lastSeenClockImageWhite;
+        private BitmapImage lastSeenClockImageBlack;
         private BitmapImage humanoidOverlay;
         private BitmapImage humanoid2Overlay;
         private BitmapImage doggyOverlay;
@@ -891,14 +892,25 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage LastSeenClockImage
+        public BitmapImage LastSeenClockImageWhite
         {
             get
             {
-                if (lastSeenClockImage == null)
-                        lastSeenClockImage = new BitmapImage(new Uri("/View/images/last_seen_clock_white.png", UriKind.Relative));
+                if (lastSeenClockImageWhite == null)
+                        lastSeenClockImageWhite = new BitmapImage(new Uri("/View/images/last_seen_clock_white.png", UriKind.Relative));
 
-                return lastSeenClockImage;
+                return lastSeenClockImageWhite;
+            }
+        }
+        
+        public BitmapImage LastSeenClockImageBlack
+        {
+            get
+            {
+                if (lastSeenClockImageBlack == null)
+                    lastSeenClockImageBlack = new BitmapImage(new Uri("/View/images/last_seen_clock_black.png", UriKind.Relative));
+
+                return lastSeenClockImageBlack;
             }
         }
 

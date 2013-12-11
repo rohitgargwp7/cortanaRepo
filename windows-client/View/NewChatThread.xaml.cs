@@ -248,8 +248,6 @@ namespace windows_client.View
 
             FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI += FileTransferStatusUpdated;
 
-            onlineStatus.Source = UI_Utils.Instance.LastSeenClockImage;
-
             ocMessages = new ObservableCollection<ConvMessage>();
             lruStickerCache = new LruCache<string, BitmapImage>(10, 0);
 
@@ -3260,6 +3258,9 @@ namespace windows_client.View
             if (emoticonPanel.Visibility == Visibility.Collapsed)
                 sendMsgTxtbox.Focus();
 
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             if (String.IsNullOrEmpty(message))
                 return;
 
@@ -3383,6 +3384,9 @@ namespace windows_client.View
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
             App.ViewModel.HideToolTip(LayoutRoot, 7);
+
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
 
             sendMsgTxtbox.Background = UI_Utils.Instance.TextBoxBackground;
             sendMsgTxtbox.Hint = string.Empty;//done intentionally as hint is shown if text is changed
@@ -3693,6 +3697,9 @@ namespace windows_client.View
                 }
             }
 
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             if (recordGrid.Visibility == Visibility.Visible)
             {
                 recordGrid.Visibility = Visibility.Collapsed;
@@ -3778,6 +3785,9 @@ namespace windows_client.View
 
             if (emoticonPanel.Visibility == Visibility.Visible)
                 emoticonPanel.Visibility = Visibility.Collapsed;
+
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
 
             this.Focus();
         }
@@ -5234,17 +5244,19 @@ namespace windows_client.View
 
         private void CancelBackgroundChange()
         {
+            chatBackgroundPopUp_Closed();
+
             if (App.ViewModel.SelectedBackground.ID != App.ViewModel.LastSelectedBackground.ID)
             {
                 App.ViewModel.SelectedBackground = App.ViewModel.LastSelectedBackground;
                 ChangeBackground();
             }
-
-            chatBackgroundPopUp_Closed();
         }
 
         private void chatPaintSave_Click(object sender, RoutedEventArgs e)
         {
+            chatBackgroundPopUp_Closed();
+
             if (App.ViewModel.SelectedBackground.ID != App.ViewModel.LastSelectedBackground.ID)
             {
                 ChatBackgroundHelper.Instance.UpdateChatBackgroundMap(mContactNumber, App.ViewModel.SelectedBackground.ID, String.Empty);
@@ -5252,8 +5264,6 @@ namespace windows_client.View
 
                 App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
             }
-
-            chatBackgroundPopUp_Closed();
         }
         
         void chatPaint_Tap(object sender, RoutedEventArgs e)
@@ -5302,6 +5312,21 @@ namespace windows_client.View
         public void ChangeBackground(bool isBubbleColorChanged = true)
         {
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
+
+            if (App.ViewModel.SelectedBackground.IsDefault)
+            {
+                headerBackground.Visibility = Visibility.Collapsed;
+                userName.Foreground = UI_Utils.Instance.Black;
+                lastSeenTxt.Foreground = UI_Utils.Instance.Black;
+                onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageBlack;
+            }
+            else
+            {
+                headerBackground.Visibility = Visibility.Visible;
+                userName.Foreground = UI_Utils.Instance.White;
+                lastSeenTxt.Foreground = UI_Utils.Instance.White;
+                onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageWhite;
+            }
 
             if (isBubbleColorChanged)
             {

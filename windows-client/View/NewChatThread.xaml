@@ -151,7 +151,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <Grid x:Name="HikeTitle" HorizontalAlignment="Stretch">
-            <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.4"/>
+            <Border x:Name="headerBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.4"/>
             <StackPanel Orientation="Vertical">
                 <Border HorizontalAlignment="Stretch" Height="45" BorderThickness="1" BorderBrush="#414141" Background="#414141" x:Name="gcMuteGrid" Visibility="Collapsed" Margin="0,0,0,10">
                     <Grid HorizontalAlignment="Stretch" Margin="12,0">
@@ -191,7 +191,7 @@
             </StackPanel>
         </Grid>
 
-        <Grid x:Name="chatBackgroundPopUp" Canvas.ZIndex="1" Grid.Row="1" MaxHeight="280" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+        <Grid x:Name="chatBackgroundPopUp" Canvas.ZIndex="1" Grid.Row="1" MaxHeight="260" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch">
             <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.9"/>
             <Grid>
                 <Grid.RowDefinitions>
@@ -202,7 +202,7 @@
                          ItemsPanel="{StaticResource chatThemeBackgroundListTemplate70x70}"
                          ItemTemplate="{StaticResource chatThemeBackgroundItemTemplate70x70}"
                          SelectionChanged="chatBackgroundList_SelectionChanged"
-                         Margin="0,12" HorizontalAlignment="Center" Height="150"/>
+                         Margin="0,12" HorizontalAlignment="Center" Height="180"/>
                 <Button Grid.Row="1" Height="80" Width="210" BorderBrush="Transparent"
                         Content="{Binding Path= LocalizedResources.Save_ChatTheme_Txt, Source={StaticResource LocalizedStrings}}" 
                         Click="chatPaintSave_Click" HorizontalAlignment="Center" VerticalAlignment="Center"
