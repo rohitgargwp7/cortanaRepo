@@ -23,7 +23,8 @@ namespace windows_client.Mqtt
         private HikePubSub pubSub;
         public bool IsLastSeenPacketSent = false;
         public bool IsAppStarted = true; // false for resume
-
+        private const int API_VERSION = 2;
+        private const bool AUTO_SUBSCRIBE = true;
         //Bug# 3833 - There are some changes in initialization of static objects in .Net 4. So, removing static for now.
         //Later, on we should be using singleton so, static won't be required
         private object lockObj = new object(); //TODO - Madhur Garg make this class singleton
@@ -109,7 +110,7 @@ namespace windows_client.Mqtt
             App.appSettings.TryGetValue<string>(App.MSISDN_SETTING, out clientId);
             uid = topic;
             if (!String.IsNullOrEmpty(clientId))
-                clientId += ":2:true";//: Api version : Auto subscribe(true/false)
+                clientId += string.Format(":{0}:{1}", API_VERSION, AUTO_SUBSCRIBE);//: Api version : Auto subscribe(true/false)
             return !(String.IsNullOrEmpty(password) || String.IsNullOrEmpty(clientId) || String.IsNullOrEmpty(topic));
         }
 
@@ -237,13 +238,13 @@ namespace windows_client.Mqtt
                 return;
             }
             List<string> listTopics = new List<string>();
-            List<QoS> listQos=new List<QoS>();
+            List<QoS> listQos = new List<QoS>();
             for (int i = 0; i < topics.Length; i++)
             {
                 listTopics.Add(topics[i].Name);
                 listQos.Add(topics[i].qos);
             }
-            mqttConnection.subscribe(listTopics,listQos, new SubscribeCB(this));
+            mqttConnection.subscribe(listTopics, listQos, new SubscribeCB(this));
 
         }
 
