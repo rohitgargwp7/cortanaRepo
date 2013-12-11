@@ -326,6 +326,25 @@ namespace windows_client.DbUtils
                         obj.LastMessage = convMsg.Message;
                     }
                 }
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED_NOT_SUPPORTED)
+                {
+                    if (!Utils.isGroupConversation(from))
+                    {
+                        if (from == App.MSISDN)
+                        {
+                            convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, AppResources.You_Txt);
+                        }
+                        else
+                        {
+                            obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, obj.NameToShow);
+                            convMsg.Message = obj.LastMessage;
+                        }
+                    }
+                    else
+                    {
+                        obj.LastMessage = convMsg.Message;
+                    }
+                }
                 #endregion
                 #region OTHER MSGS
                 else

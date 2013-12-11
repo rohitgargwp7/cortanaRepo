@@ -2029,4 +2029,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Save_ChatTheme_Txt" xml:space="preserve">
     <value>save theme</value>
   </data>
+  <data name="ChatBg_NotChanged_Text" xml:space="preserve">
+    <value>{0} just changed the background of this chat! To use hike’s amazing chat backgrounds, update to the latest build by tapping here: get.hike.in</value>
+  </data>
 </root>

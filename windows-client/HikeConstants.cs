@@ -252,6 +252,7 @@ namespace windows_client
         public static readonly Int64 DEFAULT_PRO_TIP_TIME = 300;
 
         public static readonly string BACKGROUND_ID = "bg_id";
+        public static readonly string HAS_CUSTOM_BACKGROUND = "cb";
 
         public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";

@@ -246,8 +246,6 @@ namespace windows_client.View
             _lastSeenHelper = new LastSeenHelper();
             _lastSeenHelper.UpdateLastSeen += LastSeenResponseReceived;
 
-            ChatBackgroundHelper.Instance.UpdateChatBackground -= Instance_UpdateChatBackground;
-            ChatBackgroundHelper.Instance.UpdateChatBackground += Instance_UpdateChatBackground;
             FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI += FileTransferStatusUpdated;
 
             onlineStatus.Source = UI_Utils.Instance.LastSeenClockImage;
@@ -365,14 +363,6 @@ namespace windows_client.View
                 else
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
             }
-        }
-
-        void Instance_UpdateChatBackground(object sender, ChatBackgroundEventArgs e)
-        {
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    ChangeBackground();
-                });
         }
 
         void CompositionTarget_Rendering(object sender, EventArgs e)
@@ -5202,7 +5192,7 @@ namespace windows_client.View
 
         #region Chat Backgrounds
 
-        async Task SendBackgroundChangedPacket(string bgId, string img = null)
+        async Task SendBackgroundChangedPacket(string bgId, string img = "")
         {
             if (img == null)
                 img = String.Empty;
@@ -5224,6 +5214,7 @@ namespace windows_client.View
 
                 JObject data = new JObject();
                 data[HikeConstants.IMAGE] = img;
+                data[HikeConstants.HAS_CUSTOM_BACKGROUND] = true;
                 data[HikeConstants.BACKGROUND_ID] = bgId;
                 data[HikeConstants.MESSAGE_ID] = cm.MessageId;
 
@@ -5263,8 +5254,8 @@ namespace windows_client.View
         {
             if (App.ViewModel.SelectedBackground.ID != App.ViewModel.LastSelectedBackground.ID)
             {
-                ChatBackgroundHelper.Instance.UpdateChatBackgorundMap(mContactNumber, App.ViewModel.SelectedBackground.ID, String.Empty);
-                SendBackgroundChangedPacket(App.ViewModel.SelectedBackground.ID, ChatBackgroundHelper.Instance.ChatBgMap[mContactNumber].BackgroundImageBase64);
+                ChatBackgroundHelper.Instance.UpdateChatBackgroundMap(mContactNumber, App.ViewModel.SelectedBackground.ID, String.Empty);
+                SendBackgroundChangedPacket(App.ViewModel.SelectedBackground.ID, String.Empty);
 
                 App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
             }
@@ -5317,25 +5308,13 @@ namespace windows_client.View
 
         public void ChangeBackground(bool isBubbleColorChanged = true)
         {
-            WriteableBitmap wb1;
-
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
             if (isBubbleColorChanged)
             {
                 foreach (var msg in ocMessages)
-                {
-                    msg.MessageTextForeGround = null;
-                    msg.BubbleBackGroundColor = null;
-                }
+                    msg.UpdateChatBubbles();
             }
-
-            var iHeight = 800;
-            var iWidth = 480;
-
-            wb1 = new WriteableBitmap((int)iWidth, (int)iHeight);
-            wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = (int)iWidth, Height = (int)iHeight }, null);
-            wb1.Invalidate();
 
             WriteableBitmap source = null;
 
@@ -5345,27 +5324,38 @@ namespace windows_client.View
                 source = new WriteableBitmap(UI_Utils.Instance.createImageFromBytes(App.ViewModel.SelectedBackground.ImageBytes));
             else
             {
-                source = null;
                 _background = null;
                 chatBackground.Source = null;
             }
 
             if (source != null)
             {
-                int height = 0;
-
-                for (int width = 0; width <= iWidth; )
+                if (App.ViewModel.SelectedBackground.IsTile)
                 {
-                    for (height = 0; height <= iHeight; )
+                    var iHeight = 800;
+                    var iWidth = 480;
+
+                    var wb1 = new WriteableBitmap((int)iWidth, (int)iHeight);
+                    wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = (int)iWidth, Height = (int)iHeight }, null);
+                    wb1.Invalidate(); 
+                    
+                    int height = 0;
+
+                    for (int width = 0; width <= iWidth; )
                     {
-                        wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
-                        height += source.PixelHeight;
+                        for (height = 0; height <= iHeight; )
+                        {
+                            wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
+                            height += source.PixelHeight;
+                        }
+
+                        width += source.PixelWidth;
                     }
 
-                    width += source.PixelWidth;
+                    _background = wb1;
                 }
-
-                _background = wb1;
+                else
+                    _background = source;
 
                 RotateImageAndApply();
             }

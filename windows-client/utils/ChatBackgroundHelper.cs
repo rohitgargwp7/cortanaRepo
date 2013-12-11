@@ -68,8 +68,11 @@ namespace windows_client.utils
             BackgroundList.Sort(CompareBackground);
         }
 
-        public bool UpdateChatBgMap(string id, string bgId, string image, long ts)
+        public bool UpdateChatBgMap(string id, string bgId, long ts)
         {
+            if (!BackgroundIDExists(bgId))
+                return false;
+
             BackgroundImage bg = ChatBgMap.ContainsKey(id) ? ChatBgMap[id] : new BackgroundImage();
 
             var newTs = ts;
@@ -78,7 +81,6 @@ namespace windows_client.utils
             if (oldTs < newTs)
             {
                 bg.BackgroundId = bgId;
-                bg.BackgroundImageBase64 = image;
                 bg.Timestamp = ts;
 
                 ChatBgMap[id] = bg;
@@ -110,7 +112,7 @@ namespace windows_client.utils
                             return;
 
                         if (!store.FileExists(fileName))
-                            return; 
+                            return;
 
                         using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
                         {
@@ -201,12 +203,16 @@ namespace windows_client.utils
 
         Random random = new Random();
 
-        public void UpdateChatBackgorundMap(string msisdn, string bgId, string image)
+        public bool BackgroundIDExists(string id)
+        {
+            return BackgroundList.Where(b => b.ID == id).Count() > 0;
+        }
+
+        public void UpdateChatBackgroundMap(string msisdn, string bgId, string image)
         {
             ChatBgMap[msisdn] = new BackgroundImage()
             {
                 BackgroundId = bgId,
-                BackgroundImageBase64 = image,
                 Timestamp = TimeUtils.getCurrentTimeStamp()
             };
 
@@ -228,39 +234,44 @@ namespace windows_client.utils
 
                 foreach (var bg in list)
                     BackgroundOC.Add(bg);
-
-                //LoadBackgroundOCFromList();
             }
-          
+
             if (ChatBgMap.TryGetValue(msisdn, out bgObj))
             {
                 var list = BackgroundList.Where(b => b.ID == bgObj.BackgroundId);
-                ChatBackground bg = list.Count()==0?null:list.First();
+                ChatBackground bg = list.Count() == 0 ? null : list.First();
 
-                if (bg!=null)
+                if (bg != null)
+                {
                     App.ViewModel.SelectedBackground = bg;
+                    return;
+                }
                 else
                 {
                     bg = ReadBackgroundFromFile(bgObj.BackgroundId);
 
-                    if (bg == null)
-                        GetNewBackground(msisdn, bgObj.BackgroundId);
-                    else
+                    if (bg != null)
+                    {
                         App.ViewModel.SelectedBackground = bg;
+                        return;
+                    }
                 }
             }
-            else
-            {
-                ChatBgMap[msisdn] = new BackgroundImage()
-                {
-                    BackgroundId = SetDefaultBackground(msisdn),
-                    Timestamp = TimeUtils.getCurrentTimeStamp()
-                };
 
-                SaveMapToFile();
-            }
+            ChatBgMap[msisdn] = new BackgroundImage()
+            {
+                BackgroundId = "0",
+                Timestamp = TimeUtils.getCurrentTimeStamp()
+            };
+
+            SaveMapToFile();
         }
 
+        /// <summary>
+        /// Apply a random background as default if required
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <returns></returns>
         String SetDefaultBackground(string msisdn)
         {
             int index = random.Next(0, BackgroundIdList.Count);
@@ -322,27 +333,6 @@ namespace windows_client.utils
             return chatBackground;
         }
 
-        void GetNewBackground(string msisdn, string id)
-        {
-            SetDefaultBackground(msisdn);
-            ChatBgMap[msisdn] = new BackgroundImage()
-            {
-                BackgroundId = id,
-                Timestamp = TimeUtils.getCurrentTimeStamp()
-            };
-
-            SaveMapToFile();
-
-            //make http request if data for id is not present on client
-            // no support for v1
-        }
-
-        void postUpdateInfo_Callback(JObject obj)
-        {
-            if (UpdateChatBackground != null)
-                UpdateChatBackground(null, new ChatBackgroundEventArgs());
-        }
-
         /// <summary>
         /// Read default Bg IDs from file.
         /// This has be done if server deletes a defulat category it is handled by client
@@ -363,8 +353,8 @@ namespace windows_client.utils
                         fileName = CHAT_BACKGROUND_DIRECTORY + "\\" + bgIdsListFileName;
 
                         if (!store.FileExists(fileName))
-                            return; 
-                        
+                            return;
+
                         using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
                         {
                             using (BinaryReader reader = new BinaryReader(file))
@@ -726,7 +716,7 @@ namespace windows_client.utils
 
                         if (!store.DirectoryExists(CHAT_BACKGROUND_DIRECTORY))
                             store.CreateDirectory(CHAT_BACKGROUND_DIRECTORY);
-                        
+
                         using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.Write))
                         {
                             using (BinaryWriter writer = new BinaryWriter(file))
@@ -807,14 +797,11 @@ namespace windows_client.utils
                 }
             }
         }
-
-        public event EventHandler<ChatBackgroundEventArgs> UpdateChatBackground;
     }
 
     public class BackgroundImage
     {
         public string BackgroundId;
-        public string BackgroundImageBase64;
         public long Timestamp;
 
         public void Write(BinaryWriter writer)
@@ -822,12 +809,6 @@ namespace windows_client.utils
             try
             {
                 writer.WriteStringBytes(BackgroundId);
-
-                if (BackgroundImageBase64 == null)
-                    writer.WriteStringBytes("*@N@*");
-                else
-                    writer.WriteStringBytes(BackgroundImageBase64);
-
                 writer.Write(Timestamp);
             }
             catch (Exception ex)
@@ -843,11 +824,6 @@ namespace windows_client.utils
             {
                 int count = reader.ReadInt32();
                 BackgroundId = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-
-                count = reader.ReadInt32();
-                BackgroundImageBase64 = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                if (BackgroundImageBase64 == "*@N@*")
-                    BackgroundImageBase64 = null;
 
                 Timestamp = reader.ReadInt64();
             }

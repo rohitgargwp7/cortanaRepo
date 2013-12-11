@@ -367,6 +367,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} just changed the background of this chat! To use hike’s amazing chat backgrounds, update to the latest build by tapping here: get.hike.in.
+        /// </summary>
+        public static string ChatBg_NotChanged_Text {
+            get {
+                return ResourceManager.GetString("ChatBg_NotChanged_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 1 new message.
         /// </summary>
         public static string ChatThread_1NewMessage_txt {

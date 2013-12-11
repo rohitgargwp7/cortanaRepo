@@ -84,7 +84,8 @@ namespace windows_client.Model
             IN_APP_TIP,
             FORCE_SMS_NOTIFICATION,
             H2H_OFFLINE_IN_APP_TIP,
-            CHAT_BACKGROUND_CHANGED
+            CHAT_BACKGROUND_CHANGED,
+            CHAT_BACKGROUND_CHANGED_NOT_SUPPORTED
         }
 
         public enum MessageType
@@ -106,6 +107,7 @@ namespace windows_client.Model
             UNKNOWN,
             FORCE_SMS
         }
+
         public static ParticipantInfoState fromJSON(JObject obj)
         {
             if (obj == null)
@@ -523,17 +525,17 @@ namespace windows_client.Model
             {
                 if (FileAttachment.FileState == Attachment.AttachmentState.PAUSED || FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
                 {
-                    if (App.ViewModel.SelectedBackground.IsDefault)
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
                         return UI_Utils.Instance.ResumeFTRBlack;
                     else
                         return UI_Utils.Instance.ResumeFTRWhite;
                 }
                 else
                 {
-                    if (App.ViewModel.SelectedBackground.IsDefault)
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
                         return UI_Utils.Instance.PausedFTRBlack;
                     else
-                        return UI_Utils.Instance.PausedFTRWHite;
+                        return UI_Utils.Instance.PausedFTRWhite;
                 }
             }
         }
@@ -1127,13 +1129,26 @@ namespace windows_client.Model
             }
         }
 
+        public SolidColorBrush BorderBackgroundColor
+        {
+            get
+            {
+                if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                    return UI_Utils.Instance.Transparent;
+                else
+                    return UI_Utils.Instance.Black;
+            }
+        }
+
         public SolidColorBrush BubbleBackGroundColor
         {
             get
             {
-                if (App.ViewModel.SelectedBackground.IsDefault)
+                if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
                 {
-                    if (IsSent)
+                    if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
+                        return App.Current.Resources["PhoneAccentBrush"] as SolidColorBrush;
+                    else if (IsSent)
                     {
                         if (IsSms)
                             return UI_Utils.Instance.SmsBackground;
@@ -1143,14 +1158,18 @@ namespace windows_client.Model
                     else
                         return UI_Utils.Instance.ReceivedChatBubbleColor;
                 }
-                else if (IsSent)
-                    return App.ViewModel.SelectedBackground.SentBubbleBgColor;
                 else
-                    return App.ViewModel.SelectedBackground.ReceivedBubbleBgColor;
+                {
+                    if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
+                        return UI_Utils.Instance.Black40Opacity;
+                    else if (IsSent)
+                        return App.ViewModel.SelectedBackground.SentBubbleBgColor;
+                    else
+                        return App.ViewModel.SelectedBackground.ReceivedBubbleBgColor;
+                }
             }
             set
             {
-                NotifyPropertyChanged("BubbleBackGroundColor");
             }
         }
 
@@ -1178,7 +1197,7 @@ namespace windows_client.Model
                     return ChatForegroundColor;
                 else
                 {
-                    if (App.ViewModel.SelectedBackground.IsDefault)
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
                     {
                         if (IsSent)
                             return UI_Utils.Instance.White;
@@ -1189,12 +1208,15 @@ namespace windows_client.Model
                         return BubbleForegroundColor;
                 }
             }
-            set
-            {
-                NotifyPropertyChanged("MessageTextForeGround");
-                NotifyPropertyChanged("PauseResumeImage");
-                NotifyPropertyChanged("ChatForegroundColor");
-            }
+        }
+
+        public void UpdateChatBubbles()
+        {
+            NotifyPropertyChanged("MessageTextForeGround");
+            NotifyPropertyChanged("PauseResumeImage");
+            NotifyPropertyChanged("ChatForegroundColor");
+            NotifyPropertyChanged("BorderBackgroundColor");
+            NotifyPropertyChanged("BubbleBackGroundColor");
         }
 
         public Visibility SendAsSMSVisibility
@@ -1886,6 +1908,22 @@ namespace windows_client.Model
                     {
                         gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
                         this.Message = string.Format(AppResources.ChatBg_Changed_Text, gp.Name);
+                    }
+                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+                    break;
+                case ParticipantInfoState.CHAT_BACKGROUND_CHANGED_NOT_SUPPORTED:
+                    grpId = (string)jsonObj[HikeConstants.TO];
+                    from = (string)jsonObj[HikeConstants.FROM];
+                    this._groupParticipant = from;
+                    this._msisdn = grpId;
+                    if (from == App.MSISDN)
+                    {
+                        this.Message = string.Format(AppResources.ChatBg_NotChanged_Text, AppResources.You_Txt);
+                    }
+                    else
+                    {
+                        gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
+                        this.Message = string.Format(AppResources.ChatBg_NotChanged_Text, gp.Name);
                     }
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;

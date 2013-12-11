@@ -269,7 +269,7 @@
                             <view:ChatThreadTemplateSelector.DtNotificationBubble>
                                 <DataTemplate x:Name="dtNotificationBubble">
                                     <Grid Margin="12,10">
-                                        <Border BorderThickness="1" Opacity="0.4" Background="Black" BorderBrush="Black" HorizontalAlignment="Stretch" />
+                                        <Border BorderThickness="1" Opacity="0.4" Margin="0,-3" Background="{Binding BorderBackgroundColor}" BorderBrush="Black" HorizontalAlignment="Stretch" />
                                         <Grid HorizontalAlignment="Stretch" Margin="12 3">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -279,7 +279,7 @@
                                                    Source="{Binding NotificationImage}"/>
                                             <TextBlock Height="Auto" Grid.Column="1" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
                                                        Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" Margin="3,-5,0,0" 
-                                                       VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
+                                                       VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{Binding ChatForegroundColor}"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
@@ -510,7 +510,7 @@
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
                                         <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="0, 12, 0, 0" Foreground="{Binding MessageTextForeGround}"/>
-                                        <Path Data="M0,0 L1,1 L0,1" Grid.Row="1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="Black" Opacity="0.4" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
+                                        <Path Data="M0,0 L1,1 L0,1" Grid.Row="1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
 
                                         <Grid Grid.Row="2">
                                             <Grid.RowDefinitions>
@@ -520,7 +520,7 @@
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border Grid.RowSpan="2" Background="Black" Opacity="0.4"/>
+                                            <Border Grid.RowSpan="2" Background="{Binding BubbleBackGroundColor}"/>
                                             <Image Grid.Row="0" Width="46" Height="35" Margin="12,12,12,10" HorizontalAlignment="Left" Source="/View/images/nudge_received.png"/>
                                         </Grid>
                                     </Grid>
@@ -833,11 +833,11 @@
                                                 <ColumnDefinition Width="40"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border Grid.RowSpan="2" Grid.Column="1" Background="Black" Opacity="0.4" />
+                                            <Border Grid.RowSpan="2" Grid.Column="1" Background="{Binding BubbleBackGroundColor}"/>
                                             <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
                                             <Image Grid.Row="0" Grid.Column="1"  Width="46" Height="35" Margin="12,12,12,10" HorizontalAlignment="Right" Source="/View/images/nudge_sent.png"/>
                                         </Grid>
-                                        <Path Grid.Column="1" Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16" Opacity="0.4" Fill="Black"/>
+                                        <Path Grid.Column="1" Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16" Fill="{Binding BubbleBackGroundColor}"/>
                                     </Grid>
                                 </DataTemplate>
                             </view:ChatThreadTemplateSelector.DtSentBubbleNudge>

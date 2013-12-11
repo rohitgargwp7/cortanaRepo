@@ -23,6 +23,7 @@ namespace windows_client.utils
         private SolidColorBrush transparent;
         private SolidColorBrush black;
         private SolidColorBrush white;
+        private SolidColorBrush black40Opacity;
         private SolidColorBrush btnGrayBackground;
         private SolidColorBrush btnGrayForeground;
         private SolidColorBrush groupChatHeaderColor;
@@ -326,6 +327,16 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush Black40Opacity
+        {
+            get
+            {
+                if (black40Opacity == null)
+                    black40Opacity = new SolidColorBrush(Color.FromArgb(102, 0x0, 0x0, 0x0));
+                return black40Opacity;
+            }
+        }
+
         public SolidColorBrush ButtonGrayBackground
         {
             get
@@ -567,7 +578,7 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage PausedFTRWHite
+        public BitmapImage PausedFTRWhite
         {
             get
             {

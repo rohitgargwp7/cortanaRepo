@@ -767,7 +767,9 @@ namespace windows_client
 
                                     var id = (string)jObj[HikeConstants.MSISDN];
 
-                                    if (ChatBackgroundHelper.Instance.UpdateChatBgMap(id, (string)jObj[HikeConstants.BACKGROUND_ID], (string)jObj[HikeConstants.IMAGE], TimeUtils.getCurrentTimeStamp()))
+                                    var has_Custom_Bg = (bool)jObj[HikeConstants.HAS_CUSTOM_BACKGROUND];
+
+                                    if (!has_Custom_Bg && ChatBackgroundHelper.Instance.UpdateChatBgMap(id, (string)jObj[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
                                     {
                                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                                         {
@@ -777,9 +779,16 @@ namespace windows_client
                                                 {
                                                     ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(id);
                                                     App.newChatThreadPage.ChangeBackground();
-                                                }
 
-                                                App.newChatThreadPage.chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
+                                                    try
+                                                    {
+                                                        App.newChatThreadPage.chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
+                                                    }
+                                                    catch
+                                                    {
+                                                        Debug.WriteLine("Background Id doesn't Exist");
+                                                    }
+                                                }
                                             }
                                         });
                                     }
@@ -1636,17 +1645,37 @@ namespace windows_client
                             return;
                     }
 
-                    if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
+                    var data = (JObject)jsonObj[HikeConstants.DATA];
+                    var bgId = (string)data[HikeConstants.BACKGROUND_ID];
+                    var hasCustomBg = (bool)data[HikeConstants.HAS_CUSTOM_BACKGROUND];
+
+                    if (!hasCustomBg && ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
                     {
-                        cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED, jsonObj, ts);
+                        if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
+                        {
+                            cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED, jsonObj, ts);
+                        }
+                        else
+                        {
+                            cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_READ);
+                            cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
+                        }
+
+                        cm.MetaDataString = "{\"t\":\"cbg\"}";
                     }
                     else
                     {
-                        cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_READ);
-                        cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
+                        if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
+                        {
+                            cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED_NOT_SUPPORTED, jsonObj, ts);
+                        }
+                        else
+                        {
+                            cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_READ);
+                            cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED_NOT_SUPPORTED;
+                        }
                     }
 
-                    cm.MetaDataString = "{\"t\":\"cbg\"}";
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, msisdn);
 
                     if (obj != null)
@@ -1662,13 +1691,12 @@ namespace windows_client
                             });
                     }
 
-                    var data = (JObject)jsonObj[HikeConstants.DATA];
-                    var bgId = (string)data[HikeConstants.BACKGROUND_ID];
-                    var img = (string)data[HikeConstants.IMAGE];
-
-                    if (ChatBackgroundHelper.Instance.UpdateChatBgMap(sender, bgId, img, ts))
+                    if (!hasCustomBg && ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
                     {
-                        pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, jsonObj);
+                        if (ChatBackgroundHelper.Instance.UpdateChatBgMap(sender, bgId, ts))
+                        {
+                            pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, jsonObj);
+                        }
                     }
                 }
                 catch (Exception ex)
