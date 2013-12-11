@@ -5207,7 +5207,7 @@ namespace windows_client.View
 
                 JObject data = new JObject();
                 data[HikeConstants.IMAGE] = img;
-                data[HikeConstants.HAS_CUSTOM_BACKGROUND] = true;
+                data[HikeConstants.HAS_CUSTOM_BACKGROUND] = false;
                 data[HikeConstants.BACKGROUND_ID] = bgId;
                 data[HikeConstants.MESSAGE_ID] = cm.MessageId;
 

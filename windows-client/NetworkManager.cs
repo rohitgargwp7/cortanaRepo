@@ -1678,6 +1678,9 @@ namespace windows_client
 
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, msisdn);
 
+                    if (hasCustomBg || !ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
+                        cm.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
+
                     if (obj != null)
                     {
                         object[] vals;

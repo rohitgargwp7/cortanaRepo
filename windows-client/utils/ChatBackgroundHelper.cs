@@ -260,9 +260,11 @@ namespace windows_client.utils
 
             ChatBgMap[msisdn] = new BackgroundImage()
             {
-                BackgroundId = "0",
+                BackgroundId = "9",
                 Timestamp = TimeUtils.getCurrentTimeStamp()
             };
+
+            App.ViewModel.SelectedBackground = BackgroundList.Where(b => b.IsDefault == true).First();
 
             SaveMapToFile();
         }
