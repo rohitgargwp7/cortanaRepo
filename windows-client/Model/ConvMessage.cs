@@ -1163,9 +1163,9 @@ namespace windows_client.Model
                     if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
                         return UI_Utils.Instance.Black40Opacity;
                     else if (IsSent)
-                        return App.ViewModel.SelectedBackground.SentBubbleBgColor;
+                        return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.SentBubbleBgColor : UI_Utils.Instance.White;
                     else
-                        return App.ViewModel.SelectedBackground.ReceivedBubbleBgColor;
+                        return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.ReceivedBubbleBgColor : UI_Utils.Instance.White;
                 }
             }
             set
@@ -1177,7 +1177,7 @@ namespace windows_client.Model
         {
             get
             {
-                return App.ViewModel.SelectedBackground.ForegroundColor;
+                return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.ForegroundColor : UI_Utils.Instance.White;
             }
         }
 
@@ -1185,7 +1185,7 @@ namespace windows_client.Model
         {
             get
             {
-                return App.ViewModel.SelectedBackground.BubbleForegroundColor;
+                return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.BubbleForegroundColor : UI_Utils.Instance.White;
             }
         }
 
