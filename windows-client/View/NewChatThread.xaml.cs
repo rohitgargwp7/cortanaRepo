@@ -253,18 +253,6 @@ namespace windows_client.View
 
             walkieTalkie.Source = UI_Utils.Instance.WalkieTalkieBigImage;
             deleteRecImageSuc.Source = UI_Utils.Instance.WalkieTalkieDeleteSucImage;
-
-            if (Utils.isDarkTheme())
-            {
-                deleteRecTextSuc.Foreground = UI_Utils.Instance.DeleteGreyBackground;
-                WalkieTalkieDeletedBorder.Opacity = 1;
-                WalkieTalkieGridOverlayLayer.Opacity = 1;
-            }
-            else
-            {
-                JumpToBottomGrid.Opacity = 0.85;
-                jumpToBottomBorder.Background = UI_Utils.Instance.BlackBorderBrush;
-            }
         }
 
         void FileTransferStatusUpdated(object sender, FileTransferSatatusChangedEventArgs e)
@@ -1131,7 +1119,12 @@ namespace windows_client.View
             initAppBar(isAddUser);
 
             if (isGroupChat)
+            {
+                if (!GroupManager.Instance.IsGroupLoaded)
+                    GroupManager.Instance.LoadGroupCache();
+
                 lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Count + 1);
+            }
 
             if (!isOnHike)
             {
@@ -1167,7 +1160,7 @@ namespace windows_client.View
 
             ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(mContactNumber);
 
-            chatBackgroundList.ItemsSource = ChatBackgroundHelper.Instance.BackgroundOC;
+            chatBackgroundList.ItemsSource = ChatBackgroundHelper.Instance.BackgroundList;
             chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
 
             ChangeBackground(false);
@@ -3868,10 +3861,10 @@ namespace windows_client.View
 
         }
 
-        private void chatListBox_tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            emoticonPanel.Visibility = Visibility.Collapsed;
-        }
+        //private void chatListBox_tap(object sender, System.Windows.Input.GestureEventArgs e)
+        //{
+        //    emoticonPanel.Visibility = Visibility.Collapsed;
+        //}
 
         private void emotListRecent_Tap(object sender, SelectionChangedEventArgs e)
         {
@@ -5176,7 +5169,10 @@ namespace windows_client.View
                 return;
             if (mUserIsBlocked)
                 return;
-            emoticonPanel.Visibility = Visibility.Collapsed;
+
+            if(emoticonPanel.Visibility == Visibility.Visible)
+                emoticonPanel.Visibility = Visibility.Collapsed;
+
             if ((!isOnHike && mCredits <= 0))
                 return;
             ConvMessage convMessage = new ConvMessage(string.Format("{0}!", AppResources.Nudge), mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
@@ -5259,7 +5255,7 @@ namespace windows_client.View
 
             if (App.ViewModel.SelectedBackground.ID != App.ViewModel.LastSelectedBackground.ID)
             {
-                ChatBackgroundHelper.Instance.UpdateChatBackgroundMap(mContactNumber, App.ViewModel.SelectedBackground.ID, String.Empty);
+                ChatBackgroundHelper.Instance.UpdateChatBgMap(mContactNumber, App.ViewModel.SelectedBackground.ID);
                 SendBackgroundChangedPacket(App.ViewModel.SelectedBackground.ID, String.Empty);
 
                 App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
@@ -5409,14 +5405,6 @@ namespace windows_client.View
                         Debug.WriteLine("Background doesn't exist");
                     }
                 }
-            }
-        }
-
-        private void vgroup_CurrentStateChanging(object sender, VisualStateChangedEventArgs e)
-        {
-            if (e.NewState.Name == "CompressionBottom")
-            {
-                ChatBackgroundHelper.Instance.LoadBackgroundOCFromList();
             }
         }
 
@@ -6204,8 +6192,14 @@ namespace windows_client.View
                 }
             }
 
-            attachmentMenu.Visibility = Visibility.Collapsed;
-            emoticonPanel.Visibility = Visibility.Collapsed;
+            if (attachmentMenu.Visibility == Visibility.Visible)
+                attachmentMenu.Visibility = Visibility.Collapsed;
+
+            if (emoticonPanel.Visibility == Visibility.Visible)
+                emoticonPanel.Visibility = Visibility.Collapsed;
+
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
 
             this.Focus(); // remove focus from textbox
             recordGrid.Visibility = Visibility.Visible;
@@ -6267,7 +6261,7 @@ namespace windows_client.View
             deleteRecText.Foreground = UI_Utils.Instance.DeleteGreyBackground;
 
             cancelRecord.Opacity = 1;
-            deleteBorder.BorderBrush = UI_Utils.Instance.BlackBorderBrush;
+            deleteBorder.BorderBrush = UI_Utils.Instance.Black;
             WalkieTalkieGrid.Visibility = Visibility.Collapsed;
             recordButton.Text = HOLD_AND_TALK;
             recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
@@ -6321,7 +6315,7 @@ namespace windows_client.View
         private void deleteRecImage_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = false;
-            deleteBorder.BorderBrush = UI_Utils.Instance.BlackBorderBrush;
+            deleteBorder.BorderBrush = UI_Utils.Instance.Black;
             deleteRecImage.Source = UI_Utils.Instance.DustbinGreyImage;
             deleteRecText.Foreground = UI_Utils.Instance.DeleteGreyBackground;
         }
@@ -6392,7 +6386,7 @@ namespace windows_client.View
             if (_runningSeconds >= HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED)
             {
                 cancelRecord.Opacity = 1;
-                deleteBorder.BorderBrush = UI_Utils.Instance.BlackBorderBrush;
+                deleteBorder.BorderBrush = UI_Utils.Instance.Black;
                 WalkieTalkieGrid.Visibility = Visibility.Collapsed;
                 recordButton.Text = HOLD_AND_TALK;
                 recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;

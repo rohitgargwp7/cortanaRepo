@@ -719,11 +719,6 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.5.0.0") < 0)
-            {
-                ChatBackgroundHelper.Instance.LoadDefaultIdsToFile();
-            }
-
             #region Enter to send
 
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.4.0.0") < 0)

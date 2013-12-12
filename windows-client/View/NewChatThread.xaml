@@ -19,52 +19,6 @@
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="False">
     <phone:PhoneApplicationPage.Resources>
-        <Style x:Key="VisualScrollViewer" TargetType="ScrollViewer">
-            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
-            <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ScrollViewer">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="ScrollStates">
-                                    <VisualStateGroup.Transitions>
-                                        <VisualTransition GeneratedDuration="00:00:00.5"/>
-                                    </VisualStateGroup.Transitions>
-                                    <VisualState x:Name="Scrolling">
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="Opacity" To="1" Duration="0"/>
-                                            <DoubleAnimation Storyboard.TargetName="HorizontalScrollBar" Storyboard.TargetProperty="Opacity" To="1" Duration="0"/>
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="NotScrolling">
-                                    </VisualState>
-                                </VisualStateGroup>
-                                <VisualStateGroup x:Name="VerticalCompression" CurrentStateChanged="vgroup_CurrentStateChanging">
-                                    <VisualState x:Name="NoVerticalCompression"/>
-                                    <VisualState x:Name="CompressionTop"/>
-                                    <VisualState x:Name="CompressionBottom"/>
-                                </VisualStateGroup>
-                                <VisualStateGroup x:Name="HorizontalCompression">
-                                    <VisualState x:Name="NoHorizontalCompression"/>
-                                    <VisualState x:Name="CompressionLeft"/>
-                                    <VisualState x:Name="CompressionRight"/>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
-                            <Grid Margin="{TemplateBinding Padding}">
-                                <ScrollContentPresenter x:Name="ScrollContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"/>
-                                <ScrollBar x:Name="VerticalScrollBar" IsHitTestVisible="False" Height="Auto" Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" IsTabStop="False" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Value="{TemplateBinding VerticalOffset}" Orientation="Vertical" ViewportSize="{TemplateBinding ViewportHeight}" />
-                                <ScrollBar x:Name="HorizontalScrollBar" IsHitTestVisible="False" Width="Auto" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" IsTabStop="False" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Value="{TemplateBinding HorizontalOffset}" Orientation="Horizontal" ViewportSize="{TemplateBinding ViewportWidth}" />
-                            </Grid>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
         <Style x:Name="llsMessagesStyle"  TargetType="phone:LongListSelector">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Template">
@@ -104,26 +58,6 @@
                                 <ScrollBar x:Name="VerticalScrollBar" Opacity="0" Margin="2 0 2 0" Orientation="Vertical" HorizontalAlignment="Right" Width="5" />
                             </Grid>
                         </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="InfiniteListbox" TargetType="ListBox">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
-            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListBox">
-                        <ScrollViewer Style="{StaticResource VisualScrollViewer}" x:Name="ScrollViewer" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" Padding="{TemplateBinding Padding}">
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="ValidationStates"/>
-                            </VisualStateManager.VisualStateGroups>
-                            <ItemsPresenter/>
-                        </ScrollViewer>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -198,7 +132,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <ListBox x:Name="chatBackgroundList" Style="{StaticResource InfiniteListbox}"
+                <ListBox x:Name="chatBackgroundList"
                          ItemsPanel="{StaticResource chatThemeBackgroundListTemplate70x70}"
                          ItemTemplate="{StaticResource chatThemeBackgroundItemTemplate70x70}"
                          SelectionChanged="chatBackgroundList_SelectionChanged"
@@ -949,7 +883,7 @@
                     </DataTemplate>
                 </phone:LongListSelector.ItemTemplate>
             </phone:LongListSelector>
-            <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="{StaticResource PhoneBackgroundBrush}" Opacity="0.9" x:Name="JumpToBottomGrid" Tap="JumpToBottom_Tapped" Canvas.ZIndex="3" Height="45" Visibility="Collapsed">
+            <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="Black" Opacity="0.85" x:Name="JumpToBottomGrid" Tap="JumpToBottom_Tapped" Canvas.ZIndex="3" Height="45" Visibility="Collapsed">
                 <Border x:Name="jumpToBottomBorder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource PhoneSubtleBrush}"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                     <Image MaxHeight="15" Margin="0,5,0,0" Source="images/downArrow.png" VerticalAlignment="Center" />
@@ -1266,12 +1200,12 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Border  x:Name="WalkieTalkieGridOverlayLayer" Background="{StaticResource PhoneForegroundBrush}" Margin="-25" Opacity="0.75" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3" />
+            <Border  x:Name="WalkieTalkieGridOverlayLayer" Background="Black" Margin="-25" Opacity="0.75" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3" />
             <Image x:Name="walkieTalkie" MaxHeight="95" Stretch="Uniform" HorizontalAlignment="Center"/>
             <StackPanel Grid.Row="1" Margin="0,10" x:Name="timeBar" Orientation="Horizontal" Opacity="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Ellipse Height="15" Width="15" Fill="Red" Margin="0,0,5,0"/>
-                <TextBlock x:Name="runningTime" FontFamily="Segoe WP SemiLight" FontSize="24" Text="00:00" Foreground="{StaticResource PhoneBackgroundBrush}" ></TextBlock>
-                <TextBlock x:Name="maxPlayingTime" Text=" / 2:00" FontFamily="Segoe WP SemiLight" Foreground="{StaticResource PhoneBackgroundBrush}" FontSize="24"/>
+                <TextBlock x:Name="runningTime" FontFamily="Segoe WP SemiLight" FontSize="24" Text="00:00" Foreground="White" ></TextBlock>
+                <TextBlock x:Name="maxPlayingTime" Text=" / 2:00" FontFamily="Segoe WP SemiLight" Foreground="White" FontSize="24"/>
             </StackPanel>
             <Border Grid.Row="2" Margin="-10,5,-10,-10" Background="Black" MouseLeave="deleteRecImage_MouseLeave" x:Name="deleteBorder" BorderThickness="2" BorderBrush="Black" MouseEnter="deleteRecImage_MouseEnter" Opacity="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
                 <StackPanel Canvas.ZIndex="3" Margin="35" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -1282,7 +1216,7 @@
         </Grid>
 
         <Grid Canvas.ZIndex="1" x:Name="WalkieTalkieDeleteGrid" IsHitTestVisible="False" Background="Transparent" Visibility="Collapsed" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Border x:Name="WalkieTalkieDeletedBorder" Background="{StaticResource PhoneForegroundBrush}" Opacity="0.75" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <Border x:Name="WalkieTalkieDeletedBorder" Background="Black" Opacity="0.75" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
             <StackPanel Canvas.ZIndex="3" Margin="35" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Image x:Name="deleteRecImageSuc" Margin="0,0,10,0" Grid.Column="0" Height="30" Stretch="Uniform" HorizontalAlignment="Center"/>
                 <TextBlock x:Name="deleteRecTextSuc" Foreground="White" TextAlignment="Center" Grid.Column="1" FontSize="24"  Text="{Binding Path= LocalizedResources.Message_Cancelled, Source={StaticResource LocalizedStrings}}"/>

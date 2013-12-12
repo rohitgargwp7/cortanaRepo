@@ -532,6 +532,7 @@
     <Content Include="View\images\avatars.png" />
     <Content Include="View\images\avatars_i.png" />
     <Content Include="View\images\avatars_overlay.png" />
+    <Content Include="View\images\deleted_grey_icon.png" />
     <Content Include="View\images\smileyExpressions.png" />
     <Content Include="View\images\smileyExpressions_i.png" />
     <Content Include="View\images\smileyExpressions_overlay.png" />
@@ -583,7 +584,6 @@
     <Content Include="View\images\change_pic.png" />
     <Content Include="View\images\chat_sms_error.png" />
     <Content Include="View\images\connected_tick.png" />
-    <Content Include="View\images\deleted_grey_icon.png" />
     <Content Include="View\images\deleted_white_icon.png" />
     <Content Include="View\images\delete_account_white.png" />
     <Content Include="View\images\downArrow.png" />
@@ -764,7 +764,6 @@
     <Content Include="View\images\user_lock_white.png" />
     <Content Include="View\images\new_icon.png" />
     <Content Include="View\images\new_icon_white.png" />
-    <Content Include="View\images\Walkie_Talkie_Black_big.png" />
     <Content Include="View\images\walkie_talkie_White_Big.png" />
     <Content Include="View\images\Walkie_Talkie_Grey_small.png" />
     <Content Include="View\images\made_with_love_dark.png" />

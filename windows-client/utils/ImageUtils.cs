@@ -119,10 +119,8 @@ namespace windows_client.utils
         private Thickness newChatThreadEmoticonMargin = new Thickness(0, 10, 0, -10);
         BitmapImage walkieTalkieGreyImage;
         BitmapImage walkieTalkieWhiteImage;
-        BitmapImage walkieTalkieGreyImageBig;
-        BitmapImage walkieTalkieWhiteImageBig;
-        BitmapImage walkieTalkieDeleteSucImageGrey;
-        BitmapImage walkieTalkieDeleteSucImageWhite;
+        BitmapImage walkieTalkieBigImage;
+        BitmapImage walkieTalkieDeleteSucImage;
         BitmapImage closeButtonWhiteImage;
         BitmapImage closeButtonBlackImage;
         BitmapImage dustbinGreyImage;
@@ -152,7 +150,6 @@ namespace windows_client.utils
         public Thickness UserProfileStatusTextMargin = new Thickness(18, 0, 5, 0);
         public Thickness StatusImageMargin = new Thickness(12, 28, 0, 12);
         public SolidColorBrush RedBorderBrush = new SolidColorBrush(Colors.Red);
-        public SolidColorBrush BlackBorderBrush = new SolidColorBrush(Colors.Black);
         public BitmapImage BlankBitmapImage = new BitmapImage();
         #endregion
 
@@ -1056,20 +1053,10 @@ namespace windows_client.utils
         {
             get
             {
-                if (Utils.isDarkTheme())
-                {
-                    if (walkieTalkieGreyImageBig == null)
-                        walkieTalkieGreyImageBig = new BitmapImage(new Uri("/View/images/Walkie_Talkie_Black_big.png", UriKind.Relative));
+                if (walkieTalkieBigImage == null)
+                    walkieTalkieBigImage = new BitmapImage(new Uri("/View/images/Walkie_Talkie_White_big.png", UriKind.Relative));
 
-                    return walkieTalkieGreyImageBig;
-                }
-                else
-                {
-                    if (walkieTalkieWhiteImageBig == null)
-                        walkieTalkieWhiteImageBig = new BitmapImage(new Uri("/View/images/Walkie_Talkie_White_big.png", UriKind.Relative));
-
-                    return walkieTalkieWhiteImageBig;
-                }
+                return walkieTalkieBigImage;
             }
         }
 
@@ -1077,20 +1064,10 @@ namespace windows_client.utils
         {
             get
             {
-                if (Utils.isDarkTheme())
-                {
-                    if (walkieTalkieDeleteSucImageGrey == null)
-                        walkieTalkieDeleteSucImageGrey = new BitmapImage(new Uri("/View/images/deleted_grey_icon.png", UriKind.Relative));
+                if (walkieTalkieDeleteSucImage == null)
+                    walkieTalkieDeleteSucImage = new BitmapImage(new Uri("/View/images/deleted_white_icon.png", UriKind.Relative));
 
-                    return walkieTalkieDeleteSucImageGrey;
-                }
-                else
-                {
-                    if (walkieTalkieDeleteSucImageWhite == null)
-                        walkieTalkieDeleteSucImageWhite = new BitmapImage(new Uri("/View/images/deleted_white_icon.png", UriKind.Relative));
-
-                    return walkieTalkieDeleteSucImageWhite;
-                }
+                return walkieTalkieDeleteSucImage;
             }
         }
 

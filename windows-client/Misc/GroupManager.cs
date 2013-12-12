@@ -312,6 +312,8 @@ namespace windows_client.Misc
             }
         }
 
+        public bool IsGroupLoaded = false;
+
         public void LoadGroupCache()
         {
             lock (readWriteLock)
@@ -379,6 +381,8 @@ namespace windows_client.Misc
                     }
                 }
             }
+
+            IsGroupLoaded = true;
         }
 
         public string defaultGroupName(string grpId)
