@@ -99,6 +99,7 @@ namespace windows_client.View
         private BitmapImage avatarImage;
         private ApplicationBar appBar;
         ApplicationBarMenuItem muteGroupMenuItem;
+        ApplicationBarMenuItem changeBackground;
         ApplicationBarMenuItem inviteMenuItem = null;
         public ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarMenuItem infoMenuItem;
@@ -1235,7 +1236,13 @@ namespace windows_client.View
 
             HikeToolTip tip;
 
-            if (App.ViewModel.DictInAppTip != null && App.ViewModel.DictInAppTip.TryGetValue(1, out tip) && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+            if (App.ViewModel.DictInAppTip != null && App.ViewModel.DictInAppTip.TryGetValue(8, out tip) && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+            {
+                App.ViewModel.DisplayTip(LayoutRoot, 8);
+                this.ApplicationBar = appBar;
+                isInAppTipVisible = true;
+            }
+            else if (App.ViewModel.DictInAppTip != null && App.ViewModel.DictInAppTip.TryGetValue(1, out tip) && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
             {
                 App.ViewModel.DisplayTip(LayoutRoot, 1);
                 this.ApplicationBar = appBar;
@@ -1610,6 +1617,14 @@ namespace windows_client.View
             fileTransferIconButton.Click += new EventHandler(fileTransferButton_Click);
             fileTransferIconButton.IsEnabled = true;
             appBar.Buttons.Add(fileTransferIconButton);
+
+            changeBackground = new ApplicationBarMenuItem();
+            changeBackground.Text = AppResources.Change_Background_App_Bar_Menu_Txt;
+            changeBackground.Click += (ss, ee) =>
+            {
+                chatBackgroundPopUp_Opened();
+            };
+            appBar.MenuItems.Add(changeBackground);
 
             if (isGroupChat)
             {
@@ -3020,6 +3035,7 @@ namespace windows_client.View
                     chatBubble.NotificationType = ConvMessage.MessageType.UNKNOWN;
                     this.ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
+                    ScrollToBottom();
                 }
                 #endregion
 
@@ -4809,6 +4825,7 @@ namespace windows_client.View
                 if (sender == mContactNumber)
                 {
                     ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(sender);
+                    App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
 
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -5264,11 +5281,6 @@ namespace windows_client.View
         
         void chatPaint_Tap(object sender, RoutedEventArgs e)
         {
-            App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
-
-            openChatBackgroundButton.Visibility = Visibility.Collapsed;
-            cancelChatBackgroundButton.Visibility = Visibility.Visible;
-
             chatBackgroundPopUp_Opened();
         }
 
@@ -5282,6 +5294,16 @@ namespace windows_client.View
 
         void chatBackgroundPopUp_Opened()
         {
+            if (mUserIsBlocked || (isGroupChat && !isGroupAlive))
+                return;
+            
+            App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
+
+            App.ViewModel.HideToolTip(LayoutRoot, 8);
+
+            openChatBackgroundButton.Visibility = Visibility.Collapsed;
+            cancelChatBackgroundButton.Visibility = Visibility.Visible; 
+            
             chatBackgroundPopUp.Visibility = Visibility.Visible;
 
             if (recordGrid.Visibility == Visibility.Visible)

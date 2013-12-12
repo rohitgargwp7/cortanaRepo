@@ -740,6 +740,44 @@ namespace windows_client
                                         }
 
                                         #endregion
+                                        #region CHAT BACKGROUNDS
+                                        else if (kkvv.Key == HikeConstants.CHAT_BACKGROUND_ARRAY)
+                                        {
+                                            var val = kkvv.Value;
+                                            foreach (var obj in val)
+                                            {
+                                                JObject jObj = (JObject)obj;
+
+                                                var id = (string)jObj[HikeConstants.MSISDN];
+
+                                                var has_Custom_Bg = (bool)jObj[HikeConstants.HAS_CUSTOM_BACKGROUND];
+
+                                                if (!has_Custom_Bg && ChatBackgroundHelper.Instance.UpdateChatBgMap(id, (string)jObj[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
+                                                {
+                                                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                                                    {
+                                                        if (App.newChatThreadPage != null)
+                                                        {
+                                                            if (App.newChatThreadPage.mContactNumber == id)
+                                                            {
+                                                                ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(id);
+                                                                App.newChatThreadPage.ChangeBackground();
+
+                                                                try
+                                                                {
+                                                                    App.newChatThreadPage.chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
+                                                                }
+                                                                catch
+                                                                {
+                                                                    Debug.WriteLine("Background Id doesn't Exist");
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        }
+                                        #endregion
                                     }
                                     catch (Exception ex)
                                     {
@@ -757,42 +795,6 @@ namespace windows_client
 
                                 if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.TOTAL_CREDITS_PER_MONTH)
                                     App.WriteToIsoStorageSettings(kv.Key, val);
-                            }
-                            else if (kv.Key == HikeConstants.CHAT_BACKGROUNDS)
-                            {
-                                var val = kv.Value;
-                                foreach (var obj in val)
-                                {
-                                    JObject jObj = (JObject)obj;
-
-                                    var id = (string)jObj[HikeConstants.MSISDN];
-
-                                    var has_Custom_Bg = (bool)jObj[HikeConstants.HAS_CUSTOM_BACKGROUND];
-
-                                    if (!has_Custom_Bg && ChatBackgroundHelper.Instance.UpdateChatBgMap(id, (string)jObj[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
-                                    {
-                                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                                        {
-                                            if (App.newChatThreadPage != null)
-                                            {
-                                                if (App.newChatThreadPage.mContactNumber == id)
-                                                {
-                                                    ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(id);
-                                                    App.newChatThreadPage.ChangeBackground();
-
-                                                    try
-                                                    {
-                                                        App.newChatThreadPage.chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
-                                                    }
-                                                    catch
-                                                    {
-                                                        Debug.WriteLine("Background Id doesn't Exist");
-                                                    }
-                                                }
-                                            }
-                                        });
-                                    }
-                                }
                             }
                         }
                         catch (Exception ex)
@@ -1019,6 +1021,66 @@ namespace windows_client
                         return;
                     }
                 }
+                #endregion
+                #region META DATA
+
+                JObject metaData = (JObject)jsonObj[HikeConstants.METADATA];
+
+                #region GROUP NAME
+                
+                JToken gName;
+                string groupName;
+                if (metaData.TryGetValue(HikeConstants.NAME, out gName))
+                {
+                    ConversationListObject cObj;
+                    groupName = gName.ToString();
+                    if (App.ViewModel.ConvMap.TryGetValue(grpId, out cObj))
+                    {
+                        if (cObj.ContactName != groupName)
+                            ConversationTableUtils.updateGroupName(grpId, groupName);
+                    }
+                }
+
+                #endregion
+
+                #region CHAT BACKGROUND
+
+                try
+                {
+                    JObject chatBg = (JObject)metaData[HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS];
+                    var has_Custom_Bg = (bool)chatBg[HikeConstants.HAS_CUSTOM_BACKGROUND];
+
+                    if (!has_Custom_Bg && ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (App.newChatThreadPage != null)
+                            {
+                                if (App.newChatThreadPage.mContactNumber == grpId)
+                                {
+                                    ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(grpId);
+                                    App.newChatThreadPage.ChangeBackground();
+
+                                    try
+                                    {
+                                        App.newChatThreadPage.chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
+                                    }
+                                    catch
+                                    {
+                                        Debug.WriteLine("Background Id doesn't Exist");
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN with chat background, Exception : " + ex.StackTrace);
+                }
+
+                #endregion
+
                 #endregion
 
                 ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);

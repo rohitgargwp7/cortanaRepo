@@ -2026,6 +2026,12 @@ Download it now http://hike.in and join the fun!</value>
     <value>save theme</value>
   </data>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
-    <value>{0} just changed the background of this chat! To use hike’s amazing chat backgrounds, update to the latest build by tapping here: get.hike.in</value>
+    <value>{0} just changed the chat theme with you. Update your app to the latest version to experience Chat Themes 2.0. http://hike.in</value>
+  </data>
+  <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
+    <value>change background</value>
+  </data>
+  <data name="In_App_Tip_9" xml:space="preserve">
+    <value>And loads of more themes here...</value>
   </data>
 </root>

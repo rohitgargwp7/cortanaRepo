@@ -358,6 +358,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to change background.
+        /// </summary>
+        public static string Change_Background_App_Bar_Menu_Txt {
+            get {
+                return ResourceManager.GetString("Change_Background_App_Bar_Menu_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} changed the background.
         /// </summary>
         public static string ChatBg_Changed_Text {
@@ -367,7 +376,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} just changed the background of this chat! To use hike’s amazing chat backgrounds, update to the latest build by tapping here: get.hike.in.
+        ///   Looks up a localized string similar to {0} just changed the chat theme with you. Update your app to the latest version to experience Chat Themes 2.0. http://hike.in.
         /// </summary>
         public static string ChatBg_NotChanged_Text {
             get {
@@ -2233,6 +2242,15 @@ namespace windows_client.Languages {
         public static string In_App_Tip_8_2 {
             get {
                 return ResourceManager.GetString("In_App_Tip_8_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to And loads of more themes here....
+        /// </summary>
+        public static string In_App_Tip_9 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_9", resourceCulture);
             }
         }
         

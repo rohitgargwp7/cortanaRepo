@@ -252,7 +252,7 @@ namespace windows_client
         public static readonly Int64 DEFAULT_PRO_TIP_TIME = 300;
 
         public static readonly string BACKGROUND_ID = "bg_id";
-        public static readonly string HAS_CUSTOM_BACKGROUND = "cb";
+        public static readonly string HAS_CUSTOM_BACKGROUND = "custom";
 
         public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
@@ -310,7 +310,7 @@ namespace windows_client
         public static string UNREAD_UPDATES = "urUp";
         public static string UNREAD_FRIEND_REQUESTS = "urFr";
         public static string REFRESH_BAR = "refBar";
-        public static string CHAT_BACKGROUNDS = "cbgs";
+        public static string CHAT_BACKGROUND_ARRAY = "cbgs";
 
         public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
         public static string PROFILE_NAME_CHANGED = "ProfileNameChanged";
