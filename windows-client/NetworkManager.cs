@@ -1025,62 +1025,66 @@ namespace windows_client
                 #region META DATA
 
                 JObject metaData = (JObject)jsonObj[HikeConstants.METADATA];
-
-                #region GROUP NAME
-                
-                JToken gName;
-                string groupName;
-                if (metaData.TryGetValue(HikeConstants.NAME, out gName))
+                if (metaData != null)
                 {
-                    ConversationListObject cObj;
-                    groupName = gName.ToString();
-                    if (App.ViewModel.ConvMap.TryGetValue(grpId, out cObj))
+                    #region GROUP NAME
+
+                    JToken gName;
+                    string groupName;
+                    if (metaData.TryGetValue(HikeConstants.NAME, out gName))
                     {
-                        if (cObj.ContactName != groupName)
-                            ConversationTableUtils.updateGroupName(grpId, groupName);
-                    }
-                }
-
-                #endregion
-
-                #region CHAT BACKGROUND
-
-                try
-                {
-                    JObject chatBg = (JObject)metaData[HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS];
-                    var has_Custom_Bg = (bool)chatBg[HikeConstants.HAS_CUSTOM_BACKGROUND];
-
-                    if (!has_Custom_Bg && ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
-                    {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        ConversationListObject cObj;
+                        groupName = gName.ToString();
+                        if (App.ViewModel.ConvMap.TryGetValue(grpId, out cObj))
                         {
-                            if (App.newChatThreadPage != null)
-                            {
-                                if (App.newChatThreadPage.mContactNumber == grpId)
-                                {
-                                    ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(grpId);
-                                    App.newChatThreadPage.ChangeBackground();
-
-                                    try
-                                    {
-                                        App.newChatThreadPage.chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
-                                    }
-                                    catch
-                                    {
-                                        Debug.WriteLine("Background Id doesn't Exist");
-                                    }
-                                }
-                            }
-                        });
+                            if (cObj.ContactName != groupName)
+                                ConversationTableUtils.updateGroupName(grpId, groupName);
+                        }
                     }
-                }
-                catch(Exception ex)
-                {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN with chat background, Exception : " + ex.StackTrace);
-                }
 
-                #endregion
+                    #endregion
 
+                    #region CHAT BACKGROUND
+
+                    try
+                    {
+                        JObject chatBg = (JObject)metaData[HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS];
+                        if (chatBg != null)
+                        {
+                            var has_Custom_Bg = (bool)chatBg[HikeConstants.HAS_CUSTOM_BACKGROUND];
+
+                            if (!has_Custom_Bg && ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
+                            {
+                                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                                {
+                                    if (App.newChatThreadPage != null)
+                                    {
+                                        if (App.newChatThreadPage.mContactNumber == grpId)
+                                        {
+                                            ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(grpId);
+                                            App.newChatThreadPage.ChangeBackground();
+
+                                            try
+                                            {
+                                                App.newChatThreadPage.chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
+                                            }
+                                            catch
+                                            {
+                                                Debug.WriteLine("Background Id doesn't Exist");
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN with chat background, Exception : " + ex.StackTrace);
+                    }
+
+                    #endregion
+                }
                 #endregion
 
                 ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);

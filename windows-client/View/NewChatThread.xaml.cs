@@ -1121,8 +1121,7 @@ namespace windows_client.View
 
             if (isGroupChat)
             {
-                if (!GroupManager.Instance.IsGroupLoaded)
-                    GroupManager.Instance.LoadGroupCache();
+                GroupManager.Instance.LoadGroupParticipants(mContactNumber);
 
                 lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Count + 1);
             }
@@ -3004,14 +3003,14 @@ namespace windows_client.View
                             tip.IsShown = true;
                             tip.IsCurrentlyShown = true;
 
-                            byte marked;
+                            int marked;
                             App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
-                            marked |= (byte)(1 << 4);
+                            marked |= (int)(1 << 4);
                             App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
 
-                            byte currentShown;
+                            int currentShown;
                             App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                            currentShown |= (byte)(1 << 4);
+                            currentShown |= (int)(1 << 4);
                             App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
 
                             isInAppTipVisible = true;
@@ -6214,14 +6213,14 @@ namespace windows_client.View
                     toolTip.IsCurrentlyShown = false;
 
                     int index = 2;
-                    byte shownByte;
+                    int shownByte;
                     App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out shownByte);
-                    shownByte &= (byte)~(1 << index);
+                    shownByte &= (int)~(1 << index);
                     App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, shownByte);
 
-                    byte currentShown;
+                    int currentShown;
                     App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                    currentShown &= (byte)~(1 << index);
+                    currentShown &= (int)~(1 << index);
                     App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
                 }
             }
@@ -6687,14 +6686,14 @@ namespace windows_client.View
                                  tip.IsShown = true;
                                  tip.IsCurrentlyShown = true;
 
-                                 byte marked;
+                                 int marked;
                                  App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
-                                 marked |= (byte)(1 << 6);
+                                 marked |= (int)(1 << 6);
                                  App.appSettings[App.TIP_MARKED_KEY] = marked;
 
-                                 byte currentShown;
+                                 int currentShown;
                                  App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                                 currentShown |= (byte)(1 << 6);
+                                 currentShown |= (int)(1 << 6);
                                  App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
 
                                  if (indexToInsert == ocMessages.Count - 1)
