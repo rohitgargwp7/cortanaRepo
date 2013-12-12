@@ -520,9 +520,9 @@
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
+                                                <Image Grid.Row="0" HorizontalAlignment="Left" Source="{Binding MessageImage}" Stretch="None"/>
+                                                <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}"/>
                                             </Grid>
-                                            <Image Grid.Row="0" HorizontalAlignment="Left" Source="{Binding MessageImage}" Stretch="None"/>
-                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}"/>
                                             <Grid Grid.Row="1" Visibility="{Binding IsStickerLoading}">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />

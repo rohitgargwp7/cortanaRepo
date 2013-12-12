@@ -521,7 +521,6 @@
     </Content>
     <Content Include="Application_IconImage_62x62.png" />
     <Content Include="Assets\LockImage.png" />
-    <Content Include="Assets\pattern.png" />
     <Content Include="View\images\ChangeBgPicture.png" />
     <Content Include="Audio\v1.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -532,6 +531,22 @@
     <Content Include="View\images\avatars.png" />
     <Content Include="View\images\avatars_i.png" />
     <Content Include="View\images\avatars_overlay.png" />
+    <Content Include="View\images\chatBackgrounds\aqua.png" />
+    <Content Include="View\images\chatBackgrounds\blue-2.png" />
+    <Content Include="View\images\chatBackgrounds\blue-green.png" />
+    <Content Include="View\images\chatBackgrounds\blue-grey.png" />
+    <Content Include="View\images\chatBackgrounds\blue-stocking.png" />
+    <Content Include="View\images\chatBackgrounds\blue.png" />
+    <Content Include="View\images\chatBackgrounds\cyan-snowman.png" />
+    <Content Include="View\images\chatBackgrounds\green-christmastree.png" />
+    <Content Include="View\images\chatBackgrounds\green.png" />
+    <Content Include="View\images\chatBackgrounds\orange.png" />
+    <Content Include="View\images\chatBackgrounds\purple-gift.png" />
+    <Content Include="View\images\chatBackgrounds\purple.png" />
+    <Content Include="View\images\chatBackgrounds\red-candycane.png" />
+    <Content Include="View\images\chatBackgrounds\red-christmas.png" />
+    <Content Include="View\images\chatBackgrounds\red-hearts.png" />
+    <Content Include="View\images\chatBackgrounds\yellow.png" />
     <Content Include="View\images\deleted_grey_icon.png" />
     <Content Include="View\images\smileyExpressions.png" />
     <Content Include="View\images\smileyExpressions_i.png" />
@@ -995,6 +1010,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

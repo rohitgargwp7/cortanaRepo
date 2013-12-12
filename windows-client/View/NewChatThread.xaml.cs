@@ -5304,6 +5304,7 @@ namespace windows_client.View
         }
 
         WriteableBitmap _background;
+        BitmapImage _tileBitmap;
 
         public void ChangeBackground(bool isBubbleColorChanged = true)
         {
@@ -5330,51 +5331,62 @@ namespace windows_client.View
                     msg.UpdateChatBubbles();
             }
 
-            WriteableBitmap source = null;
-
             chatBackground.Opacity = 1;
 
-            if (!string.IsNullOrEmpty(App.ViewModel.SelectedBackground.Pattern))
-                source = new WriteableBitmap(UI_Utils.Instance.createImageFromBytes(App.ViewModel.SelectedBackground.ImageBytes));
-            else
+            if (App.ViewModel.SelectedBackground.IsDefault)
             {
-                _background = null;
                 chatBackground.Source = null;
+                return;
             }
 
-            if (source != null)
-            {
-                if (App.ViewModel.SelectedBackground.IsTile)
+            _tileBitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
                 {
-                    var iHeight = 800;
-                    var iWidth = 480;
+                    CreateOptions = BitmapCreateOptions.None
+                };
+            
+            //handle delay creation of bitmap image
+            _tileBitmap.ImageOpened += (s, e) =>
+            {
+                WriteableBitmap source = null;
+                source = new WriteableBitmap(_tileBitmap);
 
-                    var wb1 = new WriteableBitmap((int)iWidth, (int)iHeight);
-                    wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = (int)iWidth, Height = (int)iHeight }, null);
-                    wb1.Invalidate(); 
-                    
-                    int height = 0;
-
-                    for (int width = 0; width <= iWidth; )
+                if (source != null)
+                {
+                    if (App.ViewModel.SelectedBackground.IsTile)
                     {
-                        for (height = 0; height <= iHeight; )
+                        var iHeight = 800;
+                        var iWidth = 480;
+
+                        var wb1 = new WriteableBitmap((int)iWidth, (int)iHeight);
+                        wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = (int)iWidth, Height = (int)iHeight }, null);
+                        wb1.Invalidate();
+
+                        int height = 0;
+
+                        for (int width = 0; width <= iWidth; )
                         {
-                            wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
-                            height += source.PixelHeight;
+                            for (height = 0; height <= iHeight; )
+                            {
+                                wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
+                                height += source.PixelHeight;
+                            }
+
+                            width += source.PixelWidth;
                         }
 
-                        width += source.PixelWidth;
+                        _background = wb1;
                     }
+                    else
+                        _background = source;
 
-                    _background = wb1;
+                    RotateImageAndApply();
                 }
-                else
-                    _background = source;
-
-                RotateImageAndApply();
-            }
+            };
         }
 
+        /// <summary>
+        /// Rotate image and apply according to current orientation
+        /// </summary>
         private void RotateImageAndApply()
         {
             if (_background == null)

@@ -86,25 +86,13 @@ namespace windows_client.Model
             }
         }
 
-        Byte[] imageBytes;
-        public Byte[] ImageBytes
-        {
-            get
-            {
-                if (imageBytes == null)
-                    imageBytes = System.Convert.FromBase64String(Pattern);
-
-                return imageBytes;
-            }
-        }
-
         BitmapImage _imagePattern;
         public BitmapImage ImagePattern
         {
             get
             {
                 if (_imagePattern == null)
-                    _imagePattern = UI_Utils.Instance.createImageFromBytes(ImageBytes);
+                    _imagePattern = new BitmapImage(new Uri(ImagePath, UriKind.Relative));
 
                 return _imagePattern;
             }
@@ -162,7 +150,7 @@ namespace windows_client.Model
         }
 
         public string ID;
-        public string Pattern;
+        public string ImagePath;
         public bool IsDefault;
         public bool IsTile;
         public string Background;
@@ -179,10 +167,10 @@ namespace windows_client.Model
             {
                 writer.WriteStringBytes(ID);
 
-                if (Pattern == null)
+                if (ImagePath == null)
                     writer.WriteStringBytes("*@N@*");
                 else
-                    writer.WriteStringBytes(Pattern);
+                    writer.WriteStringBytes(ImagePath);
 
                 writer.Write(IsDefault);
                 writer.Write(IsTile);
@@ -234,9 +222,9 @@ namespace windows_client.Model
                 ID = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
 
                 count = reader.ReadInt32();
-                Pattern = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                if (Pattern == "*@N@*")
-                    Pattern = String.Empty;
+                ImagePath = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (ImagePath == "*@N@*")
+                    ImagePath = String.Empty;
 
                 IsDefault = reader.ReadBoolean();
                 IsTile = reader.ReadBoolean();
