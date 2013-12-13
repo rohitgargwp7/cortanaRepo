@@ -565,7 +565,7 @@ namespace windows_client.Model
                         return UI_Utils.Instance.Delivered;
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                     case ConvMessage.State.SENT_DELIVERED_READ:
-                        return UI_Utils.Instance.Read;
+                            return UI_Utils.Instance.Read;
                     case ConvMessage.State.SENT_FAILED:
                         return UI_Utils.Instance.HttpFailed;
                     case ConvMessage.State.SENT_UNCONFIRMED:
@@ -1217,6 +1217,8 @@ namespace windows_client.Model
             NotifyPropertyChanged("ChatForegroundColor");
             NotifyPropertyChanged("BorderBackgroundColor");
             NotifyPropertyChanged("BubbleBackGroundColor");
+            NotifyPropertyChanged("SdrImage");
+            NotifyPropertyChanged("NotificationImage");
         }
 
         public Visibility SendAsSMSVisibility
