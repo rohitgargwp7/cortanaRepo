@@ -784,7 +784,7 @@ namespace windows_client
                 App.appSettings[App.TIP_MARKED_KEY] = 0x18;
                 App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, 0x18);
             }
-            else if (Utils.compareVersion(_currentVersion, "2.5.0.0") < 0)
+            else if (Utils.compareVersion(_currentVersion, "2.4.0.1") < 0)
             {
                 try
                 {
@@ -794,6 +794,7 @@ namespace windows_client
                 }
                 catch
                 {
+                    //remove try catch in market build
                 }
 
                 try
@@ -805,6 +806,7 @@ namespace windows_client
                 catch(Exception ex)
                 {
                     Debug.WriteLine(ex);
+                    //remove try catch in market build
                 }
             }
 

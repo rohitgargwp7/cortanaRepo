@@ -521,7 +521,6 @@
     </Content>
     <Content Include="Application_IconImage_62x62.png" />
     <Content Include="Assets\LockImage.png" />
-    <Content Include="View\images\ChangeBgPicture.png" />
     <Content Include="Audio\v1.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

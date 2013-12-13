@@ -557,12 +557,6 @@ namespace windows_client.ViewModel
                 else if (index == 3)
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 2);
 
-                if (tip.Background != null)
-                    inAppTipUC.TipBackground = tip.Background;
-
-                if (tip.Foreground != null)
-                    inAppTipUC.TipForeground = tip.Foreground;
-
                 if (tip.IsTop)
                 {
                     inAppTipUC.VerticalAlignment = VerticalAlignment.Top;

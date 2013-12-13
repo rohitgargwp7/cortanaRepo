@@ -3876,11 +3876,6 @@ namespace windows_client.View
 
         }
 
-        //private void chatListBox_tap(object sender, System.Windows.Input.GestureEventArgs e)
-        //{
-        //    emoticonPanel.Visibility = Visibility.Collapsed;
-        //}
-
         private void emotListRecent_Tap(object sender, SelectionChangedEventArgs e)
         {
             ListBox llsStickerCategory = (sender as ListBox);
