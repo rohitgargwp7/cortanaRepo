@@ -12,7 +12,6 @@ using System.Text;
 using windows_client.Misc;
 using windows_client.Languages;
 using windows_client.ViewModel;
-using System.Linq;
 using Microsoft.Phone.Shell;
 
 namespace windows_client

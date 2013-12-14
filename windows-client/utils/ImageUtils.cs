@@ -1733,7 +1733,7 @@ namespace windows_client.utils
             byte b = 0;
 
             if (hexString.StartsWith("#"))
-                hexString = hexString.Substring(1, 8);
+                hexString = hexString.Substring(1);
 
             if (hexString.Length == 8)
             {

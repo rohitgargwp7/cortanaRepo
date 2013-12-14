@@ -2009,7 +2009,6 @@ namespace windows_client.View
                 if (obj == null)
                     return;
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
-
                 string uri = "/View/NewChatThread.xaml";
                 NavigationService.Navigate(new Uri(uri, UriKind.Relative));
             }
@@ -2085,7 +2084,6 @@ namespace windows_client.View
                 objToSend = c;
             // TODO: Handle this properly
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = objToSend;
-
             string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
@@ -2546,7 +2544,6 @@ namespace windows_client.View
                         PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
                     }
                 }
-
                 NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
             }
         }
