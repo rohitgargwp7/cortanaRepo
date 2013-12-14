@@ -786,28 +786,13 @@ namespace windows_client
             }
             else if (Utils.compareVersion(_currentVersion, "2.4.0.1") < 0)
             {
-                try
-                {
-                    var val = App.appSettings[App.TIP_MARKED_KEY];
-                    App.RemoveKeyFromAppSettings(App.TIP_MARKED_KEY);
-                    App.appSettings[App.TIP_MARKED_KEY] = Convert.ToInt32(val);
-                }
-                catch
-                {
-                    //remove try catch in market build
-                }
-
-                try
-                {
-                    var val = App.appSettings[App.TIP_SHOW_KEY];
-                    App.RemoveKeyFromAppSettings(App.TIP_SHOW_KEY);
-                    App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, Convert.ToInt32(val));
-                }
-                catch(Exception ex)
-                {
-                    Debug.WriteLine(ex);
-                    //remove try catch in market build
-                }
+                var val = App.appSettings[App.TIP_MARKED_KEY];
+                App.RemoveKeyFromAppSettings(App.TIP_MARKED_KEY);
+                App.appSettings[App.TIP_MARKED_KEY] = Convert.ToInt32(val);
+             
+                val = App.appSettings[App.TIP_SHOW_KEY];
+                App.RemoveKeyFromAppSettings(App.TIP_SHOW_KEY);
+                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, Convert.ToInt32(val));
             }
 
             #endregion

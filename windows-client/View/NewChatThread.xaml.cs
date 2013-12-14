@@ -1158,7 +1158,7 @@ namespace windows_client.View
             else
                 this.ApplicationBar = appBar;
 
-            ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(mContactNumber);
+            ChatBackgroundHelper.Instance.SetSelectedBackgorundFromMap(mContactNumber);
 
             chatBackgroundList.ItemsSource = ChatBackgroundHelper.Instance.BackgroundList;
             chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
@@ -4799,26 +4799,11 @@ namespace windows_client.View
             #region Chat Background Changed
             else if (HikePubSub.CHAT_BACKGROUND_REC == type)
             {
-                var jsonObj = (JObject)obj;
-                var from = (string)jsonObj[HikeConstants.FROM];
-
-                var to = "";
-                try
-                {
-                    to = (string)jsonObj[HikeConstants.TO];
-                }
-                catch { }
-
-                var ts = (long)jsonObj[HikeConstants.TIMESTAMP];
-                var data = (JObject)jsonObj[HikeConstants.DATA];
-                var bgId = (string)data[HikeConstants.BACKGROUND_ID];
-                var img = (string)data[HikeConstants.IMAGE];
-
-                var sender = !String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to) ? to : from;
+                var sender = (string)obj;
 
                 if (sender == mContactNumber)
                 {
-                    ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(sender);
+                    ChatBackgroundHelper.Instance.SetSelectedBackgorundFromMap(sender);
                     App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
 
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -5202,28 +5187,19 @@ namespace windows_client.View
 
         #region Chat Backgrounds
 
-        async Task SendBackgroundChangedPacket(string bgId, string img = "")
+        async Task SendBackgroundChangedPacket(string bgId)
         {
-            if (img == null)
-                img = String.Empty;
-
             string msg = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
-            ConvMessage cm = new ConvMessage(String.Empty, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
-            cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
+            ConvMessage cm = new ConvMessage(msg, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
             cm.GroupParticipant = App.MSISDN;
-
-            cm.Message = msg;
             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
             cm.MetaDataString = "{\"t\":\"cbg\"}";
 
             ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, App.MSISDN);
             if (cobj != null)
             {
-                // handle msgs
-                cobj.LastMessage = msg;
-
                 JObject data = new JObject();
-                data[HikeConstants.IMAGE] = img;
+                data[HikeConstants.IMAGE] = String.Empty;
                 data[HikeConstants.HAS_CUSTOM_BACKGROUND] = false;
                 data[HikeConstants.BACKGROUND_ID] = bgId;
                 data[HikeConstants.MESSAGE_ID] = cm.MessageId;
@@ -5267,7 +5243,7 @@ namespace windows_client.View
             if (App.ViewModel.SelectedBackground.ID != App.ViewModel.LastSelectedBackground.ID)
             {
                 ChatBackgroundHelper.Instance.UpdateChatBgMap(mContactNumber, App.ViewModel.SelectedBackground.ID);
-                SendBackgroundChangedPacket(App.ViewModel.SelectedBackground.ID, String.Empty);
+                SendBackgroundChangedPacket(App.ViewModel.SelectedBackground.ID);
 
                 App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
             }

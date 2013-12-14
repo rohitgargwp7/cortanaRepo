@@ -85,7 +85,7 @@ namespace windows_client.Model
             FORCE_SMS_NOTIFICATION,
             H2H_OFFLINE_IN_APP_TIP,
             CHAT_BACKGROUND_CHANGED,
-            CHAT_BACKGROUND_CHANGED_NOT_SUPPORTED
+            CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED
         }
 
         public enum MessageType
@@ -565,7 +565,7 @@ namespace windows_client.Model
                         return UI_Utils.Instance.Delivered;
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                     case ConvMessage.State.SENT_DELIVERED_READ:
-                            return UI_Utils.Instance.Read;
+                        return UI_Utils.Instance.Read;
                     case ConvMessage.State.SENT_FAILED:
                         return UI_Utils.Instance.HttpFailed;
                     case ConvMessage.State.SENT_UNCONFIRMED:
@@ -1167,9 +1167,6 @@ namespace windows_client.Model
                     else
                         return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.ReceivedBubbleBgColor : UI_Utils.Instance.White;
                 }
-            }
-            set
-            {
             }
         }
 
@@ -1903,9 +1900,7 @@ namespace windows_client.Model
                     this._groupParticipant = from;
                     this._msisdn = grpId;
                     if (from == App.MSISDN)
-                    {
                         this.Message = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
-                    }
                     else
                     {
                         gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
@@ -1913,15 +1908,13 @@ namespace windows_client.Model
                     }
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
-                case ParticipantInfoState.CHAT_BACKGROUND_CHANGED_NOT_SUPPORTED:
+                case ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED:
                     grpId = (string)jsonObj[HikeConstants.TO];
                     from = (string)jsonObj[HikeConstants.FROM];
                     this._groupParticipant = from;
                     this._msisdn = grpId;
                     if (from == App.MSISDN)
-                    {
                         this.Message = string.Format(AppResources.ChatBg_NotChanged_Text, AppResources.You_Txt);
-                    }
                     else
                     {
                         gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);

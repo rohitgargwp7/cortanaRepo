@@ -103,7 +103,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Grid Tap="userHeader_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Grid Tap="userImage_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Image Name="userImage" Height="69" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     </Grid>
                     <StackPanel Margin="12,5,0,0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Tap="userHeader_Tap">

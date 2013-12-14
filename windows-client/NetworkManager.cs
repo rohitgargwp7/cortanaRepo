@@ -743,6 +743,8 @@ namespace windows_client
                                         #region CHAT BACKGROUNDS
                                         else if (kkvv.Key == HikeConstants.CHAT_BACKGROUND_ARRAY)
                                         {
+                                            bool isUpdated = false;
+
                                             var val = kkvv.Value;
                                             foreach (var obj in val)
                                             {
@@ -752,31 +754,19 @@ namespace windows_client
 
                                                 var has_Custom_Bg = (bool)jObj[HikeConstants.HAS_CUSTOM_BACKGROUND];
 
-                                                if (!has_Custom_Bg && ChatBackgroundHelper.Instance.UpdateChatBgMap(id, (string)jObj[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
+                                                if (!has_Custom_Bg && ChatBackgroundHelper.Instance.UpdateChatBgMap(id, (string)jObj[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp(), false))
                                                 {
-                                                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                                                    {
-                                                        if (App.newChatThreadPage != null)
-                                                        {
-                                                            if (App.newChatThreadPage.mContactNumber == id)
-                                                            {
-                                                                ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(id);
-                                                                App.newChatThreadPage.ChangeBackground();
+                                                    isUpdated = true;
 
-                                                                try
-                                                                {
-                                                                    App.newChatThreadPage.chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
-                                                                }
-                                                                catch
-                                                                {
-                                                                    Debug.WriteLine("Background Id doesn't Exist");
-                                                                }
-                                                            }
-                                                        }
-                                                    });
+                                                    if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == id)
+                                                        pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, id);
                                                 }
                                             }
+
+                                            if (isUpdated)
+                                                ChatBackgroundHelper.Instance.SaveChatBgMapToFile();
                                         }
+
                                         #endregion
                                     }
                                     catch (Exception ex)
@@ -1054,28 +1044,7 @@ namespace windows_client
                             var has_Custom_Bg = (bool)chatBg[HikeConstants.HAS_CUSTOM_BACKGROUND];
 
                             if (!has_Custom_Bg && ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
-                            {
-                                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                                {
-                                    if (App.newChatThreadPage != null)
-                                    {
-                                        if (App.newChatThreadPage.mContactNumber == grpId)
-                                        {
-                                            ChatBackgroundHelper.Instance.SetSelectedChatBackgorund(grpId);
-                                            App.newChatThreadPage.ChangeBackground();
-
-                                            try
-                                            {
-                                                App.newChatThreadPage.chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
-                                            }
-                                            catch
-                                            {
-                                                Debug.WriteLine("Background Id doesn't Exist");
-                                            }
-                                        }
-                                    }
-                                });
-                            }
+                                pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, grpId);
                         }
                     }
                     catch (Exception ex)
@@ -1683,7 +1652,7 @@ namespace windows_client
             }
 
             #endregion
-            #region Chat Background
+            #region CHAT BACKGROUND
             else if (HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS == type)
             {
                 try
@@ -1694,17 +1663,14 @@ namespace windows_client
                     {
                         long timedifference;
                         if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
-                        {
                             ts = ts - timedifference;
-                            jsonObj[HikeConstants.TIMESTAMP] = ts;
-                        }
                     }
 
                     var to = (string)jsonObj[HikeConstants.TO];
 
                     var sender = !String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to) ? to : msisdn;
 
-                    BackgroundImage bg = null;
+                    ChatThemeData bg = null;
                     if (ChatBackgroundHelper.Instance.ChatBgMap.TryGetValue(sender, out bg))
                     {
                         if (bg.Timestamp > ts)
@@ -1719,6 +1685,7 @@ namespace windows_client
                     {
                         if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
                         {
+                            //if group chat, message text will be set in the constructor else it will be updated by MessagesTableUtils.addChatMessage
                             cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED, jsonObj, ts);
                         }
                         else
@@ -1726,26 +1693,29 @@ namespace windows_client
                             cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_READ);
                             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
                         }
-
-                        cm.MetaDataString = "{\"t\":\"cbg\"}";
                     }
                     else
                     {
+                        //v2 send cbg change event to v1
+                        // show normal message with upgrade message
                         if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
                         {
-                            cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED_NOT_SUPPORTED, jsonObj, ts);
+                            //if group chat, message text will be set in the constructor else it will be updated by MessagesTableUtils.addChatMessage
+                            cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED, jsonObj, ts);
                         }
                         else
                         {
                             cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_READ);
-                            cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED_NOT_SUPPORTED;
+                            cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED;
                         }
                     }
 
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, msisdn);
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, sender);
 
                     if (hasCustomBg || !ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
                         cm.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
+                    else
+                        cm.MetaDataString = "{\"t\":\"cbg\"}";
 
                     if (obj != null)
                     {
@@ -1760,12 +1730,9 @@ namespace windows_client
                             });
                     }
 
-                    if (!hasCustomBg && ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
+                    if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(sender, bgId, ts))
                     {
-                        if (ChatBackgroundHelper.Instance.UpdateChatBgMap(sender, bgId, ts))
-                        {
-                            pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, jsonObj);
-                        }
+                        pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, sender);
                     }
                 }
                 catch (Exception ex)

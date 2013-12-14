@@ -17,11 +17,10 @@ namespace windows_client.utils
     public class ChatBackgroundHelper
     {
         private const string CHAT_BACKGROUND_DIRECTORY = "ChatBackgrounds";
-
         private const string bgIdMapFileName = "chatBgMap";
 
         public List<ChatBackground> BackgroundList;
-        public Dictionary<String, BackgroundImage> ChatBgMap;
+        public Dictionary<String, ChatThemeData> ChatBgMap;
 
         private static object readWriteLock = new object();
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
@@ -47,7 +46,7 @@ namespace windows_client.utils
 
         public ChatBackgroundHelper()
         {
-            ChatBgMap = new Dictionary<string, BackgroundImage>();
+            ChatBgMap = new Dictionary<string, ChatThemeData>();
             BackgroundList = new List<ChatBackground>();
         }
 
@@ -59,7 +58,6 @@ namespace windows_client.utils
             BackgroundList.Sort(CompareBackground);
         }
 
-       
         /// <summary>
         /// Read Bg Id Map from file
         /// </summary>
@@ -90,7 +88,7 @@ namespace windows_client.utils
                                 for (int i = 0; i < count; i++)
                                 {
                                     key = reader.ReadString();
-                                    var bgImage = new BackgroundImage();
+                                    var bgImage = new ChatThemeData();
                                     bgImage.Read(reader);
                                     ChatBgMap.Add(key, bgImage);
                                 }
@@ -112,7 +110,7 @@ namespace windows_client.utils
         /// <summary>
         /// Save Background map to file
         /// </summary>
-        async Task SaveChatBgMapToFile()
+        public async Task SaveChatBgMapToFile()
         {
             lock (readWriteLock)
             {
@@ -162,24 +160,25 @@ namespace windows_client.utils
 
         Random random = new Random();
 
-        public bool BackgroundIDExists(string id)
+        public bool BackgroundIDExists(string bgId)
         {
-            return BackgroundList.Where(b => b.ID == id).Count() > 0;
+            return BackgroundList.Where(b => b.ID == bgId).Count() > 0;
         }
 
         /// <summary>
         /// Called from Netwrok Manager, when user receives change background event
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="bgId"></param>
-        /// <param name="ts"></param>
+        /// <param name="msisdn">msisdn/group id</param>
+        /// <param name="bgId">background id</param>
+        /// <param name="ts">timestamp at which change was made</param>
+        /// <param name="saveMap">make a call to save map to IS</param>
         /// <returns></returns>
-        public bool UpdateChatBgMap(string id, string bgId, long ts)
+        public bool UpdateChatBgMap(string msisdn, string bgId, long ts, bool saveMap = true)
         {
             if (!BackgroundIDExists(bgId))
                 return false;
 
-            BackgroundImage bg = ChatBgMap.ContainsKey(id) ? ChatBgMap[id] : new BackgroundImage();
+            ChatThemeData bg = ChatBgMap.ContainsKey(msisdn) ? ChatBgMap[msisdn] : new ChatThemeData();
 
             var newTs = ts;
             var oldTs = bg.Timestamp;
@@ -189,9 +188,10 @@ namespace windows_client.utils
                 bg.BackgroundId = bgId;
                 bg.Timestamp = ts;
 
-                ChatBgMap[id] = bg;
+                ChatBgMap[msisdn] = bg;
 
-                SaveChatBgMapToFile();
+                if (saveMap)
+                    SaveChatBgMapToFile();
 
                 return true;
             }
@@ -202,12 +202,11 @@ namespace windows_client.utils
         /// <summary>
         /// When user updates a background of one of his chat
         /// </summary>
-        /// <param name="msisdn"></param>
-        /// <param name="bgId"></param>
-        /// <param name="image"></param>
+        /// <param name="msisdn">msisdn/group id</param>
+        /// <param name="bgId">chat theme id</param>
         public void UpdateChatBgMap(string msisdn, string bgId)
         {
-            ChatBgMap[msisdn] = new BackgroundImage()
+            ChatBgMap[msisdn] = new ChatThemeData()
             {
                 BackgroundId = bgId,
                 Timestamp = TimeUtils.getCurrentTimeStamp()
@@ -216,9 +215,9 @@ namespace windows_client.utils
             SaveChatBgMapToFile();
         }
 
-        public void SetSelectedChatBackgorund(string msisdn)
+        public void SetSelectedBackgorundFromMap(string msisdn)
         {
-            BackgroundImage bgObj;
+            ChatThemeData bgObj;
 
             if (ChatBgMap.TryGetValue(msisdn, out bgObj))
             {
@@ -232,7 +231,7 @@ namespace windows_client.utils
                 }
             }
 
-            ChatBgMap[msisdn] = new BackgroundImage()
+            ChatBgMap[msisdn] = new ChatThemeData()
             {
                 BackgroundId = "9",
                 Timestamp = TimeUtils.getCurrentTimeStamp()
@@ -259,7 +258,7 @@ namespace windows_client.utils
         /// <summary>
         /// Update or fresh install, load the files onto the client
         /// </summary>
-        public void LoadDefaultBackgrounds()
+        void LoadDefaultBackgrounds()
         {
             BackgroundList.Add(new ChatBackground()
             {
@@ -444,7 +443,7 @@ namespace windows_client.utils
         }
     }
 
-    public class BackgroundImage
+    public class ChatThemeData
     {
         public string BackgroundId;
         public long Timestamp;
