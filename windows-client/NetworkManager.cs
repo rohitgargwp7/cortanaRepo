@@ -1692,6 +1692,8 @@ namespace windows_client
                             cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_READ);
                             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
                         }
+
+                        cm.MetaDataString = "{\"t\":\"cbg\"}";
                     }
                     else
                     {
@@ -1713,8 +1715,6 @@ namespace windows_client
 
                     if (hasCustomBg || !ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
                         cm.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
-                    else
-                        cm.MetaDataString = "{\"t\":\"cbg\"}";
 
                     if (obj != null)
                     {

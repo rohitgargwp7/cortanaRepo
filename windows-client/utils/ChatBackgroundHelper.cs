@@ -268,10 +268,10 @@ namespace windows_client.utils
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
-                IsTile = true,
+                IsTile = false,
                 Position = 10,
                 Thumbnail = null,
-                ImagePath = "/View/images/chatBackgrounds/aqua.png"
+                ImagePath = "/View/images/chatBackgrounds/blue.png"
             });
 
             BackgroundList.Add(new ChatBackground()
@@ -342,7 +342,7 @@ namespace windows_client.utils
                 IsTile = true,
                 Position = 4,
                 Thumbnail = null,
-                ImagePath = "/View/images/chatBackgrounds/purple.png"
+                ImagePath = "/View/images/chatBackgrounds/yellow.png"
             });
 
             BackgroundList.Add(new ChatBackground()

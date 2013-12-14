@@ -329,7 +329,7 @@
             <DataTemplate x:Key="chatThemeBackgroundItemTemplate70x70">
                 <Grid Margin="0" Width="80" Height="80">
                     <Border Background="{Binding BackgroundColor}" Width="70" Height="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" Canvas.ZIndex="-2" Visibility="{Binding BackgroundVisibility}"/>
-                    <Image Source="{Binding ImagePattern}" Stretch="Uniform" Height="70" Width="70" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Image Source="{Binding ImagePattern}" Stretch="{Binding ThumbnailStretch}" Height="70" Width="70" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <Grid Canvas.ZIndex="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding DefaultImageVisibility}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>

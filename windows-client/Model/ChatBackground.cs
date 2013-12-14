@@ -38,6 +38,14 @@ namespace windows_client.Model
             }
         }
 
+        public Stretch ThumbnailStretch
+        {
+            get
+            {
+                return IsTile ? Stretch.UniformToFill : Stretch.None;
+            }
+        }
+
         SolidColorBrush _sentBubbleBgColor;
         public SolidColorBrush SentBubbleBgColor
         {
