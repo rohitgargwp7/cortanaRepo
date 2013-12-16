@@ -4761,6 +4761,8 @@ namespace windows_client.View
                     {
                         mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
                         userName.Text = mContactName;
+
+                        lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Count + 1);
                     }
                     catch (Exception ex)
                     {
@@ -4786,6 +4788,8 @@ namespace windows_client.View
                     {
                         mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
                         userName.Text = mContactName;
+
+                        lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Count + 1);
                     }
                     catch (Exception ex)
                     {
@@ -5308,6 +5312,7 @@ namespace windows_client.View
                 userName.Foreground = UI_Utils.Instance.Black;
                 lastSeenTxt.Foreground = UI_Utils.Instance.Black;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageBlack;
+                chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageBlack;
             }
             else
             {
@@ -5315,6 +5320,7 @@ namespace windows_client.View
                 userName.Foreground = UI_Utils.Instance.White;
                 lastSeenTxt.Foreground = UI_Utils.Instance.White;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageWhite;
+                chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageWhite;
             }
 
             if (isBubbleColorChanged)

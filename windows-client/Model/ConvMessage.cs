@@ -559,19 +559,37 @@ namespace windows_client.Model
                 {
                     case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
                     case ConvMessage.State.SENT_CONFIRMED:
-                        return UI_Utils.Instance.Sent;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.Sent;
+                        else
+                            return UI_Utils.Instance.Sent_ChatTheme;
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED:
-                        return UI_Utils.Instance.Delivered;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.Delivered;
+                        else
+                            return UI_Utils.Instance.Delivered_ChatTheme;
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                     case ConvMessage.State.SENT_DELIVERED_READ:
-                        return UI_Utils.Instance.Read;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.Read;
+                        else
+                            return UI_Utils.Instance.Read_ChatTheme;
                     case ConvMessage.State.SENT_FAILED:
-                        return UI_Utils.Instance.HttpFailed;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.HttpFailed;
+                        else
+                            return UI_Utils.Instance.HttpFailed_ChatTheme;
                     case ConvMessage.State.SENT_UNCONFIRMED:
-                        return UI_Utils.Instance.Trying;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.Trying;
+                        else
+                            return UI_Utils.Instance.Trying_ChatTheme;
                     default:
-                        return UI_Utils.Instance.Trying;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.Trying;
+                        else
+                            return UI_Utils.Instance.Trying_ChatTheme;
 
                 }
             }
@@ -876,45 +894,83 @@ namespace windows_client.Model
                 switch (_notificationType)
                 {
                     case MessageType.HIKE_PARTICIPANT_JOINED:
-                        return UI_Utils.Instance.OnHikeImage;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.OnHikeImage;
+                        else
+                            return UI_Utils.Instance.OnHikeImage_ChatTheme;
 
                     case MessageType.SMS_PARTICIPANT_INVITED:
-                        return UI_Utils.Instance.NotOnHikeImage;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.NotOnHikeImage;
+                        else
+                            return UI_Utils.Instance.NotOnHikeImage_ChatTheme;
 
                     case MessageType.SMS_PARTICIPANT_OPTED_IN:
-                        return UI_Utils.Instance.ChatAcceptedImage;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.ChatAcceptedImage;
+                        else
+                            return UI_Utils.Instance.ChatAcceptedImage_ChatTheme;
 
                     case MessageType.USER_JOINED_HIKE:
-                        return UI_Utils.Instance.OnHikeImage;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.OnHikeImage;
+                        else
+                            return UI_Utils.Instance.OnHikeImage_ChatTheme;
 
                     case MessageType.PARTICIPANT_LEFT:
-                        return UI_Utils.Instance.ParticipantLeft;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.ParticipantLeft;
+                        else
+                            return UI_Utils.Instance.ParticipantLeft_ChatTheme;
 
                     case MessageType.GROUP_END:
-                        return UI_Utils.Instance.ParticipantLeft;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.ParticipantLeft;
+                        else
+                            return UI_Utils.Instance.ParticipantLeft_ChatTheme;
 
                     case MessageType.WAITING:
-                        return UI_Utils.Instance.Waiting;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.Waiting;
+                        else
+                            return UI_Utils.Instance.Waiting_ChatTheme;
 
                     case MessageType.REWARD:
-                        return UI_Utils.Instance.Reward;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.Reward;
+                        else
+                            return UI_Utils.Instance.Reward_ChatTheme;
 
                     case MessageType.INTERNATIONAL_USER_BLOCKED:
-                        return UI_Utils.Instance.IntUserBlocked;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.IntUserBlocked;
+                        else
+                            return UI_Utils.Instance.IntUserBlocked_ChatTheme;
 
                     case MessageType.PIC_UPDATE:
-                        return UI_Utils.Instance.OnHikeImage;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.OnHikeImage;
+                        else
+                            return UI_Utils.Instance.OnHikeImage_ChatTheme;
 
                     case MessageType.GROUP_NAME_CHANGED:
-                        return UI_Utils.Instance.GrpNameOrPicChanged;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.GrpNameOrPicChanged;
+                        else
+                            return UI_Utils.Instance.GrpNameOrPicChanged_ChatTheme;
 
                     case MessageType.GROUP_PIC_CHANGED:
-                        return UI_Utils.Instance.GrpNameOrPicChanged;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.GrpNameOrPicChanged;
+                        else
+                            return UI_Utils.Instance.GrpNameOrPicChanged_ChatTheme;
 
                     case MessageType.TEXT_UPDATE:
                     default:
-                        return UI_Utils.Instance.OnHikeImage;
-
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.OnHikeImage;
+                        else
+                            return UI_Utils.Instance.OnHikeImage_ChatTheme;
                 }
             }
         }

@@ -39,25 +39,39 @@ namespace windows_client.utils
         private SolidColorBrush untappedCategoryColor;
         private SolidColorBrush deleteGreyBackground;
         private SolidColorBrush deleteBlackBackground;
-        private BitmapImage chatBackgroundImage;
+        private BitmapImage chatBackgroundImageWhite;
+        private BitmapImage chatBackgroundImageBlack;
         private BitmapImage onHikeImage;
+        private BitmapImage onHikeImage_ct;
         private BitmapImage notOnHikeImage;
+        private BitmapImage notOnHikeImage_ct;
         private BitmapImage chatAcceptedImage;
+        private BitmapImage chatAcceptedImage_ct;
         private BitmapImage playIcon;
         private BitmapImage pauseIcon;
         private BitmapImage audioMicIcon;
         private BitmapImage downloadIcon;
         private BitmapImage httpFailed;
+        private BitmapImage httpFailed_CT;
         private BitmapImage emptyImage;
         private BitmapImage sent;
+        private BitmapImage sent_ct;
         private BitmapImage delivered;
+        private BitmapImage delivered_ct;
         private BitmapImage read;
+        private BitmapImage read_ct;
         private BitmapImage trying;
+        private BitmapImage trying_ct;
         private BitmapImage waiting;
+        private BitmapImage waiting_ct;
         private BitmapImage reward;
+        private BitmapImage reward_ct;
         private BitmapImage chatSmsError;
+        private BitmapImage chatSmsError_ct;
         private BitmapImage grpNameOrPicChanged;
+        private BitmapImage grpNameOrPicChanged_ct;
         private BitmapImage participantLeft;
+        private BitmapImage participantLeft_ct;
         private BitmapImage nudgeSend;
         private BitmapImage nudgeReceived;
         private BitmapImage textStatusImage;
@@ -465,13 +479,23 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage ChatBackgroundImage
+        public BitmapImage ChatBackgroundImageWhite
         {
             get
             {
-                if (chatBackgroundImage == null)
-                    chatBackgroundImage = new BitmapImage(new Uri("/view/images/ChangeBgPicture.png", UriKind.Relative));
-                return chatBackgroundImage;
+                if (chatBackgroundImageWhite == null)
+                    chatBackgroundImageWhite = new BitmapImage(new Uri("/view/images/paint.png", UriKind.Relative));
+                return chatBackgroundImageWhite;
+            }
+        }
+
+        public BitmapImage ChatBackgroundImageBlack
+        {
+            get
+            {
+                if (chatBackgroundImageBlack == null)
+                    chatBackgroundImageBlack = new BitmapImage(new Uri("/view/images/paint_black.png", UriKind.Relative));
+                return chatBackgroundImageBlack;
             }
         }
 
@@ -485,6 +509,16 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage OnHikeImage_ChatTheme
+        {
+            get
+            {
+                if (onHikeImage_ct == null)
+                    onHikeImage_ct = new BitmapImage(new Uri("/View/images/chat_joined_blue_CT.png", UriKind.Relative));
+                return onHikeImage_ct;
+            }
+        }
+
         public BitmapImage NotOnHikeImage
         {
             get
@@ -492,6 +526,16 @@ namespace windows_client.utils
                 if (notOnHikeImage == null)
                     notOnHikeImage = new BitmapImage(new Uri("/View/images/chat_invited_green.png", UriKind.Relative));
                 return notOnHikeImage;
+            }
+        }
+
+        public BitmapImage NotOnHikeImage_ChatTheme
+        {
+            get
+            {
+                if (notOnHikeImage_ct == null)
+                    notOnHikeImage_ct = new BitmapImage(new Uri("/View/images/chat_invited_green_CT.png", UriKind.Relative));
+                return notOnHikeImage_ct;
             }
         }
 
@@ -514,6 +558,7 @@ namespace windows_client.utils
                 return overlaySmsImage;
             }
         }
+        
         public BitmapImage ChatAcceptedImage
         {
             get
@@ -521,6 +566,16 @@ namespace windows_client.utils
                 if (chatAcceptedImage == null)
                     chatAcceptedImage = new BitmapImage(new Uri("/View/images/chat_invited_green.png", UriKind.Relative));
                 return chatAcceptedImage;
+            }
+        }
+
+        public BitmapImage ChatAcceptedImage_ChatTheme
+        {
+            get
+            {
+                if (chatAcceptedImage_ct == null)
+                    chatAcceptedImage_ct = new BitmapImage(new Uri("/View/images/chat_invited_green_CT.png", UriKind.Relative));
+                return chatAcceptedImage_ct;
             }
         }
 
@@ -552,6 +607,7 @@ namespace windows_client.utils
             {
                 if (downloadIcon == null)
                     downloadIcon = new BitmapImage(new Uri("/View/images/download_icon.png", UriKind.Relative));
+              
                 return downloadIcon;
             }
         }
@@ -562,7 +618,19 @@ namespace windows_client.utils
             {
                 if (httpFailed == null)
                     httpFailed = new BitmapImage(new Uri("/View/images/error_icon.png", UriKind.Relative));
+             
                 return httpFailed;
+            }
+        }
+
+        public BitmapImage HttpFailed_ChatTheme
+        {
+            get
+            {
+                if (httpFailed_CT == null)
+                    httpFailed_CT = new BitmapImage(new Uri("/View/images/error_icon_CT.png", UriKind.Relative));
+              
+                return httpFailed_CT;
             }
         }
 
@@ -572,7 +640,18 @@ namespace windows_client.utils
             {
                 if (sent == null)
                     sent = new BitmapImage(new Uri("/View/images/ic_sent.png", UriKind.Relative));
+               
                 return sent;
+            }
+        }
+
+        public BitmapImage Sent_ChatTheme
+        {
+            get
+            {
+                if (sent_ct == null)
+                    sent_ct = new BitmapImage(new Uri("/View/images/ic_sent_CT.png", UriKind.Relative));
+                return sent_ct;
             }
         }
 
@@ -626,7 +705,19 @@ namespace windows_client.utils
             {
                 if (delivered == null)
                     delivered = new BitmapImage(new Uri("/View/images/ic_delivered.png", UriKind.Relative));
+                
                 return delivered;
+            }
+        }
+
+        public BitmapImage Delivered_ChatTheme
+        {
+            get
+            {
+                if (delivered_ct == null)
+                    delivered_ct = new BitmapImage(new Uri("/View/images/ic_delivered_CT.png", UriKind.Relative));
+               
+                return delivered_ct;
             }
         }
 
@@ -636,10 +727,33 @@ namespace windows_client.utils
             {
                 if (read == null)
                     read = new BitmapImage(new Uri("/View/images/ic_read.png", UriKind.Relative));
+                
                 return read;
             }
         }
 
+        public BitmapImage Read_ChatTheme
+        {
+            get
+            {
+                if (read_ct == null)
+                    read_ct = new BitmapImage(new Uri("/View/images/ic_read_CT.png", UriKind.Relative));
+                
+                return read_ct;
+            }
+        }
+
+        public BitmapImage Trying_ChatTheme
+        {
+            get
+            {
+                if (trying_ct == null)
+                    trying_ct = new BitmapImage(new Uri("/View/images/icon_sending_CT.png", UriKind.Relative));
+                
+                return trying_ct;
+            }
+        }
+        
         public BitmapImage Trying
         {
             get
@@ -662,6 +776,17 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage Waiting_ChatTheme
+        {
+            get
+            {
+                if (waiting_ct == null)
+                    waiting_ct = new BitmapImage(new Uri("/View/images/chat_waiting_CT.png", UriKind.Relative));
+                
+                return waiting_ct;
+            }
+        }
+
         public BitmapImage Reward
         {
             get
@@ -669,6 +794,16 @@ namespace windows_client.utils
                 if (reward == null)
                     reward = new BitmapImage(new Uri("/View/images/chat_reward.png", UriKind.Relative));
                 return reward;
+            }
+        }
+
+        public BitmapImage Reward_ChatTheme
+        {
+            get
+            {
+                if (reward_ct == null)
+                    reward_ct = new BitmapImage(new Uri("/View/images/chat_reward_ct.png", UriKind.Relative));
+                return reward_ct;
             }
         }
 
@@ -682,6 +817,16 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage IntUserBlocked_ChatTheme
+        {
+            get
+            {
+                if (chatSmsError_ct == null)
+                    chatSmsError_ct = new BitmapImage(new Uri("/View/images/chat_sms_error_CT.png", UriKind.Relative));
+                return chatSmsError_ct;
+            }
+        }
+
         public BitmapImage GrpNameOrPicChanged
         {
             get
@@ -692,13 +837,36 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage GrpNameOrPicChanged_ChatTheme
+        {
+            get
+            {
+                if (grpNameOrPicChanged_ct == null)
+                    grpNameOrPicChanged_ct = new BitmapImage(new Uri("/View/images/group_name_changed_CT.png", UriKind.Relative));
+                
+                return grpNameOrPicChanged_ct;
+            }
+        }
+
         public BitmapImage ParticipantLeft
         {
             get
             {
                 if (participantLeft == null)
                     participantLeft = new BitmapImage(new Uri("/View/images/chat_left.png", UriKind.Relative));
+               
                 return participantLeft;
+            }
+        }
+
+        public BitmapImage ParticipantLeft_ChatTheme
+        {
+            get
+            {
+                if (participantLeft_ct == null)
+                    participantLeft_ct = new BitmapImage(new Uri("/View/images/chat_left_CT.png", UriKind.Relative));
+
+                return participantLeft_ct;
             }
         }
 
