@@ -358,7 +358,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to change background.
+        ///   Looks up a localized string similar to change chat theme.
         /// </summary>
         public static string Change_Background_App_Bar_Menu_Txt {
             get {

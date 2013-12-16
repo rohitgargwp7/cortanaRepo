@@ -119,7 +119,6 @@
                                 <Image x:Name="chatPaint" Source="/view/images/paint.png" Height="60" Width="60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Button.Content>
                         </Button>
-                        <Button Width="130" Margin="0,-5,-25,-5" FontWeight="Light" BorderBrush="Transparent" Background="Black" Foreground="White" x:Name="cancelChatBackgroundButton" Visibility="Collapsed" Content="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="chatPaintCancel_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                     </Grid>
                 </Grid>
             </StackPanel>
@@ -137,10 +136,16 @@
                          ItemTemplate="{StaticResource chatThemeBackgroundItemTemplate70x70}"
                          SelectionChanged="chatBackgroundList_SelectionChanged"
                          Margin="0,12" HorizontalAlignment="Center"/>
-                <Button Grid.Row="1" Height="80" Width="210" BorderBrush="Transparent"
+                <StackPanel Grid.Row="1" Height="80" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Height="80" Width="180" BorderBrush="Transparent"
                         Content="{Binding Path= LocalizedResources.Save_ChatTheme_Txt, Source={StaticResource LocalizedStrings}}" 
                         Click="chatPaintSave_Click" HorizontalAlignment="Center" VerticalAlignment="Center"
-                        Background="#e9ecee" Foreground="Black" FontWeight="Thin"/>
+                        Background="#2e91d3" Foreground="White" FontWeight="Thin"/>
+                    <Button Height="80" Width="180" Margin="15,0,0,0" BorderBrush="Transparent"
+                        Content="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" 
+                        Click="chatPaintCancel_Click" HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Background="#e9ecee" Foreground="#595959" FontWeight="Thin"/>
+                </StackPanel>
             </Grid>
         </Grid>
 

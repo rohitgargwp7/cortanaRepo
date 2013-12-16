@@ -5263,7 +5263,6 @@ namespace windows_client.View
             chatBackgroundPopUp.Visibility = Visibility.Collapsed;
 
             openChatBackgroundButton.Visibility = Visibility.Visible;
-            cancelChatBackgroundButton.Visibility = Visibility.Collapsed;
         }
 
         void chatBackgroundPopUp_Opened()
@@ -5276,7 +5275,6 @@ namespace windows_client.View
             App.ViewModel.HideToolTip(LayoutRoot, 8);
 
             openChatBackgroundButton.Visibility = Visibility.Collapsed;
-            cancelChatBackgroundButton.Visibility = Visibility.Visible; 
             
             chatBackgroundPopUp.Visibility = Visibility.Visible;
 

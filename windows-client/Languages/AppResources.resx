@@ -2029,7 +2029,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>{0} just changed the chat theme with you. Update your app to the latest version to experience Chat Themes 2.0. http://hike.in</value>
   </data>
   <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
-    <value>change background</value>
+    <value>change chat theme</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
     <value>And loads of more themes here...</value>
