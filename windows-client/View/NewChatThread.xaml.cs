@@ -5267,6 +5267,9 @@ namespace windows_client.View
 
         void chatBackgroundPopUp_Opened()
         {
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                return;
+
             if (mUserIsBlocked || (isGroupChat && !isGroupAlive))
                 return;
             
