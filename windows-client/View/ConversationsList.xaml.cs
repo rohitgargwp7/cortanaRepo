@@ -32,6 +32,8 @@ using System.Threading.Tasks;
 using Microsoft.Phone.BackgroundAudio;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework;
+using System.Windows.Threading;
+using System.Windows.Media.Animation;
 
 namespace windows_client.View
 {
@@ -165,18 +167,18 @@ namespace windows_client.View
                 App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
                 firstLoad = false;
 
-
-                if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
-                    ShowAppUpdateAvailableMessage();
-                else if (appSettings.Contains(App.SHOW_BASIC_TUTORIAL))
-                {
-                    overlay.Visibility = Visibility.Visible;
-                    overlay.Tap += DismissTutorial_Tap;
-                    gridBasicTutorial.Visibility = Visibility.Visible;
-                    launchPagePivot.IsHitTestVisible = false;
-                }
-                else
-                    ShowInvitePopups();
+                StartSnowAnimation();
+                //if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
+                //    ShowAppUpdateAvailableMessage();
+                //else if (appSettings.Contains(App.SHOW_BASIC_TUTORIAL))
+                //{
+                //    overlay.Visibility = Visibility.Visible;
+                //    overlay.Tap += DismissTutorial_Tap;
+                //    gridBasicTutorial.Visibility = Visibility.Visible;
+                //    launchPagePivot.IsHitTestVisible = false;
+                //}
+                //else
+                //    ShowInvitePopups();
             }
             // this should be called only if its not first load as it will get called in first load section
             else if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -1677,7 +1679,7 @@ namespace windows_client.View
                     composeIconButton.IsEnabled = false;
                     postStatusIconButton.IsEnabled = false;
                     groupChatIconButton.IsEnabled = false;
-                }); 
+                });
             }
         }
 
@@ -2753,6 +2755,101 @@ namespace windows_client.View
                 Analytics.SendClickEvent(HikeConstants.INVITE_FRIENDS_FROM_POPUP_REWARDS);
 
             NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
+        }
+        #endregion
+
+        #region Snowflake animation
+        int count = 0;
+        DispatcherTimer t;
+        void StartSnowAnimation()
+        {
+            overlaySnow.Visibility = Visibility.Visible;
+            overlaySnow.Opacity = 0;
+            gridSnowFlakes.Opacity = 0;
+            t = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(60) };
+            t.Tick += (s, arg) =>
+            {
+                if (count == 1)
+                {
+                    for (int i = 0; i < 40; i++)
+                        Snow(true);
+                }
+                Snow(false);
+                if (count > 15 && count < 26)
+                {
+                    overlaySnow.Opacity = (count - 10) * 0.04;
+                }
+                if (count == 26)
+                {
+                    overlaySnow.Opacity = 1;
+                    overlaySnow.Background = new SolidColorBrush();
+                    gridSnowFlakes.Opacity = 0.64;
+
+                } if (count++ == 50)
+                    Storyboard1.Begin();
+            };
+            t.Start();
+
+
+        }
+
+        Random _Random = new Random((int)DateTime.Now.Ticks);
+        private void Snow(bool isInitial)
+        {
+            var x = _Random.Next(-100, (int)gridSnowFlakes.ActualWidth + 50);
+            var y = _Random.Next(isInitial ? 100 : -100, isInitial ? 500 : 0);
+            var s = _Random.Next(1, 9) * .1;
+            var r = _Random.Next(0, 270);
+            var flake = new Snowflake
+            {
+                RenderTransform = new CompositeTransform
+                {
+                    TranslateX = x,
+                    TranslateY = y,
+                    ScaleX = s,
+                    ScaleY = s,
+                    Rotation = r,
+                },
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+            };
+            gridSnowFlakes.Children.Add(flake);
+            var d = TimeSpan.FromSeconds(_Random.Next(isInitial ? 0 : 5, 12));
+
+            x += _Random.Next(-200, 200);
+            var ax = new DoubleAnimation { To = x, Duration = d };
+            Storyboard.SetTarget(ax, flake.RenderTransform);
+            Storyboard.SetTargetProperty(ax, new PropertyPath("TranslateX"));
+
+            y += (int)(gridSnowFlakes.ActualHeight + 100 + 100);
+            var ay = new DoubleAnimation { To = y, Duration = d };
+            Storyboard.SetTarget(ay, flake.RenderTransform);
+            Storyboard.SetTargetProperty(ay, new PropertyPath("TranslateY"));
+
+            r += _Random.Next(90, 360);
+            var ar = new DoubleAnimation { To = r, Duration = d };
+            Storyboard.SetTarget(ar, flake.RenderTransform);
+            Storyboard.SetTargetProperty(ar, new PropertyPath("Rotation"));
+
+            var story = new Storyboard();
+            story.Completed += (sender, e) => gridSnowFlakes.Children.Remove(flake);
+            story.Children.Add(ax);
+            story.Children.Add(ay);
+            story.Children.Add(ar);
+            story.Begin();
+        }
+        private void TextBlock_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Storyboard2.Begin();
+            Storyboard2.Completed += (a, b) =>
+                {
+                    t.Stop();
+                    gridSnowFlakes.Children.Clear();
+                };
+        }
+        private void textBlock_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            t.Stop();
         }
         #endregion
     }

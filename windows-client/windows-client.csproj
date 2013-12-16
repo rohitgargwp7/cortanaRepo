@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -161,6 +161,9 @@
       <DependentUpon>Overlay.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ProgressIndicator.cs" />
+    <Compile Include="Controls\Snowflake.xaml.cs">
+      <DependentUpon>Snowflake.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\StatusUpdate\DefaultStatusUpdateUC.xaml.cs">
       <DependentUpon>DefaultStatusUpdateUC.xaml</DependentUpon>
     </Compile>
@@ -356,6 +359,10 @@
     <Page Include="Controls\Overlay.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\Snowflake.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\StatusUpdate\DefaultStatusUpdateUC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -508,6 +515,7 @@
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
     </None>
+    <None Include="windows-client_2013_12_16_17_22_46.sap" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ApplicationIcon.png">
@@ -524,6 +532,24 @@
     <Content Include="View\images\avatars.png" />
     <Content Include="View\images\avatars_i.png" />
     <Content Include="View\images\avatars_overlay.png" />
+    <Content Include="View\images\chat_bg_ftue_Box.png" />
+    <Content Include="View\images\chat_bg_ftue_card_bg.png" />
+    <Content Include="View\images\chat_bg_ftue_Flip_side_dot.png" />
+    <Content Include="View\images\chat_bg_ftue_front_bottombar.png" />
+    <Content Include="View\images\chat_bg_ftue_front_topbar.png" />
+    <Content Include="View\images\chat_bg_ftue_FS_bottom_cut.png" />
+    <Content Include="View\images\chat_bg_ftue_FS_leftknot2.png" />
+    <Content Include="View\images\chat_bg_ftue_FS_left_cut.png" />
+    <Content Include="View\images\chat_bg_ftue_FS_left_knot.png" />
+    <Content Include="View\images\chat_bg_ftue_FS_rightknot.png" />
+    <Content Include="View\images\chat_bg_ftue_FS_rightknot2.png" />
+    <Content Include="View\images\chat_bg_ftue_FS_right_cut.png" />
+    <Content Include="View\images\chat_bg_ftue_FS_top_cut.png" />
+    <Content Include="View\images\chat_bg_ftue_gift_rapper_bottom.png" />
+    <Content Include="View\images\chat_bg_ftue_gift_rapper_left.png" />
+    <Content Include="View\images\chat_bg_ftue_gift_rapper_right.png" />
+    <Content Include="View\images\chat_bg_ftue_gift_rapper_top.png" />
+    <Content Include="View\images\chat_bg_ftue_theme_popup.png" />
     <Content Include="View\images\smileyExpressions.png" />
     <Content Include="View\images\smileyExpressions_i.png" />
     <Content Include="View\images\smileyExpressions_overlay.png" />
@@ -712,6 +738,7 @@
     <Content Include="View\images\close_black.png" />
     <Content Include="View\images\humanoid_icon.png" />
     <Content Include="View\images\humanoid_icon_inactive.png" />
+    <Content Include="View\images\snow_flake.png" />
     <Content Include="View\images\stickers\WVGA\doggy\001_hi.png" />
     <Content Include="View\images\stickers\WVGA\doggy\002_thumbsup.png" />
     <Content Include="View\images\stickers\WVGA\doggy\005_sorry.png" />
