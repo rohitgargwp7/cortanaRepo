@@ -1197,7 +1197,7 @@ namespace windows_client
                     string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
                     GroupManager.Instance.LoadGroupParticipants(groupId);
                     GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, fromMsisdn, groupId);
-                    if (gp.HasLeft)
+                    if (gp==null || gp.HasLeft)
                         return;
 
                     ConvMessage convMsg = new ConvMessage(jsonObj, false, false);

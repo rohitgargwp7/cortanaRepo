@@ -1123,7 +1123,7 @@ namespace windows_client.View
             {
                 GroupManager.Instance.LoadGroupParticipants(mContactNumber);
 
-                lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Count + 1);
+                lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
             }
 
             if (!isOnHike)
@@ -1580,7 +1580,7 @@ namespace windows_client.View
         /* Should run on UI thread, based on mUserIsBlocked*/
         private void initAppBar(bool isAddUser)
         {
-            appBar = new ApplicationBar() { ForegroundColor = Colors.White, BackgroundColor = Colors.Black};
+            appBar = new ApplicationBar() { ForegroundColor = Colors.White, BackgroundColor = Colors.Black };
             appBar.Mode = ApplicationBarMode.Default;
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = true;
@@ -4762,7 +4762,7 @@ namespace windows_client.View
                         mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
                         userName.Text = mContactName;
 
-                        lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Count + 1);
+                        lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
                     }
                     catch (Exception ex)
                     {
@@ -5170,7 +5170,7 @@ namespace windows_client.View
             if (mUserIsBlocked)
                 return;
 
-            if(emoticonPanel.Visibility == Visibility.Visible)
+            if (emoticonPanel.Visibility == Visibility.Visible)
                 emoticonPanel.Visibility = Visibility.Collapsed;
 
             if ((!isOnHike && mCredits <= 0))
@@ -5213,8 +5213,8 @@ namespace windows_client.View
                 jo[HikeConstants.TO] = mContactNumber;
                 jo[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp().ToString();
                 jo[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS;
-                jo[HikeConstants.DATA] = data; 
-                
+                jo[HikeConstants.DATA] = data;
+
                 object[] vs = new object[2];
                 vs[0] = cm;
                 vs[1] = cobj;
@@ -5252,7 +5252,7 @@ namespace windows_client.View
                 App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
             }
         }
-        
+
         void chatPaint_Tap(object sender, RoutedEventArgs e)
         {
             chatBackgroundPopUp_Opened();
@@ -5272,13 +5272,13 @@ namespace windows_client.View
 
             if (mUserIsBlocked || (isGroupChat && !isGroupAlive))
                 return;
-            
+
             App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
 
             App.ViewModel.HideToolTip(LayoutRoot, 8);
 
             openChatBackgroundButton.Visibility = Visibility.Collapsed;
-            
+
             chatBackgroundPopUp.Visibility = Visibility.Visible;
 
             if (recordGrid.Visibility == Visibility.Visible)
@@ -5342,7 +5342,7 @@ namespace windows_client.View
                 {
                     CreateOptions = BitmapCreateOptions.None
                 };
-            
+
             //handle delay creation of bitmap image
             _tileBitmap.ImageOpened += (s, e) =>
             {
