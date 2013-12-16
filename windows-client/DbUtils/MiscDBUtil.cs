@@ -143,6 +143,10 @@ namespace windows_client.DbUtils
             App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, 0); // to keep a track of current showing keys
             App.ViewModel.LoadToolTipsDict();
             #endregion
+            #region RESET CHAT THEMES
+            App.WriteToIsoStorageSettings(App.CHAT_THEME_SETTING, (byte)1);
+            ChatBackgroundHelper.Instance.Clear();
+            #endregion
         }
 
         #region STATUS UPDATES

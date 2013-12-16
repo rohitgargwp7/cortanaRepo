@@ -207,8 +207,6 @@ namespace windows_client.View
                     Debug.WriteLine("Privacy.xaml :: DeleteLocalStorage,Navigate, Exception : " + ex.StackTrace);
                 }
             });
-
-            ChatBackgroundHelper.Instance.Clear();
         }
 
         private void LogOutFb()

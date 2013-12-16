@@ -1429,7 +1429,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Post a status update</value>
   </data>
   <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
-    <value>Status updates notification</value>
+    <value>Status updates notifications</value>
   </data>
   <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
     <value>Every Hour</value>
@@ -2033,5 +2033,8 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
     <value>And loads of more themes here...</value>
+  </data>
+  <data name="Settings_ChatThemeNotification_SwitchHeader" xml:space="preserve">
+    <value>Chat themes notifications</value>
   </data>
 </root>

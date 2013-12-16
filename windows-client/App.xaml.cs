@@ -40,6 +40,7 @@ namespace windows_client
         public static readonly string SMS_SETTING = "smscredits";
         public static readonly string SHOW_FREE_SMS_SETTING = "freeSMS";
         public static readonly string STATUS_UPDATE_SETTING = "stUpSet";
+        public static readonly string CHAT_THEME_SETTING = "chatThemeSet";
         public static readonly string STATUS_UPDATE_FIRST_SETTING = "stUpFirSet";
         public static readonly string STATUS_UPDATE_SECOND_SETTING = "stUpSecSet";
         public static readonly string LAST_SEEN_SEETING = "lstSeenSet";
@@ -719,6 +720,12 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
+            #region Chat Themes
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.4.0.1") < 0)
+            {
+                App.WriteToIsoStorageSettings(App.CHAT_THEME_SETTING, (byte)1);
+            }
+            #endregion
             #region Enter to send
 
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.4.0.0") < 0)

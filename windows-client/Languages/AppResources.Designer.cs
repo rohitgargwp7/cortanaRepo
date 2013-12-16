@@ -3974,6 +3974,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Chat themes notifications.
+        /// </summary>
+        public static string Settings_ChatThemeNotification_SwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_ChatThemeNotification_SwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter sends a message.
         /// </summary>
         public static string Settings_EnterToSendToggleSwitchHeader {
@@ -4046,7 +4055,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Status updates notification.
+        ///   Looks up a localized string similar to Status updates notifications.
         /// </summary>
         public static string Settings_StatusNotification_SwitchHeader {
             get {
