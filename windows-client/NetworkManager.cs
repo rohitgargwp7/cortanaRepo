@@ -753,9 +753,12 @@ namespace windows_client
 
                                                 var id = (string)jObj[HikeConstants.MSISDN];
 
-                                                var has_Custom_Bg = (bool)jObj[HikeConstants.HAS_CUSTOM_BACKGROUND];
+                                                bool hasCustomBg = false;
+                                                JToken custom;
+                                                if (jObj.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
+                                                    hasCustomBg = Convert.ToBoolean(custom);
 
-                                                if (!has_Custom_Bg && ChatBackgroundHelper.Instance.UpdateChatBgMap(id, (string)jObj[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp(), false))
+                                                if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(id, (string)jObj[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp(), false))
                                                 {
                                                     isUpdated = true;
 
@@ -1054,9 +1057,12 @@ namespace windows_client
                         JObject chatBg = (JObject)metaData[HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS];
                         if (chatBg != null)
                         {
-                            var has_Custom_Bg = (bool)chatBg[HikeConstants.HAS_CUSTOM_BACKGROUND];
+                            bool hasCustomBg = false;
+                            JToken custom;
+                            if (chatBg.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
+                                hasCustomBg = Convert.ToBoolean(custom);
 
-                            if (!has_Custom_Bg && ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
+                            if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
                                 pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, grpId);
                         }
                     }
@@ -1692,7 +1698,11 @@ namespace windows_client
 
                     var data = (JObject)jsonObj[HikeConstants.DATA];
                     var bgId = (string)data[HikeConstants.BACKGROUND_ID];
-                    var hasCustomBg = (bool)data[HikeConstants.HAS_CUSTOM_BACKGROUND];
+                
+                    bool hasCustomBg = false;
+                    JToken custom;
+                    if (data.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
+                        hasCustomBg = Convert.ToBoolean(custom);
 
                     if (!hasCustomBg && ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
                     {

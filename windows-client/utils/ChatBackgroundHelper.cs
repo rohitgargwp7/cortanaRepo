@@ -233,7 +233,7 @@ namespace windows_client.utils
 
             ChatBgMap[msisdn] = new ChatThemeData()
             {
-                BackgroundId = "9",
+                BackgroundId = "0",
                 Timestamp = TimeUtils.getCurrentTimeStamp()
             };
 

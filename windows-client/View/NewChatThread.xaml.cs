@@ -1286,8 +1286,7 @@ namespace windows_client.View
                         }
                         else if (chatThreadCount == 2)
                         {
-                            showNudgeTute();
-                            chatThreadCount++;
+                           showNudgeTute();
                         }
                         else
                         {
@@ -1298,8 +1297,6 @@ namespace windows_client.View
                                 App.ViewModel.DisplayTip(LayoutRoot, 7);
                                 isInAppTipVisible = true;
                             }
-                            else
-                                chatThreadCount++;
 
                             this.ApplicationBar = appBar;
                         }
@@ -1430,14 +1427,12 @@ namespace windows_client.View
 
         private void showNudgeTute()
         {
-            if (!isGroupChat && App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
+            if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
             {
                 overlayForNudge.Visibility = Visibility.Visible;
-                //overlayForNudge.Opacity = 0.65;
-                overlayForNudge.Opacity = 0.3;
+                overlayForNudge.Opacity = 0.7;
                 nudgeTuteGrid.Visibility = Visibility.Visible;
                 llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = false;
-                //SystemTray.IsVisible = false;
             }
             else
             {
@@ -1452,6 +1447,10 @@ namespace windows_client.View
             llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
             this.ApplicationBar = appBar;
             App.RemoveKeyFromAppSettings(App.SHOW_NUDGE_TUTORIAL);
+
+            int val;
+            App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out val);
+            App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, ++val);
         }
 
         private void processGroupJoin(bool isNewgroup)
@@ -5314,6 +5313,7 @@ namespace windows_client.View
                 lastSeenTxt.Foreground = UI_Utils.Instance.Black;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageBlack;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageBlack;
+                progressBar.Foreground = UI_Utils.Instance.Black;
             }
             else
             {
@@ -5322,6 +5322,7 @@ namespace windows_client.View
                 lastSeenTxt.Foreground = UI_Utils.Instance.White;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageWhite;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageWhite;
+                progressBar.Foreground = App.ViewModel.SelectedBackground.ForegroundColor;
             }
 
             if (isBubbleColorChanged)
