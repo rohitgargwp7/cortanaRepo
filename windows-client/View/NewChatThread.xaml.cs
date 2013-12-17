@@ -72,7 +72,7 @@ namespace windows_client.View
         private bool _isMute = false;
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
-        private bool isGroupChat = false;
+        public bool isGroupChat = false;
         private bool mUserIsBlocked;
         private bool isOnHike;
         private bool animatedOnce = false;
@@ -99,6 +99,7 @@ namespace windows_client.View
         private BitmapImage avatarImage;
         private ApplicationBar appBar;
         ApplicationBarMenuItem muteGroupMenuItem;
+        ApplicationBarMenuItem changeBackground;
         ApplicationBarMenuItem inviteMenuItem = null;
         public ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarMenuItem infoMenuItem;
@@ -248,25 +249,11 @@ namespace windows_client.View
 
             FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI += FileTransferStatusUpdated;
 
-            onlineStatus.Source = UI_Utils.Instance.LastSeenClockImage;
-
             ocMessages = new ObservableCollection<ConvMessage>();
             lruStickerCache = new LruCache<string, BitmapImage>(10, 0);
 
             walkieTalkie.Source = UI_Utils.Instance.WalkieTalkieBigImage;
             deleteRecImageSuc.Source = UI_Utils.Instance.WalkieTalkieDeleteSucImage;
-
-            if (Utils.isDarkTheme())
-            {
-                deleteRecTextSuc.Foreground = UI_Utils.Instance.DeleteGreyBackground;
-                WalkieTalkieDeletedBorder.Opacity = 1;
-                WalkieTalkieGridOverlayLayer.Opacity = 1;
-            }
-            else
-            {
-                JumpToBottomGrid.Opacity = 0.85;
-                jumpToBottomBorder.Background = UI_Utils.Instance.BlackBorderBrush;
-            }
         }
 
         void FileTransferStatusUpdated(object sender, FileTransferSatatusChangedEventArgs e)
@@ -442,6 +429,14 @@ namespace windows_client.View
 
                     if (_lastUpdatedLastSeenTimeStamp != 0)
                         UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(actualTimeStamp), true); //show last seen tip if not shown
+                    else
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            onlineStatus.Visibility = Visibility.Collapsed;
+                            lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
+                        });
+                    }
                 }
             }
             else
@@ -451,6 +446,14 @@ namespace windows_client.View
 
                 if (_lastUpdatedLastSeenTimeStamp != 0)
                     UpdateLastSeenOnUI(_lastSeenHelper.GetLastSeenTimeStampStatus(_lastUpdatedLastSeenTimeStamp));
+                else
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        onlineStatus.Visibility = Visibility.Collapsed;
+                        lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
+                    });
+                }
             }
         }
 
@@ -897,6 +900,12 @@ namespace windows_client.View
                 e.Cancel = true;
                 return;
             }
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+            {
+                CancelBackgroundChange();
+                e.Cancel = true;
+                return;
+            }
             if (attachmentMenu.Visibility == Visibility.Visible)
             {
                 attachmentMenu.Visibility = Visibility.Collapsed;
@@ -918,6 +927,8 @@ namespace windows_client.View
                 e.Cancel = true;
                 return;
             }
+
+            App.ViewModel.SelectedBackground = null;
 
             base.OnBackKeyPress(e);
         }
@@ -1108,6 +1119,13 @@ namespace windows_client.View
 
             initAppBar(isAddUser);
 
+            if (isGroupChat)
+            {
+                GroupManager.Instance.LoadGroupParticipants(mContactNumber);
+
+                lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
+            }
+
             if (!isOnHike)
             {
                 sendMsgTxtbox.Hint = hintText = ON_SMS_TEXT;
@@ -1129,13 +1147,23 @@ namespace windows_client.View
                 if (mCredits > 0)
                     ShowInAppTips();
                 else
-                    chatThreadMainPage.ApplicationBar = appBar;
+                    this.ApplicationBar = appBar;
 
-                GetOnHikeStatus();
-                GetUserLastSeen();
+                if (!isGroupChat)
+                {
+                    GetOnHikeStatus();
+                    GetUserLastSeen();
+                }
             }
             else
-                chatThreadMainPage.ApplicationBar = appBar;
+                this.ApplicationBar = appBar;
+
+            ChatBackgroundHelper.Instance.SetSelectedBackgorundFromMap(mContactNumber);
+
+            chatBackgroundList.ItemsSource = ChatBackgroundHelper.Instance.BackgroundList;
+            chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
+
+            ChangeBackground(false);
         }
 
         private void UpdateChatStatus()
@@ -1201,16 +1229,22 @@ namespace windows_client.View
         {
             if (_isHikeBot)
             {
-                chatThreadMainPage.ApplicationBar = appBar;
+                this.ApplicationBar = appBar;
                 return;
             }
 
             HikeToolTip tip;
 
-            if (App.ViewModel.DictInAppTip != null && App.ViewModel.DictInAppTip.TryGetValue(1, out tip) && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+            if (App.ViewModel.DictInAppTip != null && App.ViewModel.DictInAppTip.TryGetValue(8, out tip) && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
+            {
+                App.ViewModel.DisplayTip(LayoutRoot, 8);
+                this.ApplicationBar = appBar;
+                isInAppTipVisible = true;
+            }
+            else if (App.ViewModel.DictInAppTip != null && App.ViewModel.DictInAppTip.TryGetValue(1, out tip) && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
             {
                 App.ViewModel.DisplayTip(LayoutRoot, 1);
-                chatThreadMainPage.ApplicationBar = appBar;
+                this.ApplicationBar = appBar;
                 isInAppTipVisible = true;
             }
             else
@@ -1234,7 +1268,7 @@ namespace windows_client.View
                             else
                                 chatThreadCount++;
 
-                            chatThreadMainPage.ApplicationBar = appBar;
+                            this.ApplicationBar = appBar;
                         }
                         else if (chatThreadCount == 1)
                         {
@@ -1248,7 +1282,7 @@ namespace windows_client.View
                             else
                                 chatThreadCount++;
 
-                            chatThreadMainPage.ApplicationBar = appBar;
+                            this.ApplicationBar = appBar;
                         }
                         else if (chatThreadCount == 2)
                         {
@@ -1267,16 +1301,17 @@ namespace windows_client.View
                             else
                                 chatThreadCount++;
 
-                            chatThreadMainPage.ApplicationBar = appBar;
+                            this.ApplicationBar = appBar;
                         }
 
+                        this.ApplicationBar = appBar;
                         App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
                     }
                     else
                         showNudgeTute();
                 }
                 else
-                    chatThreadMainPage.ApplicationBar = appBar;
+                    this.ApplicationBar = appBar;
             }
         }
 
@@ -1291,9 +1326,22 @@ namespace windows_client.View
                     var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
                     if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
                         _lastSeenHelper.requestLastSeen(mContactNumber);
+                    else
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                onlineStatus.Visibility = Visibility.Collapsed;
+                                lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
+                            });
+                    }
                 };
 
                 _worker.RunWorkerAsync();
+            }
+            else
+            {
+                onlineStatus.Visibility = Visibility.Collapsed;
+                lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
             }
         }
 
@@ -1393,7 +1441,7 @@ namespace windows_client.View
             }
             else
             {
-                chatThreadMainPage.ApplicationBar = appBar;
+                this.ApplicationBar = appBar;
             }
         }
 
@@ -1402,7 +1450,7 @@ namespace windows_client.View
             overlayForNudge.Visibility = Visibility.Collapsed;
             nudgeTuteGrid.Visibility = Visibility.Collapsed;
             llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
-            chatThreadMainPage.ApplicationBar = appBar;
+            this.ApplicationBar = appBar;
             App.RemoveKeyFromAppSettings(App.SHOW_NUDGE_TUTORIAL);
         }
 
@@ -1532,7 +1580,7 @@ namespace windows_client.View
         /* Should run on UI thread, based on mUserIsBlocked*/
         private void initAppBar(bool isAddUser)
         {
-            appBar = new ApplicationBar();
+            appBar = new ApplicationBar() { ForegroundColor = Colors.White, BackgroundColor = Colors.Black };
             appBar.Mode = ApplicationBarMode.Default;
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = true;
@@ -1569,12 +1617,16 @@ namespace windows_client.View
             fileTransferIconButton.IsEnabled = true;
             appBar.Buttons.Add(fileTransferIconButton);
 
+            changeBackground = new ApplicationBarMenuItem();
+            changeBackground.Text = AppResources.Change_Background_App_Bar_Menu_Txt;
+            changeBackground.Click += (ss, ee) =>
+            {
+                chatBackgroundPopUp_Opened();
+            };
+            appBar.MenuItems.Add(changeBackground);
 
             if (isGroupChat)
             {
-                userName.Tap += userHeader_Tap;
-                userImage.Tap += userImage_Tap;
-
                 infoMenuItem = new ApplicationBarMenuItem();
                 infoMenuItem.Text = AppResources.GroupInfo_Txt;
                 infoMenuItem.Click += userHeader_Tap;
@@ -1608,7 +1660,6 @@ namespace windows_client.View
                 callMenuItem.Text = AppResources.Call_Txt;
                 callMenuItem.Click += new EventHandler(callUser_Click);
                 appBar.MenuItems.Add(callMenuItem);
-                userHeader.Tap += userHeader_Tap;
 
                 infoMenuItem = new ApplicationBarMenuItem();
                 infoMenuItem.Text = AppResources.OthersProfile_Txt;
@@ -1951,6 +2002,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
             mPubSub.addListener(HikePubSub.LAST_SEEN, this);
+            mPubSub.addListener(HikePubSub.CHAT_BACKGROUND_REC, this);
         }
 
         private void removeListeners()
@@ -1972,6 +2024,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
                 mPubSub.removeListener(HikePubSub.LAST_SEEN, this);
+                mPubSub.removeListener(HikePubSub.CHAT_BACKGROUND_REC, this);
             }
             catch (Exception ex)
             {
@@ -2095,7 +2148,7 @@ namespace windows_client.View
                 if (mCredits > 0)
                     ShowInAppTips();
                 else if (ApplicationBar == null)
-                    chatThreadMainPage.ApplicationBar = appBar;
+                    this.ApplicationBar = appBar;
             }
         }
 
@@ -2950,14 +3003,14 @@ namespace windows_client.View
                             tip.IsShown = true;
                             tip.IsCurrentlyShown = true;
 
-                            byte marked;
+                            int marked;
                             App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
-                            marked |= (byte)(1 << 4);
+                            marked |= (int)(1 << 4);
                             App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
 
-                            byte currentShown;
+                            int currentShown;
                             App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                            currentShown |= (byte)(1 << 4);
+                            currentShown |= (int)(1 << 4);
                             App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
 
                             isInAppTipVisible = true;
@@ -2972,6 +3025,16 @@ namespace windows_client.View
                     chatBubble.NotificationType = ConvMessage.MessageType.GROUP_PIC_CHANGED;
                     this.ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
+                }
+                #endregion
+                #region CHAT_BACKGROUND
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED)
+                {
+                    ConvMessage chatBubble = new ConvMessage(convMessage.Message, this.Orientation, convMessage);
+                    chatBubble.NotificationType = ConvMessage.MessageType.UNKNOWN;
+                    this.ocMessages.Insert(insertPosition, chatBubble);
+                    insertPosition++;
+                    ScrollToBottom();
                 }
                 #endregion
 
@@ -3203,6 +3266,9 @@ namespace windows_client.View
             if (emoticonPanel.Visibility == Visibility.Collapsed)
                 sendMsgTxtbox.Focus();
 
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             if (String.IsNullOrEmpty(message))
                 return;
 
@@ -3326,6 +3392,9 @@ namespace windows_client.View
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
             App.ViewModel.HideToolTip(LayoutRoot, 7);
+
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
 
             sendMsgTxtbox.Background = UI_Utils.Instance.TextBoxBackground;
             sendMsgTxtbox.Hint = string.Empty;//done intentionally as hint is shown if text is changed
@@ -3636,6 +3705,9 @@ namespace windows_client.View
                 }
             }
 
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             if (recordGrid.Visibility == Visibility.Visible)
             {
                 recordGrid.Visibility = Visibility.Collapsed;
@@ -3722,6 +3794,9 @@ namespace windows_client.View
             if (emoticonPanel.Visibility == Visibility.Visible)
                 emoticonPanel.Visibility = Visibility.Collapsed;
 
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             this.Focus();
         }
 
@@ -3799,11 +3874,6 @@ namespace windows_client.View
             bingMapsTask.ZoomLevel = 24;
             bingMapsTask.Show();
 
-        }
-
-        private void chatListBox_tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void emotListRecent_Tap(object sender, SelectionChangedEventArgs e)
@@ -4209,13 +4279,20 @@ namespace windows_client.View
 
                         if (vals.Length == 3)
                         {
-                            ConvMessage cm = (ConvMessage)vals[2];
-                            if (cm != null)
+                            try
                             {
-                                AddNewMessageToUI(cm, false, true);
-                                if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                                    ShowJumpToBottom(true);
+                                if (vals[2] is ConvMessage)
+                                {
+                                    ConvMessage cm = (ConvMessage)vals[2];
+                                    if (cm != null)
+                                    {
+                                        AddNewMessageToUI(cm, false, true);
+                                        if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                                            ShowJumpToBottom(true);
+                                    }
+                                }
                             }
+                            catch { }
                         }
                     });
                 }
@@ -4588,9 +4665,8 @@ namespace windows_client.View
 
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                lastSeenTxt.Text = String.Empty;
-                                userName.FontSize = 50;
-                                lastSeenPannel.Visibility = Visibility.Collapsed;
+                                onlineStatus.Visibility = Visibility.Collapsed;
+                                lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
                             });
                         }
 
@@ -4685,6 +4761,8 @@ namespace windows_client.View
                     {
                         mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
                         userName.Text = mContactName;
+
+                        lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
                     }
                     catch (Exception ex)
                     {
@@ -4710,6 +4788,8 @@ namespace windows_client.View
                     {
                         mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
                         userName.Text = mContactName;
+
+                        lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Count + 1);
                     }
                     catch (Exception ex)
                     {
@@ -4718,6 +4798,26 @@ namespace windows_client.View
                 });
             }
 
+            #endregion
+
+            #region Chat Background Changed
+            else if (HikePubSub.CHAT_BACKGROUND_REC == type)
+            {
+                var sender = (string)obj;
+
+                if (sender == mContactNumber)
+                {
+                    ChatBackgroundHelper.Instance.SetSelectedBackgorundFromMap(sender);
+                    App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
+
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        ChangeBackground();
+
+                        chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
+                    });
+                }
+            }
             #endregion
         }
 
@@ -5069,7 +5169,10 @@ namespace windows_client.View
                 return;
             if (mUserIsBlocked)
                 return;
-            emoticonPanel.Visibility = Visibility.Collapsed;
+
+            if (emoticonPanel.Visibility == Visibility.Visible)
+                emoticonPanel.Visibility = Visibility.Collapsed;
+
             if ((!isOnHike && mCredits <= 0))
                 return;
             ConvMessage convMessage = new ConvMessage(string.Format("{0}!", AppResources.Nudge), mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
@@ -5086,6 +5189,237 @@ namespace windows_client.View
             }
         }
 
+        #region Chat Backgrounds
+
+        async Task SendBackgroundChangedPacket(string bgId)
+        {
+            string msg = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
+            ConvMessage cm = new ConvMessage(msg, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
+            cm.GroupParticipant = App.MSISDN;
+            cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
+            cm.MetaDataString = "{\"t\":\"cbg\"}";
+
+            ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, App.MSISDN);
+            if (cobj != null)
+            {
+                JObject data = new JObject();
+                data[HikeConstants.IMAGE] = String.Empty;
+                data[HikeConstants.HAS_CUSTOM_BACKGROUND] = false;
+                data[HikeConstants.BACKGROUND_ID] = bgId;
+                data[HikeConstants.MESSAGE_ID] = cm.MessageId;
+
+                JObject jo = new JObject();
+                jo[HikeConstants.FROM] = App.MSISDN;
+                jo[HikeConstants.TO] = mContactNumber;
+                jo[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp().ToString();
+                jo[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS;
+                jo[HikeConstants.DATA] = data;
+
+                object[] vs = new object[2];
+                vs[0] = cm;
+                vs[1] = cobj;
+                mPubSub.publish(HikePubSub.MESSAGE_RECEIVED, vs);
+
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, jo);
+            }
+        }
+
+        private void chatPaintCancel_Click(object sender, RoutedEventArgs e)
+        {
+            CancelBackgroundChange();
+        }
+
+        private void CancelBackgroundChange()
+        {
+            chatBackgroundPopUp_Closed();
+
+            if (App.ViewModel.SelectedBackground.ID != App.ViewModel.LastSelectedBackground.ID)
+            {
+                App.ViewModel.SelectedBackground = App.ViewModel.LastSelectedBackground;
+                ChangeBackground();
+            }
+        }
+
+        private void chatPaintSave_Click(object sender, RoutedEventArgs e)
+        {
+            chatBackgroundPopUp_Closed();
+
+            if (App.ViewModel.SelectedBackground.ID != App.ViewModel.LastSelectedBackground.ID)
+            {
+                ChatBackgroundHelper.Instance.UpdateChatBgMap(mContactNumber, App.ViewModel.SelectedBackground.ID);
+                SendBackgroundChangedPacket(App.ViewModel.SelectedBackground.ID);
+
+                App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
+            }
+        }
+
+        void chatPaint_Tap(object sender, RoutedEventArgs e)
+        {
+            chatBackgroundPopUp_Opened();
+        }
+
+        void chatBackgroundPopUp_Closed()
+        {
+            chatBackgroundPopUp.Visibility = Visibility.Collapsed;
+
+            openChatBackgroundButton.Visibility = Visibility.Visible;
+        }
+
+        void chatBackgroundPopUp_Opened()
+        {
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                return;
+
+            if (mUserIsBlocked || (isGroupChat && !isGroupAlive))
+                return;
+
+            App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
+
+            App.ViewModel.HideToolTip(LayoutRoot, 8);
+
+            openChatBackgroundButton.Visibility = Visibility.Collapsed;
+
+            chatBackgroundPopUp.Visibility = Visibility.Visible;
+
+            if (recordGrid.Visibility == Visibility.Visible)
+            {
+                recordGrid.Visibility = Visibility.Collapsed;
+                sendMsgTxtbox.Visibility = Visibility.Visible;
+            }
+
+            App.ViewModel.HideToolTip(LayoutRoot, 0);
+            App.ViewModel.HideToolTip(LayoutRoot, 2);
+
+            if (emoticonPanel.Visibility == Visibility.Visible)
+            {
+                App.ViewModel.HideToolTip(LayoutRoot, 1);
+                emoticonPanel.Visibility = Visibility.Collapsed;
+            }
+
+            attachmentMenu.Visibility = Visibility.Collapsed;
+            this.Focus();
+        }
+
+        WriteableBitmap _background;
+        BitmapImage _tileBitmap;
+
+        public void ChangeBackground(bool isBubbleColorChanged = true)
+        {
+            LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
+
+            if (App.ViewModel.SelectedBackground.IsDefault)
+            {
+                headerBackground.Visibility = Visibility.Collapsed;
+                userName.Foreground = UI_Utils.Instance.Black;
+                lastSeenTxt.Foreground = UI_Utils.Instance.Black;
+                onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageBlack;
+                chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageBlack;
+            }
+            else
+            {
+                headerBackground.Visibility = Visibility.Visible;
+                userName.Foreground = UI_Utils.Instance.White;
+                lastSeenTxt.Foreground = UI_Utils.Instance.White;
+                onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageWhite;
+                chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageWhite;
+            }
+
+            if (isBubbleColorChanged)
+            {
+                foreach (var msg in ocMessages)
+                    msg.UpdateChatBubbles();
+            }
+
+            chatBackground.Opacity = 1;
+
+            if (App.ViewModel.SelectedBackground.IsDefault)
+            {
+                chatBackground.Source = null;
+                return;
+            }
+
+            _tileBitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
+                {
+                    CreateOptions = BitmapCreateOptions.None
+                };
+
+            //handle delay creation of bitmap image
+            _tileBitmap.ImageOpened += (s, e) =>
+            {
+                WriteableBitmap source = null;
+                source = new WriteableBitmap(_tileBitmap);
+
+                if (source != null)
+                {
+                    if (App.ViewModel.SelectedBackground.IsTile)
+                    {
+                        var iHeight = 800;
+                        var iWidth = 480;
+
+                        var wb1 = new WriteableBitmap((int)iWidth, (int)iHeight);
+                        wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = (int)iWidth, Height = (int)iHeight }, null);
+                        wb1.Invalidate();
+
+                        int height = 0;
+
+                        for (int width = 0; width <= iWidth; )
+                        {
+                            for (height = 0; height <= iHeight; )
+                            {
+                                wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
+                                height += source.PixelHeight;
+                            }
+
+                            width += source.PixelWidth;
+                        }
+
+                        _background = wb1;
+                    }
+                    else
+                        _background = source;
+
+                    RotateImageAndApply();
+                }
+            };
+        }
+
+        /// <summary>
+        /// Rotate image and apply according to current orientation
+        /// </summary>
+        private void RotateImageAndApply()
+        {
+            if (_background == null)
+                return;
+
+            if (Orientation == PageOrientation.Portrait || Orientation == PageOrientation.PortraitUp || Orientation == PageOrientation.PortraitDown)
+                chatBackground.Source = _background;
+            else if (Orientation == PageOrientation.LandscapeLeft)
+                chatBackground.Source = _background.Rotate(270);
+            else if (Orientation == PageOrientation.LandscapeRight)
+                chatBackground.Source = _background.Rotate(90);
+        }
+
+        private void chatBackgroundList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if ((sender as ListBox).SelectedItem != null)
+            {
+                var chatBg = (sender as ListBox).SelectedItem as ChatBackground;
+                if (chatBg != null && chatBg != App.ViewModel.SelectedBackground)
+                {
+                    try
+                    {
+                        App.ViewModel.SelectedBackground = ChatBackgroundHelper.Instance.BackgroundList.Where(b => b.ID == chatBg.ID).First();
+                        ChangeBackground();
+                    }
+                    catch
+                    {
+                        Debug.WriteLine("Background doesn't exist");
+                    }
+                }
+            }
+        }
+
+        #endregion
 
         private void messageListBox_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -5272,6 +5606,8 @@ namespace windows_client.View
                 App.ViewModel.HideToolTip(LayoutRoot, 5);
                 App.ViewModel.HideToolTip(LayoutRoot, 7);
             }
+
+            RotateImageAndApply();
         }
         #endregion
 
@@ -5293,7 +5629,7 @@ namespace windows_client.View
                         {
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                shellProgress.IsVisible = false;
+                                shellProgress.Visibility = Visibility.Collapsed;
                             });
                         };
                     }
@@ -5855,20 +6191,26 @@ namespace windows_client.View
                     toolTip.IsCurrentlyShown = false;
 
                     int index = 2;
-                    byte shownByte;
+                    int shownByte;
                     App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out shownByte);
-                    shownByte &= (byte)~(1 << index);
+                    shownByte &= (int)~(1 << index);
                     App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, shownByte);
 
-                    byte currentShown;
+                    int currentShown;
                     App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                    currentShown &= (byte)~(1 << index);
+                    currentShown &= (int)~(1 << index);
                     App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
                 }
             }
 
-            attachmentMenu.Visibility = Visibility.Collapsed;
-            emoticonPanel.Visibility = Visibility.Collapsed;
+            if (attachmentMenu.Visibility == Visibility.Visible)
+                attachmentMenu.Visibility = Visibility.Collapsed;
+
+            if (emoticonPanel.Visibility == Visibility.Visible)
+                emoticonPanel.Visibility = Visibility.Collapsed;
+
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
 
             this.Focus(); // remove focus from textbox
             recordGrid.Visibility = Visibility.Visible;
@@ -5930,7 +6272,7 @@ namespace windows_client.View
             deleteRecText.Foreground = UI_Utils.Instance.DeleteGreyBackground;
 
             cancelRecord.Opacity = 1;
-            deleteBorder.BorderBrush = UI_Utils.Instance.BlackBorderBrush;
+            deleteBorder.BorderBrush = UI_Utils.Instance.Black;
             WalkieTalkieGrid.Visibility = Visibility.Collapsed;
             recordButton.Text = HOLD_AND_TALK;
             recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
@@ -5984,7 +6326,7 @@ namespace windows_client.View
         private void deleteRecImage_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = false;
-            deleteBorder.BorderBrush = UI_Utils.Instance.BlackBorderBrush;
+            deleteBorder.BorderBrush = UI_Utils.Instance.Black;
             deleteRecImage.Source = UI_Utils.Instance.DustbinGreyImage;
             deleteRecText.Foreground = UI_Utils.Instance.DeleteGreyBackground;
         }
@@ -6055,7 +6397,7 @@ namespace windows_client.View
             if (_runningSeconds >= HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED)
             {
                 cancelRecord.Opacity = 1;
-                deleteBorder.BorderBrush = UI_Utils.Instance.BlackBorderBrush;
+                deleteBorder.BorderBrush = UI_Utils.Instance.Black;
                 WalkieTalkieGrid.Visibility = Visibility.Collapsed;
                 recordButton.Text = HOLD_AND_TALK;
                 recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
@@ -6322,14 +6664,14 @@ namespace windows_client.View
                                  tip.IsShown = true;
                                  tip.IsCurrentlyShown = true;
 
-                                 byte marked;
+                                 int marked;
                                  App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
-                                 marked |= (byte)(1 << 6);
+                                 marked |= (int)(1 << 6);
                                  App.appSettings[App.TIP_MARKED_KEY] = marked;
 
-                                 byte currentShown;
+                                 int currentShown;
                                  App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                                 currentShown |= (byte)(1 << 6);
+                                 currentShown |= (int)(1 << 6);
                                  App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
 
                                  if (indexToInsert == ocMessages.Count - 1)

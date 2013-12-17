@@ -421,16 +421,6 @@ namespace windows_client.Model
             }
         }
 
-        public Visibility IsLastMessageUnread // this too should be removed
-        {
-            get
-            {
-                if (ConvMessage.State.RECEIVED_UNREAD == _messageStatus)
-                    return Visibility.Visible;
-                return Visibility.Collapsed;
-            }
-        }
-
         public string SdrImage
         {
             get

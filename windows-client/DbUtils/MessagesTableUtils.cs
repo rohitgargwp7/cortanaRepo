@@ -146,7 +146,7 @@ namespace windows_client.DbUtils
             return obj;
         }
 
-        public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup)
+        public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup, string from = "")
         {
             if (convMsg == null)
                 return null;
@@ -304,6 +304,36 @@ namespace windows_client.DbUtils
                     }
                     else
                         obj.LastMessage = convMsg.Message;
+                }
+                #endregion
+                #region Chat Background Changed
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED)
+                {
+                    if (!Utils.isGroupConversation(from))
+                    {
+                        if (from == App.MSISDN)
+                            convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
+                        else
+                            convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, obj.NameToShow);
+                    }
+                    else
+                    {
+                        obj.LastMessage = convMsg.Message;
+                    }
+                }
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED)
+                {
+                    if (!Utils.isGroupConversation(from))
+                    {
+                        if (from == App.MSISDN)
+                            convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, AppResources.You_Txt);
+                        else
+                            convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, obj.NameToShow);
+                    }
+                    else
+                    {
+                        obj.LastMessage = convMsg.Message;
+                    }
                 }
                 #endregion
                 #region OTHER MSGS

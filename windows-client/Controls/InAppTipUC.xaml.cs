@@ -8,6 +8,7 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using windows_client.utils;
+using System.Windows.Media;
 
 namespace windows_client.Controls
 {
@@ -16,7 +17,6 @@ namespace windows_client.Controls
         public InAppTipUC()
         {
             InitializeComponent();
-            closeButtonImage.Source = UI_Utils.Instance.CloseButtonImage;
         }
 
         private void LayoutRoot_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -38,24 +38,8 @@ namespace windows_client.Controls
         }
 
         public static readonly DependencyProperty TipIndexProperty = DependencyProperty.Register(
-            "TipIndex", typeof(Int32), typeof(InAppTipUC), new PropertyMetadata(OnTipIndexChanged));
+            "TipIndex", typeof(Int32), typeof(InAppTipUC), null);
 
-        private static void OnTipIndexChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
-        {
-            InAppTipUC tipControl = obj as InAppTipUC;
-            
-            var val = (int)e.NewValue;
-
-            if (val == 3)
-            {
-                tipControl.tipBackground.Background = UI_Utils.Instance.Black;
-                tipControl.topBubblePointer.Fill = UI_Utils.Instance.Black;
-                tipControl.bottomBubblePointer.Fill = UI_Utils.Instance.Black;
-                tipControl.tipText.Foreground = UI_Utils.Instance.White;
-                tipControl.closeButtonImage.Source = UI_Utils.Instance.CloseButtonWhiteImage;
-            }
-        }
-        
         public String Tip
         {
             get

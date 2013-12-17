@@ -83,7 +83,9 @@ namespace windows_client.Model
             STATUS_UPDATE,
             IN_APP_TIP,
             FORCE_SMS_NOTIFICATION,
-            H2H_OFFLINE_IN_APP_TIP
+            H2H_OFFLINE_IN_APP_TIP,
+            CHAT_BACKGROUND_CHANGED,
+            CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED
         }
 
         public enum MessageType
@@ -105,6 +107,7 @@ namespace windows_client.Model
             UNKNOWN,
             FORCE_SMS
         }
+
         public static ParticipantInfoState fromJSON(JObject obj)
         {
             if (obj == null)
@@ -118,10 +121,8 @@ namespace windows_client.Model
 
             if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type)
                 return ParticipantInfoState.PARTICIPANT_JOINED;
-
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN_NEW == type)
                 return ParticipantInfoState.MEMBERS_JOINED;
-
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type)
             {
                 JToken jt = null;
@@ -130,21 +131,13 @@ namespace windows_client.Model
                 return ParticipantInfoState.PARTICIPANT_LEFT;
             }
             else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
-            {
                 return ParticipantInfoState.STATUS_UPDATE;
-            }
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END == type)
-            {
                 return ParticipantInfoState.GROUP_END;
-            }
             else if (HikeConstants.MqttMessageTypes.GROUP_USER_JOINED_OR_WAITING == type)
-            {
                 return ParticipantInfoState.GROUP_JOINED_OR_WAITING;
-            }
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
-            {
                 return ParticipantInfoState.USER_OPT_IN;
-            }
             else if (HikeConstants.MqttMessageTypes.USER_JOIN == type)
             {
                 bool isRejoin = false;
@@ -156,33 +149,21 @@ namespace windows_client.Model
                 return isRejoin ? ParticipantInfoState.USER_REJOINED : ParticipantInfoState.USER_JOINED;
             }
             else if (HikeConstants.MqttMessageTypes.HIKE_USER == type)
-            {
                 return ParticipantInfoState.HIKE_USER;
-            }
             else if (HikeConstants.MqttMessageTypes.SMS_USER == type)
-            {
                 return ParticipantInfoState.SMS_USER;
-            }
             else if ("credits_gained" == type)
-            {
                 return ParticipantInfoState.CREDITS_GAINED;
-            }
             else if (HikeConstants.MqttMessageTypes.BLOCK_INTERNATIONAL_USER == type)
-            {
                 return ParticipantInfoState.INTERNATIONAL_USER;
-            }
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME == type)
-            {
                 return ParticipantInfoState.GROUP_NAME_CHANGE;
-            }
             else if (HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP == type)
-            {
                 return ParticipantInfoState.DND_USER;
-            }
             else if (HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC == type)
-            {
                 return ParticipantInfoState.GROUP_PIC_CHANGED;
-            }
+            else if (HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS == type)
+                return ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
             else  // shows type == null
             {
                 JArray dndNumbers = (JArray)obj["dndnumbers"];
@@ -269,7 +250,6 @@ namespace windows_client.Model
                     NotifyPropertyChanged("MessageStatus");
                     NotifyPropertyChanged("SendAsSMSVisibility");
                     NotifyPropertyChanged("BubbleBackGroundColor");
-                    NotifyPropertyChanged("TimeStampForeGround");
                     NotifyPropertyChanged("MessageTextForeGround");
                     if (_messageStatus == State.SENT_CONFIRMED)
                     {
@@ -429,7 +409,6 @@ namespace windows_client.Model
                     _isSms = value;
                     NotifyPropertyChanged("SendAsSMSVisibility");
                     NotifyPropertyChanged("BubbleBackGroundColor");
-                    NotifyPropertyChanged("TimeStampForeGround");
                     NotifyPropertyChanged("MessageTextForeGround");
                 }
             }
@@ -495,7 +474,7 @@ namespace windows_client.Model
         {
             get
             {
-                return UI_Utils.Instance.CloseButtonImage;
+                return UI_Utils.Instance.CloseButtonWhiteImage;
             }
         }
 
@@ -545,9 +524,19 @@ namespace windows_client.Model
             get
             {
                 if (FileAttachment.FileState == Attachment.AttachmentState.PAUSED || FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
-                    return UI_Utils.Instance.ResumeFTR;
+                {
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        return UI_Utils.Instance.ResumeFTRBlack;
+                    else
+                        return UI_Utils.Instance.ResumeFTRWhite;
+                }
                 else
-                    return UI_Utils.Instance.PausedFTR;
+                {
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        return UI_Utils.Instance.PausedFTRBlack;
+                    else
+                        return UI_Utils.Instance.PausedFTRWhite;
+                }
             }
         }
 
@@ -570,19 +559,37 @@ namespace windows_client.Model
                 {
                     case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
                     case ConvMessage.State.SENT_CONFIRMED:
-                        return UI_Utils.Instance.Sent;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.Sent;
+                        else
+                            return UI_Utils.Instance.Sent_ChatTheme;
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED:
-                        return UI_Utils.Instance.Delivered;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.Delivered;
+                        else
+                            return UI_Utils.Instance.Delivered_ChatTheme;
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                     case ConvMessage.State.SENT_DELIVERED_READ:
-                        return UI_Utils.Instance.Read;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.Read;
+                        else
+                            return UI_Utils.Instance.Read_ChatTheme;
                     case ConvMessage.State.SENT_FAILED:
-                        return UI_Utils.Instance.HttpFailed;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.HttpFailed;
+                        else
+                            return UI_Utils.Instance.HttpFailed_ChatTheme;
                     case ConvMessage.State.SENT_UNCONFIRMED:
-                        return UI_Utils.Instance.Trying;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.Trying;
+                        else
+                            return UI_Utils.Instance.Trying_ChatTheme;
                     default:
-                        return UI_Utils.Instance.Trying;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.Trying;
+                        else
+                            return UI_Utils.Instance.Trying_ChatTheme;
 
                 }
             }
@@ -620,10 +627,7 @@ namespace windows_client.Model
 
                 if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                 {
-                    if (_isSent)
-                        return UI_Utils.Instance.WhiteContactIcon;
-                    else
-                        return UI_Utils.Instance.ContactIcon;
+                    return UI_Utils.Instance.BlackContactIcon;
                 }
                 else if (_fileAttachment != null && _fileAttachment.Thumbnail != null)
                 {
@@ -890,45 +894,83 @@ namespace windows_client.Model
                 switch (_notificationType)
                 {
                     case MessageType.HIKE_PARTICIPANT_JOINED:
-                        return UI_Utils.Instance.OnHikeImage;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.OnHikeImage;
+                        else
+                            return UI_Utils.Instance.OnHikeImage_ChatTheme;
 
                     case MessageType.SMS_PARTICIPANT_INVITED:
-                        return UI_Utils.Instance.NotOnHikeImage;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.NotOnHikeImage;
+                        else
+                            return UI_Utils.Instance.NotOnHikeImage_ChatTheme;
 
                     case MessageType.SMS_PARTICIPANT_OPTED_IN:
-                        return UI_Utils.Instance.ChatAcceptedImage;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.ChatAcceptedImage;
+                        else
+                            return UI_Utils.Instance.ChatAcceptedImage_ChatTheme;
 
                     case MessageType.USER_JOINED_HIKE:
-                        return UI_Utils.Instance.OnHikeImage;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.OnHikeImage;
+                        else
+                            return UI_Utils.Instance.OnHikeImage_ChatTheme;
 
                     case MessageType.PARTICIPANT_LEFT:
-                        return UI_Utils.Instance.ParticipantLeft;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.ParticipantLeft;
+                        else
+                            return UI_Utils.Instance.ParticipantLeft_ChatTheme;
 
                     case MessageType.GROUP_END:
-                        return UI_Utils.Instance.ParticipantLeft;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.ParticipantLeft;
+                        else
+                            return UI_Utils.Instance.ParticipantLeft_ChatTheme;
 
                     case MessageType.WAITING:
-                        return UI_Utils.Instance.Waiting;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.Waiting;
+                        else
+                            return UI_Utils.Instance.Waiting_ChatTheme;
 
                     case MessageType.REWARD:
-                        return UI_Utils.Instance.Reward;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.Reward;
+                        else
+                            return UI_Utils.Instance.Reward_ChatTheme;
 
                     case MessageType.INTERNATIONAL_USER_BLOCKED:
-                        return UI_Utils.Instance.IntUserBlocked;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.IntUserBlocked;
+                        else
+                            return UI_Utils.Instance.IntUserBlocked_ChatTheme;
 
                     case MessageType.PIC_UPDATE:
-                        return UI_Utils.Instance.OnHikeImage;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.OnHikeImage;
+                        else
+                            return UI_Utils.Instance.OnHikeImage_ChatTheme;
 
                     case MessageType.GROUP_NAME_CHANGED:
-                        return UI_Utils.Instance.GrpNameOrPicChanged;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.GrpNameOrPicChanged;
+                        else
+                            return UI_Utils.Instance.GrpNameOrPicChanged_ChatTheme;
 
                     case MessageType.GROUP_PIC_CHANGED:
-                        return UI_Utils.Instance.GrpNameOrPicChanged;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.GrpNameOrPicChanged;
+                        else
+                            return UI_Utils.Instance.GrpNameOrPicChanged_ChatTheme;
 
                     case MessageType.TEXT_UPDATE:
                     default:
-                        return UI_Utils.Instance.OnHikeImage;
-
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.OnHikeImage;
+                        else
+                            return UI_Utils.Instance.OnHikeImage_ChatTheme;
                 }
             }
         }
@@ -1143,55 +1185,60 @@ namespace windows_client.Model
             }
         }
 
+        public SolidColorBrush BorderBackgroundColor
+        {
+            get
+            {
+                if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                    return UI_Utils.Instance.Transparent;
+                else
+                    return UI_Utils.Instance.Black;
+            }
+        }
+
         public SolidColorBrush BubbleBackGroundColor
         {
             get
             {
-                if (participantInfoState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
                 {
-                    return UI_Utils.Instance.StatusBubbleColor;
-                }
-                else if (IsSent)
-                {
-                    if (IsSms)
+                    if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
+                        return App.Current.Resources["PhoneAccentBrush"] as SolidColorBrush;
+                    else if (IsSent)
                     {
-                        return UI_Utils.Instance.SmsBackground;
+                        if (IsSms)
+                            return UI_Utils.Instance.SmsBackground;
+                        else
+                            return UI_Utils.Instance.HikeMsgBackground;
                     }
                     else
-                    {
-                        return UI_Utils.Instance.HikeMsgBackground;
-                    }
+                        return UI_Utils.Instance.ReceivedChatBubbleColor;
                 }
                 else
                 {
-                    return UI_Utils.Instance.ReceivedChatBubbleColor;
+                    if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
+                        return UI_Utils.Instance.Black40Opacity;
+                    else if (IsSent)
+                        return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.SentBubbleBgColor : UI_Utils.Instance.White;
+                    else
+                        return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.ReceivedBubbleBgColor : UI_Utils.Instance.White;
                 }
             }
         }
 
-        public SolidColorBrush TimeStampForeGround
+        public SolidColorBrush ChatForegroundColor
         {
             get
             {
-                if (participantInfoState == ConvMessage.ParticipantInfoState.STATUS_UPDATE || (!string.IsNullOrEmpty(metadataJsonString) && metadataJsonString.Contains(HikeConstants.STICKER_ID)))
-                {
-                    return UI_Utils.Instance.ReceivedChatBubbleTimestamp;
-                }
-                else if (IsSent)
-                {
-                    if (IsSms)
-                    {
-                        return UI_Utils.Instance.SMSSentChatBubbleTimestamp;
-                    }
-                    else
-                    {
-                        return UI_Utils.Instance.HikeSentChatBubbleTimestamp;
-                    }
-                }
-                else
-                {
-                    return UI_Utils.Instance.ReceivedChatBubbleTimestamp;
-                }
+                return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.ForegroundColor : UI_Utils.Instance.White;
+            }
+        }
+
+        public SolidColorBrush BubbleForegroundColor
+        {
+            get
+            {
+                return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.BubbleForegroundColor : UI_Utils.Instance.White;
             }
         }
 
@@ -1199,19 +1246,32 @@ namespace windows_client.Model
         {
             get
             {
-                if (participantInfoState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
-                {
-                    return UI_Utils.Instance.ReceiveMessageForeground;
-                }
-                else if (IsSent)
-                {
-                    return UI_Utils.Instance.White;
-                }
+                if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)) || GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
+                    return ChatForegroundColor;
                 else
                 {
-                    return UI_Utils.Instance.ReceiveMessageForeground;
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                    {
+                        if (IsSent)
+                            return UI_Utils.Instance.White;
+                        else
+                            return UI_Utils.Instance.ReceiveMessageForeground;
+                    }
+                    else
+                        return BubbleForegroundColor;
                 }
             }
+        }
+
+        public void UpdateChatBubbles()
+        {
+            NotifyPropertyChanged("MessageTextForeGround");
+            NotifyPropertyChanged("PauseResumeImage");
+            NotifyPropertyChanged("ChatForegroundColor");
+            NotifyPropertyChanged("BorderBackgroundColor");
+            NotifyPropertyChanged("BubbleBackGroundColor");
+            NotifyPropertyChanged("SdrImage");
+            NotifyPropertyChanged("NotificationImage");
         }
 
         public Visibility SendAsSMSVisibility
@@ -1566,10 +1626,10 @@ namespace windows_client.Model
                         fileObject.TryGetValue(HikeConstants.FILE_NAME, out fileName);
                         fileObject.TryGetValue(HikeConstants.FILE_KEY, out fileKey);
                         fileObject.TryGetValue(HikeConstants.FILE_THUMBNAIL, out thumbnail);
-                       
-                        if( fileObject.TryGetValue(HikeConstants.FILE_SIZE, out fileSize))
-                           fs = Convert.ToInt32(fileSize.ToString());
-                        
+
+                        if (fileObject.TryGetValue(HikeConstants.FILE_SIZE, out fileSize))
+                            fs = Convert.ToInt32(fileSize.ToString());
+
                         this.HasAttachment = true;
 
                         byte[] base64Decoded = null;
@@ -1888,6 +1948,34 @@ namespace windows_client.Model
                     gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
                     this.Message = string.Format(AppResources.GroupImgChangedByGrpMember_Txt, gp.Name);
                     jsonObj.Remove(HikeConstants.DATA);
+                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+                    break;
+                case ParticipantInfoState.CHAT_BACKGROUND_CHANGED:
+                    grpId = (string)jsonObj[HikeConstants.TO];
+                    from = (string)jsonObj[HikeConstants.FROM];
+                    this._groupParticipant = from;
+                    this._msisdn = grpId;
+                    if (from == App.MSISDN)
+                        this.Message = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
+                    else
+                    {
+                        gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
+                        this.Message = string.Format(AppResources.ChatBg_Changed_Text, gp.Name);
+                    }
+                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+                    break;
+                case ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED:
+                    grpId = (string)jsonObj[HikeConstants.TO];
+                    from = (string)jsonObj[HikeConstants.FROM];
+                    this._groupParticipant = from;
+                    this._msisdn = grpId;
+                    if (from == App.MSISDN)
+                        this.Message = string.Format(AppResources.ChatBg_NotChanged_Text, AppResources.You_Txt);
+                    else
+                    {
+                        gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
+                        this.Message = string.Format(AppResources.ChatBg_NotChanged_Text, gp.Name);
+                    }
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
                 default:

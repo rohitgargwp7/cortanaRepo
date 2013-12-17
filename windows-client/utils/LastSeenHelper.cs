@@ -7,7 +7,7 @@ using System.Text;
 
 namespace windows_client.utils
 {
-    class LastSeenHelper
+    public class LastSeenHelper
     {
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private readonly int maxRequestCount = 2;
@@ -21,13 +21,8 @@ namespace windows_client.utils
                 cNumber = number;
                 AccountUtils.LastSeenRequest(requestLastSeen_Callback, cNumber);
             }
-            //else
-            //{
-            //    if (updatelastseen != null)
-            //        updatelastseen(this, null);
-
-            //    return;
-            //}
+            else if (UpdateLastSeen != null)
+                UpdateLastSeen(this, null);
         }
 
         public void requestLastSeen_Callback(JObject obj)

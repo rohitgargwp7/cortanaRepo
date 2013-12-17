@@ -251,6 +251,9 @@ namespace windows_client
         public static readonly string PRO_TIP_TIME = "wt";
         public static readonly Int64 DEFAULT_PRO_TIP_TIME = 300;
 
+        public static readonly string BACKGROUND_ID = "bg_id";
+        public static readonly string HAS_CUSTOM_BACKGROUND = "custom";
+
         public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
         public static string MSISDN = "msisdn";
@@ -307,6 +310,7 @@ namespace windows_client
         public static string UNREAD_UPDATES = "urUp";
         public static string UNREAD_FRIEND_REQUESTS = "urFr";
         public static string REFRESH_BAR = "refBar";
+        public static string CHAT_BACKGROUND_ARRAY = "cbgs";
 
         public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
         public static string PROFILE_NAME_CHANGED = "ProfileNameChanged";
@@ -332,6 +336,7 @@ namespace windows_client
 
         public static readonly string ENABLE_PUSH_BATCH_SU = "enablepushbatchingforsu";
         public static readonly string PUSH_SU = "pushsu";
+        public static readonly string PUSH_CBG = "pushcbg";
         public static readonly string STICKER_ID = "stId";
         public static readonly string CATEGORY_ID = "catId";
 
@@ -422,6 +427,7 @@ namespace windows_client
             public static readonly string DELETE_STATUS_UPDATE = "dsu";
             public static readonly string GROUP_DISPLAY_PIC = "dp";
             public static readonly string PRO_TIPS = "pt";
+            public static readonly string CHAT_BACKGROUNDS = "cbg";
             public static readonly string APP_INFO = "app";
             public static readonly string FORCE_SMS = "fsms";
             public static readonly string APP_UPDATE = "update";

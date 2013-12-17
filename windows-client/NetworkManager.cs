@@ -739,6 +739,48 @@ namespace windows_client
                                         }
 
                                         #endregion
+
+                                        #region CHAT BACKGROUNDS
+                                        
+                                        else if (kkvv.Key == HikeConstants.CHAT_BACKGROUND_ARRAY)
+                                        {
+                                            bool isUpdated = false;
+
+                                            var val = kkvv.Value;
+                                            foreach (var obj in val)
+                                            {
+                                                JObject jObj = (JObject)obj;
+
+                                                var id = (string)jObj[HikeConstants.MSISDN];
+
+                                                var has_Custom_Bg = (bool)jObj[HikeConstants.HAS_CUSTOM_BACKGROUND];
+
+                                                if (!has_Custom_Bg && ChatBackgroundHelper.Instance.UpdateChatBgMap(id, (string)jObj[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp(), false))
+                                                {
+                                                    isUpdated = true;
+
+                                                    if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == id)
+                                                        pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, id);
+                                                }
+                                            }
+
+                                            if (isUpdated)
+                                                ChatBackgroundHelper.Instance.SaveChatBgMapToFile();
+                                        }
+                                        else if (kkvv.Key == HikeConstants.PUSH_CBG)
+                                        {
+                                            try
+                                            {
+                                                var val = Convert.ToInt32(kkvv.Value);
+                                                if (val == -1)
+                                                    App.WriteToIsoStorageSettings(App.CHAT_THEME_SETTING, (byte)0);
+                                                else
+                                                    App.WriteToIsoStorageSettings(App.CHAT_THEME_SETTING, (byte)1);
+                                            }
+                                            catch { }
+                                        }
+
+                                        #endregion
                                     }
                                     catch (Exception ex)
                                     {
@@ -983,6 +1025,49 @@ namespace windows_client
                     }
                 }
                 #endregion
+                #region META DATA
+
+                JObject metaData = (JObject)jsonObj[HikeConstants.METADATA];
+                if (metaData != null)
+                {
+                    #region GROUP NAME
+
+                    JToken gName;
+                    string groupName;
+                    if (metaData.TryGetValue(HikeConstants.NAME, out gName))
+                    {
+                        ConversationListObject cObj;
+                        groupName = gName.ToString();
+                        if (App.ViewModel.ConvMap.TryGetValue(grpId, out cObj))
+                        {
+                            if (cObj.ContactName != groupName)
+                                ConversationTableUtils.updateGroupName(grpId, groupName);
+                        }
+                    }
+
+                    #endregion
+
+                    #region CHAT BACKGROUND
+
+                    try
+                    {
+                        JObject chatBg = (JObject)metaData[HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS];
+                        if (chatBg != null)
+                        {
+                            var has_Custom_Bg = (bool)chatBg[HikeConstants.HAS_CUSTOM_BACKGROUND];
+
+                            if (!has_Custom_Bg && ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
+                                pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, grpId);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN with chat background, Exception : " + ex.StackTrace);
+                    }
+
+                    #endregion
+                }
+                #endregion
 
                 ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);
                 if (obj == null)
@@ -1112,7 +1197,7 @@ namespace windows_client
                     string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
                     GroupManager.Instance.LoadGroupParticipants(groupId);
                     GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, fromMsisdn, groupId);
-                    if (gp.HasLeft)
+                    if (gp==null || gp.HasLeft)
                         return;
 
                     ConvMessage convMsg = new ConvMessage(jsonObj, false, false);
@@ -1579,6 +1664,95 @@ namespace windows_client
                 }
             }
 
+            #endregion
+            #region CHAT BACKGROUND
+            else if (HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS == type)
+            {
+                try
+                {
+                    ConvMessage cm;
+                    var ts = (long)jsonObj[HikeConstants.TIMESTAMP];
+                    if (ts > 0)
+                    {
+                        long timedifference;
+                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                            ts = ts - timedifference;
+                    }
+
+                    var to = (string)jsonObj[HikeConstants.TO];
+
+                    var sender = !String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to) ? to : msisdn;
+
+                    ChatThemeData bg = null;
+                    if (ChatBackgroundHelper.Instance.ChatBgMap.TryGetValue(sender, out bg))
+                    {
+                        if (bg.Timestamp > ts)
+                            return;
+                    }
+
+                    var data = (JObject)jsonObj[HikeConstants.DATA];
+                    var bgId = (string)data[HikeConstants.BACKGROUND_ID];
+                    var hasCustomBg = (bool)data[HikeConstants.HAS_CUSTOM_BACKGROUND];
+
+                    if (!hasCustomBg && ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
+                    {
+                        if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
+                        {
+                            //if group chat, message text will be set in the constructor else it will be updated by MessagesTableUtils.addChatMessage
+                            cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED, jsonObj, ts);
+                        }
+                        else
+                        {
+                            cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_READ);
+                            cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
+                        }
+
+                        cm.MetaDataString = "{\"t\":\"cbg\"}";
+                    }
+                    else
+                    {
+                        //v2 send cbg change event to v1
+                        // show normal message with upgrade message
+                        if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
+                        {
+                            //if group chat, message text will be set in the constructor else it will be updated by MessagesTableUtils.addChatMessage
+                            cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED, jsonObj, ts);
+                        }
+                        else
+                        {
+                            cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_READ);
+                            cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED;
+                        }
+                    }
+
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, sender);
+
+                    if (hasCustomBg || !ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
+                        cm.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
+
+                    if (obj != null)
+                    {
+                        object[] vals;
+                        vals = new object[3];
+                        vals[0] = cm;
+                        vals[1] = obj;
+
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                            });
+                    }
+
+                    if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(sender, bgId, ts))
+                    {
+                        pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, sender);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Network Manager:: Chat Background, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                }
+            }
             #endregion
             #region App Update
 

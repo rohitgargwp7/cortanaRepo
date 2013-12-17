@@ -17,16 +17,17 @@ namespace windows_client.utils
         private SolidColorBrush lastMsgForeground;
         private SolidColorBrush smsBackground;
         private SolidColorBrush hikeMsgBackground;
+        private SolidColorBrush receivedChatBubbleColor; 
         private SolidColorBrush walkThroughSelectedColumn;
         private SolidColorBrush walkThroughUnselectedColumn;
+        private SolidColorBrush transparent;
         private SolidColorBrush black;
         private SolidColorBrush white;
+        private SolidColorBrush black40Opacity;
         private SolidColorBrush btnGrayBackground;
         private SolidColorBrush btnGrayForeground;
         private SolidColorBrush groupChatHeaderColor;
         private SolidColorBrush signUpForeground;
-        private SolidColorBrush receivedChatBubbleColor;
-        private SolidColorBrush statusBubbleColor;
         private SolidColorBrush editProfileForeground;
         private SolidColorBrush receivedChatBubbleTimestamp;
         private SolidColorBrush hikeSentChatBubbleTimestamp;
@@ -38,24 +39,39 @@ namespace windows_client.utils
         private SolidColorBrush untappedCategoryColor;
         private SolidColorBrush deleteGreyBackground;
         private SolidColorBrush deleteBlackBackground;
+        private BitmapImage chatBackgroundImageWhite;
+        private BitmapImage chatBackgroundImageBlack;
         private BitmapImage onHikeImage;
+        private BitmapImage onHikeImage_ct;
         private BitmapImage notOnHikeImage;
+        private BitmapImage notOnHikeImage_ct;
         private BitmapImage chatAcceptedImage;
+        private BitmapImage chatAcceptedImage_ct;
         private BitmapImage playIcon;
         private BitmapImage pauseIcon;
         private BitmapImage audioMicIcon;
         private BitmapImage downloadIcon;
         private BitmapImage httpFailed;
+        private BitmapImage httpFailed_CT;
         private BitmapImage emptyImage;
         private BitmapImage sent;
+        private BitmapImage sent_ct;
         private BitmapImage delivered;
+        private BitmapImage delivered_ct;
         private BitmapImage read;
+        private BitmapImage read_ct;
         private BitmapImage trying;
+        private BitmapImage trying_ct;
         private BitmapImage waiting;
+        private BitmapImage waiting_ct;
         private BitmapImage reward;
+        private BitmapImage reward_ct;
         private BitmapImage chatSmsError;
+        private BitmapImage chatSmsError_ct;
         private BitmapImage grpNameOrPicChanged;
+        private BitmapImage grpNameOrPicChanged_ct;
         private BitmapImage participantLeft;
+        private BitmapImage participantLeft_ct;
         private BitmapImage nudgeSend;
         private BitmapImage nudgeReceived;
         private BitmapImage textStatusImage;
@@ -63,7 +79,7 @@ namespace windows_client.utils
         private BitmapImage profilePicStatusImage;
         private BitmapImage noNewNotificationImage;
         private BitmapImage newNotificationImage;
-        private BitmapImage contactIcon;
+        private BitmapImage blackContactIcon;
         private BitmapImage whiteContactIcon;
         private BitmapImage facebookDisabledIcon;
         private BitmapImage facebookEnabledIcon;
@@ -73,7 +89,8 @@ namespace windows_client.utils
         private BitmapImage userProfileInviteImage;
         private BitmapImage userProfileStockImage;
         private BitmapImage loadingImage;
-        private BitmapImage lastSeenClockImage;
+        private BitmapImage lastSeenClockImageWhite;
+        private BitmapImage lastSeenClockImageBlack;
         private BitmapImage humanoidOverlay;
         private BitmapImage humanoid2Overlay;
         private BitmapImage doggyOverlay;
@@ -116,10 +133,8 @@ namespace windows_client.utils
         private Thickness newChatThreadEmoticonMargin = new Thickness(0, 10, 0, -10);
         BitmapImage walkieTalkieGreyImage;
         BitmapImage walkieTalkieWhiteImage;
-        BitmapImage walkieTalkieGreyImageBig;
-        BitmapImage walkieTalkieWhiteImageBig;
-        BitmapImage walkieTalkieDeleteSucImageGrey;
-        BitmapImage walkieTalkieDeleteSucImageWhite;
+        BitmapImage walkieTalkieBigImage;
+        BitmapImage walkieTalkieDeleteSucImage;
         BitmapImage closeButtonWhiteImage;
         BitmapImage closeButtonBlackImage;
         BitmapImage dustbinGreyImage;
@@ -130,8 +145,10 @@ namespace windows_client.utils
         private FontFamily messageText;
         private BitmapImage myLocationPin;
 
-        private BitmapImage resumeFTR;
-        private BitmapImage pausedFTR;
+        private BitmapImage resumeFTRWhite;
+        private BitmapImage resumeFTRBlack;
+        private BitmapImage pausedFTRWhite;
+        private BitmapImage pausedFTRBlack;
 
         private BitmapImage overlayRupeeImage;
         private BitmapImage overlaySmsImage;
@@ -147,7 +164,6 @@ namespace windows_client.utils
         public Thickness UserProfileStatusTextMargin = new Thickness(18, 0, 5, 0);
         public Thickness StatusImageMargin = new Thickness(12, 28, 0, 12);
         public SolidColorBrush RedBorderBrush = new SolidColorBrush(Colors.Red);
-        public SolidColorBrush BlackBorderBrush = new SolidColorBrush(Colors.Black);
         public BitmapImage BlankBitmapImage = new BitmapImage();
         #endregion
 
@@ -251,6 +267,28 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush ReceivedChatBubbleColor
+        {
+            get
+            {
+                if (receivedChatBubbleColor == null)
+                    receivedChatBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
+
+                return receivedChatBubbleColor;
+            }
+        }
+
+        public SolidColorBrush ReceiveMessageForeground
+        {
+            get
+            {
+                if (receiveMessageForeground == null)
+                    receiveMessageForeground = new SolidColorBrush(Color.FromArgb(255, 83, 83, 83));
+             
+                return receiveMessageForeground;
+            }
+        }
+
         public SolidColorBrush WalkThroughSelectedColumn
         {
             get
@@ -271,6 +309,16 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush Transparent
+        {
+            get
+            {
+                if (transparent == null)
+                    transparent = new SolidColorBrush(Colors.Transparent);
+                return transparent;
+            }
+        }
+
         public SolidColorBrush Black
         {
             get
@@ -288,6 +336,16 @@ namespace windows_client.utils
                 if (white == null)
                     white = new SolidColorBrush(Color.FromArgb(255, 0xff, 0xff, 0xff));
                 return white;
+            }
+        }
+
+        public SolidColorBrush Black40Opacity
+        {
+            get
+            {
+                if (black40Opacity == null)
+                    black40Opacity = new SolidColorBrush(Color.FromArgb(102, 0x0, 0x0, 0x0));
+                return black40Opacity;
             }
         }
 
@@ -334,34 +392,6 @@ namespace windows_client.utils
             }
         }
 
-        public SolidColorBrush ReceivedChatBubbleColor
-        {
-            get
-            {
-                if (receivedChatBubbleColor == null)
-                {
-                    if (Utils.isDarkTheme())
-                        receivedChatBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0x50, 0x50, 0x50));
-                    else
-                        receivedChatBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
-                }
-                return receivedChatBubbleColor;
-            }
-        }
-        public SolidColorBrush StatusBubbleColor
-        {
-            get
-            {
-                if (statusBubbleColor == null)
-                {
-                    if (Utils.isDarkTheme())
-                        statusBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0x26, 0x26, 0x26));
-                    else
-                        statusBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
-                }
-                return statusBubbleColor;
-            }
-        }
         public SolidColorBrush EditProfileForeground
         {
             get
@@ -374,45 +404,6 @@ namespace windows_client.utils
                         editProfileForeground = new SolidColorBrush(Color.FromArgb(255, 0x8d, 0x8d, 0x8d));
                 }
                 return editProfileForeground;
-            }
-        }
-
-        public SolidColorBrush ReceivedChatBubbleTimestamp
-        {
-            get
-            {
-                if (receivedChatBubbleTimestamp == null)
-                {
-                    if (Utils.isDarkTheme())
-                        receivedChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0xbc, 0xbc, 0xbc));
-                    else
-                        receivedChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0x83, 0x83, 0x83));
-                }
-                return receivedChatBubbleTimestamp;
-            }
-        }
-
-        public SolidColorBrush HikeSentChatBubbleTimestamp
-        {
-            get
-            {
-                if (hikeSentChatBubbleTimestamp == null)
-                {
-                    hikeSentChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0xb4, 0xd9, 0xf3));
-                }
-                return hikeSentChatBubbleTimestamp;
-            }
-        }
-
-        public SolidColorBrush SMSSentChatBubbleTimestamp
-        {
-            get
-            {
-                if (smsSentChatBubbleTimestamp == null)
-                {
-                    smsSentChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0xd6, 0xea, 0xb9));
-                }
-                return smsSentChatBubbleTimestamp;
             }
         }
 
@@ -488,6 +479,26 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage ChatBackgroundImageWhite
+        {
+            get
+            {
+                if (chatBackgroundImageWhite == null)
+                    chatBackgroundImageWhite = new BitmapImage(new Uri("/view/images/paint.png", UriKind.Relative));
+                return chatBackgroundImageWhite;
+            }
+        }
+
+        public BitmapImage ChatBackgroundImageBlack
+        {
+            get
+            {
+                if (chatBackgroundImageBlack == null)
+                    chatBackgroundImageBlack = new BitmapImage(new Uri("/view/images/paint_black.png", UriKind.Relative));
+                return chatBackgroundImageBlack;
+            }
+        }
+
         public BitmapImage OnHikeImage
         {
             get
@@ -498,6 +509,16 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage OnHikeImage_ChatTheme
+        {
+            get
+            {
+                if (onHikeImage_ct == null)
+                    onHikeImage_ct = new BitmapImage(new Uri("/View/images/chat_joined_blue_CT.png", UriKind.Relative));
+                return onHikeImage_ct;
+            }
+        }
+
         public BitmapImage NotOnHikeImage
         {
             get
@@ -505,6 +526,16 @@ namespace windows_client.utils
                 if (notOnHikeImage == null)
                     notOnHikeImage = new BitmapImage(new Uri("/View/images/chat_invited_green.png", UriKind.Relative));
                 return notOnHikeImage;
+            }
+        }
+
+        public BitmapImage NotOnHikeImage_ChatTheme
+        {
+            get
+            {
+                if (notOnHikeImage_ct == null)
+                    notOnHikeImage_ct = new BitmapImage(new Uri("/View/images/chat_invited_green_CT.png", UriKind.Relative));
+                return notOnHikeImage_ct;
             }
         }
 
@@ -527,6 +558,7 @@ namespace windows_client.utils
                 return overlaySmsImage;
             }
         }
+        
         public BitmapImage ChatAcceptedImage
         {
             get
@@ -534,6 +566,16 @@ namespace windows_client.utils
                 if (chatAcceptedImage == null)
                     chatAcceptedImage = new BitmapImage(new Uri("/View/images/chat_invited_green.png", UriKind.Relative));
                 return chatAcceptedImage;
+            }
+        }
+
+        public BitmapImage ChatAcceptedImage_ChatTheme
+        {
+            get
+            {
+                if (chatAcceptedImage_ct == null)
+                    chatAcceptedImage_ct = new BitmapImage(new Uri("/View/images/chat_invited_green_CT.png", UriKind.Relative));
+                return chatAcceptedImage_ct;
             }
         }
 
@@ -565,6 +607,7 @@ namespace windows_client.utils
             {
                 if (downloadIcon == null)
                     downloadIcon = new BitmapImage(new Uri("/View/images/download_icon.png", UriKind.Relative));
+              
                 return downloadIcon;
             }
         }
@@ -575,7 +618,19 @@ namespace windows_client.utils
             {
                 if (httpFailed == null)
                     httpFailed = new BitmapImage(new Uri("/View/images/error_icon.png", UriKind.Relative));
+             
                 return httpFailed;
+            }
+        }
+
+        public BitmapImage HttpFailed_ChatTheme
+        {
+            get
+            {
+                if (httpFailed_CT == null)
+                    httpFailed_CT = new BitmapImage(new Uri("/View/images/error_icon_CT.png", UriKind.Relative));
+              
+                return httpFailed_CT;
             }
         }
 
@@ -585,39 +640,62 @@ namespace windows_client.utils
             {
                 if (sent == null)
                     sent = new BitmapImage(new Uri("/View/images/ic_sent.png", UriKind.Relative));
+               
                 return sent;
             }
         }
 
-        public BitmapImage PausedFTR
+        public BitmapImage Sent_ChatTheme
         {
             get
             {
-                if (pausedFTR == null)
-                {
-                    if (Utils.isDarkTheme())
-                        pausedFTR = new BitmapImage(new Uri("/View/images/pause_white_ftr.png", UriKind.Relative));
-                    else
-                        pausedFTR = new BitmapImage(new Uri("/View/images/pause_black_ftr.png", UriKind.Relative));
-                }
-
-                return pausedFTR;
+                if (sent_ct == null)
+                    sent_ct = new BitmapImage(new Uri("/View/images/ic_sent_CT.png", UriKind.Relative));
+                return sent_ct;
             }
         }
 
-        public BitmapImage ResumeFTR
+        public BitmapImage PausedFTRWhite
         {
             get
             {
-                if (resumeFTR == null)
-                {
-                    if (Utils.isDarkTheme())
-                        resumeFTR = new BitmapImage(new Uri("/View/images/resume_white_ftr.png", UriKind.Relative));
-                    else
-                        resumeFTR = new BitmapImage(new Uri("/View/images/resume_black_ftr.png", UriKind.Relative));
-                }
+                if (pausedFTRWhite == null)
+                    pausedFTRWhite = new BitmapImage(new Uri("/View/images/pause_white_ftr.png", UriKind.Relative));
 
-                return resumeFTR;
+                return pausedFTRWhite;
+            }
+        }
+
+        public BitmapImage ResumeFTRWhite
+        {
+            get
+            {
+                if (resumeFTRWhite == null)
+                    resumeFTRWhite = new BitmapImage(new Uri("/View/images/resume_white_ftr.png", UriKind.Relative));
+
+                return resumeFTRWhite;
+            }
+        }
+
+        public BitmapImage PausedFTRBlack
+        {
+            get
+            {
+                if (pausedFTRBlack == null)
+                    pausedFTRBlack = new BitmapImage(new Uri("/View/images/pause_black_ftr.png", UriKind.Relative));
+
+                return pausedFTRBlack;
+            }
+        }
+
+        public BitmapImage ResumeFTRBlack
+        {
+            get
+            {
+                if (resumeFTRBlack == null)
+                    resumeFTRBlack = new BitmapImage(new Uri("/View/images/resume_black_ftr.png", UriKind.Relative));
+
+                return resumeFTRBlack;
             }
         }
 
@@ -627,7 +705,19 @@ namespace windows_client.utils
             {
                 if (delivered == null)
                     delivered = new BitmapImage(new Uri("/View/images/ic_delivered.png", UriKind.Relative));
+                
                 return delivered;
+            }
+        }
+
+        public BitmapImage Delivered_ChatTheme
+        {
+            get
+            {
+                if (delivered_ct == null)
+                    delivered_ct = new BitmapImage(new Uri("/View/images/ic_delivered_CT.png", UriKind.Relative));
+               
+                return delivered_ct;
             }
         }
 
@@ -637,10 +727,33 @@ namespace windows_client.utils
             {
                 if (read == null)
                     read = new BitmapImage(new Uri("/View/images/ic_read.png", UriKind.Relative));
+                
                 return read;
             }
         }
 
+        public BitmapImage Read_ChatTheme
+        {
+            get
+            {
+                if (read_ct == null)
+                    read_ct = new BitmapImage(new Uri("/View/images/ic_read_CT.png", UriKind.Relative));
+                
+                return read_ct;
+            }
+        }
+
+        public BitmapImage Trying_ChatTheme
+        {
+            get
+            {
+                if (trying_ct == null)
+                    trying_ct = new BitmapImage(new Uri("/View/images/icon_sending_CT.png", UriKind.Relative));
+                
+                return trying_ct;
+            }
+        }
+        
         public BitmapImage Trying
         {
             get
@@ -663,6 +776,17 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage Waiting_ChatTheme
+        {
+            get
+            {
+                if (waiting_ct == null)
+                    waiting_ct = new BitmapImage(new Uri("/View/images/chat_waiting_CT.png", UriKind.Relative));
+                
+                return waiting_ct;
+            }
+        }
+
         public BitmapImage Reward
         {
             get
@@ -670,6 +794,16 @@ namespace windows_client.utils
                 if (reward == null)
                     reward = new BitmapImage(new Uri("/View/images/chat_reward.png", UriKind.Relative));
                 return reward;
+            }
+        }
+
+        public BitmapImage Reward_ChatTheme
+        {
+            get
+            {
+                if (reward_ct == null)
+                    reward_ct = new BitmapImage(new Uri("/View/images/chat_reward_ct.png", UriKind.Relative));
+                return reward_ct;
             }
         }
 
@@ -683,6 +817,16 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage IntUserBlocked_ChatTheme
+        {
+            get
+            {
+                if (chatSmsError_ct == null)
+                    chatSmsError_ct = new BitmapImage(new Uri("/View/images/chat_sms_error_CT.png", UriKind.Relative));
+                return chatSmsError_ct;
+            }
+        }
+
         public BitmapImage GrpNameOrPicChanged
         {
             get
@@ -693,13 +837,36 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage GrpNameOrPicChanged_ChatTheme
+        {
+            get
+            {
+                if (grpNameOrPicChanged_ct == null)
+                    grpNameOrPicChanged_ct = new BitmapImage(new Uri("/View/images/group_name_changed_CT.png", UriKind.Relative));
+                
+                return grpNameOrPicChanged_ct;
+            }
+        }
+
         public BitmapImage ParticipantLeft
         {
             get
             {
                 if (participantLeft == null)
                     participantLeft = new BitmapImage(new Uri("/View/images/chat_left.png", UriKind.Relative));
+               
                 return participantLeft;
+            }
+        }
+
+        public BitmapImage ParticipantLeft_ChatTheme
+        {
+            get
+            {
+                if (participantLeft_ct == null)
+                    participantLeft_ct = new BitmapImage(new Uri("/View/images/chat_left_CT.png", UriKind.Relative));
+
+                return participantLeft_ct;
             }
         }
 
@@ -773,18 +940,14 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage ContactIcon
+        public BitmapImage BlackContactIcon
         {
             get
             {
-                if (contactIcon == null)
-                {
-                    if (Utils.isDarkTheme())
-                        contactIcon = WhiteContactIcon;
-                    else
-                        contactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon_black.png", UriKind.Relative));
-                }
-                return contactIcon;
+                if (blackContactIcon == null)
+                    blackContactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon_black.png", UriKind.Relative));
+
+                return blackContactIcon;
             }
         }
 
@@ -894,33 +1057,25 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage LastSeenClockImage
+        public BitmapImage LastSeenClockImageWhite
         {
             get
             {
-                if (lastSeenClockImage == null)
-                {
-                    if (Utils.isDarkTheme())
-                        lastSeenClockImage = new BitmapImage(new Uri("/View/images/last_seen_clock_white.png", UriKind.Relative));
-                    else
-                        lastSeenClockImage = new BitmapImage(new Uri("/View/images/last_seen_clock_black.png", UriKind.Relative));
-                }
-                return lastSeenClockImage;
+                if (lastSeenClockImageWhite == null)
+                        lastSeenClockImageWhite = new BitmapImage(new Uri("/View/images/last_seen_clock_white.png", UriKind.Relative));
+
+                return lastSeenClockImageWhite;
             }
         }
-
-        public SolidColorBrush ReceiveMessageForeground
+        
+        public BitmapImage LastSeenClockImageBlack
         {
             get
             {
-                if (receiveMessageForeground == null)
-                {
-                    if (Utils.isDarkTheme())
-                        receiveMessageForeground = this.White;
-                    else
-                        receiveMessageForeground = new SolidColorBrush(Color.FromArgb(255, 83, 83, 83));
-                }
-                return receiveMessageForeground;
+                if (lastSeenClockImageBlack == null)
+                    lastSeenClockImageBlack = new BitmapImage(new Uri("/View/images/last_seen_clock_black.png", UriKind.Relative));
+
+                return lastSeenClockImageBlack;
             }
         }
 
@@ -1066,20 +1221,10 @@ namespace windows_client.utils
         {
             get
             {
-                if (Utils.isDarkTheme())
-                {
-                    if (walkieTalkieGreyImageBig == null)
-                        walkieTalkieGreyImageBig = new BitmapImage(new Uri("/View/images/Walkie_Talkie_Black_big.png", UriKind.Relative));
+                if (walkieTalkieBigImage == null)
+                    walkieTalkieBigImage = new BitmapImage(new Uri("/View/images/Walkie_Talkie_White_big.png", UriKind.Relative));
 
-                    return walkieTalkieGreyImageBig;
-                }
-                else
-                {
-                    if (walkieTalkieWhiteImageBig == null)
-                        walkieTalkieWhiteImageBig = new BitmapImage(new Uri("/View/images/Walkie_Talkie_White_big.png", UriKind.Relative));
-
-                    return walkieTalkieWhiteImageBig;
-                }
+                return walkieTalkieBigImage;
             }
         }
 
@@ -1087,41 +1232,32 @@ namespace windows_client.utils
         {
             get
             {
-                if (Utils.isDarkTheme())
-                {
-                    if (walkieTalkieDeleteSucImageGrey == null)
-                        walkieTalkieDeleteSucImageGrey = new BitmapImage(new Uri("/View/images/deleted_grey_icon.png", UriKind.Relative));
+                if (walkieTalkieDeleteSucImage == null)
+                    walkieTalkieDeleteSucImage = new BitmapImage(new Uri("/View/images/deleted_white_icon.png", UriKind.Relative));
 
-                    return walkieTalkieDeleteSucImageGrey;
-                }
-                else
-                {
-                    if (walkieTalkieDeleteSucImageWhite == null)
-                        walkieTalkieDeleteSucImageWhite = new BitmapImage(new Uri("/View/images/deleted_white_icon.png", UriKind.Relative));
-
-                    return walkieTalkieDeleteSucImageWhite;
-                }
+                return walkieTalkieDeleteSucImage;
             }
         }
 
-        public BitmapImage CloseButtonImage
+        public BitmapImage CloseButtonBlackImage
         {
             get
             {
-                if (Utils.isDarkTheme())
-                {
-                    if (closeButtonBlackImage == null)
-                        closeButtonBlackImage = new BitmapImage(new Uri("/View/images/close_black.png", UriKind.Relative));
+                if (closeButtonBlackImage == null)
+                    closeButtonBlackImage = new BitmapImage(new Uri("/View/images/close_black.png", UriKind.Relative));
 
-                    return closeButtonBlackImage;
-                }
-                else
-                {
-                    if (closeButtonWhiteImage == null)
-                        closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
+                return closeButtonBlackImage;
+            }
+        }
 
-                    return closeButtonWhiteImage;
-                }
+        public BitmapImage CloseButtonWhiteImage
+        {
+            get
+            {
+                if (closeButtonWhiteImage == null)
+                    closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
+
+                return closeButtonWhiteImage;
             }
         }
 
@@ -1459,17 +1595,6 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage CloseButtonWhiteImage
-        {
-            get
-            {
-                if (closeButtonWhiteImage == null)
-                    closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
-
-                return closeButtonWhiteImage;
-            }
-        }
-
         public BitmapImage MuteIcon
         {
             get
@@ -1766,6 +1891,46 @@ namespace windows_client.utils
             if (Utils.isGroupConversation(msisdn))
                 return getDefaultGroupAvatar(msisdn);
             return getDefaultAvatar(msisdn);
+        }
+
+        public SolidColorBrush ConvertStringToColor(string hexString)
+        {
+            byte a = 0;
+            byte r = 0;
+            byte g = 0;
+            byte b = 0;
+
+            if (hexString.StartsWith("#"))
+                hexString = hexString.Substring(1);
+
+            if (hexString.Length == 8)
+            {
+                a = Convert.ToByte(Int32.Parse(hexString.Substring(0, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
+                r = Convert.ToByte(Int32.Parse(hexString.Substring(2, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
+                g = Convert.ToByte(Int32.Parse(hexString.Substring(4, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
+                b = Convert.ToByte(Int32.Parse(hexString.Substring(6, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
+            }
+            else
+            {
+                a = Convert.ToByte(255);
+                r = Convert.ToByte(Int32.Parse(hexString.Substring(0, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
+                g = Convert.ToByte(Int32.Parse(hexString.Substring(2, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
+                b = Convert.ToByte(Int32.Parse(hexString.Substring(4, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
+            }
+
+            return new SolidColorBrush(Color.FromArgb(a, r, g, b));
+        }
+
+        public byte[] ConvertToBytes(BitmapImage bitmapImage)
+        {
+            WriteableBitmap wb = new WriteableBitmap(bitmapImage);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                wb.SaveJpeg(ms, bitmapImage.PixelWidth, bitmapImage.PixelHeight, 0, 100);
+
+                return ms.ToArray();
+            }
         }
     }
 }

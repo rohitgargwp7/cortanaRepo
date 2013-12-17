@@ -358,6 +358,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to change chat theme.
+        /// </summary>
+        public static string Change_Background_App_Bar_Menu_Txt {
+            get {
+                return ResourceManager.GetString("Change_Background_App_Bar_Menu_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} changed the background.
+        /// </summary>
+        public static string ChatBg_Changed_Text {
+            get {
+                return ResourceManager.GetString("ChatBg_Changed_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} just changed the chat theme with you. Update your app to the latest version to experience Chat Themes 2.0. http://hike.in.
+        /// </summary>
+        public static string ChatBg_NotChanged_Text {
+            get {
+                return ResourceManager.GetString("ChatBg_NotChanged_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 1 new message.
         /// </summary>
         public static string ChatThread_1NewMessage_txt {
@@ -921,6 +948,15 @@ namespace windows_client.Languages {
         public static string CT_MessageCount_Sms_User {
             get {
                 return ResourceManager.GetString("CT_MessageCount_Sms_User", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to default.
+        /// </summary>
+        public static string Default_Txt {
+            get {
+                return ResourceManager.GetString("Default_Txt", resourceCulture);
             }
         }
         
@@ -2210,6 +2246,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to And loads of more themes here....
+        /// </summary>
+        public static string In_App_Tip_9 {
+            get {
+                return ResourceManager.GetString("In_App_Tip_9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Installed.
         /// </summary>
         public static string Installed_Txt {
@@ -3002,6 +3047,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to on hike.
+        /// </summary>
+        public static string On_Hike {
+            get {
+                return ResourceManager.GetString("On_Hike", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to on SMS.
+        /// </summary>
+        public static string On_SMS {
+            get {
+                return ResourceManager.GetString("On_SMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to on hike since {0}.
         /// </summary>
         public static string OnHIkeSince_Txt {
@@ -3061,6 +3124,15 @@ namespace windows_client.Languages {
         public static string Pause_Txt {
             get {
                 return ResourceManager.GetString("Pause_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} people.
+        /// </summary>
+        public static string People_In_Group {
+            get {
+                return ResourceManager.GetString("People_In_Group", resourceCulture);
             }
         }
         
@@ -3524,6 +3596,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to save theme.
+        /// </summary>
+        public static string Save_ChatTheme_Txt {
+            get {
+                return ResourceManager.GetString("Save_ChatTheme_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to search.
         /// </summary>
         public static string Search_Hint_Txt {
@@ -3893,6 +3974,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Chat themes notifications.
+        /// </summary>
+        public static string Settings_ChatThemeNotification_SwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_ChatThemeNotification_SwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter sends a message.
         /// </summary>
         public static string Settings_EnterToSendToggleSwitchHeader {
@@ -3965,7 +4055,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Status updates notification.
+        ///   Looks up a localized string similar to Status updates notifications.
         /// </summary>
         public static string Settings_StatusNotification_SwitchHeader {
             get {

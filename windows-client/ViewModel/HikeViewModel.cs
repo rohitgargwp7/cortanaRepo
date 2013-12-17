@@ -17,6 +17,9 @@ using windows_client.utils;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using System.Device.Location;
+using Newtonsoft.Json.Linq;
+using System.Linq;
+using windows_client.Misc;
 
 namespace windows_client.ViewModel
 {
@@ -159,8 +162,6 @@ namespace windows_client.ViewModel
         public HikeViewModel(List<ConversationListObject> convList)
         {
             _convMap = new Dictionary<string, ConversationListObject>(convList.Count);
-            _pendingReq = new Dictionary<string, ConversationListObject>();
-            _favList = new ObservableCollection<ConversationListObject>();
 
             List<ConversationListObject> listConversationBox = new List<ConversationListObject>();
             // this order should be maintained as _convMap should be populated before loading fav list
@@ -171,41 +172,41 @@ namespace windows_client.ViewModel
                 listConversationBox.Add(convListObj);
             }
             _messageListPageCollection = new ObservableCollection<ConversationListObject>(listConversationBox);
-            MiscDBUtil.LoadFavourites(_favList, _convMap);
-            int count = 0;
-            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-            if (count != _favList.Count) // values are not loaded, move to backup plan
-            {
-                _favList.Clear();
-                MiscDBUtil.LoadFavouritesFromIndividualFiles(_favList, _convMap);
-            }
-            RegisterListeners();
 
+            LoadViewModelObjects();
             LoadToolTipsDict();
             LoadCurrentLocation();
-
-            FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
         }
 
         public HikeViewModel()
         {
             _messageListPageCollection = new ObservableCollection<ConversationListObject>();
             _convMap = new Dictionary<string, ConversationListObject>();
-            _favList = new ObservableCollection<ConversationListObject>();
+
+            LoadViewModelObjects();
+        }
+
+        private void LoadViewModelObjects()
+        {
             _pendingReq = new Dictionary<string, ConversationListObject>();
+            _favList = new ObservableCollection<ConversationListObject>();
+            
             MiscDBUtil.LoadFavourites(_favList, _convMap);
             int count = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+            
             if (count != _favList.Count) // values are not loaded, move to backup plan
             {
                 _favList.Clear();
                 MiscDBUtil.LoadFavouritesFromIndividualFiles(_favList, _convMap);
             }
+
             RegisterListeners();
 
             LoadToolTipsDict();
             LoadCurrentLocation();
 
+            ChatBackgroundHelper.Instance.Instantiate();
             FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
         }
 
@@ -431,6 +432,8 @@ namespace windows_client.ViewModel
             }
         }
 
+        #region In Apptips
+
         List<HikeToolTip> _toolTipsList;
         public Dictionary<int, HikeToolTip> DictInAppTip;
 
@@ -441,14 +444,14 @@ namespace windows_client.ViewModel
             if (DictInAppTip == null)
                 DictInAppTip = new Dictionary<int, HikeToolTip>();
 
-            byte marked;
+            int marked;
             App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
-            marked &= (byte)~(1 << index);
+            marked &= (int)~(1 << index);
             App.appSettings[App.TIP_MARKED_KEY] = marked;
 
-            byte currentShown;
+            int currentShown;
             App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-            currentShown &= (byte)~(1 << index);
+            currentShown &= (int)~(1 << index);
             App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
 
             if (_toolTipsList == null)
@@ -469,13 +472,15 @@ namespace windows_client.ViewModel
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 30, 0), FullTipMargin = new Thickness(10, 0, 10, 55) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 65, 10, 0) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 75, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_7, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
 
             if (!App.appSettings.Contains(App.ENTER_TO_SEND))
                 _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_8_1, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 230, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
             else
                 _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_8_2, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 230, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
+
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_9, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(410, 0, 10, 0), FullTipMargin = new Thickness(10, 75, 10, 0) });
         }
 
         /// <summary>
@@ -483,11 +488,11 @@ namespace windows_client.ViewModel
         /// </summary>
         public void LoadToolTipsDict()
         {
-            byte marked, currentlyShowing;
+            int marked, currentlyShowing;
             App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked); //initilaized in upgrade logic
             App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentlyShowing); //initilaized in upgrade logic
 
-            if (marked == 255 && currentlyShowing == 0)//0xff
+            if (marked == 511 && currentlyShowing == 0)//0x1ff
                 return;
 
             if (_toolTipsList == null) 
@@ -529,14 +534,14 @@ namespace windows_client.ViewModel
             tip.IsShown = true;
             tip.IsCurrentlyShown = true;
 
-            byte marked;
+            int marked;
             App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
-            marked |= (byte)(1 << index);
+            marked |= (int)(1 << index);
             App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
 
-            byte currentShown;
+            int currentShown;
             App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-            currentShown |= (byte)(1 << index);
+            currentShown |= (int)(1 << index);
             App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
 
             if (element != null)
@@ -547,7 +552,7 @@ namespace windows_client.ViewModel
                 Canvas.SetZIndex(inAppTipUC, 3);
                 inAppTipUC.Visibility = Visibility.Visible;
 
-                if (index == 0 || index == 1 || index == 2 || index == 5 || index == 7)
+                if (index == 0 || index == 1 || index == 2 || index == 5 || index == 7 || index == 8)
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 3);
                 else if (index == 3)
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 2);
@@ -608,9 +613,9 @@ namespace windows_client.ViewModel
 
                     toolTip.IsCurrentlyShown = false;
 
-                    byte currentShown;
+                    int currentShown;
                     App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                    currentShown &= (byte)~(1 << index);
+                    currentShown &= (int)~(1 << index);
                     App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
                 }
             }
@@ -618,9 +623,9 @@ namespace windows_client.ViewModel
             {
                 toolTip.IsCurrentlyShown = false;
 
-                byte currentShown;
+                int currentShown;
                 App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                currentShown &= (byte)~(1 << index);
+                currentShown &= (int)~(1 << index);
                 App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
             }
         }
@@ -644,14 +649,64 @@ namespace windows_client.ViewModel
                 HikeToolTip toolTip = DictInAppTip[tip.TipIndex];
                 toolTip.IsCurrentlyShown = false;
 
-                byte currentShown;
+                int currentShown;
                 App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                currentShown &= (byte)~(1 << tip.TipIndex);
+                currentShown &= (int)~(1 << tip.TipIndex);
                 App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
 
                 toolTip.TriggerUIUpdateOnDismissed();
             }
         }
+
+        #endregion
+
+        #region ChatBackground
+
+        ChatBackground _lastSelectedBackground;
+        public ChatBackground LastSelectedBackground
+        {
+            get
+            {
+                return _lastSelectedBackground;
+            }
+            set
+            {
+                if (value != _lastSelectedBackground)
+                {
+                    if (_lastSelectedBackground != null)
+                        _lastSelectedBackground.TickImageVisibility = Visibility.Collapsed;
+
+                    _lastSelectedBackground = value;
+
+                    if (_lastSelectedBackground != null)
+                        _lastSelectedBackground.TickImageVisibility = Visibility.Visible;
+                }
+            }
+        }
+
+        ChatBackground _selectedBackground;
+        public ChatBackground SelectedBackground
+        {
+            get
+            {
+                return _selectedBackground;
+            }
+            set
+            {
+                if (value != _selectedBackground)
+                {
+                    if (_selectedBackground != null)
+                        _selectedBackground.IsSelected = false;
+                    
+                    _selectedBackground = value;
+
+                    if (_selectedBackground != null)
+                        _selectedBackground.IsSelected = true;
+                }
+            }
+        }
+
+        #endregion
 
         public void RemoveFrndReqFromTimeline(string msisdn, FriendsTableUtils.FriendStatusEnum friendStatus)
         {

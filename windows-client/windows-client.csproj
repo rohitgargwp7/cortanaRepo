@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -136,7 +136,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\sharpcompress.0.8.2\lib\sl3-wp\SharpCompress.WP7.dll</HintPath>
     </Reference>
-    <Reference Include="System.Net.Http">
+    <Reference Include="System.Net.Http, Version=1.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Net.Http.2.2.15\lib\sl4-windowsphone71\System.Net.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.Extensions">
@@ -210,6 +211,7 @@
     <Compile Include="Misc\Social.cs" />
     <Compile Include="Model\Analytics.cs" />
     <Compile Include="Model\Attachment.cs" />
+    <Compile Include="Model\ChatBackground.cs" />
     <Compile Include="Model\ContactCompleteDetails.cs" />
     <Compile Include="Model\GroupInfo.cs" />
     <Compile Include="Model\GroupParticipant.cs" />
@@ -229,6 +231,7 @@
     <Compile Include="utils\AccountUtils.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
+    <Compile Include="utils\ChatBackgroundHelper.cs" />
     <Compile Include="utils\LruCache.cs" />
     <Compile Include="utils\MD5.cs" />
     <Compile Include="utils\StickerPivotHelper.cs" />
@@ -380,6 +383,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Styles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\BlockListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -524,6 +530,37 @@
     <Content Include="View\images\avatars.png" />
     <Content Include="View\images\avatars_i.png" />
     <Content Include="View\images\avatars_overlay.png" />
+    <Content Include="View\images\chatBackgrounds\aqua.png" />
+    <Content Include="View\images\chatBackgrounds\blue-2.png" />
+    <Content Include="View\images\chatBackgrounds\blue-green.png" />
+    <Content Include="View\images\chatBackgrounds\blue-grey.png" />
+    <Content Include="View\images\chatBackgrounds\blue-stocking.png" />
+    <Content Include="View\images\chatBackgrounds\blue.png" />
+    <Content Include="View\images\chatBackgrounds\cyan-snowman.png" />
+    <Content Include="View\images\chatBackgrounds\green-christmastree.png" />
+    <Content Include="View\images\chatBackgrounds\green.png" />
+    <Content Include="View\images\chatBackgrounds\orange.png" />
+    <Content Include="View\images\chatBackgrounds\purple-gift.png" />
+    <Content Include="View\images\chatBackgrounds\purple.png" />
+    <Content Include="View\images\chatBackgrounds\red-candycane.png" />
+    <Content Include="View\images\chatBackgrounds\red-christmas.png" />
+    <Content Include="View\images\chatBackgrounds\red-hearts.png" />
+    <Content Include="View\images\chatBackgrounds\yellow.png" />
+    <Content Include="View\images\chat_invited_green_CT.png" />
+    <Content Include="View\images\chat_joined_blue_CT.png" />
+    <Content Include="View\images\chat_left_CT.png" />
+    <Content Include="View\images\chat_reward_CT.png" />
+    <Content Include="View\images\chat_sms_error_CT.png" />
+    <Content Include="View\images\chat_waiting_CT.png" />
+    <Content Include="View\images\deleted_grey_icon.png" />
+    <Content Include="View\images\download_failed_bubble_CT.png" />
+    <Content Include="View\images\error_icon_CT.png" />
+    <Content Include="View\images\group_name_changed_CT.png" />
+    <Content Include="View\images\icon_sending_CT.png" />
+    <Content Include="View\images\ic_delivered_CT.png" />
+    <Content Include="View\images\ic_read_CT.png" />
+    <Content Include="View\images\ic_sent_CT.png" />
+    <Content Include="View\images\paint_black.png" />
     <Content Include="View\images\smileyExpressions.png" />
     <Content Include="View\images\smileyExpressions_i.png" />
     <Content Include="View\images\smileyExpressions_overlay.png" />
@@ -547,6 +584,7 @@
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
+    <Content Include="View\images\paint.png" />
     <Content Include="View\images\active_bolly.png" />
     <Content Include="View\images\add_friend.png" />
     <Content Include="View\images\add_users_white.png" />
@@ -574,7 +612,6 @@
     <Content Include="View\images\change_pic.png" />
     <Content Include="View\images\chat_sms_error.png" />
     <Content Include="View\images\connected_tick.png" />
-    <Content Include="View\images\deleted_grey_icon.png" />
     <Content Include="View\images\deleted_white_icon.png" />
     <Content Include="View\images\delete_account_white.png" />
     <Content Include="View\images\downArrow.png" />
@@ -745,6 +782,7 @@
     <Content Include="View\images\tutorial_welcome.png" />
     <Content Include="View\images\twitter_status.png" />
     <Content Include="View\images\twitter_status_disabled.png" />
+    <Content Include="View\images\typing_CT.png" />
     <Content Include="View\images\unmute_icon_main_g.png" />
     <Content Include="View\images\unmute_icon_main_l.png" />
     <Content Include="View\images\user_invite.png" />
@@ -755,7 +793,6 @@
     <Content Include="View\images\user_lock_white.png" />
     <Content Include="View\images\new_icon.png" />
     <Content Include="View\images\new_icon_white.png" />
-    <Content Include="View\images\Walkie_Talkie_Black_big.png" />
     <Content Include="View\images\walkie_talkie_White_Big.png" />
     <Content Include="View\images\Walkie_Talkie_Grey_small.png" />
     <Content Include="View\images\made_with_love_dark.png" />
@@ -987,6 +1024,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
