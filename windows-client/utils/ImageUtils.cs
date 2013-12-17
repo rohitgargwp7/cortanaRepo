@@ -100,6 +100,7 @@ namespace windows_client.utils
         private BitmapImage expressionsOverlay;
         private BitmapImage smileyExpressionsOverlay;
         private BitmapImage avatarsOverlay;
+        private BitmapImage indiansOverlay;
         private BitmapImage recentIcon;
         private BitmapImage humanoidInactive;
         private BitmapImage humanoid2Inactive;
@@ -110,6 +111,7 @@ namespace windows_client.utils
         private BitmapImage expressionsInactive;
         private BitmapImage smileyExpressionsInactive;
         private BitmapImage avatarsInactive;
+        private BitmapImage indianInactive;
         private BitmapImage humanoidActive;
         private BitmapImage humanoid2Active;
         private BitmapImage doggyActive;
@@ -119,6 +121,7 @@ namespace windows_client.utils
         private BitmapImage expressionsActive;
         private BitmapImage smileyExpressionsActive;
         private BitmapImage avatarsActive;
+        private BitmapImage indianActive;
         private BitmapImage muteIcon;
         private BitmapImage muteIconForConversationView;
         private BitmapImage unmuteIcon;
@@ -128,8 +131,6 @@ namespace windows_client.utils
 
         private SolidColorBrush receiveMessageForeground;
         private Thickness convListEmoticonMargin = new Thickness(0, 3, 0, -5);
-        private Thickness chatThreadKeyPadUpMargin = new Thickness(0, 315, 15, 0);
-        private Thickness chatThreadKeyPadDownMargin = new Thickness(0, 0, 15, 0);
         private Thickness newChatThreadEmoticonMargin = new Thickness(0, 10, 0, -10);
         BitmapImage walkieTalkieGreyImage;
         BitmapImage walkieTalkieWhiteImage;
@@ -1137,22 +1138,6 @@ namespace windows_client.utils
             }
         }
 
-        public Thickness ChatThreadKeyPadUpMargin
-        {
-            get
-            {
-                return chatThreadKeyPadUpMargin;
-            }
-        }
-
-        public Thickness ChatThreadKeyPadDownMargin
-        {
-            get
-            {
-                return chatThreadKeyPadDownMargin;
-            }
-        }
-
         public SolidColorBrush DeleteBlackBackground
         {
             get
@@ -1261,13 +1246,15 @@ namespace windows_client.utils
             }
         }
 
+        #region Sticker Category Overlays
+
         public BitmapImage HumanoidOverlay
         {
             get
             {
                 if (humanoidOverlay == null)
                 {
-                    humanoidOverlay = new BitmapImage(new Uri("/View/images/humanoid_overlay.png", UriKind.Relative));
+                    humanoidOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/humanoid_overlay.png", UriKind.Relative));
                 }
                 return humanoidOverlay;
             }
@@ -1279,7 +1266,7 @@ namespace windows_client.utils
             {
                 if (humanoid2Overlay == null)
                 {
-                    humanoid2Overlay = new BitmapImage(new Uri("/View/images/humanoid2_overlay.png", UriKind.Relative));
+                    humanoid2Overlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/humanoid2_overlay.png", UriKind.Relative));
                 }
                 return humanoid2Overlay;
             }
@@ -1291,7 +1278,7 @@ namespace windows_client.utils
             {
                 if (doggyOverlay == null)
                 {
-                    doggyOverlay = new BitmapImage(new Uri("/View/images/doggy_overlay.png", UriKind.Relative));
+                    doggyOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/doggy_overlay.png", UriKind.Relative));
                 }
                 return doggyOverlay;
             }
@@ -1303,7 +1290,7 @@ namespace windows_client.utils
             {
                 if (kittyOverlay == null)
                 {
-                    kittyOverlay = new BitmapImage(new Uri("/View/images/kitty_overlay.png", UriKind.Relative));
+                    kittyOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/kitty_overlay.png", UriKind.Relative));
                 }
                 return kittyOverlay;
             }
@@ -1315,7 +1302,7 @@ namespace windows_client.utils
             {
                 if (bollywoodOverlay == null)
                 {
-                    bollywoodOverlay = new BitmapImage(new Uri("/View/images/bollywood_overlay.png", UriKind.Relative));
+                    bollywoodOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/bollywood_overlay.png", UriKind.Relative));
                 }
                 return bollywoodOverlay;
             }
@@ -1327,7 +1314,7 @@ namespace windows_client.utils
             {
                 if (trollOverlay == null)
                 {
-                    trollOverlay = new BitmapImage(new Uri("/View/images/troll_overlay.png", UriKind.Relative));
+                    trollOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/troll_overlay.png", UriKind.Relative));
                 }
                 return trollOverlay;
             }
@@ -1339,9 +1326,20 @@ namespace windows_client.utils
             {
                 if (avatarsOverlay == null)
                 {
-                    avatarsOverlay = new BitmapImage(new Uri("/View/images/avatars_overlay.png", UriKind.Relative));
+                    avatarsOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/avatars_overlay.png", UriKind.Relative));
                 }
                 return avatarsOverlay;
+            }
+        }
+
+        public BitmapImage IndiansOverlay
+        {
+            get
+            {
+                if (indiansOverlay == null)
+                    indiansOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/indian_overlay.png", UriKind.Relative));
+                
+                return indiansOverlay;
             }
         }
 
@@ -1351,7 +1349,7 @@ namespace windows_client.utils
             {
                 if (expressionsOverlay == null)
                 {
-                    expressionsOverlay = new BitmapImage(new Uri("/View/images/expressions_overlay.png", UriKind.Relative));
+                    expressionsOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/expressions_overlay.png", UriKind.Relative));
                 }
                 return expressionsOverlay;
             }
@@ -1363,30 +1361,23 @@ namespace windows_client.utils
             {
                 if (smileyExpressionsOverlay == null)
                 {
-                    smileyExpressionsOverlay = new BitmapImage(new Uri("/View/images/smileyExpressions_overlay.png", UriKind.Relative));
+                    smileyExpressionsOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/smileyExpressions_overlay.png", UriKind.Relative));
                 }
                 return smileyExpressionsOverlay;
             }
         }
 
-        public BitmapImage RecentIcon
-        {
-            get
-            {
-                if (recentIcon == null)
-                {
-                    recentIcon = new BitmapImage(new Uri("/View/images/recent_icon.png", UriKind.Relative));
-                }
-                return recentIcon;
-            }
-        }
+        #endregion
+
+        #region Sticker categroy icons
+
         public BitmapImage HumanoidInactive
         {
             get
             {
                 if (humanoidInactive == null)
                 {
-                    humanoidInactive = new BitmapImage(new Uri("/View/images/humanoid_icon_inactive.png", UriKind.Relative));
+                    humanoidInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/humanoid_icon_inactive.png", UriKind.Relative));
                 }
                 return humanoidInactive;
             }
@@ -1398,7 +1389,7 @@ namespace windows_client.utils
             {
                 if (humanoid2Inactive == null)
                 {
-                    humanoid2Inactive = new BitmapImage(new Uri("/View/images/humanoid2_icon_inactive.png", UriKind.Relative));
+                    humanoid2Inactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/humanoid2_icon_inactive.png", UriKind.Relative));
                 }
                 return humanoid2Inactive;
             }
@@ -1410,7 +1401,7 @@ namespace windows_client.utils
             {
                 if (doggyInactive == null)
                 {
-                    doggyInactive = new BitmapImage(new Uri("/View/images/doggy_i_icon.png", UriKind.Relative));
+                    doggyInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/doggy_i_icon.png", UriKind.Relative));
                 }
                 return doggyInactive;
             }
@@ -1422,7 +1413,7 @@ namespace windows_client.utils
             {
                 if (kittyInactive == null)
                 {
-                    kittyInactive = new BitmapImage(new Uri("/View/images/kitty_i_icon.png", UriKind.Relative));
+                    kittyInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/kitty_i_icon.png", UriKind.Relative));
                 }
                 return kittyInactive;
             }
@@ -1434,7 +1425,7 @@ namespace windows_client.utils
             {
                 if (bollywoodInactive == null)
                 {
-                    bollywoodInactive = new BitmapImage(new Uri("/View/images/Inactive_bolly.png", UriKind.Relative));
+                    bollywoodInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/Inactive_bolly.png", UriKind.Relative));
                 }
                 return bollywoodInactive;
             }
@@ -1446,7 +1437,7 @@ namespace windows_client.utils
             {
                 if (trollInactive == null)
                 {
-                    trollInactive = new BitmapImage(new Uri("/View/images/rf_icon.png", UriKind.Relative));
+                    trollInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/rf_icon.png", UriKind.Relative));
                 }
                 return trollInactive;
             }
@@ -1458,7 +1449,7 @@ namespace windows_client.utils
             {
                 if (expressionsInactive == null)
                 {
-                    expressionsInactive = new BitmapImage(new Uri("/View/images/expressions_i.png", UriKind.Relative));
+                    expressionsInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/expressions_i.png", UriKind.Relative));
                 }
                 return expressionsInactive;
             }
@@ -1470,7 +1461,7 @@ namespace windows_client.utils
             {
                 if (smileyExpressionsInactive == null)
                 {
-                    smileyExpressionsInactive = new BitmapImage(new Uri("/View/images/smileyExpressions_i.png", UriKind.Relative));
+                    smileyExpressionsInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/smileyExpressions_i.png", UriKind.Relative));
                 }
                 return smileyExpressionsInactive;
             }
@@ -1482,9 +1473,21 @@ namespace windows_client.utils
             {
                 if (avatarsInactive == null)
                 {
-                    avatarsInactive = new BitmapImage(new Uri("/View/images/avatars_i.png", UriKind.Relative));
+                    avatarsInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/avatars_i.png", UriKind.Relative));
                 }
                 return avatarsInactive;
+            }
+        }
+
+        public BitmapImage IndianInactive
+        {
+            get
+            {
+                if (indianInactive == null)
+                {
+                    indianInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/indian_inactive.png", UriKind.Relative));
+                }
+                return indianInactive;
             }
         }
 
@@ -1494,7 +1497,7 @@ namespace windows_client.utils
             {
                 if (humanoidActive == null)
                 {
-                    humanoidActive = new BitmapImage(new Uri("/View/images/humanoid_icon.png", UriKind.Relative));
+                    humanoidActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/humanoid_icon.png", UriKind.Relative));
                 }
                 return humanoidActive;
             }
@@ -1506,7 +1509,7 @@ namespace windows_client.utils
             {
                 if (humanoid2Active == null)
                 {
-                    humanoid2Active = new BitmapImage(new Uri("/View/images/humanoid2_icon.png", UriKind.Relative));
+                    humanoid2Active = new BitmapImage(new Uri("/View/images/stickers/categorySets/humanoid2_icon.png", UriKind.Relative));
                 }
                 return humanoid2Active;
             }
@@ -1518,18 +1521,19 @@ namespace windows_client.utils
             {
                 if (doggyActive == null)
                 {
-                    doggyActive = new BitmapImage(new Uri("/View/images/doggy_icon.png", UriKind.Relative));
+                    doggyActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/doggy_icon.png", UriKind.Relative));
                 }
                 return doggyActive;
             }
         }
+
         public BitmapImage KittyActive
         {
             get
             {
                 if (kittyActive == null)
                 {
-                    kittyActive = new BitmapImage(new Uri("/View/images/kitty_icon.png", UriKind.Relative));
+                    kittyActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/kitty_icon.png", UriKind.Relative));
                 }
                 return kittyActive;
             }
@@ -1541,7 +1545,7 @@ namespace windows_client.utils
             {
                 if (bollywoodActive == null)
                 {
-                    bollywoodActive = new BitmapImage(new Uri("/View/images/active_bolly.png", UriKind.Relative));
+                    bollywoodActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/active_bolly.png", UriKind.Relative));
                 }
                 return bollywoodActive;
             }
@@ -1553,7 +1557,7 @@ namespace windows_client.utils
             {
                 if (trollActive == null)
                 {
-                    trollActive = new BitmapImage(new Uri("/View/images/rf_i_icon.png", UriKind.Relative));
+                    trollActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/rf_i_icon.png", UriKind.Relative));
                 }
                 return trollActive;
             }
@@ -1565,7 +1569,7 @@ namespace windows_client.utils
             {
                 if (expressionsActive == null)
                 {
-                    expressionsActive = new BitmapImage(new Uri("/View/images/expressions.png", UriKind.Relative));
+                    expressionsActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/expressions.png", UriKind.Relative));
                 }
                 return expressionsActive;
             }
@@ -1577,7 +1581,7 @@ namespace windows_client.utils
             {
                 if (smileyExpressionsActive == null)
                 {
-                    smileyExpressionsActive = new BitmapImage(new Uri("/View/images/smileyExpressions.png", UriKind.Relative));
+                    smileyExpressionsActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/smileyExpressions.png", UriKind.Relative));
                 }
                 return smileyExpressionsActive;
             }
@@ -1589,9 +1593,35 @@ namespace windows_client.utils
             {
                 if (avatarsActive == null)
                 {
-                    avatarsActive = new BitmapImage(new Uri("/View/images/avatars.png", UriKind.Relative));
+                    avatarsActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/avatars.png", UriKind.Relative));
                 }
                 return avatarsActive;
+            }
+        }
+
+        public BitmapImage IndianActive
+        {
+            get
+            {
+                if (indianActive == null)
+                {
+                    indianActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/indian_active.png", UriKind.Relative));
+                }
+                return indianActive;
+            }
+        }
+
+        #endregion
+
+        public BitmapImage RecentIcon
+        {
+            get
+            {
+                if (recentIcon == null)
+                {
+                    recentIcon = new BitmapImage(new Uri("/View/images/recent_icon.png", UriKind.Relative));
+                }
+                return recentIcon;
             }
         }
 
@@ -1643,6 +1673,7 @@ namespace windows_client.utils
 
         public Thickness ZeroThickness = new Thickness(0, 0, 0, 0);
         public Thickness NewCategoryThickness = new Thickness(0, 5, 0, 0);
+
         #endregion
 
         #region DEFAULT AVATARS

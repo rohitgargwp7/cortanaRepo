@@ -533,7 +533,7 @@
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
-                                                <ProgressBar Grid.Row="0" Foreground="#1ba1e2" IsIndeterminate="True" IsEnabled="True" HorizontalAlignment="Stretch" Margin="0 20 0 30"/>
+                                                <ProgressBar Grid.Row="0" Foreground="{Binding MessageTextForeGround}" IsIndeterminate="True" IsEnabled="True" HorizontalAlignment="Stretch" Margin="0 20 0 30"/>
                                                 <TextBlock Grid.Row="1" Text="{Binding Path=LocalizedResources.DownloadingSticker_txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="12,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" TextAlignment="Left" />
                                             </Grid>
                                             <Grid Grid.Row="1" Visibility="{Binding IsHttpFailed}">
@@ -1162,7 +1162,7 @@
             <TextBlock Name="BlockTxtBlk" HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.SelectUser_BlockMsg_Txt, Source={StaticResource LocalizedStrings}}" Foreground="#FFFFFF" FontSize="30"></TextBlock>
             <Button Height="75" Name="btnBlockUnblock" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"></Button>
         </StackPanel>
-        <Grid Canvas.ZIndex="1"   x:Name="gridDownloadStickers" Visibility="Collapsed" Width="340" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Center" Margin="0 0 0 0" Tap="overlayRectangle_Tap_1">
+        <Grid Canvas.ZIndex="4"   x:Name="gridDownloadStickers" Visibility="Collapsed" Width="340" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Center" Margin="0 0 0 0" Tap="overlayRectangle_Tap_1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -1184,19 +1184,20 @@
                 <TextBlock FontFamily="Segoe WP SemiLight" Foreground="#878787" FontSize="16" Text="{Binding Path= LocalizedResources.InternetChargesMayApply_txt, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" />
             </Grid>
         </Grid>
-        <Rectangle x:Name="overlayForNudge" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="3" Fill="#ffffff" ></Rectangle>
-        <Grid x:Name="nudgeTuteGrid" Visibility="Collapsed" Grid.Row="1" Width="375" VerticalAlignment="Center"  Background="Black">
+        <Rectangle x:Name="overlayForNudge" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="3" Fill="Black"/>
+        <Grid x:Name="nudgeTuteGrid" Visibility="Collapsed" Grid.Row="1" Width="300" VerticalAlignment="Center"  Background="White">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-
-            <Image Source="/View/images/nudge_tutorial.png" Margin="0,30,0,15" Grid.Row="0" Height="70"/>
-            <TextBlock Text="{Binding Path= LocalizedResources.Nudge, Source={StaticResource LocalizedStrings}}" FontSize="24" FontFamily="Segoe WP Semibold" Foreground="White" HorizontalAlignment="Center" Grid.Row="1"/>
-            <TextBlock Margin="0,5,0,0" Text="{Binding Path= LocalizedResources.Nudge_Tute, Source={StaticResource LocalizedStrings}}" Foreground="White" TextAlignment="Center" Width="250" FontSize="18" HorizontalAlignment="Center" TextWrapping="Wrap" Grid.Row="2"/>
-            <Button Content="{Binding Path= LocalizedResources.OK, Source={StaticResource LocalizedStrings}}" BorderThickness="0" Margin="-12,25,-12,-12" Foreground="#c6c6c6" FontSize="20" Height="90" Background="#212121" Tap="dismissNudgeTutorial_Tap" Grid.Row="3"/>
+            <Image Source="/View/images/nudge_tutorial.png" Margin="0,30,0,10" Grid.Row="0" Height="80"/>
+            <TextBlock Text="{Binding Path= LocalizedResources.Nudge, Source={StaticResource LocalizedStrings}}" FontSize="24" FontFamily="Segoe WP Semibold" Foreground="Black" HorizontalAlignment="Center" Grid.Row="1"/>
+            <TextBlock Margin="0,5" Text="{Binding Path= LocalizedResources.Nudge_Tute, Source={StaticResource LocalizedStrings}}" Foreground="Black" TextAlignment="Center" Width="250" FontSize="18" HorizontalAlignment="Center" TextWrapping="Wrap" Grid.Row="2"/>
+            <Grid Grid.Row="3">
+                <Button Content="{Binding Path= LocalizedResources.OK, Source={StaticResource LocalizedStrings}}" BorderThickness="0" Background="#2e91d3" Height="65" Width="140" FontSize="20" Foreground="White" Tap="dismissNudgeTutorial_Tap"/>
+            </Grid>
         </Grid>
 
         <Grid Canvas.ZIndex="1" x:Name="WalkieTalkieGrid" Visibility="Collapsed" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">

@@ -804,8 +804,7 @@ namespace windows_client
 
             #endregion
             #region STCIKERS
-            //todo:make it 2.2.2.0
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.4.0.0") < 0)
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.4.0.1") < 0)
             {
                 if (!isNewInstall && Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
                     StickerCategory.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
@@ -940,7 +939,8 @@ namespace windows_client
                             MqttDBUtils.MqttDbUpdateToLatestVersion();
                     }
 
-                    if (Utils.compareVersion(_currentVersion, "2.2.0.0") == 0)
+                    //Reset in app tip for new stickers
+                    if (Utils.compareVersion(_currentVersion, "2.4.0.1") < 0)
                         App.ViewModel.ResetInAppTip(1);
                 }
 

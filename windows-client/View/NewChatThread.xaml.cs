@@ -1286,8 +1286,7 @@ namespace windows_client.View
                         }
                         else if (chatThreadCount == 2)
                         {
-                            showNudgeTute();
-                            chatThreadCount++;
+                           showNudgeTute();
                         }
                         else
                         {
@@ -1298,8 +1297,6 @@ namespace windows_client.View
                                 App.ViewModel.DisplayTip(LayoutRoot, 7);
                                 isInAppTipVisible = true;
                             }
-                            else
-                                chatThreadCount++;
 
                             this.ApplicationBar = appBar;
                         }
@@ -1430,14 +1427,12 @@ namespace windows_client.View
 
         private void showNudgeTute()
         {
-            if (!isGroupChat && App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
+            if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
             {
                 overlayForNudge.Visibility = Visibility.Visible;
-                //overlayForNudge.Opacity = 0.65;
-                overlayForNudge.Opacity = 0.3;
+                overlayForNudge.Opacity = 0.7;
                 nudgeTuteGrid.Visibility = Visibility.Visible;
                 llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = false;
-                //SystemTray.IsVisible = false;
             }
             else
             {
@@ -1452,6 +1447,10 @@ namespace windows_client.View
             llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
             this.ApplicationBar = appBar;
             App.RemoveKeyFromAppSettings(App.SHOW_NUDGE_TUTORIAL);
+
+            int val;
+            App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out val);
+            App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, ++val);
         }
 
         private void processGroupJoin(bool isNewgroup)
@@ -1643,11 +1642,8 @@ namespace windows_client.View
                 leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
                 appBar.MenuItems.Add(leaveMenuItem);
             }
-            else if (_isHikeBot)
-            {
-                userHeader.Tap += userImage_Tap;
-            }
-            else
+
+            if(!_isHikeBot)
             {
                 if (isAddUser)
                 {
@@ -5136,6 +5132,15 @@ namespace windows_client.View
 
         private void userHeader_Tap(object sender, EventArgs e)
         {
+            if (openChatBackgroundButton.Opacity == 0)
+                return;
+
+            if (_isHikeBot)
+            {
+                userImage_Tap(null, null);
+                return;
+            }
+
             if (isGroupChat)
             {
                 if (mUserIsBlocked || !isGroupAlive)
@@ -5154,6 +5159,9 @@ namespace windows_client.View
 
         private void userImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (openChatBackgroundButton.Opacity == 0)
+                return;
+
             App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC);
             object[] fileTapped = new object[1];
             fileTapped[0] = mContactNumber;
@@ -5163,8 +5171,6 @@ namespace windows_client.View
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            //if (isGroupChat)
-            //    return;
             if (isGroupChat && !isGroupAlive)
                 return;
             if (mUserIsBlocked)
@@ -5203,8 +5209,6 @@ namespace windows_client.View
             if (cobj != null)
             {
                 JObject data = new JObject();
-                data[HikeConstants.IMAGE] = String.Empty;
-                data[HikeConstants.HAS_CUSTOM_BACKGROUND] = false;
                 data[HikeConstants.BACKGROUND_ID] = bgId;
                 data[HikeConstants.MESSAGE_ID] = cm.MessageId;
 
@@ -5262,7 +5266,7 @@ namespace windows_client.View
         {
             chatBackgroundPopUp.Visibility = Visibility.Collapsed;
 
-            openChatBackgroundButton.Visibility = Visibility.Visible;
+            openChatBackgroundButton.Opacity = 1;
         }
 
         void chatBackgroundPopUp_Opened()
@@ -5277,7 +5281,7 @@ namespace windows_client.View
 
             App.ViewModel.HideToolTip(LayoutRoot, 8);
 
-            openChatBackgroundButton.Visibility = Visibility.Collapsed;
+            openChatBackgroundButton.Opacity = 0;
 
             chatBackgroundPopUp.Visibility = Visibility.Visible;
 
@@ -5314,6 +5318,7 @@ namespace windows_client.View
                 lastSeenTxt.Foreground = UI_Utils.Instance.Black;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageBlack;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageBlack;
+                progressBar.Foreground = UI_Utils.Instance.Black;
             }
             else
             {
@@ -5322,6 +5327,7 @@ namespace windows_client.View
                 lastSeenTxt.Foreground = UI_Utils.Instance.White;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageWhite;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageWhite;
+                progressBar.Foreground = App.ViewModel.SelectedBackground.ForegroundColor;
             }
 
             if (isBubbleColorChanged)
@@ -6067,6 +6073,9 @@ namespace windows_client.View
                     case StickerHelper.CATEGORY_AVATARS:
                         downloadDialogueImage.Source = UI_Utils.Instance.AvatarsOverlay;
                         break;
+                    case StickerHelper.CATEGORY_INDIANS:
+                        downloadDialogueImage.Source = UI_Utils.Instance.IndiansOverlay;
+                        break;
                     case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
                         downloadDialogueImage.Source = UI_Utils.Instance.SmileyExpressionsOverlay;
                         break;
@@ -6149,6 +6158,10 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                } 
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
