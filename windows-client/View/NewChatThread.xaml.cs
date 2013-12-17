@@ -5202,8 +5202,6 @@ namespace windows_client.View
             if (cobj != null)
             {
                 JObject data = new JObject();
-                data[HikeConstants.IMAGE] = String.Empty;
-                data[HikeConstants.HAS_CUSTOM_BACKGROUND] = false;
                 data[HikeConstants.BACKGROUND_ID] = bgId;
                 data[HikeConstants.MESSAGE_ID] = cm.MessageId;
 
