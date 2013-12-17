@@ -142,6 +142,8 @@ namespace windows_client.utils
                         return _isSelected ? UI_Utils.Instance.Humanoid2Active : UI_Utils.Instance.Humanoid2Inactive;
                     case StickerHelper.CATEGORY_AVATARS:
                         return _isSelected ? UI_Utils.Instance.AvatarsActive : UI_Utils.Instance.AvatarsInactive;
+                    case StickerHelper.CATEGORY_INDIANS:
+                        return _isSelected ? UI_Utils.Instance.IndianActive : UI_Utils.Instance.IndianInactive;
                     case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
                         return _isSelected ? UI_Utils.Instance.SmileyExpressionsActive : UI_Utils.Instance.SmileyExpressionsInactive;
                     default:

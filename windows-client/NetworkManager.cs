@@ -1737,10 +1737,7 @@ namespace windows_client
                         vals[0] = cm;
                         vals[1] = obj;
 
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                            });
+                        this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                     }
 
                     if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(sender, bgId, ts))

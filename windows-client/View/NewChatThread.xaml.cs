@@ -6067,6 +6067,9 @@ namespace windows_client.View
                     case StickerHelper.CATEGORY_AVATARS:
                         downloadDialogueImage.Source = UI_Utils.Instance.AvatarsOverlay;
                         break;
+                    case StickerHelper.CATEGORY_INDIANS:
+                        downloadDialogueImage.Source = UI_Utils.Instance.IndiansOverlay;
+                        break;
                     case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
                         downloadDialogueImage.Source = UI_Utils.Instance.SmileyExpressionsOverlay;
                         break;
@@ -6149,6 +6152,10 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                } 
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);

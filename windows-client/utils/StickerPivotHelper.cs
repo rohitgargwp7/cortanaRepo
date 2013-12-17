@@ -72,6 +72,11 @@ namespace windows_client.utils
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
+                {
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
+                    pivotIndex++;
                 } 
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
                 {
