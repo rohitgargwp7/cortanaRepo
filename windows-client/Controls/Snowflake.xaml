@@ -9,5 +9,5 @@
     Foreground="{StaticResource PhoneForegroundBrush}">
 
     <Image Source="/View/images/snow_flake.png"  HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None"/>
-
+    <!--<Ellipse Height="20" Width="20" Fill="White" Stroke="White" HorizontalAlignment="Left" VerticalAlignment="Top" />-->
 </UserControl>

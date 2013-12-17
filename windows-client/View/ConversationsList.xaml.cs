@@ -2764,28 +2764,19 @@ namespace windows_client.View
         void StartSnowAnimation()
         {
             overlaySnow.Visibility = Visibility.Visible;
-            overlaySnow.Opacity = 0;
             gridSnowFlakes.Opacity = 0;
-            t = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(60) };
+            for (int i = 0; i < 40; i++)
+                Snow(true);
+            t = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(40) };
             t.Tick += (s, arg) =>
             {
-                if (count == 1)
-                {
-                    for (int i = 0; i < 40; i++)
-                        Snow(true);
-                }
                 Snow(false);
-                if (count > 15 && count < 26)
+                if (count > 5 && count < 22)
                 {
-                    overlaySnow.Opacity = (count - 10) * 0.04;
+                    gridSnowFlakes.Opacity = (count) * 0.03;
                 }
-                if (count == 26)
-                {
-                    overlaySnow.Opacity = 1;
-                    overlaySnow.Background = new SolidColorBrush();
-                    gridSnowFlakes.Opacity = 0.64;
-
-                } if (count++ == 50)
+              
+                if (count++ == 35)
                     Storyboard1.Begin();
             };
             t.Start();
@@ -2796,9 +2787,9 @@ namespace windows_client.View
         Random _Random = new Random((int)DateTime.Now.Ticks);
         private void Snow(bool isInitial)
         {
-            var x = _Random.Next(-100, (int)gridSnowFlakes.ActualWidth + 50);
-            var y = _Random.Next(isInitial ? 100 : -100, isInitial ? 500 : 0);
-            var s = _Random.Next(1, 9) * .1;
+            var x = _Random.Next(isInitial ? 0 : -100, isInitial ? 500 : (int)gridSnowFlakes.ActualWidth + 50);
+            var y = _Random.Next(isInitial ? 100 : -100, isInitial ? 700 : 0);
+            var s = _Random.Next(1, _Random.Next(4, 10)) * .1;
             var r = _Random.Next(0, 270);
             var flake = new Snowflake
             {

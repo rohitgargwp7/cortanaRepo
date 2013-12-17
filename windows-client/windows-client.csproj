@@ -515,7 +515,6 @@
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
     </None>
-    <None Include="windows-client_2013_12_16_17_22_46.sap" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ApplicationIcon.png">
@@ -550,6 +549,7 @@
     <Content Include="View\images\chat_bg_ftue_gift_rapper_right.png" />
     <Content Include="View\images\chat_bg_ftue_gift_rapper_top.png" />
     <Content Include="View\images\chat_bg_ftue_theme_popup.png" />
+    <Content Include="View\images\IntroGlow.png" />
     <Content Include="View\images\smileyExpressions.png" />
     <Content Include="View\images\smileyExpressions_i.png" />
     <Content Include="View\images\smileyExpressions_overlay.png" />
