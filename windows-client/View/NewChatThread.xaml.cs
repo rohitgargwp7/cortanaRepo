@@ -1123,7 +1123,10 @@ namespace windows_client.View
             {
                 GroupManager.Instance.LoadGroupParticipants(mContactNumber);
 
-                lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
+                if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
+                    lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
+                else
+                    lastSeenTxt.Text = String.Empty;
             }
 
             if (!isOnHike)
@@ -4761,7 +4764,10 @@ namespace windows_client.View
                         mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
                         userName.Text = mContactName;
 
-                        lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
+                        if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
+                            lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
+                        else
+                            lastSeenTxt.Text = String.Empty;
                     }
                     catch (Exception ex)
                     {
@@ -4788,7 +4794,10 @@ namespace windows_client.View
                         mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
                         userName.Text = mContactName;
 
-                        lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Count + 1);
+                        if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
+                            lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
+                        else
+                            lastSeenTxt.Text = String.Empty;
                     }
                     catch (Exception ex)
                     {
