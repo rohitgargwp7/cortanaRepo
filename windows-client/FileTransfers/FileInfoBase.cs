@@ -125,7 +125,18 @@ namespace windows_client.FileTransfers
             byte[] bytes;
             MiscDBUtil.readFileFromIsolatedStorage(filePath, out bytes);
 
-            var md5 = MD5CryptoServiceProvider.GetMd5String(bytes);
+            if (bytes == null || bytes.Length == 0)
+                return false;
+
+            String md5 = string.Empty;
+            try
+            {
+                md5 = MD5CryptoServiceProvider.GetMd5String(bytes);
+            }
+            catch
+            {
+                return false;
+            }
 
             string result = String.Empty;
 
