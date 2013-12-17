@@ -40,6 +40,7 @@ namespace windows_client
         public static readonly string SMS_SETTING = "smscredits";
         public static readonly string SHOW_FREE_SMS_SETTING = "freeSMS";
         public static readonly string STATUS_UPDATE_SETTING = "stUpSet";
+        public static readonly string CHAT_THEME_SETTING = "chatThemeSet";
         public static readonly string STATUS_UPDATE_FIRST_SETTING = "stUpFirSet";
         public static readonly string STATUS_UPDATE_SECOND_SETTING = "stUpSecSet";
         public static readonly string LAST_SEEN_SEETING = "lstSeenSet";
@@ -316,7 +317,7 @@ namespace windows_client
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 // Display the current frame rate counters.
-                Application.Current.Host.Settings.EnableFrameRateCounter = true;
+                //Application.Current.Host.Settings.EnableFrameRateCounter = true;
 
                 // Show the areas of the app that are being redrawn in each frame.
                 //Application.Current.Host.Settings.EnableRedrawRegions = true;
@@ -719,6 +720,12 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
+            #region Chat Themes
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.4.0.1") < 0)
+            {
+                App.WriteToIsoStorageSettings(App.CHAT_THEME_SETTING, (byte)1);
+            }
+            #endregion
             #region Enter to send
 
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.4.0.0") < 0)
@@ -775,20 +782,29 @@ namespace windows_client
             if (isNewInstall) //upgrade logic for inapp tips, will change with every build
             {
                 App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
-                App.appSettings[App.TIP_MARKED_KEY] = (byte)0; // to keep a track of shown keys
-                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0); // to keep a track of current showing keys
+                App.appSettings[App.TIP_MARKED_KEY] = 0; // to keep a track of shown keys
+                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, 0); // to keep a track of current showing keys
             }
             else if (Utils.compareVersion(_currentVersion, "2.2.0.0") < 0)
             {
                 App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
-                App.appSettings[App.TIP_MARKED_KEY] = (byte)0x18;
-                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, (byte)0x18);
+                App.appSettings[App.TIP_MARKED_KEY] = 0x18;
+                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, 0x18);
+            }
+            else if (Utils.compareVersion(_currentVersion, "2.4.0.1") < 0)
+            {
+                var val = App.appSettings[App.TIP_MARKED_KEY];
+                App.RemoveKeyFromAppSettings(App.TIP_MARKED_KEY);
+                App.appSettings[App.TIP_MARKED_KEY] = Convert.ToInt32(val);
+             
+                val = App.appSettings[App.TIP_SHOW_KEY];
+                App.RemoveKeyFromAppSettings(App.TIP_SHOW_KEY);
+                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, Convert.ToInt32(val));
             }
 
             #endregion
             #region STCIKERS
-            //todo:make it 2.2.2.0
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.4.0.0") < 0)
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.4.0.1") < 0)
             {
                 if (!isNewInstall && Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
                     StickerCategory.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
@@ -923,7 +939,8 @@ namespace windows_client
                             MqttDBUtils.MqttDbUpdateToLatestVersion();
                     }
 
-                    if (Utils.compareVersion(_currentVersion, "2.2.0.0") == 0)
+                    //Reset in app tip for new stickers
+                    if (Utils.compareVersion(_currentVersion, "2.4.0.1") < 0)
                         App.ViewModel.ResetInAppTip(1);
                 }
 

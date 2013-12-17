@@ -136,7 +136,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\sharpcompress.0.8.2\lib\sl3-wp\SharpCompress.WP7.dll</HintPath>
     </Reference>
-    <Reference Include="System.Net.Http">
+    <Reference Include="System.Net.Http, Version=1.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Net.Http.2.2.15\lib\sl4-windowsphone71\System.Net.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.Extensions">
@@ -213,6 +214,7 @@
     <Compile Include="Misc\Social.cs" />
     <Compile Include="Model\Analytics.cs" />
     <Compile Include="Model\Attachment.cs" />
+    <Compile Include="Model\ChatBackground.cs" />
     <Compile Include="Model\ContactCompleteDetails.cs" />
     <Compile Include="Model\GroupInfo.cs" />
     <Compile Include="Model\GroupParticipant.cs" />
@@ -232,6 +234,7 @@
     <Compile Include="utils\AccountUtils.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
+    <Compile Include="utils\ChatBackgroundHelper.cs" />
     <Compile Include="utils\LruCache.cs" />
     <Compile Include="utils\MD5.cs" />
     <Compile Include="utils\StickerPivotHelper.cs" />
@@ -387,6 +390,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Styles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\BlockListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -528,9 +534,8 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="View\images\avatars.png" />
-    <Content Include="View\images\avatars_i.png" />
-    <Content Include="View\images\avatars_overlay.png" />
+
+    
     <Content Include="View\images\chat_bg_ftue_Box.png" />
     <Content Include="View\images\chat_bg_ftue_card_bg.png" />
     <Content Include="View\images\chat_bg_ftue_Flip_side_dot.png" />
@@ -550,12 +555,40 @@
     <Content Include="View\images\chat_bg_ftue_gift_rapper_top.png" />
     <Content Include="View\images\chat_bg_ftue_theme_popup.png" />
     <Content Include="View\images\IntroGlow.png" />
-    <Content Include="View\images\smileyExpressions.png" />
-    <Content Include="View\images\smileyExpressions_i.png" />
-    <Content Include="View\images\smileyExpressions_overlay.png" />
-    <Content Include="View\images\humanoid2_overlay.png" />
-    <Content Include="View\images\humanoid2_icon.png" />
-    <Content Include="View\images\humanoid2_icon_inactive.png" />
+    
+
+    <Content Include="View\images\chatBackgrounds\aqua.png" />
+    <Content Include="View\images\chatBackgrounds\blue-2.png" />
+    <Content Include="View\images\chatBackgrounds\blue-green.png" />
+    <Content Include="View\images\chatBackgrounds\blue-grey.png" />
+    <Content Include="View\images\chatBackgrounds\blue-stocking.png" />
+    <Content Include="View\images\chatBackgrounds\blue.png" />
+    <Content Include="View\images\chatBackgrounds\cyan-snowman.png" />
+    <Content Include="View\images\chatBackgrounds\green-christmastree.png" />
+    <Content Include="View\images\chatBackgrounds\green.png" />
+    <Content Include="View\images\chatBackgrounds\orange.png" />
+    <Content Include="View\images\chatBackgrounds\purple-gift.png" />
+    <Content Include="View\images\chatBackgrounds\purple.png" />
+    <Content Include="View\images\chatBackgrounds\red-candycane.png" />
+    <Content Include="View\images\chatBackgrounds\red-christmas.png" />
+    <Content Include="View\images\chatBackgrounds\red-hearts.png" />
+    <Content Include="View\images\chatBackgrounds\yellow.png" />
+    <Content Include="View\images\chat_invited_green_CT.png" />
+    <Content Include="View\images\chat_joined_blue_CT.png" />
+    <Content Include="View\images\chat_left_CT.png" />
+    <Content Include="View\images\chat_reward_CT.png" />
+    <Content Include="View\images\chat_sms_error_CT.png" />
+    <Content Include="View\images\chat_waiting_CT.png" />
+    <Content Include="View\images\deleted_grey_icon.png" />
+    <Content Include="View\images\error_icon_CT.png" />
+    <Content Include="View\images\group_name_changed_CT.png" />
+    <Content Include="View\images\icon_sending_CT.png" />
+    <Content Include="View\images\ic_delivered_CT.png" />
+    <Content Include="View\images\ic_read_CT.png" />
+    <Content Include="View\images\ic_sent_CT.png" />
+    <Content Include="View\images\stickers\categorySets\indian_overlay.png" />
+    <Content Include="View\images\paint_black.png" />
+
     <Content Include="View\images\icon_sms.png" />
     <Content Include="View\images\pause_black_ftr.png" />
     <Content Include="View\images\pause_white_ftr.png" />
@@ -573,7 +606,7 @@
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
-    <Content Include="View\images\active_bolly.png" />
+    <Content Include="View\images\paint.png" />
     <Content Include="View\images\add_friend.png" />
     <Content Include="View\images\add_users_white.png" />
     <Content Include="View\images\appbar_addfriend.png" />
@@ -595,12 +628,10 @@
     <Content Include="View\images\blocklist_holder.png" />
     <Content Include="View\images\block_list_icon_black.png" />
     <Content Include="View\images\block_list_icon_white.png" />
-    <Content Include="View\images\bollywood_overlay.png" />
     <Content Include="View\images\call.png" />
     <Content Include="View\images\change_pic.png" />
     <Content Include="View\images\chat_sms_error.png" />
     <Content Include="View\images\connected_tick.png" />
-    <Content Include="View\images\deleted_grey_icon.png" />
     <Content Include="View\images\deleted_white_icon.png" />
     <Content Include="View\images\delete_account_white.png" />
     <Content Include="View\images\downArrow.png" />
@@ -628,22 +659,15 @@
     <Content Include="View\images\emoticons\shakti4.png" />
     <Content Include="View\images\emoticons\tandoori4.png" />
     <Content Include="View\images\emoticons\thulla4.png" />
-    <Content Include="View\images\humanoid_overlay.png" />
     <Content Include="View\images\icon_direction.png" />
     <Content Include="View\images\emoticons\tiranga4.png" />
     <Content Include="View\images\MediaPlayIcon.png" />
-    <Content Include="View\images\doggy_icon.png" />
-    <Content Include="View\images\doggy_i_icon.png" />
-    <Content Include="View\images\doggy_overlay.png" />
     <Content Include="View\images\download_failed_bubble.png" />
     <Content Include="View\images\emoticon_back_key.png" />
     <Content Include="View\images\empty_screen_logo_black.png" />
     <Content Include="View\images\empty_screen_logo_white.png" />
     <Content Include="View\images\empty_screen_tip_black.png" />
     <Content Include="View\images\empty_screen_tip_white.png" />
-    <Content Include="View\images\expressions.png" />
-    <Content Include="View\images\expressions_i.png" />
-    <Content Include="View\images\expressions_overlay.png" />
     <Content Include="View\images\favorites_heart.png" />
     <Content Include="View\images\fb_icon.png" />
     <Content Include="View\images\fb_status.png" />
@@ -667,12 +691,8 @@
     <Content Include="View\images\icon_sending.png" />
     <Content Include="View\images\icon_stop.png" />
     <Content Include="View\images\icon_stop_appbar.png" />
-    <Content Include="View\images\Inactive_bolly.png" />
     <Content Include="View\images\invite.png" />
     <Content Include="View\images\invite_dark.png" />
-    <Content Include="View\images\kitty_icon.png" />
-    <Content Include="View\images\kitty_i_icon.png" />
-    <Content Include="View\images\kitty_overlay.png" />
     <Content Include="View\images\last_seen_clock_black.png" />
     <Content Include="View\images\last_seen_clock_white.png" />
     <Content Include="View\images\LocationPin.png" />
@@ -729,16 +749,44 @@
     <Content Include="View\images\remove_wt_icon.png" />
     <Content Include="View\images\resume_black_ftr.png" />
     <Content Include="View\images\resume_white_ftr.png" />
-    <Content Include="View\images\rf_icon.png" />
-    <Content Include="View\images\rf_i_icon.png" />
     <Content Include="View\images\search_icon.png" />
     <Content Include="View\images\settings_icon_dark.png" />
     <Content Include="View\images\settings_icon_white.png" />
     <Content Include="View\images\close_white.png" />
     <Content Include="View\images\close_black.png" />
-    <Content Include="View\images\humanoid_icon.png" />
-    <Content Include="View\images\humanoid_icon_inactive.png" />
+
     <Content Include="View\images\snow_flake.png" />
+
+    <Content Include="View\images\stickers\categorySets\active_bolly.png" />
+    <Content Include="View\images\stickers\categorySets\avatars.png" />
+    <Content Include="View\images\stickers\categorySets\avatars_i.png" />
+    <Content Include="View\images\stickers\categorySets\avatars_overlay.png" />
+    <Content Include="View\images\stickers\categorySets\bollywood_overlay.png" />
+    <Content Include="View\images\stickers\categorySets\doggy_icon.png" />
+    <Content Include="View\images\stickers\categorySets\doggy_i_icon.png" />
+    <Content Include="View\images\stickers\categorySets\doggy_overlay.png" />
+    <Content Include="View\images\stickers\categorySets\expressions.png" />
+    <Content Include="View\images\stickers\categorySets\expressions_i.png" />
+    <Content Include="View\images\stickers\categorySets\expressions_overlay.png" />
+    <Content Include="View\images\stickers\categorySets\humanoid2_icon.png" />
+    <Content Include="View\images\stickers\categorySets\humanoid2_icon_inactive.png" />
+    <Content Include="View\images\stickers\categorySets\humanoid2_overlay.png" />
+    <Content Include="View\images\stickers\categorySets\humanoid_icon.png" />
+    <Content Include="View\images\stickers\categorySets\humanoid_icon_inactive.png" />
+    <Content Include="View\images\stickers\categorySets\humanoid_overlay.png" />
+    <Content Include="View\images\stickers\categorySets\Inactive_bolly.png" />
+    <Content Include="View\images\stickers\categorySets\indian_active.png" />
+    <Content Include="View\images\stickers\categorySets\indian_inactive.png" />
+    <Content Include="View\images\stickers\categorySets\kitty_icon.png" />
+    <Content Include="View\images\stickers\categorySets\kitty_i_icon.png" />
+    <Content Include="View\images\stickers\categorySets\kitty_overlay.png" />
+    <Content Include="View\images\stickers\categorySets\rf_icon.png" />
+    <Content Include="View\images\stickers\categorySets\rf_i_icon.png" />
+    <Content Include="View\images\stickers\categorySets\smileyExpressions.png" />
+    <Content Include="View\images\stickers\categorySets\smileyExpressions_i.png" />
+    <Content Include="View\images\stickers\categorySets\smileyExpressions_overlay.png" />
+    <Content Include="View\images\stickers\categorySets\troll_overlay.png" />
+
     <Content Include="View\images\stickers\WVGA\doggy\001_hi.png" />
     <Content Include="View\images\stickers\WVGA\doggy\002_thumbsup.png" />
     <Content Include="View\images\stickers\WVGA\doggy\005_sorry.png" />
@@ -763,7 +811,6 @@
     <Content Include="View\images\account_black.png" />
     <Content Include="View\images\timeline_photo.png" />
     <Content Include="View\images\timeline_status_icon.png" />
-    <Content Include="View\images\troll_overlay.png" />
     <Content Include="View\images\tutorial_arrow.png" />
     <Content Include="View\images\tutorial_overlay_appbar.png" />
     <Content Include="View\images\tutorial_overlay_notifications.png" />
@@ -782,7 +829,6 @@
     <Content Include="View\images\user_lock_white.png" />
     <Content Include="View\images\new_icon.png" />
     <Content Include="View\images\new_icon_white.png" />
-    <Content Include="View\images\Walkie_Talkie_Black_big.png" />
     <Content Include="View\images\walkie_talkie_White_Big.png" />
     <Content Include="View\images\Walkie_Talkie_Grey_small.png" />
     <Content Include="View\images\made_with_love_dark.png" />
@@ -1014,6 +1060,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

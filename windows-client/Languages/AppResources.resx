@@ -1429,7 +1429,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Post a status update</value>
   </data>
   <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
-    <value>Status updates notification</value>
+    <value>Status updates notifications</value>
   </data>
   <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
     <value>Every Hour</value>
@@ -1913,6 +1913,21 @@ Download it now http://hike.in and join the fun!</value>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
     <value>Earn free SMS for every friend who joins hike because of you</value>
   </data>
+  <data name="On_Hike" xml:space="preserve">
+    <value>on hike</value>
+  </data>
+  <data name="On_SMS" xml:space="preserve">
+    <value>on SMS</value>
+  </data>
+  <data name="People_In_Group" xml:space="preserve">
+    <value>{0} people</value>
+  </data>
+  <data name="ChatBg_Changed_Text" xml:space="preserve">
+    <value>{0} changed the background</value>
+  </data>
+  <data name="Default_Txt" xml:space="preserve">
+    <value>default</value>
+  </data>
   <data name="FT_MaxFiles_Txt" xml:space="preserve">
     <value>There are more than 50 file transfers pending. Please retry again later.</value>
   </data>
@@ -2006,5 +2021,20 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Search_Hint_Txt" xml:space="preserve">
     <value>search</value>
+  </data>
+  <data name="Save_ChatTheme_Txt" xml:space="preserve">
+    <value>save theme</value>
+  </data>
+  <data name="ChatBg_NotChanged_Text" xml:space="preserve">
+    <value>{0} just changed the chat theme with you. Update your app to the latest version to experience Chat Themes 2.0. http://hike.in</value>
+  </data>
+  <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
+    <value>change chat theme</value>
+  </data>
+  <data name="In_App_Tip_9" xml:space="preserve">
+    <value>And loads of more themes here...</value>
+  </data>
+  <data name="Settings_ChatThemeNotification_SwitchHeader" xml:space="preserve">
+    <value>Chat themes notifications</value>
   </data>
 </root>
