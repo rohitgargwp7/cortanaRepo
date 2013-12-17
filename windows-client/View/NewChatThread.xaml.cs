@@ -1642,11 +1642,8 @@ namespace windows_client.View
                 leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
                 appBar.MenuItems.Add(leaveMenuItem);
             }
-            else if (_isHikeBot)
-            {
-                userHeader.Tap += userImage_Tap;
-            }
-            else
+
+            if(!_isHikeBot)
             {
                 if (isAddUser)
                 {
@@ -5135,6 +5132,15 @@ namespace windows_client.View
 
         private void userHeader_Tap(object sender, EventArgs e)
         {
+            if (openChatBackgroundButton.Opacity == 0)
+                return;
+
+            if (_isHikeBot)
+            {
+                userImage_Tap(null, null);
+                return;
+            }
+
             if (isGroupChat)
             {
                 if (mUserIsBlocked || !isGroupAlive)
@@ -5153,6 +5159,9 @@ namespace windows_client.View
 
         private void userImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (openChatBackgroundButton.Opacity == 0)
+                return;
+
             App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC);
             object[] fileTapped = new object[1];
             fileTapped[0] = mContactNumber;
@@ -5162,8 +5171,6 @@ namespace windows_client.View
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            //if (isGroupChat)
-            //    return;
             if (isGroupChat && !isGroupAlive)
                 return;
             if (mUserIsBlocked)
@@ -5259,7 +5266,7 @@ namespace windows_client.View
         {
             chatBackgroundPopUp.Visibility = Visibility.Collapsed;
 
-            openChatBackgroundButton.Visibility = Visibility.Visible;
+            openChatBackgroundButton.Opacity = 1;
         }
 
         void chatBackgroundPopUp_Opened()
@@ -5274,7 +5281,7 @@ namespace windows_client.View
 
             App.ViewModel.HideToolTip(LayoutRoot, 8);
 
-            openChatBackgroundButton.Visibility = Visibility.Collapsed;
+            openChatBackgroundButton.Opacity = 0;
 
             chatBackgroundPopUp.Visibility = Visibility.Visible;
 
