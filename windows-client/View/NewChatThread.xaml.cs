@@ -1378,6 +1378,9 @@ namespace windows_client.View
                 showNoSmsLeftOverlay = false;
                 ToggleAlertOnNoSms(false);
 
+                onlineStatus.Visibility = Visibility.Collapsed;
+                lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
+
                 ShowInAppTips();
             });
 
