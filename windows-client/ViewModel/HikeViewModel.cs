@@ -560,8 +560,7 @@ namespace windows_client.ViewModel
                 if (tip.Width != null)
                     inAppTipUC.Width = Convert.ToDouble(tip.Width);
 
-                if (tip.HAlingment != null)
-                    inAppTipUC.HorizontalAlignment = tip.HAlingment;
+                inAppTipUC.HorizontalAlignment = tip.HAlingment;
 
                 if (tip.TipImage != null)
                     inAppTipUC.TipImageSource = tip.TipImage;
