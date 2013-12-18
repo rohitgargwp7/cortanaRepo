@@ -60,7 +60,50 @@ namespace windows_client.Controls
             InAppTipUC tipControl = obj as InAppTipUC;
             tipControl.tipText.Text = (String)e.NewValue;
         }
+
+        public bool IsAnimationEnabled
+        {
+            get
+            {
+                return (bool)GetValue(IsAnimationEnabledProperty);
+            }
+            set
+            {
+                SetValue(IsAnimationEnabledProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty IsAnimationEnabledProperty = DependencyProperty.Register(
+            "IsAnimationEnabled", typeof(bool), typeof(InAppTipUC), new PropertyMetadata(OnIsAnimationEnabledPropertyChanged));
+
+        private static void OnIsAnimationEnabledPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            InAppTipUC tipControl = obj as InAppTipUC;
+            tipControl.MoveUpDown.Begin();
+        }
         
+        public ImageSource TipImageSource
+        {
+            get
+            {
+                return (ImageSource)GetValue(TipImageSourceProperty);
+            }
+            set
+            {
+                SetValue(TipImageSourceProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty TipImageSourceProperty = DependencyProperty.Register(
+            "TipImageSource", typeof(ImageSource), typeof(InAppTipUC), new PropertyMetadata(OnTipImageSourcePropertyChanged));
+
+        private static void OnTipImageSourcePropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            InAppTipUC tipControl = obj as InAppTipUC;
+            tipControl.tipImage.Source = (ImageSource)e.NewValue;
+            tipControl.tipImage.Visibility = Visibility.Visible;
+        }
+
         public Visibility TopPathVisibility
         {
             get
