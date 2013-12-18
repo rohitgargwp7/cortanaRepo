@@ -5215,7 +5215,7 @@ namespace windows_client.View
             {
                 JObject data = new JObject();
                 data[HikeConstants.BACKGROUND_ID] = bgId;
-                data[HikeConstants.MESSAGE_ID] = cm.MessageId;
+                data[HikeConstants.MESSAGE_ID] = TimeUtils.getCurrentTimeStamp().ToString();
 
                 JObject jo = new JObject();
                 jo[HikeConstants.FROM] = App.MSISDN;
