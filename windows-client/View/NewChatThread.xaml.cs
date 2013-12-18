@@ -1123,7 +1123,10 @@ namespace windows_client.View
             {
                 GroupManager.Instance.LoadGroupParticipants(mContactNumber);
 
-                lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
+                if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
+                    lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
+                else
+                    lastSeenTxt.Text = String.Empty;
             }
 
             if (!isOnHike)
@@ -1383,6 +1386,9 @@ namespace windows_client.View
 
                 showNoSmsLeftOverlay = false;
                 ToggleAlertOnNoSms(false);
+
+                onlineStatus.Visibility = Visibility.Collapsed;
+                lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
 
                 ShowInAppTips();
             });
@@ -3036,7 +3042,9 @@ namespace windows_client.View
                     chatBubble.NotificationType = ConvMessage.MessageType.UNKNOWN;
                     this.ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
-                    ScrollToBottom();
+
+                    if (!insertAtTop)
+                        ScrollToBottom();
                 }
                 #endregion
 
@@ -4764,7 +4772,10 @@ namespace windows_client.View
                         mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
                         userName.Text = mContactName;
 
-                        lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
+                        if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
+                            lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
+                        else
+                            lastSeenTxt.Text = String.Empty;
                     }
                     catch (Exception ex)
                     {
@@ -4791,7 +4802,10 @@ namespace windows_client.View
                         mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
                         userName.Text = mContactName;
 
-                        lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Count + 1);
+                        if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
+                            lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
+                        else
+                            lastSeenTxt.Text = String.Empty;
                     }
                     catch (Exception ex)
                     {
@@ -5324,7 +5338,7 @@ namespace windows_client.View
                 lastSeenTxt.Foreground = UI_Utils.Instance.Black;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageBlack;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageBlack;
-                progressBar.Foreground = UI_Utils.Instance.Black;
+                shellProgress.Foreground = progressBar.Foreground = UI_Utils.Instance.Black;
             }
             else
             {
@@ -5333,7 +5347,7 @@ namespace windows_client.View
                 lastSeenTxt.Foreground = UI_Utils.Instance.White;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageWhite;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageWhite;
-                progressBar.Foreground = App.ViewModel.SelectedBackground.ForegroundColor;
+                shellProgress.Foreground = progressBar.Foreground = App.ViewModel.SelectedBackground.ForegroundColor;
             }
 
             if (isBubbleColorChanged)
@@ -5634,6 +5648,11 @@ namespace windows_client.View
                         BackgroundWorker bw = new BackgroundWorker();
                         bw.DoWork += (s1, ev1) =>
                         {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                shellProgress.Visibility = Visibility.Visible;
+                            });
+
                             loadMessages(SUBSEQUENT_FETCH_COUNT);
                         };
                         bw.RunWorkerAsync();
