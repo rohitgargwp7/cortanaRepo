@@ -256,6 +256,9 @@ namespace windows_client.Model
                         SdrImageVisibility = Visibility.Visible;
                         NotifyPropertyChanged("SdrImageVisibility");
                     }
+
+                    if (_messageStatus >= State.FORCE_SMS_SENT_CONFIRMED)
+                        NotifyPropertyChanged("TimeStampStr");
                 }
             }
         }
@@ -466,7 +469,12 @@ namespace windows_client.Model
                 if (participantInfoState == ParticipantInfoState.STATUS_UPDATE)
                     return TimeUtils.getRelativeTime(_timestamp);
                 else
-                    return TimeUtils.getTimeStringForChatThread(_timestamp);
+                {
+                    if (MessageStatus >= State.FORCE_SMS_SENT_CONFIRMED)
+                        return String.Format(AppResources.Sent_As_SMS, TimeUtils.getTimeStringForChatThread(_timestamp));
+                    else
+                        return TimeUtils.getTimeStringForChatThread(_timestamp);
+                }
             }
         }
 

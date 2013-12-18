@@ -2037,4 +2037,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Settings_ChatThemeNotification_SwitchHeader" xml:space="preserve">
     <value>Chat themes notifications</value>
   </data>
+  <data name="Sent_As_SMS" xml:space="preserve">
+    <value>sent as SMS - {0}</value>
+  </data>
 </root>

@@ -3947,6 +3947,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to sent as SMS - {0}.
+        /// </summary>
+        public static string Sent_As_SMS {
+            get {
+                return ResourceManager.GetString("Sent_As_SMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to settings.
         /// </summary>
         public static string Settings {
