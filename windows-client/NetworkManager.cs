@@ -765,18 +765,6 @@ namespace windows_client
                                             if (isUpdated)
                                                 ChatBackgroundHelper.Instance.SaveChatBgMapToFile();
                                         }
-                                        else if (kkvv.Key == HikeConstants.PUSH_CBG)
-                                        {
-                                            try
-                                            {
-                                                var val = Convert.ToInt32(kkvv.Value);
-                                                if (val == -1)
-                                                    App.WriteToIsoStorageSettings(App.CHAT_THEME_SETTING, (byte)0);
-                                                else
-                                                    App.WriteToIsoStorageSettings(App.CHAT_THEME_SETTING, (byte)1);
-                                            }
-                                            catch { }
-                                        }
 
                                         #endregion
                                     }

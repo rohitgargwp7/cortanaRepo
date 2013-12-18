@@ -36,7 +36,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <!--<RowDefinition Height="Auto"/>-->
                 </Grid.RowDefinitions>
 
                 <toolkit:ToggleSwitch  Margin="0 0 0 -15" x:Name="pushNotifications" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
@@ -47,9 +47,7 @@
                                           Header="{Binding Path= LocalizedResources.Settings_VibrateToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="vibrate_Checked" Unchecked="vibrate_Unchecked"/>
                 <toolkit:ToggleSwitch Margin="0 0 0 -15" Grid.Row="3" x:Name="statusUpdateNotificationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="statusUpdateNotificationToggle_Loaded"
                                           Header="{Binding Path= LocalizedResources.Settings_StatusNotification_SwitchHeader, Source={StaticResource LocalizedStrings}}" />
-                <toolkit:ToggleSwitch Margin="0 0 0 -15" Grid.Row="4" x:Name="chatThemeNotificationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="chatThemeNotificationToggle_Loaded"
-                                          Header="{Binding Path= LocalizedResources.Settings_ChatThemeNotification_SwitchHeader, Source={StaticResource LocalizedStrings}}" />
-                <toolkit:ListPicker Grid.Row="5" x:Name="listBoxStatusSettings" Loaded="listBoxStatusSettings_Loaded" Margin="10 -5 10 0" Visibility="Collapsed"/>
+                <toolkit:ListPicker Grid.Row="4" x:Name="listBoxStatusSettings" Loaded="listBoxStatusSettings_Loaded" Margin="10 -5 10 0" Visibility="Collapsed"/>
             </Grid>
         </ScrollViewer>
     </Grid>

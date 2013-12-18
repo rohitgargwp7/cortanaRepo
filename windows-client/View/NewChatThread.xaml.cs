@@ -99,7 +99,6 @@ namespace windows_client.View
         private BitmapImage avatarImage;
         private ApplicationBar appBar;
         ApplicationBarMenuItem muteGroupMenuItem;
-        ApplicationBarMenuItem changeBackground;
         ApplicationBarMenuItem inviteMenuItem = null;
         public ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarMenuItem infoMenuItem;
@@ -1621,14 +1620,6 @@ namespace windows_client.View
             fileTransferIconButton.Click += new EventHandler(fileTransferButton_Click);
             fileTransferIconButton.IsEnabled = true;
             appBar.Buttons.Add(fileTransferIconButton);
-
-            changeBackground = new ApplicationBarMenuItem();
-            changeBackground.Text = AppResources.Change_Background_App_Bar_Menu_Txt;
-            changeBackground.Click += (ss, ee) =>
-            {
-                chatBackgroundPopUp_Opened();
-            };
-            appBar.MenuItems.Add(changeBackground);
 
             if (isGroupChat)
             {

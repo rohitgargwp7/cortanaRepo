@@ -95,21 +95,6 @@ namespace windows_client.View
                 showStatusUpdatesSettings = true;
                 listBoxStatusSettings.Visibility = Visibility.Visible;
             }
-
-            byte chatThemePushValue;
-            if (App.appSettings.TryGetValue(App.CHAT_THEME_SETTING, out chatThemePushValue))
-            {
-                if (chatThemePushValue > 0)
-                {
-                    chatThemeNotificationToggle.IsChecked = true;
-                    chatThemeNotificationToggle.Content = AppResources.On;
-                }
-                else
-                {
-                    chatThemeNotificationToggle.IsChecked = false;
-                    chatThemeNotificationToggle.Content = AppResources.Off;
-                }
-            }
         }
 
         private void pushNotifications_Checked(object sender, RoutedEventArgs e)
@@ -201,39 +186,6 @@ namespace windows_client.View
             statusUpdateNotificationToggle.Loaded -= statusUpdateNotificationToggle_Loaded;
             statusUpdateNotificationToggle.Checked += statusUpdateNotification_Checked;
             statusUpdateNotificationToggle.Unchecked += statusUpdateNotification_Unchecked;
-        }
-
-        private void chatThemeNotificationToggle_Loaded(object sender, RoutedEventArgs e)
-        {
-            chatThemeNotificationToggle.Loaded -= chatThemeNotificationToggle_Loaded;
-            chatThemeNotificationToggle.Checked += chatThemeNotificationToggle_Checked;
-            chatThemeNotificationToggle.Unchecked += chatThemeNotificationToggle_Unchecked;
-        }
-
-        void chatThemeNotificationToggle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.chatThemeNotificationToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.CHAT_THEME_SETTING, (byte)0);
-            
-            JObject obj = new JObject();
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
-            JObject data = new JObject();
-            data.Add(HikeConstants.PUSH_CBG, -1);
-            obj.Add(HikeConstants.DATA, data);
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-        }
-
-        void chatThemeNotificationToggle_Checked(object sender, RoutedEventArgs e)
-        {
-            this.chatThemeNotificationToggle.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(App.CHAT_THEME_SETTING, (byte)1);
-            
-            JObject obj = new JObject();
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
-            JObject data = new JObject();
-            data.Add(HikeConstants.PUSH_CBG, 0);
-            obj.Add(HikeConstants.DATA, data);
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
     }
 }
