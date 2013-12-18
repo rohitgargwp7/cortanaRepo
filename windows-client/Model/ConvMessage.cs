@@ -105,7 +105,8 @@ namespace windows_client.Model
             GROUP_PIC_CHANGED,
             DEFAULT,
             UNKNOWN,
-            FORCE_SMS
+            FORCE_SMS,
+            CHAT_BACKGROUND
         }
 
         public static ParticipantInfoState fromJSON(JObject obj)
@@ -963,15 +964,21 @@ namespace windows_client.Model
 
                     case MessageType.GROUP_NAME_CHANGED:
                         if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
-                            return UI_Utils.Instance.GrpNameOrPicChanged;
+                            return UI_Utils.Instance.GrpNameChanged;
                         else
-                            return UI_Utils.Instance.GrpNameOrPicChanged_ChatTheme;
+                            return UI_Utils.Instance.GrpNameChanged_ChatTheme;
 
                     case MessageType.GROUP_PIC_CHANGED:
                         if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
-                            return UI_Utils.Instance.GrpNameOrPicChanged;
+                            return UI_Utils.Instance.GrpPicChanged;
                         else
-                            return UI_Utils.Instance.GrpNameOrPicChanged_ChatTheme;
+                            return UI_Utils.Instance.GrpPicChanged_ChatTheme;
+
+                    case MessageType.CHAT_BACKGROUND:
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                            return UI_Utils.Instance.ChatBackgroundChanged;
+                        else
+                            return UI_Utils.Instance.ChatBackgroundChanged_ChatTheme;
 
                     case MessageType.TEXT_UPDATE:
                     default:

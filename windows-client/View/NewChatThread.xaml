@@ -107,16 +107,40 @@
                         <Image Name="userImage" Height="69" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     </Grid>
                     <StackPanel Margin="12,5,0,0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Tap="userHeader_Tap">
-                        <TextBlock x:Name="userName"  FontFamily="Segoe WP SemiLight" FontSize="36" VerticalAlignment="Top" Margin="0,-10,0,0" Foreground="White"/>
+                        <TextBlock x:Name="userName" FontFamily="Segoe WP SemiLight" FontSize="36" VerticalAlignment="Top" Margin="0,-10,0,0" Foreground="White"/>
                         <StackPanel Margin="2,0,0,0" Orientation="Horizontal" VerticalAlignment="Top" x:Name="lastSeenPannel">
                             <Image x:Name="onlineStatus" MaxHeight="15" MaxWidth="15" Margin="0,0,5,0" Visibility="Collapsed" Opacity="0.75"/>
                             <TextBlock x:Name="lastSeenTxt" Text="" FontSize="18" Foreground="White" Opacity="0.75"/>
                         </StackPanel>
                     </StackPanel>
-                    <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.Column="2">
-                        <Button x:Name="openChatBackgroundButton" Style="{StaticResource ButtonWithImageNoPaddingStyle}" Click="chatPaint_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.Column="2" Tap="chatPaint_Tap">
+                        <Button x:Name="openChatBackgroundButton" Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <Button.Content>
                                 <Image x:Name="chatPaint" Source="/view/images/paint.png" Height="60" Width="60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                </Grid>
+                <Grid x:Name="chatThemeHeader" Height="69" Margin="12,10" Visibility="Collapsed" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Tap="chatPaintCancel_Click">
+                        <Button Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,5,0,0">
+                            <Button.Content>
+                                <Image x:Name="cancelChatThemeImage" Height="55" Width="55" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                    <TextBlock x:Name="chatThemeHeaderTxt"  FontFamily="Segoe WP SemiLight" FontSize="38" 
+                               Text="{Binding Path= LocalizedResources.ChatThemeHeader_Txt, Source={StaticResource LocalizedStrings}}" 
+                               Grid.Column="1" Margin="0,0,0,0" VerticalAlignment="Center"/>
+                    <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.Column="2" Tap="chatPaintSave_Click">
+                        <Button Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,5,0,0">
+                            <Button.Content>
+                                <Image x:Name="saveChatThemeImage" Height="55" Width="55" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Button.Content>
                         </Button>
                     </Grid>
@@ -124,29 +148,14 @@
             </StackPanel>
         </Grid>
 
-        <Grid x:Name="chatBackgroundPopUp" Canvas.ZIndex="1" Grid.Row="1" MaxHeight="280" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+
+        <Grid x:Name="chatBackgroundPopUp" Canvas.ZIndex="1" Grid.Row="1" MaxHeight="220" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch">
             <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.9"/>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <ListBox x:Name="chatBackgroundList"
-                         ItemsPanel="{StaticResource chatThemeBackgroundListTemplate70x70}"
-                         ItemTemplate="{StaticResource chatThemeBackgroundItemTemplate70x70}"
-                         SelectionChanged="chatBackgroundList_SelectionChanged"
-                         Margin="0,12" HorizontalAlignment="Center"/>
-                <StackPanel Grid.Row="1" Height="80" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button Height="80" Width="180" BorderBrush="Transparent"
-                        Content="{Binding Path= LocalizedResources.Save_ChatTheme_Txt, Source={StaticResource LocalizedStrings}}" 
-                        Click="chatPaintSave_Click" HorizontalAlignment="Center" VerticalAlignment="Center"
-                        Background="#2e91d3" Foreground="White" FontWeight="Thin"/>
-                    <Button Height="80" Width="180" Margin="10,0,0,0" BorderBrush="Transparent"
-                        Content="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" 
-                        Click="chatPaintCancel_Click" HorizontalAlignment="Center" VerticalAlignment="Center"
-                            Background="#e9ecee" Foreground="#595959" FontWeight="Thin"/>
-                </StackPanel>
-            </Grid>
+            <ListBox x:Name="chatBackgroundList"
+                    ItemsPanel="{StaticResource chatThemeBackgroundListTemplate70x70}"
+                    ItemTemplate="{StaticResource chatThemeBackgroundItemTemplate70x70}"
+                    SelectionChanged="chatBackgroundList_SelectionChanged"
+                    Margin="0,6,0,12" HorizontalAlignment="Center"/>
         </Grid>
 
         <Grid Grid.Row="1" Margin="0,5,0,0">

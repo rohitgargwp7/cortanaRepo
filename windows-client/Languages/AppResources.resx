@@ -2031,6 +2031,9 @@ Download it now http://hike.in and join the fun!</value>
   <data name="In_App_Tip_9" xml:space="preserve">
     <value>And loads of more themes here...</value>
   </data>
+  <data name="ChatThemeHeader_Txt" xml:space="preserve">
+    <value>chat themes</value>
+  </data>
   <data name="Sent_As_SMS" xml:space="preserve">
     <value>Sent as SMS - {0}</value>
   </data>

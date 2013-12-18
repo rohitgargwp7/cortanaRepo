@@ -376,6 +376,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to chat themes.
+        /// </summary>
+        public static string ChatThemeHeader_Txt {
+            get {
+                return ResourceManager.GetString("ChatThemeHeader_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 1 new message.
         /// </summary>
         public static string ChatThread_1NewMessage_txt {

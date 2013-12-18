@@ -310,24 +310,24 @@
                 
             <!-- Item templates-->
             <DataTemplate x:Key="chatThemeBackgroundItemTemplate70x70">
-                <Grid Margin="0" Width="80" Height="80">
-                    <Border Background="{Binding BackgroundColor}" Width="70" Height="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" Canvas.ZIndex="-2" Visibility="{Binding BackgroundVisibility}"/>
-                    <Image Source="{Binding ImagePattern}" Stretch="{Binding ThumbnailStretch}" Height="70" Width="70" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Grid Margin="0" Width="93" Height="93">
+                    <Border Background="{Binding BackgroundColor}" Width="83" Height="83" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" Canvas.ZIndex="-2" Visibility="{Binding BackgroundVisibility}"/>
+                    <Image Source="{Binding ImagePattern}" Stretch="{Binding ThumbnailStretch}" Height="83" Width="83" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <Grid Canvas.ZIndex="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding DefaultImageVisibility}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <Border Height="15" Background="#0f8fe1" Width="70" Grid.Row="0"/>
-                        <Border Height="55" Background="#dbdbdb" Width="70" Grid.Row="1"/>
+                        <Border Height="23" Background="#0f8fe1" Width="83" Grid.Row="0"/>
+                        <Border Height="60" Background="#dbdbdb" Width="83" Grid.Row="1"/>
                     </Grid>
-                    <Border Background="Transparent" Width="70" Height="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="{Binding BorderColor}" BorderThickness="5" Canvas.ZIndex="2"/>
-                    <Image Source="/View/images/icon_tick.png" Height="40" Canvas.ZIndex="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding TickImageVisibility}"/>
+                    <Border Background="Transparent" Width="83" Height="83" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="{Binding BorderColor}" BorderThickness="5" Canvas.ZIndex="2"/>
+                    <Image Source="/View/images/icon_tick.png" Height="45" Canvas.ZIndex="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding TickImageVisibility}"/>
                 </Grid>
             </DataTemplate>
 
             <ItemsPanelTemplate x:Key="chatThemeBackgroundListTemplate70x70">
-                <toolkit:WrapPanel ItemHeight="80" ItemWidth="80"/>
+                <toolkit:WrapPanel ItemHeight="93" ItemWidth="93"/>
             </ItemsPanelTemplate>
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>

@@ -68,8 +68,12 @@ namespace windows_client.utils
         private BitmapImage reward_ct;
         private BitmapImage chatSmsError;
         private BitmapImage chatSmsError_ct;
-        private BitmapImage grpNameOrPicChanged;
-        private BitmapImage grpNameOrPicChanged_ct;
+        private BitmapImage grpNameChanged;
+        private BitmapImage grpNameChanged_ct;
+        private BitmapImage grpPicChanged;
+        private BitmapImage grpPicChanged_ct;
+        private BitmapImage chatBackgroundChanged;
+        private BitmapImage chatBackgroundChanged_ct;
         private BitmapImage participantLeft;
         private BitmapImage participantLeft_ct;
         private BitmapImage nudgeSend;
@@ -138,6 +142,8 @@ namespace windows_client.utils
         BitmapImage walkieTalkieDeleteSucImage;
         BitmapImage closeButtonWhiteImage;
         BitmapImage closeButtonBlackImage;
+        BitmapImage saveButtonWhiteImage;
+        BitmapImage saveButtonBlackImage;
         BitmapImage dustbinGreyImage;
         BitmapImage dustbinWhiteImage;
         SolidColorBrush whiteTextForeGround;
@@ -828,24 +834,66 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage GrpNameOrPicChanged
+        public BitmapImage GrpNameChanged
         {
             get
             {
-                if (grpNameOrPicChanged == null)
-                    grpNameOrPicChanged = new BitmapImage(new Uri("/View/images/group_name_changed.png", UriKind.Relative));
-                return grpNameOrPicChanged;
+                if (grpNameChanged == null)
+                    grpNameChanged = new BitmapImage(new Uri("/View/images/group_name_changed.png", UriKind.Relative));
+                return grpNameChanged;
             }
         }
 
-        public BitmapImage GrpNameOrPicChanged_ChatTheme
+        public BitmapImage GrpNameChanged_ChatTheme
         {
             get
             {
-                if (grpNameOrPicChanged_ct == null)
-                    grpNameOrPicChanged_ct = new BitmapImage(new Uri("/View/images/group_name_changed_CT.png", UriKind.Relative));
+                if (grpNameChanged_ct == null)
+                    grpNameChanged_ct = new BitmapImage(new Uri("/View/images/group_name_changed_CT.png", UriKind.Relative));
                 
-                return grpNameOrPicChanged_ct;
+                return grpNameChanged_ct;
+            }
+        }
+        
+        public BitmapImage GrpPicChanged
+        {
+            get
+            {
+                if (grpPicChanged == null)
+                    grpPicChanged = new BitmapImage(new Uri("/View/images/group_pic_changed.png", UriKind.Relative));
+                return grpPicChanged;
+            }
+        }
+
+        public BitmapImage GrpPicChanged_ChatTheme
+        {
+            get
+            {
+                if (grpPicChanged_ct == null)
+                    grpPicChanged_ct = new BitmapImage(new Uri("/View/images/group_pic_changed_CT.png", UriKind.Relative));
+
+                return grpPicChanged_ct;
+            }
+        }
+
+        public BitmapImage ChatBackgroundChanged
+        {
+            get
+            {
+                if (chatBackgroundChanged == null)
+                    chatBackgroundChanged = new BitmapImage(new Uri("/View/images/chatBackground_changed.png", UriKind.Relative));
+                return chatBackgroundChanged;
+            }
+        }
+
+        public BitmapImage ChatBackgroundChanged_ChatTheme
+        {
+            get
+            {
+                if (chatBackgroundChanged_ct == null)
+                    chatBackgroundChanged_ct = new BitmapImage(new Uri("/View/images/chatBackground_changed_CT.png", UriKind.Relative));
+
+                return chatBackgroundChanged_ct;
             }
         }
 
@@ -963,6 +1011,7 @@ namespace windows_client.utils
                 return whiteContactIcon;
             }
         }
+
         public BitmapImage FacebookDisabledIcon
         {
             get
@@ -1243,6 +1292,28 @@ namespace windows_client.utils
                     closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
 
                 return closeButtonWhiteImage;
+            }
+        }
+
+        public BitmapImage SaveButtonBlackImage
+        {
+            get
+            {
+                if (saveButtonBlackImage == null)
+                    saveButtonBlackImage = new BitmapImage(new Uri("/View/images/icon_tick_black.png", UriKind.Relative));
+
+                return saveButtonBlackImage;
+            }
+        }
+
+        public BitmapImage SaveButtonWhiteImage
+        {
+            get
+            {
+                if (saveButtonWhiteImage == null)
+                    saveButtonWhiteImage = new BitmapImage(new Uri("/View/images/icon_tick.png", UriKind.Relative));
+
+                return saveButtonWhiteImage;
             }
         }
 
