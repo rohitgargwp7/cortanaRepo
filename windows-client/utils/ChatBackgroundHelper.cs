@@ -198,7 +198,7 @@ namespace windows_client.utils
 
             return false;
         }
-        
+
         /// <summary>
         /// When user updates a background of one of his chat
         /// </summary>
@@ -247,7 +247,7 @@ namespace windows_client.utils
         /// </summary>
         /// <param name="msisdn"></param>
         /// <returns></returns>
-        String SetDefaultBackground(string msisdn)
+        public String SetDefaultBackground(string msisdn)
         {
             int index = random.Next(0, BackgroundList.Count);
 

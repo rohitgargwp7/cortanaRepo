@@ -534,29 +534,6 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-
-    
-    <Content Include="View\images\chat_bg_ftue_Box.png" />
-    <Content Include="View\images\chat_bg_ftue_card_bg.png" />
-    <Content Include="View\images\chat_bg_ftue_Flip_side_dot.png" />
-    <Content Include="View\images\chat_bg_ftue_front_bottombar.png" />
-    <Content Include="View\images\chat_bg_ftue_front_topbar.png" />
-    <Content Include="View\images\chat_bg_ftue_FS_bottom_cut.png" />
-    <Content Include="View\images\chat_bg_ftue_FS_leftknot2.png" />
-    <Content Include="View\images\chat_bg_ftue_FS_left_cut.png" />
-    <Content Include="View\images\chat_bg_ftue_FS_left_knot.png" />
-    <Content Include="View\images\chat_bg_ftue_FS_rightknot.png" />
-    <Content Include="View\images\chat_bg_ftue_FS_rightknot2.png" />
-    <Content Include="View\images\chat_bg_ftue_FS_right_cut.png" />
-    <Content Include="View\images\chat_bg_ftue_FS_top_cut.png" />
-    <Content Include="View\images\chat_bg_ftue_gift_rapper_bottom.png" />
-    <Content Include="View\images\chat_bg_ftue_gift_rapper_left.png" />
-    <Content Include="View\images\chat_bg_ftue_gift_rapper_right.png" />
-    <Content Include="View\images\chat_bg_ftue_gift_rapper_top.png" />
-    <Content Include="View\images\chat_bg_ftue_theme_popup.png" />
-    <Content Include="View\images\IntroGlow.png" />
-    
-
     <Content Include="View\images\chatBackgrounds\aqua.png" />
     <Content Include="View\images\chatBackgrounds\blue-2.png" />
     <Content Include="View\images\chatBackgrounds\blue-green.png" />
@@ -573,6 +550,7 @@
     <Content Include="View\images\chatBackgrounds\red-christmas.png" />
     <Content Include="View\images\chatBackgrounds\red-hearts.png" />
     <Content Include="View\images\chatBackgrounds\yellow.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_card_bg.png" />
     <Content Include="View\images\chat_invited_green_CT.png" />
     <Content Include="View\images\chat_joined_blue_CT.png" />
     <Content Include="View\images\chat_left_CT.png" />
@@ -586,9 +564,32 @@
     <Content Include="View\images\ic_delivered_CT.png" />
     <Content Include="View\images\ic_read_CT.png" />
     <Content Include="View\images\ic_sent_CT.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_Box.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_Flip_side_dot.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_front_bottombar.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_front_topbar.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_FS_bottom_cut.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_FS_leftknot2.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_fs_leftknot22.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_FS_left_cut.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_FS_left_knot.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_FS_rightknot.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_FS_rightknot2.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_fs_rightknot22.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_FS_right_cut.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_FS_top_cut.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_gift_rapper_bottom.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_gift_rapper_left.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_gift_rapper_right.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_gift_rapper_top.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_theme_popup.png" />
+    <Content Include="View\images\ChatBgFTUE\IntroGlow.png" />
+    <Content Include="View\images\ChatBgFTUE\ribbon1.png" />
+    <Content Include="View\images\ChatBgFTUE\ribbon2.png" />
+    <Content Include="View\images\ChatBgFTUE\ribbon3.png" />
+    <Content Include="View\images\ChatBgFTUE\snow_flake.png" />
     <Content Include="View\images\stickers\categorySets\indian_overlay.png" />
     <Content Include="View\images\paint_black.png" />
-
     <Content Include="View\images\icon_sms.png" />
     <Content Include="View\images\pause_black_ftr.png" />
     <Content Include="View\images\pause_white_ftr.png" />
@@ -754,9 +755,6 @@
     <Content Include="View\images\settings_icon_white.png" />
     <Content Include="View\images\close_white.png" />
     <Content Include="View\images\close_black.png" />
-
-    <Content Include="View\images\snow_flake.png" />
-
     <Content Include="View\images\stickers\categorySets\active_bolly.png" />
     <Content Include="View\images\stickers\categorySets\avatars.png" />
     <Content Include="View\images\stickers\categorySets\avatars_i.png" />
@@ -786,7 +784,6 @@
     <Content Include="View\images\stickers\categorySets\smileyExpressions_i.png" />
     <Content Include="View\images\stickers\categorySets\smileyExpressions_overlay.png" />
     <Content Include="View\images\stickers\categorySets\troll_overlay.png" />
-
     <Content Include="View\images\stickers\WVGA\doggy\001_hi.png" />
     <Content Include="View\images\stickers\WVGA\doggy\002_thumbsup.png" />
     <Content Include="View\images\stickers\WVGA\doggy\005_sorry.png" />

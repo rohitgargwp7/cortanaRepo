@@ -123,7 +123,13 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
+            if (overlaySnow.Visibility == Visibility.Visible)
+            {
+                overlaySnow.Visibility = Visibility.Collapsed;
+                launchPagePivot.IsHitTestVisible = true;
+                appBar.IsVisible = true;
+                SystemTray.IsVisible = true;
+            }
             if (launchPagePivot.SelectedIndex == 3)
             {
                 TotalUnreadStatuses = 0;
@@ -2764,6 +2770,9 @@ namespace windows_client.View
         void StartSnowAnimation()
         {
             overlaySnow.Visibility = Visibility.Visible;
+            launchPagePivot.IsHitTestVisible = false;
+            appBar.IsVisible = false;
+            SystemTray.IsVisible = false;
             gridSnowFlakes.Opacity = 0;
             for (int i = 0; i < 40; i++)
                 Snow(true);
@@ -2775,13 +2784,11 @@ namespace windows_client.View
                 {
                     gridSnowFlakes.Opacity = (count) * 0.03;
                 }
-              
+
                 if (count++ == 35)
                     Storyboard1.Begin();
             };
             t.Start();
-
-
         }
 
         Random _Random = new Random((int)DateTime.Now.Ticks);
@@ -2789,7 +2796,7 @@ namespace windows_client.View
         {
             var x = _Random.Next(isInitial ? 0 : -100, isInitial ? 500 : (int)gridSnowFlakes.ActualWidth + 50);
             var y = _Random.Next(isInitial ? 100 : -100, isInitial ? 700 : 0);
-            var s = _Random.Next(1, _Random.Next(4, 10)) * .1;
+            var s = _Random.Next(2, _Random.Next(6, 10)) * .1;
             var r = _Random.Next(0, 270);
             var flake = new Snowflake
             {
@@ -2805,7 +2812,7 @@ namespace windows_client.View
                 VerticalAlignment = VerticalAlignment.Top,
             };
             gridSnowFlakes.Children.Add(flake);
-            var d = TimeSpan.FromSeconds(_Random.Next(isInitial ? 0 : 5, 12));
+            var d = TimeSpan.FromSeconds(_Random.Next(isInitial ? 0 : 5, 10));
 
             x += _Random.Next(-200, 200);
             var ax = new DoubleAnimation { To = x, Duration = d };
@@ -2832,16 +2839,31 @@ namespace windows_client.View
         private void TextBlock_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             Storyboard2.Begin();
+            GiveSpinTxtBlock.Text = App.ViewModel.MessageListPageCollection.Count > 0 ? "Give it a spin!" : AppResources.OK;
             Storyboard2.Completed += (a, b) =>
                 {
                     t.Stop();
                     gridSnowFlakes.Children.Clear();
+                    gridAnimation.Tap += GridAnimationTap;
                 };
         }
-        private void textBlock_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+
+
+        private void GridAnimationTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            t.Stop();
+            //overlaySnow.Visibility = Visibility.Collapsed;
+            //launchPagePivot.IsHitTestVisible = true;
+            //appBar.IsVisible = true;
+            //SystemTray.IsVisible = true;
+            if (App.ViewModel.MessageListPageCollection.Count > 0)
+            {
+                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = App.ViewModel.MessageListPageCollection[0];
+                PhoneApplicationService.Current.State[HikeConstants.CHAT_FTUE] = true;
+                string uri = "/View/NewChatThread.xaml";
+                NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+            }
         }
+
         #endregion
     }
 }
