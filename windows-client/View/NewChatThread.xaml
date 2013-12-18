@@ -152,8 +152,8 @@
         <Grid x:Name="chatBackgroundPopUp" Canvas.ZIndex="1" Grid.Row="1" MaxHeight="220" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch">
             <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.9"/>
             <ListBox x:Name="chatBackgroundList"
-                    ItemsPanel="{StaticResource chatThemeBackgroundListTemplate70x70}"
-                    ItemTemplate="{StaticResource chatThemeBackgroundItemTemplate70x70}"
+                    ItemsPanel="{StaticResource chatThemeBackgroundListTemplate93x93}"
+                    ItemTemplate="{StaticResource chatThemeBackgroundItemTemplate93x93}"
                     SelectionChanged="chatBackgroundList_SelectionChanged"
                     Margin="0,6,0,12" HorizontalAlignment="Center"/>
         </Grid>
