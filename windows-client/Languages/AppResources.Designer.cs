@@ -367,7 +367,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} changed the background.
+        ///   Looks up a localized string similar to {0} changed the chat theme.
         /// </summary>
         public static string ChatBg_Changed_Text {
             get {

@@ -1923,7 +1923,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>{0} people</value>
   </data>
   <data name="ChatBg_Changed_Text" xml:space="preserve">
-    <value>{0} changed the background</value>
+    <value>{0} changed the chat theme</value>
   </data>
   <data name="Default_Txt" xml:space="preserve">
     <value>default</value>
