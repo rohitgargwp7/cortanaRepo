@@ -5323,6 +5323,9 @@ namespace windows_client.View
         {
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
+            if (isGroupChat && !isGroupAlive)
+                chatPaint.Opacity = 0.5;
+
             if (App.ViewModel.SelectedBackground.IsDefault)
             {
                 headerBackground.Visibility = Visibility.Collapsed;
@@ -5608,6 +5611,7 @@ namespace windows_client.View
                 App.ViewModel.HideToolTip(LayoutRoot, 7);
             }
         }
+
         #endregion
 
         private void llsMessages_ItemRealized(object sender, ItemRealizationEventArgs e)

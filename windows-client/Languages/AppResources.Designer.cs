@@ -439,6 +439,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to the chat theme changes for both you and your friend.
+        /// </summary>
+        public static string ChatThemeMessage {
+            get {
+                return ResourceManager.GetString("ChatThemeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 1 new message.
         /// </summary>
         public static string ChatThread_1NewMessage_txt {
@@ -1056,6 +1065,15 @@ namespace windows_client.Languages {
         public static string DND_USER {
             get {
                 return ResourceManager.GetString("DND_USER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to done.
+        /// </summary>
+        public static string Done_Txt {
+            get {
+                return ResourceManager.GetString("Done_Txt", resourceCulture);
             }
         }
         
