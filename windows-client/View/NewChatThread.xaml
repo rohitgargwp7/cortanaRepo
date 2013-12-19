@@ -76,7 +76,7 @@
         <ProgressBar x:Name="shellProgress" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch" Canvas.ZIndex="4" Foreground="White" Background="Transparent"/>
 
         <Border Grid.RowSpan="3" x:Name="BackgroundColor" Canvas.ZIndex="-4">
-            <Image x:Name="chatBackground" Opacity="0.7" Stretch="Fill">
+            <Image x:Name="chatBackground" Opacity="0.7" Stretch="None">
                 <Image.RenderTransform>
                     <RotateTransform x:Name="chatBackgroundRotateTransform"/>
                 </Image.RenderTransform>
@@ -114,7 +114,7 @@
                         </StackPanel>
                     </StackPanel>
                     <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.Column="2" Tap="chatPaint_Tap">
-                        <Button x:Name="openChatBackgroundButton" Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Button x:Name="openChatBackgroundButton" Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" toolkit:TiltEffect.IsTiltEnabled="True">
                             <Button.Content>
                                 <Image x:Name="chatPaint" Source="/view/images/paint.png" Height="60" Width="60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Button.Content>
@@ -128,7 +128,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Grid HorizontalAlignment="Right" MinHeight="60" MinWidth="60" VerticalAlignment="Stretch" Tap="chatPaintCancel_Click">
-                        <Button Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,5,0,0">
+                        <Button Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,5,0,0" toolkit:TiltEffect.IsTiltEnabled="True">
                             <Button.Content>
                                 <Image x:Name="cancelChatThemeImage" Height="60" Width="60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Button.Content>
@@ -137,7 +137,7 @@
                     <TextBlock x:Name="chatThemeHeaderTxt"  FontFamily="Segoe WP SemiLight" FontSize="38" 
                                Text="{Binding Path= LocalizedResources.ChatThemeHeader_Txt, Source={StaticResource LocalizedStrings}}" 
                                Grid.Column="1" Margin="0,0,0,0" VerticalAlignment="Center"/>
-                    <Button Content="save" HorizontalAlignment="Right" FontWeight="Light" Width="110" Height="70"  Grid.Column="2" Click="chatPaintSave_Click" Style="{StaticResource SaveButtonChatThemeStyle}" VerticalAlignment="Center" Margin="0,5"/>
+                    <Button Content="{Binding Path= LocalizedResources.Save_AppBar_Btn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Right" FontWeight="Light" Width="110" Height="70"  Grid.Column="2" Click="chatPaintSave_Click" Style="{StaticResource SaveButtonChatThemeStyle}" VerticalAlignment="Center" Margin="0,5"  toolkit:TiltEffect.IsTiltEnabled="True"/>
                 </Grid>
             </StackPanel>
         </Grid>
@@ -145,7 +145,7 @@
 
         <Grid x:Name="chatBackgroundPopUp" Canvas.ZIndex="1" Grid.Row="1" MaxHeight="220" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch">
             <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.9"/>
-            <ListBox x:Name="chatBackgroundList"
+            <ListBox x:Name="chatBackgroundList" toolkit:TiltEffect.IsTiltEnabled="True"
                     ItemsPanel="{StaticResource chatThemeBackgroundListTemplate93x93}"
                     ItemTemplate="{StaticResource chatThemeBackgroundItemTemplate93x93}"
                     SelectionChanged="chatBackgroundList_SelectionChanged"

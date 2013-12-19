@@ -5316,7 +5316,7 @@ namespace windows_client.View
         WriteableBitmap _background;
         BitmapImage _tileBitmap;
 
-        public void ChangeBackground(bool isBubbleColorChanged = true)
+        public void ChangeBackground(bool isBubbleColorChanged = true, bool isRegeneratePattern = true)
         {
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
@@ -5353,65 +5353,51 @@ namespace windows_client.View
                 return;
             }
 
-            _tileBitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
-                {
-                    CreateOptions = BitmapCreateOptions.None
-                };
-
-            //handle delay creation of bitmap image
-            _tileBitmap.ImageOpened += (s, e) =>
+            if (isRegeneratePattern)
             {
-                WriteableBitmap source = null;
-                source = new WriteableBitmap(_tileBitmap);
+                _tileBitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
+                   {
+                       CreateOptions = BitmapCreateOptions.None
+                   };
 
-                if (source != null)
+                //handle delay creation of bitmap image
+                _tileBitmap.ImageOpened += (s, e) =>
                 {
-                    if (App.ViewModel.SelectedBackground.IsTile)
+                    WriteableBitmap source = null;
+                    source = new WriteableBitmap(_tileBitmap);
+
+                    if (source != null)
                     {
-                        var iHeight = 800;
-                        var iWidth = 480;
-
-                        var wb1 = new WriteableBitmap((int)iWidth, (int)iHeight);
-                        wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = (int)iWidth, Height = (int)iHeight }, null);
-                        wb1.Invalidate();
-
-                        int height = 0;
-
-                        for (int width = 0; width <= iWidth; )
+                        if (App.ViewModel.SelectedBackground.IsTile)
                         {
-                            for (height = 0; height <= iHeight; )
+                            var iSize = LayoutRoot.ActualHeight > LayoutRoot.ActualWidth ? LayoutRoot.ActualHeight : LayoutRoot.ActualWidth;
+
+                            var wb1 = new WriteableBitmap((int)iSize, (int)iSize);
+                            wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = (int)iSize, Height = (int)iSize }, null);
+                            wb1.Invalidate();
+
+                            int height = 0;
+
+                            for (int width = 0; width <= iSize; )
                             {
-                                wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
-                                height += source.PixelHeight;
+                                for (height = 0; height <= iSize; )
+                                {
+                                    wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
+                                    height += source.PixelHeight;
+                                }
+
+                                width += source.PixelWidth;
                             }
 
-                            width += source.PixelWidth;
+                            _background = wb1;
                         }
+                        else
+                            _background = source;
 
-                        _background = wb1;
+                        chatBackground.Source = _background;
                     }
-                    else
-                        _background = source;
-
-                    RotateImageAndApply();
-                }
-            };
-        }
-
-        /// <summary>
-        /// Rotate image and apply according to current orientation
-        /// </summary>
-        private void RotateImageAndApply()
-        {
-            if (_background == null || App.ViewModel.SelectedBackground.IsDefault)
-                return;
-
-            if (Orientation == PageOrientation.Portrait || Orientation == PageOrientation.PortraitUp || Orientation == PageOrientation.PortraitDown)
-                chatBackground.Source = _background;
-            else if (Orientation == PageOrientation.LandscapeLeft)
-                chatBackground.Source = _background.Rotate(270);
-            else if (Orientation == PageOrientation.LandscapeRight)
-                chatBackground.Source = _background.Rotate(90);
+                };
+            }
         }
 
         private void chatBackgroundList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -5625,7 +5611,7 @@ namespace windows_client.View
                 App.ViewModel.HideToolTip(LayoutRoot, 7);
             }
 
-            RotateImageAndApply();
+            ChangeBackground(false, false);
         }
         #endregion
 
