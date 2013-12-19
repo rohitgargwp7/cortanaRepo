@@ -2028,15 +2028,20 @@ Download it now http://hike.in and join the fun!</value>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
     <value>{0} just changed the chat theme with you. Update your app to the latest version to experience Chat Themes 2.0. http://hike.in</value>
   </data>
+
   <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
     <value>change chat theme</value>
     <comment>max chars(18)</comment>
   </data>
+
   <data name="In_App_Tip_9" xml:space="preserve">
     <value>And loads of more themes here...</value>
   </data>
-  <data name="Settings_ChatThemeNotification_SwitchHeader" xml:space="preserve">
-    <value>Chat themes notifications</value>
+  <data name="ChatThemeHeader_Txt" xml:space="preserve">
+    <value>chat themes</value>
+  </data>
+  <data name="Sent_As_SMS" xml:space="preserve">
+    <value>Sent as SMS - {0}</value>
   </data>
   <data name="Chat_FTUE_chatThemes" xml:space="preserve">
     <value>Chat Themes!</value>

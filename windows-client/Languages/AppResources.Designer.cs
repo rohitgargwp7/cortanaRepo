@@ -430,6 +430,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to chat themes.
+        /// </summary>
+        public static string ChatThemeHeader_Txt {
+            get {
+                return ResourceManager.GetString("ChatThemeHeader_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 1 new message.
         /// </summary>
         public static string ChatThread_1NewMessage_txt {
@@ -3992,6 +4001,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sent as SMS - {0}.
+        /// </summary>
+        public static string Sent_As_SMS {
+            get {
+                return ResourceManager.GetString("Sent_As_SMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to settings.
         /// </summary>
         public static string Settings {
@@ -4015,15 +4033,6 @@ namespace windows_client.Languages {
         public static string Settings_BlocklistSettings_Txt {
             get {
                 return ResourceManager.GetString("Settings_BlocklistSettings_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Chat themes notifications.
-        /// </summary>
-        public static string Settings_ChatThemeNotification_SwitchHeader {
-            get {
-                return ResourceManager.GetString("Settings_ChatThemeNotification_SwitchHeader", resourceCulture);
             }
         }
         
