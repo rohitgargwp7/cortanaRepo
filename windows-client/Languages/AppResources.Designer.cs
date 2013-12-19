@@ -358,6 +358,60 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to change chat theme.
+        /// </summary>
+        public static string Change_Background_App_Bar_Menu_Txt {
+            get {
+                return ResourceManager.GetString("Change_Background_App_Bar_Menu_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chat Themes!.
+        /// </summary>
+        public static string Chat_FTUE_chatThemes {
+            get {
+                return ResourceManager.GetString("Chat_FTUE_chatThemes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Give it a spin!.
+        /// </summary>
+        public static string Chat_FTUE_giveSpin {
+            get {
+                return ResourceManager.GetString("Chat_FTUE_giveSpin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What are holidays without any gifts? Happy Hiking!.
+        /// </summary>
+        public static string Chat_FTUE_HappyHiking {
+            get {
+                return ResourceManager.GetString("Chat_FTUE_HappyHiking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open gift ....
+        /// </summary>
+        public static string Chat_FTUE_OpenGift {
+            get {
+                return ResourceManager.GetString("Chat_FTUE_OpenGift", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personalise your chat with gorgeus themes..
+        /// </summary>
+        public static string Chat_FTUE_personalise {
+            get {
+                return ResourceManager.GetString("Chat_FTUE_personalise", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} changed the chat theme.
         /// </summary>
         public static string ChatBg_Changed_Text {

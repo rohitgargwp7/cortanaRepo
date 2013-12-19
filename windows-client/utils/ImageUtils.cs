@@ -129,6 +129,7 @@ namespace windows_client.utils
         private BitmapImage muteIcon;
         private BitmapImage muteIconForConversationView;
         private BitmapImage unmuteIcon;
+        private BitmapImage circles;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
         private string[] defaultAvatarFileNames;
@@ -1292,6 +1293,17 @@ namespace windows_client.utils
                     closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
 
                 return closeButtonWhiteImage;
+            }
+        }
+        public BitmapImage Circles
+        {
+            get
+            {
+                if (circles == null)
+                {
+                    circles = new BitmapImage(new Uri("/View/images/circles.png", UriKind.Relative));
+                }
+                return circles;
             }
         }
 

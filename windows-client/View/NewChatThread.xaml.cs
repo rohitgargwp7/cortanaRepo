@@ -1142,6 +1142,14 @@ namespace windows_client.View
 
             initBlockUnblockState();
 
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CHAT_FTUE))
+            {
+                ChatBackgroundHelper.Instance.SetDefaultBackground(mContactNumber);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.CHAT_FTUE);
+            }
+            else
+                ChatBackgroundHelper.Instance.SetSelectedBackgorundFromMap(mContactNumber);
+
             if (!mUserIsBlocked)
             {
                 UpdateChatStatus();
@@ -1160,7 +1168,7 @@ namespace windows_client.View
             else
                 this.ApplicationBar = appBar;
 
-            ChatBackgroundHelper.Instance.SetSelectedBackgorundFromMap(mContactNumber);
+            
 
             chatBackgroundList.ItemsSource = ChatBackgroundHelper.Instance.BackgroundList;
             chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
@@ -1229,12 +1237,6 @@ namespace windows_client.View
 
         private void ShowInAppTips()
         {
-            if (_isHikeBot)
-            {
-                this.ApplicationBar = appBar;
-                return;
-            }
-
             HikeToolTip tip;
 
             if (App.ViewModel.DictInAppTip != null && App.ViewModel.DictInAppTip.TryGetValue(8, out tip) && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
@@ -1288,7 +1290,7 @@ namespace windows_client.View
                         }
                         else if (chatThreadCount == 2)
                         {
-                           showNudgeTute();
+                            showNudgeTute();
                         }
                         else
                         {
@@ -1640,7 +1642,7 @@ namespace windows_client.View
                 appBar.MenuItems.Add(leaveMenuItem);
             }
 
-            if(!_isHikeBot)
+            if (!_isHikeBot)
             {
                 if (isAddUser)
                 {
@@ -6157,7 +6159,7 @@ namespace windows_client.View
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
-                } 
+                }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
