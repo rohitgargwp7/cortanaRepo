@@ -5317,7 +5317,7 @@ namespace windows_client.View
         WriteableBitmap _background;
         BitmapImage _tileBitmap;
 
-        public void ChangeBackground(bool isBubbleColorChanged = true, bool isRegeneratePattern = true)
+        public void ChangeBackground(bool isBubbleColorChanged = true)
         {
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
@@ -5354,51 +5354,48 @@ namespace windows_client.View
                 return;
             }
 
-            if (isRegeneratePattern)
+            _tileBitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
+               {
+                   CreateOptions = BitmapCreateOptions.None
+               };
+
+            //handle delay creation of bitmap image
+            _tileBitmap.ImageOpened += (s, e) =>
             {
-                _tileBitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
-                   {
-                       CreateOptions = BitmapCreateOptions.None
-                   };
+                WriteableBitmap source = null;
+                source = new WriteableBitmap(_tileBitmap);
 
-                //handle delay creation of bitmap image
-                _tileBitmap.ImageOpened += (s, e) =>
+                if (source != null)
                 {
-                    WriteableBitmap source = null;
-                    source = new WriteableBitmap(_tileBitmap);
-
-                    if (source != null)
+                    if (App.ViewModel.SelectedBackground.IsTile)
                     {
-                        if (App.ViewModel.SelectedBackground.IsTile)
+                        var iSize = LayoutRoot.ActualHeight > LayoutRoot.ActualWidth ? LayoutRoot.ActualHeight : LayoutRoot.ActualWidth;
+
+                        var wb1 = new WriteableBitmap((int)iSize, (int)iSize);
+                        wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = (int)iSize, Height = (int)iSize }, null);
+                        wb1.Invalidate();
+
+                        int height = 0;
+
+                        for (int width = 0; width <= iSize; )
                         {
-                            var iSize = LayoutRoot.ActualHeight > LayoutRoot.ActualWidth ? LayoutRoot.ActualHeight : LayoutRoot.ActualWidth;
-
-                            var wb1 = new WriteableBitmap((int)iSize, (int)iSize);
-                            wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = (int)iSize, Height = (int)iSize }, null);
-                            wb1.Invalidate();
-
-                            int height = 0;
-
-                            for (int width = 0; width <= iSize; )
+                            for (height = 0; height <= iSize; )
                             {
-                                for (height = 0; height <= iSize; )
-                                {
-                                    wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
-                                    height += source.PixelHeight;
-                                }
-
-                                width += source.PixelWidth;
+                                wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
+                                height += source.PixelHeight;
                             }
 
-                            _background = wb1;
+                            width += source.PixelWidth;
                         }
-                        else
-                            _background = source;
 
-                        chatBackground.Source = _background;
+                        _background = wb1;
                     }
-                };
-            }
+                    else
+                        _background = source;
+
+                    chatBackground.Source = _background;
+                }
+            };
         }
 
         private void chatBackgroundList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -5406,19 +5403,16 @@ namespace windows_client.View
             if ((sender as ListBox).SelectedItem != null)
             {
                 var chatBg = (sender as ListBox).SelectedItem as ChatBackground;
-                if (chatBg != null)
+                if (chatBg != null && chatBg != App.ViewModel.SelectedBackground)
                 {
-                    if (chatBg != App.ViewModel.SelectedBackground)
+                    try
                     {
-                        try
-                        {
-                            App.ViewModel.SelectedBackground = ChatBackgroundHelper.Instance.BackgroundList.Where(b => b.ID == chatBg.ID).First();
-                            ChangeBackground();
-                        }
-                        catch
-                        {
-                            Debug.WriteLine("Background doesn't exist");
-                        }
+                        App.ViewModel.SelectedBackground = ChatBackgroundHelper.Instance.BackgroundList.Where(b => b.ID == chatBg.ID).First();
+                        ChangeBackground();
+                    }
+                    catch
+                    {
+                        Debug.WriteLine("Background doesn't exist");
                     }
                 }
             }
@@ -5611,8 +5605,6 @@ namespace windows_client.View
                 App.ViewModel.HideToolTip(LayoutRoot, 5);
                 App.ViewModel.HideToolTip(LayoutRoot, 7);
             }
-
-            ChangeBackground(false, false);
         }
         #endregion
 
