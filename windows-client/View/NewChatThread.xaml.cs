@@ -5288,6 +5288,7 @@ namespace windows_client.View
 
             App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
 
+            App.ViewModel.HideToolTip(LayoutRoot, 5);
             App.ViewModel.HideToolTip(LayoutRoot, 8);
 
             openChatBackgroundButton.Opacity = 0;
@@ -6831,7 +6832,7 @@ namespace windows_client.View
                     userName.FontSize = 36;
                     lastSeenPannel.Visibility = Visibility.Visible;
 
-                    if (isShowTip && !isInAppTipVisible)
+                    if (isShowTip && !isInAppTipVisible && chatBackgroundPopUp.Visibility == Visibility.Collapsed)
                     {
                         App.ViewModel.DisplayTip(LayoutRoot, 5);
                         isInAppTipVisible = true;
