@@ -1670,7 +1670,7 @@ namespace windows_client
                     ChatThemeData bg = null;
                     if (ChatBackgroundHelper.Instance.ChatBgMap.TryGetValue(sender, out bg))
                     {
-                        if (bg.Timestamp > ts)
+                        if (bg.Timestamp >= ts)
                             return;
                     }
 
@@ -1686,7 +1686,7 @@ namespace windows_client
                         }
                         else
                         {
-                            cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_READ);
+                            cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_UNREAD);
                             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
                         }
 

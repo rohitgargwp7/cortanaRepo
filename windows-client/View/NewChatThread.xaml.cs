@@ -5288,6 +5288,7 @@ namespace windows_client.View
 
             App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
 
+            App.ViewModel.HideToolTip(LayoutRoot, 5);
             App.ViewModel.HideToolTip(LayoutRoot, 8);
 
             openChatBackgroundButton.Opacity = 0;
@@ -5328,7 +5329,6 @@ namespace windows_client.View
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageBlack;
                 shellProgress.Foreground = progressBar.Foreground = UI_Utils.Instance.Black;
                 cancelChatThemeImage.Source = UI_Utils.Instance.CloseButtonBlackImage;
-                saveChatThemeImage.Source = UI_Utils.Instance.SaveButtonBlackImage;
             }
             else
             {
@@ -5338,7 +5338,6 @@ namespace windows_client.View
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageWhite;
                 shellProgress.Foreground = progressBar.Foreground = App.ViewModel.SelectedBackground.ForegroundColor;
                 cancelChatThemeImage.Source = UI_Utils.Instance.CloseButtonWhiteImage;
-                saveChatThemeImage.Source = UI_Utils.Instance.SaveButtonWhiteImage;
             }
 
             if (isBubbleColorChanged)
@@ -5356,9 +5355,9 @@ namespace windows_client.View
             }
 
             _tileBitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
-                {
-                    CreateOptions = BitmapCreateOptions.None
-                };
+               {
+                   CreateOptions = BitmapCreateOptions.None
+               };
 
             //handle delay creation of bitmap image
             _tileBitmap.ImageOpened += (s, e) =>
@@ -5370,18 +5369,17 @@ namespace windows_client.View
                 {
                     if (App.ViewModel.SelectedBackground.IsTile)
                     {
-                        var iHeight = 800;
-                        var iWidth = 480;
+                        var iSize = LayoutRoot.ActualHeight > LayoutRoot.ActualWidth ? LayoutRoot.ActualHeight : LayoutRoot.ActualWidth;
 
-                        var wb1 = new WriteableBitmap((int)iWidth, (int)iHeight);
-                        wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = (int)iWidth, Height = (int)iHeight }, null);
+                        var wb1 = new WriteableBitmap((int)iSize, (int)iSize);
+                        wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = (int)iSize, Height = (int)iSize }, null);
                         wb1.Invalidate();
 
                         int height = 0;
 
-                        for (int width = 0; width <= iWidth; )
+                        for (int width = 0; width <= iSize; )
                         {
-                            for (height = 0; height <= iHeight; )
+                            for (height = 0; height <= iSize; )
                             {
                                 wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
                                 height += source.PixelHeight;
@@ -5395,25 +5393,9 @@ namespace windows_client.View
                     else
                         _background = source;
 
-                    RotateImageAndApply();
+                    chatBackground.Source = _background;
                 }
             };
-        }
-
-        /// <summary>
-        /// Rotate image and apply according to current orientation
-        /// </summary>
-        private void RotateImageAndApply()
-        {
-            if (_background == null)
-                return;
-
-            if (Orientation == PageOrientation.Portrait || Orientation == PageOrientation.PortraitUp || Orientation == PageOrientation.PortraitDown)
-                chatBackground.Source = _background;
-            else if (Orientation == PageOrientation.LandscapeLeft)
-                chatBackground.Source = _background.Rotate(270);
-            else if (Orientation == PageOrientation.LandscapeRight)
-                chatBackground.Source = _background.Rotate(90);
         }
 
         private void chatBackgroundList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -5623,8 +5605,6 @@ namespace windows_client.View
                 App.ViewModel.HideToolTip(LayoutRoot, 5);
                 App.ViewModel.HideToolTip(LayoutRoot, 7);
             }
-
-            RotateImageAndApply();
         }
         #endregion
 
@@ -6844,7 +6824,7 @@ namespace windows_client.View
                     userName.FontSize = 36;
                     lastSeenPannel.Visibility = Visibility.Visible;
 
-                    if (isShowTip && !isInAppTipVisible)
+                    if (isShowTip && !isInAppTipVisible && chatBackgroundPopUp.Visibility == Visibility.Collapsed)
                     {
                         App.ViewModel.DisplayTip(LayoutRoot, 5);
                         isInAppTipVisible = true;
