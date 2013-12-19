@@ -1943,6 +1943,15 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
+            if (App.IS_VIEWMODEL_LOADED)
+            {
+                int convs = 0;
+                appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                if (convs != 0 && App.ViewModel.ConvMap.Count == 0)
+                    return;
+                ConversationTableUtils.saveConvObjectList();
+            }
+
             if (FileTransfers.FileTransferManager.Instance.IsBusy())
             {
                 var result = MessageBox.Show(AppResources.FileTransfer_InProgress_Msg, AppResources.FileTransfer_InProgress, MessageBoxButton.OKCancel);
@@ -1955,14 +1964,7 @@ namespace windows_client.View
             }
 
             NetworkManager.turnOffNetworkManager = true;
-            if (App.IS_VIEWMODEL_LOADED)
-            {
-                int convs = 0;
-                appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
-                if (convs != 0 && App.ViewModel.ConvMap.Count == 0)
-                    return;
-                ConversationTableUtils.saveConvObjectList();
-            }
+
             base.OnBackKeyPress(e);
         }
 

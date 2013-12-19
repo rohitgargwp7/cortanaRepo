@@ -1135,7 +1135,10 @@ namespace windows_client.View
                 appBar.MenuItems.Add(inviteMenuItem);
             }
             else
+            {
+                chatThemeTip.Visibility = Visibility.Visible;
                 sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
+            }
 
             if (isGroupChat)
                 sendMsgTxtbox.Hint = hintText = ON_GROUP_TEXT;
@@ -1224,6 +1227,7 @@ namespace windows_client.View
                     else
                     {
                         isOnHike = true;
+                        chatThemeTip.Visibility = Visibility.Visible;
                         UpdateUiForHikeUser();
                     }
                 };
@@ -1384,6 +1388,9 @@ namespace windows_client.View
 
                 onlineStatus.Visibility = Visibility.Collapsed;
                 lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
+
+                if(isOnHike)
+                    chatThemeTip.Visibility = Visibility.Visible;
 
                 ShowInAppTips();
             });
@@ -5600,10 +5607,12 @@ namespace windows_client.View
             if (e.Orientation == PageOrientation.Portrait || e.Orientation == PageOrientation.PortraitUp || e.Orientation == PageOrientation.PortraitDown)
             {
                 svMessage.MaxHeight = 150;
+                chatThemeTipTxt.MaxWidth = 420;
             }
             else if (e.Orientation == PageOrientation.Landscape || e.Orientation == PageOrientation.LandscapeLeft || e.Orientation == PageOrientation.LandscapeRight)
             {
                 svMessage.MaxHeight = 70;
+                chatThemeTipTxt.MaxWidth = 700;
 
                 App.ViewModel.HideToolTip(LayoutRoot, 0);
                 App.ViewModel.HideToolTip(LayoutRoot, 1);
