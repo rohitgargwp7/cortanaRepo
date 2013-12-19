@@ -143,14 +143,14 @@
         </Grid>
 
 
-        <Grid x:Name="chatBackgroundPopUp" Canvas.ZIndex="1" Grid.Row="1" MaxHeight="260" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+        <Grid x:Name="chatBackgroundPopUp" Canvas.ZIndex="1" Grid.Row="1" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch">
             <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.9"/>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <ListBox x:Name="chatBackgroundList" toolkit:TiltEffect.IsTiltEnabled="True"
+                <ListBox x:Name="chatBackgroundList" toolkit:TiltEffect.IsTiltEnabled="True" Height="200"
                     ItemsPanel="{StaticResource chatThemeBackgroundListTemplate93x93}"
                     ItemTemplate="{StaticResource chatThemeBackgroundItemTemplate93x93}"
                     SelectionChanged="chatBackgroundList_SelectionChanged"
