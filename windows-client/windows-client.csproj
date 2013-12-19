@@ -598,6 +598,7 @@
     <Content Include="View\images\ChatBgFTUE\ribbon2.png" />
     <Content Include="View\images\ChatBgFTUE\ribbon3.png" />
     <Content Include="View\images\ChatBgFTUE\snow_flake.png" />
+    <Content Include="View\images\notification_Image.png" />
     <Content Include="View\images\stickers\categorySets\indian_overlay.png" />
     <Content Include="View\images\paint_black.png" />
     <Content Include="View\images\icon_sms.png" />

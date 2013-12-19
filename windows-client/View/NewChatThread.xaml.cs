@@ -5611,6 +5611,7 @@ namespace windows_client.View
                 App.ViewModel.HideToolTip(LayoutRoot, 7);
             }
         }
+
         #endregion
 
         private void llsMessages_ItemRealized(object sender, ItemRealizationEventArgs e)

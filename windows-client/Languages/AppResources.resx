@@ -2042,7 +2042,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Sent as SMS - {0}</value>
   </data>
   <data name="ChatThemeMessage" xml:space="preserve">
-    <value>* the chat theme changes for both you and your friend</value>
+    <value>the chat theme changes for both you and your friend</value>
   </data>
   <data name="Done_Txt" xml:space="preserve">
     <value>done</value>
