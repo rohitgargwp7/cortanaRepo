@@ -4841,6 +4841,7 @@ namespace windows_client.View
             stickersIconButton.IsEnabled = false;
             emoticonsIconButton.IsEnabled = false;
             fileTransferIconButton.IsEnabled = false;
+            chatPaint.Opacity = 0.5;
         }
 
         private void groupChatAlive()
