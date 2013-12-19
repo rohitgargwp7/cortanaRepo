@@ -1145,7 +1145,6 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CHAT_FTUE))
             {
                 ChatBackgroundHelper.Instance.SetDefaultBackground(mContactNumber);
-                App.ViewModel.ResetInAppTip(8);//todo:remove this line in final commit
                 PhoneApplicationService.Current.State.Remove(HikeConstants.CHAT_FTUE);
             }
             else
