@@ -113,8 +113,8 @@
                             <TextBlock x:Name="lastSeenTxt" Text="" FontSize="18" Foreground="White" Opacity="0.75"/>
                         </StackPanel>
                     </StackPanel>
-                    <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.Column="2" Tap="chatPaint_Tap">
-                        <Button x:Name="openChatBackgroundButton" Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" toolkit:TiltEffect.IsTiltEnabled="True">
+                    <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.Column="2" Tap="chatPaint_Tap" Margin="-10,0" Background="Transparent">
+                        <Button x:Name="openChatBackgroundButton" Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" toolkit:TiltEffect.IsTiltEnabled="True" Margin="20,0,0,0">
                             <Button.Content>
                                 <Image x:Name="chatPaint" Source="/view/images/paint.png" Height="60" Width="60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Button.Content>
