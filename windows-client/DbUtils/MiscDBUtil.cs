@@ -144,7 +144,6 @@ namespace windows_client.DbUtils
             App.ViewModel.LoadToolTipsDict();
             #endregion
             #region RESET CHAT THEMES
-            App.WriteToIsoStorageSettings(App.CHAT_THEME_SETTING, (byte)1);
             ChatBackgroundHelper.Instance.Clear();
             #endregion
         }

@@ -358,15 +358,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to change chat theme.
-        /// </summary>
-        public static string Change_Background_App_Bar_Menu_Txt {
-            get {
-                return ResourceManager.GetString("Change_Background_App_Bar_Menu_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} changed the chat theme.
         /// </summary>
         public static string ChatBg_Changed_Text {
@@ -381,6 +372,15 @@ namespace windows_client.Languages {
         public static string ChatBg_NotChanged_Text {
             get {
                 return ResourceManager.GetString("ChatBg_NotChanged_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to chat themes.
+        /// </summary>
+        public static string ChatThemeHeader_Txt {
+            get {
+                return ResourceManager.GetString("ChatThemeHeader_Txt", resourceCulture);
             }
         }
         
@@ -3947,6 +3947,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sent as SMS - {0}.
+        /// </summary>
+        public static string Sent_As_SMS {
+            get {
+                return ResourceManager.GetString("Sent_As_SMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to settings.
         /// </summary>
         public static string Settings {
@@ -3970,15 +3979,6 @@ namespace windows_client.Languages {
         public static string Settings_BlocklistSettings_Txt {
             get {
                 return ResourceManager.GetString("Settings_BlocklistSettings_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Chat themes notifications.
-        /// </summary>
-        public static string Settings_ChatThemeNotification_SwitchHeader {
-            get {
-                return ResourceManager.GetString("Settings_ChatThemeNotification_SwitchHeader", resourceCulture);
             }
         }
         

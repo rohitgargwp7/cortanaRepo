@@ -527,6 +527,8 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\images\chatBackground_changed.png" />
+    <Content Include="View\images\chatBackground_changed_CT.png" />
     <Content Include="View\images\chatBackgrounds\aqua.png" />
     <Content Include="View\images\chatBackgrounds\blue-2.png" />
     <Content Include="View\images\chatBackgrounds\blue-green.png" />
@@ -552,7 +554,10 @@
     <Content Include="View\images\deleted_grey_icon.png" />
     <Content Include="View\images\error_icon_CT.png" />
     <Content Include="View\images\group_name_changed_CT.png" />
+    <Content Include="View\images\group_pic_changed.png" />
+    <Content Include="View\images\group_pic_changed_CT.png" />
     <Content Include="View\images\icon_sending_CT.png" />
+    <Content Include="View\images\icon_tick_black.png" />
     <Content Include="View\images\ic_delivered_CT.png" />
     <Content Include="View\images\ic_read_CT.png" />
     <Content Include="View\images\ic_sent_CT.png" />

@@ -99,7 +99,6 @@ namespace windows_client.View
         private BitmapImage avatarImage;
         private ApplicationBar appBar;
         ApplicationBarMenuItem muteGroupMenuItem;
-        ApplicationBarMenuItem changeBackground;
         ApplicationBarMenuItem inviteMenuItem = null;
         public ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarMenuItem infoMenuItem;
@@ -1622,14 +1621,6 @@ namespace windows_client.View
             fileTransferIconButton.IsEnabled = true;
             appBar.Buttons.Add(fileTransferIconButton);
 
-            changeBackground = new ApplicationBarMenuItem();
-            changeBackground.Text = AppResources.Change_Background_App_Bar_Menu_Txt;
-            changeBackground.Click += (ss, ee) =>
-            {
-                chatBackgroundPopUp_Opened();
-            };
-            appBar.MenuItems.Add(changeBackground);
-
             if (isGroupChat)
             {
                 infoMenuItem = new ApplicationBarMenuItem();
@@ -3033,7 +3024,7 @@ namespace windows_client.View
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED)
                 {
                     ConvMessage chatBubble = new ConvMessage(convMessage.Message, this.Orientation, convMessage);
-                    chatBubble.NotificationType = ConvMessage.MessageType.UNKNOWN;
+                    chatBubble.NotificationType = ConvMessage.MessageType.CHAT_BACKGROUND;
                     this.ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
 
@@ -5224,7 +5215,7 @@ namespace windows_client.View
             {
                 JObject data = new JObject();
                 data[HikeConstants.BACKGROUND_ID] = bgId;
-                data[HikeConstants.MESSAGE_ID] = cm.MessageId;
+                data[HikeConstants.MESSAGE_ID] = TimeUtils.getCurrentTimeStamp().ToString();
 
                 JObject jo = new JObject();
                 jo[HikeConstants.FROM] = App.MSISDN;
@@ -5271,7 +5262,7 @@ namespace windows_client.View
             }
         }
 
-        void chatPaint_Tap(object sender, RoutedEventArgs e)
+        void chatPaint_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             chatBackgroundPopUp_Opened();
         }
@@ -5279,7 +5270,8 @@ namespace windows_client.View
         void chatBackgroundPopUp_Closed()
         {
             chatBackgroundPopUp.Visibility = Visibility.Collapsed;
-
+            chatThemeHeader.Visibility = Visibility.Collapsed;
+            userHeader.Visibility = Visibility.Visible;
             openChatBackgroundButton.Opacity = 1;
         }
 
@@ -5290,6 +5282,9 @@ namespace windows_client.View
 
             if (mUserIsBlocked || (isGroupChat && !isGroupAlive))
                 return;
+
+            chatThemeHeader.Visibility = Visibility.Visible;
+            userHeader.Visibility = Visibility.Collapsed;
 
             App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
 
@@ -5328,20 +5323,22 @@ namespace windows_client.View
             if (App.ViewModel.SelectedBackground.IsDefault)
             {
                 headerBackground.Visibility = Visibility.Collapsed;
-                userName.Foreground = UI_Utils.Instance.Black;
-                lastSeenTxt.Foreground = UI_Utils.Instance.Black;
+                chatThemeHeaderTxt.Foreground = userName.Foreground = lastSeenTxt.Foreground = UI_Utils.Instance.Black;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageBlack;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageBlack;
                 shellProgress.Foreground = progressBar.Foreground = UI_Utils.Instance.Black;
+                cancelChatThemeImage.Source = UI_Utils.Instance.CloseButtonBlackImage;
+                saveChatThemeImage.Source = UI_Utils.Instance.SaveButtonBlackImage;
             }
             else
             {
                 headerBackground.Visibility = Visibility.Visible;
-                userName.Foreground = UI_Utils.Instance.White;
-                lastSeenTxt.Foreground = UI_Utils.Instance.White;
+                chatThemeHeaderTxt.Foreground = userName.Foreground = lastSeenTxt.Foreground = UI_Utils.Instance.White;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageWhite;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageWhite;
                 shellProgress.Foreground = progressBar.Foreground = App.ViewModel.SelectedBackground.ForegroundColor;
+                cancelChatThemeImage.Source = UI_Utils.Instance.CloseButtonWhiteImage;
+                saveChatThemeImage.Source = UI_Utils.Instance.SaveButtonWhiteImage;
             }
 
             if (isBubbleColorChanged)
