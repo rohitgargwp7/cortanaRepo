@@ -1145,7 +1145,7 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CHAT_FTUE))
             {
                 ChatBackgroundHelper.Instance.SetDefaultBackground(mContactNumber);
-                App.ViewModel.ResetInAppTip(8);//todo:remove as
+                App.ViewModel.ResetInAppTip(8);//todo:remove this line in final commit
                 PhoneApplicationService.Current.State.Remove(HikeConstants.CHAT_FTUE);
             }
             else
@@ -1238,12 +1238,6 @@ namespace windows_client.View
 
         private void ShowInAppTips()
         {
-            if (_isHikeBot)
-            {
-                this.ApplicationBar = appBar;
-                return;
-            }
-
             HikeToolTip tip;
 
             if (App.ViewModel.DictInAppTip != null && App.ViewModel.DictInAppTip.TryGetValue(8, out tip) && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
