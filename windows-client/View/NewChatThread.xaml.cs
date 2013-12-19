@@ -5330,7 +5330,7 @@ namespace windows_client.View
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageBlack;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageBlack;
                 shellProgress.Foreground = progressBar.Foreground = UI_Utils.Instance.Black;
-                cancelChatThemeImage.Source = UI_Utils.Instance.CloseButtonBlackImage;
+                cancelChatThemeImage.Source = UI_Utils.Instance.CancelButtonBlackImage;
             }
             else
             {
@@ -5339,7 +5339,7 @@ namespace windows_client.View
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageWhite;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageWhite;
                 shellProgress.Foreground = progressBar.Foreground = App.ViewModel.SelectedBackground.ForegroundColor;
-                cancelChatThemeImage.Source = UI_Utils.Instance.CloseButtonWhiteImage;
+                cancelChatThemeImage.Source = UI_Utils.Instance.CancelButtonWhiteImage;
             }
 
             if (isBubbleColorChanged)
