@@ -5321,6 +5321,9 @@ namespace windows_client.View
         {
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
+            if (isGroupChat && !isGroupAlive)
+                chatPaint.Opacity = 0.5;
+
             if (App.ViewModel.SelectedBackground.IsDefault)
             {
                 headerBackground.Visibility = Visibility.Collapsed;

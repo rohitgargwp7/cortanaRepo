@@ -370,7 +370,6 @@
                         <Border Height="60" Background="#dbdbdb" Width="84" Grid.Row="1"/>
                     </Grid>
                     <Border Background="Transparent" Width="84" Height="84" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="{Binding BorderColor}" BorderThickness="5" Canvas.ZIndex="2"/>
-                    <Image Source="/View/images/icon_tick.png" Height="45" Canvas.ZIndex="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding TickImageVisibility}"/>
                 </Grid>
             </DataTemplate>
 
