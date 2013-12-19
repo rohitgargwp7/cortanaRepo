@@ -32,6 +32,9 @@ using System.Threading.Tasks;
 using Microsoft.Phone.BackgroundAudio;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework;
+using System.Windows.Threading;
+using System.Windows.Media.Animation;
+using System.Windows.Navigation;
 
 namespace windows_client.View
 {
@@ -121,7 +124,13 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
+            if (overlaySnow.Visibility == Visibility.Visible)
+            {
+                overlaySnow.Visibility = Visibility.Collapsed;
+                launchPagePivot.IsHitTestVisible = true;
+                appBar.IsVisible = true;
+                SystemTray.IsVisible = true;
+            }
             if (launchPagePivot.SelectedIndex == 3)
             {
                 TotalUnreadStatuses = 0;
@@ -143,7 +152,8 @@ namespace windows_client.View
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
 
-
+            if (appSettings.Contains(HikeConstants.SHOW_CHAT_FTUE))
+                StartSnowAnimation();
 
             if (firstLoad)
             {
@@ -165,18 +175,21 @@ namespace windows_client.View
                 App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
                 firstLoad = false;
 
-
-                if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
-                    ShowAppUpdateAvailableMessage();
-                else if (appSettings.Contains(App.SHOW_BASIC_TUTORIAL))
+                if (!appSettings.Contains(HikeConstants.SHOW_CHAT_FTUE))
                 {
-                    overlay.Visibility = Visibility.Visible;
-                    overlay.Tap += DismissTutorial_Tap;
-                    gridBasicTutorial.Visibility = Visibility.Visible;
-                    launchPagePivot.IsHitTestVisible = false;
+
+                    if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
+                        ShowAppUpdateAvailableMessage();
+                    else if (appSettings.Contains(App.SHOW_BASIC_TUTORIAL))
+                    {
+                        overlay.Visibility = Visibility.Visible;
+                        overlay.Tap += DismissTutorial_Tap;
+                        gridBasicTutorial.Visibility = Visibility.Visible;
+                        launchPagePivot.IsHitTestVisible = false;
+                    }
+                    else
+                        ShowInvitePopups();
                 }
-                else
-                    ShowInvitePopups();
             }
             // this should be called only if its not first load as it will get called in first load section
             else if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -1677,7 +1690,7 @@ namespace windows_client.View
                     composeIconButton.IsEnabled = false;
                     postStatusIconButton.IsEnabled = false;
                     groupChatIconButton.IsEnabled = false;
-                }); 
+                });
             }
         }
 
@@ -2754,6 +2767,124 @@ namespace windows_client.View
 
             NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
         }
+        #endregion
+
+        #region Snowflake animation
+        int count = 0;
+        DispatcherTimer t;
+        void StartSnowAnimation()
+        {
+            overlaySnow.Visibility = Visibility.Visible;
+            launchPagePivot.IsHitTestVisible = false;
+            appBar.IsVisible = false;
+            SystemTray.IsVisible = false;
+            gridSnowFlakes.Opacity = 0;
+            for (int i = 0; i < 120; i++)
+                Snow(true);
+
+            //done so that on app minimise and relaunch this doesnot happen twice
+            if (t == null)
+            {
+                t = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(10) };
+                t.Stop();
+            }
+            t.Tick -= t_Tick;
+            t.Tick += t_Tick;
+
+            t.Start();
+        }
+
+        void t_Tick(object sender, EventArgs e)
+        {
+            Snow(false);
+            if (count > 5)
+            {
+                gridSnowFlakes.Opacity = (count) * 0.04;
+                if (count > 22)
+                    gridSnowFlakes.Opacity = 0.8;
+            }
+
+            if (count++ == 35)
+                Storyboard1.Begin();
+        }
+
+        Random _Random = new Random((int)DateTime.Now.Ticks);
+        private void Snow(bool isInitial)
+        {
+            var x = _Random.Next(isInitial ? 0 : -100, isInitial ? 500 : (int)gridSnowFlakes.ActualWidth + 50);
+            var y = _Random.Next(isInitial ? 100 : -100, isInitial ? 700 : _Random.Next(200, _Random.Next(600, (int)gridSnowFlakes.ActualHeight - 100)));
+            var s = _Random.Next(1, _Random.Next(4, _Random.Next(6, 11))) * .1;
+            //var r = _Random.Next(0, 270);
+            var flake = new Snowflake
+            {
+                RenderTransform = new CompositeTransform
+                {
+                    TranslateX = x,
+                    TranslateY = y,
+                    ScaleX = s,
+                    ScaleY = s,
+                    // Rotation = r,
+                },
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+            };
+            gridSnowFlakes.Children.Add(flake);
+            var d = TimeSpan.FromSeconds(_Random.Next(2, 7));
+
+            x += _Random.Next(_Random.Next(-200, 0), _Random.Next(200, 500));
+            var ax = new DoubleAnimation { To = x, Duration = d };
+            Storyboard.SetTarget(ax, flake.RenderTransform);
+            Storyboard.SetTargetProperty(ax, new PropertyPath("TranslateX"));
+
+            y = (int)(_Random.Next(y, isInitial ? y + 400 : (int)gridSnowFlakes.ActualHeight + 200));
+            var ay = new DoubleAnimation { To = y, Duration = d };
+            Storyboard.SetTarget(ay, flake.RenderTransform);
+            Storyboard.SetTargetProperty(ay, new PropertyPath("TranslateY"));
+
+            //r += _Random.Next(90, 360);
+            //var ar = new DoubleAnimation { To = r, Duration = d };
+            //Storyboard.SetTarget(ar, flake.RenderTransform);
+            //Storyboard.SetTargetProperty(ar, new PropertyPath("Rotation"));
+
+            var story = new Storyboard();
+            story.Completed += (sender, e) => gridSnowFlakes.Children.Remove(flake);
+            story.Children.Add(ax);
+            story.Children.Add(ay);
+            //story.Children.Add(ar);
+            story.Begin();
+        }
+        private void TextBlock_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Storyboard2.Begin();
+            GiveSpinTxtBlock.Text = App.ViewModel.MessageListPageCollection.Count > 0 ? AppResources.Chat_FTUE_giveSpin : AppResources.OK;
+            Storyboard2.Completed += (a, b) =>
+                {
+                    t.Stop();
+                    gridSnowFlakes.Children.Clear();
+                    gridAnimation.Tap += GridAnimationTap;
+                };
+        }
+
+
+        private void GridAnimationTap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            App.RemoveKeyFromAppSettings(HikeConstants.SHOW_CHAT_FTUE);
+            if (App.ViewModel.MessageListPageCollection.Count > 0)
+            {
+                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = App.ViewModel.MessageListPageCollection[0];
+                PhoneApplicationService.Current.State[HikeConstants.CHAT_FTUE] = true;
+                string uri = "/View/NewChatThread.xaml";
+                NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+            }
+            else
+            {
+                overlaySnow.Visibility = Visibility.Collapsed;
+                launchPagePivot.IsHitTestVisible = true;
+                appBar.IsVisible = true;
+                SystemTray.IsVisible = true;
+            }
+        }
+
         #endregion
     }
 }

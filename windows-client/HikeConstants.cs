@@ -310,6 +310,8 @@ namespace windows_client
         public static string UNREAD_FRIEND_REQUESTS = "urFr";
         public static string REFRESH_BAR = "refBar";
         public static string CHAT_BACKGROUND_ARRAY = "cbgs";
+        public static string CHAT_FTUE = "cftue";
+        public static string SHOW_CHAT_FTUE = "showcftue";
 
         public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
         public static string PROFILE_NAME_CHANGED = "ProfileNameChanged";

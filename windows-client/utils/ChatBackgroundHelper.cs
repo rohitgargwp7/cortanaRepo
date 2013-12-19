@@ -198,7 +198,7 @@ namespace windows_client.utils
 
             return false;
         }
-        
+
         /// <summary>
         /// When user updates a background of one of his chat
         /// </summary>
@@ -247,9 +247,22 @@ namespace windows_client.utils
         /// </summary>
         /// <param name="msisdn"></param>
         /// <returns></returns>
-        String SetDefaultBackground(string msisdn)
+        public String SetDefaultBackground(string msisdn)
         {
-            int index = random.Next(0, BackgroundList.Count);
+            ChatThemeData bgObj;
+
+            if (ChatBgMap.TryGetValue(msisdn, out bgObj))
+            {
+                var list = BackgroundList.Where(b => b.ID == bgObj.BackgroundId);
+                ChatBackground bg = list.Count() == 0 ? null : list.First();
+
+                if (bg != null && bg.ID != "0")
+                {
+                    App.ViewModel.SelectedBackground = bg;
+                    return bg.ID;
+                }
+            }
+            int index = random.Next(1, BackgroundList.Count);
 
             App.ViewModel.SelectedBackground = BackgroundList[index];
             return App.ViewModel.SelectedBackground.ID;

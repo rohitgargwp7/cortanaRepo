@@ -143,13 +143,21 @@
         </Grid>
 
 
-        <Grid x:Name="chatBackgroundPopUp" Canvas.ZIndex="1" Grid.Row="1" MaxHeight="220" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+        <Grid x:Name="chatBackgroundPopUp" Canvas.ZIndex="1" Grid.Row="1" MaxHeight="290" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch">
             <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.9"/>
-            <ListBox x:Name="chatBackgroundList" toolkit:TiltEffect.IsTiltEnabled="True"
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ListBox x:Name="chatBackgroundList" toolkit:TiltEffect.IsTiltEnabled="True"
                     ItemsPanel="{StaticResource chatThemeBackgroundListTemplate94x94}"
                     ItemTemplate="{StaticResource chatThemeBackgroundItemTemplate94x94}"
                     SelectionChanged="chatBackgroundList_SelectionChanged"
-                    Margin="0,6,0,12" HorizontalAlignment="Center"/>
+                    Margin="0,6,0,0" HorizontalAlignment="Center"/>
+                <TextBlock Margin="12" Grid.Row="1" Foreground="White" HorizontalAlignment="Center" TextAlignment="Left"
+                          Text="{Binding Path= LocalizedResources.ChatThemeMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" />
+            </Grid>
         </Grid>
 
         <Grid Grid.Row="1" Margin="0,5,0,0">

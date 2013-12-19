@@ -2028,6 +2028,10 @@ Download it now http://hike.in and join the fun!</value>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
     <value>{0} just changed the chat theme with you. Update your app to the latest version to experience Chat Themes 2.0. http://hike.in</value>
   </data>
+  <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
+    <value>change chat theme</value>
+    <comment>max chars(18)</comment>
+  </data>
   <data name="In_App_Tip_9" xml:space="preserve">
     <value>And loads of more themes here...</value>
   </data>
@@ -2042,5 +2046,25 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Done_Txt" xml:space="preserve">
     <value>done</value>
+  </data>
+  <data name="Chat_FTUE_chatThemes" xml:space="preserve">
+    <value>Chat Themes!</value>
+    <comment>max chars(20)</comment>
+  </data>
+  <data name="Chat_FTUE_giveSpin" xml:space="preserve">
+    <value>Give it a spin!</value>
+    <comment>max chars(30) -as in " give a try" </comment>
+  </data>
+  <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
+    <value>What are holidays without any gifts? Happy Hiking!</value>
+    <comment>max chars(80)</comment>
+  </data>
+  <data name="Chat_FTUE_OpenGift" xml:space="preserve">
+    <value>Open gift ...</value>
+    <comment>max chars(30)</comment>
+  </data>
+  <data name="Chat_FTUE_personalise" xml:space="preserve">
+    <value>Personalise your chat with gorgeus themes.</value>
+    <comment>max chars(80)</comment>
   </data>
 </root>
