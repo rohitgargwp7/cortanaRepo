@@ -2868,6 +2868,9 @@ namespace windows_client.View
 
         private void GridAnimationTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            t.Stop();
+            gridSnowFlakes.Children.Clear();
+
             App.RemoveKeyFromAppSettings(HikeConstants.SHOW_CHAT_FTUE);
             if (App.ViewModel.MessageListPageCollection.Count > 0)
             {
