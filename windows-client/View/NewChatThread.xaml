@@ -137,7 +137,7 @@
                     <TextBlock x:Name="chatThemeHeaderTxt"  FontFamily="Segoe WP SemiLight" FontSize="38" 
                                Text="{Binding Path= LocalizedResources.ChatThemeHeader_Txt, Source={StaticResource LocalizedStrings}}" 
                                Grid.Column="1" Margin="0,0,0,0" VerticalAlignment="Center"/>
-                    <Button Content="{Binding Path= LocalizedResources.Save_AppBar_Btn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Right" FontWeight="Light" Width="110" Height="70"  Grid.Column="2" Click="chatPaintSave_Click" Style="{StaticResource SaveButtonChatThemeStyle}" VerticalAlignment="Center" Margin="0,5"  toolkit:TiltEffect.IsTiltEnabled="True"/>
+                    <Button Content="{Binding Path= LocalizedResources.Save_AppBar_Btn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Right" FontWeight="Light" Width="120" Height="70" Grid.Column="2" Click="chatPaintSave_Click" Style="{StaticResource SaveButtonChatThemeStyle}" VerticalAlignment="Center" Margin="0,10,0,0"  toolkit:TiltEffect.IsTiltEnabled="True"/>
                 </Grid>
             </StackPanel>
         </Grid>
@@ -204,7 +204,7 @@
                             <view:ChatThreadTemplateSelector.DtForceSMSNotification>
                                 <DataTemplate>
                                     <Grid HorizontalAlignment="Right" Margin="0,-8,24,5" >
-                                        <TextBlock FontSize="16" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding MessageTextForeGround}"/>
+                                        <TextBlock FontSize="16" MaxWidth="{Binding MessageBubbleWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap"/>
                                     </Grid>
                                 </DataTemplate>
                             </view:ChatThreadTemplateSelector.DtForceSMSNotification>
