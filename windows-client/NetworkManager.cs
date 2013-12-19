@@ -1670,7 +1670,7 @@ namespace windows_client
                     ChatThemeData bg = null;
                     if (ChatBackgroundHelper.Instance.ChatBgMap.TryGetValue(sender, out bg))
                     {
-                        if (bg.Timestamp > ts)
+                        if (bg.Timestamp >= ts)
                             return;
                     }
 

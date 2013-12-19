@@ -5328,7 +5328,6 @@ namespace windows_client.View
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageBlack;
                 shellProgress.Foreground = progressBar.Foreground = UI_Utils.Instance.Black;
                 cancelChatThemeImage.Source = UI_Utils.Instance.CloseButtonBlackImage;
-                saveChatThemeImage.Source = UI_Utils.Instance.SaveButtonBlackImage;
             }
             else
             {
@@ -5338,7 +5337,6 @@ namespace windows_client.View
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageWhite;
                 shellProgress.Foreground = progressBar.Foreground = App.ViewModel.SelectedBackground.ForegroundColor;
                 cancelChatThemeImage.Source = UI_Utils.Instance.CloseButtonWhiteImage;
-                saveChatThemeImage.Source = UI_Utils.Instance.SaveButtonWhiteImage;
             }
 
             if (isBubbleColorChanged)
@@ -5405,7 +5403,7 @@ namespace windows_client.View
         /// </summary>
         private void RotateImageAndApply()
         {
-            if (_background == null)
+            if (_background == null || App.ViewModel.SelectedBackground.IsDefault)
                 return;
 
             if (Orientation == PageOrientation.Portrait || Orientation == PageOrientation.PortraitUp || Orientation == PageOrientation.PortraitDown)
@@ -5421,16 +5419,19 @@ namespace windows_client.View
             if ((sender as ListBox).SelectedItem != null)
             {
                 var chatBg = (sender as ListBox).SelectedItem as ChatBackground;
-                if (chatBg != null && chatBg != App.ViewModel.SelectedBackground)
+                if (chatBg != null)
                 {
-                    try
+                    if (chatBg != App.ViewModel.SelectedBackground)
                     {
-                        App.ViewModel.SelectedBackground = ChatBackgroundHelper.Instance.BackgroundList.Where(b => b.ID == chatBg.ID).First();
-                        ChangeBackground();
-                    }
-                    catch
-                    {
-                        Debug.WriteLine("Background doesn't exist");
+                        try
+                        {
+                            App.ViewModel.SelectedBackground = ChatBackgroundHelper.Instance.BackgroundList.Where(b => b.ID == chatBg.ID).First();
+                            ChangeBackground();
+                        }
+                        catch
+                        {
+                            Debug.WriteLine("Background doesn't exist");
+                        }
                     }
                 }
             }
