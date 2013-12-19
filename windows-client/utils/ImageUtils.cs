@@ -142,8 +142,8 @@ namespace windows_client.utils
         BitmapImage walkieTalkieDeleteSucImage;
         BitmapImage closeButtonWhiteImage;
         BitmapImage closeButtonBlackImage;
-        BitmapImage saveButtonWhiteImage;
-        BitmapImage saveButtonBlackImage;
+        BitmapImage cancelButtonWhiteImage;
+        BitmapImage cancelButtonBlackImage;
         BitmapImage dustbinGreyImage;
         BitmapImage dustbinWhiteImage;
         SolidColorBrush whiteTextForeGround;
@@ -1295,25 +1295,25 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage SaveButtonBlackImage
+        public BitmapImage CancelButtonBlackImage
         {
             get
             {
-                if (saveButtonBlackImage == null)
-                    saveButtonBlackImage = new BitmapImage(new Uri("/View/images/icon_tick_black.png", UriKind.Relative));
+                if (cancelButtonBlackImage == null)
+                    cancelButtonBlackImage = new BitmapImage(new Uri("/View/images/cancel_black.png", UriKind.Relative));
 
-                return saveButtonBlackImage;
+                return cancelButtonBlackImage;
             }
         }
 
-        public BitmapImage SaveButtonWhiteImage
+        public BitmapImage CancelButtonWhiteImage
         {
             get
             {
-                if (saveButtonWhiteImage == null)
-                    saveButtonWhiteImage = new BitmapImage(new Uri("/View/images/icon_tick.png", UriKind.Relative));
+                if (cancelButtonWhiteImage == null)
+                    cancelButtonWhiteImage = new BitmapImage(new Uri("/View/images/cancel_white.png", UriKind.Relative));
 
-                return saveButtonWhiteImage;
+                return cancelButtonWhiteImage;
             }
         }
 
