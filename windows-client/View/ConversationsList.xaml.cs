@@ -2839,7 +2839,7 @@ namespace windows_client.View
         private void TextBlock_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             Storyboard2.Begin();
-            GiveSpinTxtBlock.Text = App.ViewModel.MessageListPageCollection.Count > 0 ? "Give it a spin!" : AppResources.OK;
+            GiveSpinTxtBlock.Text = App.ViewModel.MessageListPageCollection.Count > 0 ? AppResources.Chat_FTUE_giveSpin : AppResources.OK;
             Storyboard2.Completed += (a, b) =>
                 {
                     t.Stop();
@@ -2851,16 +2851,19 @@ namespace windows_client.View
 
         private void GridAnimationTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            //overlaySnow.Visibility = Visibility.Collapsed;
-            //launchPagePivot.IsHitTestVisible = true;
-            //appBar.IsVisible = true;
-            //SystemTray.IsVisible = true;
             if (App.ViewModel.MessageListPageCollection.Count > 0)
             {
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = App.ViewModel.MessageListPageCollection[0];
                 PhoneApplicationService.Current.State[HikeConstants.CHAT_FTUE] = true;
                 string uri = "/View/NewChatThread.xaml";
                 NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+            }
+            else
+            {
+                overlaySnow.Visibility = Visibility.Collapsed;
+                launchPagePivot.IsHitTestVisible = true;
+                appBar.IsVisible = true;
+                SystemTray.IsVisible = true;
             }
         }
 

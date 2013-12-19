@@ -37,7 +37,7 @@
         <Storyboard x:Name="Storyboard1">
         	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="image">
         		<EasingDoubleKeyFrame KeyTime="0" Value="-350"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="-262.495"/>
+        		<EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="-262.495"/>
         		<EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="-10"/>
         		<EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="-10"/>
         		<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="-10"/>
@@ -48,7 +48,7 @@
         	</DoubleAnimationUsingKeyFrames>
         	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="image">
         		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0"/>
+        		<EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0"/>
         		<EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
         		<EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0"/>
         		<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
@@ -59,7 +59,7 @@
         	</DoubleAnimationUsingKeyFrames>
         	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="image">
         		<EasingDoubleKeyFrame KeyTime="0" Value="12.734"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="11.5692"/>
+        		<EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="11.5692"/>
         		<EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="8.075"/>
         		<EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0"/>
         		<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="-4"/>
@@ -116,7 +116,7 @@
         	</DoubleAnimationUsingKeyFrames>
         	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="image">
         		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0"/>
+        		<EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0"/>
         		<EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
         		<EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0"/>
         		<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
@@ -152,7 +152,7 @@
         	</ObjectAnimationUsingKeyFrames>
         	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="image">
         		<EasingDoubleKeyFrame KeyTime="0" Value="0.4"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="1"/>
+        		<EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1"/>
         	</DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <Storyboard x:Name="Storyboard2">
@@ -1138,9 +1138,9 @@
                    
                         <Grid Background="White" Grid.RowSpan="4" />
                         <Image Name="themePopup" Source="/View/images/ChatBgFTUE/chat_bg_ftue_theme_popup.png" Grid.RowSpan="4" MaxHeight="360"/>
-                        <TextBlock FontSize="22" Foreground="Black" Grid.Row="1" FontWeight="Bold" TextAlignment="Center" Text="Chat Themes!" Margin="0 180 0 0"/>
-                        <TextBlock FontSize="22" Foreground="Black" Grid.Row="2" TextAlignment="Center" Margin="24 0 24 0" Text="Personalise your chat with gorgeus themes." TextWrapping="Wrap"/>
-                        <TextBlock x:Name="GiveSpinTxtBlock" FontSize="22" Grid.Row="3" Foreground="Gray" FontWeight="Bold" Margin="24 12 24 0" TextAlignment="Center" Text="Give it a spin!" />
+                        <TextBlock FontSize="22" Foreground="Black" Grid.Row="1" FontWeight="Bold" TextAlignment="Center" Text="{Binding Path= LocalizedResources.Chat_FTUE_chatThemes, Source={StaticResource LocalizedStrings}}" Margin="0 180 0 0"/>
+                        <TextBlock FontSize="22" Foreground="Black" Grid.Row="2" TextAlignment="Center" Margin="24 0 24 0" Text="{Binding Path= LocalizedResources.Chat_FTUE_personalise, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap"/>
+                        <TextBlock x:Name="GiveSpinTxtBlock" FontSize="22" Grid.Row="3" Foreground="Gray" FontWeight="Bold" Margin="24 12 24 0" TextAlignment="Center" />
                     </Grid>
                     <Image Name="leftWrapper" Height="360" Source="/View/images/ChatBgFTUE/chat_bg_ftue_gift_rapper_left.png" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5">
                         <Image.RenderTransform>
@@ -1262,8 +1262,8 @@
                         		<CompositeTransform/>
                         	</Image.RenderTransform>
                         </Image>
-                        <TextBlock Grid.Row="1" Margin="30 100 30 0" Foreground="#f14444" Text="What are holidays without any gifts? Happy Hiking!" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" FontFamily="Segoe WP Regular" />
-                        <TextBlock Grid.Row="2" Margin="24 10 24 0" Foreground="#ffa800" Text="Open gift ..." FontSize="20" TextAlignment="Center" Tap="TextBlock_Tap" FontFamily="Segoe WP Bold" />
+                        <TextBlock Grid.Row="1" Margin="30 100 30 0" Foreground="#f14444" Text="{Binding Path= LocalizedResources.Chat_FTUE_HappyHiking, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" FontFamily="Segoe WP Regular" />
+                        <TextBlock Grid.Row="2" Margin="24 10 24 0" Foreground="#ffa800" Text="{Binding Path= LocalizedResources.Chat_FTUE_OpenGift, Source={StaticResource LocalizedStrings}}" FontSize="20" TextAlignment="Center" Tap="TextBlock_Tap" FontFamily="Segoe WP Bold" />
                     </Grid>
                 </Grid>
 

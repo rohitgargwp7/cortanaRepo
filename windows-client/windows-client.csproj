@@ -557,6 +557,7 @@
     <Content Include="View\images\chat_reward_CT.png" />
     <Content Include="View\images\chat_sms_error_CT.png" />
     <Content Include="View\images\chat_waiting_CT.png" />
+    <Content Include="View\images\circles.png" />
     <Content Include="View\images\deleted_grey_icon.png" />
     <Content Include="View\images\error_icon_CT.png" />
     <Content Include="View\images\group_name_changed_CT.png" />

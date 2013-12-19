@@ -480,7 +480,7 @@ namespace windows_client.ViewModel
             else
                 _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_8_2, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 230, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
 
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_9, TipImage = UI_Utils.Instance.AvatarsActive, IsAnimationEnabled = true, Width = "300", HAlingment = HorizontalAlignment.Right, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(260, 0, 10, 0), FullTipMargin = new Thickness(0, 75, 20, 0) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_9, TipImage = UI_Utils.Instance.Circles, IsAnimationEnabled = true, Width = "300", HAlingment = HorizontalAlignment.Right, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(260, 0, 10, 0), FullTipMargin = new Thickness(0, 80, 20, 0) });
         }
 
         /// <summary>

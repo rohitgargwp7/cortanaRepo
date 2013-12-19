@@ -1143,6 +1143,15 @@ namespace windows_client.View
 
             initBlockUnblockState();
 
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CHAT_FTUE))
+            {
+                ChatBackgroundHelper.Instance.SetDefaultBackground(mContactNumber);
+                App.ViewModel.ResetInAppTip(8);//todo:remove as
+                PhoneApplicationService.Current.State.Remove(HikeConstants.CHAT_FTUE);
+            }
+            else
+                ChatBackgroundHelper.Instance.SetSelectedBackgorundFromMap(mContactNumber);
+
             if (!mUserIsBlocked)
             {
                 UpdateChatStatus();
@@ -1161,13 +1170,7 @@ namespace windows_client.View
             else
                 this.ApplicationBar = appBar;
 
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CHAT_FTUE))
-            {
-                ChatBackgroundHelper.Instance.SetDefaultBackground(mContactNumber);
-                PhoneApplicationService.Current.State.Remove(HikeConstants.CHAT_FTUE);
-            }
-            else
-                ChatBackgroundHelper.Instance.SetSelectedBackgorundFromMap(mContactNumber);
+            
 
             chatBackgroundList.ItemsSource = ChatBackgroundHelper.Instance.BackgroundList;
             chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();

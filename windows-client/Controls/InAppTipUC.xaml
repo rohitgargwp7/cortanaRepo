@@ -16,7 +16,13 @@
 				<EasingDoubleKeyFrame KeyTime="0:0:0.8" Value="10"/>
 				<EasingDoubleKeyFrame KeyTime="0:0:1.2" Value="-10"/>
                 <EasingDoubleKeyFrame KeyTime="0:0:1.6" Value="10"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:2.0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.0" Value="-10"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.4" Value="10"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.8" Value="-10"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:3.2" Value="10"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:3.6" Value="-10"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:4.0" Value="10"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:4.4" Value="0"/>
 			</DoubleAnimationUsingKeyFrames>
 		</Storyboard>
 	</UserControl.Resources>
@@ -39,7 +45,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Image MaxHeight="45" Margin="-5,0,5,0" Visibility="Collapsed" x:Name="tipImage" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <Image MaxHeight="45" Margin="0,0,10,0" Visibility="Collapsed" x:Name="tipImage" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 <TextBlock Grid.Column="1" x:Name="tipText" TextWrapping="Wrap" Foreground="White"/>
                 <Image Grid.Column="2" MaxHeight="35" Margin="5,0,0,0" x:Name="closeButtonImage" Source="/View/images/close_white.png" Tap="close_Tapped" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Right"/>
             </Grid>
