@@ -879,7 +879,7 @@
                             <view:ChatThreadTemplateSelector.DtStatusUpdateBubble>
                                 <DataTemplate x:Name="dtStatusUpdateBubble">
                                     <Grid Margin="0,5" HorizontalAlignment="Stretch">
-                                        <Border Background="Black" Opacity="0.4"/>
+                                        <Border Background="Black" Opacity="0.2"/>
                                         <Grid Margin="5,10">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
@@ -891,8 +891,8 @@
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="Auto"/>
                                                 </Grid.RowDefinitions>
-                                                <TextBlock FontSize="21" Foreground="White" TextWrapping="Wrap" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Top"/>
-                                                <TextBlock Grid.Row="1" FontSize="15" Foreground="White" Opacity="0.6" Text="{Binding TimeStampStr}" VerticalAlignment="Top"/>
+                                                <TextBlock FontSize="21" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Top"/>
+                                                <TextBlock Grid.Row="1" FontSize="15" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" Text="{Binding TimeStampStr}" VerticalAlignment="Top"/>
                                             </Grid>
                                         </Grid>
                                     </Grid>
