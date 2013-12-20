@@ -5291,7 +5291,10 @@ namespace windows_client.View
             if (mUserIsBlocked || (isGroupChat && !isGroupAlive))
                 return;
 
-            chatBackgroundList.ScrollIntoView(chatBackgroundList.SelectedItem);
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    chatBackgroundList.ScrollIntoView(chatBackgroundList.SelectedItem);
+                });
 
             chatThemeHeader.Visibility = Visibility.Visible;
             userHeader.Visibility = Visibility.Collapsed;
