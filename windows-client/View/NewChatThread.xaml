@@ -215,7 +215,7 @@
                             <view:ChatThreadTemplateSelector.DtForceSMSNotification>
                                 <DataTemplate>
                                     <Grid HorizontalAlignment="Right" Margin="0,-8,12,5" >
-                                        <TextBlock FontSize="16" MaxWidth="{Binding MessageBubbleWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap"/>
+                                        <TextBlock FontSize="16" MaxWidth="{Binding MessageBubbleWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" TextAlignment="Right"/>
                                     </Grid>
                                 </DataTemplate>
                             </view:ChatThreadTemplateSelector.DtForceSMSNotification>
