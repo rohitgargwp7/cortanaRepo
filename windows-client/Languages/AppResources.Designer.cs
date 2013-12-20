@@ -358,15 +358,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to change chat theme.
-        /// </summary>
-        public static string Change_Background_App_Bar_Menu_Txt {
-            get {
-                return ResourceManager.GetString("Change_Background_App_Bar_Menu_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Chat Themes!.
         /// </summary>
         public static string Chat_FTUE_chatThemes {
@@ -448,7 +439,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Once you tap done, the chat theme will change for the group.
+        ///   Looks up a localized string similar to Once you tap done, the chat theme will change for the group..
         /// </summary>
         public static string ChatThemeMessage_GrpMessage {
             get {
@@ -1020,15 +1011,6 @@ namespace windows_client.Languages {
         public static string CT_MessageCount_Sms_User {
             get {
                 return ResourceManager.GetString("CT_MessageCount_Sms_User", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to default.
-        /// </summary>
-        public static string Default_Txt {
-            get {
-                return ResourceManager.GetString("Default_Txt", resourceCulture);
             }
         }
         
@@ -3673,15 +3655,6 @@ namespace windows_client.Languages {
         public static string Save_AppBar_Btn {
             get {
                 return ResourceManager.GetString("Save_AppBar_Btn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to save theme.
-        /// </summary>
-        public static string Save_ChatTheme_Txt {
-            get {
-                return ResourceManager.GetString("Save_ChatTheme_Txt", resourceCulture);
             }
         }
         

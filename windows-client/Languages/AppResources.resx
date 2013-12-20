@@ -1925,9 +1925,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="ChatBg_Changed_Text" xml:space="preserve">
     <value>{0} changed the chat theme</value>
   </data>
-  <data name="Default_Txt" xml:space="preserve">
-    <value>default</value>
-  </data>
   <data name="FT_MaxFiles_Txt" xml:space="preserve">
     <value>There are more than 50 file transfers pending. Please retry again later.</value>
   </data>
@@ -2022,15 +2019,8 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Search_Hint_Txt" xml:space="preserve">
     <value>search</value>
   </data>
-  <data name="Save_ChatTheme_Txt" xml:space="preserve">
-    <value>save theme</value>
-  </data>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
     <value>{0} just changed the chat theme with you. Update your app to the latest version to experience Chat Themes 2.0. http://hike.in</value>
-  </data>
-  <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
-    <value>change chat theme</value>
-    <comment>max chars(18)</comment>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
     <value>More gorgeous themes here...</value>
@@ -2068,6 +2058,6 @@ Download it now http://hike.in and join the fun!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
-    <value>Once you tap done, the chat theme will change for the group</value>
+    <value>Once you tap done, the chat theme will change for the group.</value>
   </data>
 </root>

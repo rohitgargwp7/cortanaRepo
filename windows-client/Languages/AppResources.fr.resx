@@ -658,7 +658,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
-    <value>Message texte</value>
+    <value>message texte</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_TapMsg_Txt" xml:space="preserve">
@@ -1430,7 +1430,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <value>Publier une mise à jour de statut</value>
   </data>
   <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
-    <value>Alerte de mise à jour du statut</value>
+    <value>Alertes des mises à jour de statut</value>
   </data>
   <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
     <value>Toutes les heures</value>
@@ -1885,10 +1885,6 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <value>Qualité standard (VGA) (par défaut)</value>
     <comment>(VGA) is constant, Max limit 40</comment>
   </data>
-  <data name="Video_Very_High_Quality_Txt" xml:space="preserve">
-    <value>Très haute qualité (1080p)</value>
-    <comment>(1080p) is constant, Max limit 40</comment>
-  </data>
   <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
     <value>Bienvenue sur hike</value>
   </data>
@@ -1917,6 +1913,21 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
     <value>Gagne des SMS gratuits pour chaque ami qui rejoint hike grâce à toi</value>
+  </data>
+  <data name="On_Hike" xml:space="preserve">
+    <value>sur hike</value>
+  </data>
+  <data name="On_SMS" xml:space="preserve">
+    <value>par SMS</value>
+  </data>
+  <data name="People_In_Group" xml:space="preserve">
+    <value>{0} personnes</value>
+  </data>
+  <data name="ChatBg_Changed_Text" xml:space="preserve">
+    <value>{0} a changé le thème de tchat</value>
+  </data>
+  <data name="Default_Txt" xml:space="preserve">
+    <value>par défaut</value>
   </data>
   <data name="FT_MaxFiles_Txt" xml:space="preserve">
     <value>Plus de 50 transferts de fichier sont en attente. Réessaie plus tard.</value>
@@ -2011,5 +2022,41 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
   </data>
   <data name="Search_Hint_Txt" xml:space="preserve">
     <value>rechercher</value>
+  </data>
+  <data name="Save_ChatTheme_Txt" xml:space="preserve">
+    <value>enregistrer le thème</value>
+  </data>
+  <data name="ChatBg_NotChanged_Text" xml:space="preserve">
+    <value>{0} a changé le thème du tchat avec toi. Mets ton appli à jour vers la dernière version et découvre les Thèmes de tchat 2.0. http://hike.in</value>
+  </data>
+  <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
+    <value>modif. thème tchat</value>
+    <comment>max chars(18)</comment>
+  </data>
+  <data name="In_App_Tip_9" xml:space="preserve">
+    <value>Et beaucoup d'autres thèmes ici...</value>
+  </data>
+  <data name="Settings_ChatThemeNotification_SwitchHeader" xml:space="preserve">
+    <value>Alertes thèmes de tchat</value>
+  </data>
+  <data name="Chat_FTUE_chatThemes" xml:space="preserve">
+    <value>Thèmes de tchat !</value>
+    <comment>max chars(20)</comment>
+  </data>
+  <data name="Chat_FTUE_giveSpin" xml:space="preserve">
+    <value>Essaie-les donc !</value>
+    <comment>max chars(30) -as in " give a try" </comment>
+  </data>
+  <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
+    <value>Des fêtes sans cadeaux, à quoi ça rime ? "Hike" bien !</value>
+    <comment>max chars(80)</comment>
+  </data>
+  <data name="Chat_FTUE_OpenGift" xml:space="preserve">
+    <value>Ouvre le cadeau...</value>
+    <comment>max chars(30)</comment>
+  </data>
+  <data name="Chat_FTUE_personalise" xml:space="preserve">
+    <value>Personnalise tes tchats avec de superbes thèmes.</value>
+    <comment>max chars(80)</comment>
   </data>
 </root>
