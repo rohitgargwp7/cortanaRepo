@@ -158,36 +158,8 @@ namespace windows_client.DbUtils
                 // if status update dont create a new conversation if not already there
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                     return null;
-                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED)
-                {
-                    if (!Utils.isGroupConversation(from))
-                    {
-                        if (from == App.MSISDN)
-                            convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
-                        else
-                            convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, obj.NameToShow);
-                    }
-                    else
-                    {
-                        obj.LastMessage = convMsg.Message;
-                    }
-                }
-                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED)
-                {
-                    if (!Utils.isGroupConversation(from))
-                    {
-                        if (from == App.MSISDN)
-                            convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, AppResources.You_Txt);
-                        else
-                            convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, obj.NameToShow);
-                    }
-                    else
-                    {
-                        obj.LastMessage = convMsg.Message;
-                    }
-                }
 
-                obj = ConversationTableUtils.addConversation(convMsg, isNewGroup);
+                obj = ConversationTableUtils.addConversation(convMsg, isNewGroup, from);
                 App.ViewModel.ConvMap.Add(convMsg.Msisdn, obj);
             }
             else

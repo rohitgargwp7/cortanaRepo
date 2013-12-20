@@ -973,7 +973,7 @@ namespace windows_client
             }
             #endregion
             #region CHAT_FTUE
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.4.0.2") < 0)
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.4.0.3") < 0)
             {
                 WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, true);
             }

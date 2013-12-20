@@ -1120,6 +1120,8 @@ namespace windows_client.View
 
             if (isGroupChat)
             {
+                chatThemeTipTxt.Text = AppResources.ChatThemeMessage_GrpMessage;
+
                 GroupManager.Instance.LoadGroupParticipants(mContactNumber);
 
                 if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
@@ -5622,12 +5624,12 @@ namespace windows_client.View
             if (e.Orientation == PageOrientation.Portrait || e.Orientation == PageOrientation.PortraitUp || e.Orientation == PageOrientation.PortraitDown)
             {
                 svMessage.MaxHeight = 150;
-                chatThemeTipTxt.MaxWidth = 420;
+                chatThemeTipTxt.MaxWidth = LayoutRoot.ActualWidth - 20;
             }
             else if (e.Orientation == PageOrientation.Landscape || e.Orientation == PageOrientation.LandscapeLeft || e.Orientation == PageOrientation.LandscapeRight)
             {
                 svMessage.MaxHeight = 70;
-                chatThemeTipTxt.MaxWidth = 700;
+                chatThemeTipTxt.MaxWidth = LayoutRoot.ActualWidth - 20;
 
                 App.ViewModel.HideToolTip(LayoutRoot, 0);
                 App.ViewModel.HideToolTip(LayoutRoot, 1);
