@@ -1135,7 +1135,10 @@ namespace windows_client.View
                 appBar.MenuItems.Add(inviteMenuItem);
             }
             else
+            {
+                chatThemeTip.Visibility = Visibility.Visible;
                 sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
+            }
 
             if (isGroupChat)
                 sendMsgTxtbox.Hint = hintText = ON_GROUP_TEXT;
@@ -1167,8 +1170,6 @@ namespace windows_client.View
             }
             else
                 this.ApplicationBar = appBar;
-
-
 
             chatBackgroundList.ItemsSource = ChatBackgroundHelper.Instance.BackgroundList;
             chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
@@ -1224,6 +1225,7 @@ namespace windows_client.View
                     else
                     {
                         isOnHike = true;
+                        chatThemeTip.Visibility = Visibility.Visible;
                         UpdateUiForHikeUser();
                     }
                 };
@@ -1384,6 +1386,9 @@ namespace windows_client.View
 
                 onlineStatus.Visibility = Visibility.Collapsed;
                 lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
+
+                if(isOnHike)
+                    chatThemeTip.Visibility = Visibility.Visible;
 
                 ShowInAppTips();
             });
@@ -4842,6 +4847,7 @@ namespace windows_client.View
             stickersIconButton.IsEnabled = false;
             emoticonsIconButton.IsEnabled = false;
             fileTransferIconButton.IsEnabled = false;
+            chatPaint.Opacity = 0.5;
         }
 
         private void groupChatAlive()
@@ -5293,6 +5299,12 @@ namespace windows_client.View
             if (mUserIsBlocked || (isGroupChat && !isGroupAlive))
                 return;
 
+            // delay to update ui for scrolling
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    chatBackgroundList.ScrollIntoView(chatBackgroundList.SelectedItem);
+                });
+
             chatThemeHeader.Visibility = Visibility.Visible;
             userHeader.Visibility = Visibility.Collapsed;
 
@@ -5342,6 +5354,7 @@ namespace windows_client.View
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageBlack;
                 shellProgress.Foreground = progressBar.Foreground = UI_Utils.Instance.Black;
                 cancelChatThemeImage.Source = UI_Utils.Instance.CancelButtonBlackImage;
+                doneButton.Background = UI_Utils.Instance.Black;
             }
             else
             {
@@ -5351,6 +5364,7 @@ namespace windows_client.View
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageWhite;
                 shellProgress.Foreground = progressBar.Foreground = App.ViewModel.SelectedBackground.ForegroundColor;
                 cancelChatThemeImage.Source = UI_Utils.Instance.CancelButtonWhiteImage;
+                doneButton.Background = UI_Utils.Instance.Black40Opacity;
             }
 
             if (isBubbleColorChanged)
@@ -5608,10 +5622,12 @@ namespace windows_client.View
             if (e.Orientation == PageOrientation.Portrait || e.Orientation == PageOrientation.PortraitUp || e.Orientation == PageOrientation.PortraitDown)
             {
                 svMessage.MaxHeight = 150;
+                chatThemeTipTxt.MaxWidth = 420;
             }
             else if (e.Orientation == PageOrientation.Landscape || e.Orientation == PageOrientation.LandscapeLeft || e.Orientation == PageOrientation.LandscapeRight)
             {
                 svMessage.MaxHeight = 70;
+                chatThemeTipTxt.MaxWidth = 700;
 
                 App.ViewModel.HideToolTip(LayoutRoot, 0);
                 App.ViewModel.HideToolTip(LayoutRoot, 1);

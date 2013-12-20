@@ -439,7 +439,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to the chat theme changes for both you and your friend.
+        ///   Looks up a localized string similar to Once you tap done, the chat theme will change for both you and your friend..
         /// </summary>
         public static string ChatThemeMessage {
             get {

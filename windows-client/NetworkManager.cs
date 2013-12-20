@@ -741,7 +741,7 @@ namespace windows_client
                                         #endregion
 
                                         #region CHAT BACKGROUNDS
-                                        
+
                                         else if (kkvv.Key == HikeConstants.CHAT_BACKGROUND_ARRAY)
                                         {
                                             bool isUpdated = false;
@@ -752,8 +752,12 @@ namespace windows_client
                                                 JObject jObj = (JObject)obj;
 
                                                 var id = (string)jObj[HikeConstants.MSISDN];
+                                                bool hasCustomBg = false;
+                                                JToken custom;
+                                                if (jObj.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
+                                                    hasCustomBg = Convert.ToBoolean(custom);
 
-                                                if (ChatBackgroundHelper.Instance.UpdateChatBgMap(id, (string)jObj[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp(), false))
+                                                if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(id, (string)jObj[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp(), false))
                                                 {
                                                     isUpdated = true;
 
@@ -1040,7 +1044,12 @@ namespace windows_client
                         JObject chatBg = (JObject)metaData[HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS];
                         if (chatBg != null)
                         {
-                            if (ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
+                            bool hasCustomBg = false;
+                            JToken custom;
+                            if (chatBg.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
+                                hasCustomBg = Convert.ToBoolean(custom);
+
+                            if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
                                 pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, grpId);
                         }
                     }
@@ -1676,8 +1685,13 @@ namespace windows_client
 
                     var data = (JObject)jsonObj[HikeConstants.DATA];
                     var bgId = (string)data[HikeConstants.BACKGROUND_ID];
-                
-                    if (ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
+                    
+                    bool hasCustomBg = false;
+                    JToken custom;
+                    if (data.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
+                        hasCustomBg = Convert.ToBoolean(custom);
+
+                    if (!hasCustomBg && ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
                     {
                         if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
                         {
@@ -1703,14 +1717,14 @@ namespace windows_client
                         }
                         else
                         {
-                            cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_READ);
+                            cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_UNREAD);
                             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED;
                         }
                     }
 
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, sender);
 
-                    if (!ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
+                    if (!hasCustomBg && !ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
                         cm.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
 
                     if (obj != null)
