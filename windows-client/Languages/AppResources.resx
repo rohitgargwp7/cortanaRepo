@@ -2033,7 +2033,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>max chars(18)</comment>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>And loads of more themes here...</value>
+    <value>More gorgeous themes here...</value>
   </data>
   <data name="ChatThemeHeader_Txt" xml:space="preserve">
     <value>chat themes</value>
@@ -2066,5 +2066,8 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Chat_FTUE_personalise" xml:space="preserve">
     <value>Personalise your chat with gorgeus themes.</value>
     <comment>max chars(80)</comment>
+  </data>
+  <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
+    <value>Once you tap done, the chat theme will change for the group</value>
   </data>
 </root>

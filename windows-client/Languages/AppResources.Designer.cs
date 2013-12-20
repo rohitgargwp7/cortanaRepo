@@ -448,6 +448,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Once you tap done, the chat theme will change for the group.
+        /// </summary>
+        public static string ChatThemeMessage_GrpMessage {
+            get {
+                return ResourceManager.GetString("ChatThemeMessage_GrpMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 1 new message.
         /// </summary>
         public static string ChatThread_1NewMessage_txt {
@@ -2318,7 +2327,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to And loads of more themes here....
+        ///   Looks up a localized string similar to More gorgeous themes here....
         /// </summary>
         public static string In_App_Tip_9 {
             get {
