@@ -2026,7 +2026,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>salvar tema</value>
   </data>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
-    <value>{0} alterou o tema da conversa com você. Atualize o aplicativo para a versão mais recente para usar os Temas de Conversa 2.0. http://hike.in</value>
+    <value>{0} acabou de mudar o tema do bate-papo. Para usar os novos temas do bate-papo, atualizar hike. http://hike.in.</value>
   </data>
   <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
     <value>alterar tema da conversa</value>

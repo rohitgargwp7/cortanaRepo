@@ -2016,7 +2016,7 @@ hike पिछली बार दिखे के साथ आपको गो
     <value>{0} ने चैट थीम बदला</value>
   </data>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
-    <value>{0} ने आपके साथ चैट थीम अभी-अभी बदला है। चैट थीम 2.0 का अनुभव करने के लिए अपनी ऐप को नवीनतम संस्करण में अद्यतित करें। http://hike.in</value>
+    <value>{0} ने अभी चैट थीम बदला है। नई चैट थीम का उपयोग करने के लिए, hike को अपग्रेड करें। http://hike.in.</value>
   </data>
   <data name="Chat_FTUE_chatThemes" xml:space="preserve">
     <value>चैट थीम!</value>
