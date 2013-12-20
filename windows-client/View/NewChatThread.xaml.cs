@@ -5346,6 +5346,7 @@ namespace windows_client.View
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageBlack;
                 shellProgress.Foreground = progressBar.Foreground = UI_Utils.Instance.Black;
                 cancelChatThemeImage.Source = UI_Utils.Instance.CancelButtonBlackImage;
+                doneButton.Background = UI_Utils.Instance.Black;
             }
             else
             {
@@ -5355,6 +5356,7 @@ namespace windows_client.View
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageWhite;
                 shellProgress.Foreground = progressBar.Foreground = App.ViewModel.SelectedBackground.ForegroundColor;
                 cancelChatThemeImage.Source = UI_Utils.Instance.CancelButtonWhiteImage;
+                doneButton.Background = UI_Utils.Instance.Black40Opacity;
             }
 
             if (isBubbleColorChanged)
