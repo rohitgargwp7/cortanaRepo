@@ -2880,9 +2880,11 @@ namespace windows_client.View
             gridSnowFlakes.Children.Clear();
 
             App.RemoveKeyFromAppSettings(HikeConstants.SHOW_CHAT_FTUE);
-            if (App.ViewModel.MessageListPageCollection.Count > 0)
+            ConversationListObject obj;
+            if (App.ViewModel.MessageListPageCollection.Count > 0 && (obj = GetFtueThread()) != null)
             {
-                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = App.ViewModel.MessageListPageCollection[0];
+
+                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
                 PhoneApplicationService.Current.State[HikeConstants.CHAT_FTUE] = true;
                 string uri = "/View/NewChatThread.xaml";
                 NavigationService.Navigate(new Uri(uri, UriKind.Relative));
@@ -2896,6 +2898,35 @@ namespace windows_client.View
             }
         }
 
+
+        public ConversationListObject GetFtueThread()
+        {
+            ConversationListObject obj = null;
+            try
+            {
+                var list = App.ViewModel.MessageListPageCollection.Where(f => f.IsFav && f.IsOnhike);
+
+                if (list.Count() == 0)
+                {
+                    list = App.ViewModel.MessageListPageCollection.Where(f => f.IsOnhike);
+                    if (list.Count() == 0)
+                    {
+                        if (App.ViewModel.MessageListPageCollection.Count > 0)
+                            obj = App.ViewModel.MessageListPageCollection[0];
+                    }
+                    else
+                        obj = list.First();
+                }
+                else
+                    obj = list.First();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception::ConversationList.xaml.cs:GetFtueThread,ex:" + ex.Message);
+            }
+
+            return obj;
+        }
         #endregion
     }
 }
