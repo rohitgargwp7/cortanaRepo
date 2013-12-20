@@ -2032,7 +2032,7 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
     <comment>max chars(18)</comment>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Y muchos temas más aquí...</value>
+    <value>Más magníficos temas aquí...</value>
   </data>
   <data name="Settings_ChatThemeNotification_SwitchHeader" xml:space="preserve">
     <value>Notificaciones de temas del chat</value>
@@ -2056,5 +2056,20 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
   <data name="Chat_FTUE_personalise" xml:space="preserve">
     <value>Personaliza tu chat con temas increíbles</value>
     <comment>max chars(80)</comment>
+  </data>
+  <data name="ChatThemeHeader_Txt" xml:space="preserve">
+    <value>temas de chat</value>
+  </data>
+  <data name="ChatThemeMessage" xml:space="preserve">
+    <value>Una vez selecciona "hecho", el tema de charla va a cambiar para ti y tu amigo.</value>
+  </data>
+  <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
+    <value>Una vez selecciona "hecho", el tema de charla cambiará para el grupo.</value>
+  </data>
+  <data name="Done_Txt" xml:space="preserve">
+    <value>hecho</value>
+  </data>
+  <data name="Sent_As_SMS" xml:space="preserve">
+    <value>Enviado como SMS - {0}</value>
   </data>
 </root>
