@@ -755,7 +755,7 @@ namespace windows_client
                                                 bool hasCustomBg = false;
                                                 JToken custom;
                                                 if (jObj.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
-                                                    hasCustomBg = Convert.ToBoolean(custom);
+                                                    hasCustomBg = (bool)custom;
 
                                                 if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(id, (string)jObj[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp(), false))
                                                 {
@@ -1047,7 +1047,7 @@ namespace windows_client
                             bool hasCustomBg = false;
                             JToken custom;
                             if (chatBg.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
-                                hasCustomBg = Convert.ToBoolean(custom);
+                                hasCustomBg = (bool)custom;
 
                             if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
                                 pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, grpId);
@@ -1689,7 +1689,7 @@ namespace windows_client
                     bool hasCustomBg = false;
                     JToken custom;
                     if (data.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
-                        hasCustomBg = Convert.ToBoolean(custom);
+                        hasCustomBg = (bool)custom;
 
                     if (!hasCustomBg && ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
                     {
@@ -1724,7 +1724,7 @@ namespace windows_client
 
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, sender);
 
-                    if (!hasCustomBg && !ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
+                    if (hasCustomBg || !ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
                         cm.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
 
                     if (obj != null)
@@ -1737,7 +1737,7 @@ namespace windows_client
                         this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                     }
 
-                    if (ChatBackgroundHelper.Instance.UpdateChatBgMap(sender, bgId, ts))
+                    if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(sender, bgId, ts))
                     {
                         pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, sender);
                     }
