@@ -487,7 +487,7 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "15",
-                Background = "#ff5d57af",
+                Background = "#ff9BB300",
                 SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
@@ -495,7 +495,7 @@ namespace windows_client.utils
                 IsTile = true,
                 Position = 15,
                 Thumbnail = null,
-                ImagePath = "/View/images/chatBackgrounds/cbSpace.png"
+                ImagePath = "/View/images/chatBackgrounds/cbSporty.png"
             });
 
             BackgroundList.Add(new ChatBackground()
