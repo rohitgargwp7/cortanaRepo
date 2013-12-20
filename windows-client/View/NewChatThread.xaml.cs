@@ -1171,8 +1171,6 @@ namespace windows_client.View
             else
                 this.ApplicationBar = appBar;
 
-            
-
             chatBackgroundList.ItemsSource = ChatBackgroundHelper.Instance.BackgroundList;
             chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
 
@@ -5292,6 +5290,8 @@ namespace windows_client.View
 
             if (mUserIsBlocked || (isGroupChat && !isGroupAlive))
                 return;
+
+            chatBackgroundList.ScrollIntoView(chatBackgroundList.SelectedItem);
 
             chatThemeHeader.Visibility = Visibility.Visible;
             userHeader.Visibility = Visibility.Collapsed;
