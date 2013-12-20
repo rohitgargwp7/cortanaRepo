@@ -252,7 +252,7 @@ namespace windows_client.utils
             int index = random.Next(3);
 
             if (index == 0)
-                index = 1;
+                index = 4;
             else if (index == 1)
                 index = 15;
             else
