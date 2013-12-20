@@ -5291,6 +5291,7 @@ namespace windows_client.View
             if (mUserIsBlocked || (isGroupChat && !isGroupAlive))
                 return;
 
+            // delay to update ui for scrolling
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     chatBackgroundList.ScrollIntoView(chatBackgroundList.SelectedItem);
