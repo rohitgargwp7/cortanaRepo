@@ -2787,7 +2787,7 @@ namespace windows_client.View
             //done so that on app minimise and relaunch this doesnot happen twice
             if (t == null)
             {
-                t = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(10) };
+                t = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(6) };
                 t.Stop();
             }
             t.Tick -= t_Tick;
@@ -2816,7 +2816,13 @@ namespace windows_client.View
         {
             var x = _Random.Next(isInitial ? 0 : -100, isInitial ? 500 : (int)gridSnowFlakes.ActualWidth + 50);
             var y = _Random.Next(isInitial ? 100 : -100, isInitial ? 700 : _Random.Next(200, _Random.Next(600, (int)gridSnowFlakes.ActualHeight - 100)));
-            var s = _Random.Next(1, _Random.Next(4, _Random.Next(6, 11))) * .1;
+
+            double s;
+            var number = _Random.Next(0, 100);
+            if (number < 99)
+                s = _Random.Next(1, _Random.Next(4, 7)) * .1;
+            else
+                s = _Random.Next(10, 13) * .1;
             //var r = _Random.Next(0, 270);
             var flake = new Snowflake
             {
@@ -2832,14 +2838,14 @@ namespace windows_client.View
                 VerticalAlignment = VerticalAlignment.Top,
             };
             gridSnowFlakes.Children.Add(flake);
-            var d = TimeSpan.FromSeconds(_Random.Next(2, 7));
+            var d = TimeSpan.FromSeconds(_Random.Next(2, 6));
 
             x += _Random.Next(_Random.Next(-200, 0), _Random.Next(200, 500));
             var ax = new DoubleAnimation { To = x, Duration = d };
             Storyboard.SetTarget(ax, flake.RenderTransform);
             Storyboard.SetTargetProperty(ax, new PropertyPath("TranslateX"));
 
-            y = (int)(_Random.Next(y, isInitial ? y + 400 : (int)gridSnowFlakes.ActualHeight + 200));
+            y = s > 0.9 && !isInitial ? (int)gridSnowFlakes.ActualHeight : (int)(_Random.Next(y, isInitial ? y + 400 : (int)gridSnowFlakes.ActualHeight + 200));
             var ay = new DoubleAnimation { To = y, Duration = d };
             Storyboard.SetTarget(ay, flake.RenderTransform);
             Storyboard.SetTargetProperty(ay, new PropertyPath("TranslateY"));
