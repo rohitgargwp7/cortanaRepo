@@ -78,7 +78,7 @@ namespace windows_client.DbUtils
             return obj;
         }
 
-        public static ConversationListObject addConversation(ConvMessage convMessage, bool isNewGroup)
+        public static ConversationListObject addConversation(ConvMessage convMessage, bool isNewGroup, string from = "")
         {
             ConversationListObject obj = null;
             if (isNewGroup)
@@ -141,6 +141,35 @@ namespace windows_client.DbUtils
                 obj.LastMessage = string.Format(AppResources.USER_REJOINED_HIKE_TXT, obj.NameToShow);
                 convMessage.Message = obj.LastMessage;
             }
+            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED)
+            {
+                if (!Utils.isGroupConversation(from))
+                {
+                    if (from == App.MSISDN)
+                        convMessage.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
+                    else
+                        convMessage.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, obj.NameToShow);
+                }
+                else
+                {
+                    obj.LastMessage = convMessage.Message;
+                }
+            }
+            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED)
+            {
+                if (!Utils.isGroupConversation(from))
+                {
+                    if (from == App.MSISDN)
+                        convMessage.Message = obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, AppResources.You_Txt);
+                    else
+                        convMessage.Message = obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, obj.NameToShow);
+                }
+                else
+                {
+                    obj.LastMessage = convMessage.Message;
+                }
+            }
+
             Stopwatch st1 = Stopwatch.StartNew();
             bool success = MessagesTableUtils.addMessage(convMessage);
             if (!success)

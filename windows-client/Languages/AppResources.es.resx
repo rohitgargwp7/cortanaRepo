@@ -658,7 +658,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
-    <value>Mensaje de texto</value>
+    <value>mensaje de texto</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_TapMsg_Txt" xml:space="preserve">
@@ -1307,13 +1307,13 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
     <value>estén en hike con SMS de hike gratuitos</value>
   </data>
   <data name="MessagingHikeFriendsFree_Txt" xml:space="preserve">
-    <value>Enviar mensajes a tus amigos de hike es gratuito y sin límites.</value>
+    <value>Enviar mensajes a tus amigos de hike es gratuito y sin límites. #hikeerror &amp;</value>
   </data>
   <data name="ReadyToHike_Txt" xml:space="preserve">
     <value>Prepárate para usar hike...</value>
   </data>
   <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
-    <value>Compartir en Facebook y Twitter</value>
+    <value>Compartir en Facebook y Twitter #hikeerror &amp;</value>
   </data>
   <data name="FB_Connect_Txt" xml:space="preserve">
     <value>Conectar con Facebook</value>
@@ -1428,7 +1428,7 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
     <value>Publicar actualización de estado</value>
   </data>
   <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
-    <value>Notificación de actualizaciones de estado</value>
+    <value>Notificaciones de actualizaciones de estado</value>
   </data>
   <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
     <value>Cada hora</value>
@@ -1883,10 +1883,6 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
     <value>Calidad estándar (VGA) (por defecto)</value>
     <comment>(VGA) is constant, Max limit 40</comment>
   </data>
-  <data name="Video_Very_High_Quality_Txt" xml:space="preserve">
-    <value>Calidad muy alta (1080p)</value>
-    <comment>(1080p) is constant, Max limit 40</comment>
-  </data>
   <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
     <value>Bienvenido a hike</value>
   </data>
@@ -1915,6 +1911,21 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
     <value>Consigue SMS gratis por cada amigo que se una a hike gracias a ti.</value>
+  </data>
+  <data name="On_Hike" xml:space="preserve">
+    <value>en hike</value>
+  </data>
+  <data name="On_SMS" xml:space="preserve">
+    <value>en SMS</value>
+  </data>
+  <data name="People_In_Group" xml:space="preserve">
+    <value>{0} personas</value>
+  </data>
+  <data name="ChatBg_Changed_Text" xml:space="preserve">
+    <value>{0} personas han cambiado el tema del chat</value>
+  </data>
+  <data name="Default_Txt" xml:space="preserve">
+    <value>predeterminado</value>
   </data>
   <data name="FT_MaxFiles_Txt" xml:space="preserve">
     <value>Hay más de 50 transferencias de archivos pendientes. Vuelve a intentarlo más tarde.</value>
@@ -2009,5 +2020,41 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
   </data>
   <data name="Search_Hint_Txt" xml:space="preserve">
     <value>buscar</value>
+  </data>
+  <data name="Save_ChatTheme_Txt" xml:space="preserve">
+    <value>guardar tema</value>
+  </data>
+  <data name="ChatBg_NotChanged_Text" xml:space="preserve">
+    <value>{0} acaba de cambiar el tema del chat para ti. Actualiza la aplicación a la última versión para disfrutar de los temas del chat 2.0. http://hike.in</value>
+  </data>
+  <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
+    <value>cambiar el tema del chat</value>
+    <comment>max chars(18)</comment>
+  </data>
+  <data name="In_App_Tip_9" xml:space="preserve">
+    <value>Y muchos temas más aquí...</value>
+  </data>
+  <data name="Settings_ChatThemeNotification_SwitchHeader" xml:space="preserve">
+    <value>Notificaciones de temas del chat</value>
+  </data>
+  <data name="Chat_FTUE_chatThemes" xml:space="preserve">
+    <value>¡Temas del chat!</value>
+    <comment>max chars(20)</comment>
+  </data>
+  <data name="Chat_FTUE_giveSpin" xml:space="preserve">
+    <value>¡Pruébalo!</value>
+    <comment>max chars(30) -as in " give a try" </comment>
+  </data>
+  <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
+    <value>¿Qué sería la Navidad sin regalos? ¡Disfruta de Hike!</value>
+    <comment>max chars(80)</comment>
+  </data>
+  <data name="Chat_FTUE_OpenGift" xml:space="preserve">
+    <value>Abrir regalo...</value>
+    <comment>max chars(30)</comment>
+  </data>
+  <data name="Chat_FTUE_personalise" xml:space="preserve">
+    <value>Personaliza tu chat con temas increíbles</value>
+    <comment>max chars(80)</comment>
   </data>
 </root>

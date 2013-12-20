@@ -658,7 +658,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
-    <value>Текстовое сообщение</value>
+    <value>текстовое сообщение</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_TapMsg_Txt" xml:space="preserve">
@@ -1308,13 +1308,13 @@
     <value>без hike с помощью бесплатных SMS</value>
   </data>
   <data name="MessagingHikeFriendsFree_Txt" xml:space="preserve">
-    <value>Бесплатный и неограниченный чат с друзьями по hike.</value>
+    <value>Бесплатный и неограниченный чат с друзьями по hike. #hikeerror &amp;</value>
   </data>
   <data name="ReadyToHike_Txt" xml:space="preserve">
     <value>Готов(а) общаться по hike...</value>
   </data>
   <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
-    <value>Поделиться в Facebook и Твиттере</value>
+    <value>Поделиться в Facebook и Твиттере #hikeerror &amp;</value>
   </data>
   <data name="FB_Connect_Txt" xml:space="preserve">
     <value>Подключиться с Facebook</value>
@@ -1429,7 +1429,7 @@
     <value>Опубликовать обновление статуса</value>
   </data>
   <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
-    <value>Уведомление об обновлении статуса</value>
+    <value>Уведомления об обновлениях статуса</value>
   </data>
   <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
     <value>Каждый час</value>
@@ -1884,10 +1884,6 @@
     <value>Стандарт. качество (VGA) (по умолчанию)</value>
     <comment>(VGA) is constant, Max limit 40</comment>
   </data>
-  <data name="Video_Very_High_Quality_Txt" xml:space="preserve">
-    <value>Очень высокое качество (1080p)</value>
-    <comment>(1080p) is constant, Max limit 40</comment>
-  </data>
   <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
     <value>Приветствуем в hike!</value>
   </data>
@@ -1916,6 +1912,21 @@
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
     <value>Получайте бесплатные SMS за каждого друга, установившего hike по вашему приглашению</value>
+  </data>
+  <data name="On_Hike" xml:space="preserve">
+    <value>через hike</value>
+  </data>
+  <data name="On_SMS" xml:space="preserve">
+    <value>по SMS</value>
+  </data>
+  <data name="People_In_Group" xml:space="preserve">
+    <value>{0} чел.</value>
+  </data>
+  <data name="ChatBg_Changed_Text" xml:space="preserve">
+    <value>{0} сменил(а) тему чата</value>
+  </data>
+  <data name="Default_Txt" xml:space="preserve">
+    <value>по умолчанию</value>
   </data>
   <data name="FT_MaxFiles_Txt" xml:space="preserve">
     <value>Более 50 файлов ожидают передачи. Попробуйте еще раз позже.</value>
@@ -2010,5 +2021,41 @@
   </data>
   <data name="Search_Hint_Txt" xml:space="preserve">
     <value>поиск</value>
+  </data>
+  <data name="Save_ChatTheme_Txt" xml:space="preserve">
+    <value>сохранить тему</value>
+  </data>
+  <data name="ChatBg_NotChanged_Text" xml:space="preserve">
+    <value>{0} только что сменили тему чата с вами. Обновите приложение до последней версии, чтобы использовать темы Chat Themes 2.0. http://hike.in</value>
+  </data>
+  <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
+    <value>изменить тему чата</value>
+    <comment>max chars(18)</comment>
+  </data>
+  <data name="In_App_Tip_9" xml:space="preserve">
+    <value>Еще много других тем...</value>
+  </data>
+  <data name="Settings_ChatThemeNotification_SwitchHeader" xml:space="preserve">
+    <value>Уведомления о темах чата</value>
+  </data>
+  <data name="Chat_FTUE_chatThemes" xml:space="preserve">
+    <value>Темы чата!</value>
+    <comment>max chars(20)</comment>
+  </data>
+  <data name="Chat_FTUE_giveSpin" xml:space="preserve">
+    <value>Попробуйте!</value>
+    <comment>max chars(30) -as in " give a try" </comment>
+  </data>
+  <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
+    <value>Что за праздники без подарков? Приятного общения!</value>
+    <comment>max chars(80)</comment>
+  </data>
+  <data name="Chat_FTUE_OpenGift" xml:space="preserve">
+    <value>Открытие подарка...</value>
+    <comment>max chars(30)</comment>
+  </data>
+  <data name="Chat_FTUE_personalise" xml:space="preserve">
+    <value>Придайте индивидуальности чату с помощью великолепных тем.</value>
+    <comment>max chars(80)</comment>
   </data>
 </root>

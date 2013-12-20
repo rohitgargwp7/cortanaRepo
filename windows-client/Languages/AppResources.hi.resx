@@ -658,7 +658,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
-    <value>लिखित संदेश</value>
+    <value>पाठ संदेश</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_TapMsg_Txt" xml:space="preserve">
@@ -1430,7 +1430,7 @@ hike पिछली बार दिखे के साथ आपको गो
     <value>एक स्टेटस अपडेट को पोस्ट करे !</value>
   </data>
   <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
-    <value>स्टेटस अपडेट्स नोटिफिकेशन</value>
+    <value>स्टेटस अपडेट्स नोटिफिकेशन्स</value>
   </data>
   <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
     <value>हर घंटे</value>
@@ -2011,5 +2011,35 @@ hike पिछली बार दिखे के साथ आपको गो
   </data>
   <data name="Search_Hint_Txt" xml:space="preserve">
     <value>खोज करें</value>
+  </data>
+  <data name="ChatBg_Changed_Text" xml:space="preserve">
+    <value>{0} ने चैट थीम बदला</value>
+  </data>
+  <data name="ChatBg_NotChanged_Text" xml:space="preserve">
+    <value>{0} ने आपके साथ चैट थीम अभी-अभी बदला है। चैट थीम 2.0 का अनुभव करने के लिए अपनी ऐप को नवीनतम संस्करण में अद्यतित करें। http://hike.in</value>
+  </data>
+  <data name="Chat_FTUE_chatThemes" xml:space="preserve">
+    <value>चैट थीम!</value>
+  </data>
+  <data name="Chat_FTUE_giveSpin" xml:space="preserve">
+    <value>इसे आज़माएँ!</value>
+  </data>
+  <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
+    <value>उपहारों के बिना छुट्टियों का क्या मतलब? Hiking में आनंद लें!</value>
+  </data>
+  <data name="Chat_FTUE_OpenGift" xml:space="preserve">
+    <value>उपहार खोलें...</value>
+  </data>
+  <data name="Chat_FTUE_personalise" xml:space="preserve">
+    <value>शानदार थीम से अपनी चैट निजीकृत करें।</value>
+  </data>
+  <data name="On_Hike" xml:space="preserve">
+    <value>hike पर</value>
+  </data>
+  <data name="On_SMS" xml:space="preserve">
+    <value>एसएमएस पर</value>
+  </data>
+  <data name="People_In_Group" xml:space="preserve">
+    <value>{0} लोग</value>
   </data>
 </root>
