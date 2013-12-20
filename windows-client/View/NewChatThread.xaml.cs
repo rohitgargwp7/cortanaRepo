@@ -3898,6 +3898,8 @@ namespace windows_client.View
             recordGrid.Visibility = Visibility.Collapsed;
             sendMsgTxtbox.Visibility = Visibility.Visible;
             int index = emotList0.SelectedIndex;
+            if (index >= SmileyParser.Instance.emoticonStrings.Length)
+                return;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emotList0.SelectedIndex = -1;
             SmileyParser.Instance.AddEmoticons(index);
@@ -3910,6 +3912,8 @@ namespace windows_client.View
             recordGrid.Visibility = Visibility.Collapsed;
             sendMsgTxtbox.Visibility = Visibility.Visible;
             int index = emotList1.SelectedIndex + SmileyParser.Instance.emoticon0Size;
+            if (index >= SmileyParser.Instance.emoticonStrings.Length)
+                return;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emotList1.SelectedIndex = -1;
             SmileyParser.Instance.AddEmoticons(index);
@@ -3922,6 +3926,8 @@ namespace windows_client.View
             recordGrid.Visibility = Visibility.Collapsed;
             sendMsgTxtbox.Visibility = Visibility.Visible;
             int index = emotList2.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size;
+            if (index >= SmileyParser.Instance.emoticonStrings.Length)
+                return;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emotList2.SelectedIndex = -1;
             SmileyParser.Instance.AddEmoticons(index);
@@ -3934,6 +3940,8 @@ namespace windows_client.View
             recordGrid.Visibility = Visibility.Collapsed;
             sendMsgTxtbox.Visibility = Visibility.Visible;
             int index = emotList3.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size + SmileyParser.Instance.emoticon2Size;
+            if (index >= SmileyParser.Instance.emoticonStrings.Length)
+                return;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emotList3.SelectedIndex = -1;
             SmileyParser.Instance.AddEmoticons(index);
@@ -5831,7 +5839,7 @@ namespace windows_client.View
             {
                 stickerPivot.ShowNoStickers();
             }
-            else if (stickerCategory.ListStickers.Count == 0 && stickerCategory.HasMoreStickers)
+            else if (stickerCategory.ListStickers.Count < 10 && stickerCategory.HasMoreStickers)
             {
                 downloadStickers_Tap(null, null);
             }

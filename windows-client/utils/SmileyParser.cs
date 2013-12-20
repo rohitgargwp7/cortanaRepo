@@ -232,7 +232,7 @@ namespace windows_client
             "(cupid)",
             "(shaktiman)",
             "(tandoori)",
-            "(dd)",
+            "(dd)"
 
       };
         //regex for emoticons, email, url and phone number
