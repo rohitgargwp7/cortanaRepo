@@ -259,6 +259,8 @@ namespace windows_client.utils
                 index = 11;
 
             App.ViewModel.SelectedBackground = BackgroundList[index];
+            UpdateChatBgMap(msisdn, App.ViewModel.SelectedBackground.ID);
+
             return App.ViewModel.SelectedBackground.ID;
         }
 
