@@ -5823,7 +5823,7 @@ namespace windows_client.View
             {
                 stickerPivot.ShowNoStickers();
             }
-            else if (stickerCategory.ListStickers.Count == 0 && stickerCategory.HasMoreStickers)
+            else if (stickerCategory.ListStickers.Count < 10 && stickerCategory.HasMoreStickers)
             {
                 downloadStickers_Tap(null, null);
             }
