@@ -1140,8 +1140,8 @@
                         		<CompositeTransform/>
                         	</Image.RenderTransform>
                         </Image>
-                        <TextBlock Grid.Row="1" Margin="30 100 30 0" Foreground="#f14444" Text="{Binding Path= LocalizedResources.Chat_FTUE_HappyHiking, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" FontFamily="Segoe WP Regular" />
-                        <TextBlock Grid.Row="2" Margin="24 10 24 0" Foreground="#ffa800" Text="{Binding Path= LocalizedResources.Chat_FTUE_OpenGift, Source={StaticResource LocalizedStrings}}" FontSize="20" TextAlignment="Center" Tap="TextBlock_Tap" FontFamily="Segoe WP Bold" />
+                        <TextBlock Grid.Row="1" Margin="30 70 30 0" Height="100" Foreground="#f14444" Text="{Binding Path= LocalizedResources.Chat_FTUE_HappyHiking, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" FontFamily="Segoe WP Regular" />
+                        <TextBlock Grid.Row="2" Margin="24 0 24 0" Foreground="#ffa800" Text="{Binding Path= LocalizedResources.Chat_FTUE_OpenGift, Source={StaticResource LocalizedStrings}}" FontSize="20" TextAlignment="Center" Tap="TextBlock_Tap" FontFamily="Segoe WP Bold" />
                     </Grid>
                 </Grid>
 
