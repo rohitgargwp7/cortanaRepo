@@ -319,7 +319,7 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "3",
-                Background = "#ffa8b900",
+                Background = "#ffFF6191",
                 SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
@@ -445,7 +445,7 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "12",
-                Background = "#ff1a9ecd",
+                Background = "#ffFF5F78",
                 SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
@@ -515,7 +515,7 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "17",
-                Background = "#ffbb8c2f",
+                Background = "#ff95B000",
                 SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
@@ -553,20 +553,6 @@ namespace windows_client.utils
                 Thumbnail = null,
                 ImagePath = "/View/images/chatBackgrounds/cbBikers.png"
             });
-
-            //BackgroundList.Add(new ChatBackground()
-            //{
-            //    ID = "20",
-            //    Background = "#ff9bb300",
-            //    SentBubbleBackground = "#e5ffffff",
-            //    ReceivedBubbleBackground = "#ffffffff",
-            //    BubbleForeground = "#ff000000",
-            //    Foreground = "#ffffffff",
-            //    IsTile = true,
-            //    Position = 20,
-            //    Thumbnail = null,
-            //    ImagePath = "/View/images/chatBackgrounds/cbSporty.png"
-            //});
         }
 
         /// <summary>
