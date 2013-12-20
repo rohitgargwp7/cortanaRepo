@@ -542,6 +542,7 @@
     <Content Include="View\images\chatBackgrounds\cbChatty.png" />
     <Content Include="View\images\chatBackgrounds\cbCheers.png" />
     <Content Include="View\images\chatBackgrounds\cbCreepy.png" />
+    <Content Include="View\images\chatBackgrounds\cbCupcake.png" />
     <Content Include="View\images\chatBackgrounds\cbFloral.png" />
     <Content Include="View\images\chatBackgrounds\cbForest.png" />
     <Content Include="View\images\chatBackgrounds\cbGirly.png" />

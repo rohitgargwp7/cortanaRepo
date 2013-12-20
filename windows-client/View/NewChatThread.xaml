@@ -127,8 +127,8 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Grid HorizontalAlignment="Right" MinHeight="60" MinWidth="60" VerticalAlignment="Stretch" Tap="chatPaintCancel_Click">
-                        <Button Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="12,10,0,0" toolkit:TiltEffect.IsTiltEnabled="True">
+                    <Grid HorizontalAlignment="Right" MinHeight="60" MinWidth="60" VerticalAlignment="Stretch" Tap="chatPaintCancel_Click" Background="Transparent">
+                        <Button Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="12,8,0,0" toolkit:TiltEffect.IsTiltEnabled="True">
                             <Button.Content>
                                 <Image x:Name="cancelChatThemeImage" Height="30" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Button.Content>
@@ -136,28 +136,28 @@
                     </Grid>
                     <TextBlock x:Name="chatThemeHeaderTxt"  FontFamily="Segoe WP SemiLight" FontSize="38" 
                                Text="{Binding Path= LocalizedResources.ChatThemeHeader_Txt, Source={StaticResource LocalizedStrings}}" 
-                               Grid.Column="1" Margin="3,-2,0,0" VerticalAlignment="Center"/>
-                    <Button Content="{Binding Path= LocalizedResources.Done_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Right" FontWeight="Light" Width="120" Height="70" Grid.Column="2" Click="chatPaintSave_Click" Style="{StaticResource SaveButtonChatThemeStyle}" VerticalAlignment="Center" Margin="0,0,0,0"  toolkit:TiltEffect.IsTiltEnabled="True"/>
+                               Grid.Column="1" Margin="3,-4,0,0" VerticalAlignment="Center"/>
+                    <Button x:Name="doneButton" Content="{Binding Path= LocalizedResources.Done_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Right" FontWeight="Light" Width="120" Height="70" Grid.Column="2" Click="chatPaintSave_Click" Style="{StaticResource SaveButtonChatThemeStyle}" VerticalAlignment="Center" Margin="0,0,0,0"  toolkit:TiltEffect.IsTiltEnabled="True"/>
                 </Grid>
             </StackPanel>
         </Grid>
 
 
-        <Grid x:Name="chatBackgroundPopUp" Canvas.ZIndex="1" Grid.Row="1" MaxHeight="260" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+        <Grid x:Name="chatBackgroundPopUp" Canvas.ZIndex="1" Grid.Row="1" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch">
             <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.9"/>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <ListBox x:Name="chatBackgroundList" toolkit:TiltEffect.IsTiltEnabled="True"
+                <ListBox x:Name="chatBackgroundList" toolkit:TiltEffect.IsTiltEnabled="True" Height="200"
                     ItemsPanel="{StaticResource chatThemeBackgroundListTemplate93x93}"
                     ItemTemplate="{StaticResource chatThemeBackgroundItemTemplate93x93}"
                     SelectionChanged="chatBackgroundList_SelectionChanged"
-                    Margin="0,6,0,0" HorizontalAlignment="Center"/>
-                <StackPanel Orientation="Horizontal" Margin="12" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
-                    <Image Source="/View/images/notification_Image.png" Opacity="0.7" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                    <TextBlock Opacity="0.7" FontSize="16" Foreground="White" HorizontalAlignment="Center" TextAlignment="Left"
+                    Margin="0,6,0,12" HorizontalAlignment="Center"/>
+                <StackPanel x:Name="chatThemeTip" Visibility="Collapsed" Orientation="Horizontal" Margin="12,-3,12,12" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
+                    <Image Source="/View/images/notification_Image.png" Opacity="0.7" Height="16" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,3,6,0"/>
+                    <TextBlock x:Name="chatThemeTipTxt" Opacity="0.7" FontSize="16" Foreground="White" HorizontalAlignment="Center" TextAlignment="Left" MaxWidth="420"
                           Text="{Binding Path= LocalizedResources.ChatThemeMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" />
                 </StackPanel>
             </Grid>
@@ -215,7 +215,7 @@
                             <view:ChatThreadTemplateSelector.DtForceSMSNotification>
                                 <DataTemplate>
                                     <Grid HorizontalAlignment="Right" Margin="0,-8,12,5" >
-                                        <TextBlock FontSize="16" MaxWidth="{Binding MessageBubbleWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap"/>
+                                        <TextBlock FontSize="16" MaxWidth="{Binding MessageBubbleWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" TextAlignment="Right"/>
                                     </Grid>
                                 </DataTemplate>
                             </view:ChatThreadTemplateSelector.DtForceSMSNotification>
@@ -879,7 +879,7 @@
                             <view:ChatThreadTemplateSelector.DtStatusUpdateBubble>
                                 <DataTemplate x:Name="dtStatusUpdateBubble">
                                     <Grid Margin="0,5" HorizontalAlignment="Stretch">
-                                        <Border Background="Black" Opacity="0.4"/>
+                                        <Border Background="Black" Opacity="0.2"/>
                                         <Grid Margin="5,10">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
@@ -891,8 +891,8 @@
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="Auto"/>
                                                 </Grid.RowDefinitions>
-                                                <TextBlock FontSize="21" Foreground="White" TextWrapping="Wrap" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Top"/>
-                                                <TextBlock Grid.Row="1" FontSize="15" Foreground="White" Opacity="0.6" Text="{Binding TimeStampStr}" VerticalAlignment="Top"/>
+                                                <TextBlock FontSize="21" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Top"/>
+                                                <TextBlock Grid.Row="1" FontSize="15" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" Text="{Binding TimeStampStr}" VerticalAlignment="Top"/>
                                             </Grid>
                                         </Grid>
                                     </Grid>
