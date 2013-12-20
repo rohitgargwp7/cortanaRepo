@@ -249,20 +249,14 @@ namespace windows_client.utils
         /// <returns></returns>
         public String SetDefaultBackground(string msisdn)
         {
-            ChatThemeData bgObj;
+            int index = random.Next(3);
 
-            if (ChatBgMap.TryGetValue(msisdn, out bgObj))
-            {
-                var list = BackgroundList.Where(b => b.ID == bgObj.BackgroundId);
-                ChatBackground bg = list.Count() == 0 ? null : list.First();
-
-                if (bg != null && bg.ID != "0")
-                {
-                    App.ViewModel.SelectedBackground = bg;
-                    return bg.ID;
-                }
-            }
-            int index = random.Next(1, BackgroundList.Count);
+            if (index == 0)
+                index = 1;
+            else if (index == 1)
+                index = 15;
+            else
+                index = 11;
 
             App.ViewModel.SelectedBackground = BackgroundList[index];
             return App.ViewModel.SelectedBackground.ID;
@@ -361,7 +355,7 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "6",
-                Background = "#ff03b1c5",
+                Background = "#ff9BB300",
                 SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
@@ -369,7 +363,7 @@ namespace windows_client.utils
                 IsTile = true,
                 Position = 6,
                 Thumbnail = null,
-                ImagePath = "/View/images/chatBackgrounds/cbBeach.png"
+                ImagePath = "/View/images/chatBackgrounds/cbSporty.png"
             });
 
             BackgroundList.Add(new ChatBackground()
@@ -487,7 +481,7 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "15",
-                Background = "#ff9BB300",
+                Background = "#ff03b1c5",
                 SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
@@ -495,7 +489,7 @@ namespace windows_client.utils
                 IsTile = true,
                 Position = 15,
                 Thumbnail = null,
-                ImagePath = "/View/images/chatBackgrounds/cbSporty.png"
+                ImagePath = "/View/images/chatBackgrounds/cbBeach.png"
             });
 
             BackgroundList.Add(new ChatBackground()
