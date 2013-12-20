@@ -453,7 +453,7 @@ namespace windows_client.utils
                 IsTile = true,
                 Position = 12,
                 Thumbnail = null,
-                ImagePath = "/View/images/chatBackgrounds/cbCupcakes.png"
+                ImagePath = "/View/images/chatBackgrounds/cbCupcake.png"
             });
 
             BackgroundList.Add(new ChatBackground()
