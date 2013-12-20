@@ -2042,4 +2042,22 @@ hike पिछली बार दिखे के साथ आपको गो
   <data name="People_In_Group" xml:space="preserve">
     <value>{0} लोग</value>
   </data>
+  <data name="ChatThemeHeader_Txt" xml:space="preserve">
+    <value>चैट थीम्स</value>
+  </data>
+  <data name="ChatThemeMessage" xml:space="preserve">
+    <value>जब आप "डन" करेंगे, तोह आपके और आपके मित्र की चैट का थीम बदल जयेगा|</value>
+  </data>
+  <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
+    <value>जब आप "डन" करेंगे, तोह आपके और आपके ग्रुप की चैट का थीम बदल जयेगा|</value>
+  </data>
+  <data name="Done_Txt" xml:space="preserve">
+    <value>डन</value>
+  </data>
+  <data name="In_App_Tip_9" xml:space="preserve">
+    <value>और अधिक भव्य चैट थीम्स यहाँ...</value>
+  </data>
+  <data name="Sent_As_SMS" xml:space="preserve">
+    <value>SMS भेजा गया - {0}</value>
+  </data>
 </root>

@@ -2020,7 +2020,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>search</value>
   </data>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
-    <value>{0} just changed the chat theme with you. Update your app to the latest version to experience Chat Themes 2.0. http://hike.in</value>
+    <value>{0} just changed the chat theme. To use the new chat themes, upgrade hike. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
     <value>More gorgeous themes here...</value>

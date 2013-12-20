@@ -412,7 +412,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} just changed the chat theme with you. Update your app to the latest version to experience Chat Themes 2.0. http://hike.in.
+        ///   Looks up a localized string similar to {0} just changed the chat theme. To use the new chat themes, upgrade hike. http://hike.in..
         /// </summary>
         public static string ChatBg_NotChanged_Text {
             get {

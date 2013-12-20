@@ -2033,7 +2033,7 @@
     <comment>max chars(18)</comment>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Еще много других тем...</value>
+    <value>Более великолепные темы здесь...</value>
   </data>
   <data name="Settings_ChatThemeNotification_SwitchHeader" xml:space="preserve">
     <value>Уведомления о темах чата</value>
@@ -2057,5 +2057,20 @@
   <data name="Chat_FTUE_personalise" xml:space="preserve">
     <value>Придайте индивидуальности чату с помощью великолепных тем.</value>
     <comment>max chars(80)</comment>
+  </data>
+  <data name="ChatThemeHeader_Txt" xml:space="preserve">
+    <value>чат темы</value>
+  </data>
+  <data name="ChatThemeMessage" xml:space="preserve">
+    <value>После того как вы выберите «Готово», тема чата будет меняться для вас и вашего друга.</value>
+  </data>
+  <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
+    <value>После того как вы выберите «Готово», тема чата будет меняться для группы.</value>
+  </data>
+  <data name="Done_Txt" xml:space="preserve">
+    <value>Договорились</value>
+  </data>
+  <data name="Sent_As_SMS" xml:space="preserve">
+    <value>Отправить как SMS - {0}</value>
   </data>
 </root>
