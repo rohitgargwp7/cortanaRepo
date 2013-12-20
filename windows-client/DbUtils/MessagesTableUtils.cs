@@ -159,7 +159,7 @@ namespace windows_client.DbUtils
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                     return null;
 
-                obj = ConversationTableUtils.addConversation(convMsg, isNewGroup);
+                obj = ConversationTableUtils.addConversation(convMsg, isNewGroup, from);
                 App.ViewModel.ConvMap.Add(convMsg.Msisdn, obj);
             }
             else
