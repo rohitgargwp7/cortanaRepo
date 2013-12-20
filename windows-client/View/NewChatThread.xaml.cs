@@ -1144,7 +1144,7 @@ namespace windows_client.View
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CHAT_FTUE))
             {
-                ChatBackgroundHelper.Instance.SetDefaultBackground(mContactNumber);
+                SendBackgroundChangedPacket(ChatBackgroundHelper.Instance.SetDefaultBackground(mContactNumber));
                 PhoneApplicationService.Current.State.Remove(HikeConstants.CHAT_FTUE);
             }
             else

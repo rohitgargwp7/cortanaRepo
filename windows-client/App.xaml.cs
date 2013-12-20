@@ -973,7 +973,6 @@ namespace windows_client
             }
             #endregion
             #region CHAT_FTUE
-            //todo:in next install remove this
             if (isNewInstall || Utils.compareVersion(_currentVersion, "2.4.0.2") < 0)
             {
                 WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, true);

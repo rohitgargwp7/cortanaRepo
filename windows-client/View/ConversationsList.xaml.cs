@@ -2799,9 +2799,10 @@ namespace windows_client.View
             Snow(false);
             if (count > 5)
             {
-                gridSnowFlakes.Opacity = (count) * 0.04;
                 if (count > 22)
-                    gridSnowFlakes.Opacity = 0.8;
+                    gridSnowFlakes.Opacity = 0.88;
+                else
+                    gridSnowFlakes.Opacity = (count) * 0.04;
             }
 
             if (count++ == 35)
@@ -2855,12 +2856,11 @@ namespace windows_client.View
         }
         private void TextBlock_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            Storyboard2.Begin();
+            Storyboard3.Begin();
             GiveSpinTxtBlock.Text = App.ViewModel.MessageListPageCollection.Count > 0 ? AppResources.Chat_FTUE_giveSpin : AppResources.OK;
-            Storyboard2.Completed += (a, b) =>
+            Storyboard3.Completed += (a, b) =>
                 {
                     t.Stop();
-                    gridSnowFlakes.Children.Clear();
                     gridAnimation.Tap += GridAnimationTap;
                 };
         }
