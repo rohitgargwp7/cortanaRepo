@@ -2025,7 +2025,7 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
     <value>guardar tema</value>
   </data>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
-    <value>{0} acaba de cambiar el tema del chat para ti. Actualiza la aplicación a la última versión para disfrutar de los temas del chat 2.0. http://hike.in</value>
+    <value>{0} verändert nur das Chat-Thema. Um die neue Chat-Themen zu verwenden, aktualisieren Sie hike. http://hike.in.</value>
   </data>
   <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
     <value>cambiar el tema del chat</value>

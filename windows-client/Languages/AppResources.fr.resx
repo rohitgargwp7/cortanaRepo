@@ -2027,7 +2027,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <value>enregistrer le thème</value>
   </data>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
-    <value>{0} a changé le thème du tchat avec toi. Mets ton appli à jour vers la dernière version et découvre les Thèmes de tchat 2.0. http://hike.in</value>
+    <value>{0} vient de changer le thème du chat. Pour utiliser les nouveaux thèmes de discussion, mise à niveau hike. http://hike.in.</value>
   </data>
   <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
     <value>modif. thème tchat</value>

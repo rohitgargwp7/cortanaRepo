@@ -5263,6 +5263,7 @@ namespace windows_client.View
             if (App.ViewModel.SelectedBackground.ID != App.ViewModel.LastSelectedBackground.ID)
             {
                 App.ViewModel.SelectedBackground = App.ViewModel.LastSelectedBackground;
+                chatBackgroundList.SelectedItem = App.ViewModel.SelectedBackground;
                 ChangeBackground();
             }
         }
@@ -5291,6 +5292,7 @@ namespace windows_client.View
             chatThemeHeader.Visibility = Visibility.Collapsed;
             userHeader.Visibility = Visibility.Visible;
             openChatBackgroundButton.Opacity = 1;
+
         }
 
         void chatBackgroundPopUp_Opened()
@@ -5341,8 +5343,10 @@ namespace windows_client.View
         WriteableBitmap _background;
         BitmapImage _tileBitmap;
 
-        public void ChangeBackground(bool isBubbleColorChanged = true)
+        public async void ChangeBackground(bool isBubbleColorChanged = true)
         {
+            await Task.Delay(1);
+
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
             if (isGroupChat && !isGroupAlive)

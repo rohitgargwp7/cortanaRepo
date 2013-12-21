@@ -2026,7 +2026,7 @@
     <value>сохранить тему</value>
   </data>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
-    <value>{0} только что сменили тему чата с вами. Обновите приложение до последней версии, чтобы использовать темы Chat Themes 2.0. http://hike.in</value>
+    <value>{0} просто изменил тему чата. Чтобы использовать новые темы чат, обновить hike. http://hike.in.</value>
   </data>
   <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
     <value>изменить тему чата</value>

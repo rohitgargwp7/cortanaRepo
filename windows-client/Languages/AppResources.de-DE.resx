@@ -2019,7 +2019,7 @@
     <value>Motiv speichern</value>
   </data>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
-    <value>{0} hat soeben das Motiv für den Chat mit dir geändert. Aktualisiere deine App auf die neueste Version, um Chatmotive 2.0 zu erhalten. Gehe zu http://hike.in </value>
+    <value>{0} verändert nur das Chat-Thema. Um die neue Chat-Themen zu verwenden, aktualisieren Sie hike. http://hike.in.</value>
   </data>
   <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
     <value>Chatmotiv ändern</value>
