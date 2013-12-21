@@ -1389,7 +1389,7 @@ namespace windows_client.View
                 onlineStatus.Visibility = Visibility.Collapsed;
                 lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
 
-                if(isOnHike)
+                if (isOnHike)
                     chatThemeTip.Visibility = Visibility.Visible;
 
                 ShowInAppTips();
@@ -5343,10 +5343,8 @@ namespace windows_client.View
         WriteableBitmap _background;
         BitmapImage _tileBitmap;
 
-        public async void ChangeBackground(bool isBubbleColorChanged = true)
+        public void ChangeBackground(bool isBubbleColorChanged = true)
         {
-            await Task.Delay(1);
-
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
             if (isGroupChat && !isGroupAlive)
@@ -5387,10 +5385,16 @@ namespace windows_client.View
                 return;
             }
 
+            CreateBackgroundImage();
+        }
+
+        private async void CreateBackgroundImage()
+        {
+            await Task.Delay(1);
             _tileBitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
-               {
-                   CreateOptions = BitmapCreateOptions.None
-               };
+            {
+                CreateOptions = BitmapCreateOptions.None
+            };
 
             //handle delay creation of bitmap image
             _tileBitmap.ImageOpened += (s, e) =>
