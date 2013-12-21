@@ -89,7 +89,7 @@ namespace windows_client
         private static string _currentVersion = "1.0.0.0";
         private static string _latestVersion;
         public static bool IS_VIEWMODEL_LOADED = false;
-        public static bool IS_MARKETPLACE = false; // change this to toggle debugging
+        public static bool IS_MARKETPLACE = true; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
         private static bool _isTombstoneLaunch = false;
@@ -784,7 +784,7 @@ namespace windows_client
                 App.appSettings[App.TIP_MARKED_KEY] = 0x18;
                 App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, 0x18);
             }
-            else if (Utils.compareVersion(_currentVersion, "2.4.0.4") < 0)
+            else if (Utils.compareVersion(_currentVersion, "2.5.0.0") < 0)
             {
                 var val = App.appSettings[App.TIP_MARKED_KEY];
                 App.RemoveKeyFromAppSettings(App.TIP_MARKED_KEY);
@@ -797,7 +797,7 @@ namespace windows_client
 
             #endregion
             #region STCIKERS
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.4.0.4") < 0)
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.5.0.0") < 0)
             {
                 if (!isNewInstall && Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
                     StickerCategory.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
@@ -933,7 +933,7 @@ namespace windows_client
                     }
 
                     //Reset in app tip for new stickers
-                    if (Utils.compareVersion(_currentVersion, "2.4.0.4") < 0)
+                    if (Utils.compareVersion(_currentVersion, "2.5.0.0") < 0)
                         App.ViewModel.ResetInAppTip(1);
                 }
 
@@ -973,7 +973,7 @@ namespace windows_client
             }
             #endregion
             #region CHAT_FTUE
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.4.0.4") < 0)
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.5.0.0") < 0)
             {
                 WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, true);
             }
