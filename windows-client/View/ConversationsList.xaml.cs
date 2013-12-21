@@ -2814,6 +2814,8 @@ namespace windows_client.View
         Random _Random = new Random((int)DateTime.Now.Ticks);
         private void Snow(bool isInitial)
         {
+            if (!isInitial && (int)gridSnowFlakes.ActualHeight == 0)
+                return;
             var x = _Random.Next(isInitial ? 0 : -100, isInitial ? 500 : (int)gridSnowFlakes.ActualWidth + 50);
             var y = _Random.Next(isInitial ? 100 : -100, isInitial ? 700 : _Random.Next(200, _Random.Next(600, (int)gridSnowFlakes.ActualHeight - 100)));
 
