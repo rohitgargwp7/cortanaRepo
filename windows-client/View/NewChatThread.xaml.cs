@@ -5343,8 +5343,10 @@ namespace windows_client.View
         WriteableBitmap _background;
         BitmapImage _tileBitmap;
 
-        public void ChangeBackground(bool isBubbleColorChanged = true)
+        public async void ChangeBackground(bool isBubbleColorChanged = true)
         {
+            await Task.Delay(1);
+
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
             if (isGroupChat && !isGroupAlive)
