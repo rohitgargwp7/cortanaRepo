@@ -558,7 +558,9 @@
     <Content Include="View\images\chatBackgrounds\cbValentines.png" />
     <Content Include="View\images\chatBackground_changed.png" />
     <Content Include="View\images\chatBackground_changed_CT.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_bottombar_bottom_line.png" />
     <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_card_bg.png" />
+    <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_topbar_left_line.png" />
     <Content Include="View\images\chat_invited_green_CT.png" />
     <Content Include="View\images\chat_joined_blue_CT.png" />
     <Content Include="View\images\chat_left_CT.png" />
