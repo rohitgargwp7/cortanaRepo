@@ -2032,7 +2032,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Sent as SMS - {0}</value>
   </data>
   <data name="ChatThemeMessage" xml:space="preserve">
-    <value>Once you tap done, the chat theme will change for both you and your friend.</value>
+    <value>The chat theme will change for both you and your friend</value>
   </data>
   <data name="Done_Txt" xml:space="preserve">
     <value>done</value>
@@ -2058,6 +2058,6 @@ Download it now http://hike.in and join the fun!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
-    <value>Once you tap done, the chat theme will change for the group.</value>
+    <value>The chat theme will change for the whole group</value>
   </data>
 </root>
