@@ -2930,5 +2930,25 @@ namespace windows_client.View
             return obj;
         }
         #endregion
+
+        private void MenuItem_Click_GoToUserInfo(object sender, RoutedEventArgs e)
+        {
+            var obj = (sender as MenuItem).DataContext as ConversationListObject;
+            if (obj != null)
+            {
+                if (obj.IsGroupChat)
+                {
+                    App.AnalyticsInstance.addEvent(Analytics.GROUP_INFO);
+                    PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = obj.Msisdn;
+                    PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = obj.NameToShow;
+                    NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
+                }
+                else
+                {
+                    PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CONVERSATION_PAGE] = obj;
+                    NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+                }
+            }
+        }
     }
 }

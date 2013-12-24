@@ -4676,6 +4676,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to view profile.
+        /// </summary>
+        public static string User_Info_Txt {
+            get {
+                return ResourceManager.GetString("User_Info_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  has been invited.
         /// </summary>
         public static string USER_INVITED {
