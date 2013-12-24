@@ -477,6 +477,17 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility ViewProfileVisibility
+        {
+            get
+            {
+                if (Utils.IsHikeBotMsg(_msisdn))
+                    return Visibility.Collapsed;
+                else
+                    return Visibility.Visible;
+            }
+        }
+
         public bool IsGroupChat
         {
             get

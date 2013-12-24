@@ -856,7 +856,7 @@
                                         <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" IsZoomEnabled="False" VerticalAlignment="Center">
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
                                             <toolkit:MenuItem  Header="{Binding FavMsg}" Visibility="{Binding AddToFriendVisibility}" Click="MenuItem_Click_AddRemoveFav"/>
-                                            <toolkit:MenuItem  Header="{Binding ProfileMsg}" Click="MenuItem_Click_GoToUserInfo"/>
+                                            <toolkit:MenuItem  Header="{Binding ProfileMsg}" Visibility="{Binding ViewProfileVisibility}" Click="MenuItem_Click_GoToUserInfo"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
                                     <Grid.ColumnDefinitions>
