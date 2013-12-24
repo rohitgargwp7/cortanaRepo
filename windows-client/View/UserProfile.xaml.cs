@@ -261,6 +261,21 @@ namespace windows_client.View
             if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
             {
                 object o;
+                #region USER INFO FROM CONVERSATION PAGE
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_CONVERSATION_PAGE, out o))
+                {
+                    ConversationListObject co = (ConversationListObject)o;
+                    if (o != null)
+                    {
+                        InitAppBar();
+                        nameToShow = co.NameToShow;
+                        isOnHike = co.IsOnhike;
+                        profileImage = co.AvatarImage;
+                        msisdn = co.Msisdn;
+                        InitChatIconBtn();
+                    }
+                }
+                #endregion
                 #region USER INFO FROM CHAT THREAD
                 if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE, out o))
                 {
@@ -451,6 +466,7 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_CONVERSATION_PAGE);
             PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE);
             PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE);
             PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_PROFILE);

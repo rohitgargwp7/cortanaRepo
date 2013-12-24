@@ -466,6 +466,28 @@ namespace windows_client.Model
             }
         }
 
+        public string ProfileMsg
+        {
+            get
+            {
+                if (IsGroupChat)
+                    return AppResources.GroupInfo_Txt;
+                else
+                    return AppResources.User_Info_Txt;
+            }
+        }
+
+        public Visibility ViewProfileVisibility
+        {
+            get
+            {
+                if (Utils.IsHikeBotMsg(_msisdn))
+                    return Visibility.Collapsed;
+                else
+                    return Visibility.Visible;
+            }
+        }
+
         public bool IsGroupChat
         {
             get

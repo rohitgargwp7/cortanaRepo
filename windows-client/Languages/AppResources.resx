@@ -2060,4 +2060,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
     <value>The chat theme will change for the whole group</value>
   </data>
+  <data name="User_Info_Txt" xml:space="preserve">
+    <value>view profile</value>
+  </data>
 </root>
