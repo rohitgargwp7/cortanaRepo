@@ -120,15 +120,17 @@ namespace windows_client.View
 
                     if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
                     {
+                        if (App.PageStateVal != App.PageState.CONVLIST_SCREEN)
+                        {
+                            Uri nUri = Utils.LoadPageUri(App.PageStateVal);
+                            NavigationService.Navigate(nUri);
+                            return;
+                        }
+                        PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
                         string param = Utils.GetParamFromUri(targetPage);
                         NavigationService.Navigate(new Uri("/View/NewChatThread.xaml?" + param, UriKind.Relative));
                     }
                     else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
-                    {
-                        PhoneApplicationService.Current.State["IsStatusPush"] = true;
-                        NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
-                    }
-                    else if (targetPage != null && targetPage.Contains("NewSelectUserPage.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
                     {
                         if (App.PageStateVal != App.PageState.CONVLIST_SCREEN)
                         {
@@ -136,15 +138,38 @@ namespace windows_client.View
                             NavigationService.Navigate(nUri);
                             return;
                         }
+                        PhoneApplicationService.Current.State["IsStatusPush"] = true;
 
+                        App page = (App)Application.Current;
+                        ((UriMapper)(page.RootFrame.UriMapper)).UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                        page.RootFrame.Navigate(new Uri("/View/ConversationsList.xaml?id=1", UriKind.Relative));
+                    }
+                    else if (targetPage != null && targetPage.Contains("ConversationsList.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
+                    {
+                        if (App.PageStateVal != App.PageState.CONVLIST_SCREEN)
+                        {
+                            Uri nUri = Utils.LoadPageUri(App.PageStateVal);
+                            NavigationService.Navigate(nUri);
+                            return;
+                        }
+                        PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
                         int idx = targetPage.IndexOf("?") + 1;
                         string param = targetPage.Substring(idx);
-                        NavigationService.Navigate(new Uri("/View/ConversationsList.xaml?" + true, UriKind.Relative));
+                        NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative));
                     }
                     else
                     {
-                        Uri nUri = Utils.LoadPageUri(App.PageStateVal);
-                        NavigationService.Navigate(nUri);
+                        if (App.PageStateVal == App.PageState.CONVLIST_SCREEN)
+                        {
+                            App page = (App)Application.Current;
+                            ((UriMapper)(page.RootFrame.UriMapper)).UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                            page.RootFrame.Navigate(new Uri("/View/ConversationsList.xaml?id=1", UriKind.Relative));
+                        }
+                        else
+                        {
+                            Uri nUri = Utils.LoadPageUri(App.PageStateVal);
+                            NavigationService.Navigate(nUri);
+                        }
                     }
                 };
             }
@@ -176,14 +201,14 @@ namespace windows_client.View
 
                     List<ContactInfo> hkList = hike_contacts_by_id[id];
 
-                    var listToUpdate = ContactUtils.getContactsToUpdateList(phList,hkList);
+                    var listToUpdate = ContactUtils.getContactsToUpdateList(phList, hkList);
 
-                    if(listToUpdate!=null)
+                    if (listToUpdate != null)
                     {
                         if (contactsToBeUpdated == null)
                             contactsToBeUpdated = new List<ContactInfo>();
-                       
-                        foreach(var item in listToUpdate)
+
+                        foreach (var item in listToUpdate)
                             contactsToBeUpdated.Add(item);
                     }
                 }
@@ -194,7 +219,7 @@ namespace windows_client.View
                 UsersTableUtils.updateContacts(contactsToBeUpdated);
                 ConversationTableUtils.updateConversation(contactsToBeUpdated);
             }
-            
+
             _isContactsSyncComplete = false;
         }
     }

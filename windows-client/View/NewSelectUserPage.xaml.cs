@@ -270,6 +270,14 @@ namespace windows_client.View
                     App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
                 }
             }
+
+            //remove if push came directly from upgrade page
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.LAUNCH_FROM_UPGRADEPAGE))
+            {
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
+                PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_UPGRADEPAGE);
+            }
         }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
