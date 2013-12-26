@@ -3194,7 +3194,6 @@ namespace windows_client.View
 
         #region PAGE EVENTS
 
-        private bool isEmptyString = true;
         private int lastMessageCount = 0;
         private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -3205,28 +3204,21 @@ namespace windows_client.View
             svMessage.UpdateLayout();
             svMessage.ScrollToVerticalOffset(sendMsgTxtbox.GetRectFromCharacterIndex(sendMsgTxtbox.SelectionStart > 0 ? sendMsgTxtbox.SelectionStart : sendMsgTxtbox.Text.Length).Top - 30.0);
 
-            string msgText = sendMsgTxtbox.Text.Trim();
-            if (String.IsNullOrEmpty(msgText))
+            lastText = sendMsgTxtbox.Text.Trim();
+            if (String.IsNullOrEmpty(lastText))
             {
-                isEmptyString = true;
                 sendIconButton.IsEnabled = false;
                 return;
             }
-            if (isEmptyString)
-            {
-                this.sendMsgTxtbox.Foreground = UI_Utils.Instance.Black;
-                isEmptyString = false;
-            }
-            lastText = msgText;
             lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
             scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(HikeConstants.SEND_END_TYPING_TIMER));
 
             sendStartTypingNotification();
 
-            if (!isOnHike && msgText.Length > 130)
+            if (!isOnHike && lastText.Length > 130)
             {
                 spSmsCharCounter.Visibility = Visibility.Visible;
-                int numberOfMessages = (msgText.Length / maxSmsCharLength) + 1;
+                int numberOfMessages = (lastText.Length / maxSmsCharLength) + 1;
 
                 if (numberOfMessages > 1)
                 {
@@ -3242,7 +3234,7 @@ namespace windows_client.View
                     txtMsgCount.Visibility = Visibility.Collapsed;
                 }
 
-                txtMsgCharCount.Text = string.Format(AppResources.CT_CharCount_Sms_User, msgText.Length, numberOfMessages * maxSmsCharLength);
+                txtMsgCharCount.Text = string.Format(AppResources.CT_CharCount_Sms_User, lastText.Length, numberOfMessages * maxSmsCharLength);
             }
             else
             {

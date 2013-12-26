@@ -95,13 +95,15 @@ namespace windows_client.View
             gi = GroupTableUtils.getGroupInfoForId(groupId);
             if (gi == null)
                 return;
+
+            GroupManager.Instance.LoadGroupParticipants(groupId);
+
             if (!App.IS_TOMBSTONED)
                 groupImage.Source = App.ViewModel.ConvMap[groupId].AvatarImage;
             else
             {
                 string grpId = groupId.Replace(":", "_");
                 groupImage.Source = UI_Utils.Instance.GetBitmapImage(grpId);
-                GroupManager.Instance.LoadGroupParticipants(groupId);
             }
             if (Utils.isDarkTheme())
             {

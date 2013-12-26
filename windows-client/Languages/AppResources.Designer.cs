@@ -430,7 +430,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Once you tap done, the chat theme will change for both you and your friend..
+        ///   Looks up a localized string similar to The chat theme will change for both you and your friend.
         /// </summary>
         public static string ChatThemeMessage {
             get {
@@ -439,7 +439,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Once you tap done, the chat theme will change for the group..
+        ///   Looks up a localized string similar to The chat theme will change for the whole group.
         /// </summary>
         public static string ChatThemeMessage_GrpMessage {
             get {
@@ -4672,6 +4672,15 @@ namespace windows_client.Languages {
         public static string User_Cancelled_Task_Txt {
             get {
                 return ResourceManager.GetString("User_Cancelled_Task_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to view profile.
+        /// </summary>
+        public static string User_Info_Txt {
+            get {
+                return ResourceManager.GetString("User_Info_Txt", resourceCulture);
             }
         }
         
