@@ -507,7 +507,7 @@ namespace windows_client.DbUtils
 
         private void updateDbBatch(long[] ids, int status)
         {
-            string msisdn = MessagesTableUtils.updateAllMsgStatus(null, ids, status);
+            string msisdn = MessagesTableUtils.updateAllMsgStatus(null, ids, status, null);
             ConversationTableUtils.updateLastMsgStatus(ids[ids.Length - 1], msisdn, status);
         }
     }

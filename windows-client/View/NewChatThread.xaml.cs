@@ -218,7 +218,7 @@ namespace windows_client.View
             }
         }
 
-        ConvMessage _lastUnDeliveredMessage = null, _tap2SendAsSMSMessage = null;
+        ConvMessage _lastUnDeliveredMessage = null, _tap2SendAsSMSMessage = null, _;
 
         public LruCache<string, BitmapImage> lruStickerCache;
 
@@ -1013,7 +1013,6 @@ namespace windows_client.View
             }
 
             #endregion
-
             #region OBJECT FROM SELECT USER PAGE
 
             else if (this.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
@@ -1779,8 +1778,11 @@ namespace windows_client.View
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (ss, ee) =>
                 {
-                    MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ);
-                    idsToUpdate = null;
+                    if (!isGroupChat)
+                    {
+                        MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ, null);
+                        idsToUpdate = null;
+                    }
                 };
                 bw.RunWorkerAsync();
             }
@@ -4449,37 +4451,40 @@ namespace windows_client.View
                 }
                 #region perception fix
 
-                if (msgMap.Count > 0)
+                if (!isGroupChat)
                 {
-
-                    try
+                    if (msgMap.Count > 0)
                     {
-                        List<long> idsToUpdate = new List<long>();
-                        foreach (var kv in msgMap)
+                        try
                         {
-                            if (kv.Key < maxId)
+                            List<long> idsToUpdate = new List<long>();
+                            foreach (var kv in msgMap)
                             {
-                                ConvMessage msg = kv.Value;
-                                if (msg.IsSent && (msg.FileAttachment == null || (msg.FileAttachment.FileState == Attachment.AttachmentState.COMPLETED)))
+                                if (kv.Key < maxId)
                                 {
-                                    idsToUpdate.Add(kv.Key);
-                                    msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
+                                    ConvMessage msg = kv.Value;
+                                    if (msg.IsSent && (msg.FileAttachment == null || (msg.FileAttachment.FileState == Attachment.AttachmentState.COMPLETED)))
+                                    {
+                                        idsToUpdate.Add(kv.Key);
+                                        msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
+                                    }
                                 }
                             }
+
+                            // remove these ids from map
+                            foreach (long id in idsToUpdate)
+                                msgMap.Remove(id);
+
+                            MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ, null);
+                            idsToUpdate = null;
                         }
-
-                        // remove these ids from map
-                        foreach (long id in idsToUpdate)
-                            msgMap.Remove(id);
-
-                        MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ);
-                        idsToUpdate = null;
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("NewChatThread :: OnEventRecieved, perception Fix, Exception:" + ex.StackTrace);
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("NewChatThread :: OnEventRecieved, perception Fix, Exception:" + ex.StackTrace);
+                        }
                     }
                 }
+
                 #endregion
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>

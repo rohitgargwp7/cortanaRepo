@@ -414,7 +414,7 @@ namespace windows_client.DbUtils
         /// <param name="ids"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        public static string updateAllMsgStatus(string fromUser, long[] ids, int status)
+        public static string updateAllMsgStatus(string fromUser, long[] ids, int status, string sender)
         {
             bool shouldSubmit = false;
             string msisdn = null;
@@ -442,6 +442,16 @@ namespace windows_client.DbUtils
                             if (fromUser == null || fromUser == message.Msisdn)
                             {
                                 message.MessageStatus = (ConvMessage.State)val;
+
+                                if (sender != null)
+                                {
+                                    if (message.ReadByArray == null)
+                                        message.ReadByArray = new JArray();
+
+                                    message.ReadByArray.Add(sender);
+                                    message.ReadByInfo = "a";
+                                }
+
                                 msisdn = message.Msisdn;
                                 shouldSubmit = true;
                             }

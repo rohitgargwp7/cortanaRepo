@@ -349,10 +349,11 @@ namespace windows_client
                 {
                     ids[i] = Int64.Parse(msgIds[i].ToString());
                 }
-                object[] vals = new object[2];
+                object[] vals = new object[3];
                 vals[0] = ids;
                 vals[1] = msisdnToCheck;
-                updateDbBatch(msisdnToCheck, ids, (int)ConvMessage.State.SENT_DELIVERED_READ);
+                vals[2] = msisdn;
+                updateDbBatch(msisdnToCheck, ids, (int)ConvMessage.State.SENT_DELIVERED_READ, msisdn);
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, vals);
             }
             #endregion
@@ -2165,12 +2166,12 @@ namespace windows_client
             Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
         }
 
-        private void updateDbBatch(string fromUser, long[] ids, int status)
+        private void updateDbBatch(string fromUser, long[] ids, int status, string sender)
         {
             if (ids == null || ids.Length == 0)
                 return;
             Stopwatch st = Stopwatch.StartNew();
-            string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status);
+            string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status, sender);
             if (msisdn == null)
             {
                 string idsString = string.Empty;
