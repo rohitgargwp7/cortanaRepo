@@ -508,7 +508,7 @@ namespace windows_client
                     APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                     PhoneApplicationService.Current.State["IsStatusPush"] = true;
                 }
-                else if (targetPage != null && targetPage.Contains("NewSelectUserPage.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
+                else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("FileId")) // SHARE PICKER CASE
                 {
                     APP_LAUNCH_STATE = LaunchState.SHARE_PICKER_LAUNCH;
 
@@ -516,7 +516,7 @@ namespace windows_client
                     string param = targetPage.Substring(idx);
                     mapper.UriMappings[0].MappedUri = new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative);
                 }
-                else if (targetPage.Contains("/View/NewSelectUserPage.xaml"))
+                else
                 {
                     e.Cancel = true;
                 }
@@ -542,7 +542,6 @@ namespace windows_client
             _latestVersion = Utils.getAppVersion(); // this will get the new version we are upgrading to
 
             string targetPage = e.Uri.ToString();
-            //  e.Cancel = true;
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 

@@ -163,7 +163,7 @@ namespace windows_client.View
                         {
                             App page = (App)Application.Current;
                             ((UriMapper)(page.RootFrame.UriMapper)).UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
-                            page.RootFrame.Navigate(new Uri("/View/ConversationsList.xaml?id=1", UriKind.Relative));
+                            page.RootFrame.Navigate(new Uri("/View/ConversationsList.xaml?id=1", UriKind.Relative));//hardcoded id=1 to make this url different from default url so that it navigate to page
                         }
                         else
                         {
