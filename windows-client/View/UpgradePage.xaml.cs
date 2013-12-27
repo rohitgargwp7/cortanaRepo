@@ -106,28 +106,28 @@ namespace windows_client.View
                     else
                         App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
 
-                    //if (Utils.compareVersion("2.5.0.1", App.CURRENT_VERSION) == 1)
-                    //{
-                    //    using (HikeChatsDb db = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
-                    //    {
-                    //        if (db.DatabaseExists())
-                    //        {
-                    //            DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
-                    //            int version = dbUpdater.DatabaseSchemaVersion;
-                    //            if (version == 0)
-                    //            {
-                    //                dbUpdater.AddColumn<ConvMessage>("ReadByInfo");
-                    //                dbUpdater.DatabaseSchemaVersion = 1;
+                    if (Utils.compareVersion("2.5.0.1", App.CURRENT_VERSION) == 1)
+                    {
+                        using (HikeChatsDb db = new HikeChatsDb(App.MsgsDBConnectionstring))
+                        {
+                            if (db.DatabaseExists())
+                            {
+                                DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
+                                int version = dbUpdater.DatabaseSchemaVersion;
+                                if (version == 0)
+                                {
+                                    dbUpdater.AddColumn<ConvMessage>("ReadByInfo");
+                                    dbUpdater.DatabaseSchemaVersion = 1;
 
-                    //                try
-                    //                {
-                    //                    dbUpdater.Execute();
-                    //                }
-                    //                catch { }
-                    //            }
-                    //        }
-                    //    }
-                    //}
+                                    try
+                                    {
+                                        dbUpdater.Execute();
+                                    }
+                                    catch { }
+                                }
+                            }
+                        }
+                    }
 
                     Thread.Sleep(2000);//added so that this shows at least for 2 sec
                 };

@@ -352,7 +352,7 @@ namespace windows_client.Model
             }
         }
 
-        [Column(CanBeNull = true)]
+        [Column(CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string ReadByInfo
         {
             get
