@@ -199,6 +199,8 @@ namespace windows_client.View
             this.enterToSendToggle.Content = AppResources.On;
             App.appSettings.Remove(App.ENTER_TO_SEND);
             App.appSettings.Save();
+
+            App.SendEnterToSendStatusToServer();
         }
 
         private void enterToSendToggle_Unchecked(object sender, RoutedEventArgs e)
@@ -206,6 +208,8 @@ namespace windows_client.View
             this.enterToSendToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.ENTER_TO_SEND, false);
             App.appSettings.Save();
+
+            App.SendEnterToSendStatusToServer();
         }
 
         private async void btnGoToLockSettings_Click(object sender, System.Windows.Input.GestureEventArgs e)

@@ -714,14 +714,6 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
-            #region Enter to send
-
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.4.0.0") < 0)
-            {
-                appSettings[App.HIKEJINGLE_PREF] = (bool)true;
-                App.WriteToIsoStorageSettings(App.ENTER_TO_SEND, false);
-            }
-            #endregion
             #region ProTips 2.3.0.0
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.3.0.0") < 0)
             {
@@ -973,6 +965,22 @@ namespace windows_client
                 WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, true);
             }
             #endregion
+            #region Enter to send
+
+            if (!isNewInstall)
+            {
+                if (Utils.compareVersion(_currentVersion, "2.4.0.0") < 0)
+                {
+                    appSettings[App.HIKEJINGLE_PREF] = (bool)true;
+                    App.WriteToIsoStorageSettings(App.ENTER_TO_SEND, false);
+                }
+                else if (Utils.compareVersion(_currentVersion, "2.5.0.1") < 0)
+                {
+                    SendEnterToSendStatusToServer();
+                }
+            }
+
+            #endregion
         }
 
         public static void createDatabaseAsync()
@@ -1203,6 +1211,33 @@ namespace windows_client
 
             if (App.HikePubSubInstance != null)
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
+        
+        public static void SendEnterToSendStatusToServer()
+        {
+            var jobj = new JObject();
+
+            bool enterToSend;
+            if (!appSettings.TryGetValue(ENTER_TO_SEND, out enterToSend))
+                enterToSend = true;
+
+            jobj.Add(Analytics.ENTER_TO_SEND, enterToSend);
+
+            JObject data = new JObject();
+            data.Add(HikeConstants.METADATA, jobj);
+            data.Add(HikeConstants.SUB_TYPE, HikeConstants.UI_EVENT);
+            data[HikeConstants.TAG] = utils.Utils.IsWP8 ? "wp8" : "wp7";
+
+            JObject jsonObj = new JObject();
+            jsonObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
+            jsonObj.Add(HikeConstants.DATA, data);
+
+            object[] publishData = new object[2];
+            publishData[0] = jsonObj;
+            publishData[1] = 1; //qos
+
+            if (App.HikePubSubInstance != null)
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, publishData);
         }
 
         public static MediaElement GlobalMediaElement
