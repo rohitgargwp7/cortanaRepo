@@ -65,6 +65,7 @@ namespace windows_client.Model
 
         //pro Tips
         public static readonly string PRO_TIPS_DISMISSED = "tip_id";
+        public static readonly string ENTER_TO_SEND = "enterToSend";
 
         private Dictionary<string, int> eventMap = null;
 
