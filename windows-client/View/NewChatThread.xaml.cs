@@ -4313,12 +4313,12 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         ToastPrompt toast = new ToastPrompt();
-                        if (cObj.ContactName != null)
-                            toast.Title = cObj.ContactName;
-                        else
-                            toast.Title = cObj.Msisdn;
+                        toast.Title = (cObj.ContactName != null ? cObj.ContactName : cObj.Msisdn) + (cObj.IsGroupChat ? " :" : " -");
                         toast.Message = cObj.LastMessage;
-                        toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.RelativeOrAbsolute));
+                        toast.Foreground = UI_Utils.Instance.White;
+                        toast.Background = (SolidColorBrush)App.Current.Resources["PhoneAccentBrush"];
+                        toast.ImageSource = UI_Utils.Instance.HikeToastImage;
+                        toast.VerticalContentAlignment = VerticalAlignment.Center;
                         toast.Show();
 
                     });

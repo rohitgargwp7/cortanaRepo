@@ -29,9 +29,6 @@ namespace windows_client.utils
         private SolidColorBrush groupChatHeaderColor;
         private SolidColorBrush signUpForeground;
         private SolidColorBrush editProfileForeground;
-        private SolidColorBrush receivedChatBubbleTimestamp;
-        private SolidColorBrush hikeSentChatBubbleTimestamp;
-        private SolidColorBrush smsSentChatBubbleTimestamp;
         private SolidColorBrush receivedChatBubbleProgress;
         private SolidColorBrush phoneThemeColor;
         private SolidColorBrush statusTextForeground;
@@ -49,11 +46,9 @@ namespace windows_client.utils
         private BitmapImage chatAcceptedImage_ct;
         private BitmapImage playIcon;
         private BitmapImage pauseIcon;
-        private BitmapImage audioMicIcon;
         private BitmapImage downloadIcon;
         private BitmapImage httpFailed;
         private BitmapImage httpFailed_CT;
-        private BitmapImage emptyImage;
         private BitmapImage sent;
         private BitmapImage sent_ct;
         private BitmapImage delivered;
@@ -130,6 +125,7 @@ namespace windows_client.utils
         private BitmapImage muteIconForConversationView;
         private BitmapImage unmuteIcon;
         private BitmapImage circles;
+        private BitmapImage hikeToastImage;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
         private string[] defaultAvatarFileNames;
@@ -617,6 +613,20 @@ namespace windows_client.utils
                     downloadIcon = new BitmapImage(new Uri("/View/images/download_icon.png", UriKind.Relative));
               
                 return downloadIcon;
+            }
+        }
+
+        public BitmapImage HikeToastImage
+        {
+            get
+            {
+                if (hikeToastImage == null)
+                {
+                    hikeToastImage = new BitmapImage(new Uri("/hike_small.png", UriKind.RelativeOrAbsolute));
+                    hikeToastImage.DecodePixelWidth = 14;
+                }
+
+                return hikeToastImage;
             }
         }
 
