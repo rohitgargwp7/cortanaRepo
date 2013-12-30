@@ -317,7 +317,7 @@ namespace windows_client.FileTransfers
                     BeginUploadPostRequest();
                 }
             }
-            else if (responseCode == HttpStatusCode.NotFound)
+            else
             {
                 // fresh upload
                 CurrentHeaderPosition = index;
