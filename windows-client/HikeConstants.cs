@@ -156,6 +156,7 @@ namespace windows_client
 
         public static readonly string NO_SMS = "nosms";
         public static readonly string UI_EVENT = "uiEvent";
+        public static readonly string CONFIG_EVENT = "config";
 
         public static readonly string COUNT = "c";
         public static readonly string FORCE_SMS_MESSAGE = "m";
