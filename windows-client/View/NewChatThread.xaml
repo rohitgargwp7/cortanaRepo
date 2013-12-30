@@ -913,7 +913,7 @@
 
         <StackPanel x:Name="bottomPanel" Height="Auto" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Bottom" Background="Transparent">
             <StackPanel x:Name="smscounter" Margin="0,5,0,0" Visibility="Collapsed" >
-                <TextBlock x:Name="smsCounterTxtBlk"  Margin="20,0,0,0"></TextBlock>
+                <TextBlock x:Name="smsCounterTxtBlk" Margin="20,0,0,0"></TextBlock>
             </StackPanel>
             <Grid Background="#eeeeec">
                 <Grid Background="#eeeeec">
