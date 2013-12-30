@@ -280,10 +280,8 @@ namespace windows_client.FileTransfers
             }
 
             int index = 0;
-            if (responseCode == HttpStatusCode.OK)
+            if (responseCode == HttpStatusCode.OK && Int32.TryParse(data, out index))
             {
-                index = Convert.ToInt32(data);
-
                 if (TotalBytes - 1 == index)
                 {
                     // if the task was paused on the last chunk. This condition will be triggered on resume

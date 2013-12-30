@@ -5348,7 +5348,7 @@ namespace windows_client.View
                 chatThemeHeaderTxt.Foreground = userName.Foreground = lastSeenTxt.Foreground = UI_Utils.Instance.Black;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageBlack;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageBlack;
-                shellProgress.Foreground = progressBar.Foreground = UI_Utils.Instance.Black;
+                shellProgress.Foreground = progressBar.Foreground = smsCounterTxtBlk.Foreground = UI_Utils.Instance.Black;
                 cancelChatThemeImage.Source = UI_Utils.Instance.CancelButtonBlackImage;
                 doneButton.Background = UI_Utils.Instance.Black;
             }
@@ -5358,7 +5358,7 @@ namespace windows_client.View
                 chatThemeHeaderTxt.Foreground = userName.Foreground = lastSeenTxt.Foreground = UI_Utils.Instance.White;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageWhite;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageWhite;
-                shellProgress.Foreground = progressBar.Foreground = App.ViewModel.SelectedBackground.ForegroundColor;
+                shellProgress.Foreground = progressBar.Foreground = smsCounterTxtBlk.Foreground = App.ViewModel.SelectedBackground.ForegroundColor;
                 cancelChatThemeImage.Source = UI_Utils.Instance.CancelButtonWhiteImage;
                 doneButton.Background = UI_Utils.Instance.Black40Opacity;
             }
