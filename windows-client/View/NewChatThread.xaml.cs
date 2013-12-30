@@ -6662,7 +6662,7 @@ namespace windows_client.View
 
         void ShowForceSMSOnUI()
         {
-            if (_isSendAllAsSMSVisible || mUserIsBlocked)
+            if (!isOnHike || !IsSMSOptionValid || _isSendAllAsSMSVisible || mUserIsBlocked)
                 return;
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
