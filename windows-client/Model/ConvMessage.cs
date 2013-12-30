@@ -84,7 +84,8 @@ namespace windows_client.Model
             FORCE_SMS_NOTIFICATION,
             H2H_OFFLINE_IN_APP_TIP,
             CHAT_BACKGROUND_CHANGED,
-            CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED
+            CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED,
+            MESSAGE_STATUS
         }
 
         public enum MessageType
@@ -105,7 +106,8 @@ namespace windows_client.Model
             DEFAULT,
             UNKNOWN,
             FORCE_SMS,
-            CHAT_BACKGROUND
+            CHAT_BACKGROUND,
+            MESSAGE_STATUS
         }
 
         public static ParticipantInfoState fromJSON(JObject obj)
@@ -229,6 +231,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("Message");
                     _message = value;
+                    NotifyPropertyChanged("DispMessage");
                 }
             }
         }
@@ -1300,7 +1303,10 @@ namespace windows_client.Model
         {
             get
             {
-                if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)) || GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION || GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)) 
+                    || GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION
+                    || GrpParticipantState == ConvMessage.ParticipantInfoState.MESSAGE_STATUS
+                    || GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                     return ChatForegroundColor;
                 else
                 {

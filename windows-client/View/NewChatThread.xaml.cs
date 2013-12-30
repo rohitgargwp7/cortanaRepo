@@ -218,7 +218,7 @@ namespace windows_client.View
             }
         }
 
-        ConvMessage _lastUnDeliveredMessage = null, _tap2SendAsSMSMessage = null, _;
+        ConvMessage _lastUnDeliveredMessage = null, _tap2SendAsSMSMessage = null;
 
         public LruCache<string, BitmapImage> lruStickerCache;
 
@@ -412,6 +412,8 @@ namespace windows_client.View
                                 {
                                     ocMessages.Remove(_tap2SendAsSMSMessage);
                                     _isSendAllAsSMSVisible = false;
+
+                                    UpdateLastSentMessageStatusOnUI();
                                 }
                             });
                         }
@@ -1226,7 +1228,6 @@ namespace windows_client.View
                     else
                     {
                         isOnHike = true;
-                        chatThemeTip.Visibility = Visibility.Visible;
                         UpdateUiForHikeUser();
                     }
                 };
@@ -1788,6 +1789,7 @@ namespace windows_client.View
             }
             #endregion
 
+            UpdateLastSentMessageStatusOnUI();
 
             if (isPublish)
             {
@@ -3510,6 +3512,11 @@ namespace windows_client.View
                 _isSendAllAsSMSVisible = false;
                 ShowForceSMSOnUI();
             }
+            else if (msg == _lastSentMessage)
+            {
+                UpdateLastSentMessageStatusOnUI();
+            }
+           
 
             ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
 
@@ -3627,7 +3634,7 @@ namespace windows_client.View
                 ConversationTableUtils.updateLastMsgStatus(convMessage.MessageId, msisdn, (int)ConvMessage.State.FORCE_SMS_SENT_CONFIRMED);
 
                 SendForceSMS(convMessage);
-
+                UpdateLastSentMessageStatusOnUI();
                 if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
                 {
                     this.ocMessages.Remove(_h2hofflineToolTip);
@@ -4344,6 +4351,8 @@ namespace windows_client.View
                             msg.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
                         }
 
+                        UpdateLastSentMessageStatusOnUI();
+
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 if (lastSeenTxt.Text != AppResources.Online)
@@ -4389,6 +4398,8 @@ namespace windows_client.View
                             msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
                     }
 
+                    UpdateLastSentMessageStatusOnUI();
+
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                          {
                              if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
@@ -4420,6 +4431,7 @@ namespace windows_client.View
                 object[] vals = (object[])obj;
                 long[] ids = (long[])vals[0];
                 string msisdnToCheck = (string)vals[1];
+                string sender = (string)vals[2];
                 if (msisdnToCheck != mContactNumber || ids == null || ids.Length == 0)
                     return;
                 long maxId = 0;
@@ -4440,7 +4452,26 @@ namespace windows_client.View
                             else
                                 msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
 
-                            msgMap.Remove(ids[i]);
+                            if (isGroupChat)
+                            {
+                                if (!String.IsNullOrEmpty(sender))
+                                {
+                                    if (msg.ReadByArray == null)
+                                        msg.ReadByArray = new JArray();
+
+                                    msg.ReadByArray.Add(sender);
+                                    msg.ReadByInfo = msg.ReadByArray.ToString();
+
+                                    if (Utils.GetReadBy(msg.ReadByArray, mContactNumber) == "read by everyone")
+                                    {
+                                        msgMap.Remove(ids[i]);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                msgMap.Remove(ids[i]);
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -4449,7 +4480,8 @@ namespace windows_client.View
                         continue;
                     }
                 }
-                #region perception fix
+
+                #region perception fix for 1-1 chat
 
                 if (!isGroupChat)
                 {
@@ -4486,6 +4518,8 @@ namespace windows_client.View
                 }
 
                 #endregion
+
+                UpdateLastSentMessageStatusOnUI();
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -4683,6 +4717,8 @@ namespace windows_client.View
                             StartForceSMSTimer(false);
                         else if (lastSeen == 0)
                         {
+                            UpdateLastSentMessageStatusOnUI();
+
                             if (_isSendAllAsSMSVisible)
                             {
                                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -6604,6 +6640,8 @@ namespace windows_client.View
 
         #endregion
 
+        #region H2H Offline
+
         void StartForceSMSTimer(bool isNewTimer)
         {
             if (!isOnHike || !IsSMSOptionValid || _isSendAllAsSMSVisible || mUserIsBlocked)
@@ -6728,6 +6766,9 @@ namespace windows_client.View
                                  return;
                              }
                          }
+
+                         if (_readByMessage != null && ocMessages.Contains(_readByMessage) && ocMessages.IndexOf(_readByMessage) == indexToInsert)
+                             ocMessages.Remove(_readByMessage);
 
                          if (_h2hofflineToolTip != null)
                          {
@@ -6895,6 +6936,7 @@ namespace windows_client.View
                             if (result == MessageBoxResult.OK)
                             {
                                 SendForceSMS();
+                                UpdateLastSentMessageStatusOnUI();
 
                                 if (_lastUnDeliveredMessage != null)
                                     ocMessages.Remove(_tap2SendAsSMSMessage);
@@ -6927,6 +6969,66 @@ namespace windows_client.View
                 ShowForceSMSOnUI();
             }
         }
+
+        #endregion
+
+        #region Read By
+
+        ConvMessage _lastSentMessage = null, _readByMessage = null;
+
+        void UpdateLastSentMessageStatusOnUI()
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                _lastSentMessage = null;
+
+                try
+                {
+                    var msgList = (from message in ocMessages
+                                   where message.IsSent == true
+                                   select message);
+
+                    _lastSentMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
+                }
+                catch
+                {
+                    return;
+                }
+
+                if (_lastSentMessage != null)
+                {
+                    var indexToInsert = ocMessages.IndexOf(_lastSentMessage) + 1;
+
+                    if (_readByMessage == null)
+                    {
+                        _readByMessage = new ConvMessage();
+                        _readByMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.MESSAGE_STATUS;
+                        _readByMessage.NotificationType = ConvMessage.MessageType.MESSAGE_STATUS;
+                        _readByMessage.MessageStatus = ConvMessage.State.UNKNOWN;
+                    }
+
+                    if (isGroupChat)
+                        _readByMessage.Message = Utils.GetMessageStatus(_lastSentMessage.MessageStatus, _lastSentMessage.ReadByArray, true, mContactNumber);
+                    else
+                        _readByMessage.Message = Utils.GetMessageStatus(_lastSentMessage.MessageStatus, _lastSentMessage.ReadByArray, false, mContactNumber);
+
+                    try
+                    {
+                        this.ocMessages.Remove(_readByMessage);
+                        indexToInsert = ocMessages.IndexOf(_lastSentMessage) + 1;
+                    }
+                    catch
+                    {
+                    }
+
+                    this.ocMessages.Insert(indexToInsert, _readByMessage);
+
+                    if (indexToInsert == ocMessages.Count - 1)
+                        ScrollToBottom();
+                }
+            });
+        }
+        #endregion
 
         ViewportControl llsViewPort;
         private void ViewPortLoaded(object sender, RoutedEventArgs e)
@@ -6988,7 +7090,6 @@ namespace windows_client.View
                 resumeMediaPlayerAfterDone = false;
             }
         }
-
     }
 
     public class ChatThreadTemplateSelector : TemplateSelector
@@ -7002,6 +7103,12 @@ namespace windows_client.View
         }
 
         public DataTemplate DtH2HOfflineInAppTip
+        {
+            get;
+            set;
+        }
+
+        public DataTemplate DtMessageStatus
         {
             get;
             set;
@@ -7163,6 +7270,8 @@ namespace windows_client.View
                     return DtInAppTip;
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
                     return DtH2HOfflineInAppTip;
+                else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.MESSAGE_STATUS)
+                    return DtMessageStatus;
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
                     return DtForceSMSNotification;
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
