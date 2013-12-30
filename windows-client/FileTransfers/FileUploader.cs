@@ -310,6 +310,7 @@ namespace windows_client.FileTransfers
                 else
                 {
                     // resume upload from last position and update state
+                    
                     CurrentHeaderPosition = index + 1;
                     FileState = FileTransferState.STARTED;
                     Save();
@@ -317,9 +318,10 @@ namespace windows_client.FileTransfers
                     BeginUploadPostRequest();
                 }
             }
-            else if (responseCode == HttpStatusCode.NotFound)
+            else
             {
                 // fresh upload
+                Id = Guid.NewGuid().ToString();
                 CurrentHeaderPosition = index;
                 FileState = FileTransferState.STARTED;
                 Save();
