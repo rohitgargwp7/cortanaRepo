@@ -69,7 +69,7 @@ namespace windows_client.View
                             {
                                 DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
                                 int version = dbUpdater.DatabaseSchemaVersion;
-                                if (version == 0)
+                                if (version < 1)
                                 {
                                     dbUpdater.AddColumn<ContactInfo>("PhoneNoKind");
                                     dbUpdater.DatabaseSchemaVersion = 1;
@@ -114,7 +114,7 @@ namespace windows_client.View
                             {
                                 DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
                                 int version = dbUpdater.DatabaseSchemaVersion;
-                                if (version == 0)
+                                if (version < 1)
                                 {
                                     dbUpdater.AddColumn<ConvMessage>("ReadByInfo");
                                     dbUpdater.DatabaseSchemaVersion = 1;
