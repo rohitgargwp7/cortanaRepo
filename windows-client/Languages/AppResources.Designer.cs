@@ -556,6 +556,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} is typing ....
+        /// </summary>
+        public static string ConversationList_grp_istyping_txt {
+            get {
+                return ResourceManager.GetString("ConversationList_grp_istyping_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to is typing ....
+        /// </summary>
+        public static string ConversationList_istyping_txt {
+            get {
+                return ResourceManager.GetString("ConversationList_istyping_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to added you as friend. Would you like to do the same?.
         /// </summary>
         public static string Conversations_AddedYouToFav_Txt {

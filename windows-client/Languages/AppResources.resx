@@ -2063,4 +2063,10 @@ Download it now http://hike.in and join the fun!</value>
   <data name="User_Info_Txt" xml:space="preserve">
     <value>view profile</value>
   </data>
+  <data name="ConversationList_grp_istyping_txt" xml:space="preserve">
+    <value>{0} is typing ...</value>
+  </data>
+  <data name="ConversationList_istyping_txt" xml:space="preserve">
+    <value>is typing ...</value>
+  </data>
 </root>
