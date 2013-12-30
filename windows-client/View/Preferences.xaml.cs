@@ -134,6 +134,13 @@ namespace windows_client.View
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
+        private void locationToggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            locationToggle.Loaded -= locationToggle_Loaded;
+            locationToggle.Checked += locationToggle_Checked;
+            locationToggle.Unchecked += locationToggle_Unchecked;
+        }
+        
         private void locationToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.locationToggle.Content = AppResources.On;
@@ -194,6 +201,13 @@ namespace windows_client.View
             App.appSettings.Save();
         }
 
+        private void enterToSendToggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            enterToSendToggle.Loaded -= enterToSendToggle_Loaded;
+            enterToSendToggle.Checked += enterToSendToggle_Checked;
+            enterToSendToggle.Unchecked += enterToSendToggle_Unchecked;
+        }
+        
         private void enterToSendToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.enterToSendToggle.Content = AppResources.On;
