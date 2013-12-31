@@ -262,6 +262,8 @@ namespace windows_client.FileTransfers
                     else
                         responseCode = HttpStatusCode.RequestTimeout;
                 }
+                else
+                    responseCode = HttpStatusCode.RequestTimeout;
             }
             finally
             {
@@ -280,7 +282,7 @@ namespace windows_client.FileTransfers
             }
 
             int index = 0;
-            if (responseCode == HttpStatusCode.OK && Int32.TryParse(data, out index))
+            if (responseCode == HttpStatusCode.OK && !String.IsNullOrEmpty(data) && Int32.TryParse(data, out index))
             {
                 if (TotalBytes - 1 == index)
                 {
@@ -300,7 +302,7 @@ namespace windows_client.FileTransfers
                             return;
                         }
                     }
-                 
+
                     // if not uploaded succssfully, need to start from begining
                     // mark as failed and delete the data to restart the upload next time.
                     FileState = FileTransferState.FAILED;
@@ -310,7 +312,7 @@ namespace windows_client.FileTransfers
                 else
                 {
                     // resume upload from last position and update state
-                    
+
                     CurrentHeaderPosition = index + 1;
                     FileState = FileTransferState.STARTED;
                     Save();
@@ -318,15 +320,24 @@ namespace windows_client.FileTransfers
                     BeginUploadPostRequest();
                 }
             }
-            else
+            else if (responseCode == HttpStatusCode.NotFound)
             {
                 // fresh upload
+
+                // to be safe create new GUID
                 Id = Guid.NewGuid().ToString();
+
                 CurrentHeaderPosition = index;
                 FileState = FileTransferState.STARTED;
                 Save();
                 OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 BeginUploadPostRequest();
+            }
+            else
+            {
+                FileState = FileTransferState.FAILED;
+                Save();
+                OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
             }
         }
 
