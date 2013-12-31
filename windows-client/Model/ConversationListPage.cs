@@ -65,7 +65,7 @@ namespace windows_client.Model
         {
             get
             {
-                return _lastMessage;
+                return string.IsNullOrEmpty(_typingNotificationText) ? _lastMessage : _typingNotificationText;
             }
             set
             {
@@ -273,20 +273,23 @@ namespace windows_client.Model
         {
             get
             {
-                switch (_messageStatus)
-                {
-                    case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
-                    case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
-                    case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
-                    case ConvMessage.State.SENT_CONFIRMED:
-                    case ConvMessage.State.SENT_DELIVERED:
-                    case ConvMessage.State.SENT_DELIVERED_READ:
-                    case ConvMessage.State.SENT_UNCONFIRMED:
-                    case ConvMessage.State.SENT_FAILED:
-                        return Visibility.Visible;
-                    default:
-                        return Visibility.Collapsed;
-                }
+                if (string.IsNullOrEmpty(_typingNotificationText))
+                    switch (_messageStatus)
+                    {
+                        case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
+                        case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
+                        case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
+                        case ConvMessage.State.SENT_CONFIRMED:
+                        case ConvMessage.State.SENT_DELIVERED:
+                        case ConvMessage.State.SENT_DELIVERED_READ:
+                        case ConvMessage.State.SENT_UNCONFIRMED:
+                        case ConvMessage.State.SENT_FAILED:
+                            return Visibility.Visible;
+                        default:
+                            return Visibility.Collapsed;
+                    }
+                else
+                    return Visibility.Collapsed;
             }
         }
 
@@ -294,7 +297,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (_messageStatus == ConvMessage.State.RECEIVED_UNREAD)
+                if (_messageStatus == ConvMessage.State.RECEIVED_UNREAD && string.IsNullOrEmpty(_typingNotificationText))
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
@@ -410,14 +413,14 @@ namespace windows_client.Model
         {
             get
             {
-                switch (_messageStatus)
+                if (!string.IsNullOrEmpty(_typingNotificationText) || _messageStatus == ConvMessage.State.RECEIVED_UNREAD)
                 {
-                    case ConvMessage.State.RECEIVED_UNREAD:
-                        Color currentAccentColorHex =
-                        (Color)Application.Current.Resources["PhoneAccentColor"];
-                        return currentAccentColorHex.ToString();
-                    default: return "gray";
+                    Color currentAccentColorHex =
+                       (Color)Application.Current.Resources["PhoneAccentColor"];
+                    return currentAccentColorHex.ToString();
                 }
+                else
+                    return "gray";
             }
         }
 
@@ -498,6 +501,25 @@ namespace windows_client.Model
             }
         }
 
+        private string _typingNotificationText;
+        public string TypingNotificationText
+        {
+            get
+            {
+                return _typingNotificationText;
+            }
+            set
+            {
+                if (value != _typingNotificationText)
+                {
+                    _typingNotificationText = value;
+                    NotifyPropertyChanged("LastMessage");
+                    NotifyPropertyChanged("UnreadCircleVisibility");
+                    NotifyPropertyChanged("SDRStatusImageVisible");
+                    NotifyPropertyChanged("LastMessageColor");
+                }
+            }
+        }
         public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar, ConvMessage.State msgStatus, long lastMsgId)
         {
             this._msisdn = msisdn;
