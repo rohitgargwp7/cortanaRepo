@@ -1225,7 +1225,7 @@ namespace windows_client
 
             JObject data = new JObject();
             data.Add(HikeConstants.METADATA, jobj);
-            data.Add(HikeConstants.SUB_TYPE, HikeConstants.UI_EVENT);
+            data.Add(HikeConstants.SUB_TYPE, HikeConstants.CONFIG_EVENT);
             data[HikeConstants.TAG] = utils.Utils.IsWP8 ? "wp8" : "wp7";
 
             JObject jsonObj = new JObject();
