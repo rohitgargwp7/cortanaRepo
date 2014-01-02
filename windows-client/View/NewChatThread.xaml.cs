@@ -649,6 +649,7 @@ namespace windows_client.View
             {
                 string msisdn = (this.NavigationContext.QueryString["msisdn"] as string).Trim();
                 this.NavigationContext.QueryString.Clear();
+
                 if (Char.IsDigit(msisdn[0]))
                     msisdn = "+" + msisdn;
 
@@ -689,7 +690,6 @@ namespace windows_client.View
                         NavigationService.RemoveBackEntry();
                     PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_UPGRADEPAGE);
                 }
-
                 isFirstLaunch = false;
             }
             #endregion
@@ -929,7 +929,7 @@ namespace windows_client.View
                 ResumeBackgroundAudio();
             }
 
-            if (!NavigationService.CanGoBack)// if no page to go back in this case back would go to conversation list
+            if (!NavigationService.CanGoBack || App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)// if no page to go back in this case back would go to conversation list
             {
                 e.Cancel = true;
 
