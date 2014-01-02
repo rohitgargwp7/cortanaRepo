@@ -4396,8 +4396,10 @@ namespace windows_client.View
                     {
                         if (msg.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
                             msg.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
-                        else
+                        else if (msg.MessageStatus < ConvMessage.State.SENT_DELIVERED)
                             msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
+                        else
+                            return;
                     }
 
                     UpdateLastSentMessageStatusOnUI();
@@ -4464,10 +4466,8 @@ namespace windows_client.View
                                     msg.ReadByArray.Add(sender);
                                     msg.ReadByInfo = msg.ReadByArray.ToString();
 
-                                    if (Utils.GetReadBy(msg.ReadByArray, mContactNumber) == "read by everyone")
-                                    {
+                                    if (msg.ReadByArray.Count == GroupManager.Instance.GroupCache[mContactNumber].Count)
                                         msgMap.Remove(ids[i]);
-                                    }
                                 }
                             }
                             else
