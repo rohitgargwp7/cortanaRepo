@@ -4595,11 +4595,11 @@ namespace windows_client.View
 
             else if (HikePubSub.TYPING_CONVERSATION == type)
             {
-                if (!App.appSettings.Contains(App.LAST_SEEN_SEETING))
+                if (!App.appSettings.Contains(App.LAST_SEEN_SEETING) && !isGroupChat && _lastUpdatedLastSeenTimeStamp != 0)
                 {
                     var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
 
-                    if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && _lastUpdatedLastSeenTimeStamp != 0) //dont show online if his last seen setting is off
+                    if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT) //dont show online if his last seen setting is off
                         UpdateLastSeenOnUI(AppResources.Online);
                 }
 
