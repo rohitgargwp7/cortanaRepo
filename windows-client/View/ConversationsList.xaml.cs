@@ -2654,7 +2654,7 @@ namespace windows_client.View
             ConversationListObject convListObj = llsConversations.SelectedItem as ConversationListObject;
             if (convListObj == null)
                 return;
-
+            llsConversations.SelectedItem = null;
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = convListObj;
 
             string uri = "/View/NewChatThread.xaml";
