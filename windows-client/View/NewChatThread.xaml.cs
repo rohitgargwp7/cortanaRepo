@@ -1647,6 +1647,8 @@ namespace windows_client.View
                 leaveMenuItem.Text = AppResources.SelectUser_LeaveGrp_Txt;
                 leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
                 appBar.MenuItems.Add(leaveMenuItem);
+
+                return;
             }
 
             if (!_isHikeBot)
