@@ -777,6 +777,8 @@ namespace windows_client.View
             }
             #endregion
 
+            if (_patternNotLoaded)
+                ChangeBackground();
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -5382,6 +5384,8 @@ namespace windows_client.View
             CreateBackgroundImage();
         }
 
+        bool _patternNotLoaded = false;
+
         private async void CreateBackgroundImage()
         {
             await Task.Delay(1);
@@ -5389,6 +5393,11 @@ namespace windows_client.View
             {
                 CreateOptions = BitmapCreateOptions.None
             };
+
+            _tileBitmap.ImageFailed += (s, e) =>
+                {
+                    _patternNotLoaded = true;
+                };
 
             //handle delay creation of bitmap image
             _tileBitmap.ImageOpened += (s, e) =>
@@ -5425,6 +5434,8 @@ namespace windows_client.View
                         _background = source;
 
                     chatBackground.Source = _background;
+
+                    _patternNotLoaded = false;
                 }
             };
         }
