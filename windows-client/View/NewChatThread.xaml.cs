@@ -778,7 +778,7 @@ namespace windows_client.View
             #endregion
 
             if (_patternNotLoaded)
-                ChangeBackground();
+                CreateBackgroundImage();
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -5341,6 +5341,8 @@ namespace windows_client.View
 
         public void ChangeBackground(bool isBubbleColorChanged = true)
         {
+            _patternNotLoaded = false;
+
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
             if (isGroupChat && !isGroupAlive)
@@ -5402,41 +5404,37 @@ namespace windows_client.View
             //handle delay creation of bitmap image
             _tileBitmap.ImageOpened += (s, e) =>
             {
-                WriteableBitmap source = null;
-                source = new WriteableBitmap(_tileBitmap);
+                WriteableBitmap source = new WriteableBitmap(_tileBitmap);
 
-                if (source != null)
+                if (App.ViewModel.SelectedBackground.IsTile)
                 {
-                    if (App.ViewModel.SelectedBackground.IsTile)
+                    var iSize = LayoutRoot.ActualHeight > LayoutRoot.ActualWidth ? LayoutRoot.ActualHeight : LayoutRoot.ActualWidth;
+
+                    var wb1 = new WriteableBitmap((int)iSize, (int)iSize);
+                    wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = (int)iSize, Height = (int)iSize }, null);
+                    wb1.Invalidate();
+
+                    int height = 0;
+
+                    for (int width = 0; width <= iSize; )
                     {
-                        var iSize = LayoutRoot.ActualHeight > LayoutRoot.ActualWidth ? LayoutRoot.ActualHeight : LayoutRoot.ActualWidth;
-
-                        var wb1 = new WriteableBitmap((int)iSize, (int)iSize);
-                        wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = (int)iSize, Height = (int)iSize }, null);
-                        wb1.Invalidate();
-
-                        int height = 0;
-
-                        for (int width = 0; width <= iSize; )
+                        for (height = 0; height <= iSize; )
                         {
-                            for (height = 0; height <= iSize; )
-                            {
-                                wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
-                                height += source.PixelHeight;
-                            }
-
-                            width += source.PixelWidth;
+                            wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
+                            height += source.PixelHeight;
                         }
 
-                        _background = wb1;
+                        width += source.PixelWidth;
                     }
-                    else
-                        _background = source;
 
-                    chatBackground.Source = _background;
-
-                    _patternNotLoaded = false;
+                    _background = wb1;
                 }
+                else
+                    _background = source;
+
+                chatBackground.Source = _background;
+
+                _patternNotLoaded = _background.PixelWidth == 0 ? true : false;
             };
         }
 
