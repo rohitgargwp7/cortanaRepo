@@ -513,6 +513,7 @@ namespace windows_client.View
                     if (NavigationService.CanGoBack)
                         NavigationService.RemoveBackEntry();
             }
+
         }
 
         private void ManagePage()
@@ -622,7 +623,7 @@ namespace windows_client.View
             if (HikeViewModel.stickerHelper == null)
                 HikeViewModel.stickerHelper = new StickerHelper();
 
-            if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
+            if (isFirstLaunch)
             {
                 if (App.newChatThreadPage != null)
                 {
@@ -648,6 +649,7 @@ namespace windows_client.View
             {
                 string msisdn = (this.NavigationContext.QueryString["msisdn"] as string).Trim();
                 this.NavigationContext.QueryString.Clear();
+
                 if (Char.IsDigit(msisdn[0]))
                     msisdn = "+" + msisdn;
 
@@ -680,6 +682,14 @@ namespace windows_client.View
                     this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = statusObject = contact;
                 }
                 ManagePage();
+
+                //remove if user came directly from upgrade page
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.LAUNCH_FROM_UPGRADEPAGE))
+                {
+                    if (NavigationService.CanGoBack)
+                        NavigationService.RemoveBackEntry();
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_UPGRADEPAGE);
+                }
                 isFirstLaunch = false;
             }
             #endregion
@@ -921,11 +931,16 @@ namespace windows_client.View
                 ResumeBackgroundAudio();
             }
 
-            if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
+            if (!NavigationService.CanGoBack || App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)// if no page to go back in this case back would go to conversation list
             {
-                Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
-                NavigationService.Navigate(nUri);
                 e.Cancel = true;
+
+                //current uri mapping is new chat thread so update mapping to conversation list
+                //do this whenever you have to navigate to newly created conversation list page
+                App page = (App)Application.Current;
+                ((UriMapper)(page.RootFrame.UriMapper)).UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                page.RootFrame.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+
                 return;
             }
 
@@ -1229,7 +1244,6 @@ namespace windows_client.View
                     else
                     {
                         isOnHike = true;
-                        chatThemeTip.Visibility = Visibility.Visible;
                         UpdateUiForHikeUser();
                     }
                 };
