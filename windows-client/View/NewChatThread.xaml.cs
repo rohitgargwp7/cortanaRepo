@@ -1804,6 +1804,10 @@ namespace windows_client.View
             }
             #endregion
 
+            if (statusObject != null && statusObject is ConversationListObject && !string.IsNullOrEmpty(((ConversationListObject)statusObject).TypingNotificationText))
+            {
+                ShowTypingNotification();
+            }
 
             if (isPublish)
             {
