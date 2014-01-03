@@ -501,7 +501,9 @@ namespace windows_client.Model
             }
         }
 
+        private long lastTypingNotificationShownTime;
         private string _typingNotificationText;
+
         public string TypingNotificationText
         {
             get
@@ -513,6 +515,8 @@ namespace windows_client.Model
                 if (value != _typingNotificationText)
                 {
                     _typingNotificationText = value;
+                    if (!string.IsNullOrEmpty(_typingNotificationText))
+                        lastTypingNotificationShownTime = TimeUtils.getCurrentTimeStamp();
                     NotifyPropertyChanged("LastMessage");
                     NotifyPropertyChanged("UnreadCircleVisibility");
                     NotifyPropertyChanged("SDRStatusImageVisible");
@@ -520,6 +524,16 @@ namespace windows_client.Model
                 }
             }
         }
+
+        public void AutoHidetypingNotification()
+        {
+            long timeElapsed = TimeUtils.getCurrentTimeStamp() - lastTypingNotificationShownTime;
+            if (timeElapsed >= HikeConstants.TYPING_NOTIFICATION_AUTOHIDE)
+            {
+                TypingNotificationText = null;
+            }
+        }
+
         public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar, ConvMessage.State msgStatus, long lastMsgId)
         {
             this._msisdn = msisdn;
@@ -596,6 +610,8 @@ namespace windows_client.Model
         }
 
         #endregion
+
+
         public void Write(BinaryWriter writer)
         {
             try

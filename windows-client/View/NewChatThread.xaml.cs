@@ -253,6 +253,10 @@ namespace windows_client.View
 
             walkieTalkie.Source = UI_Utils.Instance.WalkieTalkieBigImage;
             deleteRecImageSuc.Source = UI_Utils.Instance.WalkieTalkieDeleteSucImage;
+
+            App.ViewModel.ShowTypingNotification += ShowTypingNotification;
+            App.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
+            App.ViewModel.HidetypingNotification += HideTypingNotification;
         }
 
         void FileTransferStatusUpdated(object sender, FileTransferSatatusChangedEventArgs e)
@@ -547,7 +551,7 @@ namespace windows_client.View
 
                 Stopwatch st = Stopwatch.StartNew();
                 attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
-                loadMessages(INITIAL_FETCH_COUNT);
+                loadMessages(INITIAL_FETCH_COUNT, true);
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
@@ -1711,7 +1715,7 @@ namespace windows_client.View
         // this variable stores the status of last SENT msg
         ConvMessage.State refState = ConvMessage.State.UNKNOWN;
 
-        private void loadMessages(int messageFetchCount)
+        private void loadMessages(int messageFetchCount, bool isInitialLaunch)
         {
             int i;
             bool isPublish = false;
@@ -1804,6 +1808,10 @@ namespace windows_client.View
             }
             #endregion
 
+            if (isInitialLaunch && statusObject != null && statusObject is ConversationListObject && !string.IsNullOrEmpty(((ConversationListObject)statusObject).TypingNotificationText))
+            {
+                ShowTypingNotification();
+            }
 
             if (isPublish)
             {
@@ -2014,8 +2022,6 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
             mPubSub.addListener(HikePubSub.USER_JOINED, this);
             mPubSub.addListener(HikePubSub.USER_LEFT, this);
-            mPubSub.addListener(HikePubSub.TYPING_CONVERSATION, this);
-            mPubSub.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.GROUP_END, this);
             mPubSub.addListener(HikePubSub.GROUP_ALIVE, this);
@@ -2036,8 +2042,6 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.USER_JOINED, this);
                 mPubSub.removeListener(HikePubSub.USER_LEFT, this);
-                mPubSub.removeListener(HikePubSub.TYPING_CONVERSATION, this);
-                mPubSub.removeListener(HikePubSub.END_TYPING_CONVERSATION, this);
                 mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
                 mPubSub.removeListener(HikePubSub.GROUP_END, this);
                 mPubSub.removeListener(HikePubSub.GROUP_ALIVE, this);
@@ -4140,6 +4144,53 @@ namespace windows_client.View
 
         #region TYPING NOTIFICATIONS
 
+        void ShowTypingNotification(object sender, object[] vals)
+        {
+            if (!App.appSettings.Contains(App.LAST_SEEN_SEETING) && !isGroupChat && _lastUpdatedLastSeenTimeStamp != 0)
+            {
+                var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
+
+                if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT) //dont show online if his last seen setting is off
+                    UpdateLastSeenOnUI(AppResources.Online);
+            }
+
+            string typingNotSenderOrSendee = "";
+            if (isGroupChat)
+            {
+                typingNotSenderOrSendee = (string)vals[1];
+            }
+            else
+            {
+                // this shows that typing notification has come for a group chat , which in current case is not
+                if (vals[1] != null) // vals[1] will be null in 1-1 chat
+                    return;
+                typingNotSenderOrSendee = (string)vals[0];
+            }
+            if (mContactNumber == typingNotSenderOrSendee)
+            {
+                ShowTypingNotification();
+            }
+        }
+
+        void AutoHidetypingNotification(object sender, object[] vals)
+        {
+            string typingNotSenderOrSendee = isGroupChat ? (string)vals[1] : (string)vals[0];
+            if (mContactNumber == typingNotSenderOrSendee)
+            {
+                long timeElapsed = TimeUtils.getCurrentTimeStamp() - lastTypingNotificationShownTime;
+                if (timeElapsed >= HikeConstants.TYPING_NOTIFICATION_AUTOHIDE)
+                    HideTypingNotification();
+            }
+        }
+
+        void HideTypingNotification(object sender, object[] vals)
+        {
+            string typingNotSenderOrSendee = isGroupChat ? (string)vals[1] : (string)vals[0];
+            if (mContactNumber == typingNotSenderOrSendee)
+                HideTypingNotification();
+        }
+
+
         private void sendTypingNotification(bool notificationType)
         {
             JObject obj = new JObject();
@@ -4205,14 +4256,6 @@ namespace windows_client.View
                     ScrollToBottom();
             });
             lastTypingNotificationShownTime = TimeUtils.getCurrentTimeStamp();
-            scheduler.Schedule(autoHideTypingNotification, TimeSpan.FromSeconds(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE));
-        }
-
-        private void autoHideTypingNotification()
-        {
-            long timeElapsed = TimeUtils.getCurrentTimeStamp() - lastTypingNotificationShownTime;
-            if (timeElapsed >= HikeConstants.TYPING_NOTIFICATION_AUTOHIDE)
-                HideTypingNotification();
         }
 
         private void HideTypingNotification()
@@ -4603,61 +4646,6 @@ namespace windows_client.View
                     changeInviteButtonVisibility();
                     updateUIForHikeStatus();
                 });
-            }
-
-            #endregion
-
-            #region TYPING_CONVERSATION
-
-            else if (HikePubSub.TYPING_CONVERSATION == type)
-            {
-                if (!App.appSettings.Contains(App.LAST_SEEN_SEETING) && !isGroupChat && _lastUpdatedLastSeenTimeStamp != 0)
-                {
-                    var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
-
-                    if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT) //dont show online if his last seen setting is off
-                        UpdateLastSeenOnUI(AppResources.Online);
-                }
-
-                object[] vals = (object[])obj;
-                string typingNotSenderOrSendee = "";
-                if (isGroupChat)
-                {
-                    typingNotSenderOrSendee = (string)vals[1];
-                }
-                else
-                {
-                    // this shows that typing notification has come for a group chat , which in current case is not
-                    if (vals[1] != null) // vals[1] will be null in 1-1 chat
-                        return;
-                    typingNotSenderOrSendee = (string)vals[0];
-                }
-                if (mContactNumber == typingNotSenderOrSendee)
-                {
-                    ShowTypingNotification();
-                }
-            }
-
-            #endregion
-
-            #region END_TYPING_CONVERSATION
-
-            else if (HikePubSub.END_TYPING_CONVERSATION == type)
-            {
-                object[] vals = (object[])obj;
-                string typingNotSenderOrSendee = "";
-                if (isGroupChat)
-                {
-                    typingNotSenderOrSendee = (string)vals[1];
-                }
-                else
-                {
-                    typingNotSenderOrSendee = (string)vals[0];
-                }
-                if (mContactNumber == typingNotSenderOrSendee)
-                {
-                    HideTypingNotification();
-                }
             }
 
             #endregion
@@ -5681,7 +5669,7 @@ namespace windows_client.View
                                 shellProgress.Visibility = Visibility.Visible;
                             });
 
-                            loadMessages(SUBSEQUENT_FETCH_COUNT);
+                            loadMessages(SUBSEQUENT_FETCH_COUNT, false);
                         };
                         bw.RunWorkerAsync();
                         bw.RunWorkerCompleted += (s1, ev1) =>
