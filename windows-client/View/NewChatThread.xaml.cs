@@ -4174,26 +4174,7 @@ namespace windows_client.View
 
         void AutoHidetypingNotification(object sender, object[] vals)
         {
-            if (!App.appSettings.Contains(App.LAST_SEEN_SEETING) && !isGroupChat && _lastUpdatedLastSeenTimeStamp != 0)
-            {
-                var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
-
-                if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT) //dont show online if his last seen setting is off
-                    UpdateLastSeenOnUI(AppResources.Online);
-            }
-
-            string typingNotSenderOrSendee = "";
-            if (isGroupChat)
-            {
-                typingNotSenderOrSendee = (string)vals[1];
-            }
-            else
-            {
-                // this shows that typing notification has come for a group chat , which in current case is not
-                if (vals[1] != null) // vals[1] will be null in 1-1 chat
-                    return;
-                typingNotSenderOrSendee = (string)vals[0];
-            }
+            string typingNotSenderOrSendee = isGroupChat ? (string)vals[1] : (string)vals[0];
             if (mContactNumber == typingNotSenderOrSendee)
             {
                 long timeElapsed = TimeUtils.getCurrentTimeStamp() - lastTypingNotificationShownTime;
@@ -4204,19 +4185,9 @@ namespace windows_client.View
 
         void HideTypingNotification(object sender, object[] vals)
         {
-            string typingNotSenderOrSendee = "";
-            if (isGroupChat)
-            {
-                typingNotSenderOrSendee = (string)vals[1];
-            }
-            else
-            {
-                typingNotSenderOrSendee = (string)vals[0];
-            }
+            string typingNotSenderOrSendee = isGroupChat ? (string)vals[1] : (string)vals[0];
             if (mContactNumber == typingNotSenderOrSendee)
-            {
                 HideTypingNotification();
-            }
         }
 
 
