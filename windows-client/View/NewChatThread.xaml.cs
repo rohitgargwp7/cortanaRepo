@@ -547,7 +547,7 @@ namespace windows_client.View
 
                 Stopwatch st = Stopwatch.StartNew();
                 attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
-                loadMessages(INITIAL_FETCH_COUNT);
+                loadMessages(INITIAL_FETCH_COUNT, true);
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
@@ -1711,7 +1711,7 @@ namespace windows_client.View
         // this variable stores the status of last SENT msg
         ConvMessage.State refState = ConvMessage.State.UNKNOWN;
 
-        private void loadMessages(int messageFetchCount)
+        private void loadMessages(int messageFetchCount, bool isInitialLaunch)
         {
             int i;
             bool isPublish = false;
@@ -1804,7 +1804,7 @@ namespace windows_client.View
             }
             #endregion
 
-            if (statusObject != null && statusObject is ConversationListObject && !string.IsNullOrEmpty(((ConversationListObject)statusObject).TypingNotificationText))
+            if (isInitialLaunch && statusObject != null && statusObject is ConversationListObject && !string.IsNullOrEmpty(((ConversationListObject)statusObject).TypingNotificationText))
             {
                 ShowTypingNotification();
             }
@@ -4208,15 +4208,6 @@ namespace windows_client.View
                 if (JumpToBottomGrid.Visibility == Visibility.Collapsed)
                     ScrollToBottom();
             });
-            lastTypingNotificationShownTime = TimeUtils.getCurrentTimeStamp();
-            scheduler.Schedule(autoHideTypingNotification, TimeSpan.FromSeconds(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE));
-        }
-
-        private void autoHideTypingNotification()
-        {
-            long timeElapsed = TimeUtils.getCurrentTimeStamp() - lastTypingNotificationShownTime;
-            if (timeElapsed >= HikeConstants.TYPING_NOTIFICATION_AUTOHIDE)
-                HideTypingNotification();
         }
 
         private void HideTypingNotification()
@@ -5685,7 +5676,7 @@ namespace windows_client.View
                                 shellProgress.Visibility = Visibility.Visible;
                             });
 
-                            loadMessages(SUBSEQUENT_FETCH_COUNT);
+                            loadMessages(SUBSEQUENT_FETCH_COUNT, false);
                         };
                         bw.RunWorkerAsync();
                         bw.RunWorkerCompleted += (s1, ev1) =>

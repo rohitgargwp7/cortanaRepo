@@ -505,8 +505,6 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.CONTACT_ADDED, this);
             mPubSub.addListener(HikePubSub.ADDRESSBOOK_UPDATED, this);
             mPubSub.addListener(HikePubSub.APP_UPDATE_AVAILABLE, this);
-            mPubSub.addListener(HikePubSub.TYPING_CONVERSATION, this);
-            mPubSub.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
         }
 
         private void removeListeners()
@@ -533,8 +531,6 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.CONTACT_ADDED, this);
                 mPubSub.removeListener(HikePubSub.ADDRESSBOOK_UPDATED, this);
                 mPubSub.removeListener(HikePubSub.APP_UPDATE_AVAILABLE, this);
-                mPubSub.removeListener(HikePubSub.TYPING_CONVERSATION, this);
-                mPubSub.removeListener(HikePubSub.END_TYPING_CONVERSATION, this);
             }
             catch (Exception ex)
             {
@@ -1608,62 +1604,6 @@ namespace windows_client.View
                 ShowAppUpdateAvailableMessage();
             }
             #endregion
-            #region START TYPING NOTIFICATION
-            else if (type == HikePubSub.TYPING_CONVERSATION)
-            {
-                object[] vals = (object[])obj;
-                string typerMsisdn = (string)vals[0];
-                string searchBy = vals[1] != null ? (string)vals[1] : typerMsisdn;
-
-                var list = App.ViewModel.MessageListPageCollection.Where(f => f.Msisdn == searchBy);
-
-                if (list.Count() == 0)
-                    return;
-
-                ConversationListObject convListObj = (ConversationListObject)list.FirstOrDefault();
-
-                if (vals[1] != null && !convListObj.IsGroupChat)
-                    return;
-                if (convListObj.IsGroupChat)
-                {
-                    GroupManager.Instance.LoadGroupParticipants(searchBy);
-                    if (GroupManager.Instance.GroupCache != null && GroupManager.Instance.GroupCache.ContainsKey(searchBy))
-                    {
-                        var a = (GroupManager.Instance.GroupCache[searchBy]).Where(gp => gp.Msisdn == typerMsisdn);
-                        if (a.Count() > 0)
-                        {
-                            GroupParticipant gp = (GroupParticipant)a.FirstOrDefault();
-                            convListObj.TypingNotificationText = string.Format(AppResources.ConversationList_grp_istyping_txt, gp.Name);
-                        }
-                    }
-                }
-                else
-                {
-                    convListObj.TypingNotificationText = AppResources.ConversationList_istyping_txt;
-                }
-            }
-            #endregion
-            #region END TYPING NOTIFICATION
-            else if (type == HikePubSub.END_TYPING_CONVERSATION)
-            {
-                object[] vals = (object[])obj;
-                string typerMsisdn = (string)vals[0];
-                string searchBy = vals[1] != null ? (string)vals[1] : typerMsisdn;
-
-                var list = App.ViewModel.MessageListPageCollection.Where(f => f.Msisdn == searchBy);
-
-                if (list.Count() == 0)
-                    return;
-
-                ConversationListObject convListObj = (ConversationListObject)list.FirstOrDefault();
-
-                if (vals[1] != null && !convListObj.IsGroupChat)
-                    return;
-                convListObj.TypingNotificationText = null;
-            }
-            #endregion
-
-
         }
 
         #endregion

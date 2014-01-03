@@ -151,6 +151,8 @@ namespace windows_client.ViewModel
             }
         }
 
+        public IScheduler scheduler = Scheduler.NewThread;
+
         public ObservableCollection<ConversationListObject> FavList
         {
             get
@@ -190,11 +192,11 @@ namespace windows_client.ViewModel
         {
             _pendingReq = new Dictionary<string, ConversationListObject>();
             _favList = new ObservableCollection<ConversationListObject>();
-            
+
             MiscDBUtil.LoadFavourites(_favList, _convMap);
             int count = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-            
+
             if (count != _favList.Count) // values are not loaded, move to backup plan
             {
                 _favList.Clear();
@@ -316,6 +318,8 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.addListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.addListener(HikePubSub.USER_LEFT, this);
             App.HikePubSubInstance.addListener(HikePubSub.BLOCK_USER, this);
+            App.HikePubSubInstance.addListener(HikePubSub.TYPING_CONVERSATION, this);
+            App.HikePubSubInstance.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
         }
 
         private void RemoveListeners()
@@ -324,6 +328,8 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.removeListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.removeListener(HikePubSub.USER_LEFT, this);
             App.HikePubSubInstance.removeListener(HikePubSub.BLOCK_USER, this);
+            App.HikePubSubInstance.removeListener(HikePubSub.TYPING_CONVERSATION, this);
+            App.HikePubSubInstance.removeListener(HikePubSub.END_TYPING_CONVERSATION, this);
         }
 
         public void onEventReceived(string type, object obj)
@@ -391,6 +397,62 @@ namespace windows_client.ViewModel
                 {
                     Debug.WriteLine("HikeViewModel :: OnEventReceived : BLOCK USER , Exception : ", e.StackTrace);
                 }
+            }
+            #endregion
+            #region START TYPING NOTIFICATION
+            else if (type == HikePubSub.TYPING_CONVERSATION)
+            {
+                object[] vals = (object[])obj;
+                string typerMsisdn = (string)vals[0];
+                string searchBy = vals[1] != null ? (string)vals[1] : typerMsisdn;
+
+                var list = MessageListPageCollection.Where(f => f.Msisdn == searchBy);
+
+                if (list.Count() == 0)
+                    return;
+
+                ConversationListObject convListObj = (ConversationListObject)list.FirstOrDefault();
+
+                if (vals[1] != null && !convListObj.IsGroupChat)
+                    return;
+                if (convListObj.IsGroupChat)
+                {
+                    GroupManager.Instance.LoadGroupParticipants(searchBy);
+                    if (GroupManager.Instance.GroupCache != null && GroupManager.Instance.GroupCache.ContainsKey(searchBy))
+                    {
+                        var a = (GroupManager.Instance.GroupCache[searchBy]).Where(gp => gp.Msisdn == typerMsisdn);
+                        if (a.Count() > 0)
+                        {
+                            GroupParticipant gp = (GroupParticipant)a.FirstOrDefault();
+                            convListObj.TypingNotificationText = string.Format(AppResources.ConversationList_grp_istyping_txt, gp.Name);
+                        }
+                    }
+                }
+                else
+                {
+                    convListObj.TypingNotificationText = AppResources.ConversationList_istyping_txt;
+                }
+
+                scheduler.Schedule(convListObj.EndTypingNotification, TimeSpan.FromSeconds(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE));
+            }
+            #endregion
+            #region END TYPING NOTIFICATION
+            else if (type == HikePubSub.END_TYPING_CONVERSATION)
+            {
+                object[] vals = (object[])obj;
+                string typerMsisdn = (string)vals[0];
+                string searchBy = vals[1] != null ? (string)vals[1] : typerMsisdn;
+
+                var list = MessageListPageCollection.Where(f => f.Msisdn == searchBy);
+
+                if (list.Count() == 0)
+                    return;
+
+                ConversationListObject convListObj = (ConversationListObject)list.FirstOrDefault();
+
+                if (vals[1] != null && !convListObj.IsGroupChat)
+                    return;
+                convListObj.TypingNotificationText = null;
             }
             #endregion
         }
@@ -495,7 +557,7 @@ namespace windows_client.ViewModel
             if (marked == 511 && currentlyShowing == 0)//0x1ff
                 return;
 
-            if (_toolTipsList == null) 
+            if (_toolTipsList == null)
                 LoadToolTipsList();
 
             DictInAppTip = new Dictionary<int, HikeToolTip>();
@@ -707,7 +769,7 @@ namespace windows_client.ViewModel
                 {
                     if (_selectedBackground != null)
                         _selectedBackground.IsSelected = false;
-                    
+
                     _selectedBackground = value;
 
                     if (_selectedBackground != null)
