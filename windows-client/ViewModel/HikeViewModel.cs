@@ -20,6 +20,7 @@ using System.Device.Location;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using windows_client.Misc;
+using System.Threading;
 
 namespace windows_client.ViewModel
 {
@@ -403,59 +404,30 @@ namespace windows_client.ViewModel
             else if (type == HikePubSub.TYPING_CONVERSATION)
             {
                 object[] vals = (object[])obj;
-                string typerMsisdn = (string)vals[0];
-                string searchBy = vals[1] != null ? (string)vals[1] : typerMsisdn;
+                if (ShowTypingNotification != null)
+                    ShowTypingNotification(null, vals);
 
-                var list = MessageListPageCollection.Where(f => f.Msisdn == searchBy);
+                Thread.Sleep(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE * 1000);
 
-                if (list.Count() == 0)
-                    return;
+                if (AutohideTypingNotification != null)
+                    AutohideTypingNotification(null, vals);
 
-                ConversationListObject convListObj = (ConversationListObject)list.FirstOrDefault();
-
-                if (vals[1] != null && !convListObj.IsGroupChat)
-                    return;
-                if (convListObj.IsGroupChat)
-                {
-                    GroupManager.Instance.LoadGroupParticipants(searchBy);
-                    if (GroupManager.Instance.GroupCache != null && GroupManager.Instance.GroupCache.ContainsKey(searchBy))
-                    {
-                        var a = (GroupManager.Instance.GroupCache[searchBy]).Where(gp => gp.Msisdn == typerMsisdn);
-                        if (a.Count() > 0)
-                        {
-                            GroupParticipant gp = (GroupParticipant)a.FirstOrDefault();
-                            convListObj.TypingNotificationText = string.Format(AppResources.ConversationList_grp_istyping_txt, gp.Name);
-                        }
-                    }
-                }
-                else
-                {
-                    convListObj.TypingNotificationText = AppResources.ConversationList_istyping_txt;
-                }
-
-                scheduler.Schedule(convListObj.EndTypingNotification, TimeSpan.FromSeconds(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE));
             }
             #endregion
             #region END TYPING NOTIFICATION
             else if (type == HikePubSub.END_TYPING_CONVERSATION)
             {
                 object[] vals = (object[])obj;
-                string typerMsisdn = (string)vals[0];
-                string searchBy = vals[1] != null ? (string)vals[1] : typerMsisdn;
+                if (HidetypingNotification != null)
+                    HidetypingNotification(null, vals);
 
-                var list = MessageListPageCollection.Where(f => f.Msisdn == searchBy);
-
-                if (list.Count() == 0)
-                    return;
-
-                ConversationListObject convListObj = (ConversationListObject)list.FirstOrDefault();
-
-                if (vals[1] != null && !convListObj.IsGroupChat)
-                    return;
-                convListObj.TypingNotificationText = null;
             }
             #endregion
         }
+
+        public event EventHandler<Object[]> ShowTypingNotification;
+        public event EventHandler<Object[]> AutohideTypingNotification;
+        public event EventHandler<Object[]> HidetypingNotification;
 
         #region INotifyPropertyChanged Members
 
@@ -469,6 +441,7 @@ namespace windows_client.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
         #endregion
 
         public void ClearViewModel()

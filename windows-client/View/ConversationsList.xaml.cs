@@ -94,7 +94,13 @@ namespace windows_client.View
             int tipCount;
             App.appSettings.TryGetValue(App.PRO_TIP_COUNT, out tipCount);
             ProTipCount = tipCount;
+
+            App.ViewModel.ShowTypingNotification += ShowTypingNotification;
+            App.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
+            App.ViewModel.HidetypingNotification += HideTypingNotification;
         }
+
+
 
         void Instance_ShowProTip(object sender, EventArgs e)
         {
@@ -2950,5 +2956,77 @@ namespace windows_client.View
                 }
             }
         }
+
+        #region Typing Notification
+        
+        void ShowTypingNotification(object sender, object[] vals)
+        {
+            string typerMsisdn = (string)vals[0];
+            string searchBy = vals[1] != null ? (string)vals[1] : typerMsisdn;
+
+            var list = App.ViewModel.MessageListPageCollection.Where(f => f.Msisdn == searchBy);
+
+            if (list.Count() == 0)
+                return;
+
+            ConversationListObject convListObj = (ConversationListObject)list.FirstOrDefault();
+
+            if (vals[1] != null && !convListObj.IsGroupChat)
+                return;
+            if (convListObj.IsGroupChat)
+            {
+                GroupManager.Instance.LoadGroupParticipants(searchBy);
+                if (GroupManager.Instance.GroupCache != null && GroupManager.Instance.GroupCache.ContainsKey(searchBy))
+                {
+                    var a = (GroupManager.Instance.GroupCache[searchBy]).Where(gp => gp.Msisdn == typerMsisdn);
+                    if (a.Count() > 0)
+                    {
+                        GroupParticipant gp = (GroupParticipant)a.FirstOrDefault();
+                        convListObj.TypingNotificationText = string.Format(AppResources.ConversationList_grp_istyping_txt, gp.Name);
+                    }
+                }
+            }
+            else
+            {
+                convListObj.TypingNotificationText = AppResources.ConversationList_istyping_txt;
+            }
+        }
+
+        void AutoHidetypingNotification(object sender, object[] vals)
+        {
+            string typerMsisdn = (string)vals[0];
+            string searchBy = vals[1] != null ? (string)vals[1] : typerMsisdn;
+
+            var list = App.ViewModel.MessageListPageCollection.Where(f => f.Msisdn == searchBy);
+
+            if (list.Count() == 0)
+                return;
+
+            ConversationListObject convListObj = (ConversationListObject)list.FirstOrDefault();
+
+            if (vals[1] != null && !convListObj.IsGroupChat)
+                return;
+            convListObj.AutoHidetypingNotification();
+        }
+
+        void HideTypingNotification(object sender, object[] vals)
+        {
+            string typerMsisdn = (string)vals[0];
+            string searchBy = vals[1] != null ? (string)vals[1] : typerMsisdn;
+
+            var list = App.ViewModel.MessageListPageCollection.Where(f => f.Msisdn == searchBy);
+
+            if (list.Count() == 0)
+                return;
+
+            ConversationListObject convListObj = (ConversationListObject)list.FirstOrDefault();
+
+            if (vals[1] != null && !convListObj.IsGroupChat)
+                return;
+            convListObj.TypingNotificationText = null;
+        }
+        
+        #endregion
+
     }
 }

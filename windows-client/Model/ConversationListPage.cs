@@ -525,15 +525,12 @@ namespace windows_client.Model
             }
         }
 
-        public void EndTypingNotification()
+        public void AutoHidetypingNotification()
         {
             long timeElapsed = TimeUtils.getCurrentTimeStamp() - lastTypingNotificationShownTime;
             if (timeElapsed >= HikeConstants.TYPING_NOTIFICATION_AUTOHIDE)
             {
-                object[] vals = new object[2];
-                vals[0] = _msisdn;
-                vals[1] = IsGroupChat ? _msisdn : null;
-                App.HikePubSubInstance.publish(HikePubSub.END_TYPING_CONVERSATION, vals);
+                TypingNotificationText = null;
             }
         }
 
