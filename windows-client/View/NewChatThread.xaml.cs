@@ -5848,6 +5848,10 @@ namespace windows_client.View
             if (stickerCategory.ShowDownloadMessage)
             {
                 ShowDownloadOverlay(true);
+                if (stickerCategory.ListStickers.Count == 0)
+                    stickerPivot.ShowNoStickers();
+                else
+                    stickerPivot.ShowStickers();
                 return;
             }
             if (stickerCategory == null)
