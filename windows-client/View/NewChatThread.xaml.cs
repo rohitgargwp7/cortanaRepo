@@ -5295,6 +5295,9 @@ namespace windows_client.View
 
         void chatBackgroundPopUp_Opened()
         {
+            if (!isOnHike && mCredits <= 0)
+                return;
+
             if (chatBackgroundPopUp.Visibility == Visibility.Visible)
                 return;
 
@@ -5347,7 +5350,7 @@ namespace windows_client.View
 
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
-            if (isGroupChat && !isGroupAlive)
+            if ((isGroupChat && !isGroupAlive) || (!isOnHike && mCredits <= 0))
                 chatPaint.Opacity = 0.5;
 
             if (App.ViewModel.SelectedBackground.IsDefault)
@@ -6232,6 +6235,9 @@ namespace windows_client.View
 
         private void Record_ActionIconTapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!isOnHike && mCredits <= 0)
+                return;
+            
             App.ViewModel.HideToolTip(LayoutRoot, 1);
             App.ViewModel.HideToolTip(LayoutRoot, 2);
 
