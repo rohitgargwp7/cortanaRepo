@@ -238,7 +238,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (Utils.isGroupConversation(Msisdn) || Utils.IsHikeBotMsg(_msisdn))
+                if (App.ViewModel.BlockedHashset.Contains(Msisdn) || Utils.isGroupConversation(Msisdn) || Utils.IsHikeBotMsg(Msisdn))
                     return Visibility.Collapsed;
                 else
                     return Visibility.Visible;
