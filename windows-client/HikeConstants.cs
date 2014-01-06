@@ -317,6 +317,8 @@ namespace windows_client
         public static string CHAT_FTUE = "cftue";
         public static string SHOW_CHAT_FTUE = "showcftue";
 
+        public static readonly string LAUNCH_FROM_PUSH_MSISDN = "launchFromPushMsisdn";
+
         public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
         public static string PROFILE_NAME_CHANGED = "ProfileNameChanged";
 

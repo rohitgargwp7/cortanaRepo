@@ -128,7 +128,8 @@ namespace windows_client.View
                         }
                         PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
                         string param = Utils.GetParamFromUri(targetPage);
-                        NavigationService.Navigate(new Uri("/View/NewChatThread.xaml?" + param, UriKind.Relative));
+                        PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = param;
+                        NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
                     }
                     else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
                     {
