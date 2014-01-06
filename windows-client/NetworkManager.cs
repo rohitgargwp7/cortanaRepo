@@ -1225,6 +1225,10 @@ namespace windows_client
                         ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMessage, false);
                         if (cObj == null)
                             return;
+
+                        //explicitly set IsGroupAlive false to prevent db hit
+                        cObj.IsGroupAlive = false;
+
                         object[] vals = new object[2];
                         vals[0] = convMessage;
                         vals[1] = cObj;

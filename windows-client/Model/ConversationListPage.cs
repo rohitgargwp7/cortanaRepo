@@ -15,6 +15,7 @@ using windows_client.Misc;
 using System.Text;
 using windows_client.Languages;
 using windows_client.Controls;
+using windows_client.DbUtils;
 
 namespace windows_client.Model
 {
@@ -484,7 +485,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (Utils.IsHikeBotMsg(_msisdn))
+                if (Utils.IsHikeBotMsg(_msisdn) || (IsGroupChat && !IsGroupAlive))
                     return Visibility.Collapsed;
                 else
                     return Visibility.Visible;
@@ -495,9 +496,26 @@ namespace windows_client.Model
         {
             get
             {
-                if (Utils.isGroupConversation(_msisdn))
-                    return true;
-                return false;
+                return Utils.isGroupConversation(_msisdn);
+            }
+        }
+        public bool? _isGroupAlive;
+        public bool IsGroupAlive
+        {
+            get
+            {
+                if (IsGroupChat && _isGroupAlive == null)
+                {
+                    var gi = GroupTableUtils.getGroupInfoForId(_msisdn);
+                    _isGroupAlive = gi != null ? gi.GroupAlive : false;
+                }
+
+                return (bool)_isGroupAlive;
+            }
+            set
+            {
+                if (value != _isGroupAlive)
+                    _isGroupAlive = value;
             }
         }
 
