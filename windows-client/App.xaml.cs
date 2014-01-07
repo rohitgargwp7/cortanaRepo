@@ -501,7 +501,8 @@ namespace windows_client
                 {
                     APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                     string param = Utils.GetParamFromUri(targetPage);
-                    mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml?" + param, UriKind.Relative);
+                    PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = param;
+                    mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
                 }
                 else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
                 {
@@ -567,7 +568,8 @@ namespace windows_client
                 }
 
                 string param = Utils.GetParamFromUri(targetPage);
-                mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml?" + param, UriKind.Relative);
+                PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = param;
+                mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
             }
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
             {

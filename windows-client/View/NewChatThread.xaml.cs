@@ -651,8 +651,8 @@ namespace windows_client.View
             // push notification , needs to be handled just once.
             if (this.NavigationContext.QueryString.ContainsKey("msisdn"))
             {
-                string msisdn = (this.NavigationContext.QueryString["msisdn"] as string).Trim();
-                this.NavigationContext.QueryString.Clear();
+                string msisdn = (PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] as string).Trim();
+                PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_PUSH_MSISDN);
 
                 if (Char.IsDigit(msisdn[0]))
                     msisdn = "+" + msisdn;
@@ -680,7 +680,7 @@ namespace windows_client.View
                     {
                         contact = new ContactInfo();
                         contact.Msisdn = msisdn;
-                        contact.Name = null;
+                        contact.Name = Utils.IsHikeBotMsg(msisdn) ? Utils.GetHikeBotName(msisdn) : null;
                         contact.OnHike = true; // this is assumed bcoz there is very less chance for an sms user to send push
                     }
                     this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = statusObject = contact;
@@ -4587,6 +4587,8 @@ namespace windows_client.View
                         }
                         else if (!isOnHike)
                         {
+                            chatPaint.Opacity = 0.5;
+
                             showNoSmsLeftOverlay = true;
                             ToggleAlertOnNoSms(true);
                             Deployment.Current.Dispatcher.BeginInvoke(() => //using ui thread beacuse I want this to happen after togle alert on no sms
@@ -4600,6 +4602,8 @@ namespace windows_client.View
                     {
                         showNoSmsLeftOverlay = false;
                         ToggleAlertOnNoSms(false);
+
+                        chatPaint.Opacity = 1;
                     }
 
                     updateChatMetadata();
@@ -5295,6 +5299,9 @@ namespace windows_client.View
 
         void chatBackgroundPopUp_Opened()
         {
+            if (!isOnHike && mCredits <= 0)
+                return;
+
             if (chatBackgroundPopUp.Visibility == Visibility.Visible)
                 return;
 
@@ -5347,7 +5354,7 @@ namespace windows_client.View
 
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
-            if (isGroupChat && !isGroupAlive)
+            if ((isGroupChat && !isGroupAlive) || (!isOnHike && mCredits <= 0))
                 chatPaint.Opacity = 0.5;
 
             if (App.ViewModel.SelectedBackground.IsDefault)
@@ -6236,6 +6243,9 @@ namespace windows_client.View
 
         private void Record_ActionIconTapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!isOnHike && mCredits <= 0)
+                return;
+            
             App.ViewModel.HideToolTip(LayoutRoot, 1);
             App.ViewModel.HideToolTip(LayoutRoot, 2);
 
