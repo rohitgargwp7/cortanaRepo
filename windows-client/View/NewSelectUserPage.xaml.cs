@@ -431,7 +431,7 @@ namespace windows_client.View
                 List<ConversationListObject> listGroupChats = new List<ConversationListObject>();
                 foreach (ConversationListObject convList in App.ViewModel.ConvMap.Values)
                 {
-                    if (convList.IsGroupChat && convList.LastMessage != AppResources.GROUP_CHAT_END && (!forwardedFromGroupChat || convList.Msisdn != groupId))//handled ended group
+                    if (convList.IsGroupChat && convList.IsGroupAlive && (!forwardedFromGroupChat || convList.Msisdn != groupId))//handled ended group
                     {
                         listGroupChats.Add(convList);
                     }
