@@ -206,13 +206,13 @@ namespace windows_client
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
                 PushHelper.Instance.registerPushnotifications();
-                
+
                 string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
                 msisdn = msisdn.Substring(msisdn.Length - 10);
-                
+
                 StringBuilder userMsisdn = new StringBuilder();
                 userMsisdn.Append(msisdn.Substring(0, 3)).Append("-").Append(msisdn.Substring(3, 3)).Append("-").Append(msisdn.Substring(6)).Append("!");
-                
+
                 string country_code = null;
                 App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
                 txtBlckPhoneNumber.Text = AppResources.EnterName_YourMsisdn_TxtBlk + " " + (country_code == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code) + "-" + userMsisdn.ToString();
@@ -232,7 +232,7 @@ namespace windows_client
                         string token = (string)App.appSettings["token"];
                         AccountUtils.postAddressBook(ContactUtils.contactsMap, new AccountUtils.postResponseFunction(postAddressBook_Callback));
                     };
-                
+
                     bw.RunWorkerAsync();
                 }
             }
@@ -242,7 +242,7 @@ namespace windows_client
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
                 object obj = null;
-            
+
                 if (this.State.TryGetValue("txtBxEnterName", out obj))
                 {
                     txtBxEnterName.Text = (string)obj;
@@ -263,6 +263,8 @@ namespace windows_client
                 txtBxEnterName.Text = name;
                 txtBxEnterName.Hint = string.Empty;
                 nextIconButton.IsEnabled = true;
+                fbConnectTxtBlk.Text = AppResources.FreeSMS_fbOrTwitter_Connected;
+                spFbConnect.Tap -= facebook_Tap;
             }
 
             if (reloadImage) // this will handle both deactivation and tombstone
@@ -284,7 +286,7 @@ namespace windows_client
                 else
                 {
                     _avatar = MiscDBUtil.getThumbNailForMsisdn(HikeConstants.MY_PROFILE_PIC);
-                
+
                     if (_avatar != null)
                     {
                         try
