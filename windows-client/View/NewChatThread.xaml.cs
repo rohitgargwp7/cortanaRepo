@@ -6243,7 +6243,7 @@ namespace windows_client.View
 
         private void Record_ActionIconTapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (!isOnHike && mCredits <= 0)
+            if ((!isOnHike && mCredits <= 0) || (isGroupChat && !isGroupAlive))
                 return;
             
             App.ViewModel.HideToolTip(LayoutRoot, 1);
