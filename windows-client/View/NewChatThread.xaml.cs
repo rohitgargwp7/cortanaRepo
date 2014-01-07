@@ -4587,6 +4587,8 @@ namespace windows_client.View
                         }
                         else if (!isOnHike)
                         {
+                            chatPaint.Opacity = 0.5;
+
                             showNoSmsLeftOverlay = true;
                             ToggleAlertOnNoSms(true);
                             Deployment.Current.Dispatcher.BeginInvoke(() => //using ui thread beacuse I want this to happen after togle alert on no sms
@@ -4600,6 +4602,8 @@ namespace windows_client.View
                     {
                         showNoSmsLeftOverlay = false;
                         ToggleAlertOnNoSms(false);
+
+                        chatPaint.Opacity = 1;
                     }
 
                     updateChatMetadata();
