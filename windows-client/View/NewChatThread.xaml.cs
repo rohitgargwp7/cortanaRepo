@@ -649,7 +649,7 @@ namespace windows_client.View
 
             #region PUSH NOTIFICATION
             // push notification , needs to be handled just once.
-            if (this.NavigationContext.QueryString.ContainsKey("msisdn"))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.LAUNCH_FROM_PUSH_MSISDN))
             {
                 string msisdn = (PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] as string).Trim();
                 PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_PUSH_MSISDN);
