@@ -3516,6 +3516,9 @@ namespace windows_client.View
             }
             else if (msg == _lastSentMessage)
             {
+                if (_readByMessage != null && ocMessages.Contains(_readByMessage))
+                    ocMessages.Remove(_readByMessage);
+
                 UpdateLastSentMessageStatusOnUI();
             }
            
@@ -7027,6 +7030,11 @@ namespace windows_client.View
 
                     if (indexToInsert == ocMessages.Count - 1)
                         ScrollToBottom();
+                }
+                else
+                {
+                    if (_readByMessage != null && ocMessages.Contains(_readByMessage))
+                        ocMessages.Remove(_readByMessage);
                 }
             });
         }

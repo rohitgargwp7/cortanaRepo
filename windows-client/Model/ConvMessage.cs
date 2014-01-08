@@ -236,7 +236,7 @@ namespace windows_client.Model
             }
         }
 
-        [Column(IsDbGenerated = false, UpdateCheck = UpdateCheck.Never)]
+        [Column(IsDbGenerated = false)]
         public State MessageStatus
         {
             get
@@ -355,7 +355,7 @@ namespace windows_client.Model
             }
         }
 
-        [Column(CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        [Column(CanBeNull = true)]
         public string ReadByInfo
         {
             get
@@ -366,7 +366,7 @@ namespace windows_client.Model
             {
                 if (_readByInfo != value)
                 {
-                    NotifyPropertyChanging("ReadByInfo");
+                    //NotifyPropertyChanging("ReadByInfo");
                     _readByInfo = value;
                     NotifyPropertyChanged("ReadByInfo");
                 }

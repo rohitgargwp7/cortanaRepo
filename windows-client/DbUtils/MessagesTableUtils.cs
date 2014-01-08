@@ -444,6 +444,15 @@ namespace windows_client.DbUtils
                                 message.MessageStatus = (ConvMessage.State)val;
 
                                 msisdn = message.Msisdn;
+
+                                if (sender != null)
+                                {
+                                    if (message.ReadByArray == null)
+                                        message.ReadByArray = new JArray();
+
+                                    message.ReadByArray.Add(sender);
+                                    message.ReadByInfo = message.ReadByArray.ToString();
+                                }
                                 shouldSubmit = true;
                             }
                         }
@@ -453,27 +462,27 @@ namespace windows_client.DbUtils
                     SubmitWithConflictResolve(context);
                 shouldSubmit = false;
 
-                for (int i = 0; i < ids.Length; i++)
-                {
-                    var val = status;
-                    ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).FirstOrDefault<ConvMessage>();
+                //for (int i = 0; i < ids.Length; i++)
+                //{
+                //    var val = status;
+                //    ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).FirstOrDefault<ConvMessage>();
 
-                    if (message != null)
-                    {
-                        if (sender != null)
-                        {
-                            if (message.ReadByArray == null)
-                                message.ReadByArray = new JArray();
+                //    if (message != null)
+                //    {
+                //        if (sender != null)
+                //        {
+                //            if (message.ReadByArray == null)
+                //                message.ReadByArray = new JArray();
 
-                            message.ReadByArray.Add(sender);
-                            message.ReadByInfo = message.ReadByArray.ToString();
-                        }
-                        shouldSubmit = true;
-                    }
-                }
-                if (shouldSubmit)
-                    SubmitWithConflictResolve(context);
-                shouldSubmit = false;
+                //            message.ReadByArray.Add(sender);
+                //            message.ReadByInfo = message.ReadByArray.ToString();
+                //        }
+                //        shouldSubmit = true;
+                //    }
+                //}
+                //if (shouldSubmit)
+                //    SubmitWithConflictResolve(context);
+                //shouldSubmit = false;
 
                 return msisdn;
             }
