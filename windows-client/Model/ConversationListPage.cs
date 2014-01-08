@@ -505,10 +505,7 @@ namespace windows_client.Model
             get
             {
                 if (IsGroupChat && _isGroupAlive == null)
-                {
-                    var gi = GroupTableUtils.getGroupInfoForId(_msisdn);
-                    _isGroupAlive = gi != null ? gi.GroupAlive : false;
-                }
+                    _isGroupAlive = GroupTableUtils.IsGroupAlive(_msisdn);
 
                 return (bool)_isGroupAlive;
             }
