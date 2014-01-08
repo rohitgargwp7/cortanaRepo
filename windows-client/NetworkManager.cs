@@ -949,7 +949,7 @@ namespace windows_client
                         if (dndMembersList != null && dndMembersList.Count > 0)
                         {
                             string dndMsg = GetDndMsg(dndMembersList);
-                            convMessage.Message += ";" + dndMsg;
+                            convMessage.Message = convMessage.Message.Replace(";", "") + ";" + dndMsg.Replace(";", "");// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
                         }
                     }
                     catch (Exception ex)
@@ -1006,7 +1006,7 @@ namespace windows_client
                         if (dndMembersList != null && dndMembersList.Count > 0)
                         {
                             string dndMsg = GetDndMsg(dndMembersList);
-                            convMessage.Message += ";" + dndMsg;
+                            convMessage.Message = convMessage.Message.Replace(";", "") + ";" + dndMsg.Replace(";", "");// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
                         }
                     }
                     catch
@@ -1190,7 +1190,7 @@ namespace windows_client
                     string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
                     GroupManager.Instance.LoadGroupParticipants(groupId);
                     GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, fromMsisdn, groupId);
-                    if (gp==null || gp.HasLeft)
+                    if (gp == null || gp.HasLeft)
                         return;
 
                     ConvMessage convMsg = new ConvMessage(jsonObj, false, false);
@@ -1689,7 +1689,7 @@ namespace windows_client
 
                     var data = (JObject)jsonObj[HikeConstants.DATA];
                     var bgId = (string)data[HikeConstants.BACKGROUND_ID];
-                    
+
                     bool hasCustomBg = false;
                     JToken custom;
                     if (data.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))

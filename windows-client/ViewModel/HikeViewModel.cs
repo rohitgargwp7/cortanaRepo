@@ -123,6 +123,21 @@ namespace windows_client.ViewModel
             }
         }
 
+        /// <summary>
+        /// use this function to clear blocklist rather than BlockedHashset.clear()
+        /// </summary>
+        public void ClearBLockedHashSet()
+        {
+            lock (readWriteLock)
+            {
+                if (_blockedHashSet != null)
+                {
+                    _blockedHashSet.Clear();
+                    _blockedHashSet = null;
+                }
+                isBlockedSetLoaded = false;
+            }
+        }
         public bool IsPendingListLoaded
         {
             get;

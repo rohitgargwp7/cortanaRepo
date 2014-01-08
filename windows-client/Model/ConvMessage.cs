@@ -1833,6 +1833,8 @@ namespace windows_client.Model
                 }
                 else
                     this._message = GetMsgText(GroupManager.Instance.GroupCache[toVal], true);
+
+                this._message = this._message.Replace(";", "");// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
             }
 
             else if (this.participantInfoState == ParticipantInfoState.GROUP_END)
