@@ -6083,7 +6083,7 @@ namespace windows_client.View
 
         public void ShowDownloadOverlay(bool show)
         {
-            sendIconButton.IsEnabled = show ? sendMsgTxtbox.Text.Length > 0 : false;
+            sendIconButton.IsEnabled = !show ? sendMsgTxtbox.Text.Length > 0 : false;
             stickersIconButton.IsEnabled = !show;
             emoticonsIconButton.IsEnabled = !show;
             fileTransferIconButton.IsEnabled = !show;
