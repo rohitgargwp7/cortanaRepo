@@ -2633,6 +2633,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Microphone is disabled on your phone.
+        /// </summary>
+        public static string MicrophoneNotFound_ErrorTxt {
+            get {
+                return ResourceManager.GetString("MicrophoneNotFound_ErrorTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Angry .
         /// </summary>
         public static string Mood_Angry {

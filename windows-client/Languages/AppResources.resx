@@ -2069,4 +2069,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="ConversationList_istyping_txt" xml:space="preserve">
     <value>is typing ...</value>
   </data>
+  <data name="MicrophoneNotFound_ErrorTxt" xml:space="preserve">
+    <value>Microphone is disabled on your phone</value>
+  </data>
 </root>
