@@ -303,6 +303,7 @@ namespace windows_client
         public static string ACCOUNT = "account";
         public static string OBJ_FROM_BLOCKED_LIST = "objFrmBlckList";
         public static readonly string PAGE_TO_NAVIGATE_TO = "pageToNavigateTo";
+        public static readonly string LAUNCH_FROM_UPGRADEPAGE = "launchFromUpgradePage";
         public static readonly string MESSAGE_OBJ_FROM_CT = "msgCT";
         public static string USERINFO_FROM_CONVERSATION_PAGE = "userInfoFromConvPage";
         public static string USERINFO_FROM_CHATTHREAD_PAGE = "userInfoFromChatThread";
@@ -315,6 +316,8 @@ namespace windows_client
         public static string CHAT_BACKGROUND_ARRAY = "cbgs";
         public static string CHAT_FTUE = "cftue";
         public static string SHOW_CHAT_FTUE = "showcftue";
+
+        public static readonly string LAUNCH_FROM_PUSH_MSISDN = "launchFromPushMsisdn";
 
         public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
         public static string PROFILE_NAME_CHANGED = "ProfileNameChanged";

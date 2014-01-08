@@ -81,7 +81,10 @@ namespace windows_client.View
             {
                 SmileyParser.Instance.initializeSmileyParser();
                 App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
-                NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+
+                App page = (App)Application.Current;
+                ((UriMapper)(page.RootFrame.UriMapper)).UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                page.RootFrame.Navigate(new Uri("/View/ConversationsList.xaml?id=1", UriKind.Relative));
             }
         }
     }

@@ -491,6 +491,8 @@ namespace windows_client
         void RootFrame_CheckForFastResume(object sender, NavigatingCancelEventArgs e)
         {
             RootFrame.Navigating -= RootFrame_CheckForFastResume;
+            UriMapper mapper = Resources["mapper"] as UriMapper;
+            RootFrame.UriMapper = mapper;
             var targetPage = e.Uri.ToString();
 
             if (e.NavigationMode == NavigationMode.New)
@@ -499,38 +501,35 @@ namespace windows_client
                 {
                     APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                     string param = Utils.GetParamFromUri(targetPage);
-                    e.Cancel = true;
-                    RootFrame.Dispatcher.BeginInvoke(delegate
-                    {
-                        RootFrame.Navigate(new Uri("/View/NewChatThread.xaml?" + param, UriKind.Relative));
-                    });
+                    PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = param;
+                    mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
                 }
                 else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
                 {
                     APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                     PhoneApplicationService.Current.State["IsStatusPush"] = true;
                 }
-                else if (targetPage != null && targetPage.Contains("NewSelectUserPage.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
+                else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("FileId")) // SHARE PICKER CASE
                 {
                     APP_LAUNCH_STATE = LaunchState.SHARE_PICKER_LAUNCH;
 
                     int idx = targetPage.IndexOf("?") + 1;
                     string param = targetPage.Substring(idx);
-                    e.Cancel = true;
-
-                    RootFrame.Dispatcher.BeginInvoke(delegate
-                    {
-                        RootFrame.Navigate(new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative));
-                    });
+                    mapper.UriMappings[0].MappedUri = new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative);
                 }
-                else if (targetPage.Contains("/View/NewSelectUserPage.xaml"))
+                else
+                {
                     e.Cancel = true;
+                }
             }
         }
 
         void RootFrame_Navigating(object sender, NavigatingCancelEventArgs e)
         {
             RootFrame.Navigating -= RootFrame_Navigating;
+
+            UriMapper mapper = Resources["mapper"] as UriMapper;
+            RootFrame.UriMapper = mapper;
 
             if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
                 isNewInstall = false;
@@ -544,17 +543,13 @@ namespace windows_client
             _latestVersion = Utils.getAppVersion(); // this will get the new version we are upgrading to
 
             string targetPage = e.Uri.ToString();
-            e.Cancel = true;
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
             if (!isNewInstall && Utils.compareVersion("2.5.0.1", _currentVersion) == 1)
             {
                 instantiateClasses(true);
-                RootFrame.Dispatcher.BeginInvoke(delegate
-                {
-                    RootFrame.Navigate(new Uri("/View/UpgradePage.xaml", UriKind.Relative));
-                });
+                mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
             }
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
@@ -564,11 +559,16 @@ namespace windows_client
 
                 instantiateClasses(false);
                 appInitialize();
-                string param = Utils.GetParamFromUri(targetPage);
-                RootFrame.Dispatcher.BeginInvoke(delegate
+                if (ps != PageState.CONVLIST_SCREEN)
                 {
-                    RootFrame.Navigate(new Uri("/View/NewChatThread.xaml?" + param, UriKind.Relative));
-                });
+                    Uri nUri = Utils.LoadPageUri(ps);
+                    mapper.UriMappings[0].MappedUri = nUri;
+                    return;
+                }
+
+                string param = Utils.GetParamFromUri(targetPage);
+                PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = param;
+                mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
             }
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
             {
@@ -576,14 +576,18 @@ namespace windows_client
                 _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
                 PhoneApplicationService.Current.State["IsStatusPush"] = true;
+
                 instantiateClasses(false);
                 appInitialize();
-                RootFrame.Dispatcher.BeginInvoke(delegate
+                if (ps != PageState.CONVLIST_SCREEN)
                 {
-                    RootFrame.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
-                });
+                    Uri nUri = Utils.LoadPageUri(ps);
+                    mapper.UriMappings[0].MappedUri = nUri;
+                    return;
+                }
+                mapper.UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
             }
-            else if (targetPage != null && targetPage.Contains("NewSelectUserPage.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
+            else if (targetPage != null && targetPage.Contains("ConversationsList.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
             {
                 PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
                 _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
@@ -593,19 +597,14 @@ namespace windows_client
                 appInitialize();
                 if (ps != PageState.CONVLIST_SCREEN)
                 {
-                    RootFrame.Dispatcher.BeginInvoke(delegate
-                    {
-                        Uri nUri = Utils.LoadPageUri(ps);
-                        ((App)Application.Current).RootFrame.Navigate(nUri);
-                        return;
-                    });
+                    Uri nUri = Utils.LoadPageUri(ps);
+                    mapper.UriMappings[0].MappedUri = nUri;
+                    return;
                 }
+
                 int idx = targetPage.IndexOf("?") + 1;
                 string param = targetPage.Substring(idx);
-                RootFrame.Dispatcher.BeginInvoke(delegate
-                {
-                    RootFrame.Navigate(new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative));
-                });
+                mapper.UriMappings[0].MappedUri = new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative);
             }
             else
             {
@@ -615,11 +614,9 @@ namespace windows_client
 
                 instantiateClasses(false);
                 appInitialize();
-                RootFrame.Dispatcher.BeginInvoke(delegate
-                {
-                    Uri nUri = Utils.LoadPageUri(ps);
-                    ((App)Application.Current).RootFrame.Navigate(nUri);
-                });
+
+                Uri nUri = Utils.LoadPageUri(ps);
+                mapper.UriMappings[0].MappedUri = nUri;
             }
         }
 
@@ -780,7 +777,7 @@ namespace windows_client
                 var val = App.appSettings[App.TIP_MARKED_KEY];
                 App.RemoveKeyFromAppSettings(App.TIP_MARKED_KEY);
                 App.appSettings[App.TIP_MARKED_KEY] = Convert.ToInt32(val);
-             
+
                 val = App.appSettings[App.TIP_SHOW_KEY];
                 App.RemoveKeyFromAppSettings(App.TIP_SHOW_KEY);
                 App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, Convert.ToInt32(val));

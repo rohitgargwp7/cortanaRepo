@@ -460,7 +460,7 @@ namespace windows_client.utils
             try
             {
                 int idx = targetPage.IndexOf("msisdn");
-                return targetPage.Substring(idx);
+                return targetPage.Substring(idx).Remove(0,7);
             }
             catch (Exception ex)
             {

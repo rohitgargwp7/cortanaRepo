@@ -20,6 +20,7 @@ using System.Device.Location;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using windows_client.Misc;
+using System.Threading;
 
 namespace windows_client.ViewModel
 {
@@ -151,6 +152,8 @@ namespace windows_client.ViewModel
             }
         }
 
+        public IScheduler scheduler = Scheduler.NewThread;
+
         public ObservableCollection<ConversationListObject> FavList
         {
             get
@@ -190,11 +193,11 @@ namespace windows_client.ViewModel
         {
             _pendingReq = new Dictionary<string, ConversationListObject>();
             _favList = new ObservableCollection<ConversationListObject>();
-            
+
             MiscDBUtil.LoadFavourites(_favList, _convMap);
             int count = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-            
+
             if (count != _favList.Count) // values are not loaded, move to backup plan
             {
                 _favList.Clear();
@@ -316,6 +319,8 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.addListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.addListener(HikePubSub.USER_LEFT, this);
             App.HikePubSubInstance.addListener(HikePubSub.BLOCK_USER, this);
+            App.HikePubSubInstance.addListener(HikePubSub.TYPING_CONVERSATION, this);
+            App.HikePubSubInstance.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
         }
 
         private void RemoveListeners()
@@ -324,6 +329,8 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.removeListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.removeListener(HikePubSub.USER_LEFT, this);
             App.HikePubSubInstance.removeListener(HikePubSub.BLOCK_USER, this);
+            App.HikePubSubInstance.removeListener(HikePubSub.TYPING_CONVERSATION, this);
+            App.HikePubSubInstance.removeListener(HikePubSub.END_TYPING_CONVERSATION, this);
         }
 
         public void onEventReceived(string type, object obj)
@@ -393,7 +400,34 @@ namespace windows_client.ViewModel
                 }
             }
             #endregion
+            #region START TYPING NOTIFICATION
+            else if (type == HikePubSub.TYPING_CONVERSATION)
+            {
+                object[] vals = (object[])obj;
+                if (ShowTypingNotification != null)
+                    ShowTypingNotification(null, vals);
+
+                Thread.Sleep(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE * 1000);
+
+                if (AutohideTypingNotification != null)
+                    AutohideTypingNotification(null, vals);
+
+            }
+            #endregion
+            #region END TYPING NOTIFICATION
+            else if (type == HikePubSub.END_TYPING_CONVERSATION)
+            {
+                object[] vals = (object[])obj;
+                if (HidetypingNotification != null)
+                    HidetypingNotification(null, vals);
+
+            }
+            #endregion
         }
+
+        public event EventHandler<Object[]> ShowTypingNotification;
+        public event EventHandler<Object[]> AutohideTypingNotification;
+        public event EventHandler<Object[]> HidetypingNotification;
 
         #region INotifyPropertyChanged Members
 
@@ -407,6 +441,7 @@ namespace windows_client.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
         #endregion
 
         public void ClearViewModel()
@@ -495,7 +530,7 @@ namespace windows_client.ViewModel
             if (marked == 511 && currentlyShowing == 0)//0x1ff
                 return;
 
-            if (_toolTipsList == null) 
+            if (_toolTipsList == null)
                 LoadToolTipsList();
 
             DictInAppTip = new Dictionary<int, HikeToolTip>();
@@ -707,7 +742,7 @@ namespace windows_client.ViewModel
                 {
                     if (_selectedBackground != null)
                         _selectedBackground.IsSelected = false;
-                    
+
                     _selectedBackground = value;
 
                     if (_selectedBackground != null)

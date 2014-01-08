@@ -270,6 +270,14 @@ namespace windows_client.View
                     App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
                 }
             }
+
+            //remove if push came directly from upgrade page
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.LAUNCH_FROM_UPGRADEPAGE))
+            {
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
+                PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_UPGRADEPAGE);
+            }
         }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
@@ -423,7 +431,7 @@ namespace windows_client.View
                 List<ConversationListObject> listGroupChats = new List<ConversationListObject>();
                 foreach (ConversationListObject convList in App.ViewModel.ConvMap.Values)
                 {
-                    if (convList.IsGroupChat && convList.LastMessage != AppResources.GROUP_CHAT_END && (!forwardedFromGroupChat || convList.Msisdn != groupId))//handled ended group
+                    if (convList.IsGroupChat && convList.IsGroupAlive && (!forwardedFromGroupChat || convList.Msisdn != groupId))//handled ended group
                     {
                         listGroupChats.Add(convList);
                     }

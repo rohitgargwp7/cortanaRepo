@@ -15,6 +15,7 @@ using windows_client.Misc;
 using System.Text;
 using windows_client.Languages;
 using windows_client.Controls;
+using windows_client.DbUtils;
 
 namespace windows_client.Model
 {
@@ -237,7 +238,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (Utils.isGroupConversation(Msisdn) || Utils.IsHikeBotMsg(_msisdn))
+                if (App.ViewModel.BlockedHashset.Contains(Msisdn) || Utils.isGroupConversation(Msisdn) || Utils.IsHikeBotMsg(Msisdn))
                     return Visibility.Collapsed;
                 else
                     return Visibility.Visible;
@@ -484,7 +485,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (Utils.IsHikeBotMsg(_msisdn))
+                if (Utils.IsHikeBotMsg(_msisdn) || (IsGroupChat && !IsGroupAlive))
                     return Visibility.Collapsed;
                 else
                     return Visibility.Visible;
@@ -495,13 +496,32 @@ namespace windows_client.Model
         {
             get
             {
-                if (Utils.isGroupConversation(_msisdn))
-                    return true;
-                return false;
+                return Utils.isGroupConversation(_msisdn);
+            }
+        }
+        public bool? _isGroupAlive;
+        public bool IsGroupAlive
+        {
+            get
+            {
+                if (IsGroupChat && _isGroupAlive == null)
+                {
+                    var gi = GroupTableUtils.getGroupInfoForId(_msisdn);
+                    _isGroupAlive = gi != null ? gi.GroupAlive : false;
+                }
+
+                return (bool)_isGroupAlive;
+            }
+            set
+            {
+                if (value != _isGroupAlive)
+                    _isGroupAlive = value;
             }
         }
 
+        private long lastTypingNotificationShownTime;
         private string _typingNotificationText;
+
         public string TypingNotificationText
         {
             get
@@ -513,6 +533,8 @@ namespace windows_client.Model
                 if (value != _typingNotificationText)
                 {
                     _typingNotificationText = value;
+                    if (!string.IsNullOrEmpty(_typingNotificationText))
+                        lastTypingNotificationShownTime = TimeUtils.getCurrentTimeStamp();
                     NotifyPropertyChanged("LastMessage");
                     NotifyPropertyChanged("UnreadCircleVisibility");
                     NotifyPropertyChanged("SDRStatusImageVisible");
@@ -520,6 +542,16 @@ namespace windows_client.Model
                 }
             }
         }
+
+        public void AutoHidetypingNotification()
+        {
+            long timeElapsed = TimeUtils.getCurrentTimeStamp() - lastTypingNotificationShownTime;
+            if (timeElapsed >= HikeConstants.TYPING_NOTIFICATION_AUTOHIDE)
+            {
+                TypingNotificationText = null;
+            }
+        }
+
         public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar, ConvMessage.State msgStatus, long lastMsgId)
         {
             this._msisdn = msisdn;
@@ -596,6 +628,8 @@ namespace windows_client.Model
         }
 
         #endregion
+
+
         public void Write(BinaryWriter writer)
         {
             try
