@@ -130,8 +130,11 @@ namespace windows_client.ViewModel
         {
             lock (readWriteLock)
             {
-                _blockedHashSet.Clear();
-                _blockedHashSet = null;
+                if (_blockedHashSet != null)
+                {
+                    _blockedHashSet.Clear();
+                    _blockedHashSet = null;
+                }
                 isBlockedSetLoaded = false;
             }
         }
