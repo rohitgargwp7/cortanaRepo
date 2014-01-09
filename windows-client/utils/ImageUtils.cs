@@ -622,8 +622,7 @@ namespace windows_client.utils
             {
                 if (hikeToastImage == null)
                 {
-                    hikeToastImage = new BitmapImage(new Uri("/hike_small.png", UriKind.RelativeOrAbsolute));
-                    hikeToastImage.DecodePixelWidth = 14;
+                    hikeToastImage = new BitmapImage(new Uri("/View/images/hike_toast_image.png", UriKind.RelativeOrAbsolute));
                 }
 
                 return hikeToastImage;
