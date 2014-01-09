@@ -2070,6 +2070,9 @@ Download it now http://hike.in and join the fun!</value>
     <value>is typing ...</value>
   </data>
   <data name="MicrophoneNotFound_ErrorTxt" xml:space="preserve">
-    <value>Microphone is disabled on your phone</value>
+    <value>Please check your phone's mic and try again.</value>
+  </data>
+  <data name="MicrophoneNotFound_HeaderTxt" xml:space="preserve">
+    <value>Unable to record!</value>
   </data>
 </root>
