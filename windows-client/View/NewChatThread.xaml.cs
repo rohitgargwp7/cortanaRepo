@@ -234,10 +234,11 @@ namespace windows_client.View
             _dt = new DispatcherTimer();
             _dt.Interval = TimeSpan.FromMilliseconds(33);
 
-            _duration = _microphone.BufferDuration;
-
-            // Event handler for getting audio data when the buffer is full
-            _microphone.BufferReady += new EventHandler<EventArgs>(microphone_BufferReady);
+            if (_microphone != null)
+            {
+                // Event handler for getting audio data when the buffer is full
+                _microphone.BufferReady += new EventHandler<EventArgs>(microphone_BufferReady);
+            }
 
             _progressTimer = new DispatcherTimer();
             _progressTimer.Interval = TimeSpan.FromSeconds(1);
@@ -3844,6 +3845,12 @@ namespace windows_client.View
         }
         private void sendAudio_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (_microphone == null)
+            {
+                MessageBox.Show(AppResources.MicrophoneNotFound_ErrorTxt, AppResources.MicrophoneNotFound_HeaderTxt, MessageBoxButton.OK);
+                return;
+            }
+
             NavigationService.Navigate(new Uri("/View/RecordMedia.xaml", UriKind.Relative));
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
@@ -6087,7 +6094,7 @@ namespace windows_client.View
 
         public void ShowDownloadOverlay(bool show)
         {
-            sendIconButton.IsEnabled = show ? sendMsgTxtbox.Text.Length > 0 : false;
+            sendIconButton.IsEnabled = !show ? sendMsgTxtbox.Text.Length > 0 : false;
             stickersIconButton.IsEnabled = !show;
             emoticonsIconButton.IsEnabled = !show;
             fileTransferIconButton.IsEnabled = !show;
@@ -6245,7 +6252,13 @@ namespace windows_client.View
         {
             if ((!isOnHike && mCredits <= 0) || (isGroupChat && !isGroupAlive))
                 return;
-            
+
+            if (_microphone == null)
+            {
+                MessageBox.Show(AppResources.MicrophoneNotFound_ErrorTxt, AppResources.MicrophoneNotFound_HeaderTxt, MessageBoxButton.OK);
+                return;
+            }
+
             App.ViewModel.HideToolTip(LayoutRoot, 1);
             App.ViewModel.HideToolTip(LayoutRoot, 2);
 
@@ -6604,9 +6617,6 @@ namespace windows_client.View
         private DispatcherTimer _progressTimer;
         private DispatcherTimer _deleteTimer;
         private int _runningSeconds = 0;
-
-        // Status images
-        private TimeSpan _duration;
 
         Boolean _isWalkieTalkieMessgeDelete = false;
 

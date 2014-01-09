@@ -2633,6 +2633,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please check your phone&apos;s mic and try again..
+        /// </summary>
+        public static string MicrophoneNotFound_ErrorTxt {
+            get {
+                return ResourceManager.GetString("MicrophoneNotFound_ErrorTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to record!.
+        /// </summary>
+        public static string MicrophoneNotFound_HeaderTxt {
+            get {
+                return ResourceManager.GetString("MicrophoneNotFound_HeaderTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Angry .
         /// </summary>
         public static string Mood_Angry {
