@@ -3847,7 +3847,7 @@ namespace windows_client.View
         {
             if (_microphone == null)
             {
-                MessageBox.Show(AppResources.MicrophoneNotFound_ErrorTxt);
+                MessageBox.Show(AppResources.MicrophoneNotFound_ErrorTxt, AppResources.MicrophoneNotFound_HeaderTxt, MessageBoxButton.OK);
                 return;
             }
 
@@ -6251,7 +6251,7 @@ namespace windows_client.View
 
             if (_microphone == null)
             {
-                MessageBox.Show(AppResources.MicrophoneNotFound_ErrorTxt);
+                MessageBox.Show(AppResources.MicrophoneNotFound_ErrorTxt, AppResources.MicrophoneNotFound_HeaderTxt, MessageBoxButton.OK);
                 return;
             }
 
