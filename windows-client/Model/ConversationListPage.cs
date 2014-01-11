@@ -79,6 +79,17 @@ namespace windows_client.Model
             }
         }
 
+        /// <summary>
+        /// use where we dont need to show typing notification
+        /// </summary>
+        public string ToastText
+        {
+            get
+            {
+                return _lastMessage;
+            }
+        }
+
         [DataMember]
         public long TimeStamp
         {
