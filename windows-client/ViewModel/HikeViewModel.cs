@@ -422,11 +422,8 @@ namespace windows_client.ViewModel
                 if (ShowTypingNotification != null)
                     ShowTypingNotification(null, vals);
 
-                Thread.Sleep(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE * 1000);
-
-                if (AutohideTypingNotification != null)
-                    AutohideTypingNotification(null, vals);
-
+                TypingNotification tn = new TypingNotification(vals);
+                scheduler.Schedule(tn.AutoHideAfterTyping, TimeSpan.FromSeconds(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE));
             }
             #endregion
             #region END TYPING NOTIFICATION
@@ -440,10 +437,18 @@ namespace windows_client.ViewModel
             #endregion
         }
 
+
         public event EventHandler<Object[]> ShowTypingNotification;
         public event EventHandler<Object[]> AutohideTypingNotification;
         public event EventHandler<Object[]> HidetypingNotification;
 
+        public void CallAutohide(object[] vals)
+        {
+            if (AutohideTypingNotification != null)
+            {
+                AutohideTypingNotification(null, vals);
+            }
+        }
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
