@@ -976,7 +976,7 @@ namespace windows_client
                     appSettings[App.HIKEJINGLE_PREF] = (bool)true;
                     App.WriteToIsoStorageSettings(App.ENTER_TO_SEND, false);
                 }
-                else if (Utils.compareVersion(_currentVersion, "2.5.0.2") < 0)
+                else if (Utils.compareVersion(_currentVersion, "2.5.0.3") < 0)
                 {
                     SendEnterToSendStatusToServer();
                 }
