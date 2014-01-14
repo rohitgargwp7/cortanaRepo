@@ -268,6 +268,7 @@ namespace windows_client.Model
 
         public ContactInfo(ContactInfo contact)
         {
+            this._id = contact.Id;
             this._msisdn = contact._msisdn;
             this._name = contact._name;
             this._onHike = contact._onHike;

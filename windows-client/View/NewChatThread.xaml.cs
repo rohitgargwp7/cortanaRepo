@@ -1068,15 +1068,15 @@ namespace windows_client.View
                 isOnHike = obj.OnHike;
 
                 /* Check if it is a forwarded msg */
-                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
-                {
-                    NavigationService.RemoveBackEntry(); // remove last chat thread page
-                    if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is string)
-                    {
-                        sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
-                        PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
-                    }
-                }
+                //if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
+                //{
+                //    NavigationService.RemoveBackEntry(); // remove last chat thread page
+                //    if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is string)
+                //    {
+                //        sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                //        PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                //    }
+                //}
                 avatarImage = UI_Utils.Instance.GetBitmapImage(mContactNumber, isOnHike);
                 userImage.Source = avatarImage;
             }
@@ -1855,74 +1855,7 @@ namespace windows_client.View
 
         private void forwardAttachmentMessage()
         {
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
-            {
-                if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
-                {
-                    object[] attachmentData = (object[])PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
-                    if (attachmentData.Length == 1)
-                    {
-                        ConvMessage convMessage = new ConvMessage(AppResources.Sticker_Txt, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                        convMessage.IsSms = !isOnHike;
-                        convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
-                        convMessage.MetaDataString = attachmentData[0] as string;
-
-                        AddNewMessageToUI(convMessage, false);
-
-                        mPubSub.publish(HikePubSub.MESSAGE_SENT, convMessage);
-                        PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
-                    }
-                    else
-                    {
-                        string contentType = (string)attachmentData[0];
-                        string sourceMsisdn = (string)attachmentData[1];
-                        long messageId = (long)attachmentData[2];
-                        string metaDataString = (string)attachmentData[3];
-                        string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn.Replace(":", "_") + "/" + messageId;
-
-                        ConvMessage convMessage = new ConvMessage("", mContactNumber,
-                            TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                        convMessage.IsSms = !isOnHike;
-                        convMessage.HasAttachment = true;
-                        convMessage.FileAttachment = new Attachment();
-                        convMessage.FileAttachment.ContentType = contentType;
-                        convMessage.FileAttachment.Thumbnail = (byte[])attachmentData[4];
-                        convMessage.FileAttachment.FileName = (string)attachmentData[5];
-                        convMessage.IsSms = !isOnHike;
-                        convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
-
-                        if (contentType.Contains(HikeConstants.IMAGE))
-                            convMessage.Message = AppResources.Image_Txt;
-                        else if (contentType.Contains(HikeConstants.AUDIO))
-                        {
-                            convMessage.Message = AppResources.Audio_Txt;
-                            convMessage.MetaDataString = metaDataString;
-                        }
-                        else if (contentType.Contains(HikeConstants.VIDEO))
-                            convMessage.Message = AppResources.Video_Txt;
-                        else if (contentType.Contains(HikeConstants.LOCATION))
-                        {
-                            convMessage.Message = AppResources.Location_Txt;
-                            convMessage.MetaDataString = metaDataString;
-                        }
-                        else if (contentType.Contains(HikeConstants.CT_CONTACT))
-                        {
-                            convMessage.Message = AppResources.ContactTransfer_Text;
-                            convMessage.MetaDataString = metaDataString;
-                        }
-
-                        AddMessageToOcMessages(convMessage, false, false);
-                        object[] vals = new object[3];
-                        vals[0] = convMessage;
-                        vals[1] = sourceFilePath;
-                        mPubSub.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
-                        PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
-                    }
-                }
-
-            }
-
-            else if (PhoneApplicationService.Current.State.ContainsKey("SharePicker"))
+            if (PhoneApplicationService.Current.State.ContainsKey("SharePicker"))
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {

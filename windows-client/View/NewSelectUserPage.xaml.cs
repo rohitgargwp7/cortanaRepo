@@ -37,6 +37,7 @@ namespace windows_client.View
         bool xyz = true; // this is used to avoid double calling of Text changed function in Textbox
         private bool isExistingGroup = false;
         private bool isGroupChat = false;
+        public List<ContactInfo> contactsForForward = null; // this is used to store all those contacts which are selected for forwarding message
         public List<ContactInfo> contactsForgroup = null; // this is used to store all those contacts which are selected for group
         List<Group<ContactInfo>> glistFiltered = null;
         public List<Group<ContactInfo>> jumpList = null; // list that will contain the complete jump list
@@ -55,6 +56,7 @@ namespace windows_client.View
 
         private ApplicationBar appBar;
         private ApplicationBarIconButton doneIconButton = null;
+        private ApplicationBarIconButton forwardDoneIconButton = null;
         private ApplicationBarIconButton refreshIconButton = null;
         private ApplicationBarMenuItem onHikeFilter = null;
 
@@ -77,35 +79,72 @@ namespace windows_client.View
                 if (value != existingGroupUsers)
                 {
                     existingGroupUsers = value;
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+
+                    if (doneIconButton != null)
                     {
-                        if (!isExistingGroup) // case if group is new
-                        {
-                            if (existingGroupUsers >= 3)
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                if (!doneIconButton.IsEnabled)
-                                    doneIconButton.IsEnabled = true;
+                                if (!isExistingGroup) // case if group is new
+                                {
+                                    if (existingGroupUsers >= 3)
+                                    {
+                                        if (!doneIconButton.IsEnabled)
+                                            doneIconButton.IsEnabled = true;
+                                    }
+                                    else
+                                    {
+                                        if (doneIconButton.IsEnabled)
+                                            doneIconButton.IsEnabled = false;
+                                    }
+                                }
+                                else
+                                {
+                                    if (existingGroupUsers - defaultGroupmembers > 0)
+                                    {
+                                        if (!doneIconButton.IsEnabled)
+                                            doneIconButton.IsEnabled = true;
+                                    }
+                                    else
+                                    {
+                                        if (doneIconButton.IsEnabled)
+                                            doneIconButton.IsEnabled = false;
+                                    }
+                                }
+                            });
+                    }
+                }
+            }
+        }
+
+        private int forwardUsers = 0; // 1 because owner of the group is already included
+        public int ForwardUsers
+        {
+            get
+            {
+                return forwardUsers;
+            }
+            set
+            {
+                if (value != forwardUsers)
+                {
+                    forwardUsers = value;
+
+                    if (forwardDoneIconButton != null)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (forwardUsers > 0)
+                            {
+                                if (!forwardDoneIconButton.IsEnabled)
+                                    forwardDoneIconButton.IsEnabled = true;
                             }
                             else
                             {
-                                if (doneIconButton.IsEnabled)
-                                    doneIconButton.IsEnabled = false;
+                                if (forwardDoneIconButton.IsEnabled)
+                                    forwardDoneIconButton.IsEnabled = false;
                             }
-                        }
-                        else
-                        {
-                            if (existingGroupUsers - defaultGroupmembers > 0)
-                            {
-                                if (!doneIconButton.IsEnabled)
-                                    doneIconButton.IsEnabled = true;
-                            }
-                            else
-                            {
-                                if (doneIconButton.IsEnabled)
-                                    doneIconButton.IsEnabled = false;
-                            }
-                        }
-                    });
+                        });
+                    }
                 }
             }
         }
@@ -364,6 +403,18 @@ namespace windows_client.View
             {
 
             }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
+            {
+                if (forwardDoneIconButton != null)
+                    return;
+                forwardDoneIconButton = new ApplicationBarIconButton();
+                forwardDoneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
+                forwardDoneIconButton.Text = AppResources.AppBar_Done_Btn;
+                forwardDoneIconButton.Click += forwardTo_Click;
+                forwardDoneIconButton.IsEnabled = false;
+                appBar.Buttons.Add(forwardDoneIconButton); 
+                contactsListBox.Tap += contactSelectedForForward_Click;
+            }
             else
             {
                 contactsListBox.Tap += contactSelected_Click;
@@ -617,7 +668,7 @@ namespace windows_client.View
             }
             xyz = !xyz;
 
-            if (isGroupChat)
+            if (isGroupChat || PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
                 charsEntered = enterNameTxt.Text.Substring(stringBuilderForContactNames.Length);
             else
                 charsEntered = enterNameTxt.Text.ToLower();
@@ -767,6 +818,65 @@ namespace windows_client.View
             return glistFiltered;
         }
 
+        #region FORWARD RELATED
+
+        void forwardTo_Click(object sender, EventArgs e)
+        {
+            App.ViewModel.ForwardMessage(contactsForForward);
+
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+        }
+
+        private void contactSelectedForForward_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
+            contactsListBox.SelectedItem = null;//so that if user taps anywhere else on the list it doesn't get selected by default
+            if (contact == null || contact.Msisdn == AppResources.SelectUser_EnterValidNo_Txt || contact.Msisdn == App.MSISDN)
+                return;
+
+            if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
+            {
+                contact.Msisdn = Utils.NormalizeNumber(contact.Name);
+                if (contact.Msisdn == App.MSISDN)
+                    return;
+                contact = GetContactIfExists(contact);
+                contact.Name = contact.Msisdn;
+            }
+
+            if ((contact.Id == null && isNumberAlreadySelected(contact.Msisdn, contactsForForward)) || isGroupAlreadySelected(contact.Id, contactsForForward))
+            {
+                MessageBoxResult result = MessageBox.Show(string.Format(AppResources.SelectUser_UserAlreadyAdded_Txt, contact.Msisdn), AppResources.SelectUser_AlreadyAdded_Txt, MessageBoxButton.OK);
+                return;
+            }
+
+            if (contactsForForward == null)
+                contactsForForward = new List<ContactInfo>();
+
+            // new object is created for every numbered contacts i.e contact not in your list and you have added him by entering number
+            ContactInfo contactToAdd = new ContactInfo(contact);
+            contactsForForward.Add(contactToAdd);
+            stringBuilderForContactNames.Append(contactToAdd.Name).Append("; ");
+            enterNameTxt.Text = stringBuilderForContactNames.ToString();
+            enterNameTxt.Select(enterNameTxt.Text.Length, 0);
+
+            ForwardUsers++;
+
+            charsEntered = "";
+        }
+
+        private bool isGroupAlreadySelected(string id, List<ContactInfo> l)
+        {
+            for (int i = 0; i < (l != null ? l.Count : 0); i++)
+            {
+                if (l[i].Id == id)
+                    return true;
+            }
+            return false;
+        }
+
+        #endregion
+
         #region GROUP CHAT RELATED
 
         private void startGroup_Click(object sender, EventArgs e)
@@ -820,6 +930,7 @@ namespace windows_client.View
                 if (!cn.OnHike)
                     smsUserCount--;
                 ExistingGroupUsers--;
+                ForwardUsers--;
             }
         }
 
@@ -1221,6 +1332,7 @@ namespace windows_client.View
                         return;
                     }
                     ExistingGroupUsers--;
+                    ForwardUsers--;
                     if (!contactsForgroup[k].OnHike)
                         smsUserCount--;
                     contactsForgroup.RemoveAt(k);
