@@ -1679,6 +1679,9 @@ namespace windows_client
 
                     var to = (string)jsonObj[HikeConstants.TO];
 
+                    if (!String.IsNullOrEmpty(to))
+                        GroupManager.Instance.LoadGroupCache();
+
                     var sender = !String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to) ? to : msisdn;
 
                     ChatThemeData bg = null;
