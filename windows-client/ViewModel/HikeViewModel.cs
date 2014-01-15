@@ -816,6 +816,9 @@ namespace windows_client.ViewModel
                     convMessage.IsSms = !contact.OnHike;
                     convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
 
+                    if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == msisdn)
+                        App.newChatThreadPage.AddNewMessageToUI(convMessage, false);
+
                     App.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, convMessage);
                 }
 
@@ -833,6 +836,9 @@ namespace windows_client.ViewModel
                         convMessage.IsSms = !contact.OnHike;
                         convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
                         convMessage.MetaDataString = attachmentData[0] as string;
+
+                        if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == msisdn)
+                            App.newChatThreadPage.AddNewMessageToUI(convMessage, false);
 
                         App.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, convMessage);
                     }
@@ -880,6 +886,9 @@ namespace windows_client.ViewModel
                             convMessage.MetaDataString = metaDataString;
                         }
 
+                        if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == msisdn)
+                            App.newChatThreadPage.AddNewMessageToUI(convMessage, false);
+
                         object[] vals = new object[3];
                         vals[0] = convMessage;
                         vals[1] = sourceFilePath;
@@ -887,6 +896,24 @@ namespace windows_client.ViewModel
                     }
 
                     PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                }
+            }
+        }
+
+        ObservableCollection<ConvMessage> _ocMessages;
+
+        public ObservableCollection<ConvMessage> OcMessages
+        {
+            get
+            {
+                return _ocMessages;
+            }
+            set
+            {
+                if (value != _ocMessages)
+                {
+                    _ocMessages = value;
+                    NotifyPropertyChanged("OcMessages");
                 }
             }
         }
