@@ -272,7 +272,7 @@ namespace windows_client.Model
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("StatusMessage ::  NotifyPropertyChanging : NotifyPropertyChanging, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("StatusMessage ::  NotifyPropertyChanging : NotifyPropertyChanging, Exception : " + ex.StackTrace);
                 }
             }
         }

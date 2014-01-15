@@ -184,7 +184,7 @@ namespace windows_client.Model
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine("ChatBackground Model :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("ChatBackground Model :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
                     }
                 });
             }

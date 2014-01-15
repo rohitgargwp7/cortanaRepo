@@ -106,7 +106,7 @@ namespace windows_client.utils
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("ProTipHelper :: saveProTipImage : saveProTipImage, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("ProTipHelper :: saveProTipImage : saveProTipImage, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -138,7 +138,7 @@ namespace windows_client.utils
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("ProTipHelper :: getProTipImage : getProTipImage, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("ProTipHelper :: getProTipImage : getProTipImage, Exception : " + ex.StackTrace);
                 }
             }
 
@@ -174,7 +174,7 @@ namespace windows_client.utils
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("ProTip Helper :: Write ProTip To File, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("ProTip Helper :: Write ProTip To File, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -208,7 +208,7 @@ namespace windows_client.utils
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("ProTip Helper :: Read ProTip From File, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("ProTip Helper :: Read ProTip From File, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -258,7 +258,7 @@ namespace windows_client.utils
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("ProTip Helper :: delete ProTip Data on upgrade to 2.2.2.1, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("ProTip Helper :: delete ProTip Data on upgrade to 2.2.2.1, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -296,7 +296,7 @@ namespace windows_client.utils
                         }
                         catch (Exception ex)
                         {
-                            System.Diagnostics.Debug.WriteLine("ProTip Helper :: delete current ProTip File, Exception : " + ex.StackTrace);
+                            Logging.LogWriter.Instance.WriteToLog("ProTip Helper :: delete current ProTip File, Exception : " + ex.StackTrace);
                         }
                     }
                 }
@@ -384,7 +384,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("ProTip :: Write : Unable To write, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("ProTip :: Write : Unable To write, Exception : " + ex.StackTrace);
             }
 
         }
@@ -425,7 +425,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("ProTip :: Read : Read, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("ProTip :: Read : Read, Exception : " + ex.StackTrace);
             }
         }
     }

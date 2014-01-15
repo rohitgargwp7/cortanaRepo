@@ -102,7 +102,7 @@ namespace windows_client.utils
 
                     catch (Exception e)
                     {
-                        Debug.WriteLine("BlockingQueue ::  Enqueue :  Enqueue , Exception : " + e.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("BlockingQueue ::  Enqueue :  Enqueue , Exception : " + e.StackTrace);
                         // Monitor exited with exception.  Could be owner thread of monitor
                         // object was terminated or timeout on wait.  Pulse any/all waiting
                         // threads to ensure we don't get any "live locked" producers.
@@ -172,7 +172,7 @@ namespace windows_client.utils
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine("BlockingQueue ::  Dequeue :  Enqueue , Exception : " + e.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("BlockingQueue ::  Dequeue :  Enqueue , Exception : " + e.StackTrace);
                         Monitor.PulseAll(syncRoot);
                         throw;
                     }

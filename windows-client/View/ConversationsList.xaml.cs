@@ -540,7 +540,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("ConversationList ::  removeListeners , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("ConversationList ::  removeListeners , Exception : " + ex.StackTrace);
             }
         }
 
@@ -612,7 +612,7 @@ namespace windows_client.View
             avatarImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to fetch profile image : {0}", msec);
+            Logging.LogWriter.Instance.WriteToLog("Time to fetch profile image : " + msec);
         }
 
         #endregion
@@ -721,6 +721,8 @@ namespace windows_client.View
 
         private void deleteConversation(ConversationListObject convObj)
         {
+
+            Logging.LogWriter.Instance.WriteToLog(string.Format("CONVERSATION DELETION:Long Press delete convlist,msisdn:{0}, name:{1}", convObj.Msisdn, convObj.ContactName));
             App.ViewModel.ConvMap.Remove(convObj.Msisdn); // removed entry from map for UI
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
 
@@ -737,6 +739,9 @@ namespace windows_client.View
                 jObj[HikeConstants.TO] = convObj.Msisdn;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
             }
+            else
+                Logging.LogWriter.Instance.WriteToLog(string.Format("Not group so no gcl ,msisdn:{0}, name:{1}", convObj.Msisdn, convObj.ContactName));
+
             mPubSub.publish(HikePubSub.DELETE_CONVERSATION, convObj.Msisdn);
         }
 
@@ -955,7 +960,7 @@ namespace windows_client.View
         {
             if (obj == null)
             {
-                Debug.WriteLine("ConversationsList :: OnEventReceived : Object received is null");
+                Logging.LogWriter.Instance.WriteToLog("ConversationsList :: OnEventReceived : Object received is null");
                 if (type != HikePubSub.ADD_REMOVE_FAV)
                     return;
             }
@@ -983,7 +988,7 @@ namespace windows_client.View
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine("ConversationList ::  onEventReceived,MESSAGE_RECEIVED  , Exception : " + ex.StackTrace);
+                            Logging.LogWriter.Instance.WriteToLog("ConversationList ::  onEventReceived,MESSAGE_RECEIVED  , Exception : " + ex.StackTrace);
                         }
                     });
                 }
@@ -1144,7 +1149,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("ConversationList ::  onEventReceived,BAD_USER_PASS  , Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("ConversationList ::  onEventReceived,BAD_USER_PASS  , Exception : " + ex.StackTrace);
                 }
             }
             #endregion
@@ -1425,7 +1430,7 @@ namespace windows_client.View
                                             }
                                             catch (Exception e)
                                             {
-                                                Debug.WriteLine("ConversationsList :: BLOCK USER : Exception while removing a friendRequest, Exception : " + e.StackTrace);
+                                                Logging.LogWriter.Instance.WriteToLog("ConversationsList :: BLOCK USER : Exception while removing a friendRequest, Exception : " + e.StackTrace);
                                             }
                                         });
                                         break;
@@ -1711,7 +1716,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("ConversationList ::  openMarketPlace, openMarketPlace  , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("ConversationList ::  openMarketPlace, openMarketPlace  , Exception : " + ex.StackTrace);
             }
         }
 
@@ -1907,7 +1912,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("CONVERSATIONSLIST SCREEN :: Exception while navigating to SocialPages screen : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("CONVERSATIONSLIST SCREEN :: Exception while navigating to SocialPages screen : " + ex.StackTrace);
             }
         }
 
@@ -1921,7 +1926,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("CONVERSATIONSLIST SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("CONVERSATIONSLIST SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
             }
         }
 
@@ -2011,7 +2016,7 @@ namespace windows_client.View
                                  }
                                  catch (Exception ex)
                                  {
-                                     Debug.WriteLine("ConversationList ::  showRateAppMessage, showRateAppMessage  , Exception : " + ex.StackTrace);
+                                     Logging.LogWriter.Instance.WriteToLog("ConversationList ::  showRateAppMessage, showRateAppMessage  , Exception : " + ex.StackTrace);
                                  }
                              }
                          }
@@ -2930,7 +2935,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Exception::ConversationList.xaml.cs:GetFtueThread,ex:" + ex.Message);
+                Logging.LogWriter.Instance.WriteToLog("Exception::ConversationList.xaml.cs:GetFtueThread,ex:" + ex.Message);
             }
 
             return obj;
@@ -2958,7 +2963,7 @@ namespace windows_client.View
         }
 
         #region Typing Notification
-        
+
         void ShowTypingNotification(object sender, object[] vals)
         {
             string typerMsisdn = (string)vals[0];
@@ -3025,7 +3030,7 @@ namespace windows_client.View
                 return;
             convListObj.TypingNotificationText = null;
         }
-        
+
         #endregion
 
     }

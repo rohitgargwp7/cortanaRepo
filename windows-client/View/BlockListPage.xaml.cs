@@ -59,7 +59,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("ConversationList ::  removeListeners , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("ConversationList ::  removeListeners , Exception : " + ex.StackTrace);
             }
         }
 
@@ -67,7 +67,7 @@ namespace windows_client.View
         {
             if (obj == null)
             {
-                Debug.WriteLine("BlockListPage :: OnEventReceived : Object received is null");
+                Logging.LogWriter.Instance.WriteToLog("BlockListPage :: OnEventReceived : Object received is null");
                 return;
             }
             if (type == HikePubSub.BLOCK_USER)

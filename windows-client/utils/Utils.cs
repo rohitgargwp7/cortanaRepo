@@ -97,15 +97,15 @@ namespace windows_client.utils
             JObject requestAccountInfo = new JObject();
             try
             {
-                JObject upgradeJobj=new JObject();
-                upgradeJobj.Add(HikeConstants.UPGRADE,true);
+                JObject upgradeJobj = new JObject();
+                upgradeJobj.Add(HikeConstants.UPGRADE, true);
                 requestAccountInfo.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
                 requestAccountInfo.Add(HikeConstants.DATA, upgradeJobj);
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, requestAccountInfo);
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Utils", "Invalid JSON", e);
+                Logging.LogWriter.Instance.WriteToLog("Utils" + "Invalid JSON" + e.Message);
             }
         }
 
@@ -272,7 +272,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Utils ::  computeHash :  computeHash , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("Utils ::  computeHash :  computeHash , Exception : " + ex.StackTrace);
             }
             return rethash;
         }
@@ -459,11 +459,11 @@ namespace windows_client.utils
             try
             {
                 int idx = targetPage.IndexOf("msisdn");
-                return targetPage.Substring(idx).Remove(0,7);
+                return targetPage.Substring(idx).Remove(0, 7);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("App :: GetParamFromUri : GetParamFromUri , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("App :: GetParamFromUri : GetParamFromUri , Exception : " + ex.StackTrace);
                 return "";
             }
         }

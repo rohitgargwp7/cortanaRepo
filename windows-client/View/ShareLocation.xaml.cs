@@ -191,7 +191,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("ShareLocation :: ParsePlaces : ParsePlaces , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("ShareLocation :: ParsePlaces : ParsePlaces , Exception : " + ex.StackTrace);
             }
 
             return places;
@@ -330,7 +330,7 @@ namespace windows_client.View
             {
                 // Couldn't get current location - location might be disabled in settings
                 //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
-                System.Diagnostics.Debug.WriteLine("Location exception GetCurrentCoordinate : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("Location exception GetCurrentCoordinate : " + ex.StackTrace);
             }
             finally
             {
@@ -832,7 +832,7 @@ namespace windows_client.View
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine("Places :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("Places :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
                     }
                 });
             }

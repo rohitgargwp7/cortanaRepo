@@ -21,7 +21,7 @@ namespace windows_client.FileTransfers
         public static int MaxBlockSize;
         protected int BlockSize = 1024;
         protected int ChunkFactor = 1;
-        
+
         public int BytesTransfered
         {
             get
@@ -108,7 +108,7 @@ namespace windows_client.FileTransfers
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine(e);
+                    Logging.LogWriter.Instance.WriteToLog(e.ToString() + e.StackTrace);
                 }
 
                 retryAttempts++;

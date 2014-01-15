@@ -182,7 +182,7 @@ namespace windows_client
             catch (Exception ex)
             {
                 // do something here
-                Debug.WriteLine("HIkePubSub :: HikePubSub() : thread start, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("HIkePubSub :: HikePubSub() : thread start, Exception : " + ex.StackTrace);
             }
         }
 
@@ -234,7 +234,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("HIkePubSub :: startPubSub : startPubSub , Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("HIkePubSub :: startPubSub : startPubSub , Exception : " + ex.StackTrace);
                     continue;
                 }
 

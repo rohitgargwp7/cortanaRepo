@@ -307,7 +307,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("NewSelectUserPage.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("NewSelectUserPage.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
             }
             PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_BLOCKED_LIST);
             PhoneApplicationService.Current.State.Remove(HikeConstants.START_NEW_GROUP);
@@ -599,7 +599,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("NewSelectUserPage.xaml :: contactSelected_Click, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("NewSelectUserPage.xaml :: contactSelected_Click, Exception : " + ex.StackTrace);
             }
         }
 
@@ -621,7 +621,7 @@ namespace windows_client.View
                 charsEntered = enterNameTxt.Text.Substring(stringBuilderForContactNames.Length);
             else
                 charsEntered = enterNameTxt.Text.ToLower();
-            Debug.WriteLine("Chars Entered : {0}", charsEntered);
+          //  Logging.LogWriter.Instance.WriteToLog("Chars Entered : {0}", charsEntered);
 
             charsEntered = charsEntered.Trim();
             if (String.IsNullOrWhiteSpace(charsEntered))
@@ -798,7 +798,7 @@ namespace windows_client.View
             if (e.Key == Key.Back)
             {
 
-                Debug.WriteLine(Environment.OSVersion);
+                Logging.LogWriter.Instance.WriteToLog(Environment.OSVersion.ToString());
                 int cursorPosition = enterNameTxt.SelectionStart;
 
                 // this has to be done for WP8 device. therse is a problem in win phone os
@@ -811,9 +811,9 @@ namespace windows_client.View
 
                 ContactInfo cn = contactsForgroup[contactsForgroup.Count - 1];
                 contactsForgroup.RemoveAt(contactsForgroup.Count - 1);
-                Debug.WriteLine("Contacts selected : {0}, char count = {1}", stringBuilderForContactNames.ToString(), stringBuilderForContactNames.Length);
+                Logging.LogWriter.Instance.WriteToLog(string.Format("Contacts selected : {0}, char count = {1}", stringBuilderForContactNames.ToString(), stringBuilderForContactNames.Length));
                 stringBuilderForContactNames.Remove(stringBuilderForContactNames.Length - (cn.Name.Length + 2), (cn.Name.Length + 2));
-                Debug.WriteLine("Contacts selected : {0}, char count = {1}", stringBuilderForContactNames.ToString(), stringBuilderForContactNames.Length);
+                Logging.LogWriter.Instance.WriteToLog(string.Format("Contacts selected : {0}, char count = {1}", stringBuilderForContactNames.ToString(), stringBuilderForContactNames.Length));
                 enterNameTxt.Text = stringBuilderForContactNames.ToString();
                 enterNameTxt.Select(enterNameTxt.Text.Length, 0);
                 // update user count
@@ -1064,7 +1064,7 @@ namespace windows_client.View
                         }
                         catch (Exception e)
                         {
-                            Debug.WriteLine("REFRESH CONTACTS :: Delete contact exception " + e.StackTrace);
+                            Logging.LogWriter.Instance.WriteToLog("REFRESH CONTACTS :: Delete contact exception " + e.StackTrace);
                         }
                     }
                     else // if this contact is in favourite or pending and not in convMap update this also

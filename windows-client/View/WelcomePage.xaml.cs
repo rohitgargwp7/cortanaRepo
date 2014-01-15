@@ -75,11 +75,11 @@ namespace windows_client
 
             #region SERVER INFO
             string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
-            Debug.WriteLine("SERVER SETTING : " + env);
-            Debug.WriteLine("HOST : " + AccountUtils.HOST);
-            Debug.WriteLine("PORT : " + AccountUtils.PORT);
-            Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
-            Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
+            Logging.LogWriter.Instance.WriteToLog("SERVER SETTING : " + env);
+            Logging.LogWriter.Instance.WriteToLog("HOST : " + AccountUtils.HOST);
+            Logging.LogWriter.Instance.WriteToLog("PORT : " + AccountUtils.PORT);
+            Logging.LogWriter.Instance.WriteToLog("MQTT HOST : " + AccountUtils.MQTT_HOST);
+            Logging.LogWriter.Instance.WriteToLog("MQTT PORT : " + AccountUtils.MQTT_PORT);
             #endregion
             NetworkErrorTxtBlk.Opacity = 0;
             if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
@@ -99,7 +99,7 @@ namespace windows_client
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("WelcomePage.xaml :: getStarted_click, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("WelcomePage.xaml :: getStarted_click, Exception : " + ex.StackTrace);
             }
             isClicked = true;
             progressBar.Opacity = 1;
@@ -165,7 +165,7 @@ namespace windows_client
         {
             base.OnNavigatingFrom(e);
             string uri = e.Uri.ToString();
-            Debug.WriteLine("Welcome :: " + uri);
+            Logging.LogWriter.Instance.WriteToLog("Welcome :: " + uri);
             if (!uri.Contains("View")) // this means app is not navigating to a new page so save for tombstone
             {
                 this.State["NetworkErrorTxtBlk.Opacity"] = (int)NetworkErrorTxtBlk.Opacity;
@@ -184,7 +184,7 @@ namespace windows_client
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("WelcomePAge.xaml :: Privacy_Tap, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("WelcomePAge.xaml :: Privacy_Tap, Exception : " + ex.StackTrace);
             }
         }
     }

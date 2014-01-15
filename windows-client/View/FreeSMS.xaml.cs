@@ -135,7 +135,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Free Smms ::  OnRemovedFromJournal , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("Free Smms ::  OnRemovedFromJournal , Exception : " + ex.StackTrace);
             }
             base.OnRemovedFromJournal(e);
         }
@@ -211,7 +211,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("FREE SMS SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("FREE SMS SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
             }
         }
 
@@ -319,7 +319,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Free Sms::  initializeCredits , Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("Free Sms::  initializeCredits , Exception : " + ex.StackTrace);
                 }
             }
             long val = ((long)creditsRemaining * 435) / max;

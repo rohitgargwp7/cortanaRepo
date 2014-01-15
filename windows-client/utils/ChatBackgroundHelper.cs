@@ -102,7 +102,7 @@ namespace windows_client.utils
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("Chat Bg Helper :: Read Bg Id Map From File, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("Chat Bg Helper :: Read Bg Id Map From File, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -148,7 +148,7 @@ namespace windows_client.utils
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("Chat Bg Helper :: Write Bg Id Map To File, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("Chat Bg Helper :: Write Bg Id Map To File, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -606,7 +606,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("BackgroundImage :: Write : Unable To write, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("BackgroundImage :: Write : Unable To write, Exception : " + ex.StackTrace);
             }
 
         }
@@ -622,7 +622,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("BackgroundImage :: Read : Read, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("BackgroundImage :: Read : Read, Exception : " + ex.StackTrace);
             }
         }
     }

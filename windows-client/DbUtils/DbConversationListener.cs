@@ -409,7 +409,7 @@ namespace windows_client.DbUtils
                                     }
                                     catch (Exception e)
                                     {
-                                        Debug.WriteLine("DbConversationListener :: Error on Saving file : " + destinationPath + ", Exception : " + e.StackTrace);
+                                        Logging.LogWriter.Instance.WriteToLog("DbConversationListener :: Error on Saving file : " + destinationPath + ", Exception : " + e.StackTrace);
                                     }
                                 }
 
@@ -475,7 +475,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine("DbConversationListener :: FILE_STATE_CHANGED : FILE_STATE_CHANGED, Exception : " + e.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("DbConversationListener :: FILE_STATE_CHANGED : FILE_STATE_CHANGED, Exception : " + e.StackTrace);
                     }
                 }
             }

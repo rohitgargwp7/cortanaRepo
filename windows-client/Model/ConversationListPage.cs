@@ -415,7 +415,7 @@ namespace windows_client.Model
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("ConversationListPage :: AvatarImage : AvatarImage, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("ConversationListPage :: AvatarImage : AvatarImage, Exception : " + ex.StackTrace);
                     return null;
                 }
             }
@@ -666,7 +666,7 @@ namespace windows_client.Model
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("ConversationListPage :: Write : Unable To write, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("ConversationListPage :: Write : Unable To write, Exception : " + ex.StackTrace);
                 throw new Exception("Unable to write to a file...");
             }
         }
@@ -707,7 +707,7 @@ namespace windows_client.Model
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("ConversationListPage :: ReadVer_1_4_0_0 : Unable To write, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("ConversationListPage :: ReadVer_1_4_0_0 : Unable To write, Exception : " + ex.StackTrace);
                 throw new Exception("Conversation Object corrupt");
             }
         }
@@ -749,7 +749,7 @@ namespace windows_client.Model
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("ConversationListPage :: ReadVer_Latest : Unable To write, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("ConversationListPage :: ReadVer_Latest : Unable To write, Exception : " + ex.StackTrace);
                 throw new Exception("Conversation Object corrupt");
             }
         }
@@ -787,7 +787,7 @@ namespace windows_client.Model
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("ConversationListPage :: WriteFavOrPending : WriteFavOrPending, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("ConversationListPage :: WriteFavOrPending : WriteFavOrPending, Exception : " + ex.StackTrace);
                 throw new Exception("Unable to write to a file...");
             }
         }
@@ -824,7 +824,7 @@ namespace windows_client.Model
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("ConversationListPage :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("ConversationListPage :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
                     }
                 });
             }

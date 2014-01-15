@@ -359,11 +359,11 @@ namespace windows_client
             {
                 #region SERVER INFO
                 string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
-                Debug.WriteLine("SERVER SETTING : " + env);
-                Debug.WriteLine("HOST : " + AccountUtils.HOST);
-                Debug.WriteLine("PORT : " + AccountUtils.PORT);
-                Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
-                Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
+                Logging.LogWriter.Instance.WriteToLog("SERVER SETTING : " + env);
+                Logging.LogWriter.Instance.WriteToLog("HOST : " + AccountUtils.HOST);
+                Logging.LogWriter.Instance.WriteToLog("PORT : " + AccountUtils.PORT);
+                Logging.LogWriter.Instance.WriteToLog("MQTT HOST : " + AccountUtils.MQTT_HOST);
+                Logging.LogWriter.Instance.WriteToLog("MQTT PORT : " + AccountUtils.MQTT_PORT);
                 #endregion
             }
             _isAppLaunched = true;
@@ -385,7 +385,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("App :: Application_Activated : Setting launch state , Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("App :: Application_Activated : Setting launch state , Exception : " + ex.StackTrace);
                 }
 
                 if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
@@ -661,7 +661,7 @@ namespace windows_client
                 //Running on a device / emulator without debugging
                 e.Handled = true;
                 Error.Exception = e.ExceptionObject;
-                Debug.WriteLine("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog(string.Format("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace));
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     MessageBox.Show(e.ExceptionObject.ToString(), "Exception", MessageBoxButton.OK);
@@ -819,7 +819,7 @@ namespace windows_client
                 App.HikePubSubInstance = new HikePubSub(); // instantiate pubsub
             st.Stop();
             long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Pubsub : {0}", msec);
+            // Logging.LogWriter.Instance.WriteToLog("APP: Time to Instantiate Pubsub : {0}", msec);
             #endregion
             #region DBCONVERSATION LISTENER
             st.Reset();
@@ -828,7 +828,7 @@ namespace windows_client
                 App.DbListener = new DbConversationListener();
             st.Stop();
             msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate DbListeners : {0}", msec);
+            //Logging.LogWriter.Instance.WriteToLog("APP: Time to Instantiate DbListeners : " + msec);
             #endregion
             #region NETWORK MANAGER
             st.Reset();
@@ -836,7 +836,7 @@ namespace windows_client
             App.NetworkManagerInstance = NetworkManager.Instance;
             st.Stop();
             msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Network Manager : {0}", msec);
+            //Logging.LogWriter.Instance.WriteToLog("APP: Time to Instantiate Network Manager : {0}" + msec);
             #endregion
             #region MQTT MANAGER
             st.Reset();
@@ -850,7 +850,7 @@ namespace windows_client
             }
             st.Stop();
             msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate MqttManager : {0}", msec);
+            //Logging.LogWriter.Instance.WriteToLog("APP: Time to Instantiate MqttManager : {0}", msec);
             #endregion
             #region UI UTILS
             st.Reset();
@@ -858,7 +858,7 @@ namespace windows_client
             App.UI_UtilsInstance = UI_Utils.Instance;
             st.Stop();
             msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate UI_Utils : {0}", msec);
+            //Logging.LogWriter.Instance.WriteToLog("APP: Time to Instantiate UI_Utils : {0}", msec);
             #endregion
             #region ANALYTICS
             st.Reset();
@@ -866,14 +866,14 @@ namespace windows_client
             App.AnalyticsInstance = Analytics.Instance;
             st.Stop();
             msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Analytics : {0}", msec);
+            //Logging.LogWriter.Instance.WriteToLog("APP: Time to Instantiate Analytics : {0}", msec);
             #endregion
             #region PUSH HELPER
             st.Reset();
             st.Start();
             st.Stop();
             msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Push helper : {0}", msec);
+            //Logging.LogWriter.Instance.WriteToLog("APP: Time to Instantiate Push helper : {0}", msec);
             #endregion
             #region SMILEY
             if (ps == PageState.CONVLIST_SCREEN) //  this confirms tombstone
@@ -928,7 +928,7 @@ namespace windows_client
 
                 st.Stop();
                 msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
+                //Logging.LogWriter.Instance.WriteToLog("APP: Time to Instantiate View Model : {0}", msec);
                 IS_VIEWMODEL_LOADED = true;
 
                 // setting it a default counter of 2 to show notification counter for new user on conversation page
@@ -1039,11 +1039,11 @@ namespace windows_client
                     WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
                     st.Stop();
                     long msec = st.ElapsedMilliseconds;
-                    Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
+                    Logging.LogWriter.Instance.WriteToLog("APP: Time to create Dbs : {0}" + msec);
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("App :: createDatabaseAsync : createDatabaseAsync , Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("App :: createDatabaseAsync : createDatabaseAsync , Exception : " + ex.StackTrace);
                     RemoveKeyFromAppSettings(App.IS_DB_CREATED);
                 }
 
@@ -1084,7 +1084,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("App :: WriteToIsoStorageSettings, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("App :: WriteToIsoStorageSettings, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -1100,7 +1100,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("App :: ClearAppSettings, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("App :: ClearAppSettings, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -1117,7 +1117,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("App :: RemoveKeyFromAppSettings, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("App :: RemoveKeyFromAppSettings, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -1214,7 +1214,7 @@ namespace windows_client
             if (App.HikePubSubInstance != null)
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
-        
+
         public static void SendEnterToSendStatusToServer()
         {
             var jobj = new JObject();

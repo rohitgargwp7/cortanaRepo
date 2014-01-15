@@ -76,7 +76,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("MessagesTableUtils :: addMessage : submit changes, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("MessagesTableUtils :: addMessage : submit changes, Exception : " + ex.StackTrace);
                     return false;
                 }
             }
@@ -347,7 +347,7 @@ namespace windows_client.DbUtils
                     return null;
                 st1.Stop();
                 long msec1 = st1.ElapsedMilliseconds;
-                Debug.WriteLine("Time to add chat msg : {0}", msec1);
+                Logging.LogWriter.Instance.WriteToLog(string.Format("Time to add chat msg : {0}", msec1));
 
                 if (convMsg.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
@@ -364,7 +364,7 @@ namespace windows_client.DbUtils
                 ConversationTableUtils.updateConversation(obj);
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to update conversation  : {0}", msec);
+                Logging.LogWriter.Instance.WriteToLog(string.Format("Time to update conversation  : {0}", msec));
             }
             return obj;
         }
@@ -500,7 +500,7 @@ namespace windows_client.DbUtils
             }
             catch (ChangeConflictException ex)
             {
-                Debug.WriteLine("MessageTableUtils :: SubmitWithConflictResolve : submitChanges, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("MessageTableUtils :: SubmitWithConflictResolve : submitChanges, Exception : " + ex.StackTrace);
                 // Automerge database values for members that client
                 // has not modified.
                 foreach (ObjectChangeConflict occ in context.ChangeConflicts)
@@ -521,7 +521,7 @@ namespace windows_client.DbUtils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         msisdn = msisdn.Replace(':', '_');
                         if (!store.DirectoryExists(LONG_MSG_DIRECTORY))
@@ -550,7 +550,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("MessageTableUtils::SaveLongMessage, Exception:", ex.Message);
+                    Logging.LogWriter.Instance.WriteToLog("MessageTableUtils::SaveLongMessage, Exception:" + ex.Message);
                 }
             }
         }
@@ -562,7 +562,7 @@ namespace windows_client.DbUtils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         msisdn = msisdn.Replace(':', '_');
                         string fileName = LONG_MSG_DIRECTORY + "\\" + msisdn + "\\" + timestamp;
@@ -582,7 +582,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("MessageTableUtils :: ReadLongMessage, Exception:", ex.Message);
+                    Logging.LogWriter.Instance.WriteToLog("MessageTableUtils :: ReadLongMessage, Exception:" + ex.Message);
                 }
             }
             return message;
@@ -608,7 +608,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("ConversationTableUtils :: deleteConversation : deleteConversation , Exception : " + ex.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("ConversationTableUtils :: deleteConversation : deleteConversation , Exception : " + ex.StackTrace);
                     }
                 }
             }
@@ -640,7 +640,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("ConversationTableUtils :: deleteConversation : deleteConversation , Exception : " + ex.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("ConversationTableUtils :: deleteConversation : deleteConversation , Exception : " + ex.StackTrace);
                     }
                 }
             }

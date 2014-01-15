@@ -49,7 +49,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("HElp.xaml ::  FAQs_Tap , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("HElp.xaml ::  FAQs_Tap , Exception : " + ex.StackTrace);
             }
         }
 
@@ -73,7 +73,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("HElp.xaml ::  ContactUs_Tap , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("HElp.xaml ::  ContactUs_Tap , Exception : " + ex.StackTrace);
             }
         }
 
@@ -88,7 +88,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("HElp.xaml ::  Legal_Tap , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("HElp.xaml ::  Legal_Tap , Exception : " + ex.StackTrace);
             }
         }
 
@@ -113,7 +113,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("HElp.xaml ::  rateAndReview_Tap , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("HElp.xaml ::  rateAndReview_Tap , Exception : " + ex.StackTrace);
             }
         }
 
@@ -127,7 +127,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("HElp.xaml ::  SystemHealth_Tap , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("HElp.xaml ::  SystemHealth_Tap , Exception : " + ex.StackTrace);
             }
         }
     }

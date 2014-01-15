@@ -153,7 +153,7 @@ namespace windows_client.View
         {
             if (obj == null || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
             {
-                Debug.WriteLine("Delete Account", "Could not delete account !!");
+                Logging.LogWriter.Instance.WriteToLog("Delete Account"+ "Could not delete account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     MessageBoxResult result = MessageBox.Show(AppResources.Delete_Account_Failed, AppResources.Delete_Account_Heading, MessageBoxButton.OKCancel);
@@ -197,7 +197,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Privacy.xaml :: DeleteLocalStorage,hideProgress, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("Privacy.xaml :: DeleteLocalStorage,hideProgress, Exception : " + ex.StackTrace);
                 }
                 try
                 {
@@ -205,7 +205,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Privacy.xaml :: DeleteLocalStorage,Navigate, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("Privacy.xaml :: DeleteLocalStorage,Navigate, Exception : " + ex.StackTrace);
                 }
             });
         }

@@ -80,7 +80,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("UserProfile.xaml :: removeListeners, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("UserProfile.xaml :: removeListeners, Exception : " + ex.StackTrace);
             }
         }
 
@@ -88,7 +88,7 @@ namespace windows_client.View
         {
             if (obj == null)
             {
-                Debug.WriteLine("UserProfile :: OnEventReceived : Object received is null");
+                Logging.LogWriter.Instance.WriteToLog("UserProfile :: OnEventReceived : Object received is null");
                 return;
             }
 
@@ -215,7 +215,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("UserProfile:: onEventReceived, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("UserProfile:: onEventReceived, Exception : " + ex.StackTrace);
                 }
             }
             #endregion
@@ -237,21 +237,21 @@ namespace windows_client.View
                             AccountUtils.GetOnhikeDate(msisdn, new AccountUtils.postResponseFunction(GetHikeStatus_Callback));
                         else
                             txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, TimeUtils.GetOnHikeSinceDisplay(timeOfJoin));
-                       
+
                         ShowAddAsFriends();
                     });
                 }
 
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("UserProfile:: onEventReceived, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("UserProfile:: onEventReceived, Exception : " + ex.StackTrace);
                 }
             }
             #endregion
         }
 
         #endregion
-        
+
         GroupParticipant _groupParticipant;
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -449,7 +449,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("UserProfile.xaml ::  menuItemCall_Click , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("UserProfile.xaml ::  menuItemCall_Click , Exception : " + ex.StackTrace);
             }
         }
 
@@ -500,7 +500,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("UserProfile.xaml :: onProfilePicButtonTap, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("UserProfile.xaml :: onProfilePicButtonTap, Exception : " + ex.StackTrace);
             }
         }
 
@@ -536,7 +536,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("USER PROFILE :: Exception in photochooser task " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("USER PROFILE :: Exception in photochooser task " + ex.StackTrace);
                 }
             }
             else if (e.TaskResult == TaskResult.Cancel)
@@ -563,7 +563,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("UserProfile.xaml :: updateProfile_Callback, serverid parse, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("UserProfile.xaml :: updateProfile_Callback, serverid parse, Exception : " + ex.StackTrace);
                 }
                 if (serverId != null)
                 {
@@ -1012,7 +1012,7 @@ namespace windows_client.View
             gridHikeUser.Visibility = Visibility.Collapsed;
             btnInvite.Visibility = Visibility.Collapsed;
             addToFavBtn.Visibility = Visibility.Collapsed;
-        
+
             if (!isInAddressBook)
                 ShowAddToContacts();
         }
@@ -1207,10 +1207,10 @@ namespace windows_client.View
                         ApplicationBar.Buttons.Remove(addToContactsAppBarButton);
                     break;
                 case TaskResult.Cancel:
-                    System.Diagnostics.Debug.WriteLine(AppResources.User_Cancelled_Task_Txt);
+                    Logging.LogWriter.Instance.WriteToLog(AppResources.User_Cancelled_Task_Txt);
                     break;
                 case TaskResult.None:
-                    System.Diagnostics.Debug.WriteLine(AppResources.NoInfoForTask_Txt);
+                    Logging.LogWriter.Instance.WriteToLog(AppResources.NoInfoForTask_Txt);
                     break;
             }
         }
@@ -1238,12 +1238,12 @@ namespace windows_client.View
             int count = 0;
             int duplicates = 0;
             Dictionary<string, List<ContactInfo>> contactListMap = null;
-            
+
             if (contacts == null)
                 return null;
-            
+
             contactListMap = new Dictionary<string, List<ContactInfo>>();
-            
+
             foreach (Contact cn in contacts)
             {
                 CompleteName cName = cn.CompleteName;
@@ -1260,7 +1260,7 @@ namespace windows_client.View
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
                     contactInfo = cInfo;
-                    
+
                     if (contactListMap.ContainsKey(cInfo.Id))
                     {
                         if (!contactListMap[cInfo.Id].Contains(cInfo))
@@ -1268,7 +1268,7 @@ namespace windows_client.View
                         else
                         {
                             duplicates++;
-                            Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                            Logging.LogWriter.Instance.WriteToLog(string.Format("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo));
                         }
                     }
                     else
@@ -1280,9 +1280,9 @@ namespace windows_client.View
                 }
             }
 
-            Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
-            Debug.WriteLine("Total contacts with no phone number : {0}", count);
-            
+            Logging.LogWriter.Instance.WriteToLog(string.Format("Total duplicate contacts : {0}", duplicates));
+            Logging.LogWriter.Instance.WriteToLog(string.Format("Total contacts with no phone number : {0}", count));
+
             return contactListMap;
         }
 
@@ -1326,7 +1326,7 @@ namespace windows_client.View
                 }
             }
             UsersTableUtils.addContact(contactInfo);
-             App.HikePubSubInstance.publish(HikePubSub.CONTACT_ADDED, contactInfo);
+            App.HikePubSubInstance.publish(HikePubSub.CONTACT_ADDED, contactInfo);
             List<StatusMessage> statusMessagesFromDB = null;
             if (friendStatus >= FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
             {
@@ -1405,7 +1405,7 @@ namespace windows_client.View
         {
             TextBlock textBlock = sender as TextBlock;
             ContextMenu contextMenu = ContextMenuService.GetContextMenu(textBlock);
-         
+
             if (contextMenu != null)
                 contextMenu.IsOpen = true;
         }

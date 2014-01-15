@@ -144,7 +144,7 @@ namespace windows_client.Model
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Analytics :: Read : read Count, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("Analytics :: Read : read Count, Exception : " + ex.StackTrace);
             }
             string key;
             int value = -1;
@@ -164,7 +164,7 @@ namespace windows_client.Model
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Analytics :: Read : read item, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("Analytics :: Read : read item, Exception : " + ex.StackTrace);
                 }
             }
         }

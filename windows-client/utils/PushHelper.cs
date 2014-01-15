@@ -81,11 +81,11 @@ namespace windows_client.utils
             }
             catch (InvalidOperationException e)
             {
-                Debug.WriteLine("Push Helper :: closePushnotifications : " + e.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("Push Helper :: closePushnotifications : " + e.StackTrace);
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Push Helper :: closePushnotifications : " + e.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("Push Helper :: closePushnotifications : " + e.StackTrace);
             }
         }
 
@@ -130,11 +130,11 @@ namespace windows_client.utils
             }
             catch (InvalidOperationException ioe)
             {
-                Debug.WriteLine("PUSH Exception :: " + ioe.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("PUSH Exception :: " + ioe.StackTrace);
             }
             catch (Exception ee)
             {
-                Debug.WriteLine("PUSH Exception :: " + ee.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("PUSH Exception :: " + ee.StackTrace);
             }
         }
 

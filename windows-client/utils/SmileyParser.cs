@@ -674,7 +674,7 @@ namespace windows_client
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("SmileyParser :: UpdateRecentsFile : DeletingFile , Exception : " + ex.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("SmileyParser :: UpdateRecentsFile : DeletingFile , Exception : " + ex.StackTrace);
                     }
                     try
                     {
@@ -697,14 +697,14 @@ namespace windows_client
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("SmileyParser :: UpdateRecentsFile : WritingFile , Exception : " + ex.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("SmileyParser :: UpdateRecentsFile : WritingFile , Exception : " + ex.StackTrace);
                     }
 
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("SmileyParser :: UpdateRecentsFile , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("SmileyParser :: UpdateRecentsFile , Exception : " + ex.StackTrace);
             }
         }
         private void ShrinkToSize()
@@ -898,7 +898,7 @@ namespace windows_client
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("SmileyParser:: selectUserBtn_Click : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("SmileyParser:: selectUserBtn_Click : " + ex.StackTrace);
             }
         }
 
@@ -999,7 +999,7 @@ namespace windows_client
                         r.Text = regexMatch;
                         p.Inlines.Add(r);
 
-                        Debug.WriteLine("SmileyParser:: LinkifyAll : " + ex.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("SmileyParser:: LinkifyAll : " + ex.StackTrace);
                     }
                 }
                 else

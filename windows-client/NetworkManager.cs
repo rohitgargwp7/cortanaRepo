@@ -97,7 +97,7 @@ namespace windows_client
             }
             catch (JsonReaderException ex)
             {
-                Debug.WriteLine("NetworkManager ::  onMessage : json Parse, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage : json Parse, Exception : " + ex.StackTrace);
                 return;
             }
             string type = null;
@@ -107,7 +107,7 @@ namespace windows_client
             }
             catch (JsonReaderException ex)
             {
-                Debug.WriteLine("NetworkManager ::  onMessage : json Parse type, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage : json Parse type, Exception : " + ex.StackTrace);
                 return;
             }
             string msisdn = null;
@@ -117,7 +117,7 @@ namespace windows_client
             }
             catch (JsonReaderException ex)
             {
-                Debug.WriteLine("NetworkManager ::  onMessage : json Parse from, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage : json Parse from, Exception : " + ex.StackTrace);
                 return;
             }
 
@@ -135,7 +135,7 @@ namespace windows_client
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("NetworkManager ::  onMessage :  MESSAGE convmessage, Exception : " + ex.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  MESSAGE convmessage, Exception : " + ex.StackTrace);
                         return;
                     }
 
@@ -167,7 +167,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  MESSAGE , Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  MESSAGE , Exception : " + ex.StackTrace);
                     return;
                 }
             }
@@ -182,7 +182,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  START_TYPING, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  START_TYPING, Exception : " + ex.StackTrace);
                 }
                 object[] vals = new object[2];
                 vals[0] = msisdn;
@@ -202,7 +202,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  END_TYPING, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  END_TYPING, Exception : " + ex.StackTrace);
                 }
 
                 object[] vals = new object[2];
@@ -239,7 +239,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("NetworkManager ::  Last Seen :  TimeStamp, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  Last Seen :  TimeStamp, Exception : " + ex.StackTrace);
                 }
 
                 object[] vals = new object[2];
@@ -263,7 +263,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  SMS_CREDITS, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  SMS_CREDITS, Exception : " + ex.StackTrace);
                 }
             }
             #endregion
@@ -275,11 +275,11 @@ namespace windows_client
                 try
                 {
                     msgID = long.Parse(id);
-                    Debug.WriteLine("NETWORK MANAGER:: Received report for Message Id " + msgID);
+                    // Logging.LogWriter.Instance.WriteToLog("NETWORK MANAGER:: Received report for Message Id " + msgID);
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  SERVER_REPORT, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  SERVER_REPORT, Exception : " + ex.StackTrace);
                     msgID = -1;
                     return;
                 }
@@ -305,7 +305,7 @@ namespace windows_client
                 }
                 catch (FormatException e)
                 {
-                    Debug.WriteLine("Network Manager:: Delivery Report, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("Network Manager:: Delivery Report, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), e.StackTrace));
                     msgID = -1;
                     return;
                 }
@@ -335,12 +335,12 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  MESSAGE_READ, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  MESSAGE_READ, Exception : " + ex.StackTrace);
                     return;
                 }
                 if (msgIds == null || msgIds.Count == 0)
                 {
-                    Debug.WriteLine("NETWORK MANAGER", "Update Error : Message id Array is empty or null . Check problem");
+                    Logging.LogWriter.Instance.WriteToLog("NETWORK MANAGER" + "Update Error : Message id Array is empty or null . Check problem");
                     return;
                 }
 
@@ -368,7 +368,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  USER_JOINED USER_LEFT, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  USER_JOINED USER_LEFT, Exception : " + ex.StackTrace);
                     return;
                 }
                 bool joined = USER_JOINED == type;
@@ -450,7 +450,7 @@ namespace windows_client
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine("NetworkManager ::  onMessage :  ICON , Exception : " + ex.StackTrace);
+                            Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  ICON , Exception : " + ex.StackTrace);
                         }
                     });
                 }
@@ -485,7 +485,7 @@ namespace windows_client
                     });
                 }
                 long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
+                Logging.LogWriter.Instance.WriteToLog(string.Format("Time to save image for msisdn {0} : {1}", msisdn, msec));
             }
             #endregion
             #region INVITE_INFO
@@ -504,7 +504,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  INVITE_INFO , Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  INVITE_INFO , Exception : " + ex.StackTrace);
                 }
                 try
                 {
@@ -513,7 +513,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  INVITE_INFO , Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  INVITE_INFO , Exception : " + ex.StackTrace);
                 }
                 string totalCreditsPerMonth = "0";
                 try
@@ -522,7 +522,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  INVITE_INFO , Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  INVITE_INFO , Exception : " + ex.StackTrace);
                 }
 
                 if (!String.IsNullOrEmpty(totalCreditsPerMonth) && Int32.Parse(totalCreditsPerMonth) > 0)
@@ -540,7 +540,7 @@ namespace windows_client
                 try
                 {
                     data = (JObject)jsonObj[HikeConstants.DATA];
-                    Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString());
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString()));
                     JToken jtoken;
                     if (data.TryGetValue(HikeConstants.SHOW_FREE_INVITES, out jtoken) && (bool)jtoken)
                     {
@@ -553,7 +553,7 @@ namespace windows_client
                         try
                         {
                             kv = keyVals.Current;
-                            Debug.WriteLine("AI :: Key : " + kv.Key);
+                            Logging.LogWriter.Instance.WriteToLog("AI :: Key : " + kv.Key);
                             JToken valTok = kv.Value;
                             object oj = valTok.ToObject<object>();
                             if (kv.Key == HikeConstants.ACCOUNT)
@@ -566,7 +566,7 @@ namespace windows_client
                                     try
                                     {
                                         kkvv = kkeyVvals.Current;
-                                        Debug.WriteLine("AI :: Key : " + kkvv.Key);
+                                        Logging.LogWriter.Instance.WriteToLog("AI :: Key : " + kkvv.Key);
 
                                         #region FAVOURITES
                                         if (kkvv.Key == HikeConstants.FAVORITES)
@@ -624,7 +624,7 @@ namespace windows_client
                                                         }
                                                         else
                                                             FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
-                                                        Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
+                                                        Logging.LogWriter.Instance.WriteToLog(string.Format("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav));
                                                         LoadFavAndPending(isFav, fkkvv.Key); // true for favs
                                                         thrAreFavs = true;
 
@@ -774,7 +774,7 @@ namespace windows_client
                                     }
                                     catch (Exception ex)
                                     {
-                                        Debug.WriteLine("NetworkManager ::  onMessage :  ACCOUNT_INFO , Exception : " + ex.StackTrace);
+                                        Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  ACCOUNT_INFO , Exception : " + ex.StackTrace);
                                     }
                                 }
 
@@ -784,7 +784,7 @@ namespace windows_client
                             else if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.TOTAL_CREDITS_PER_MONTH)
                             {
                                 string val = oj.ToString();
-                                Debug.WriteLine("AI :: Value : " + val);
+                                Logging.LogWriter.Instance.WriteToLog("AI :: Value : " + val);
 
                                 if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.TOTAL_CREDITS_PER_MONTH)
                                     App.WriteToIsoStorageSettings(kv.Key, val);
@@ -792,7 +792,7 @@ namespace windows_client
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine("NetworkManager ::  onMessage :  ACCOUNT_INFO , Exception : " + ex.StackTrace);
+                            Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  ACCOUNT_INFO , Exception : " + ex.StackTrace);
                         }
                     }
 
@@ -800,13 +800,13 @@ namespace windows_client
                     if (it != null)
                     {
                         string tc = it.ToString().Trim();
-                        Debug.WriteLine("Account Info :: TOTAL_CREDITS_PER_MONTH : " + tc);
+                        Logging.LogWriter.Instance.WriteToLog("Account Info :: TOTAL_CREDITS_PER_MONTH : " + tc);
                         this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
                     }
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("NETWORK MANAGER :: Account Info Json Exception " + e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NETWORK MANAGER :: Account Info Json Exception " + e.StackTrace);
                     return;
                 }
 
@@ -819,7 +819,7 @@ namespace windows_client
                 try
                 {
                     data = (JObject)jsonObj[HikeConstants.DATA];
-                    Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString());
+                    Logging.LogWriter.Instance.WriteToLog("NETWORK MANAGER : Received account info json :" + jsonObj.ToString());
                     #region rewards zone
                     JToken rew;
                     if (data.TryGetValue(HikeConstants.REWARDS_TOKEN, out rew))
@@ -853,7 +853,7 @@ namespace windows_client
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine("NetworkManager ::  onMessage :  ACCOUNT CONFIG, enable push notification, Exception : " + ex.StackTrace);
+                            Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  ACCOUNT CONFIG, enable push notification, Exception : " + ex.StackTrace);
                         }
                     }
                     #endregion
@@ -893,7 +893,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  ACCOUNT CONFIG , Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  ACCOUNT CONFIG , Exception : " + ex.StackTrace);
                 }
 
             }
@@ -918,7 +918,7 @@ namespace windows_client
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCJ packet : " + e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NETWORK MANAGER :: Exception while parsing GCJ packet : " + e.StackTrace);
                 }
                 if (arr == null || !arr.HasValues)
                     return;
@@ -930,7 +930,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN , Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN , Exception : " + ex.StackTrace);
                 }
                 GroupManager.Instance.LoadGroupParticipants(grpId);
                 ConvMessage convMessage = null;
@@ -954,7 +954,7 @@ namespace windows_client
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("NetworkManager ::  onMessage :  NEW GROUP , Exception : " + ex.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  NEW GROUP , Exception : " + ex.StackTrace);
                         return;
                     }
                 }
@@ -1055,7 +1055,7 @@ namespace windows_client
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN with chat background, Exception : " + ex.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN with chat background, Exception : " + ex.StackTrace);
                     }
 
                     #endregion
@@ -1067,7 +1067,7 @@ namespace windows_client
                     return;
                 GroupManager.Instance.SaveGroupCache(grpId);
                 //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
-                Debug.WriteLine("NetworkManager", "Group is new");
+                //Logging.LogWriter.Instance.WriteToLog("NetworkManager", "Group is new");
 
                 object[] vals = new object[2];
                 vals[0] = convMessage;
@@ -1117,7 +1117,7 @@ namespace windows_client
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCN packet : " + e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NETWORK MANAGER :: Exception while parsing GCN packet : " + e.StackTrace);
                 }
             }
             #endregion
@@ -1169,7 +1169,7 @@ namespace windows_client
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine("Network Manager : Exception in ICON :: " + ex.StackTrace);
+                            Logging.LogWriter.Instance.WriteToLog("Network Manager : Exception in ICON :: " + ex.StackTrace);
                         }
                     });
                 }
@@ -1208,7 +1208,7 @@ namespace windows_client
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCL packet : " + e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NETWORK MANAGER :: Exception while parsing GCL packet : " + e.StackTrace);
                 }
             }
             #endregion
@@ -1239,7 +1239,7 @@ namespace windows_client
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCE packet : " + e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NETWORK MANAGER :: Exception while parsing GCE packet : " + e.StackTrace);
                 }
             }
             #endregion
@@ -1314,12 +1314,12 @@ namespace windows_client
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine("Network Manager : Exception in ADD FAVORITES :: " + e.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("Network Manager : Exception in ADD FAVORITES :: " + e.StackTrace);
                     }
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Network Manager :: Exception in ADD TO FAVS : " + e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("Network Manager :: Exception in ADD TO FAVS : " + e.StackTrace);
                 }
             }
             #endregion
@@ -1333,7 +1333,7 @@ namespace windows_client
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Network Manager :: Exception in PostPone from FAVS : " + e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("Network Manager :: Exception in PostPone from FAVS : " + e.StackTrace);
                 }
             }
             #endregion
@@ -1351,7 +1351,7 @@ namespace windows_client
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Network Manager :: Exception in Remove from Friends: " + e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("Network Manager :: Exception in Remove from Friends: " + e.StackTrace);
                 }
             }
             #endregion
@@ -1368,7 +1368,7 @@ namespace windows_client
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Netwok Manager :: Exception in REWARDS : " + e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("Netwok Manager :: Exception in REWARDS : " + e.StackTrace);
                 }
             }
             #endregion
@@ -1467,7 +1467,7 @@ namespace windows_client
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Network Manager :: Exception in STATUS UPDATES : " + e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("Network Manager :: Exception in STATUS UPDATES : " + e.StackTrace);
                 }
             }
             #endregion
@@ -1557,6 +1557,7 @@ namespace windows_client
                                     ConversationTableUtils.deleteConversation(msisdn);
                                     pubSub.publish(HikePubSub.DELETE_STATUS_AND_CONV, App.ViewModel.ConvMap[msisdn]);
                                     App.ViewModel.ConvMap.Remove(msisdn);
+                                    Logging.LogWriter.Instance.WriteToLog(string.Format("CONVERSATION DELETION:Remove status so delete convlist for msisdn:{0}", msisdn));
                                 }
                             }
                         }
@@ -1564,7 +1565,7 @@ namespace windows_client
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("NETWORK MANAGER :: Exception in DELETE STATUS : " + e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NETWORK MANAGER :: Exception in DELETE STATUS : " + e.StackTrace);
                 }
             }
             #endregion
@@ -1616,7 +1617,7 @@ namespace windows_client
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("NETWORK MANAGER :: Exception in ADD Sticker: " + e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NETWORK MANAGER :: Exception in ADD Sticker: " + e.StackTrace);
                 }
             }
             #endregion
@@ -1657,7 +1658,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Network Manager:: ProTip, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("Network Manager:: ProTip, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace));
                 }
             }
 
@@ -1748,7 +1749,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Network Manager:: Chat Background, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("Network Manager:: Chat Background, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace));
                 }
             }
             #endregion
@@ -1801,7 +1802,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Network Manager:: APP UPDATE, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("Network Manager:: APP UPDATE, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace));
                 }
             }
 
@@ -1918,7 +1919,7 @@ namespace windows_client
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("NETWORK MANAGER :: Exception in ProcessUoUjMsgs : " + e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("NETWORK MANAGER :: Exception in ProcessUoUjMsgs : " + e.StackTrace);
                     credits = 0;
                 }
             }
@@ -2166,7 +2167,7 @@ namespace windows_client
             ConversationTableUtils.updateLastMsgStatus(msgID, msisdn, status); // update conversationObj, null is already checked in the function
             st.Stop();
             long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
+            Logging.LogWriter.Instance.WriteToLog(string.Format("Time to update msg status DELIVERED : {0}", msec));
         }
 
         private void updateDbBatch(string fromUser, long[] ids, int status)
@@ -2182,7 +2183,7 @@ namespace windows_client
                 {
                     idsString = string.Format("{0}, {1}", idsString, id.ToString());
                 }
-                Debug.WriteLine("NetworkManager :: UpdateDbBatch : msisdn null for user:{0} ,ids:{1}, status:{2}", fromUser, idsString, status);
+                Logging.LogWriter.Instance.WriteToLog(string.Format("NetworkManager :: UpdateDbBatch : msisdn null for user:{0} ,ids:{1}, status:{2}", fromUser, idsString, status));
                 return;
             }
             // To update conversation object , we have to check if ids [] contains last msg id
@@ -2193,7 +2194,7 @@ namespace windows_client
             }
             st.Stop();
             long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to update msg status DELIVERED READ : {0}", msec);
+            Logging.LogWriter.Instance.WriteToLog(string.Format("Time to update msg status DELIVERED READ : {0}", msec));
         }
 
         private bool ContainsLastMsgId(long[] ids, ConversationListObject co)

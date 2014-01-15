@@ -95,7 +95,7 @@ namespace windows_client
             // if addbook already stored simply call setname api
             if (ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB || (App.appSettings.TryGetValue(ContactUtils.IS_ADDRESS_BOOK_SCANNED, out isScanned) && isScanned))
             {
-                Debug.WriteLine("Btn clicked,Addbook already scanned, posting name to server");
+                Logging.LogWriter.Instance.WriteToLog("Btn clicked,Addbook already scanned, posting name to server");
                 AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
             }
             // if addbook failed earlier , re attempt for posting add book
@@ -110,7 +110,7 @@ namespace windows_client
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (ss, ee) =>
                 {
-                    Debug.WriteLine("Thread 2 started ....");
+                    Logging.LogWriter.Instance.WriteToLog("Thread 2 started ....");
                     while (true)
                     {
                         if (ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB || ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_STORE_FAILED)
@@ -121,7 +121,7 @@ namespace windows_client
                     // if addbook is stored properly in hike db then call for setname function
                     if (ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB)
                     {
-                        Debug.WriteLine("Setname is called from thread 2 ....");
+                        Logging.LogWriter.Instance.WriteToLog("Setname is called from thread 2 ....");
                         AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
                     }
                 };
@@ -135,7 +135,7 @@ namespace windows_client
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    Debug.WriteLine("Set Name post request returned unsuccessfully .... ");
+                    Logging.LogWriter.Instance.WriteToLog("Set Name post request returned unsuccessfully .... ");
                     txtBxEnterName.IsReadOnly = false; ;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
@@ -149,7 +149,7 @@ namespace windows_client
                 });
                 return;
             }
-            Debug.WriteLine("Set Name post request returned successfully .... ");
+            Logging.LogWriter.Instance.WriteToLog("Set Name post request returned successfully .... ");
             App.WriteToIsoStorageSettings(App.ACCOUNT_NAME, ac_name);
             if (App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED)) // shows that addressbook is already scanned
             {
@@ -193,7 +193,7 @@ namespace windows_client
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Enter Name ::  processEnterName , processEnterName  , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("Enter Name ::  processEnterName , processEnterName  , Exception : " + ex.StackTrace);
             }
         }
 
@@ -228,7 +228,7 @@ namespace windows_client
                         while (ContactUtils.ContactState != ContactUtils.ContactScanState.ADDBOOK_SCANNED)
                             Thread.Sleep(100);
                         // now addressbook is scanned 
-                        Debug.WriteLine("Posting addbook from thread 1.... ");
+                        Logging.LogWriter.Instance.WriteToLog("Posting addbook from thread 1.... ");
                         string token = (string)App.appSettings["token"];
                         AccountUtils.postAddressBook(ContactUtils.contactsMap, new AccountUtils.postResponseFunction(postAddressBook_Callback));
                     };
@@ -299,7 +299,7 @@ namespace windows_client
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine("Enter Name ::  OnNavigatedTo , Exception : " + ex.StackTrace);
+                            Logging.LogWriter.Instance.WriteToLog("Enter Name ::  OnNavigatedTo , Exception : " + ex.StackTrace);
                             avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
                         }
                     }
@@ -397,7 +397,7 @@ namespace windows_client
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("EnterName :: OnProfilePicButtonTap, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("EnterName :: OnProfilePicButtonTap, Exception : " + ex.StackTrace);
             }
         }
 
@@ -436,7 +436,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("EnterName :: Exception in photochooser task " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("EnterName :: Exception in photochooser task " + ex.StackTrace);
                 }
             }
             else if (e.TaskResult == TaskResult.Cancel)
@@ -486,7 +486,7 @@ namespace windows_client
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("EnterName :: GetProfilePic_Callback, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("EnterName :: GetProfilePic_Callback, Exception : " + ex.StackTrace);
             }
         }
 
@@ -497,7 +497,7 @@ namespace windows_client
             JObject obj = jsonForAddressBookAndBlockList;
             if (obj == null)
             {
-                Debug.WriteLine("Post addbook request returned unsuccessfully .... ");
+                Logging.LogWriter.Instance.WriteToLog("Post addbook request returned unsuccessfully .... ");
                 ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_STORE_FAILED;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -516,7 +516,7 @@ namespace windows_client
                 });
                 return;
             }
-            Debug.WriteLine("Post addbook request returned successfully .... ");
+            Logging.LogWriter.Instance.WriteToLog("Post addbook request returned successfully .... ");
             List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, ContactUtils.contactsMap, false);
             List<string> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
 
@@ -531,7 +531,7 @@ namespace windows_client
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    Debug.WriteLine("Phone DB is not created in time .... ");
+                    Logging.LogWriter.Instance.WriteToLog("Phone DB is not created in time .... ");
                     ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_STORE_FAILED;
                     this.msgTxtBlk.Text = AppResources.EnterName_Failed_Txt;
                 });
@@ -547,14 +547,14 @@ namespace windows_client
                 UsersTableUtils.addContacts(addressbook); // add the contacts to hike users db.
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to add addressbook {0}", msec);
+                Logging.LogWriter.Instance.WriteToLog(string.Format("Time to add addressbook {0}", msec));
                 UsersTableUtils.addBlockList(blockList);
             }
             catch (Exception e)
             {
-                Debug.WriteLine("EnterName :: postAddressBook_Callback : Exception : " + e.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("EnterName :: postAddressBook_Callback : Exception : " + e.StackTrace);
             }
-            Debug.WriteLine("Addbook stored in Hike Db .... ");
+            Logging.LogWriter.Instance.WriteToLog("Addbook stored in Hike Db .... ");
             App.WriteToIsoStorageSettings(ContactUtils.IS_ADDRESS_BOOK_SCANNED, true);
             ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB;
         }

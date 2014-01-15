@@ -46,7 +46,7 @@ namespace windows_client.View
         //    }
         //    catch (Exception ex)
         //    {
-        //        Debug.WriteLine("Invite.xaml ::  Social_Tap , Exception : " + ex.StackTrace);
+        //        Logging.LogWriter.Instance.WriteToLog("Invite.xaml ::  Social_Tap , Exception : " + ex.StackTrace);
         //    }
         //}
 
@@ -65,7 +65,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Invite.xaml ::  Email_Tap , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("Invite.xaml ::  Email_Tap , Exception : " + ex.StackTrace);
             }
         }
 

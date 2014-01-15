@@ -99,7 +99,7 @@ namespace windows_client.Misc
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("GroupManager :: SaveGroupCache : delete file , Exception : " + ex.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("GroupManager :: SaveGroupCache : delete file , Exception : " + ex.StackTrace);
                     }
                     try
                     {
@@ -123,7 +123,7 @@ namespace windows_client.Misc
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("GroupManager :: SaveGroupCache : write file , Exception : " + ex.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("GroupManager :: SaveGroupCache : write file , Exception : " + ex.StackTrace);
                     }
                 }
             }
@@ -147,7 +147,7 @@ namespace windows_client.Misc
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine("GroupManager :: SaveGroupCache : delete file , Exception : " + ex.StackTrace);
+                            Logging.LogWriter.Instance.WriteToLog("GroupManager :: SaveGroupCache : delete file , Exception : " + ex.StackTrace);
                         }
                         try
                         {
@@ -171,7 +171,7 @@ namespace windows_client.Misc
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine("GroupManager :: SaveGroupCache : write file , Exception : " + ex.StackTrace);
+                            Logging.LogWriter.Instance.WriteToLog("GroupManager :: SaveGroupCache : write file , Exception : " + ex.StackTrace);
                         }
                     }
                 }
@@ -206,7 +206,7 @@ namespace windows_client.Misc
                                     }
                                     catch (Exception ex)
                                     {
-                                        Debug.WriteLine("GroupManager :: GetParticipantList : read count, Exception : " + ex.StackTrace);
+                                        Logging.LogWriter.Instance.WriteToLog("GroupManager :: GetParticipantList : read count, Exception : " + ex.StackTrace);
                                     }
                                     if (count > 0)
                                     {
@@ -220,7 +220,7 @@ namespace windows_client.Misc
                                             }
                                             catch (Exception ex)
                                             {
-                                                Debug.WriteLine("GroupManager :: GetParticipantList : read group participant, Exception : " + ex.StackTrace);
+                                                Logging.LogWriter.Instance.WriteToLog("GroupManager :: GetParticipantList : read group participant, Exception : " + ex.StackTrace);
                                                 item = null;
                                             }
                                         }
@@ -234,7 +234,7 @@ namespace windows_client.Misc
                                 }
                                 catch (Exception ex)
                                 {
-                                    Debug.WriteLine("GroupManager :: GetParticipantList : dispose file , Exception : " + ex.StackTrace);
+                                    Logging.LogWriter.Instance.WriteToLog("GroupManager :: GetParticipantList : dispose file , Exception : " + ex.StackTrace);
                                 }
                             }
                             if (gpList != null)
@@ -273,7 +273,7 @@ namespace windows_client.Misc
                                 }
                                 catch (Exception ex)
                                 {
-                                    Debug.WriteLine("GroupManager :: LoadGroupParticipants : read count, Exception : " + ex.StackTrace);
+                                    Logging.LogWriter.Instance.WriteToLog("GroupManager :: LoadGroupParticipants : read count, Exception : " + ex.StackTrace);
                                 }
                                 if (count > 0)
                                 {
@@ -288,7 +288,7 @@ namespace windows_client.Misc
                                         }
                                         catch (Exception ex)
                                         {
-                                            Debug.WriteLine("GroupManager :: LoadGroupParticipants : read item, Exception : " + ex.StackTrace);
+                                            Logging.LogWriter.Instance.WriteToLog("GroupManager :: LoadGroupParticipants : read item, Exception : " + ex.StackTrace);
                                             item = null;
                                         }
                                     }
@@ -302,7 +302,7 @@ namespace windows_client.Misc
                             }
                             catch (Exception ex)
                             {
-                                Debug.WriteLine("GroupManager :: LoadGroupParticipants : dispose file, Exception : " + ex.StackTrace);
+                                Logging.LogWriter.Instance.WriteToLog("GroupManager :: LoadGroupParticipants : dispose file, Exception : " + ex.StackTrace);
                             }
                         }
                         if (gpList != null)
@@ -341,7 +341,7 @@ namespace windows_client.Misc
                                 }
                                 catch (Exception ex)
                                 {
-                                    Debug.WriteLine("GroupManager :: LoadGroupCache : read count, Exception : " + ex.StackTrace);
+                                    Logging.LogWriter.Instance.WriteToLog("GroupManager :: LoadGroupCache : read count, Exception : " + ex.StackTrace);
                                 }
                                 if (count > 0)
                                 {
@@ -356,7 +356,7 @@ namespace windows_client.Misc
                                         }
                                         catch (Exception ex)
                                         {
-                                            Debug.WriteLine("GroupManager :: LoadGroupCache : read item, Exception : " + ex.StackTrace);
+                                            Logging.LogWriter.Instance.WriteToLog("GroupManager :: LoadGroupCache : read item, Exception : " + ex.StackTrace);
                                             item = null;
                                         }
                                     }
@@ -370,7 +370,7 @@ namespace windows_client.Misc
                             }
                             catch (Exception ex)
                             {
-                                Debug.WriteLine("GroupManager :: LoadGroupCache : dispose file, Exception : " + ex.StackTrace);
+                                Logging.LogWriter.Instance.WriteToLog("GroupManager :: LoadGroupCache : dispose file, Exception : " + ex.StackTrace);
                             }
                         }
                         if (gpList != null)
@@ -430,7 +430,7 @@ namespace windows_client.Misc
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine("GroupManager :: DeleteAllGroups :DeleteAllGroups, Exception : " + ex.StackTrace);
+                            Logging.LogWriter.Instance.WriteToLog("GroupManager :: DeleteAllGroups :DeleteAllGroups, Exception : " + ex.StackTrace);
                         }
                     }
                 }

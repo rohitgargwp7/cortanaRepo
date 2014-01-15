@@ -219,6 +219,7 @@
     <Compile Include="Model\GroupInfo.cs" />
     <Compile Include="Model\GroupParticipant.cs" />
     <Compile Include="Model\HikePacket.cs" />
+    <Compile Include="Model\Logger.cs" />
     <Compile Include="Model\MessageMetadata.cs" />
     <Compile Include="Model\MiscDatabases.cs" />
     <Compile Include="Model\StatusMessage.cs" />

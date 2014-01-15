@@ -389,7 +389,7 @@ namespace windows_client
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Exception handled in page EnterNumber Screen : " + e.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("Exception handled in page EnterNumber Screen : " + e.StackTrace);
             }
         }
 
@@ -415,7 +415,7 @@ namespace windows_client
                 
                 catch (ArgumentException argEx)
                 {
-                    Debug.WriteLine("Enter Number ::  OnNavigatedTo , Country Code Invalid, Exception : " + argEx.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("Enter Number ::  OnNavigatedTo , Country Code Invalid, Exception : " + argEx.StackTrace);
                 }
                 if (isoCodeCountryCode.ContainsKey(ISORegion))
                 {

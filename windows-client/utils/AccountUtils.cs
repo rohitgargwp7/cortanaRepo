@@ -619,19 +619,19 @@ namespace windows_client.utils
 
                 catch (IOException ioe)
                 {
-                    Debug.WriteLine("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + ioe.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + ioe.StackTrace);
                 }
                 catch (WebException we)
                 {
-                    Debug.WriteLine("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + we.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + we.StackTrace);
                 }
                 catch (JsonException je)
                 {
-                    Debug.WriteLine("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + je.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + je.StackTrace);
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + e.StackTrace);
                 }
                 finally
                 {
@@ -665,7 +665,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("AccountUtils ::  Decompress :  Decompress , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("AccountUtils ::  Decompress :  Decompress , Exception : " + ex.StackTrace);
                 return compressedText;
             }
 
@@ -831,22 +831,22 @@ namespace windows_client.utils
             }
             catch (IOException ioe)
             {
-                Debug.WriteLine("AccountUtils ::  json_Callback :  json_Callback , Exception : " + ioe.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("AccountUtils ::  json_Callback :  json_Callback , Exception : " + ioe.StackTrace);
                 obj = null;
             }
             catch (WebException we)
             {
-                Debug.WriteLine("AccountUtils ::  json_Callback :  json_Callback , Exception : " + we.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("AccountUtils ::  json_Callback :  json_Callback , Exception : " + we.StackTrace);
                 obj = null;
             }
             catch (JsonException je)
             {
-                Debug.WriteLine("AccountUtils ::  json_Callback :  json_Callback , Exception : " + je.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("AccountUtils ::  json_Callback :  json_Callback , Exception : " + je.StackTrace);
                 obj = null;
             }
             catch (Exception e)
             {
-                Debug.WriteLine("AccountUtils ::  json_Callback :  json_Callback , Exception : " + e.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("AccountUtils ::  json_Callback :  json_Callback , Exception : " + e.StackTrace);
                 obj = null;
             }
             finally
@@ -896,12 +896,12 @@ namespace windows_client.utils
 
             catch (ArgumentException e)
             {
-                Debug.WriteLine("AccountUtils ::  getBlockList :  getBlockList , Exception : " + e.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("AccountUtils ::  getBlockList :  getBlockList , Exception : " + e.StackTrace);
                 return null;
             }
             catch (Exception e)
             {
-                Debug.WriteLine("AccountUtils ::  getBlockList :  getBlockList , Exception : " + e.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("AccountUtils ::  getBlockList :  getBlockList , Exception : " + e.StackTrace);
                 return null;
             }
         }
@@ -928,7 +928,7 @@ namespace windows_client.utils
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("AccountUtils :: getJsonContactList(outer loop) : Exception : " + e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("AccountUtils :: getJsonContactList(outer loop) : Exception : " + e.StackTrace);
                 }
             }
             return updateContacts;
@@ -1026,7 +1026,7 @@ namespace windows_client.utils
                                     }
                                     catch (Exception e)
                                     {
-                                        Debug.WriteLine("REFRESH CONTACTS :: Update contact exception " + e.StackTrace);
+                                        Logging.LogWriter.Instance.WriteToLog("REFRESH CONTACTS :: Update contact exception " + e.StackTrace);
                                     }
                                 }
                                 else // fav and pending case
@@ -1059,7 +1059,7 @@ namespace windows_client.utils
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("AccountUtils : getContactList : Exception : " + ex.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog("AccountUtils : getContactList : Exception : " + ex.StackTrace);
                     }
                 }
 
@@ -1070,8 +1070,8 @@ namespace windows_client.utils
                     MiscDBUtil.SavePendingRequests();
                 
                 msisdns = null;
-                Debug.WriteLine("Total contacts with no msisdn : {0}", count);
-                Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
+                Logging.LogWriter.Instance.WriteToLog("Total contacts with no msisdn : {0}"+ count);
+                Logging.LogWriter.Instance.WriteToLog("Total contacts inserted : {0}"+ totalContacts);
                 
                 if (!isRefresh)
                     App.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, msgToShow);
@@ -1081,12 +1081,12 @@ namespace windows_client.utils
 
             catch (ArgumentException e)
             {
-                Debug.WriteLine("AccountUtils ::  getContactList :  getContactList , Exception : " + e.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("AccountUtils ::  getContactList :  getContactList , Exception : " + e.StackTrace);
                 return null;
             }
             catch (Exception e)
             {
-                Debug.WriteLine("AccountUtils ::  getContactList :  getContactList , Exception : " + e.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("AccountUtils ::  getContactList :  getContactList , Exception : " + e.StackTrace);
                 return null;
             }
         }

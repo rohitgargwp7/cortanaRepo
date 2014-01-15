@@ -58,5 +58,17 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.BLOCKLIST);
             NavigationService.Navigate(new Uri("/View/BlockListPage.xaml", UriKind.Relative));
         }
+
+        private void ClearLogs_tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Logging.LogWriter.Instance.ClearLogs();
+        }
+
+        private void ViewLogs_tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.MESSAGE_OBJ_FROM_CT] = Logging.LogWriter.Instance.ReadFile();
+            var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
+            currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.RelativeOrAbsolute));
+        }
     }
 }

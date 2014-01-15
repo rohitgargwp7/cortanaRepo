@@ -187,7 +187,7 @@ namespace windows_client.utils
                     }
                     catch (Exception ex)
                     {
-                        //                        Debug.WriteLine("PostStatus:: postStatus_Callback, Exception : " + ex.StackTrace);
+                        //                        Logging.LogWriter.Instance.WriteToLog("PostStatus:: postStatus_Callback, Exception : " + ex.StackTrace);
                     }
                 });
             }

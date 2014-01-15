@@ -120,7 +120,7 @@ namespace windows_client
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Enter Pin ::  txtBxEnterPin_GotFocus , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("Enter Pin ::  txtBxEnterPin_GotFocus , Exception : " + ex.StackTrace);
             }
         }
 
@@ -148,7 +148,7 @@ namespace windows_client
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Exception handled in page EnterPin Screen : " + e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("Exception handled in page EnterPin Screen : " + e.StackTrace);
                 }
             }
         }
@@ -263,7 +263,7 @@ namespace windows_client
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Enter Pin ::  txtBxEnterPin_LostFocus , Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("Enter Pin ::  txtBxEnterPin_LostFocus , Exception : " + ex.StackTrace);
             }
         }
 

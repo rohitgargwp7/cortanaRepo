@@ -28,7 +28,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("UsersTable :: Block user {0} , Exception : {1}", msisdn, e.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("UsersTable :: Block user {0} , Exception : {1}", msisdn, e.StackTrace));
                 }
             }
         }
@@ -68,7 +68,7 @@ namespace windows_client.DbUtils
             }
             catch(Exception e)
             {
-                Debug.WriteLine("UserTableUtils :: addContacts : submit changes, Exception : " + e.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("UserTableUtils :: addContacts : submit changes, Exception : " + e.StackTrace);
             }
         }
 
@@ -83,7 +83,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("UserTableUtils :: GetAllHikeContacts : GetAllHikeContacts, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("UserTableUtils :: GetAllHikeContacts : GetAllHikeContacts, Exception : " + ex.StackTrace);
                     res = null;
                 }
                 return res;
@@ -100,7 +100,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("UserTableUtils :: GetAllHikeContactsOrdered : GetAllHikeContactsOrdered, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("UserTableUtils :: GetAllHikeContactsOrdered : GetAllHikeContactsOrdered, Exception : " + ex.StackTrace);
                     res = null;
                 }
                 return res;
@@ -117,7 +117,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("UserTableUtils :: getAllContacts : getAllContacts, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("UserTableUtils :: getAllContacts : getAllContacts, Exception : " + ex.StackTrace);
                     res = null;
                 }
                 return (res == null || res.Count == 0) ? null : res;
@@ -153,7 +153,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("UserTableUtils :: getContactInfoFromMSISDN : getContactInfoFromMSISDN, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("UserTableUtils :: getContactInfoFromMSISDN : getContactInfoFromMSISDN, Exception : " + ex.StackTrace);
                     res = null;
                 }
                 return (res == null || res.Count == 0) ? null : res.First();
@@ -189,7 +189,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("UserTableUtils :: addBlockList : addBlockList, Exception : " + ex.StackTrace);
+                    Logging.LogWriter.Instance.WriteToLog("UserTableUtils :: addBlockList : addBlockList, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -305,7 +305,7 @@ namespace windows_client.DbUtils
             }
             catch (ChangeConflictException e)
             {
-                Debug.WriteLine("UserTableUtils :: SubmitWithConflictResolve : SubmitWithConflictResolve, Exception : " + e.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("UserTableUtils :: SubmitWithConflictResolve : SubmitWithConflictResolve, Exception : " + e.StackTrace);
 
                 // Automerge database values for members that client
                 // has not modified.

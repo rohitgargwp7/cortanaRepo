@@ -355,7 +355,7 @@ namespace windows_client.Model
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("GroupParticipant ::  Write : Write, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("GroupParticipant ::  Write : Write, Exception : " + ex.StackTrace);
                 throw new Exception("Unable to write to a file...");
             }
         }
@@ -384,7 +384,7 @@ namespace windows_client.Model
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("GroupParticipant ::  Read : Read, Exception : " + ex.StackTrace);
+                Logging.LogWriter.Instance.WriteToLog("GroupParticipant ::  Read : Read, Exception : " + ex.StackTrace);
                 throw new Exception("Conversation Object corrupt");
             }
         }
@@ -406,7 +406,7 @@ namespace windows_client.Model
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("Exception in property : {0}. Exception : {1}", propertyName, ex.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog(string.Format("Exception in property : {0}. Exception : {1}", propertyName, ex.StackTrace));
                     }
                 }
             });
