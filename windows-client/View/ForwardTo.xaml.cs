@@ -32,6 +32,7 @@ namespace windows_client.View
         private bool _isContactShared = false;
         private bool _flag;
 
+        int _smsUserCount = 0;
         private int _smsCredits;
         int _selectedContacts = 0;
         private byte _maxCharGroups = 26;
@@ -58,39 +59,6 @@ namespace windows_client.View
 
         string defaultMsg = AppResources.Tap_To_Invite_Txt;
         ContactInfo defaultContact = new ContactInfo(); // this is used to store default phone number 
-
-        private int forwardUsers = 0; // 1 because owner of the group is already included
-        public int ForwardUsers
-        {
-            get
-            {
-                return forwardUsers;
-            }
-            set
-            {
-                if (value != forwardUsers)
-                {
-                    forwardUsers = value;
-
-                    if (_doneIconButton != null)
-                    {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            if (forwardUsers > 0)
-                            {
-                                if (!_doneIconButton.IsEnabled)
-                                    _doneIconButton.IsEnabled = true;
-                            }
-                            else
-                            {
-                                if (_doneIconButton.IsEnabled)
-                                    _doneIconButton.IsEnabled = false;
-                            }
-                        });
-                    }
-                }
-            }
-        }
 
         public ForwardTo()
         {
@@ -209,56 +177,6 @@ namespace windows_client.View
 
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();
-        }
-
-        private bool isNumberAlreadySelected(string msisdn, List<ContactInfo> l)
-        {
-            for (int i = 0; i < (l != null ? l.Count : 0); i++)
-            {
-                if (l[i].Msisdn == msisdn)
-                    return true;
-            }
-            // if add to existing group then check number already added or not
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
-            {
-                List<GroupParticipant> list = PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] as List<GroupParticipant>;
-                for (int i = 0; i < list.Count; i++)
-                {
-                    if (list[i].Msisdn == msisdn)
-                        return true;
-                }
-            }
-            return false;
-        }
-
-        private bool isGroupAlreadySelected(string id, List<ContactInfo> l)
-        {
-            for (int i = 0; i < (l != null ? l.Count : 0); i++)
-            {
-                if (l[i].Id == id)
-                    return true;
-            }
-            return false;
-        }
-
-        private void GetContactIfExists(ContactInfo contact)
-        {
-            if (_glistFiltered == null)
-                return;
-
-            for (int i = 0; i < _maxCharGroups; i++)
-            {
-                if (_glistFiltered[i] == null || _glistFiltered[i] == null)
-                    return;
-                for (int k = 0; k < _glistFiltered[i].Count; k++)
-                {
-                    if (_glistFiltered[i][k].Msisdn == contact.Msisdn)
-                    {
-                        contact = _glistFiltered[i][k];
-                        return;
-                    }
-                }
-            }
         }
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
@@ -799,16 +717,10 @@ namespace windows_client.View
             _doneIconButton.IsEnabled = true;
         }
 
-        private void enterNameTxt_GotFocus(object sender, RoutedEventArgs e)
-        {
-            enterNameTxt.BorderBrush = UI_Utils.Instance.Black;
-        }
-
-        int smsCount = 0;
         private void contactsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var cInfo = (sender as LongListSelector).SelectedItem as ContactInfo;
-            int oldSmsCount = smsCount;
+            int oldSmsCount = _smsUserCount;
 
             if (cInfo != null)
             {
@@ -822,17 +734,18 @@ namespace windows_client.View
                         if (!Utils.isGroupConversation(cInfo.Msisdn))
                         {
                             if (!cInfo.OnHike)
-                                smsCount++;
+                                _smsUserCount++;
                         }
                         else
-                            smsCount += GroupManager.Instance.GetSMSParticiantCount(cInfo.Msisdn);
+                            _smsUserCount += GroupManager.Instance.GetSMSParticiantCount(cInfo.Msisdn);
 
-                        if (smsCount > 0)
+                        if (_smsUserCount > _smsCredits)
                         {
-                            MessageBox.Show("Insufficient sms balance");
+                            MessageBox.Show(AppResources.H2HOfline_Confirmation_Message);
+
                             _selectedContacts++;
                             cInfo.IsSelected = false;
-                            smsCount = oldSmsCount;
+                            _smsUserCount = oldSmsCount;
                         }
                         else
                             _contactsForForward.Add(cInfo);
@@ -842,10 +755,10 @@ namespace windows_client.View
                         if (!Utils.isGroupConversation(cInfo.Msisdn))
                         {
                             if (!cInfo.OnHike)
-                                smsCount--;
+                                _smsUserCount--;
                         }
                         else
-                            smsCount -= GroupManager.Instance.GetSMSParticiantCount(cInfo.Msisdn);
+                            _smsUserCount -= GroupManager.Instance.GetSMSParticiantCount(cInfo.Msisdn);
 
                         if (_contactsForForward.Contains(cInfo))
                             _contactsForForward.Remove(cInfo);
@@ -863,6 +776,25 @@ namespace windows_client.View
             }
 
             contactsListBox.SelectedItem = null;
+        }
+
+        protected override void OnBackKeyPress(CancelEventArgs e)
+        {
+            if (!_canGoBack)
+            {
+                MessageBoxResult mbox = MessageBox.Show(AppResources.Stop_Contact_Scanning, AppResources.Stop_Caption_txt, MessageBoxButton.OKCancel);
+                if (mbox == MessageBoxResult.OK)
+                {
+                    _stopContactScanning = true;
+                    contactsListBox.IsHitTestVisible = true;
+                    progressIndicator.Hide(LayoutRoot);
+                    EnableApplicationBar();
+                    _canGoBack = true;
+                }
+                e.Cancel = true;
+            }
+
+            base.OnBackKeyPress(e);
         }
     }
 
