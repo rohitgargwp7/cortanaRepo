@@ -3415,7 +3415,7 @@ namespace windows_client.View
 
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
             }
-            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
 
         }
 

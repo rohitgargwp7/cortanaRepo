@@ -415,6 +415,18 @@ namespace windows_client.Misc
             return activeGroupMembers;
         }
 
+        public Int32 GetSMSParticiantCount(string groupId)
+        {
+            try
+            {
+                return GetParticipantList(groupId).Where(g => g.IsOnHike == false && g.HasLeft == false).Count();
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
         public void DeleteAllGroups()
         {
             lock (readWriteLock)

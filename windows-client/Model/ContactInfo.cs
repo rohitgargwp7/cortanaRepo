@@ -198,6 +198,39 @@ namespace windows_client.Model
             }
         }   // this is used in inviteUsers page , when you show hike users
 
+        bool _isSelected;
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                if (value != _isSelected)
+                {
+                    _isSelected = value;
+                    NotifyPropertyChanged("IsSelected");
+                }
+            }
+        }
+
+        String _contactListLabel;
+        public String ContactListLabel
+        {
+            get
+            {
+                return String.IsNullOrEmpty(_contactListLabel) ? Msisdn : _contactListLabel;
+            }
+            set
+            {
+                if (value != _contactListLabel)
+                {
+                    _contactListLabel = value;
+                    NotifyPropertyChanged("ContactListLabel");
+                }
+            }
+        }
 
         public string BlockUnblockText
         {
