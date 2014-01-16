@@ -791,7 +791,12 @@ namespace windows_client.View
                 ContactTransfer();
             }
             #endregion
-
+            #region MULTIPLE IMAGES
+            if (!App.IS_TOMBSTONED && App.ViewModel.MultiplePhotos != null)
+            {
+                MultipleImagesTransfer();
+            }
+            #endregion
             if (_patternNotLoaded)
                 CreateBackgroundImage();
         }
@@ -3823,7 +3828,8 @@ namespace windows_client.View
         {
             try
             {
-                photoChooserTask.Show();
+                NavigationService.Navigate(new Uri("/View/MultipleImageSelect.xaml", UriKind.RelativeOrAbsolute));
+                //photoChooserTask.Show();
                 attachmentMenu.Visibility = Visibility.Collapsed;
             }
             catch (Exception ex)
@@ -3855,7 +3861,7 @@ namespace windows_client.View
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
 
-        private void sendContact_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void sendContact_Tap(object dsender, System.Windows.Input.GestureEventArgs e)
         {
             if (!spContactTransfer.IsHitTestVisible)
                 return;
@@ -5026,6 +5032,21 @@ namespace windows_client.View
                 App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
             }
         }
+
+        private void MultipleImagesTransfer()
+        {
+            if (App.ViewModel.MultiplePhotos != null)
+            {
+                foreach (MultipleImageSelect.Photo pic in App.ViewModel.MultiplePhotos)
+                {
+                    SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString());
+                }
+
+                App.ViewModel.MultiplePhotos = null;
+            }
+
+        }
+
         // this should be called when one gets tap here msg.
         private void smsUser_Click(object sender, EventArgs e)
         {

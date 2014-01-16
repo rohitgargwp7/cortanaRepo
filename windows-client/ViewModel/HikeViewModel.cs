@@ -487,6 +487,12 @@ namespace windows_client.ViewModel
             }
         }
 
+        public List<MultipleImageSelect.Photo> MultiplePhotos
+        {
+            get;
+            set;
+        }
+
         #region In Apptips
 
         List<HikeToolTip> _toolTipsList;

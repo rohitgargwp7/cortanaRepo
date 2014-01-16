@@ -261,6 +261,9 @@
     <Compile Include="View\ConversationsList.xaml.cs">
       <DependentUpon>ConversationsList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\MultipleImageSelect.xaml.cs">
+      <DependentUpon>MultipleImageSelect.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Preferences.xaml.cs">
       <DependentUpon>Preferences.xaml</DependentUpon>
     </Compile>
@@ -401,6 +404,10 @@
     <Page Include="View\ConversationsList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\MultipleImageSelect.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Preferences.xaml">
       <Generator>MSBuild:Compile</Generator>
