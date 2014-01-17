@@ -59,7 +59,7 @@
 
         <DataTemplate x:Key="ItemTemplate">
             <StackPanel Height="108" Width="108" Margin="6,6">
-                <Image Width="108" Height="108" Stretch="UniformToFill" Source="{Binding ImageSource}" />
+                <Image Width="108" Height="108" Stretch="UniformToFill" Source="{Binding Thumbnail}" />
             </StackPanel>
         </DataTemplate>
 

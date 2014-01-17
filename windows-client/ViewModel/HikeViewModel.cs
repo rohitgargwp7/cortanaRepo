@@ -21,6 +21,8 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using windows_client.Misc;
 using System.Threading;
+using System.Windows.Media.Imaging;
+using Microsoft.Xna.Framework.Media;
 
 namespace windows_client.ViewModel
 {
@@ -487,7 +489,7 @@ namespace windows_client.ViewModel
             }
         }
 
-        public List<MultipleImageSelect.Photo> MultiplePhotos
+        public List<Picture> MultiplePhotos
         {
             get;
             set;

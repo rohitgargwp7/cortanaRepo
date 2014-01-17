@@ -5037,9 +5037,12 @@ namespace windows_client.View
         {
             if (App.ViewModel.MultiplePhotos != null)
             {
-                foreach (MultipleImageSelect.Photo pic in App.ViewModel.MultiplePhotos)
+                foreach (Picture pic in App.ViewModel.MultiplePhotos)
                 {
-                    SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString());
+                    BitmapImage bmp = new BitmapImage();
+                    bmp.SetSource(pic.GetImage());
+                    SendImage(bmp, "image_" + TimeUtils.getCurrentTimeStamp().ToString());
+                    pic.Dispose();
                 }
 
                 App.ViewModel.MultiplePhotos = null;

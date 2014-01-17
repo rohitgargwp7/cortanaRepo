@@ -43,10 +43,10 @@ namespace windows_client.View
         /// <param name="e"></param>
         void OnPicturesUploadClick(object sender, EventArgs e)
         {
-            App.ViewModel.MultiplePhotos = new List<Photo>();
+            App.ViewModel.MultiplePhotos = new List<Picture>();
             foreach (Photo picture in PhotoHubLLS.SelectedItems)
             {
-                App.ViewModel.MultiplePhotos.Add(picture);
+                App.ViewModel.MultiplePhotos.Add(picture.Pic);
             }
             NavigationService.GoBack();
         }
@@ -78,12 +78,8 @@ namespace windows_client.View
             MediaLibrary lib = new MediaLibrary();
             foreach (Picture pic in lib.Pictures)
             {
-                BitmapImage image = new BitmapImage();
-                image.CreateOptions = BitmapCreateOptions.BackgroundCreation;
-                image.SetSource(pic.GetImage());
-                Photo imageData = new Photo()
+                Photo imageData = new Photo(pic)
                 {
-                    ImageSource = image,
                     Title = pic.Name,
                     TimeStamp = pic.Date
                 };
@@ -96,9 +92,49 @@ namespace windows_client.View
 
         public class Photo
         {
-            public string Title { get; set; }
-            public BitmapImage ImageSource { get; set; }
+            Picture _pic;
+            BitmapImage _thumbnail;
+            BitmapImage _image;
+            public BitmapImage Thumbnail
+            {
+                get
+                {
+                    if (_thumbnail == null)
+                    {
+                        _thumbnail = new BitmapImage();
+                        if (_pic != null)
+                            _thumbnail.SetSource(_pic.GetThumbnail());
+                    }
+                    return _thumbnail;
+                }
+            }
+            public BitmapImage ImageSource
+            {
+                get
+                {
+                    if (_image == null)
+                    {
+                        _image = new BitmapImage();
+                        if (_pic != null)
+                            _image.SetSource(_pic.GetImage());
+                    }
+                    return _thumbnail;
+                }
+            }
             public DateTime TimeStamp { get; set; }
+            public string Title { get; set; }
+            public Picture Pic
+            {
+                get
+                {
+                    return _pic;
+                }
+            }
+            public Photo(Picture pic)
+            {
+                _pic = pic;
+            }
+
         }
 
         public class KeyedList<TKey, TItem> : List<TItem>
@@ -124,7 +160,7 @@ namespace windows_client.View
             if (PhotoHubLLS.ItemsSource != null)
             {
                 PhotoHubLLS.ItemsSource.Clear();
-                PhotoHubLLS.ItemsSource = null; 
+                PhotoHubLLS.ItemsSource = null;
             }
             if (_groupedPhotos != null)
             {
