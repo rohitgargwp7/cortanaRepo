@@ -384,25 +384,7 @@
 
             <Style x:Key="LongListSelectorJumpListStyle" TargetType="phone:LongListSelector">
                 <Setter Property="GridCellSize"  Value="113,113"/>
-                <Setter Property="LayoutMode" Value="Grid" />
-                <Setter Property="ItemTemplate">
-                    <Setter.Value>
-                        <DataTemplate>
-                            <Border Background="{Binding Converter={StaticResource BackgroundConverter}}"
-                                        Width="113" Height="113" Margin="6" >
-                                <TextBlock Text="{Binding Title}"
-                                               FontFamily="{StaticResource PhoneFontFamilySemiBold}"
-                                               FontSize="48" Padding="6"
-                                               Foreground="{Binding Converter={StaticResource ForegroundConverter}}"
-                                               VerticalAlignment="Center"/>
-                            </Border>
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style x:Key="LongListMultiSelectorJumpListStyle" TargetType="toolkit:LongListMultiSelector">
-                <Setter Property="GridCellSize"  Value="113,113"/>
+                <Setter Property="LayoutMode" Value="Grid"/>
                 <Setter Property="ItemTemplate">
                     <Setter.Value>
                         <DataTemplate>
@@ -414,7 +396,7 @@
                                                FontSize="48" Padding="6"
                                                Foreground="{Binding Converter={StaticResource ForegroundConverter}}"
                                                VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding TextVisibility}"/>
-                                    <Image Source="/View/images/icon_group_chat.png" Height="50" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding GrpImageVisibility}"></Image>
+                                    <Image Source="/View/images/icon_group_chat.png" Height="50" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding GrpImageVisibility}"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>
@@ -425,13 +407,13 @@
             <DataTemplate x:Key="ForwardToGroupHeaderTemplate">
                 <Border Background="Transparent" Margin="0,5,0,10">
                     <Border Background="{StaticResource PhoneAccentBrush}" 
-                        Width="55" Height="55" HorizontalAlignment="Left"  Visibility="{Binding TxtVisibility}">
+                        Width="55" Height="55" HorizontalAlignment="Left">
                         <Grid>
                             <TextBlock Text="{Binding Title}" 
                                 Foreground="White" 
                                 Style="{StaticResource PhoneTextLargeStyle}"
                                 VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding TextVisibility}"/>
-                            <Image Source="/View/images/icon_group_chat.png" Height="40" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding GrpImageVisibility}"></Image>
+                            <Image Source="/View/images/icon_group_chat.png" Height="40" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding GrpImageVisibility}"/>
                         </Grid>
                     </Border>
                 </Border>

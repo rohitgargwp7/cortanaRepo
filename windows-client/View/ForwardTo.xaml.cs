@@ -717,9 +717,33 @@ namespace windows_client.View
             _doneIconButton.IsEnabled = true;
         }
 
-        private void contactsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        protected override void OnBackKeyPress(CancelEventArgs e)
         {
-            var cInfo = (sender as LongListSelector).SelectedItem as ContactInfo;
+            if (!_canGoBack)
+            {
+                MessageBoxResult mbox = MessageBox.Show(AppResources.Stop_Contact_Scanning, AppResources.Stop_Caption_txt, MessageBoxButton.OKCancel);
+                if (mbox == MessageBoxResult.OK)
+                {
+                    _stopContactScanning = true;
+                    contactsListBox.IsHitTestVisible = true;
+                    progressIndicator.Hide(LayoutRoot);
+                    EnableApplicationBar();
+                    _canGoBack = true;
+                }
+                e.Cancel = true;
+            }
+
+            base.OnBackKeyPress(e);
+        }
+
+        private void ContactItem_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            var cInfo = (sender as FrameworkElement).DataContext as ContactInfo;
+            CheckUnCheckContact(cInfo);
+        }
+
+        private void CheckUnCheckContact(ContactInfo cInfo)
+        {
             int oldSmsCount = _smsUserCount;
 
             if (cInfo != null)
@@ -774,33 +798,27 @@ namespace windows_client.View
 
                 _doneIconButton.IsEnabled = _selectedContacts > 0 ? true : false;
             }
-
-            contactsListBox.SelectedItem = null;
         }
 
-        protected override void OnBackKeyPress(CancelEventArgs e)
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            if (!_canGoBack)
-            {
-                MessageBoxResult mbox = MessageBox.Show(AppResources.Stop_Contact_Scanning, AppResources.Stop_Caption_txt, MessageBoxButton.OKCancel);
-                if (mbox == MessageBoxResult.OK)
-                {
-                    _stopContactScanning = true;
-                    contactsListBox.IsHitTestVisible = true;
-                    progressIndicator.Hide(LayoutRoot);
-                    EnableApplicationBar();
-                    _canGoBack = true;
-                }
-                e.Cancel = true;
-            }
+            var cInfo = (sender as FrameworkElement).DataContext as ContactInfo;
+            cInfo.IsSelected = false;
+            CheckUnCheckContact(cInfo);
+        }
 
-            base.OnBackKeyPress(e);
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            var cInfo = (sender as FrameworkElement).DataContext as ContactInfo;
+            cInfo.IsSelected = true;
+            CheckUnCheckContact(cInfo);
         }
     }
 
     public class Group<T> : List<T>
     {
         bool _isGroup;
+
         public Visibility TextVisibility
         {
             get
@@ -808,6 +826,7 @@ namespace windows_client.View
                 return !_isGroup ? Visibility.Visible : Visibility.Collapsed;
             }
         }
+
         public Visibility GrpImageVisibility
         {
             get
@@ -815,6 +834,7 @@ namespace windows_client.View
                 return _isGroup ? Visibility.Visible : Visibility.Collapsed;
             }
         }
+
         public Group(string name, bool isGroup, List<T> items)
         {
             this.Title = name;

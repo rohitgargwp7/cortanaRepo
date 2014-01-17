@@ -44,14 +44,14 @@
             <phone:LongListSelector x:Name="contactsListBox" Grid.Row="1" Margin="0,10,0,10" 
                           VerticalAlignment="Stretch"
                           HorizontalAlignment="Stretch"
-                          IsGroupingEnabled="True" HideEmptyGroups="True" SelectionChanged="contactsListBox_SelectionChanged"
+                          IsGroupingEnabled="True" HideEmptyGroups="True"
                           GroupHeaderTemplate="{StaticResource ForwardToGroupHeaderTemplate}"
-                          JumpListStyle="{StaticResource LongListMultiSelectorJumpListStyle}">
+                          JumpListStyle="{StaticResource LongListSelectorJumpListStyle}">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
-                            <CheckBox IsChecked="{Binding IsSelected}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="5,0">
+                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="5,0" Tap="ContactItem_Tap">
                                 <TextBlock Text="{Binding Name}" FontFamily="Segoe WP SemiLight" FontSize="42" />
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>

@@ -899,23 +899,5 @@ namespace windows_client.ViewModel
                 }
             }
         }
-
-        ObservableCollection<ConvMessage> _ocMessages;
-
-        public ObservableCollection<ConvMessage> OcMessages
-        {
-            get
-            {
-                return _ocMessages;
-            }
-            set
-            {
-                if (value != _ocMessages)
-                {
-                    _ocMessages = value;
-                    NotifyPropertyChanged("OcMessages");
-                }
-            }
-        }
     }
 }

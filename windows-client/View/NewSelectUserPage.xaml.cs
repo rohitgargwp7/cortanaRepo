@@ -50,7 +50,6 @@ namespace windows_client.View
         private StringBuilder stringBuilderForContactNames = new StringBuilder();
         private bool _showExistingGroups;
         private byte maxCharGroups = 26;
-        private string senderMsisdn;
         List<ContactInfo> allContactsList = null; // contacts list
 
         private ApplicationBar appBar;
