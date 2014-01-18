@@ -5420,6 +5420,9 @@ namespace windows_client.View
             //handle delay creation of bitmap image
             _tileBitmap.ImageOpened += (s, e) =>
             {
+                if (App.ViewModel.SelectedBackground == null)
+                    return;
+
                 WriteableBitmap source = new WriteableBitmap(_tileBitmap);
 
                 if (App.ViewModel.SelectedBackground.IsTile)
