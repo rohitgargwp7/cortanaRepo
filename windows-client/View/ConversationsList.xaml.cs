@@ -1719,6 +1719,13 @@ namespace windows_client.View
 
         #region CONTEXT MENUS
 
+        private void ContextMenu_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ContextMenu contextMenu = sender as ContextMenu;
+
+            contextMenu.ClearValue(FrameworkElement.DataContextProperty);
+        }
+
         private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chat_Confirmation, AppResources.Conversations_DelChat_Txt, MessageBoxButton.OKCancel);
@@ -2339,7 +2346,6 @@ namespace windows_client.View
                 notificationCountTxtBlk.Text = newCounterValue.ToString();
         }
 
-
         private void refreshStatuses_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             UpdatePendingStatusFromRefreshBar();
@@ -2512,8 +2518,7 @@ namespace windows_client.View
                 NavigationService.Navigate(nextPage);
             }
         }
-
-
+        
         //tap event of photo in status bubble
         private void statusBubblePhoto_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -2575,8 +2580,7 @@ namespace windows_client.View
             Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
         }
-
-
+        
         #endregion
 
         #region Pro Tips

@@ -3454,6 +3454,13 @@ namespace windows_client.View
 
         #region CONTEXT MENU
 
+        private void ContextMenu_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ContextMenu contextMenu = sender as ContextMenu;
+
+            contextMenu.ClearValue(FrameworkElement.DataContextProperty);
+        }
+
         private void MenuItem_Click_Forward(object sender, RoutedEventArgs e)
         {
             isContextMenuTapped = true;
