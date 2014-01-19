@@ -741,23 +741,23 @@ namespace windows_client.View
         }
 
         bool isContactListLoaded = false;
+        int _oldIndex = 0, _newIndex = 0;
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            PivotItem pItem = e.AddedItems[0] as PivotItem;
-            var panorama = pItem.Parent as Pivot;
-            var selectedIndex = panorama.SelectedIndex;
+            _oldIndex = _newIndex;
+            _newIndex = (sender as Pivot).SelectedIndex;
 
-            if (selectedIndex != 3 && RefreshBarCount > 0)
+            if (_newIndex != 3 && _oldIndex == 3 && RefreshBarCount > 0)
                 UpdatePendingStatusFromRefreshBar();
 
-            if (selectedIndex == 0)
+            if (_newIndex == 0)
             {
                 if (!appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Insert(0, delConvsMenu);
 
                 gridToggleStatus.Visibility = Visibility.Collapsed;
             }
-            else if (selectedIndex == 1) // favourite
+            else if (_newIndex == 1) // favourite
             {
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
@@ -850,11 +850,11 @@ namespace windows_client.View
                 }
                 #endregion
             }
-            else if (selectedIndex == 2)
+            else if (_newIndex == 2)
             {
                 gridToggleStatus.Visibility = Visibility.Collapsed;
             }
-            else if (selectedIndex == 3)
+            else if (_newIndex == 3)
             {
                 ProTipCount = 0;
 
@@ -940,7 +940,7 @@ namespace windows_client.View
                         statusLLS.ItemsSource = App.ViewModel.StatusList;
                 }
             }
-            if (selectedIndex != 3)
+            if (_newIndex != 3)
             {
                 if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
                     TotalUnreadStatuses = 0;
@@ -2214,26 +2214,27 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        if (_refreshBarCount == 0 && value > 0)
+                        {
+                            refreshStatusBackground.Visibility = System.Windows.Visibility.Visible;
+                            refreshBarPanel.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        else if (_refreshBarCount > 0 && value == 0)
+                        {
+                            refreshStatusBackground.Visibility = System.Windows.Visibility.Collapsed;
+                            refreshBarPanel.Visibility = System.Windows.Visibility.Collapsed;
+                            FreshStatusUpdates.Clear();
+                        }
+                        if (refreshBarPanel.Visibility == System.Windows.Visibility.Visible && value > 0)
+                        {
+                            if (value == 1)
+                                refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_SingleStatus, value);
+                            else
+                                refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_Status, value);
+                        }
+
                         if (launchPagePivot.SelectedIndex == 3)
                         {
-                            if (_refreshBarCount == 0 && value > 0)
-                            {
-                                refreshStatusBackground.Visibility = System.Windows.Visibility.Visible;
-                                refreshBarPanel.Visibility = System.Windows.Visibility.Visible;
-                            }
-                            else if (_refreshBarCount > 0 && value == 0)
-                            {
-                                refreshStatusBackground.Visibility = System.Windows.Visibility.Collapsed;
-                                refreshBarPanel.Visibility = System.Windows.Visibility.Collapsed;
-                                FreshStatusUpdates.Clear();
-                            }
-                            if (refreshBarPanel.Visibility == System.Windows.Visibility.Visible && value > 0)
-                            {
-                                if (value == 1)
-                                    refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_SingleStatus, value);
-                                else
-                                    refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_Status, value);
-                            }
                             setNotificationCounter(0);
                         }
                         else
