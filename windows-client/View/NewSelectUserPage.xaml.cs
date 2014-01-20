@@ -45,7 +45,6 @@ namespace windows_client.View
         private string charsEntered;
         ContactInfo contactInfoObj;
         private readonly int MAX_USERS_ALLOWED_IN_GROUP = 50;
-        private int defaultGroupmembers = 0;
         private ProgressIndicatorControl progressIndicator;
         private StringBuilder stringBuilderForContactNames = new StringBuilder();
         private bool _showExistingGroups;
@@ -96,7 +95,7 @@ namespace windows_client.View
                         }
                         else
                         {
-                            if (existingGroupUsers - defaultGroupmembers > 0)
+                            if (_addedUsers > 0)
                             {
                                 if (!doneIconButton.IsEnabled)
                                     doneIconButton.IsEnabled = true;
@@ -414,7 +413,6 @@ namespace windows_client.View
                     }
                     existingGroupUsers++;
                 }
-                defaultGroupmembers = ExistingGroupUsers;
                 existingGroupUsers += _addedUsers;
             }
 
@@ -1187,7 +1185,7 @@ namespace windows_client.View
             // should be Group Chat
             // if new group then number of users should be greater than equal to 3 
             // if existing group then added user should atleast be 1
-            if (isGroupChat && ((!isExistingGroup && existingGroupUsers >= 3) || (isExistingGroup && (existingGroupUsers - defaultGroupmembers > 0))))
+            if (isGroupChat && ((!isExistingGroup && existingGroupUsers >= 3) || (isExistingGroup && _addedUsers > 0)))
             {
                 doneIconButton.IsEnabled = true;
             }
