@@ -169,6 +169,7 @@ namespace windows_client.FileTransfers
             req.Method = "GET";
             req.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
             req.Headers["Range"] = string.Format("bytes={0}-", CurrentHeaderPosition);
+            req.Headers["Cache-control"] = "no-transform";
 
             req.BeginGetResponse(DownloadGetResponseCallback, new object[] { req });
         }

@@ -3456,6 +3456,13 @@ namespace windows_client.View
 
         #region CONTEXT MENU
 
+        private void ContextMenu_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ContextMenu contextMenu = sender as ContextMenu;
+
+            contextMenu.ClearValue(FrameworkElement.DataContextProperty);
+        }
+
         private void MenuItem_Click_Forward(object sender, RoutedEventArgs e)
         {
             isContextMenuTapped = true;
@@ -3464,6 +3471,8 @@ namespace windows_client.View
             {
                 Object[] obj = new Object[1];
                 obj[0] = convMessage.MetaDataString;
+                Sticker sticker = new Sticker(convMessage.StickerObj.Category, convMessage.StickerObj.Id, null, false);
+                HikeViewModel.stickerHelper.recentStickerHelper.AddSticker(sticker);
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = obj;//done this way to distinguish it from message
             }
             else if (convMessage.FileAttachment == null)
@@ -5424,6 +5433,9 @@ namespace windows_client.View
             //handle delay creation of bitmap image
             _tileBitmap.ImageOpened += (s, e) =>
             {
+                if (App.ViewModel.SelectedBackground == null)
+                    return;
+
                 WriteableBitmap source = new WriteableBitmap(_tileBitmap);
 
                 if (App.ViewModel.SelectedBackground.IsTile)
