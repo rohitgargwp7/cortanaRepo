@@ -3469,6 +3469,8 @@ namespace windows_client.View
             {
                 Object[] obj = new Object[1];
                 obj[0] = convMessage.MetaDataString;
+                Sticker sticker = new Sticker(convMessage.StickerObj.Category, convMessage.StickerObj.Id, null, false);
+                HikeViewModel.stickerHelper.recentStickerHelper.AddSticker(sticker);
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = obj;//done this way to distinguish it from message
             }
             else if (convMessage.FileAttachment == null)
