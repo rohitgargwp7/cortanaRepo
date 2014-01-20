@@ -559,7 +559,7 @@ namespace windows_client.View
             Contact contact = null;
             foreach (Contact c in contacts)
             {
-                if (c.DisplayName == contactInfoObj.Name)
+                if (c.DisplayName.Trim() == contactInfoObj.Name)
                 {
                     contact = c;
                     break;
