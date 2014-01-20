@@ -63,9 +63,11 @@ namespace windows_client.View
         Dictionary<string, List<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, List<Group<ContactInfo>>>();
         HashSet<string> blockedSet = null;
 
-        private int smsUserCount = 0;
-        private int existingGroupUsers = 1; // 1 because owner of the group is already included
+        int _addedUsers = 0;
 
+        private int smsUserCount = 0;
+
+        private int existingGroupUsers = 1; // 1 because owner of the group is already included
         public int ExistingGroupUsers
         {
             get
@@ -396,10 +398,10 @@ namespace windows_client.View
         private List<Group<ContactInfo>> getGroupedList(List<ContactInfo> allContactsList)
         {
             List<GroupParticipant> activeExistingGroupMembers = null;
-
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
             {
                 isExistingGroup = true;
+                existingGroupUsers = 0;
                 activeExistingGroupMembers = PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] as List<GroupParticipant>;
 
                 //TODO start this loop from end, after sorting is done on onHike status
@@ -413,6 +415,7 @@ namespace windows_client.View
                     existingGroupUsers++;
                 }
                 defaultGroupmembers = ExistingGroupUsers;
+                existingGroupUsers += _addedUsers;
             }
 
             List<Group<ContactInfo>> glist = createGroups();
@@ -820,6 +823,7 @@ namespace windows_client.View
                 if (!cn.OnHike)
                     smsUserCount--;
                 ExistingGroupUsers--;
+                _addedUsers--;
             }
         }
 
@@ -864,6 +868,7 @@ namespace windows_client.View
             if (!contact.OnHike)
                 smsUserCount++;
             ExistingGroupUsers++;
+            _addedUsers++;
 
             charsEntered = "";
         }
@@ -1221,6 +1226,7 @@ namespace windows_client.View
                         return;
                     }
                     ExistingGroupUsers--;
+                    _addedUsers--;
                     if (!contactsForgroup[k].OnHike)
                         smsUserCount--;
                     contactsForgroup.RemoveAt(k);
