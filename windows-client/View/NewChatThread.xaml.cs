@@ -542,11 +542,10 @@ namespace windows_client.View
                 // whenever CT is opened , mark last msg as read if received read
                 if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && App.ViewModel.ConvMap[mContactNumber].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
                 {
-                    //ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber);
-
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         App.ViewModel.ConvMap[mContactNumber].MessageStatus = ConvMessage.State.RECEIVED_READ;
+                        ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[mContactNumber].LastMsgId, mContactNumber, (int)ConvMessage.State.RECEIVED_READ);
                     });
                 }
 
@@ -1983,11 +1982,11 @@ namespace windows_client.View
             {
                 //save conv object to save unreadcounter. Currently gives exception in the case when reading a chat thread and new messages
                 // come on other chat thread.
-                //ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[msisdn], msisdn);
-
                 Deployment.Current.Dispatcher.BeginInvoke(new Action<String>(delegate(string number)
                 {
                     App.ViewModel.ConvMap[number].MessageStatus = ConvMessage.State.RECEIVED_READ; // this is to notify ConvList.
+                    ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[mContactNumber].LastMsgId, mContactNumber, (int)ConvMessage.State.RECEIVED_READ);
+                    //ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[msisdn], msisdn);
                 }), msisdn);
             }
         }
