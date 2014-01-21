@@ -81,6 +81,7 @@ namespace windows_client.FileTransfers
             FileName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
             if (FileName == "*@N@*")
                 FileName = null;
+             
 
             count = reader.ReadInt32();
             ContentType = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);

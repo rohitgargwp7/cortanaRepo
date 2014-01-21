@@ -11,6 +11,7 @@ using windows_client.Model;
 using windows_client.utils;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
+using Microsoft.Phone.Tasks;
 
 namespace windows_client.View
 {
@@ -62,6 +63,7 @@ namespace windows_client.View
         private void ClearLogs_tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             Logging.LogWriter.Instance.ClearLogs();
+            MQttLogging.LogWriter.Instance.ReadFile();
         }
 
         private void ViewLogs_tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -69,6 +71,47 @@ namespace windows_client.View
             PhoneApplicationService.Current.State[HikeConstants.MESSAGE_OBJ_FROM_CT] = Logging.LogWriter.Instance.ReadFile();
             var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
             currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.RelativeOrAbsolute));
+        }
+
+        private void ViewMqtt_tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.MESSAGE_OBJ_FROM_CT] = MQttLogging.LogWriter.Instance.ReadFile();
+            var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
+            currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.RelativeOrAbsolute));
+        }
+
+        private void Email_tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            string text= MQttLogging.LogWriter.Instance.ReadFile();
+            if (text.Length > 65535)
+            {
+                MessageBox.Show("Log file greater than max email size");
+                return;
+            }
+
+            EmailComposeTask emailComposeTask = new EmailComposeTask();
+
+            emailComposeTask.Subject = "Mqtt logs";
+            emailComposeTask.Body = text;
+
+            emailComposeTask.Show();
+        }
+
+        private void EmailApp_tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            string text = Logging.LogWriter.Instance.ReadFile();
+            if (text.Length > 65535)
+            {
+                MessageBox.Show("Log file greater than max email size");
+                return;
+            }
+
+            EmailComposeTask emailComposeTask = new EmailComposeTask();
+
+            emailComposeTask.Subject = "App logs";
+            emailComposeTask.Body = text;
+
+            emailComposeTask.Show();
         }
     }
 }

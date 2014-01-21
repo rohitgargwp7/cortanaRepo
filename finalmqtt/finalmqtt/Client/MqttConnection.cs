@@ -157,11 +157,14 @@ namespace finalmqtt.Client
             : this(id, host, port, username, password, connectCallback, null)
         {
         }
+
+        DateTime dt;
         /// <summary>
         /// Initiates connect request to server.
         /// </summary>
         public void connect()
         {
+            dt = DateTime.Now;
             DnsEndPoint hostEntry = new DnsEndPoint(host, port);
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
@@ -177,12 +180,17 @@ namespace finalmqtt.Client
         /// <param name="e"></param>
         private void onSocketConnected(object s, SocketAsyncEventArgs e)
         {
+            Double timeTaken = (DateTime.Now - dt).TotalSeconds;
+            firstmessage = true;
             //connected = _socket.Connected;
             if (e.SocketError != SocketError.Success)
             {
                 connectCallback.onFailure(new Exception(e.SocketError.ToString()));
+
+                MQttLogging.LogWriter.Instance.WriteToLog("MQTT socket connection FAILED, time taken :" + timeTaken + " secs");
                 return;
             }
+            MQttLogging.LogWriter.Instance.WriteToLog("MQTT socket connection SUCCESS, time taken :" + timeTaken + " secs");
             ConnectMessage msg = new ConnectMessage(id, false, (byte)60, this);
             if (username != null)
                 msg.setCredentials(username, password);
@@ -370,7 +378,7 @@ namespace finalmqtt.Client
             }
             return msg;
         }
-
+        bool firstmessage = false;
         /// <summary>
         /// Writes message to socket. If message is of retryable type, its id and callback are inserted in a map.
         /// If ack is not received in 5 seconds, then callback's onFailure is called
@@ -486,38 +494,54 @@ namespace finalmqtt.Client
         }
         public void publish(String topic, byte[] message, QoS qos, Callback cb) //throws IOException 
         {
+
             PublishMessage msg = new PublishMessage(topic, message, qos, this);
+            if (msg is PublishMessage && firstmessage)
+            {
+                listSubscribe.Add(((PublishMessage)msg).getMessageId(), DateTime.Now);
+                firstmessage = false;
+            }
             msg.setMessageId(getNextMessageId());
             sendCallbackMessage(msg, cb);
         }
 
         public void publish(String topic, byte[][] message, QoS qos, Callback[] cb) //throws IOException 
         {
+
             PublishMessage[] messagesToPublish = new PublishMessage[cb.Length];
             for (int i = 0; i < message.Length; i++)
             {
                 messagesToPublish[i] = new PublishMessage(topic, message[i], qos, this);
+                if (messagesToPublish[i] is PublishMessage && firstmessage)
+                {
+                    listSubscribe.Add(((PublishMessage)messagesToPublish[i]).getMessageId(), DateTime.Now);
+                    firstmessage = false;
+                }
                 messagesToPublish[i].setMessageId(getNextMessageId());
             }
             sendCallbackMessage(messagesToPublish, cb);
         }
-
+        Dictionary<short, DateTime> listSubscribe = new Dictionary<short, DateTime>();
         public void subscribe(String topic, Callback cb) //throws IOException 
         {
             SubscribeMessage msg = new SubscribeMessage(topic, QoS.AT_MOST_ONCE, this);
-            msg.setMessageId(getNextMessageId());
+            short messageid = getNextMessageId();
+            msg.setMessageId(messageid);
+
             sendCallbackMessage(msg, cb);
         }
         public void subscribe(String topic, QoS qos, Callback cb) //throws IOException 
         {
             SubscribeMessage msg = new SubscribeMessage(topic, qos, this);
-            msg.setMessageId(getNextMessageId());
+            short messageid = getNextMessageId();
+            msg.setMessageId(messageid);
             sendCallbackMessage(msg, cb);
         }
         public void subscribe(List<String> listTopics, List<QoS> listQos, Callback cb) //throws IOException 
         {
             SubscribeMessage msg = new SubscribeMessage(listTopics, listQos, this);
-            msg.setMessageId(getNextMessageId());
+            short messageid = getNextMessageId();
+            msg.setMessageId(messageid);
             sendCallbackMessage(msg, cb);
         }
         public void unsubscribe(String topic, Callback cb) //throws IOException 
@@ -619,6 +643,15 @@ namespace finalmqtt.Client
         {
             try
             {
+                DateTime dt1;
+
+                if (listSubscribe.TryGetValue(msg.getMessageId(), out dt1))
+                {
+                    Double timeTaken = (DateTime.Now - dt1).TotalSeconds;
+                    MQttLogging.LogWriter.Instance.WriteToLog("Ack for first message published, time taken :" + timeTaken + " secs");
+                    listSubscribe.Remove(msg.getMessageId());
+                }
+
                 sendAcknowledement(msg);
                 if (mqttListener != null)
                     mqttListener.onPublish(msg.getTopic(), msg.getData());
@@ -638,6 +671,17 @@ namespace finalmqtt.Client
         }
         protected void handleMessage(SubAckMessage msg)
         {
+            DateTime dt1;
+
+            if (listSubscribe.TryGetValue(msg.getMessageId(), out dt1))
+            {
+                Double timeTaken = (dt1 - DateTime.Now).TotalSeconds;
+                MQttLogging.LogWriter.Instance.WriteToLog("AUTO SUBSCRIPTION, time taken :" + timeTaken + " secs");
+            }
+            else
+            {
+                MQttLogging.LogWriter.Instance.WriteToLog("AUTO SUBSCRIPTION, key not found for messageid:" + msg.getMessageId());
+            }
         }
 
         /// <summary>

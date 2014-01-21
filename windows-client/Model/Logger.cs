@@ -114,16 +114,20 @@ namespace Logging
 
             lock (logQueue)
             {
-                string logPath = logDir + "\\" + logFile;
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                FlushLog();
+                lock (logQueue)
                 {
-                    if (store.FileExists(logPath))
+                    string logPath = logDir + "\\" + logFile;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        using (var file = store.OpenFile(logPath, FileMode.Open, FileAccess.Read))
+                        if (store.FileExists(logPath))
                         {
-                            using (var reader = new StreamReader(file))
+                            using (var file = store.OpenFile(logPath, FileMode.Open, FileAccess.Read))
                             {
-                                filedata = reader.ReadToEnd();
+                                using (var reader = new StreamReader(file))
+                                {
+                                    filedata = reader.ReadToEnd();
+                                }
                             }
                         }
                     }
