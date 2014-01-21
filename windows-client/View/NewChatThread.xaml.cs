@@ -542,11 +542,8 @@ namespace windows_client.View
                 // whenever CT is opened , mark last msg as read if received read
                 if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && App.ViewModel.ConvMap[mContactNumber].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        App.ViewModel.ConvMap[mContactNumber].MessageStatus = ConvMessage.State.RECEIVED_READ;
-                        ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[mContactNumber].LastMsgId, mContactNumber, (int)ConvMessage.State.RECEIVED_READ);
-                    });
+                    App.ViewModel.ConvMap[mContactNumber].MessageStatus = ConvMessage.State.RECEIVED_READ;
+                    ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[mContactNumber].LastMsgId, mContactNumber, (int)ConvMessage.State.RECEIVED_READ);
                 }
 
                 Stopwatch st = Stopwatch.StartNew();
@@ -1980,11 +1977,8 @@ namespace windows_client.View
         {
             if (App.ViewModel.ConvMap.ContainsKey(msisdn))
             {
-                Deployment.Current.Dispatcher.BeginInvoke(new Action<String>(delegate(string number)
-                {
-                    App.ViewModel.ConvMap[number].MessageStatus = ConvMessage.State.RECEIVED_READ; // this is to notify ConvList.
-                    ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[mContactNumber].LastMsgId, msisdn, (int)ConvMessage.State.RECEIVED_READ);
-                }), msisdn);
+                App.ViewModel.ConvMap[msisdn].MessageStatus = ConvMessage.State.RECEIVED_READ; // this is to notify ConvList.
+                ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[mContactNumber].LastMsgId, msisdn, (int)ConvMessage.State.RECEIVED_READ);
             }
         }
 
