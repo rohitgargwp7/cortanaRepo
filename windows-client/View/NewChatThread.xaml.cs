@@ -1980,8 +1980,6 @@ namespace windows_client.View
         {
             if (App.ViewModel.ConvMap.ContainsKey(msisdn))
             {
-                //save conv object to save unreadcounter. Currently gives exception in the case when reading a chat thread and new messages
-                // come on other chat thread.
                 Deployment.Current.Dispatcher.BeginInvoke(new Action<String>(delegate(string number)
                 {
                     App.ViewModel.ConvMap[number].MessageStatus = ConvMessage.State.RECEIVED_READ; // this is to notify ConvList.
