@@ -166,10 +166,13 @@ namespace windows_client.Model
                     NotifyPropertyChanged("UnreadCircleVisibility");
                 }
 
-                if (_messageStatus == ConvMessage.State.RECEIVED_UNREAD)
-                    UnreadCounter++;
-                else
+                if (_messageStatus != ConvMessage.State.RECEIVED_UNREAD)
                     UnreadCounter = 0;
+                else
+                {
+                    if (!IsLastMsgStatusUpdate)
+                        UnreadCounter++;
+                }
             }
         }
 
@@ -309,7 +312,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (_messageStatus == ConvMessage.State.RECEIVED_UNREAD && string.IsNullOrEmpty(_typingNotificationText))
+                if (_messageStatus == ConvMessage.State.RECEIVED_UNREAD && string.IsNullOrEmpty(_typingNotificationText) && !IsLastMsgStatusUpdate)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
@@ -351,7 +354,10 @@ namespace windows_client.Model
             set
             {
                 if (value != _isFirstMsg)
+                {
                     _isFirstMsg = value;
+                    NotifyPropertyChanged("UnreadCircleVisibility");
+                }
             }
         }
 

@@ -1983,7 +1983,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(new Action<String>(delegate(string number)
                 {
                     App.ViewModel.ConvMap[number].MessageStatus = ConvMessage.State.RECEIVED_READ; // this is to notify ConvList.
-                    ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[mContactNumber].LastMsgId, mContactNumber, (int)ConvMessage.State.RECEIVED_READ);
+                    ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[mContactNumber].LastMsgId, msisdn, (int)ConvMessage.State.RECEIVED_READ);
                 }), msisdn);
             }
         }
