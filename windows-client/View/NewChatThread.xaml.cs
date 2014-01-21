@@ -1986,7 +1986,6 @@ namespace windows_client.View
                 {
                     App.ViewModel.ConvMap[number].MessageStatus = ConvMessage.State.RECEIVED_READ; // this is to notify ConvList.
                     ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[mContactNumber].LastMsgId, mContactNumber, (int)ConvMessage.State.RECEIVED_READ);
-                    //ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[msisdn], msisdn);
                 }), msisdn);
             }
         }
