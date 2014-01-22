@@ -606,11 +606,6 @@ namespace windows_client.View
             groupInfoPage.ApplicationBar = appBar;
         }
 
-        private void groupNameTxtBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            //groupInfoPage.ApplicationBar = null;
-        }
-
         private void btnGetSelected_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             groupChatParticipants.SelectedIndex = -1;
