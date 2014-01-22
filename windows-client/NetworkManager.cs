@@ -1408,7 +1408,6 @@ namespace windows_client
 
                     if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
                         id = idToken.ToString();
-
                     #region HANDLE PROFILE PIC UPDATE
                     if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
                     {

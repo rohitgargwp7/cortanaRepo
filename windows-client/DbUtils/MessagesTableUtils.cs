@@ -521,7 +521,7 @@ namespace windows_client.DbUtils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         msisdn = msisdn.Replace(':', '_');
                         if (!store.DirectoryExists(LONG_MSG_DIRECTORY))
@@ -562,7 +562,7 @@ namespace windows_client.DbUtils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         msisdn = msisdn.Replace(':', '_');
                         string fileName = LONG_MSG_DIRECTORY + "\\" + msisdn + "\\" + timestamp;
