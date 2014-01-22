@@ -66,9 +66,8 @@ namespace windows_client.View
             saveIconButton.IconUri = new Uri("/View/images/icon_save.png", UriKind.Relative);
             saveIconButton.Text = AppResources.Save_AppBar_Btn;
             saveIconButton.Click += new EventHandler(doneBtn_Click);
-            saveIconButton.IsEnabled = true;
+            saveIconButton.IsEnabled = false;
             appBar.Buttons.Add(saveIconButton);
-            //groupInfoPage.ApplicationBar = appBar;
 
             initPageBasedOnState();
             photoChooserTask = new PhotoChooserTask();
@@ -581,23 +580,22 @@ namespace windows_client.View
             {
                 //db and ui would be updated after server sends group name change packet 
                 isgroupNameSelfChanged = true;
-
+                PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     groupNameTxtBox.IsReadOnly = false;
-                    saveIconButton.IsEnabled = true;
+                    saveIconButton.IsEnabled = false;
                     shellProgress.IsVisible = false;
                 });
             }
             else
             {
+                groupName = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     groupNameTxtBox.IsReadOnly = false;
                     saveIconButton.IsEnabled = true;
                     shellProgress.IsVisible = false;
-                    //progressBar.IsEnabled = false;
-                    this.groupNameTxtBox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];
                     MessageBox.Show(AppResources.CannotChangeGrpName_Txt, AppResources.Something_Wrong_Txt, MessageBoxButton.OK);
                 });
             }
@@ -606,12 +604,11 @@ namespace windows_client.View
         private void groupNameTxtBox_GotFocus(object sender, RoutedEventArgs e)
         {
             groupInfoPage.ApplicationBar = appBar;
-
         }
 
         private void groupNameTxtBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            groupInfoPage.ApplicationBar = null;
+            //groupInfoPage.ApplicationBar = null;
         }
 
         private void btnGetSelected_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -973,6 +970,16 @@ namespace windows_client.View
 
                 }
             }
+        }
+
+        private void groupNameTxtBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var newName = groupNameTxtBox.Text.Trim();
+
+            if (newName != groupName && !String.IsNullOrEmpty(newName))
+                saveIconButton.IsEnabled = true;
+            else
+                saveIconButton.IsEnabled = false;
         }
     }
 }
