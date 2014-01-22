@@ -1408,7 +1408,6 @@ namespace windows_client
 
                     if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
                         id = idToken.ToString();
-                    Debug.WriteLine("status update");
                     #region HANDLE PROFILE PIC UPDATE
                     if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
                     {
@@ -1448,7 +1447,6 @@ namespace windows_client
                             return;
                     }
                     #endregion
-                    Debug.WriteLine("status update added");
 
                     ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj, ts);
                     cm.Msisdn = msisdn;
