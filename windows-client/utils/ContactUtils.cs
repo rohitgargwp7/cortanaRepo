@@ -41,7 +41,7 @@ namespace windows_client.utils
                 if (value != cState)
                 {
                     cState = value;
-                    Logging.LogWriter.Instance.WriteToLog("Contact state : " + cState.ToString());
+                    Debug.WriteLine("Contact state : " + cState.ToString());
                 }
             }
         }
@@ -59,7 +59,7 @@ namespace windows_client.utils
         public static void getContacts(contacts_Callback callback)
         {
             st = Stopwatch.StartNew();
-            Logging.LogWriter.Instance.WriteToLog("Contact Scanning started .....");
+            Debug.WriteLine("Contact Scanning started .....");
             cState = ContactScanState.ADDBOOK_SCANNING;
             Contacts cons = new Contacts();
             cons.SearchCompleted += new EventHandler<ContactsSearchEventArgs>(callback);
@@ -78,10 +78,10 @@ namespace windows_client.utils
         {
             try
             {
-                Logging.LogWriter.Instance.WriteToLog("Contact Scanning Completed ...... ");
+                Debug.WriteLine("Contact Scanning Completed ...... ");
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
-                Logging.LogWriter.Instance.WriteToLog(string.Format("Time to scan contacts from phone : {0}", msec));
+                Debug.WriteLine(string.Format("Time to scan contacts from phone : {0}", msec));
 
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (ss, ee) =>
@@ -94,7 +94,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("ContactUtils ::  contactSearchCompleted_Callback :  contactSearchCompleted_Callback , Exception : " + ex.StackTrace);
+                Debug.WriteLine("ContactUtils ::  contactSearchCompleted_Callback :  contactSearchCompleted_Callback , Exception : " + ex.StackTrace);
             }
         }
 
@@ -239,7 +239,7 @@ namespace windows_client.utils
                                 else
                                 {
                                     duplicates++;
-                                    Logging.LogWriter.Instance.WriteToLog(string.Format("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo));
+                                    Debug.WriteLine(string.Format("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo));
                                 }
                             }
                             else
@@ -251,17 +251,17 @@ namespace windows_client.utils
                         }
                         catch (Exception ex)
                         {
-                            Logging.LogWriter.Instance.WriteToLog("ContactUtils : getContactsListMap(Inner loop) : Exception : " + ex.StackTrace);
+                            Debug.WriteLine("ContactUtils : getContactsListMap(Inner loop) : Exception : " + ex.StackTrace);
                         }
                     }
                 }
                 catch (Exception e)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("ContactUtils : getContactsListMap(Outer loop) : Exception : " + e.StackTrace);
+                    Debug.WriteLine("ContactUtils : getContactsListMap(Outer loop) : Exception : " + e.StackTrace);
                 }
             }
-            Logging.LogWriter.Instance.WriteToLog(string.Format("Total duplicate contacts : {0}", duplicates));
-            Logging.LogWriter.Instance.WriteToLog(string.Format("Total contacts with no phone number : {0}", count));
+            Debug.WriteLine(string.Format("Total duplicate contacts : {0}", duplicates));
+            Debug.WriteLine(string.Format("Total contacts with no phone number : {0}", count));
             return contactListMap;
         }
 
@@ -276,7 +276,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("ContactUtils ::  saveContact :  saveContact , Exception : " + ex.StackTrace);
+                Debug.WriteLine("ContactUtils ::  saveContact :  saveContact , Exception : " + ex.StackTrace);
             }
         }
 

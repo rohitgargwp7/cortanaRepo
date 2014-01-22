@@ -540,7 +540,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("ConversationList ::  removeListeners , Exception : " + ex.StackTrace);
+                Debug.WriteLine("ConversationList ::  removeListeners , Exception : " + ex.StackTrace);
             }
         }
 
@@ -612,7 +612,7 @@ namespace windows_client.View
             avatarImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
-            Logging.LogWriter.Instance.WriteToLog("Time to fetch profile image : " + msec);
+            Debug.WriteLine("Time to fetch profile image : " + msec);
         }
 
         #endregion
@@ -740,7 +740,7 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
             }
             else
-                Logging.LogWriter.Instance.WriteToLog(string.Format("Not group so no gcl ,msisdn:{0}, name:{1}", convObj.Msisdn, convObj.ContactName));
+                Debug.WriteLine(string.Format("Not group so no gcl ,msisdn:{0}, name:{1}", convObj.Msisdn, convObj.ContactName));
 
             mPubSub.publish(HikePubSub.DELETE_CONVERSATION, convObj.Msisdn);
         }
@@ -960,7 +960,7 @@ namespace windows_client.View
         {
             if (obj == null)
             {
-                Logging.LogWriter.Instance.WriteToLog("ConversationsList :: OnEventReceived : Object received is null");
+                Debug.WriteLine("ConversationsList :: OnEventReceived : Object received is null");
                 if (type != HikePubSub.ADD_REMOVE_FAV)
                     return;
             }
@@ -988,7 +988,7 @@ namespace windows_client.View
                         }
                         catch (Exception ex)
                         {
-                            Logging.LogWriter.Instance.WriteToLog("ConversationList ::  onEventReceived,MESSAGE_RECEIVED  , Exception : " + ex.StackTrace);
+                            Debug.WriteLine("ConversationList ::  onEventReceived,MESSAGE_RECEIVED  , Exception : " + ex.StackTrace);
                         }
                     });
                 }
@@ -1149,7 +1149,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("ConversationList ::  onEventReceived,BAD_USER_PASS  , Exception : " + ex.StackTrace);
+                    Debug.WriteLine("ConversationList ::  onEventReceived,BAD_USER_PASS  , Exception : " + ex.StackTrace);
                 }
             }
             #endregion
@@ -1430,7 +1430,7 @@ namespace windows_client.View
                                             }
                                             catch (Exception e)
                                             {
-                                                Logging.LogWriter.Instance.WriteToLog("ConversationsList :: BLOCK USER : Exception while removing a friendRequest, Exception : " + e.StackTrace);
+                                                Debug.WriteLine("ConversationsList :: BLOCK USER : Exception while removing a friendRequest, Exception : " + e.StackTrace);
                                             }
                                         });
                                         break;
@@ -1716,7 +1716,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("ConversationList ::  openMarketPlace, openMarketPlace  , Exception : " + ex.StackTrace);
+                Debug.WriteLine("ConversationList ::  openMarketPlace, openMarketPlace  , Exception : " + ex.StackTrace);
             }
         }
 
@@ -1919,7 +1919,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("CONVERSATIONSLIST SCREEN :: Exception while navigating to SocialPages screen : " + ex.StackTrace);
+                Debug.WriteLine("CONVERSATIONSLIST SCREEN :: Exception while navigating to SocialPages screen : " + ex.StackTrace);
             }
         }
 
@@ -1933,7 +1933,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("CONVERSATIONSLIST SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
+                Debug.WriteLine("CONVERSATIONSLIST SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
             }
         }
 
@@ -2023,7 +2023,7 @@ namespace windows_client.View
                                  }
                                  catch (Exception ex)
                                  {
-                                     Logging.LogWriter.Instance.WriteToLog("ConversationList ::  showRateAppMessage, showRateAppMessage  , Exception : " + ex.StackTrace);
+                                     Debug.WriteLine("ConversationList ::  showRateAppMessage, showRateAppMessage  , Exception : " + ex.StackTrace);
                                  }
                              }
                          }
@@ -2940,7 +2940,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("Exception::ConversationList.xaml.cs:GetFtueThread,ex:" + ex.Message);
+                Debug.WriteLine("Exception::ConversationList.xaml.cs:GetFtueThread,ex:" + ex.Message);
             }
 
             return obj;

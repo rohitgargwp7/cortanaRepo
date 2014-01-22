@@ -177,7 +177,7 @@ namespace windows_client.DbUtils
             obj.LastMsgId = convMessage.MessageId;
             st1.Stop();
             long msec1 = st1.ElapsedMilliseconds;
-            Logging.LogWriter.Instance.WriteToLog(string.Format("Time to add chat msg : {0}", msec1));
+            Debug.WriteLine(string.Format("Time to add chat msg : {0}", msec1));
 
             Stopwatch st = Stopwatch.StartNew();
             //saveNewConv(obj);
@@ -187,7 +187,7 @@ namespace windows_client.DbUtils
             App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
-            Logging.LogWriter.Instance.WriteToLog(string.Format("Time to write conversation to iso storage {0}", msec));
+            Debug.WriteLine(string.Format("Time to write conversation to iso storage {0}", msec));
 
             return obj;
         }
@@ -223,7 +223,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("ConversationTableUtils :: deleteConversation : deleteConversation , Exception : " + ex.StackTrace);
+                    Debug.WriteLine("ConversationTableUtils :: deleteConversation : deleteConversation , Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -316,7 +316,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("ConversationTableUtils :: saveConvObjectList : DeletingFile , Exception : " + ex.StackTrace);
+                        Debug.WriteLine("ConversationTableUtils :: saveConvObjectList : DeletingFile , Exception : " + ex.StackTrace);
                     }
                     try
                     {
@@ -346,7 +346,7 @@ namespace windows_client.DbUtils
 
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("ConversationTableUtils :: saveConvObjectList : writing file , Exception : " + ex.StackTrace);
+                        Debug.WriteLine("ConversationTableUtils :: saveConvObjectList : writing file , Exception : " + ex.StackTrace);
                     }
 
                     try // TODO REVIEW
@@ -355,7 +355,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("ConversationTableUtils :: saveConvObjectList : copying file , Exception : " + ex.StackTrace);
+                        Debug.WriteLine("ConversationTableUtils :: saveConvObjectList : copying file , Exception : " + ex.StackTrace);
                     }
                     try
                     {
@@ -363,7 +363,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("ConversationTableUtils :: saveConvObjectList : SAVE LIST BACKUP , Exception : " + ex.StackTrace);
+                        Debug.WriteLine("ConversationTableUtils :: saveConvObjectList : SAVE LIST BACKUP , Exception : " + ex.StackTrace);
                         return;
                     }
 
@@ -373,14 +373,14 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("ConversationTableUtils :: saveConvObjectList : save list, Exception : " + ex.StackTrace);
+                        Debug.WriteLine("ConversationTableUtils :: saveConvObjectList : save list, Exception : " + ex.StackTrace);
                     }
                     store.Dispose();
                 }
             }
             st.Stop();
             long mSec = st.ElapsedMilliseconds;
-            Logging.LogWriter.Instance.WriteToLog(string.Format("Time to save {0} conversations : {1}", convs, mSec));
+            Debug.WriteLine(string.Format("Time to save {0} conversations : {1}", convs, mSec));
         }
 
         public static void saveNewConv(ConversationListObject obj)
@@ -416,7 +416,7 @@ namespace windows_client.DbUtils
             }
             st.Stop();
             long mSec = st.ElapsedMilliseconds;
-            Logging.LogWriter.Instance.WriteToLog(string.Format("Time to save {0} conversations : {1}", convs, mSec));
+            Debug.WriteLine(string.Format("Time to save {0} conversations : {1}", convs, mSec));
         }
 
         /// <summary>
@@ -476,7 +476,7 @@ namespace windows_client.DbUtils
                             }
                             catch (Exception ex)
                             {
-                                Logging.LogWriter.Instance.WriteToLog("ConversationTableUtils :: getAllConvs : reading count , Exception : " + ex.StackTrace);
+                                Debug.WriteLine("ConversationTableUtils :: getAllConvs : reading count , Exception : " + ex.StackTrace);
                             }
                             if (count > 0)
                             {
@@ -497,7 +497,7 @@ namespace windows_client.DbUtils
                                     }
                                     catch (Exception ex)
                                     {
-                                        Logging.LogWriter.Instance.WriteToLog("ConversationTableUtils :: getAllConvs : reading file , Exception : " + ex.StackTrace);
+                                        Debug.WriteLine("ConversationTableUtils :: getAllConvs : reading file , Exception : " + ex.StackTrace);
                                         item = null;
                                     }
                                     if (IsValidConv(item))
@@ -514,7 +514,7 @@ namespace windows_client.DbUtils
                         }
                         catch (Exception ex)
                         {
-                            Logging.LogWriter.Instance.WriteToLog("ConversationTableUtils :: getAllConvs : file dispose, Exception : " + ex.StackTrace);
+                            Debug.WriteLine("ConversationTableUtils :: getAllConvs : file dispose, Exception : " + ex.StackTrace);
                         }
                     }
                     store.Dispose();
@@ -551,7 +551,7 @@ namespace windows_client.DbUtils
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("ConversationTableUtils :: IsValidConv : IsValidConv, Exception : " + ex.StackTrace);
+                Debug.WriteLine("ConversationTableUtils :: IsValidConv : IsValidConv, Exception : " + ex.StackTrace);
                 return false;
             }
         }
@@ -571,7 +571,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("ConversationTableUtils :: deleteAllConversationsOld : get file Names, Exception : " + ex.StackTrace);
+                        Debug.WriteLine("ConversationTableUtils :: deleteAllConversationsOld : get file Names, Exception : " + ex.StackTrace);
                         files = null;
                     }
 
@@ -587,8 +587,8 @@ namespace windows_client.DbUtils
                         }
                         catch (Exception ex)
                         {
-                            Logging.LogWriter.Instance.WriteToLog(string.Format("File {0} does not exist.", CONVERSATIONS_DIRECTORY + "\\" + fileName));
-                            Logging.LogWriter.Instance.WriteToLog("ConversationTableUtils :: deleteAllConversationsOld : delete file, Exception : " + ex.StackTrace);
+                            Debug.WriteLine(string.Format("File {0} does not exist.", CONVERSATIONS_DIRECTORY + "\\" + fileName));
+                            Debug.WriteLine("ConversationTableUtils :: deleteAllConversationsOld : delete file, Exception : " + ex.StackTrace);
                         }
 
                     }

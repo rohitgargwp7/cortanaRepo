@@ -155,7 +155,7 @@ namespace windows_client.FileTransfers
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("FileUploader :: Save Upload Status To IS, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FileUploader :: Save Upload Status To IS, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -182,7 +182,7 @@ namespace windows_client.FileTransfers
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("FileUploader :: Delete Upload From IS, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FileUploader :: Delete Upload From IS, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -250,7 +250,7 @@ namespace windows_client.FileTransfers
             }
             catch (Exception e)
             {
-                Logging.LogWriter.Instance.WriteToLog("FileUploader ::  UploadGetResponseCallback :  UploadGetResponseCallback , Exception : " + e.StackTrace);
+                Debug.WriteLine("FileUploader ::  UploadGetResponseCallback :  UploadGetResponseCallback , Exception : " + e.StackTrace);
                 data = null;
 
                 var webException = e as WebException;
@@ -451,13 +451,13 @@ namespace windows_client.FileTransfers
             //        MaxBlockSize = (netInterface.InterfaceSubtype == NetworkInterfaceSubType.Cellular_EDGE 
             //            || netInterface.InterfaceSubtype == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
 
-            //        Logging.LogWriter.Instance.WriteToLog(netInterface.InterfaceType.ToString());
+            //        Debug.WriteLine(netInterface.InterfaceType.ToString());
             //    }
             //    catch (NetworkException networkException)
             //    {
             //        if (networkException.NetworkErrorCode == NetworkError.WebRequestAlreadyFinished)
             //        {
-            //            Logging.LogWriter.Instance.WriteToLog("Cannot call GetCurrentNetworkInterface if the webrequest is already complete");
+            //            Debug.WriteLine("Cannot call GetCurrentNetworkInterface if the webrequest is already complete");
             //        }
             //    }
             //}); 
@@ -479,7 +479,7 @@ namespace windows_client.FileTransfers
             }
             catch (Exception e)
             {
-                Logging.LogWriter.Instance.WriteToLog("FileUploader ::  UploadPostResponseCallback :  UploadPostResponseCallback , Exception : " + e.StackTrace);
+                Debug.WriteLine("FileUploader ::  UploadPostResponseCallback :  UploadPostResponseCallback , Exception : " + e.StackTrace);
                 data = null;
 
                 var webException = e as WebException;

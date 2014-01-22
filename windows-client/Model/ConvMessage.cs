@@ -1429,7 +1429,7 @@ namespace windows_client.Model
                 }
                 catch (Exception e) //Incase  of error receiver will see it as a normal text message with a link (same as sms user)
                 {                   //ideally code should never reach here.
-                    Logging.LogWriter.Instance.WriteToLog("ConvMessage :: serialize :: Exception while parsing metadat " + e.StackTrace);
+                    Debug.WriteLine("ConvMessage :: serialize :: Exception while parsing metadat " + e.StackTrace);
                 }
             }
             else if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
@@ -1513,7 +1513,7 @@ namespace windows_client.Model
                         }
                         catch (Exception ex)
                         {
-                            Logging.LogWriter.Instance.WriteToLog("ConvMessage :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
+                            Debug.WriteLine("ConvMessage :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
                         }
                     });
             }
@@ -1536,7 +1536,7 @@ namespace windows_client.Model
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("ConvMessage :: NotifyPropertyChanging : NotifyPropertyChanging , Exception : " + ex.StackTrace);
+                    Debug.WriteLine("ConvMessage :: NotifyPropertyChanging : NotifyPropertyChanging , Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -1594,7 +1594,7 @@ namespace windows_client.Model
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("ConvMessage :: serializeDeliveryReportRead : serializeDeliveryReportRead , Exception : " + ex.StackTrace);
+                Debug.WriteLine("ConvMessage :: serializeDeliveryReportRead : serializeDeliveryReportRead , Exception : " + ex.StackTrace);
             }
             return obj;
         }
@@ -1616,7 +1616,7 @@ namespace windows_client.Model
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("ConvMessage ::  ConvMessage constructor : metadata parse , Exception : " + ex.StackTrace);
+                    Debug.WriteLine("ConvMessage ::  ConvMessage constructor : metadata parse , Exception : " + ex.StackTrace);
                 }
 
                 if (metadataToken != null)
@@ -1763,7 +1763,7 @@ namespace windows_client.Model
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("ConvMessage ::  ConvMessage constructor :  parse json , Exception : " + ex.StackTrace);
+                Debug.WriteLine("ConvMessage ::  ConvMessage constructor :  parse json , Exception : " + ex.StackTrace);
                 throw new Exception("Error in parsing json");
             }
         }
@@ -1799,7 +1799,7 @@ namespace windows_client.Model
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("ConvMessage ::  ConvMessage(JObject obj, bool isSelfGenerated, bool addedLater) :  parse json onhike, Exception : " + ex.StackTrace);
+                        Debug.WriteLine("ConvMessage ::  ConvMessage(JObject obj, bool isSelfGenerated, bool addedLater) :  parse json onhike, Exception : " + ex.StackTrace);
                     }
                     try
                     {
@@ -1807,7 +1807,7 @@ namespace windows_client.Model
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("ConvMessage ::  ConvMessage(JObject obj, bool isSelfGenerated, bool addedLater) :  parse json dnd, Exception : " + ex.StackTrace);
+                        Debug.WriteLine("ConvMessage ::  ConvMessage(JObject obj, bool isSelfGenerated, bool addedLater) :  parse json dnd, Exception : " + ex.StackTrace);
                     }
 
                     GroupParticipant gp = GroupManager.Instance.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn, _msisdn);

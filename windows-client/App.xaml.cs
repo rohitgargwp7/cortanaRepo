@@ -359,11 +359,11 @@ namespace windows_client
             {
                 #region SERVER INFO
                 string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
-                Logging.LogWriter.Instance.WriteToLog("SERVER SETTING : " + env);
-                Logging.LogWriter.Instance.WriteToLog("HOST : " + AccountUtils.HOST);
-                Logging.LogWriter.Instance.WriteToLog("PORT : " + AccountUtils.PORT);
-                Logging.LogWriter.Instance.WriteToLog("MQTT HOST : " + AccountUtils.MQTT_HOST);
-                Logging.LogWriter.Instance.WriteToLog("MQTT PORT : " + AccountUtils.MQTT_PORT);
+                Debug.WriteLine("SERVER SETTING : " + env);
+                Debug.WriteLine("HOST : " + AccountUtils.HOST);
+                Debug.WriteLine("PORT : " + AccountUtils.PORT);
+                Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
+                Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
                 #endregion
             }
             _isAppLaunched = true;
@@ -385,7 +385,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("App :: Application_Activated : Setting launch state , Exception : " + ex.StackTrace);
+                    Debug.WriteLine("App :: Application_Activated : Setting launch state , Exception : " + ex.StackTrace);
                 }
 
                 if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
@@ -661,7 +661,7 @@ namespace windows_client
                 //Running on a device / emulator without debugging
                 e.Handled = true;
                 Error.Exception = e.ExceptionObject;
-                Logging.LogWriter.Instance.WriteToLog(string.Format("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace));
+                Debug.WriteLine(string.Format("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace));
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     MessageBox.Show(e.ExceptionObject.ToString(), "Exception", MessageBoxButton.OK);
@@ -819,7 +819,7 @@ namespace windows_client
                 App.HikePubSubInstance = new HikePubSub(); // instantiate pubsub
             st.Stop();
             long msec = st.ElapsedMilliseconds;
-            // Logging.LogWriter.Instance.WriteToLog("APP: Time to Instantiate Pubsub : {0}", msec);
+            // Debug.WriteLine("APP: Time to Instantiate Pubsub : {0}", msec);
             #endregion
             #region DBCONVERSATION LISTENER
             st.Reset();
@@ -1039,11 +1039,11 @@ namespace windows_client
                     WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
                     st.Stop();
                     long msec = st.ElapsedMilliseconds;
-                    Logging.LogWriter.Instance.WriteToLog("APP: Time to create Dbs : {0}" + msec);
+                    Debug.WriteLine("APP: Time to create Dbs : {0}" + msec);
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("App :: createDatabaseAsync : createDatabaseAsync , Exception : " + ex.StackTrace);
+                    Debug.WriteLine("App :: createDatabaseAsync : createDatabaseAsync , Exception : " + ex.StackTrace);
                     RemoveKeyFromAppSettings(App.IS_DB_CREATED);
                 }
 
@@ -1084,7 +1084,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("App :: WriteToIsoStorageSettings, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("App :: WriteToIsoStorageSettings, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -1100,7 +1100,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("App :: ClearAppSettings, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("App :: ClearAppSettings, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -1117,7 +1117,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("App :: RemoveKeyFromAppSettings, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("App :: RemoveKeyFromAppSettings, Exception : " + ex.StackTrace);
                 }
             }
         }

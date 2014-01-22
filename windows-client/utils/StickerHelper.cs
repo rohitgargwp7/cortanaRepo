@@ -112,7 +112,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("StickerHelper::InitialiseStickers, Exception:" + ex.Message);
+                Debug.WriteLine("StickerHelper::InitialiseStickers, Exception:" + ex.Message);
             }
         }
 
@@ -240,7 +240,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("StickerCategory::CreateFromFile, Exception:" + ex.Message);
+                Debug.WriteLine("StickerCategory::CreateFromFile, Exception:" + ex.Message);
             }
             return;
         }
@@ -418,7 +418,7 @@ namespace windows_client.utils
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("RecentStickerHelper :: UpdateRecentsFile : DeletingFile , Exception : " + ex.StackTrace);
+                        Debug.WriteLine("RecentStickerHelper :: UpdateRecentsFile : DeletingFile , Exception : " + ex.StackTrace);
                     }
                     try
                     {
@@ -442,14 +442,14 @@ namespace windows_client.utils
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("RecentStickerHelper :: UpdateRecentsFile : WritingFile , Exception : " + ex.StackTrace);
+                        Debug.WriteLine("RecentStickerHelper :: UpdateRecentsFile : WritingFile , Exception : " + ex.StackTrace);
                     }
 
                 }
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("RecentStickerHelper :: UpdateRecentsFile , Exception : " + ex.StackTrace);
+                Debug.WriteLine("RecentStickerHelper :: UpdateRecentsFile , Exception : " + ex.StackTrace);
             }
         }
         private void ShrinkToSize()
@@ -529,13 +529,13 @@ namespace windows_client.utils
                         }
                         catch (Exception ex)
                         {
-                            Logging.LogWriter.Instance.WriteToLog(string.Format("RecentStickerHelper :: DeleteRecents :Delete FIle: Exception :{0} , StackTrace:{1} ", ex.Message, ex.StackTrace));
+                            Debug.WriteLine(string.Format("RecentStickerHelper :: DeleteRecents :Delete FIle: Exception :{0} , StackTrace:{1} ", ex.Message, ex.StackTrace));
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog(string.Format("RecentStickerHelper :: DeleteRecents , Exception :{0} , StackTrace:{1} ", ex.Message, ex.StackTrace));
+                    Debug.WriteLine(string.Format("RecentStickerHelper :: DeleteRecents , Exception :{0} , StackTrace:{1} ", ex.Message, ex.StackTrace));
                 }
             }
         }

@@ -14,6 +14,7 @@ using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 namespace windows_client.utils
 {
@@ -271,7 +272,7 @@ namespace windows_client.utils
                     myByte = bReader.ReadBytes((int)reader.BaseStream.Length);
                 }
 
-                Logging.LogWriter.Instance.WriteToLog("Image Was Under Download " + (e.UserState as ImageInfo).Uri);
+                Debug.WriteLine("Image Was Under Download " + (e.UserState as ImageInfo).Uri);
                 Deployment.Current.Dispatcher.BeginInvoke(new Action<ImageInfo, Byte[]>(SetImageSource), e.UserState as ImageInfo, myByte);
 
                 SaveFileInIsolatedStorage(e.UserState as ImageInfo, myByte);
@@ -279,7 +280,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog(ex.Message);
+                Debug.WriteLine(ex.Message);
             }
         }
 
@@ -299,7 +300,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog(ex.Message);
+                Debug.WriteLine(ex.Message);
             }
         }
 
@@ -312,7 +313,7 @@ namespace windows_client.utils
             }
             catch
             {
-                Logging.LogWriter.Instance.WriteToLog("Image Render Failed, " + imgInfo.Uri);
+                Debug.WriteLine("Image Render Failed, " + imgInfo.Uri);
                 imgInfo.BitmapImage.UriSource = imgInfo.DefaultImgUri;
             }
         }

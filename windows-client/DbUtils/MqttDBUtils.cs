@@ -38,7 +38,7 @@ namespace windows_client.DbUtils
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("MqttDbUtil :: getAllSentMessages : getAllSentMessages, Exception : " + ex.StackTrace);
+                Debug.WriteLine("MqttDbUtil :: getAllSentMessages : getAllSentMessages, Exception : " + ex.StackTrace);
                 return null;
             }
         }
@@ -60,7 +60,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("MqttDbUtil :: addSentMessage : addSentMessage, Exception : " + ex.StackTrace);
+                        Debug.WriteLine("MqttDbUtil :: addSentMessage : addSentMessage, Exception : " + ex.StackTrace);
                     }
                 }
             }
@@ -80,12 +80,12 @@ namespace windows_client.DbUtils
                     try
                     {
                         context.SubmitChanges(ConflictMode.ContinueOnConflict);
-                        Logging.LogWriter.Instance.WriteToLog("Removed unsent packet with timestamp :: " + timestamp);
+                        Debug.WriteLine("Removed unsent packet with timestamp :: " + timestamp);
                     }
                     catch (ChangeConflictException e)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("MqttDbUtil :: removeSentMessage : removeSentMessage, Exception : " + e.StackTrace);
-                        Logging.LogWriter.Instance.WriteToLog("Failed to remove unsent packet with timestamp :: " + timestamp);
+                        Debug.WriteLine("MqttDbUtil :: removeSentMessage : removeSentMessage, Exception : " + e.StackTrace);
+                        Debug.WriteLine("Failed to remove unsent packet with timestamp :: " + timestamp);
                         // Automerge database values for members that client
                         // has not modified.
                         foreach (ObjectChangeConflict occ in context.ChangeConflicts)
@@ -111,7 +111,7 @@ namespace windows_client.DbUtils
 
                 catch (ChangeConflictException e)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("MqttDbUtil :: deleteAllUnsentMessages : deleteAllUnsentMessages, Exception : " + e.StackTrace);
+                    Debug.WriteLine("MqttDbUtil :: deleteAllUnsentMessages : deleteAllUnsentMessages, Exception : " + e.StackTrace);
                     // Automerge database values for members that client
                     // has not modified.
                     foreach (ObjectChangeConflict occ in context.ChangeConflicts)

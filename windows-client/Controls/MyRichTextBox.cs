@@ -75,7 +75,7 @@ namespace windows_client.Controls
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog(ex.Message);
+                Debug.WriteLine(ex.Message);
             }
         }
     }

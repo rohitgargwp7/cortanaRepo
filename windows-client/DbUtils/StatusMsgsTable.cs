@@ -45,7 +45,7 @@ namespace windows_client.DbUtils
             }
             catch (Exception e)
             {
-                Logging.LogWriter.Instance.WriteToLog("MessagesTableUtils :: addMessage : submit changes, Exception : " + e.StackTrace);
+                Debug.WriteLine("MessagesTableUtils :: addMessage : submit changes, Exception : " + e.StackTrace);
                 return false;
             }
             return true;
@@ -118,7 +118,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("StatusMsgsTable :: DeleteAllStatusMsgs : DeleteAllStatusMsgs, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("StatusMsgsTable :: DeleteAllStatusMsgs : DeleteAllStatusMsgs, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -139,7 +139,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("StatusMsgsTable :: DeleteStatusMsg : DeleteStatusMsg, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("StatusMsgsTable :: DeleteStatusMsg : DeleteStatusMsg, Exception : " + ex.StackTrace);
                     return -1;
                 }
             }
@@ -174,7 +174,7 @@ namespace windows_client.DbUtils
                         }
                         catch (Exception ex)
                         {
-                            Logging.LogWriter.Instance.WriteToLog("StatusMsgTable :: SaveLastStatusMessage: delete file, Exception : " + ex.StackTrace);
+                            Debug.WriteLine("StatusMsgTable :: SaveLastStatusMessage: delete file, Exception : " + ex.StackTrace);
                         }
                         try
                         {
@@ -194,7 +194,7 @@ namespace windows_client.DbUtils
                         }
                         catch (Exception ex)
                         {
-                            Logging.LogWriter.Instance.WriteToLog("StatusMsgTable :: SaveLastStatusMessage : write file, Exception : " + ex.StackTrace);
+                            Debug.WriteLine("StatusMsgTable :: SaveLastStatusMessage : write file, Exception : " + ex.StackTrace);
                         }
                     }
                 }
@@ -229,7 +229,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("UserTableUtils :: GetContactsFromFile : read file, Exception : " + ex.StackTrace);
+                        Debug.WriteLine("UserTableUtils :: GetContactsFromFile : read file, Exception : " + ex.StackTrace);
                     }
                 }
             }
@@ -252,7 +252,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("StatusMsgTable :: DeleteLastStatusFile : delete file, Exception : " + ex.StackTrace);
+                        Debug.WriteLine("StatusMsgTable :: DeleteLastStatusFile : delete file, Exception : " + ex.StackTrace);
                     }
                 }
             }
@@ -317,7 +317,7 @@ namespace windows_client.DbUtils
                                         }
                                         catch (Exception e)
                                         {
-                                            Logging.LogWriter.Instance.WriteToLog("SaveUnreadCounts :: SaveUnreadCounts : Reading status, Exception : " + e.StackTrace);
+                                            Debug.WriteLine("SaveUnreadCounts :: SaveUnreadCounts : Reading status, Exception : " + e.StackTrace);
                                         }
                                     }
                                 }
@@ -351,7 +351,7 @@ namespace windows_client.DbUtils
                         }
                         catch (Exception ex)
                         {
-                            Logging.LogWriter.Instance.WriteToLog("StatusMsgTable :: SaveUnreadCounts : write file, Exception : " + ex.StackTrace);
+                            Debug.WriteLine("StatusMsgTable :: SaveUnreadCounts : write file, Exception : " + ex.StackTrace);
                         }
                     }
                 }
@@ -390,7 +390,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("StatusMsgTable :: GetRefreshBarCount : read file, Exception : " + ex.StackTrace);
+                        Debug.WriteLine("StatusMsgTable :: GetRefreshBarCount : read file, Exception : " + ex.StackTrace);
                         return 0;
                     }
                 }
@@ -419,7 +419,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("StatusMsgTable :: DeleteRefreshCountFile : delete file, Exception : " + ex.StackTrace);
+                        Debug.WriteLine("StatusMsgTable :: DeleteRefreshCountFile : delete file, Exception : " + ex.StackTrace);
                     }
                 }
             }

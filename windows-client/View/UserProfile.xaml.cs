@@ -80,7 +80,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("UserProfile.xaml :: removeListeners, Exception : " + ex.StackTrace);
+                Debug.WriteLine("UserProfile.xaml :: removeListeners, Exception : " + ex.StackTrace);
             }
         }
 
@@ -88,7 +88,7 @@ namespace windows_client.View
         {
             if (obj == null)
             {
-                Logging.LogWriter.Instance.WriteToLog("UserProfile :: OnEventReceived : Object received is null");
+                Debug.WriteLine("UserProfile :: OnEventReceived : Object received is null");
                 return;
             }
 
@@ -215,7 +215,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("UserProfile:: onEventReceived, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("UserProfile:: onEventReceived, Exception : " + ex.StackTrace);
                 }
             }
             #endregion
@@ -244,7 +244,7 @@ namespace windows_client.View
 
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("UserProfile:: onEventReceived, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("UserProfile:: onEventReceived, Exception : " + ex.StackTrace);
                 }
             }
             #endregion
@@ -449,7 +449,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("UserProfile.xaml ::  menuItemCall_Click , Exception : " + ex.StackTrace);
+                Debug.WriteLine("UserProfile.xaml ::  menuItemCall_Click , Exception : " + ex.StackTrace);
             }
         }
 
@@ -500,7 +500,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("UserProfile.xaml :: onProfilePicButtonTap, Exception : " + ex.StackTrace);
+                Debug.WriteLine("UserProfile.xaml :: onProfilePicButtonTap, Exception : " + ex.StackTrace);
             }
         }
 
@@ -536,7 +536,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("USER PROFILE :: Exception in photochooser task " + ex.StackTrace);
+                    Debug.WriteLine("USER PROFILE :: Exception in photochooser task " + ex.StackTrace);
                 }
             }
             else if (e.TaskResult == TaskResult.Cancel)
@@ -563,7 +563,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("UserProfile.xaml :: updateProfile_Callback, serverid parse, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("UserProfile.xaml :: updateProfile_Callback, serverid parse, Exception : " + ex.StackTrace);
                 }
                 if (serverId != null)
                 {
@@ -1207,10 +1207,10 @@ namespace windows_client.View
                         ApplicationBar.Buttons.Remove(addToContactsAppBarButton);
                     break;
                 case TaskResult.Cancel:
-                    Logging.LogWriter.Instance.WriteToLog(AppResources.User_Cancelled_Task_Txt);
+                    Debug.WriteLine(AppResources.User_Cancelled_Task_Txt);
                     break;
                 case TaskResult.None:
-                    Logging.LogWriter.Instance.WriteToLog(AppResources.NoInfoForTask_Txt);
+                    Debug.WriteLine(AppResources.NoInfoForTask_Txt);
                     break;
             }
         }
@@ -1268,7 +1268,7 @@ namespace windows_client.View
                         else
                         {
                             duplicates++;
-                            Logging.LogWriter.Instance.WriteToLog(string.Format("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo));
+                            Debug.WriteLine(string.Format("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo));
                         }
                     }
                     else
@@ -1280,8 +1280,8 @@ namespace windows_client.View
                 }
             }
 
-            Logging.LogWriter.Instance.WriteToLog(string.Format("Total duplicate contacts : {0}", duplicates));
-            Logging.LogWriter.Instance.WriteToLog(string.Format("Total contacts with no phone number : {0}", count));
+            Debug.WriteLine(string.Format("Total duplicate contacts : {0}", duplicates));
+            Debug.WriteLine(string.Format("Total contacts with no phone number : {0}", count));
 
             return contactListMap;
         }

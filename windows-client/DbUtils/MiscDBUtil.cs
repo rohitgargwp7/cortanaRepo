@@ -59,7 +59,7 @@ namespace windows_client.DbUtils
                 }
                 catch (ChangeConflictException ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: clearDatabase : submitChangesChat, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("MiscDbUtil :: clearDatabase : submitChangesChat, Exception : " + ex.StackTrace);
                     // Automerge database values for members that client
                     // has not modified.
                     foreach (ObjectChangeConflict occ in context.ChangeConflicts)
@@ -90,7 +90,7 @@ namespace windows_client.DbUtils
 
                 catch (ChangeConflictException ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: clearDatabase : submitChangesUSers , blocklists, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("MiscDbUtil :: clearDatabase : submitChangesUSers , blocklists, Exception : " + ex.StackTrace);
                     // Automerge database values for members that client
                     // has not modified.
                     foreach (ObjectChangeConflict occ in context.ChangeConflicts)
@@ -115,7 +115,7 @@ namespace windows_client.DbUtils
 
                 catch (ChangeConflictException ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: clearDatabase :  DELETE MQTTPERSISTED MESSAGES , Exception : " + ex.StackTrace);
+                    Debug.WriteLine("MiscDbUtil :: clearDatabase :  DELETE MQTTPERSISTED MESSAGES , Exception : " + ex.StackTrace);
                     // Automerge database values for members that client
                     // has not modified.
                     foreach (ObjectChangeConflict occ in context.ChangeConflicts)
@@ -215,7 +215,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: saveProfileImages :saveProfileImages, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("MiscDbUtil :: saveProfileImages :saveProfileImages, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -257,8 +257,8 @@ namespace windows_client.DbUtils
                         }
                         catch (Exception ex)
                         {
-                            Logging.LogWriter.Instance.WriteToLog(string.Format("File {0} does not exist.", STATUS_UPDATE_LARGE + "\\" + dir + "\\" + file));
-                            Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: DeleteAllLargeStatusImages : DeleteAllLargeStatusImages, Exception : " + ex.StackTrace);
+                            Debug.WriteLine(string.Format("File {0} does not exist.", STATUS_UPDATE_LARGE + "\\" + dir + "\\" + file));
+                            Debug.WriteLine("MiscDbUtil :: DeleteAllLargeStatusImages : DeleteAllLargeStatusImages, Exception : " + ex.StackTrace);
                         }
                     }
                 }
@@ -286,8 +286,8 @@ namespace windows_client.DbUtils
                             }
                             catch (Exception ex)
                             {
-                                Logging.LogWriter.Instance.WriteToLog(string.Format("File {0} does not exist.", PROFILE_PICS + "\\" + dir + "\\" + file));
-                                Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: DeleteAllPicUpdates : DeleteAllPicUpdates, Exception : " + ex.StackTrace);
+                                Debug.WriteLine(string.Format("File {0} does not exist.", PROFILE_PICS + "\\" + dir + "\\" + file));
+                                Debug.WriteLine("MiscDbUtil :: DeleteAllPicUpdates : DeleteAllPicUpdates, Exception : " + ex.StackTrace);
                             }
                         }
                     }
@@ -323,7 +323,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: saveAvatarImage : saveAvatarImage, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("MiscDbUtil :: saveAvatarImage : saveAvatarImage, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -342,7 +342,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: hasCustomProfileImage : hasCustomProfileImage, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("MiscDbUtil :: hasCustomProfileImage : hasCustomProfileImage, Exception : " + ex.StackTrace);
                 }
             }
             return false;
@@ -372,7 +372,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: getThumbNailForMsisdn : getThumbNailForMsisdn, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("MiscDbUtil :: getThumbNailForMsisdn : getThumbNailForMsisdn, Exception : " + ex.StackTrace);
                 }
             }
             return data;
@@ -391,8 +391,8 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog(string.Format("File {0} does not exist.", THUMBNAILS + "\\" + fileName));
-                        Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: DeleteAllThumbnails : DeleteAllThumbnails, Exception : " + ex.StackTrace);
+                        Debug.WriteLine(string.Format("File {0} does not exist.", THUMBNAILS + "\\" + fileName));
+                        Debug.WriteLine("MiscDbUtil :: DeleteAllThumbnails : DeleteAllThumbnails, Exception : " + ex.StackTrace);
                     }
                 }
             }
@@ -430,7 +430,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: saveAttachmentObject : saveAttachmentObject, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("MiscDbUtil :: saveAttachmentObject : saveAttachmentObject, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -716,7 +716,7 @@ namespace windows_client.DbUtils
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: LoadFavouritesFromIndividualFiles : reading file, Exception : " + ex.StackTrace);
+                                    Debug.WriteLine("MiscDbUtil :: LoadFavouritesFromIndividualFiles : reading file, Exception : " + ex.StackTrace);
                                 }
                                 reader.Close();
                             }
@@ -727,7 +727,7 @@ namespace windows_client.DbUtils
                             }
                             catch (Exception ex)
                             {
-                                Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: LoadFavouritesFromIndividualFiles : disposing file, Exception : " + ex.StackTrace);
+                                Debug.WriteLine("MiscDbUtil :: LoadFavouritesFromIndividualFiles : disposing file, Exception : " + ex.StackTrace);
                             }
                         }
                     }
@@ -760,7 +760,7 @@ namespace windows_client.DbUtils
                             }
                             catch (Exception ex)
                             {
-                                Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: LoadFavourites : count reading, Exception : " + ex.StackTrace);
+                                Debug.WriteLine("MiscDbUtil :: LoadFavourites : count reading, Exception : " + ex.StackTrace);
                             }
                             if (count > 0)
                             {
@@ -780,7 +780,7 @@ namespace windows_client.DbUtils
                                     }
                                     catch (Exception ex)
                                     {
-                                        Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: LoadFavourites : file reading, Exception : " + ex.StackTrace);
+                                        Debug.WriteLine("MiscDbUtil :: LoadFavourites : file reading, Exception : " + ex.StackTrace);
                                     }
                                 }
                             }
@@ -793,7 +793,7 @@ namespace windows_client.DbUtils
                         }
                         catch (Exception ex)
                         {
-                            Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: LoadFavourites : disposing file, Exception : " + ex.StackTrace);
+                            Debug.WriteLine("MiscDbUtil :: LoadFavourites : disposing file, Exception : " + ex.StackTrace);
                         }
                     }
                 }
@@ -878,7 +878,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: DeleteFavourites :DeleteFavourites Exception : " + ex.StackTrace);
+                    Debug.WriteLine("MiscDbUtil :: DeleteFavourites :DeleteFavourites Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -893,7 +893,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: DeleteFavourite : DeleteFavourite, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("MiscDbUtil :: DeleteFavourite : DeleteFavourite, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -929,7 +929,7 @@ namespace windows_client.DbUtils
                             }
                             catch (Exception ex)
                             {
-                                Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: LoadPendingRequests : read count, Exception : " + ex.StackTrace);
+                                Debug.WriteLine("MiscDbUtil :: LoadPendingRequests : read count, Exception : " + ex.StackTrace);
                             }
                             if (count > 0)
                             {
@@ -950,7 +950,7 @@ namespace windows_client.DbUtils
                                     }
                                     catch (Exception ex)
                                     {
-                                        Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: LoadPendingRequests : read file, Exception : " + ex.StackTrace);
+                                        Debug.WriteLine("MiscDbUtil :: LoadPendingRequests : read file, Exception : " + ex.StackTrace);
                                     }
                                 }
                             }
@@ -963,7 +963,7 @@ namespace windows_client.DbUtils
                         }
                         catch (Exception ex)
                         {
-                            Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: LoadPendingRequests : dispose file, Exception : " + ex.StackTrace);
+                            Debug.WriteLine("MiscDbUtil :: LoadPendingRequests : dispose file, Exception : " + ex.StackTrace);
                         }
                     }
                 }
@@ -1013,7 +1013,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("MiscDbUtil :: DeletePendingRequests : DeletePendingRequests, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("MiscDbUtil :: DeletePendingRequests : DeletePendingRequests, Exception : " + ex.StackTrace);
                 }
             }
         }

@@ -209,7 +209,7 @@ namespace windows_client.utils
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("StickerCategory :: NotifyPropertyChanged : NotifyPropertyChanged, Exception : " + ex.StackTrace);
+                        Debug.WriteLine("StickerCategory :: NotifyPropertyChanged : NotifyPropertyChanged, Exception : " + ex.StackTrace);
                     }
                 });
             }
@@ -258,14 +258,14 @@ namespace windows_client.utils
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logging.LogWriter.Instance.WriteToLog(string.Format("Writing HIgh res Sticker:{0} failed,Exception:{1}", fileName, ex.Message));
+                                    Debug.WriteLine(string.Format("Writing HIgh res Sticker:{0} failed,Exception:{1}", fileName, ex.Message));
                                 }
                             }
                         }
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("StickerCategory::WriteToFile, Exception:" + ex.Message);
+                        Debug.WriteLine("StickerCategory::WriteToFile, Exception:" + ex.Message);
                     }
                 }
             }
@@ -318,7 +318,7 @@ namespace windows_client.utils
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logging.LogWriter.Instance.WriteToLog(string.Format("Writing Sticker:{0} failed,Exception:{1}", fileName, ex.Message));
+                                    Debug.WriteLine(string.Format("Writing Sticker:{0} failed,Exception:{1}", fileName, ex.Message));
                                 }
                             }
                             string metadataFile = folder + "\\" + METADATA;
@@ -338,7 +338,7 @@ namespace windows_client.utils
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("StickerCategory::WriteToFile, Exception:" + ex.Message);
+                        Debug.WriteLine("StickerCategory::WriteToFile, Exception:" + ex.Message);
                     }
                 }
             }
@@ -382,7 +382,7 @@ namespace windows_client.utils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("StickerCategory::SetDownloadMessage, Exception:" + ex.Message);
+                    Debug.WriteLine("StickerCategory::SetDownloadMessage, Exception:" + ex.Message);
                 }
             }
         }
@@ -430,7 +430,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("StickerCategory::CreateFromFile, Exception:" + ex.Message);
+                Debug.WriteLine("StickerCategory::CreateFromFile, Exception:" + ex.Message);
             }
             return null;
         }
@@ -501,7 +501,7 @@ namespace windows_client.utils
                                                 }
                                                 catch (Exception ex)
                                                 {
-                                                    Logging.LogWriter.Instance.WriteToLog("Exception in reading sticker file,message:" + ex.Message);
+                                                    Debug.WriteLine("Exception in reading sticker file,message:" + ex.Message);
                                                 }
                                             }
                                         }
@@ -512,7 +512,7 @@ namespace windows_client.utils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("StickerCategory::CreateFromFile, Exception:" + ex.Message);
+                    Debug.WriteLine("StickerCategory::CreateFromFile, Exception:" + ex.Message);
                 }
                 return listStickerCategory;
             }
@@ -561,7 +561,7 @@ namespace windows_client.utils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("StickerCategory::DeleteCategory, Exception:" + ex.Message);
+                    Debug.WriteLine("StickerCategory::DeleteCategory, Exception:" + ex.Message);
                 }
             }
         }
@@ -597,7 +597,7 @@ namespace windows_client.utils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("StickerCategory::DeleteCategory, Exception:" + ex.Message);
+                    Debug.WriteLine("StickerCategory::DeleteCategory, Exception:" + ex.Message);
                 }
             }
         }
@@ -639,7 +639,7 @@ namespace windows_client.utils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("StickerCategory::DeleteCategory, Exception:" + ex.Message);
+                    Debug.WriteLine("StickerCategory::DeleteCategory, Exception:" + ex.Message);
                 }
             }
         }
@@ -707,7 +707,7 @@ namespace windows_client.utils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("StickerCategory::UpdateHasMoreMessages, Exception:" + ex.Message);
+                    Debug.WriteLine("StickerCategory::UpdateHasMoreMessages, Exception:" + ex.Message);
                 }
             }
         }
@@ -763,7 +763,7 @@ namespace windows_client.utils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("StickerCategory::DeleteCategory, Exception:" + ex.Message);
+                    Debug.WriteLine("StickerCategory::DeleteCategory, Exception:" + ex.Message);
                 }
             }
         }

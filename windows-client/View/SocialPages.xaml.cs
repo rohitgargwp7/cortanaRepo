@@ -195,7 +195,7 @@ namespace windows_client.View
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logging.LogWriter.Instance.WriteToLog("SocialPages.xaml :: LoginSucceded, LoginSucceded, Exception : " + ex.StackTrace);
+                                    Debug.WriteLine("SocialPages.xaml :: LoginSucceded, LoginSucceded, Exception : " + ex.StackTrace);
                                 }
                             }
 
@@ -249,7 +249,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("SocialPages :: requestTokenQuery_QueryResponse : TwitterAuth , Exception:" + ex.StackTrace);
+                Debug.WriteLine("SocialPages :: requestTokenQuery_QueryResponse : TwitterAuth , Exception:" + ex.StackTrace);
             }
         }
 
@@ -301,7 +301,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("SocialPages::Browser_Navigating:TwitterAuth , Exception:" + ex.StackTrace);
+                    Debug.WriteLine("SocialPages::Browser_Navigating:TwitterAuth , Exception:" + ex.StackTrace);
                 }
             }
             else if (uri.Contains("get.hike.in") && uri.Contains("windowsphone") || uri.Contains("zune"))
@@ -328,7 +328,7 @@ namespace windows_client.View
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("SocialPages SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
+                        Debug.WriteLine("SocialPages SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
                     }
                 });
             }
@@ -353,7 +353,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("SocialPages::AccessTokenQuery_QueryResponse, Exception:" + ex.StackTrace);
+                Debug.WriteLine("SocialPages::AccessTokenQuery_QueryResponse, Exception:" + ex.StackTrace);
             }
         }
 

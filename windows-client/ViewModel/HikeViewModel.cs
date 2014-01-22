@@ -163,7 +163,7 @@ namespace windows_client.ViewModel
             }
             catch (Exception e)
             {
-                Logging.LogWriter.Instance.WriteToLog("HikeViewModel :: LoadPendingRequests : Exception : " + e.StackTrace);
+                Debug.WriteLine("HikeViewModel :: LoadPendingRequests : Exception : " + e.StackTrace);
             }
         }
 
@@ -263,7 +263,7 @@ namespace windows_client.ViewModel
                     {
                         // Couldn't get current location - location might be disabled in settings
                         //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
-                        Logging.LogWriter.Instance.WriteToLog("Location exception GetCurrentCoordinate HikeViewModel : " + ex.StackTrace);
+                        Debug.WriteLine("Location exception GetCurrentCoordinate HikeViewModel : " + ex.StackTrace);
                     }
                     finally
                     {
@@ -378,7 +378,7 @@ namespace windows_client.ViewModel
 
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("HikeViewModel:: onEventReceived, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("HikeViewModel:: onEventReceived, Exception : " + ex.StackTrace);
                 }
             }
             #endregion
@@ -404,14 +404,14 @@ namespace windows_client.ViewModel
                         }
                         catch (Exception e)
                         {
-                            Logging.LogWriter.Instance.WriteToLog("HikeViewModel :: SavePendingRequests : Exception : " + e.StackTrace);
+                            Debug.WriteLine("HikeViewModel :: SavePendingRequests : Exception : " + e.StackTrace);
                         }
                     }
                     #endregion
                 }
                 catch (Exception e)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("HikeViewModel :: OnEventReceived : BLOCK USER , Exception : " + e.StackTrace);
+                    Debug.WriteLine("HikeViewModel :: OnEventReceived : BLOCK USER , Exception : " + e.StackTrace);
                 }
             }
             #endregion

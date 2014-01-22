@@ -58,7 +58,7 @@ namespace windows_client.DbUtils
                                     }
                                     catch (Exception e)
                                     {
-                                        Logging.LogWriter.Instance.WriteToLog("FriendsTableUtils :: SetFriendStatus : Reading status, Exception : " + e.StackTrace);
+                                        Debug.WriteLine("FriendsTableUtils :: SetFriendStatus : Reading status, Exception : " + e.StackTrace);
                                     }
                                     try
                                     {
@@ -66,7 +66,7 @@ namespace windows_client.DbUtils
                                     }
                                     catch (Exception e)
                                     {
-                                        Logging.LogWriter.Instance.WriteToLog("FriendsTableUtils :: SetFriendStatus : Reading timestamp, Exception : " + e.StackTrace);
+                                        Debug.WriteLine("FriendsTableUtils :: SetFriendStatus : Reading timestamp, Exception : " + e.StackTrace);
                                     }
                                     try
                                     {
@@ -74,7 +74,7 @@ namespace windows_client.DbUtils
                                     }
                                     catch (Exception e)
                                     {
-                                        Logging.LogWriter.Instance.WriteToLog("FriendsTableUtils :: SetFriendStatus : Reading last Seen timestamp, Exception : " + e.StackTrace);
+                                        Debug.WriteLine("FriendsTableUtils :: SetFriendStatus : Reading last Seen timestamp, Exception : " + e.StackTrace);
                                     } 
                                 }
 
@@ -111,7 +111,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("FriendsTableUtils :: SetFriendStatus, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: SetFriendStatus, Exception : " + ex.StackTrace);
                 }
             }
             return friendStatus;
@@ -141,7 +141,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("FriendsTableUtils :: GetFriendStatus :GetFriendStatus, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: GetFriendStatus :GetFriendStatus, Exception : " + ex.StackTrace);
                 }
             }
             return friendStatus;
@@ -190,7 +190,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("FriendsTableUtils :: GetFriendStatus :GetFriendStatus, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: GetFriendStatus :GetFriendStatus, Exception : " + ex.StackTrace);
                 }
             }
             return friendStatus;
@@ -245,7 +245,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("FriendsTableUtils :: GetFriendStatus :GetFriendStatus, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: GetFriendStatus :GetFriendStatus, Exception : " + ex.StackTrace);
                 }
             }
             return lsts;
@@ -298,7 +298,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("FriendsTableUtils :: SetFriendTimeStamp :SetFriendTimeStamp, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: SetFriendTimeStamp :SetFriendTimeStamp, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -365,7 +365,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("FriendsTableUtils :: UpdateFriendTimeStamp :UpdateFriendTimeStamp, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: UpdateFriendTimeStamp :UpdateFriendTimeStamp, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -400,7 +400,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("FriendsTableUtils :: GetFriendStatus :GetFriendStatus, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: GetFriendStatus :GetFriendStatus, Exception : " + ex.StackTrace);
                 }
             }
             return ts;
@@ -443,7 +443,7 @@ namespace windows_client.DbUtils
                                     }
                                     catch (Exception e)
                                     {
-                                        Logging.LogWriter.Instance.WriteToLog("FriendsTableUtils :: SetFriendStatus : Reading status, Exception : " + e.StackTrace);
+                                        Debug.WriteLine("FriendsTableUtils :: SetFriendStatus : Reading status, Exception : " + e.StackTrace);
                                     }
                                 }
                             }
@@ -465,7 +465,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("FriendsTableUtils :: SetFriendStatus, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: SetFriendStatus, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -488,15 +488,15 @@ namespace windows_client.DbUtils
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logging.LogWriter.Instance.WriteToLog(string.Format("Exception while deleting all friendsDb, FileName :{0} ", fileName));
-                                    Logging.LogWriter.Instance.WriteToLog("FriendsTableUtils :: DeleteAllFriends : Individual Files, Exception : " + ex.StackTrace);
+                                    Debug.WriteLine(string.Format("Exception while deleting all friendsDb, FileName :{0} ", fileName));
+                                    Debug.WriteLine("FriendsTableUtils :: DeleteAllFriends : Individual Files, Exception : " + ex.StackTrace);
                                 }
                             }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("FriendsTableUtils :: DeleteAllFriends : DeleteAllFriends, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: DeleteAllFriends : DeleteAllFriends, Exception : " + ex.StackTrace);
                 }
             }
         }

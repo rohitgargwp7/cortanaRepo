@@ -108,7 +108,7 @@ namespace windows_client.FileTransfers
                 }
                 catch (Exception e)
                 {
-                    Logging.LogWriter.Instance.WriteToLog(e.ToString() + e.StackTrace);
+                    Debug.WriteLine(e.ToString() + e.StackTrace);
                 }
 
                 retryAttempts++;

@@ -555,7 +555,7 @@ namespace windows_client.View
                 loadMessages(INITIAL_FETCH_COUNT, true);
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
-                Logging.LogWriter.Instance.WriteToLog(string.Format("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec));
+                Debug.WriteLine(string.Format("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec));
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -713,7 +713,7 @@ namespace windows_client.View
                 if (isFirstLaunch) // if first time launching after tombstone
                 {
                     /* Tombstone case and page is opened from select user page*/
-                    Logging.LogWriter.Instance.WriteToLog("CHAT THREAD :: Recovered from Tombstone.");
+                    Debug.WriteLine("CHAT THREAD :: Recovered from Tombstone.");
                     NetworkManager.turnOffNetworkManager = false;
                     App.MqttManagerInstance.connect();
                     object obj = null;
@@ -883,7 +883,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("NewChatThread.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("NewChatThread.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
                 }
 
                 FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI -= FileTransferStatusUpdated;
@@ -895,7 +895,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog(ex.Message);
+                Debug.WriteLine(ex.Message);
             }
         }
 
@@ -1143,6 +1143,8 @@ namespace windows_client.View
 
             if (isGroupChat)
             {
+                Logging.LogWriter.Instance.WriteToLog(string.Format("Chat thread opened for groupid:{0}, gpname,{1}", mContactNumber, mContactName));
+
                 chatThemeTipTxt.Text = AppResources.ChatThemeMessage_GrpMessage;
 
                 GroupManager.Instance.LoadGroupParticipants(mContactNumber);
@@ -1601,11 +1603,11 @@ namespace windows_client.View
 
                     obj[HikeConstants.DATA] = array;
                 }
-                Logging.LogWriter.Instance.WriteToLog("GROUP JSON : " + obj.ToString());
+                Debug.WriteLine("GROUP JSON : " + obj.ToString());
             }
             catch (Exception e)
             {
-                Logging.LogWriter.Instance.WriteToLog("ConvMessage" + "invalid json message" + e.Message);
+                Debug.WriteLine("ConvMessage" + "invalid json message" + e.Message);
             }
             return obj;
         }
@@ -1939,7 +1941,7 @@ namespace windows_client.View
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("Chat Thread :: Exception : " + ex.StackTrace);
+                        Debug.WriteLine("Chat Thread :: Exception : " + ex.StackTrace);
                     }
                     SendImage(bitmap, token);
                     PhoneApplicationService.Current.State.Remove("SharePicker");
@@ -1974,7 +1976,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("NewChatThread::ScrollToBottom , Exception:" + ex.Message);
+                Debug.WriteLine("NewChatThread::ScrollToBottom , Exception:" + ex.Message);
             }
         }
 
@@ -2054,7 +2056,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("NewChatThread.xaml ::  removeListeners , Exception : " + ex.StackTrace);
+                Debug.WriteLine("NewChatThread.xaml ::  removeListeners , Exception : " + ex.StackTrace);
             }
         }
         #endregion
@@ -2072,7 +2074,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("NewChatThread.xaml ::  callUser_Click , Exception : " + ex.StackTrace);
+                Debug.WriteLine("NewChatThread.xaml ::  callUser_Click , Exception : " + ex.StackTrace);
             }
         }
 
@@ -2326,7 +2328,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("NewChatThread.xaml ::  displayAttachment ,Ausio video , Exception : " + ex.StackTrace);
+                    Debug.WriteLine("NewChatThread.xaml ::  displayAttachment ,Ausio video , Exception : " + ex.StackTrace);
                 }
             }
             else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
@@ -2416,7 +2418,7 @@ namespace windows_client.View
                             }
                             catch (Exception ex) //Code should never reach here
                             {
-                                Logging.LogWriter.Instance.WriteToLog("NewChatTHread :: Play Audio Attachment :: Exception while playing audio file" + ex.StackTrace);
+                                Debug.WriteLine("NewChatTHread :: Play Audio Attachment :: Exception while playing audio file" + ex.StackTrace);
                             }
                         }
                     }
@@ -2449,7 +2451,7 @@ namespace windows_client.View
                             }
                             catch (Exception ex) //Code should never reach here
                             {
-                                Logging.LogWriter.Instance.WriteToLog("NewChatTHread :: Play Audio Attachment :: Exception while playing audio file" + ex.StackTrace);
+                                Debug.WriteLine("NewChatTHread :: Play Audio Attachment :: Exception while playing audio file" + ex.StackTrace);
                             }
                         }
                         else //play new file after resume app
@@ -2498,7 +2500,7 @@ namespace windows_client.View
                             }
                             catch (Exception ex) //Code should never reach here
                             {
-                                Logging.LogWriter.Instance.WriteToLog("NewChatTHread :: Play Audio Attachment :: Exception while playing audio file" + ex.StackTrace);
+                                Debug.WriteLine("NewChatTHread :: Play Audio Attachment :: Exception while playing audio file" + ex.StackTrace);
                             }
                         }
                     }
@@ -2547,7 +2549,7 @@ namespace windows_client.View
                     }
                     catch (Exception ex) //Code should never reach here
                     {
-                        Logging.LogWriter.Instance.WriteToLog("NewChatTHread :: Play Audio Attachment :: Exception while playing audio file" + ex.StackTrace);
+                        Debug.WriteLine("NewChatTHread :: Play Audio Attachment :: Exception while playing audio file" + ex.StackTrace);
                     }
                 }
             }
@@ -2577,7 +2579,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex) //Code should never reach here
                 {
-                    Logging.LogWriter.Instance.WriteToLog("NewChatTHread :: DisplayAttachment :: Exception while parsing location parameters" + ex.StackTrace);
+                    Debug.WriteLine("NewChatTHread :: DisplayAttachment :: Exception while parsing location parameters" + ex.StackTrace);
                 }
                 return;
             }
@@ -2707,7 +2709,7 @@ namespace windows_client.View
                         if (convMessage.FileAttachment == null)
                         {
                             //Done to avoid crash. Code should never reach here
-                            Logging.LogWriter.Instance.WriteToLog("Fileattachment object is null for convmessage with attachment");
+                            Debug.WriteLine("Fileattachment object is null for convmessage with attachment");
                             return;
                         }
 
@@ -2993,7 +2995,7 @@ namespace windows_client.View
                         }
                         catch (Exception e)
                         {
-                            Logging.LogWriter.Instance.WriteToLog("Exception while inserting Text Update msg : " + e.StackTrace);
+                            Debug.WriteLine("Exception while inserting Text Update msg : " + e.StackTrace);
                         }
                     }
                     #endregion
@@ -3008,7 +3010,7 @@ namespace windows_client.View
                         }
                         catch (Exception e)
                         {
-                            Logging.LogWriter.Instance.WriteToLog("Exception while inserting Text Update msg : " + e.StackTrace);
+                            Debug.WriteLine("Exception while inserting Text Update msg : " + e.StackTrace);
                         }
                     }
                     #endregion
@@ -3073,7 +3075,7 @@ namespace windows_client.View
             }
             catch (Exception e)
             {
-                Logging.LogWriter.Instance.WriteToLog("NEW CHAT THREAD :: " + e.StackTrace);
+                Debug.WriteLine("NEW CHAT THREAD :: " + e.StackTrace);
             }
         }
 
@@ -3201,7 +3203,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("NewChatThread :: inviteUserBtn_Click : Exception Occored:" + ex.StackTrace);
+                Debug.WriteLine("NewChatThread :: inviteUserBtn_Click : Exception Occored:" + ex.StackTrace);
             }
         }
 
@@ -3325,7 +3327,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("GROUP INFO :: Exception in photochooser task " + ex.StackTrace);
+                    Debug.WriteLine("GROUP INFO :: Exception in photochooser task " + ex.StackTrace);
                 }
             }
             else if (e.TaskResult == TaskResult.Cancel)
@@ -3841,7 +3843,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("NewChatThread.xaml :: sendImage_Tap , Exception : " + ex.StackTrace);
+                Debug.WriteLine("NewChatThread.xaml :: sendImage_Tap , Exception : " + ex.StackTrace);
             }
         }
         private void clickPhoto_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3853,7 +3855,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("NewChatThread.xaml :: clickPhoto_Tap , Exception : " + ex.StackTrace);
+                Debug.WriteLine("NewChatThread.xaml :: clickPhoto_Tap , Exception : " + ex.StackTrace);
             }
         }
         private void sendAudio_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -4230,7 +4232,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("NewChatThread.xaml :: sendTypingNotification , Exception : " + ex.StackTrace);
+                Debug.WriteLine("NewChatThread.xaml :: sendTypingNotification , Exception : " + ex.StackTrace);
             }
             object[] publishData = new object[2];
             publishData[0] = obj;
@@ -4441,7 +4443,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("NewChatThread.xaml :: onEventReceived ,SERVER_RECEIVED_MSG Exception : " + ex.StackTrace);
+                    Debug.WriteLine("NewChatThread.xaml :: onEventReceived ,SERVER_RECEIVED_MSG Exception : " + ex.StackTrace);
                 }
             }
 
@@ -4486,7 +4488,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("NewChatThread.xaml :: onEventReceived ,MESSAGE_DELIVERED, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("NewChatThread.xaml :: onEventReceived ,MESSAGE_DELIVERED, Exception : " + ex.StackTrace);
                 }
             }
 
@@ -4524,7 +4526,7 @@ namespace windows_client.View
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("NewChatThread.xaml :: onEventReceived ,MESSAGE_DELIVERED_READ Exception : " + ex.StackTrace);
+                        Debug.WriteLine("NewChatThread.xaml :: onEventReceived ,MESSAGE_DELIVERED_READ Exception : " + ex.StackTrace);
                         continue;
                     }
                 }
@@ -4558,7 +4560,7 @@ namespace windows_client.View
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("NewChatThread :: OnEventRecieved, perception Fix, Exception:" + ex.StackTrace);
+                        Debug.WriteLine("NewChatThread :: OnEventRecieved, perception Fix, Exception:" + ex.StackTrace);
                     }
                 }
                 #endregion
@@ -4803,7 +4805,7 @@ namespace windows_client.View
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("NEW_CHAT_THREAD :: Exception in participant left group : " + ex.StackTrace);
+                        Debug.WriteLine("NEW_CHAT_THREAD :: Exception in participant left group : " + ex.StackTrace);
                     }
                 });
             }
@@ -4833,7 +4835,7 @@ namespace windows_client.View
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("NEW_CHAT_THREAD :: Exception in participant joined group : " + ex.StackTrace);
+                        Debug.WriteLine("NEW_CHAT_THREAD :: Exception in participant joined group : " + ex.StackTrace);
                     }
                 });
             }
@@ -5051,7 +5053,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("NewChatThread.xaml :: smsUser_Click Exception : " + ex.StackTrace);
+                Debug.WriteLine("NewChatThread.xaml :: smsUser_Click Exception : " + ex.StackTrace);
             }
         }
 
@@ -5484,7 +5486,7 @@ namespace windows_client.View
                     }
                     catch
                     {
-                        Logging.LogWriter.Instance.WriteToLog("Background doesn't exist");
+                        Debug.WriteLine("Background doesn't exist");
                     }
                 }
             }
@@ -5527,7 +5529,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("NewChatThread.xaml :: contactSearchCompleted_Callback, Exception : " + ex.StackTrace);
+                Debug.WriteLine("NewChatThread.xaml :: contactSearchCompleted_Callback, Exception : " + ex.StackTrace);
             }
         }
 
@@ -5566,7 +5568,7 @@ namespace windows_client.View
                         else
                         {
                             duplicates++;
-                            Logging.LogWriter.Instance.WriteToLog(string.Format("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo));
+                            Debug.WriteLine(string.Format("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo));
                         }
                     }
                     else
@@ -5578,8 +5580,8 @@ namespace windows_client.View
                 }
             }
 
-            Logging.LogWriter.Instance.WriteToLog(string.Format("Total duplicate contacts : {0}", duplicates));
-            Logging.LogWriter.Instance.WriteToLog(string.Format("Total contacts with no phone number : {0}", count));
+            Debug.WriteLine(string.Format("Total duplicate contacts : {0}", duplicates));
+            Debug.WriteLine(string.Format("Total contacts with no phone number : {0}", count));
 
             return contactListMap;
         }
@@ -6007,7 +6009,7 @@ namespace windows_client.View
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("NewChatThread : callBack : Exception : " + ex.Message);
+                        Debug.WriteLine("NewChatThread : callBack : Exception : " + ex.Message);
                     }
                 }
                 stickerCategory.WriteHighResToFile(listHighResStickersBytes);
@@ -6078,7 +6080,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("NewChatThread::StickersRequestCallBack , Exception:" + ex.Message);
+                Debug.WriteLine("NewChatThread::StickersRequestCallBack , Exception:" + ex.Message);
                 if (stickerCategory != null)
                 {
                     stickerCategory.IsDownLoading = false;
@@ -6460,7 +6462,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("NewChatThread.xaml :: dt_Tick, update, Exception : " + ex.StackTrace);
+                Debug.WriteLine("NewChatThread.xaml :: dt_Tick, update, Exception : " + ex.StackTrace);
             }
         }
 

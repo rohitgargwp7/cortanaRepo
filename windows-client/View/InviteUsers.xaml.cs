@@ -288,7 +288,7 @@ namespace windows_client.View
             xyz = !xyz;
 
             charsEntered = enterNameTxt.Text.ToLower();
-            Logging.LogWriter.Instance.WriteToLog(string.Format("Chars Entered : {0}", charsEntered));
+            Debug.WriteLine(string.Format("Chars Entered : {0}", charsEntered));
 
             charsEntered = charsEntered.Trim();
             if (String.IsNullOrWhiteSpace(charsEntered))

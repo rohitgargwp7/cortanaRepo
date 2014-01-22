@@ -138,7 +138,7 @@ namespace windows_client.Mqtt
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("HIkeMqttManager ::  disconnectFromBroker : disconnectFromBroker, Exception : " + ex.StackTrace);
+                Debug.WriteLine("HIkeMqttManager ::  disconnectFromBroker : disconnectFromBroker, Exception : " + ex.StackTrace);
             }
         }
 
@@ -182,7 +182,7 @@ namespace windows_client.Mqtt
             catch (Exception ex)
             {
                 /* couldn't connect, schedule a ping even earlier? */
-                Logging.LogWriter.Instance.WriteToLog("HIkeMqttManager ::  connectToBroker : connectToBroker, Exception : " + ex.StackTrace);
+                Debug.WriteLine("HIkeMqttManager ::  connectToBroker : connectToBroker, Exception : " + ex.StackTrace);
             }
 
         }
@@ -213,7 +213,7 @@ namespace windows_client.Mqtt
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("HIkeMqttManager ::  unsubscribeFromTopics : unsubscribeFromTopics, Exception : " + ex.StackTrace);
+                Debug.WriteLine("HIkeMqttManager ::  unsubscribeFromTopics : unsubscribeFromTopics, Exception : " + ex.StackTrace);
             }
         }
 
@@ -275,7 +275,7 @@ namespace windows_client.Mqtt
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("HIkeMqttManager ::  ping : ping, Exception : " + ex.StackTrace);
+                Debug.WriteLine("HIkeMqttManager ::  ping : ping, Exception : " + ex.StackTrace);
             }
         }
 
@@ -312,7 +312,7 @@ namespace windows_client.Mqtt
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("HIkeMqttManager ::  connect : connect, Exception : " + ex.StackTrace);
+                Debug.WriteLine("HIkeMqttManager ::  connect : connect, Exception : " + ex.StackTrace);
                 connectInBackground();
             }
         }
@@ -361,7 +361,7 @@ namespace windows_client.Mqtt
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("HIkeMqttManager ::  send : send, Exception : " + ex.StackTrace);
+                        Debug.WriteLine("HIkeMqttManager ::  send : send, Exception : " + ex.StackTrace);
                     }
                 }
                 this.connect();
@@ -442,7 +442,7 @@ namespace windows_client.Mqtt
 
             if (packets == null)
                 return;
-            Logging.LogWriter.Instance.WriteToLog("MQTT MANAGER:: NUmber os unsent messages" + packets.Count);
+            Debug.WriteLine("MQTT MANAGER:: NUmber os unsent messages" + packets.Count);
             sendAllUnsentMessages(packets);
         }
 

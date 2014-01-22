@@ -131,7 +131,7 @@ namespace windows_client.FileTransfers
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("FileDownloader :: Save Download Status To IS, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FileDownloader :: Save Download Status To IS, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -158,7 +158,7 @@ namespace windows_client.FileTransfers
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("FileDownloader :: Delete Download From IS, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FileDownloader :: Delete Download From IS, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -210,7 +210,7 @@ namespace windows_client.FileTransfers
             }
             catch (Exception e)
             {
-                Logging.LogWriter.Instance.WriteToLog("FileDownloader ::  DownloadGetResponseCallback :  DownloadGetResponseCallback , Exception : " + e.StackTrace);
+                Debug.WriteLine("FileDownloader ::  DownloadGetResponseCallback :  DownloadGetResponseCallback , Exception : " + e.StackTrace);
                 responseStream = null;
 
                 var webException = e as WebException;

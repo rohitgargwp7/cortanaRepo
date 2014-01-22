@@ -190,7 +190,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("Group Info Page ::  removeListeners , Exception : " + ex.StackTrace);
+                Debug.WriteLine("Group Info Page ::  removeListeners , Exception : " + ex.StackTrace);
             }
         }
 
@@ -364,7 +364,7 @@ namespace windows_client.View
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("Group Info Page ::  onGroupProfileTap , Exception : " + ex.StackTrace);
+                        Debug.WriteLine("Group Info Page ::  onGroupProfileTap , Exception : " + ex.StackTrace);
                     }
                     isProfilePicTapped = true;
                 }
@@ -407,7 +407,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("GROUP INFO :: Exception in photochooser task " + ex.StackTrace);
+                    Debug.WriteLine("GROUP INFO :: Exception in photochooser task " + ex.StackTrace);
                 }
             }
             else if (e.TaskResult == TaskResult.Cancel)
@@ -658,7 +658,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("Group Info Page ::  contactSearchCompleted_Callback , Exception : " + ex.StackTrace);
+                Debug.WriteLine("Group Info Page ::  contactSearchCompleted_Callback , Exception : " + ex.StackTrace);
             }
         }
 
@@ -697,7 +697,7 @@ namespace windows_client.View
                         else
                         {
                             duplicates++;
-                            Logging.LogWriter.Instance.WriteToLog("Duplicate Contact !! for Phone Number " + cInfo.PhoneNo);
+                            Debug.WriteLine("Duplicate Contact !! for Phone Number " + cInfo.PhoneNo);
                         }
                     }
                     else
@@ -709,8 +709,8 @@ namespace windows_client.View
                 }
             }
 
-            Logging.LogWriter.Instance.WriteToLog("Total duplicate contacts : " + duplicates);
-            Logging.LogWriter.Instance.WriteToLog("Total contacts with no phone number : " + count);
+            Debug.WriteLine("Total duplicate contacts : " + duplicates);
+            Debug.WriteLine("Total contacts with no phone number : " + count);
 
             return contactListMap;
         }

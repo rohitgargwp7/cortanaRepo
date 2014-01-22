@@ -1865,7 +1865,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("ImageUtils ::  BitmapImgToByteArray :  BitmapImgToByteArray , Exception : " + ex.StackTrace);
+                Debug.WriteLine("ImageUtils ::  BitmapImgToByteArray :  BitmapImgToByteArray , Exception : " + ex.StackTrace);
                 return null;
             }
         }
@@ -1928,7 +1928,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("ImageUtils ::  BitmapImgToByteArray :  BitmapImgToByteArray , Exception : " + ex.StackTrace);
+                Debug.WriteLine("ImageUtils ::  BitmapImgToByteArray :  BitmapImgToByteArray , Exception : " + ex.StackTrace);
                 return null;
             }
         }
@@ -1949,7 +1949,7 @@ namespace windows_client.utils
             }
             catch (Exception e)
             {
-                Logging.LogWriter.Instance.WriteToLog("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
+                Debug.WriteLine("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
             }
             return bitmapImage;
         }
@@ -1969,7 +1969,7 @@ namespace windows_client.utils
             }
             catch (Exception e)
             {
-                Logging.LogWriter.Instance.WriteToLog("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
+                Debug.WriteLine("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
             }
         }
         /// <summary>

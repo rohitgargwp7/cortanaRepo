@@ -105,7 +105,7 @@ namespace windows_client.utils
             }
             catch (Exception e)
             {
-                Logging.LogWriter.Instance.WriteToLog("Utils" + "Invalid JSON" + e.Message);
+                Debug.WriteLine("Utils" + "Invalid JSON" + e.Message);
             }
         }
 
@@ -272,7 +272,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("Utils ::  computeHash :  computeHash , Exception : " + ex.StackTrace);
+                Debug.WriteLine("Utils ::  computeHash :  computeHash , Exception : " + ex.StackTrace);
             }
             return rethash;
         }
@@ -463,7 +463,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("App :: GetParamFromUri : GetParamFromUri , Exception : " + ex.StackTrace);
+                Debug.WriteLine("App :: GetParamFromUri : GetParamFromUri , Exception : " + ex.StackTrace);
                 return "";
             }
         }

@@ -577,7 +577,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog(ex.Message);
+                Debug.WriteLine(ex.Message);
                 UpdateUI(ButtonState.CameraNotSupported);
             }
         }
@@ -657,7 +657,7 @@ namespace windows_client.View
             }
             catch (Exception e)
             {
-                Logging.LogWriter.Instance.WriteToLog("RecoedVideo.xaml :: StartVideoRecording, Exception : " + e.StackTrace);
+                Debug.WriteLine("RecoedVideo.xaml :: StartVideoRecording, Exception : " + e.StackTrace);
             }
         }
 
@@ -676,7 +676,7 @@ namespace windows_client.View
             }
             catch (Exception e)
             {
-                Logging.LogWriter.Instance.WriteToLog("RecoedVideo.xaml :: StopVideoRecording, Exception : " + e.StackTrace);
+                Debug.WriteLine("RecoedVideo.xaml :: StopVideoRecording, Exception : " + e.StackTrace);
             }
 
             addOrRemoveAppBarButton(sendIconButton, true);
@@ -738,7 +738,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Logging.LogWriter.Instance.WriteToLog("Record Video :: StartRecording_Click , Exception:" + ex.StackTrace);
+                Debug.WriteLine("Record Video :: StartRecording_Click , Exception:" + ex.StackTrace);
             }
         }
 

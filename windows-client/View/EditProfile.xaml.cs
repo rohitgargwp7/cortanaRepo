@@ -214,7 +214,7 @@ namespace windows_client.View
                         }
                         catch (Exception ex)
                         {
-                            Logging.LogWriter.Instance.WriteToLog("Edit Profile ::  setName_Callback, setName_Callback_Okay  , Exception : " + ex.StackTrace);
+                            Debug.WriteLine("Edit Profile ::  setName_Callback, setName_Callback_Okay  , Exception : " + ex.StackTrace);
                         }
                     }
                 }
@@ -229,7 +229,7 @@ namespace windows_client.View
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("Edit Profile ::  setName_Callback, setName_Callback_Okay  , Exception : " + ex.StackTrace);
+                        Debug.WriteLine("Edit Profile ::  setName_Callback, setName_Callback_Okay  , Exception : " + ex.StackTrace);
                     }
                 }
                 isClicked = false;
@@ -270,7 +270,7 @@ namespace windows_client.View
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("Edit Profile ::  setProfile_Callback, setProfile_Callback_okay  , Exception : " + ex.StackTrace);
+                        Debug.WriteLine("Edit Profile ::  setProfile_Callback, setProfile_Callback_okay  , Exception : " + ex.StackTrace);
                     }
                 }
                 else // failure from server
@@ -287,7 +287,7 @@ namespace windows_client.View
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("Edit Profile ::  setProfile_Callback, setProfile_Callback , Exception : " + ex.StackTrace);
+                        Debug.WriteLine("Edit Profile ::  setProfile_Callback, setProfile_Callback , Exception : " + ex.StackTrace);
                     }
 
                 }

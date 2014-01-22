@@ -372,7 +372,7 @@ namespace windows_client.Model
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogWriter.Instance.WriteToLog("ContactInfo :: NotifyPropertyChanged : NotifyPropertyChanged, Exception : " + ex.StackTrace);
+                        Debug.WriteLine("ContactInfo :: NotifyPropertyChanged : NotifyPropertyChanged, Exception : " + ex.StackTrace);
                     }
                 });
             }
@@ -451,7 +451,7 @@ namespace windows_client.Model
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogWriter.Instance.WriteToLog("ContactInfo :: AvatarImage : fetch AvatarImage, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("ContactInfo :: AvatarImage : fetch AvatarImage, Exception : " + ex.StackTrace);
                     return null;
                 }
             }
