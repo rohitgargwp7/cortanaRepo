@@ -349,10 +349,15 @@ namespace windows_client.DbUtils
                 long msec1 = st1.ElapsedMilliseconds;
                 Debug.WriteLine("Time to add chat msg : {0}", msec1);
 
-                obj.MessageStatus = convMsg.MessageStatus;
-
                 if (convMsg.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                {
+                    obj.MessageStatus = convMsg.MessageStatus;
                     obj.TimeStamp = convMsg.Timestamp;
+                }
+                else if (obj.MessageStatus != ConvMessage.State.RECEIVED_UNREAD)// its for status msg
+                {
+                    obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
+                }
 
                 obj.LastMsgId = convMsg.MessageId;
                 Stopwatch st = Stopwatch.StartNew();
@@ -516,7 +521,7 @@ namespace windows_client.DbUtils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         msisdn = msisdn.Replace(':', '_');
                         if (!store.DirectoryExists(LONG_MSG_DIRECTORY))
@@ -557,7 +562,7 @@ namespace windows_client.DbUtils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         msisdn = msisdn.Replace(':', '_');
                         string fileName = LONG_MSG_DIRECTORY + "\\" + msisdn + "\\" + timestamp;
