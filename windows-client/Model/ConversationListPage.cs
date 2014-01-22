@@ -166,13 +166,10 @@ namespace windows_client.Model
                     NotifyPropertyChanged("UnreadCircleVisibility");
                 }
 
-                if (_messageStatus != ConvMessage.State.RECEIVED_UNREAD)
-                    UnreadCounter = 0;
+                if (_messageStatus == ConvMessage.State.RECEIVED_UNREAD)
+                    UnreadCounter++;
                 else
-                {
-                    if (!IsLastMsgStatusUpdate)
-                        UnreadCounter++;
-                }
+                    UnreadCounter = 0;
             }
         }
 
