@@ -1924,9 +1924,6 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
   <data name="ChatBg_Changed_Text" xml:space="preserve">
     <value>{0} personas han cambiado el tema del chat</value>
   </data>
-  <data name="Default_Txt" xml:space="preserve">
-    <value>predeterminado</value>
-  </data>
   <data name="FT_MaxFiles_Txt" xml:space="preserve">
     <value>Hay más de 50 transferencias de archivos pendientes. Vuelve a intentarlo más tarde.</value>
   </data>
@@ -2021,21 +2018,23 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
   <data name="Search_Hint_Txt" xml:space="preserve">
     <value>buscar</value>
   </data>
-  <data name="Save_ChatTheme_Txt" xml:space="preserve">
-    <value>guardar tema</value>
-  </data>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
-    <value>{0} verändert nur das Chat-Thema. Um die neue Chat-Themen zu verwenden, aktualisieren Sie hike. http://hike.in.</value>
-  </data>
-  <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
-    <value>cambiar el tema del chat</value>
-    <comment>max chars(18)</comment>
+    <value>{0} acaba de cambiar el tema del chat. Para usar los nuevos temas del chat, actualiza hike. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Más magníficos temas aquí...</value>
+    <value>Más temas increíbles aquí...</value>
   </data>
-  <data name="Settings_ChatThemeNotification_SwitchHeader" xml:space="preserve">
-    <value>Notificaciones de temas del chat</value>
+  <data name="ChatThemeHeader_Txt" xml:space="preserve">
+    <value>temas de chat</value>
+  </data>
+  <data name="Sent_As_SMS" xml:space="preserve">
+    <value>Enviado como SMS - {0}</value>
+  </data>
+  <data name="ChatThemeMessage" xml:space="preserve">
+    <value>El tema del chat se cambiará para ti y tu amigo.</value>
+  </data>
+  <data name="Done_Txt" xml:space="preserve">
+    <value>listo</value>
   </data>
   <data name="Chat_FTUE_chatThemes" xml:space="preserve">
     <value>¡Temas del chat!</value>
@@ -2057,19 +2056,10 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
     <value>Personaliza tu chat con temas increíbles</value>
     <comment>max chars(80)</comment>
   </data>
-  <data name="ChatThemeHeader_Txt" xml:space="preserve">
-    <value>temas de chat</value>
-  </data>
-  <data name="ChatThemeMessage" xml:space="preserve">
-    <value>Una vez selecciona "hecho", el tema de charla va a cambiar para ti y tu amigo.</value>
-  </data>
   <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
-    <value>Una vez selecciona "hecho", el tema de charla cambiará para el grupo.</value>
+    <value>El tema del chat se cambiará para todo el grupo.</value>
   </data>
-  <data name="Done_Txt" xml:space="preserve">
-    <value>hecho</value>
-  </data>
-  <data name="Sent_As_SMS" xml:space="preserve">
-    <value>Enviado como SMS - {0}</value>
+  <data name="User_Info_Txt" xml:space="preserve">
+    <value>ver perfil</value>
   </data>
 </root>

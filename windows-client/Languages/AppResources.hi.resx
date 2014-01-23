@@ -1239,7 +1239,7 @@ hike पिछली बार दिखे के साथ आपको गो
     <value>  मस्ती को याद कर रहे हैं।</value>
   </data>
   <data name="OnSms_Txt" xml:space="preserve">
-    <value>एसएमएस पर</value>
+    <value>SMS पर</value>
   </data>
   <data name="MyProfileheader_Txt" xml:space="preserve">
     <value>मेरा प्रोफ़ाइल</value>
@@ -1430,7 +1430,7 @@ hike पिछली बार दिखे के साथ आपको गो
     <value>एक स्टेटस अपडेट को पोस्ट करे !</value>
   </data>
   <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
-    <value>स्टेटस अपडेट्स नोटिफिकेशन्स</value>
+    <value>स्थिति अद्यतन अधिसूचनाएँ</value>
   </data>
   <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
     <value>हर घंटे</value>
@@ -1885,10 +1885,6 @@ hike पिछली बार दिखे के साथ आपको गो
     <value>मानक गुणवत्ता (VGA) (डिफ़ॉल्ट)</value>
     <comment>(VGA) is constant, Max limit 40</comment>
   </data>
-  <data name="Video_Very_High_Quality_Txt" xml:space="preserve">
-    <value>अत्यंत उच्च गुणवत्ता (1080p)</value>
-    <comment>(1080p) is constant, Max limit 40</comment>
-  </data>
   <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
     <value>hike में आपका स्वागत है</value>
   </data>
@@ -1917,6 +1913,18 @@ hike पिछली बार दिखे के साथ आपको गो
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
     <value>उस हर मित्र के लिए मुफ़्त एसएमएस अर्जित करें जो आपकी वजह से hike में शामिल होता है</value>
+  </data>
+  <data name="On_Hike" xml:space="preserve">
+    <value>hike पर</value>
+  </data>
+  <data name="On_SMS" xml:space="preserve">
+    <value>SMS पर</value>
+  </data>
+  <data name="People_In_Group" xml:space="preserve">
+    <value>{0} लोग</value>
+  </data>
+  <data name="ChatBg_Changed_Text" xml:space="preserve">
+    <value>{0} चैट थीम बदला गया</value>
   </data>
   <data name="FT_MaxFiles_Txt" xml:space="preserve">
     <value>50 से अधिक फ़ाइलें स्थानांतरण के लिए बकाया हैं। कृपया बाद में फिर से कोशिश करें।</value>
@@ -2012,52 +2020,48 @@ hike पिछली बार दिखे के साथ आपको गो
   <data name="Search_Hint_Txt" xml:space="preserve">
     <value>खोज करें</value>
   </data>
-  <data name="ChatBg_Changed_Text" xml:space="preserve">
-    <value>{0} ने चैट थीम बदला</value>
-  </data>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
-    <value>{0} ने अभी चैट थीम बदला है। नई चैट थीम का उपयोग करने के लिए, hike को अपग्रेड करें। http://hike.in.</value>
+    <value>{0} ने अभी-अभी चैट थीम बदला है। नए चैट थीमों का उपयोग करने के लिए, hike को अपग्रेड करें। http://hike.in.</value>
+  </data>
+  <data name="In_App_Tip_9" xml:space="preserve">
+    <value>अधिक शानदार थीम यहाँ हैं...</value>
+  </data>
+  <data name="ChatThemeHeader_Txt" xml:space="preserve">
+    <value>चैट थीम</value>
+  </data>
+  <data name="Sent_As_SMS" xml:space="preserve">
+    <value>एसएमएस के रूप में भेजा गया - {0}</value>
+  </data>
+  <data name="ChatThemeMessage" xml:space="preserve">
+    <value>चैट थीम आपके और आपके दोस्त दोनों के लिए बदल जाएगा </value>
+  </data>
+  <data name="Done_Txt" xml:space="preserve">
+    <value>संपन्न</value>
   </data>
   <data name="Chat_FTUE_chatThemes" xml:space="preserve">
     <value>चैट थीम!</value>
+    <comment>max chars(20)</comment>
   </data>
   <data name="Chat_FTUE_giveSpin" xml:space="preserve">
     <value>इसे आज़माएँ!</value>
+    <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
     <value>उपहारों के बिना छुट्टियों का क्या मतलब? Hiking में आनंद लें!</value>
+    <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">
     <value>उपहार खोलें...</value>
+    <comment>max chars(30)</comment>
   </data>
   <data name="Chat_FTUE_personalise" xml:space="preserve">
-    <value>शानदार थीम से अपनी चैट निजीकृत करें।</value>
-  </data>
-  <data name="On_Hike" xml:space="preserve">
-    <value>hike पर</value>
-  </data>
-  <data name="On_SMS" xml:space="preserve">
-    <value>एसएमएस पर</value>
-  </data>
-  <data name="People_In_Group" xml:space="preserve">
-    <value>{0} लोग</value>
-  </data>
-  <data name="ChatThemeHeader_Txt" xml:space="preserve">
-    <value>चैट थीम्स</value>
-  </data>
-  <data name="ChatThemeMessage" xml:space="preserve">
-    <value>जब आप "डन" करेंगे, तोह आपके और आपके मित्र की चैट का थीम बदल जयेगा|</value>
+    <value>शानदार थीमों से अपनी चैट निजीकृत करें।</value>
+    <comment>max chars(80)</comment>
   </data>
   <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
-    <value>जब आप "डन" करेंगे, तोह आपके और आपके ग्रुप की चैट का थीम बदल जयेगा|</value>
+    <value>चैट थीम पूरे समूह के लिए बदल जाएगा</value>
   </data>
-  <data name="Done_Txt" xml:space="preserve">
-    <value>डन</value>
-  </data>
-  <data name="In_App_Tip_9" xml:space="preserve">
-    <value>और अधिक भव्य चैट थीम्स यहाँ...</value>
-  </data>
-  <data name="Sent_As_SMS" xml:space="preserve">
-    <value>SMS भेजा गया - {0}</value>
+  <data name="User_Info_Txt" xml:space="preserve">
+    <value>प्रोफ़ाइल देखें</value>
   </data>
 </root>
