@@ -2062,4 +2062,16 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
   <data name="User_Info_Txt" xml:space="preserve">
     <value>ver perfil</value>
   </data>
+  <data name="ConversationList_grp_istyping_txt" xml:space="preserve">
+    <value>{0} está escribiendo...</value>
+  </data>
+  <data name="ConversationList_istyping_txt" xml:space="preserve">
+    <value>está escribiendo...</value>
+  </data>
+  <data name="MicrophoneNotFound_ErrorTxt" xml:space="preserve">
+    <value>Comprueba el micrófono del teléfono e inténtalo de nuevo.</value>
+  </data>
+  <data name="MicrophoneNotFound_HeaderTxt" xml:space="preserve">
+    <value>¡No se puede grabar!</value>
+  </data>
 </root>

@@ -2056,4 +2056,16 @@
   <data name="User_Info_Txt" xml:space="preserve">
     <value>Profil anzeigen</value>
   </data>
+  <data name="ConversationList_grp_istyping_txt" xml:space="preserve">
+    <value>{0} schreibt etwas ...</value>
+  </data>
+  <data name="ConversationList_istyping_txt" xml:space="preserve">
+    <value>schreibt etwas ...</value>
+  </data>
+  <data name="MicrophoneNotFound_ErrorTxt" xml:space="preserve">
+    <value>Überprüfe das Mikrofon deines Telefons und versuche es erneut.</value>
+  </data>
+  <data name="MicrophoneNotFound_HeaderTxt" xml:space="preserve">
+    <value>Keine Aufnahme möglich!</value>
+  </data>
 </root>

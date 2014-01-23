@@ -2064,4 +2064,16 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
   <data name="User_Info_Txt" xml:space="preserve">
     <value>voir le profil</value>
   </data>
+  <data name="ConversationList_grp_istyping_txt" xml:space="preserve">
+    <value>{0} écrit...</value>
+  </data>
+  <data name="ConversationList_istyping_txt" xml:space="preserve">
+    <value>écrit...</value>
+  </data>
+  <data name="MicrophoneNotFound_ErrorTxt" xml:space="preserve">
+    <value>Vérifie ton micro et réessaie.</value>
+  </data>
+  <data name="MicrophoneNotFound_HeaderTxt" xml:space="preserve">
+    <value>Enregistrement impossible !</value>
+  </data>
 </root>

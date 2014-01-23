@@ -2063,4 +2063,16 @@
   <data name="User_Info_Txt" xml:space="preserve">
     <value>профиль</value>
   </data>
+  <data name="ConversationList_grp_istyping_txt" xml:space="preserve">
+    <value>{0} пишет...</value>
+  </data>
+  <data name="ConversationList_istyping_txt" xml:space="preserve">
+    <value>пишет...</value>
+  </data>
+  <data name="MicrophoneNotFound_ErrorTxt" xml:space="preserve">
+    <value>Проверьте микрофон своего телефона и попробуйте еще раз.</value>
+  </data>
+  <data name="MicrophoneNotFound_HeaderTxt" xml:space="preserve">
+    <value>Ошибка записи!</value>
+  </data>
 </root>

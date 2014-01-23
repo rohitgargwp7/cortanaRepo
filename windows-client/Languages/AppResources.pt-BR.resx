@@ -2063,4 +2063,16 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
   <data name="User_Info_Txt" xml:space="preserve">
     <value>visualizar perfil</value>
   </data>
+  <data name="ConversationList_grp_istyping_txt" xml:space="preserve">
+    <value>{0} está digitando ...</value>
+  </data>
+  <data name="ConversationList_istyping_txt" xml:space="preserve">
+    <value>está digitando ...</value>
+  </data>
+  <data name="MicrophoneNotFound_ErrorTxt" xml:space="preserve">
+    <value>Verifique o microfone do celular e tente novamente.</value>
+  </data>
+  <data name="MicrophoneNotFound_HeaderTxt" xml:space="preserve">
+    <value>Não foi possível gravar!</value>
+  </data>
 </root>
