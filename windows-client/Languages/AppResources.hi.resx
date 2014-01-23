@@ -1924,7 +1924,7 @@ hike पिछली बार दिखे के साथ आपको गो
     <value>{0} लोग</value>
   </data>
   <data name="ChatBg_Changed_Text" xml:space="preserve">
-    <value>{0} चैट थीम बदला गया</value>
+    <value>{0} ने चैट थीम बदला</value>
   </data>
   <data name="FT_MaxFiles_Txt" xml:space="preserve">
     <value>50 से अधिक फ़ाइलें स्थानांतरण के लिए बकाया हैं। कृपया बाद में फिर से कोशिश करें।</value>
