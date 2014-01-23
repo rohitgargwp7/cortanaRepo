@@ -1682,15 +1682,15 @@ namespace windows_client
 
                     var sender = !String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to) ? to : msisdn;
 
+                    var data = (JObject)jsonObj[HikeConstants.DATA];
+                    var bgId = (string)data[HikeConstants.BACKGROUND_ID];
+                    
                     ChatThemeData bg = null;
                     if (ChatBackgroundHelper.Instance.ChatBgMap.TryGetValue(sender, out bg))
                     {
-                        if (bg.Timestamp >= ts)
+                        if (bg.Timestamp >= ts || bg.BackgroundId == bgId)
                             return;
                     }
-
-                    var data = (JObject)jsonObj[HikeConstants.DATA];
-                    var bgId = (string)data[HikeConstants.BACKGROUND_ID];
 
                     bool hasCustomBg = false;
                     JToken custom;
