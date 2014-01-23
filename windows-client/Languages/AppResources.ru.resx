@@ -2046,7 +2046,7 @@
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>Что за праздники без подарков? Приятного общения!</value>
+    <value>Мы хотим сделать вам подарок. Счастливого общения!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">

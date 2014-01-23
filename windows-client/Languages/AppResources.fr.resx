@@ -2047,7 +2047,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>Des fêtes sans cadeaux, à quoi ça rime ? "Hike" bien !</value>
+    <value>Nous avons un cadeau pour toi. Bon Hiking !</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">

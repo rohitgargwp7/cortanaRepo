@@ -1308,13 +1308,13 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>no hike com os SMS grátis do hike</value>
   </data>
   <data name="MessagingHikeFriendsFree_Txt" xml:space="preserve">
-    <value>Enviar mensagens para os amigos do hike é grátis & ilimitado.</value>
+    <value>Enviar mensagens para os amigos do hike é grátis &amp; ilimitado.</value>
   </data>
   <data name="ReadyToHike_Txt" xml:space="preserve">
     <value>Pronto para o hike...</value>
   </data>
   <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
-    <value>Compartilhar no Facebook & no Twitter</value>
+    <value>Compartilhar no Facebook &amp; no Twitter</value>
   </data>
   <data name="FB_Connect_Txt" xml:space="preserve">
     <value>Conectar com o Facebook</value>
@@ -2046,7 +2046,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>O que são festas sem presentes? Feliz hike!</value>
+    <value>Há um presente esperando você. Aproveite o hike!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">

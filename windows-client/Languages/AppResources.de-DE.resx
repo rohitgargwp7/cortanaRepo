@@ -2039,7 +2039,7 @@
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>Was wäre Weihnachten ohne Geschenke? Viel Spaß mit hike!</value>
+    <value>Wir haben ein Geschenk für dich. Viel Spaß mit Hike!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">
