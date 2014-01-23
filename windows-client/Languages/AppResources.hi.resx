@@ -1430,7 +1430,7 @@ hike पिछली बार दिखे के साथ आपको गो
     <value>एक स्टेटस अपडेट को पोस्ट करे !</value>
   </data>
   <data name="Settings_StatusNotification_SwitchHeader" xml:space="preserve">
-    <value>स्थिति अद्यतन अधिसूचनाएँ</value>
+    <value>स्टेटस अपडेट्स नोटिफिकेशन्स</value>
   </data>
   <data name="Settings_StatusUpdate_Every1Hour_txt" xml:space="preserve">
     <value>हर घंटे</value>
