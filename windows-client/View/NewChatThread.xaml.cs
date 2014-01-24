@@ -970,6 +970,8 @@ namespace windows_client.View
 
         private void initPageBasedOnState()
         {
+            App.ViewModel.ResetInAppTip(8);
+
             GroupInfo gi = null;
             bool isAddUser = false;
             #region OBJECT FROM CONVLIST PAGE
@@ -1956,11 +1958,12 @@ namespace windows_client.View
         {
             try
             {
-                if (this.ocMessages.Count > 0 && ((!IsMute && _userTappedJumpToBottom) || this.ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
+                if (this.ocMessages.Count > 0 && (!IsMute || _userTappedJumpToBottom || this.ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
                 {
                     _userTappedJumpToBottom = false;
 
                     JumpToBottomGrid.Visibility = Visibility.Collapsed;
+                    _unreadMessageCounter = 0;
                     if (vScrollBar != null && llsViewPort != null && ((vScrollBar.Maximum - vScrollBar.Value) < 2000))
                         llsViewPort.SetViewportOrigin(new System.Windows.Point(0, llsViewPort.Bounds.Height));
                     else
@@ -5732,8 +5735,6 @@ namespace windows_client.View
         {
             _userTappedJumpToBottom = true;
             ScrollToBottom();
-            JumpToBottomGrid.Visibility = Visibility.Collapsed;
-            _unreadMessageCounter = 0;
         }
 
         private void llsMessages_ItemUnRealized(object sender, ItemRealizationEventArgs e)
@@ -5757,7 +5758,8 @@ namespace windows_client.View
                 return;
             if (vScrollBar != null && (ocMessages != null && ocMessages.Count > 6) && vScrollBar.Maximum < 1000000)
             {
-                if ((vScrollBar.Maximum - vScrollBar.Value) > 500)
+                //show jump to bottom for mute chat for incoming messages as scroll to bottom wont work for mute gcs
+                if ((vScrollBar.Maximum - vScrollBar.Value) > 500 || (IsMute && increaseUnreadCounter))
                 {
                     if (increaseUnreadCounter)
                         _unreadMessageCounter += 1;
