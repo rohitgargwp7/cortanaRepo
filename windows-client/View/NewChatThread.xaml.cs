@@ -1951,20 +1951,20 @@ namespace windows_client.View
 
         }
 
-        Object obj = new object();
         //this function is called from UI thread only. No need to synch.
         private void ScrollToBottom()
         {
             try
             {
-                if (this.ocMessages.Count > 0 && (!IsMute || this.ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
+                if (this.ocMessages.Count > 0 && ((!IsMute && _userTappedJumpToBottom) || this.ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
                 {
+                    _userTappedJumpToBottom = false;
+
                     JumpToBottomGrid.Visibility = Visibility.Collapsed;
                     if (vScrollBar != null && llsViewPort != null && ((vScrollBar.Maximum - vScrollBar.Value) < 2000))
                         llsViewPort.SetViewportOrigin(new System.Windows.Point(0, llsViewPort.Bounds.Height));
                     else
                         llsMessages.ScrollTo(ocMessages[ocMessages.Count - 1]);
-
                 }
             }
             catch (Exception ex)
@@ -5727,8 +5727,10 @@ namespace windows_client.View
             }
         }
 
+        bool _userTappedJumpToBottom = false;
         private void JumpToBottom_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            _userTappedJumpToBottom = true;
             ScrollToBottom();
             JumpToBottomGrid.Visibility = Visibility.Collapsed;
             _unreadMessageCounter = 0;
