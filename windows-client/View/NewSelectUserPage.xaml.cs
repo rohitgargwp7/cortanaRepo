@@ -1032,8 +1032,8 @@ namespace windows_client.View
                 canGoBack = true;
                 return;
             }
+           
 
-            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
             List<ContactInfo.DelContacts> hikeIds = null;
             List<ContactInfo> deletedContacts = null;
             // Code to delete the removed contacts
@@ -1086,6 +1086,9 @@ namespace windows_client.View
                     GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo);
                 }
             }
+
+            //should be done after deleting contacts so that delete could remove previous name and update will update new name
+            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
             if (stopContactScanning)
             {
                 stopContactScanning = false;
