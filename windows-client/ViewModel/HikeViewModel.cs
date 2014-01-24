@@ -638,7 +638,12 @@ namespace windows_client.ViewModel
                 }
 
                 inAppTipUC.Tip = tip.Tip;
-                inAppTipUC.Margin = tip.FullTipMargin;
+
+                if (index == 8 && App.newChatThreadPage != null && App.newChatThreadPage.IsMute)
+                    inAppTipUC.Margin = new Thickness(0, 125, 20, 0);
+                else
+                    inAppTipUC.Margin = tip.FullTipMargin;
+
                 inAppTipUC.TipIndex = index;
 
                 inAppTipUC.Dismissed += inAppTipUC_Dismissed;

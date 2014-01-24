@@ -1951,20 +1951,21 @@ namespace windows_client.View
 
         }
 
-        Object obj = new object();
         //this function is called from UI thread only. No need to synch.
         private void ScrollToBottom()
         {
             try
             {
-                if (this.ocMessages.Count > 0 && (!IsMute || this.ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
+                if (this.ocMessages.Count > 0 && (!IsMute || _userTappedJumpToBottom || this.ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
                 {
+                    _userTappedJumpToBottom = false;
+
                     JumpToBottomGrid.Visibility = Visibility.Collapsed;
+                    _unreadMessageCounter = 0;
                     if (vScrollBar != null && llsViewPort != null && ((vScrollBar.Maximum - vScrollBar.Value) < 2000))
                         llsViewPort.SetViewportOrigin(new System.Windows.Point(0, llsViewPort.Bounds.Height));
                     else
                         llsMessages.ScrollTo(ocMessages[ocMessages.Count - 1]);
-
                 }
             }
             catch (Exception ex)
@@ -2124,6 +2125,10 @@ namespace windows_client.View
                 muteGroupMenuItem.Text = AppResources.SelectUser_UnMuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
+
+            InAppTipUC tip = LayoutRoot.FindName("tip8") as InAppTipUC;
+            if (tip != null)
+                tip.Margin = IsMute ? new Thickness(0, 125, 20, 0) : new Thickness(0, 80, 20, 0);
         }
 
         private void blockUnblock_Click(object sender, EventArgs e)
@@ -5358,6 +5363,9 @@ namespace windows_client.View
         {
             _patternNotLoaded = false;
 
+            if (App.ViewModel.SelectedBackground == null)
+                return;
+
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
             if ((isGroupChat && !isGroupAlive) || (!isOnHike && mCredits <= 0))
@@ -5406,6 +5414,10 @@ namespace windows_client.View
         private async void CreateBackgroundImage()
         {
             await Task.Delay(1);
+            
+            if (App.ViewModel.SelectedBackground == null)
+                return;
+
             _tileBitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
             {
                 CreateOptions = BitmapCreateOptions.None
@@ -5720,11 +5732,11 @@ namespace windows_client.View
             }
         }
 
+        bool _userTappedJumpToBottom = false;
         private void JumpToBottom_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            _userTappedJumpToBottom = true;
             ScrollToBottom();
-            JumpToBottomGrid.Visibility = Visibility.Collapsed;
-            _unreadMessageCounter = 0;
         }
 
         private void llsMessages_ItemUnRealized(object sender, ItemRealizationEventArgs e)
@@ -5748,7 +5760,8 @@ namespace windows_client.View
                 return;
             if (vScrollBar != null && (ocMessages != null && ocMessages.Count > 6) && vScrollBar.Maximum < 1000000)
             {
-                if ((vScrollBar.Maximum - vScrollBar.Value) > 500)
+                //show jump to bottom for mute chat for incoming messages as scroll to bottom wont work for mute gcs
+                if ((vScrollBar.Maximum - vScrollBar.Value) > 500 || (IsMute && increaseUnreadCounter))
                 {
                     if (increaseUnreadCounter)
                         _unreadMessageCounter += 1;
