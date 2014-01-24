@@ -5358,6 +5358,9 @@ namespace windows_client.View
         {
             _patternNotLoaded = false;
 
+            if (App.ViewModel.SelectedBackground == null)
+                return;
+
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
             if ((isGroupChat && !isGroupAlive) || (!isOnHike && mCredits <= 0))
@@ -5406,6 +5409,10 @@ namespace windows_client.View
         private async void CreateBackgroundImage()
         {
             await Task.Delay(1);
+            
+            if (App.ViewModel.SelectedBackground == null)
+                return;
+
             _tileBitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
             {
                 CreateOptions = BitmapCreateOptions.None
