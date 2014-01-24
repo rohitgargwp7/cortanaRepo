@@ -970,8 +970,6 @@ namespace windows_client.View
 
         private void initPageBasedOnState()
         {
-            App.ViewModel.ResetInAppTip(8);
-
             GroupInfo gi = null;
             bool isAddUser = false;
             #region OBJECT FROM CONVLIST PAGE
@@ -2131,7 +2129,6 @@ namespace windows_client.View
             InAppTipUC tip = LayoutRoot.FindName("tip8") as InAppTipUC;
             if (tip != null)
                 tip.Margin = IsMute ? new Thickness(0, 125, 20, 0) : new Thickness(0, 80, 20, 0);
-
         }
 
         private void blockUnblock_Click(object sender, EventArgs e)
