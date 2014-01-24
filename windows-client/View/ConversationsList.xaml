@@ -911,7 +911,7 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
                         <Grid x:Name="cohProgressBar" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="4" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
-                            <ProgressBar VerticalContentAlignment="Center" IsIndeterminate="True" IsEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Center"></ProgressBar>
+                            <ProgressBar VerticalContentAlignment="Center" Background="Transparent" IsIndeterminate="True" IsEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Center"></ProgressBar>
                         </Grid>
                         <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
                             <TextBlock Name="txtCircleOfFriends" Visibility="Collapsed" FontSize="24"  FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}"/>

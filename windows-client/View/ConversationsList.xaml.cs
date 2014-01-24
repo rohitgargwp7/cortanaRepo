@@ -1779,8 +1779,11 @@ namespace windows_client.View
                     if (App.ViewModel.ContactsCache.ContainsKey(convObj.Msisdn))
                         c = App.ViewModel.ContactsCache[convObj.Msisdn];
                     else
+                    {
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
-                    c.Avatar = convObj.Avatar;
+                        c.Avatar = convObj.Avatar;
+                    }
+
                     c.IsUsedAtMiscPlaces = true;
                     if (c.Msisdn != App.MSISDN && isContactListLoaded)
                     {
@@ -2077,8 +2080,11 @@ namespace windows_client.View
                     if (App.ViewModel.ContactsCache.ContainsKey(convObj.Msisdn))
                         c = App.ViewModel.ContactsCache[convObj.Msisdn];
                     else
+                    {
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
-                    c.Avatar = convObj.Avatar;
+                        c.Avatar = convObj.Avatar;
+                    }
+
                     c.IsUsedAtMiscPlaces = true;
                     if (c.Msisdn != App.MSISDN)
                     {
@@ -2145,7 +2151,8 @@ namespace windows_client.View
                 }
                 else
                 {
-                    cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, contactInfo.Avatar);
+                    var bytes = contactInfo.Avatar == null ? UI_Utils.Instance.ConvertToBytes(contactInfo.AvatarImage) : contactInfo.Avatar;
+                    cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, bytes);
                 }
                 contactInfo.IsUsedAtMiscPlaces = true;
                 hikeContactList.Remove(contactInfo);
