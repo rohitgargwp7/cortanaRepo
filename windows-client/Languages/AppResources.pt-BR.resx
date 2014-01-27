@@ -1925,9 +1925,6 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
   <data name="ChatBg_Changed_Text" xml:space="preserve">
     <value>{0} alterou o tema da conversa</value>
   </data>
-  <data name="Default_Txt" xml:space="preserve">
-    <value>padrão</value>
-  </data>
   <data name="FT_MaxFiles_Txt" xml:space="preserve">
     <value>Há mais de 50 transferências pendentes. Tente de novo mais tarde.</value>
   </data>
@@ -2022,21 +2019,23 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
   <data name="Search_Hint_Txt" xml:space="preserve">
     <value>pesquisar</value>
   </data>
-  <data name="Save_ChatTheme_Txt" xml:space="preserve">
-    <value>salvar tema</value>
-  </data>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
-    <value>{0} acabou de mudar o tema do bate-papo. Para usar os novos temas do bate-papo, atualizar hike. http://hike.in.</value>
-  </data>
-  <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
-    <value>alterar tema da conversa</value>
-    <comment>max chars(18)</comment>
+    <value>{0} alterou o tema do bate-papo. Para usar os novos temas de bate-papo, atualize o hike. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Temas mais lindos aqui...</value>
+    <value>Mais temas lindos aqui...</value>
   </data>
-  <data name="Settings_ChatThemeNotification_SwitchHeader" xml:space="preserve">
-    <value>Notificações de temas de conversa</value>
+  <data name="ChatThemeHeader_Txt" xml:space="preserve">
+    <value>temas do bate-papo</value>
+  </data>
+  <data name="Sent_As_SMS" xml:space="preserve">
+    <value>Enviado como SMS - {0}</value>
+  </data>
+  <data name="ChatThemeMessage" xml:space="preserve">
+    <value>O tema do bate-papo será alterado para você e seu amigo</value>
+  </data>
+  <data name="Done_Txt" xml:space="preserve">
+    <value>pronto</value>
   </data>
   <data name="Chat_FTUE_chatThemes" xml:space="preserve">
     <value>Temas de conversa!</value>
@@ -2047,7 +2046,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>O que são festas sem presentes? Feliz hike!</value>
+    <value>Há um presente esperando você. Aproveite o hike!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">
@@ -2058,19 +2057,22 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>Personalize a conversa com temas incríveis.</value>
     <comment>max chars(80)</comment>
   </data>
-  <data name="ChatThemeHeader_Txt" xml:space="preserve">
-    <value>temas conversar</value>
-  </data>
-  <data name="ChatThemeMessage" xml:space="preserve">
-    <value>Depois de selecionar "done", o tema do bate-papo vai mudar para você e seu amigo.</value>
-  </data>
   <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
-    <value>Depois de selecionar "done", o tema do bate-papo vai mudar para o grupo.</value>
+    <value>O tema do bate-papo será alterado para todo o grupo</value>
   </data>
-  <data name="Done_Txt" xml:space="preserve">
-    <value>feito</value>
+  <data name="User_Info_Txt" xml:space="preserve">
+    <value>visualizar perfil</value>
   </data>
-  <data name="Sent_As_SMS" xml:space="preserve">
-    <value>Enviado como SMS - {0}</value>
+  <data name="ConversationList_grp_istyping_txt" xml:space="preserve">
+    <value>{0} está digitando ...</value>
+  </data>
+  <data name="ConversationList_istyping_txt" xml:space="preserve">
+    <value>está digitando ...</value>
+  </data>
+  <data name="MicrophoneNotFound_ErrorTxt" xml:space="preserve">
+    <value>Verifique o microfone do celular e tente novamente.</value>
+  </data>
+  <data name="MicrophoneNotFound_HeaderTxt" xml:space="preserve">
+    <value>Não foi possível gravar!</value>
   </data>
 </root>

@@ -577,6 +577,7 @@ namespace windows_client.utils
                 AddToken(request);
             
             request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
+            request.Headers["Cache-control"] = "no-transform";
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback, metadata });
         }
 

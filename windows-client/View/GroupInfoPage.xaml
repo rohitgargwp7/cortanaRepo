@@ -68,8 +68,8 @@
                 <!--<StackPanel Grid.Column="1" Orientation="Vertical" Margin="0, 0,0,0">-->
                 <TextBlock Grid.Column="1" Grid.Row="0" FontSize="24" Opacity="0.6" Text="{Binding Path= LocalizedResources.GrpName_Txt, Source={StaticResource LocalizedStrings}}" Margin="20,15,0,0" />
                 <TextBox Margin="-15,0,0,0" Grid.Column="1" Grid.Row="1" Name="groupNameTxtBox" Text="{Binding Path= LocalizedResources.GROUP_NAME_TXT, Source={StaticResource LocalizedStrings}}" Height="72" 
-                             VerticalAlignment="Center" Width="330" GotFocus="groupNameTxtBox_GotFocus"
-                             FontSize="24" LostFocus="groupNameTxtBox_LostFocus" InputScope="Text"></TextBox>
+                             VerticalAlignment="Center" Width="330" TextChanged="groupNameTxtBox_TextChanged" GotFocus="groupNameTxtBox_GotFocus"
+                             FontSize="24" InputScope="Text"></TextBox>
 
             </Grid>
 

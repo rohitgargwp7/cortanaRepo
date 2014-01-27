@@ -491,7 +491,7 @@ namespace windows_client.Misc
             if (allGrpsInfo == null || allGrpsInfo.Count == 0) // if no grp exists , do nothing
                 return;
 
-            foreach (string grpId in groupCache.Keys)
+            foreach (string grpId in groupCache.Keys.ToList())
             {
                 GroupParticipant gp = GetParticipant(grpId, cn.Msisdn);
                 if (gp != null) // represents this contact lies in the group
