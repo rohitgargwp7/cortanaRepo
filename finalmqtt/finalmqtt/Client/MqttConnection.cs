@@ -498,7 +498,7 @@ namespace finalmqtt.Client
             PublishMessage msg = new PublishMessage(topic, message, qos, this);
             if (msg is PublishMessage && firstmessage)
             {
-                listSubscribe.Add(((PublishMessage)msg).getMessageId(), DateTime.Now);
+                listSubscribe[((PublishMessage)msg).getMessageId()] = DateTime.Now;
                 firstmessage = false;
             }
             msg.setMessageId(getNextMessageId());
@@ -514,7 +514,7 @@ namespace finalmqtt.Client
                 messagesToPublish[i] = new PublishMessage(topic, message[i], qos, this);
                 if (messagesToPublish[i] is PublishMessage && firstmessage)
                 {
-                    listSubscribe.Add(((PublishMessage)messagesToPublish[i]).getMessageId(), DateTime.Now);
+                    listSubscribe[((PublishMessage)messagesToPublish[i]).getMessageId()] = DateTime.Now;
                     firstmessage = false;
                 }
                 messagesToPublish[i].setMessageId(getNextMessageId());

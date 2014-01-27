@@ -808,12 +808,15 @@ namespace windows_client.DbUtils
                 {
                     string fName = MISC_DIR + "\\" + FAVOURITES_FILE;
 
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("Save Favouriews,before file open"));
+
                     using (var file = store.OpenFile(fName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                     {
                         if (!store.DirectoryExists(MISC_DIR))
                         {
                             store.CreateDirectory(MISC_DIR);
                         }
+                        Logging.LogWriter.Instance.WriteToLog(string.Format("Save Favouriews,before file open"));
 
                         using (BinaryWriter writer = new BinaryWriter(file))
                         {
@@ -829,6 +832,8 @@ namespace windows_client.DbUtils
                         }
                         file.Close();
                         file.Dispose();
+                        Logging.LogWriter.Instance.WriteToLog(string.Format("Save Favouriews,file closed"));
+
                     }
                 }
             }
@@ -840,14 +845,18 @@ namespace windows_client.DbUtils
                 return;
             lock (favReadWriteLock)
             {
+
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     if (!store.DirectoryExists("FAVS"))
                         store.CreateDirectory("FAVS");
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("SAVE favourite, before file open :MSISDN {0} ", obj.Msisdn));
 
                     string fName = "FAVS" + "\\" + obj.Msisdn.Replace(":", "_"); // ttoohis will handle GC 
                     using (var file = store.OpenFile(fName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                     {
+                        Logging.LogWriter.Instance.WriteToLog(string.Format("SAVE favourite, file opened :MSISDN {0} ", obj.Msisdn));
+
                         using (BinaryWriter writer = new BinaryWriter(file))
                         {
                             writer.Seek(0, SeekOrigin.Begin);
@@ -857,6 +866,8 @@ namespace windows_client.DbUtils
                         }
                         file.Close();
                         file.Dispose();
+                        Logging.LogWriter.Instance.WriteToLog(string.Format("SAVE favourite, file closed :MSISDN {0} ", obj.Msisdn));
+ 
                     }
                 }
             }
@@ -982,8 +993,12 @@ namespace windows_client.DbUtils
                         store.CreateDirectory(MISC_DIR);
                     }
                     string fName = MISC_DIR + "\\" + PENDING_REQ_FILE;
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("Save pending,before file open"));
+
                     using (var file = store.OpenFile(fName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                     {
+                        Logging.LogWriter.Instance.WriteToLog(string.Format("Save pending,after file open"));
+
                         using (BinaryWriter writer = new BinaryWriter(file))
                         {
                             writer.Seek(0, SeekOrigin.Begin);
@@ -998,6 +1013,8 @@ namespace windows_client.DbUtils
                         }
                         file.Close();
                         file.Dispose();
+                        Logging.LogWriter.Instance.WriteToLog(string.Format("Save pending,file closed"));
+
                     }
                 }
             }

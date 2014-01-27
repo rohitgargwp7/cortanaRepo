@@ -540,7 +540,7 @@ namespace windows_client
                 try
                 {
                     data = (JObject)jsonObj[HikeConstants.DATA];
-                    Debug.WriteLine(string.Format("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString()));
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString()));
                     JToken jtoken;
                     if (data.TryGetValue(HikeConstants.SHOW_FREE_INVITES, out jtoken) && (bool)jtoken)
                     {
@@ -643,7 +643,7 @@ namespace windows_client
                                                             FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                                                         }
 
-                                                        Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
+                                                        Logging.LogWriter.Instance.WriteToLog(string.Format("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav));
                                                         LoadFavAndPending(isFav, fkkvv.Key); // true for favs
                                                     }
 
@@ -931,7 +931,7 @@ namespace windows_client
                 try
                 {
                     grpId = jsonObj[HikeConstants.TO].ToString();
-                    Logging.LogWriter.Instance.WriteToLog(string.Format("Group Chat join recieved for group:{0}, json:{1}",grpId,jsonObj.ToString()));
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("Group Chat join recieved for group:{0}, json:{1}", grpId, jsonObj.ToString()));
                 }
                 catch (Exception ex)
                 {
@@ -1435,10 +1435,10 @@ namespace windows_client
                             byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
                             if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
                             {
-                                Logging.LogWriter.Instance.WriteToLog(string.Format("Status update db insertion failed for pic update,Message:{0},msgid:{1}", sm.Message,sm.MsgId));
+                                Logging.LogWriter.Instance.WriteToLog(string.Format("Status update db insertion failed for pic update,Message:{0},msgid:{1}", sm.Message, sm.MsgId));
                                 return;
                             }
-                            Logging.LogWriter.Instance.WriteToLog(string.Format("Status update db insertion successful for pic update,Message:{0},msgid:{1}", sm.Message,sm.MsgId));
+                            Logging.LogWriter.Instance.WriteToLog(string.Format("Status update db insertion successful for pic update,Message:{0},msgid:{1}", sm.Message, sm.MsgId));
 
                             MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.ServerId);
                             jsonObj[HikeConstants.PROFILE_PIC_ID] = sm.ServerId;
@@ -1711,7 +1711,7 @@ namespace windows_client
 
                     var data = (JObject)jsonObj[HikeConstants.DATA];
                     var bgId = (string)data[HikeConstants.BACKGROUND_ID];
-                    
+
                     ChatThemeData bg = null;
                     if (ChatBackgroundHelper.Instance.ChatBgMap.TryGetValue(sender, out bg))
                     {
@@ -1863,8 +1863,12 @@ namespace windows_client
                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
                     favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
                 }
+                Logging.LogWriter.Instance.WriteToLog(string.Format("LOAD FAV AND PENDING,BEfore Dispatcher :MSISDN {0} ; isFav : {1}", msisdn, isFav));
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("LOAD FAV AND PENDING,inside Dispatcher :MSISDN {0} ; isFav : {1}", msisdn, isFav));
+
                     App.ViewModel.FavList.Add(favObj);
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.SaveFavourites(favObj);
@@ -1888,7 +1892,11 @@ namespace windows_client
                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
                     favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
                 }
+                Logging.LogWriter.Instance.WriteToLog(string.Format("LOAD FAV AND PENDING,save pending before setting:MSISDN {0} ; isFav : {1}", msisdn, isFav));
+
                 App.ViewModel.PendingRequests[favObj.Msisdn] = favObj;
+                Logging.LogWriter.Instance.WriteToLog(string.Format("LOAD FAV AND PENDING,save pending after setting :MSISDN {0} ; isFav : {1}", msisdn, isFav));
+
                 MiscDBUtil.SavePendingRequests();
             }
         }
