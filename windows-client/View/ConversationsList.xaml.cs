@@ -2565,7 +2565,12 @@ namespace windows_client.View
                 {
                     ConversationListObject cFav = App.ViewModel.GetFav(stsBox.Msisdn);
                     if (cFav != null)
+                    {
+                        if (!_isFavListBound)
+                            cFav.Avatar = MiscDBUtil.getThumbNailForMsisdn(cFav.Msisdn);
+
                         PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = cFav;
+                    }
                     else
                     {
                         ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(stsBox.Msisdn);
