@@ -130,6 +130,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+           
             if (overlaySnow.Visibility == Visibility.Visible)
             {
                 overlaySnow.Visibility = Visibility.Collapsed;
