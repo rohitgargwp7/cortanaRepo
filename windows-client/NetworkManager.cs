@@ -577,12 +577,12 @@ namespace windows_client
                                                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                                                 {
                                                     string name = null;
-                                                    bool thrAreFavs = false;
+                                                    bool thrAreFavs = false, isFav;
                                                     KeyValuePair<string, JToken> fkkvv;
                                                     IEnumerator<KeyValuePair<string, JToken>> kVals = favJSON.GetEnumerator();
                                                     while (kVals.MoveNext()) // this will iterate throught the list
                                                     {
-                                                        bool isFav = true; // true for fav , false for pending
+                                                        isFav = true; // true for fav , false for pending
                                                         fkkvv = kVals.Current; // kkvv contains favourites MSISDN
 
                                                         if (App.ViewModel.BlockedHashset.Contains(fkkvv.Key)) // if this user is blocked ignore him
@@ -593,6 +593,7 @@ namespace windows_client
                                                         if (pendingJSON.TryGetValue(HikeConstants.REQUEST_PENDING, out pToken))
                                                         {
                                                             bool rp = false;
+                                                            thrAreFavs = true;
                                                             if (pToken != null)
                                                             {
                                                                 try
@@ -614,6 +615,20 @@ namespace windows_client
                                                             {
                                                                 isFav = false;
                                                                 FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
+
+                                                                ConversationListObject favObj;
+                                                                if (App.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
+                                                                    favObj = App.ViewModel.ConvMap[fkkvv.Key];
+                                                                else
+                                                                {
+                                                                    ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(fkkvv.Key);
+                                                                    if (ci != null)
+                                                                        name = ci.Name;
+
+                                                                    favObj = new ConversationListObject(fkkvv.Key, name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(fkkvv.Key) : null);
+                                                                }
+
+                                                                this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
                                                             }
                                                             else // pending is false
                                                             {
@@ -623,24 +638,13 @@ namespace windows_client
                                                             }
                                                         }
                                                         else
-                                                            FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
-                                                        Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
-                                                        LoadFavAndPending(isFav, fkkvv.Key); // true for favs
-                                                        thrAreFavs = true;
-
-                                                        ConversationListObject favObj;
-                                                        if (App.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
-                                                            favObj = App.ViewModel.ConvMap[fkkvv.Key];
-                                                        else
                                                         {
-                                                            ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(fkkvv.Key);
-                                                            if (ci != null)
-                                                                name = ci.Name;
-
-                                                            favObj = new ConversationListObject(fkkvv.Key, name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(fkkvv.Key) : null);
+                                                            thrAreFavs = true;
+                                                            FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                                                         }
 
-                                                        this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
+                                                        Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
+                                                        LoadFavAndPending(isFav, fkkvv.Key); // true for favs
                                                     }
 
                                                     if (thrAreFavs)
