@@ -413,11 +413,17 @@ namespace windows_client.View
                     //cannot use convMap here because object has pushed to map but not to ui
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                      {
-                         if (App.ViewModel.MessageListPageCollection.Contains(convObj))
+                         int index = App.ViewModel.MessageListPageCollection.IndexOf(convObj);
+                         if (index < 0)//not present in oc
                          {
-                             App.ViewModel.MessageListPageCollection.Remove(convObj);
+                             App.ViewModel.MessageListPageCollection.Insert(0, convObj);
                          }
-                         App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                         else if (index > 0)
+                         {
+                             App.ViewModel.MessageListPageCollection.RemoveAt(index);
+                             App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                         }//if already at zero, do nothing
+                        
                          emptyScreenImage.Opacity = 0;
                          emptyScreenTip.Opacity = 0;
                      });
