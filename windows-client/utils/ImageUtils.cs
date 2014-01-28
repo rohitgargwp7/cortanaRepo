@@ -1951,8 +1951,54 @@ namespace windows_client.utils
             {
                 Debug.WriteLine("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
             }
+
+            try
+            {
+                var aspectratio = (double)bitmapImage.PixelHeight / bitmapImage.PixelWidth;
+                int toWidth = 0;
+
+                if (bitmapImage.PixelWidth > 480 && bitmapImage.PixelHeight > 800)
+                    toWidth = bitmapImage.PixelWidth > bitmapImage.PixelHeight ? 480 : Convert.ToInt32(800 / aspectratio);
+                else if (bitmapImage.PixelWidth > 480)
+                    toWidth = 480;
+                else if (bitmapImage.PixelHeight > 800)
+                    toWidth = Convert.ToInt32(800 / aspectratio);
+
+                if (toWidth != 0)
+                    return getCompressedImage(imagebytes, toWidth);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("IMAGE UTILS :: Exception while calculating aspect ratio  for compressed image: " + ex.StackTrace);
+            }
+
             return bitmapImage;
         }
+
+        BitmapImage getCompressedImage(byte[] imagebytes, int toWidth)
+        {
+            if (imagebytes == null || imagebytes.Length == 0)
+                return null;
+            BitmapImage bitmapImage = null;
+            try
+            {
+                using (var memStream = new MemoryStream(imagebytes))
+                {
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    bitmapImage = new BitmapImage() { DecodePixelWidth = toWidth };
+                    //If you specify BackgroundCreation in the CreateOptions of a BitmapImage, you have to specify only DecodePixelHeight.
+                    //The DecodePixelWidth property is ignored when you specify BackgroundCreation.
+                    bitmapImage.SetSource(memStream);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("IMAGE UTILS :: Exception while creating compressed bitmap image from memstream : " + e.StackTrace);
+            }
+
+            return bitmapImage;
+        }
+
         public void createImageFromBytes(byte[] imagebytes, BitmapImage bitmapImage)
         {
             if (imagebytes == null || imagebytes.Length == 0)
@@ -1972,6 +2018,7 @@ namespace windows_client.utils
                 Debug.WriteLine("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
             }
         }
+
         /// <summary>
         /// Call this function only if you want to cache the Bitmap Image
         /// </summary>
