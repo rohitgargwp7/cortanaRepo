@@ -360,9 +360,18 @@ namespace windows_client.ViewModel
                         ConversationListObject mObj = (ConversationListObject)vals[1];
                         if (mObj == null)
                             return;
-                        App.ViewModel.MessageListPageCollection.Remove(mObj);
+
                         App.ViewModel.ConvMap[mObj.Msisdn] = mObj;
-                        App.ViewModel.MessageListPageCollection.Insert(0, mObj);
+                        int index = App.ViewModel.MessageListPageCollection.IndexOf(mObj);
+                        if (index < 0)//not present in oc
+                        {
+                            App.ViewModel.MessageListPageCollection.Insert(0, mObj);
+                        }
+                        else if (index > 0)
+                        {
+                            App.ViewModel.MessageListPageCollection.RemoveAt(index);
+                            App.ViewModel.MessageListPageCollection.Insert(0, mObj);
+                        }//if already at zero, do nothing
                     });
             }
             #endregion
