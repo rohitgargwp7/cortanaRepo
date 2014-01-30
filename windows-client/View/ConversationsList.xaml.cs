@@ -1575,7 +1575,9 @@ namespace windows_client.View
                             bool isNewUserAdded = false;
                             foreach (ContactInfo cinfo in listAddedContacts)
                             {
-                                if (cinfo.OnHike && !App.ViewModel.Isfavourite(cinfo.Msisdn) && !App.ViewModel.ContactsCache.ContainsKey(cinfo.Msisdn))
+
+                                //To:Do - why check in contactscache and then not add in contacts cache but in hikeContactList
+                                if (cinfo.OnHike && !App.ViewModel.Isfavourite(cinfo.Msisdn) && hikeContactList.Where(c=>c.Msisdn == cinfo.Msisdn).Count() == 0)
                                 {
                                     hikeContactList.Add(cinfo);
                                     isNewUserAdded = true;
@@ -1599,6 +1601,7 @@ namespace windows_client.View
                            foreach (ContactInfo cinfo in listDeletedContacts)
                            {
                                hikeContactList.Remove(cinfo);
+                               App.ViewModel.ContactsCache.Remove(cinfo.Msisdn);
                            }
                            cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                            if (hikeContactList.Count == 0)
