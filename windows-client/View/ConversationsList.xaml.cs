@@ -1575,8 +1575,6 @@ namespace windows_client.View
                             bool isNewUserAdded = false;
                             foreach (ContactInfo cinfo in listAddedContacts)
                             {
-
-                                //To:Do - why check in contactscache and then not add in contacts cache but in hikeContactList
                                 if (cinfo.OnHike && !App.ViewModel.Isfavourite(cinfo.Msisdn) && hikeContactList.Where(c=>c.Msisdn == cinfo.Msisdn).Count() == 0)
                                 {
                                     hikeContactList.Add(cinfo);
