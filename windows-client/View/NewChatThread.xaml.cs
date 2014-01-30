@@ -5414,7 +5414,7 @@ namespace windows_client.View
         private async void CreateBackgroundImage()
         {
             await Task.Delay(1);
-            
+
             if (App.ViewModel.SelectedBackground == null)
                 return;
 
@@ -6153,6 +6153,12 @@ namespace windows_client.View
                     case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
                         downloadDialogueImage.Source = UI_Utils.Instance.SmileyExpressionsOverlay;
                         break;
+                    case StickerHelper.CATEGORY_LOVE:
+                        downloadDialogueImage.Source = UI_Utils.Instance.LoveOverlay;
+                        break;
+                    case StickerHelper.CATEGORY_ANGRY:
+                        downloadDialogueImage.Source = UI_Utils.Instance.AngryOverlay;
+                        break;
                 }
                 overlayRectangle.Tap += overlayRectangle_Tap_1;
                 overlayRectangle.Visibility = Visibility.Visible;
@@ -6224,23 +6230,15 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null)
-                {
-                    listStickerCategories.Add(stickerCategory);
-                }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_LOVE)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
-                {
-                    listStickerCategories.Add(stickerCategory);
-                }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_ANGRY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
@@ -6252,6 +6250,23 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+               
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
