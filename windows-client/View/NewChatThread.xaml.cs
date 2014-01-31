@@ -4389,6 +4389,7 @@ namespace windows_client.View
                         toast.Background = (SolidColorBrush)App.Current.Resources["PhoneAccentBrush"];
                         toast.ImageSource = UI_Utils.Instance.HikeToastImage;
                         toast.VerticalContentAlignment = VerticalAlignment.Center;
+                        toast.MaxHeight = 60;
                         toast.Show();
 
                     });
