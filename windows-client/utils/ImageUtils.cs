@@ -100,6 +100,8 @@ namespace windows_client.utils
         private BitmapImage smileyExpressionsOverlay;
         private BitmapImage avatarsOverlay;
         private BitmapImage indiansOverlay;
+        private BitmapImage loveOverlay;
+        private BitmapImage angryOverlay;
         private BitmapImage recentIcon;
         private BitmapImage humanoidInactive;
         private BitmapImage humanoid2Inactive;
@@ -111,6 +113,8 @@ namespace windows_client.utils
         private BitmapImage smileyExpressionsInactive;
         private BitmapImage avatarsInactive;
         private BitmapImage indianInactive;
+        private BitmapImage loveInactive;
+        private BitmapImage angryInactive;
         private BitmapImage humanoidActive;
         private BitmapImage humanoid2Active;
         private BitmapImage doggyActive;
@@ -121,6 +125,8 @@ namespace windows_client.utils
         private BitmapImage smileyExpressionsActive;
         private BitmapImage avatarsActive;
         private BitmapImage indianActive;
+        private BitmapImage loveActive;
+        private BitmapImage angryActive;
         private BitmapImage muteIcon;
         private BitmapImage muteIconForConversationView;
         private BitmapImage unmuteIcon;
@@ -1435,6 +1441,26 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage AngryOverlay
+        {
+            get
+            {
+                if (angryOverlay == null)
+                    angryOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/hotheads_overlay.png", UriKind.Relative));
+
+                return angryOverlay;
+            }
+        }
+        public BitmapImage LoveOverlay
+        {
+            get
+            {
+                if (loveOverlay == null)
+                    loveOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/iloveyou_overlay.png", UriKind.Relative));
+
+                return loveOverlay;
+            }
+        }
         public BitmapImage ExpressionsOverlay
         {
             get
@@ -1583,6 +1609,28 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage LoveInactive
+        {
+            get
+            {
+                if (loveInactive == null)
+                {
+                    loveInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/love_inactive.png", UriKind.Relative));
+                }
+                return loveInactive;
+            }
+        }
+        public BitmapImage AngryInactive
+        {
+            get
+            {
+                if (angryInactive == null)
+                {
+                    angryInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/angry_inactive.png", UriKind.Relative));
+                }
+                return angryInactive;
+            }
+        }
         public BitmapImage HumanoidActive
         {
             get
@@ -1703,6 +1751,28 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage AngryActive
+        {
+            get
+            {
+                if (angryActive == null)
+                {
+                    angryActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/angry_active.png", UriKind.Relative));
+                }
+                return angryActive;
+            }
+        }
+        public BitmapImage LoveActive
+        {
+            get
+            {
+                if (loveActive == null)
+                {
+                    loveActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/love_active.png", UriKind.Relative));
+                }
+                return loveActive;
+            }
+        }
         #endregion
 
         public BitmapImage RecentIcon
