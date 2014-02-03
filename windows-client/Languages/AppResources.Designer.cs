@@ -394,7 +394,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Personalise your chat with gorgeus themes..
+        ///   Looks up a localized string similar to Personalise your chat with gorgeous themes..
         /// </summary>
         public static string Chat_FTUE_personalise {
             get {
