@@ -253,8 +253,6 @@ namespace windows_client.View
 
         private void txtStatus_GotFocus(object sender, RoutedEventArgs e)
         {
-            (App.Current as App).RootFrame.RenderTransform = new CompositeTransform();
-
             gridContent.Height = 200;
             svStatusText.Height = 165;
             txtStatus.Hint = string.Empty;//done intentionally
