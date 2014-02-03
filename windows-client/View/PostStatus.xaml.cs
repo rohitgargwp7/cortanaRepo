@@ -16,7 +16,6 @@ using System.Net.NetworkInformation;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
 using windows_client.View;
-using System.Windows.Media;
 
 namespace windows_client.View
 {
