@@ -16,6 +16,7 @@ using System.Net.NetworkInformation;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
 using windows_client.View;
+using System.Windows.Media;
 
 namespace windows_client.View
 {
@@ -252,6 +253,8 @@ namespace windows_client.View
 
         private void txtStatus_GotFocus(object sender, RoutedEventArgs e)
         {
+            (App.Current as App).RootFrame.RenderTransform = new CompositeTransform();
+
             gridContent.Height = 200;
             svStatusText.Height = 165;
             txtStatus.Hint = string.Empty;//done intentionally
