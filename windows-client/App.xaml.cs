@@ -786,7 +786,7 @@ namespace windows_client
 
             #endregion
             #region STCIKERS
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.5.0.6") < 0)//todo:update to next market build
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.5.0.7") < 0)//todo:update to next market build
             {
                 if (!isNewInstall && Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
                     StickerCategory.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
@@ -922,7 +922,7 @@ namespace windows_client
                     }
 
                     //Reset in app tip for new stickers
-                    if (Utils.compareVersion(_currentVersion, "2.5.0.6") < 0)//todo:update it to market version
+                    if (Utils.compareVersion(_currentVersion, "2.5.0.7") < 0)//todo:update it to market version
                         App.ViewModel.ResetInAppTip(1);
                 }
 
@@ -976,7 +976,7 @@ namespace windows_client
                     appSettings[App.HIKEJINGLE_PREF] = (bool)true;
                     App.WriteToIsoStorageSettings(App.ENTER_TO_SEND, false);
                 }
-                else if (Utils.compareVersion(_currentVersion, "2.5.0.5") < 0)
+                else if (Utils.compareVersion(_currentVersion, "2.5.0.7") < 0)
                 {
                     SendEnterToSendStatusToServer();
                 }
