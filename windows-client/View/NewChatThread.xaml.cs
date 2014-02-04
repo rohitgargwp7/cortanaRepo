@@ -2279,6 +2279,10 @@ namespace windows_client.View
                         // if transfer was not placed because of queue limit reached then display limit reached message
                         if (!transferPlaced && !FileTransferManager.Instance.IsTransferPossible())
                             MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
+
+                        if (transferPlaced && !msgMap.ContainsKey(convMessage.MessageId))
+                            msgMap.Add(convMessage.MessageId, convMessage);
+
                     }
                 }
                 else
@@ -2679,8 +2683,13 @@ namespace windows_client.View
                             attachments.Remove(convMessage.MessageId);
 
                             // due to perception fix message status would have been changed to read. Need to change it back to unconfirmed.
-                            if (convMessage.IsSent && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
-                                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                            if (convMessage.IsSent)
+                            {
+                                if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.CANCELED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED)
+                                    convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                                else if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                                    convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                            }
                         }
 
                         if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.CANCELED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
