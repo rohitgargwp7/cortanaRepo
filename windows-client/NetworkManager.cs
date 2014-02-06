@@ -1685,6 +1685,12 @@ namespace windows_client
                     if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to))
                         GroupManager.Instance.LoadGroupParticipants(to);
 
+                    if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to) && !GroupManager.Instance.GroupCache.ContainsKey(to))
+                    {
+                        Debug.WriteLine("OnMesage: Chat backgrounds: Group not found - {0}", to);
+                        return;
+                    }
+
                     var sender = !String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to) ? to : msisdn;
 
                     var data = (JObject)jsonObj[HikeConstants.DATA];
