@@ -960,7 +960,6 @@ namespace windows_client.utils
                 }
                 else // if refresh case load groups in cache
                 {
-                    GroupManager.Instance.LoadGroupCache();
                     List<GroupInfo> gl = GroupTableUtils.GetAllGroups();
                     for (int i = 0; i < gl.Count; i++)
                     {
