@@ -1043,7 +1043,6 @@ namespace windows_client.View
                 deletedContacts = new List<ContactInfo>(ContactUtils.hike_contactsMap.Count);
                 // This loop deletes all those contacts which are removed.
                 Dictionary<string, GroupInfo> allGroupsInfo = null;
-                GroupManager.Instance.LoadGroupCache();
                 List<GroupInfo> gl = GroupTableUtils.GetAllGroups();
                 for (int i = 0; i < gl.Count; i++)
                 {

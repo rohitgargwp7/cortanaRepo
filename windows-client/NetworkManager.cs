@@ -1682,8 +1682,8 @@ namespace windows_client
 
                     var to = (string)jsonObj[HikeConstants.TO];
 
-                    if (!String.IsNullOrEmpty(to))
-                        GroupManager.Instance.LoadGroupCache();
+                    if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to))
+                        GroupManager.Instance.LoadGroupParticipants(to);
 
                     var sender = !String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to) ? to : msisdn;
 
