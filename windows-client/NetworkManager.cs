@@ -1682,10 +1682,16 @@ namespace windows_client
 
                     var to = (string)jsonObj[HikeConstants.TO];
 
-                    if (!String.IsNullOrEmpty(to))
-                        GroupManager.Instance.LoadGroupCache();
+                    if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to))
+                        GroupManager.Instance.LoadGroupParticipants(to);
 
-                    var sender = !String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to) ? to : msisdn;
+                    if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to) && !GroupManager.Instance.GroupCache.ContainsKey(to))
+                    {
+                        Debug.WriteLine("OnMesage: Chat backgrounds: Group not found - {0}", to);
+                        return;
+                    }
+
+                    var sender = !String.IsNullOrEmpty(to) ? to : msisdn;
 
                     var data = (JObject)jsonObj[HikeConstants.DATA];
                     var bgId = (string)data[HikeConstants.BACKGROUND_ID];
