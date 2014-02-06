@@ -46,6 +46,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            
             <Style x:Key="PlayProgressBarStyle" TargetType="ProgressBar">
                 <Setter Property="Height" Value="45"/>
                 <Setter Property="Foreground" Value="#6D6D6D"/>
@@ -183,6 +184,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            
             <Style x:Key="ButtonWithNoPaddingStyle" TargetType="Button">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="BorderBrush" Value="{StaticResource PhoneForegroundBrush}"/>
@@ -231,6 +233,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            
             <Style x:Key="ButtonNoStyle" TargetType="Button">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="BorderBrush" Value="Transparent"/>
@@ -279,6 +282,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            
             <Style x:Key="ButtonWithImageNoPaddingStyle" TargetType="Button">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="BorderThickness" Value="0"/>
@@ -307,6 +311,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            
             <Style x:Key="SaveButtonChatThemeStyle" TargetType="Button">
                 <Setter Property="Background" Value="#66000000"/>
                 <Setter Property="BorderBrush" Value="#66000000"/>
@@ -356,6 +361,41 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <ControlTemplate x:Key="PhoneScrollbarThumb" TargetType="Thumb">
+                <Rectangle Fill="{TemplateBinding Background}" Height="{TemplateBinding Height}" IsHitTestVisible="False" Width="{TemplateBinding Width}"/>
+            </ControlTemplate>
+            <Style x:Key="ChatThemeScrollBarStyle" TargetType="ScrollBar">
+                <Setter Property="Background" Value="{StaticResource PhoneDisabledBrush}"/>
+                <Setter Property="Padding" Value="1"/>
+                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="MinWidth" Value="5"/>
+                <Setter Property="MinHeight" Value="5"/>
+                <Setter Property="IsHitTestVisible" Value="False"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ScrollBar">
+                            <Grid>
+                                <Grid x:Name="VerticalRoot" Background="Transparent" Width="{TemplateBinding Width}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <RepeatButton x:Name="VerticalSmallDecrease" Visibility="Collapsed"/>
+                                    <RepeatButton x:Name="VerticalLargeDecrease" Grid.Row="1" Template="{x:Null}" Width="0"/>
+                                    <Thumb x:Name="VerticalThumb" Background="#66000000" Margin="{TemplateBinding Padding}" MinHeight="72" Grid.Row="2" Template="{StaticResource PhoneScrollbarThumb}" Width="{TemplateBinding Width}"/>
+                                    <RepeatButton x:Name="VerticalLargeIncrease" Grid.Row="3" Template="{x:Null}" Width="0"/>
+                                    <RepeatButton x:Name="VerticalSmallIncrease" Visibility="Collapsed"/>
+                                </Grid>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
             <!-- Item templates-->
             <DataTemplate x:Key="chatThemeBackgroundItemTemplate93x93">
                 <Grid Margin="0" Width="93" Height="93">

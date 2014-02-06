@@ -1029,6 +1029,7 @@ namespace windows_client
 
                     JToken gName;
                     string groupName;
+                    //To:Do pubsub for gcn is not raised, also grpId will not exist, this implementation will not work
                     if (metaData.TryGetValue(HikeConstants.NAME, out gName))
                     {
                         ConversationListObject cObj;

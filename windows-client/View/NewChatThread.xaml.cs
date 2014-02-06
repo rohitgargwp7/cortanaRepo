@@ -2283,6 +2283,10 @@ namespace windows_client.View
                         // if transfer was not placed because of queue limit reached then display limit reached message
                         if (!transferPlaced && !FileTransferManager.Instance.IsTransferPossible())
                             MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
+
+                        if (transferPlaced && !msgMap.ContainsKey(convMessage.MessageId))
+                            msgMap.Add(convMessage.MessageId, convMessage);
+
                     }
                 }
                 else
@@ -2683,8 +2687,13 @@ namespace windows_client.View
                             attachments.Remove(convMessage.MessageId);
 
                             // due to perception fix message status would have been changed to read. Need to change it back to unconfirmed.
-                            if (convMessage.IsSent && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
-                                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                            if (convMessage.IsSent)
+                            {
+                                if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.CANCELED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED)
+                                    convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                                else if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                                    convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                            }
                         }
 
                         if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.CANCELED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
@@ -4395,6 +4404,7 @@ namespace windows_client.View
                         toast.Background = (SolidColorBrush)App.Current.Resources["PhoneAccentBrush"];
                         toast.ImageSource = UI_Utils.Instance.HikeToastImage;
                         toast.VerticalContentAlignment = VerticalAlignment.Center;
+                        toast.MaxHeight = 60;
                         toast.Show();
 
                     });
@@ -5420,7 +5430,7 @@ namespace windows_client.View
         private async void CreateBackgroundImage()
         {
             await Task.Delay(1);
-            
+
             if (App.ViewModel.SelectedBackground == null)
                 return;
 
@@ -6159,6 +6169,12 @@ namespace windows_client.View
                     case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
                         downloadDialogueImage.Source = UI_Utils.Instance.SmileyExpressionsOverlay;
                         break;
+                    case StickerHelper.CATEGORY_LOVE:
+                        downloadDialogueImage.Source = UI_Utils.Instance.LoveOverlay;
+                        break;
+                    case StickerHelper.CATEGORY_ANGRY:
+                        downloadDialogueImage.Source = UI_Utils.Instance.AngryOverlay;
+                        break;
                 }
                 overlayRectangle.Tap += overlayRectangle_Tap_1;
                 overlayRectangle.Visibility = Visibility.Visible;
@@ -6230,23 +6246,15 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null)
-                {
-                    listStickerCategories.Add(stickerCategory);
-                }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_LOVE)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
-                {
-                    listStickerCategories.Add(stickerCategory);
-                }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_ANGRY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
@@ -6258,6 +6266,23 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+               
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);

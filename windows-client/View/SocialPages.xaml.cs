@@ -92,14 +92,19 @@ namespace windows_client.View
             BrowserControl.Navigate(_fb.GetLoginUrl(parameters));
         }
 
-        private void LogoutFb()
+        private async void LogoutFb()
         {
-            var fb = new FacebookClient();
-            var parameters = new Dictionary<string, object>();
-            parameters["access_token"] = (string)App.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
-            parameters["next"] = "https://m.facebook.com/connect/login_success.html";
-            var logoutUrl = fb.GetLogoutUrl(parameters);
-            BrowserControl.Navigate(logoutUrl);
+            await BrowserControl.ClearCookiesAsync();
+
+            App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN);
+                    App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
+                    App.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        PhoneApplicationService.Current.State[HikeConstants.SOCIAL_STATE] = FreeSMS.SocialState.FB_LOGOUT;
+                        if (NavigationService.CanGoBack)
+                            NavigationService.GoBack();
+                    });
         }
 
         private void Browser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
@@ -115,18 +120,6 @@ namespace windows_client.View
             else if (socialNetwork == HikeConstants.FACEBOOK) // facebook auth
             {
                 FacebookOAuthResult oauthResult;
-                if (e.Uri.AbsoluteUri == "https://m.facebook.com/connect/login_success.html")
-                {
-                    App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN);
-                    App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
-                    App.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        PhoneApplicationService.Current.State[HikeConstants.SOCIAL_STATE] = FreeSMS.SocialState.FB_LOGOUT;
-                        if (NavigationService.CanGoBack)
-                            NavigationService.GoBack();
-                    });
-                }
 
                 if (!_fb.TryParseOAuthCallbackUrl(e.Uri, out oauthResult))
                 {

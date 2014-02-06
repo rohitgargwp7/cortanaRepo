@@ -607,6 +607,10 @@
     <Content Include="View\images\ChatBgFTUE\ribbon3.png" />
     <Content Include="View\images\ChatBgFTUE\snow_flake.png" />
     <Content Include="View\images\notification_Image.png" />
+    <Content Include="View\images\stickers\categorySets\angry_active.png" />
+    <Content Include="View\images\stickers\categorySets\angry_inactive.png" />
+    <Content Include="View\images\stickers\categorySets\hotheads_overlay.png" />
+    <Content Include="View\images\stickers\categorySets\iloveyou_overlay.png" />
     <Content Include="View\images\stickers\categorySets\indian_overlay.png" />
     <Content Include="View\images\paint_black.png" />
     <Content Include="View\images\icon_sms.png" />
@@ -797,6 +801,8 @@
     <Content Include="View\images\stickers\categorySets\kitty_icon.png" />
     <Content Include="View\images\stickers\categorySets\kitty_i_icon.png" />
     <Content Include="View\images\stickers\categorySets\kitty_overlay.png" />
+    <Content Include="View\images\stickers\categorySets\love_active.png" />
+    <Content Include="View\images\stickers\categorySets\love_inactive.png" />
     <Content Include="View\images\stickers\categorySets\rf_icon.png" />
     <Content Include="View\images\stickers\categorySets\rf_i_icon.png" />
     <Content Include="View\images\stickers\categorySets\smileyExpressions.png" />
