@@ -1691,7 +1691,7 @@ namespace windows_client
                         return;
                     }
 
-                    var sender = !String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to) ? to : msisdn;
+                    var sender = !String.IsNullOrEmpty(to) ? to : msisdn;
 
                     var data = (JObject)jsonObj[HikeConstants.DATA];
                     var bgId = (string)data[HikeConstants.BACKGROUND_ID];
