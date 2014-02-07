@@ -444,6 +444,8 @@ namespace windows_client.Mqtt
                 return;
             Debug.WriteLine("MQTT MANAGER:: NUmber os unsent messages" + packets.Count);
             sendAllUnsentMessages(packets);
+
+            PushHelper.Instance.ClearTile();
         }
 
         public void onDisconnected()

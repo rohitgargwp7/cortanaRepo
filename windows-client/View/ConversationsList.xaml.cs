@@ -130,6 +130,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+           
             if (overlaySnow.Visibility == Visibility.Visible)
             {
                 overlaySnow.Visibility = Visibility.Collapsed;
@@ -412,11 +413,17 @@ namespace windows_client.View
                     //cannot use convMap here because object has pushed to map but not to ui
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                      {
-                         if (App.ViewModel.MessageListPageCollection.Contains(convObj))
+                         int index = App.ViewModel.MessageListPageCollection.IndexOf(convObj);
+                         if (index < 0)//not present in oc
                          {
-                             App.ViewModel.MessageListPageCollection.Remove(convObj);
+                             App.ViewModel.MessageListPageCollection.Insert(0, convObj);
                          }
-                         App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                         else if (index > 0)
+                         {
+                             App.ViewModel.MessageListPageCollection.RemoveAt(index);
+                             App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                         }//if already at zero, do nothing
+                        
                          emptyScreenImage.Opacity = 0;
                          emptyScreenTip.Opacity = 0;
                      });
@@ -1568,7 +1575,7 @@ namespace windows_client.View
                             bool isNewUserAdded = false;
                             foreach (ContactInfo cinfo in listAddedContacts)
                             {
-                                if (cinfo.OnHike && !App.ViewModel.Isfavourite(cinfo.Msisdn) && !App.ViewModel.ContactsCache.ContainsKey(cinfo.Msisdn))
+                                if (cinfo.OnHike && !App.ViewModel.Isfavourite(cinfo.Msisdn) && hikeContactList.Where(c=>c.Msisdn == cinfo.Msisdn).Count() == 0)
                                 {
                                     hikeContactList.Add(cinfo);
                                     isNewUserAdded = true;
@@ -1592,6 +1599,7 @@ namespace windows_client.View
                            foreach (ContactInfo cinfo in listDeletedContacts)
                            {
                                hikeContactList.Remove(cinfo);
+                               App.ViewModel.ContactsCache.Remove(cinfo.Msisdn);
                            }
                            cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                            if (hikeContactList.Count == 0)
@@ -1779,8 +1787,11 @@ namespace windows_client.View
                     if (App.ViewModel.ContactsCache.ContainsKey(convObj.Msisdn))
                         c = App.ViewModel.ContactsCache[convObj.Msisdn];
                     else
+                    {
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
-                    c.Avatar = convObj.Avatar;
+                        c.Avatar = convObj.Avatar;
+                    }
+
                     c.IsUsedAtMiscPlaces = true;
                     if (c.Msisdn != App.MSISDN && isContactListLoaded)
                     {
@@ -2077,8 +2088,11 @@ namespace windows_client.View
                     if (App.ViewModel.ContactsCache.ContainsKey(convObj.Msisdn))
                         c = App.ViewModel.ContactsCache[convObj.Msisdn];
                     else
+                    {
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
-                    c.Avatar = convObj.Avatar;
+                        c.Avatar = convObj.Avatar;
+                    }
+
                     c.IsUsedAtMiscPlaces = true;
                     if (c.Msisdn != App.MSISDN)
                     {
@@ -2145,7 +2159,8 @@ namespace windows_client.View
                 }
                 else
                 {
-                    cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, contactInfo.Avatar);
+                    var bytes = contactInfo.Avatar == null ? UI_Utils.Instance.ConvertToBytes(contactInfo.AvatarImage) : contactInfo.Avatar;
+                    cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, bytes);
                 }
                 contactInfo.IsUsedAtMiscPlaces = true;
                 hikeContactList.Remove(contactInfo);
@@ -2558,7 +2573,12 @@ namespace windows_client.View
                 {
                     ConversationListObject cFav = App.ViewModel.GetFav(stsBox.Msisdn);
                     if (cFav != null)
+                    {
+                        if (!_isFavListBound)
+                            cFav.Avatar = MiscDBUtil.getThumbNailForMsisdn(cFav.Msisdn);
+
                         PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = cFav;
+                    }
                     else
                     {
                         ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(stsBox.Msisdn);
@@ -2917,11 +2937,11 @@ namespace windows_client.View
             ConversationListObject obj = null;
             try
             {
-                var list = App.ViewModel.MessageListPageCollection.Where(f => f.IsFav && f.IsOnhike);
+                var list = App.ViewModel.MessageListPageCollection.Where(f => f.IsFav && f.IsOnhike && !f.IsGroupChat);
 
                 if (list.Count() == 0)
                 {
-                    list = App.ViewModel.MessageListPageCollection.Where(f => f.IsOnhike);
+                    list = App.ViewModel.MessageListPageCollection.Where(f => f.IsOnhike && !f.IsGroupChat);
                     if (list.Count() == 0)
                     {
                         if (App.ViewModel.MessageListPageCollection.Count > 0)

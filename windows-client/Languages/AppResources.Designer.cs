@@ -376,7 +376,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to What are holidays without any gifts? Happy Hiking!.
+        ///   Looks up a localized string similar to We&apos;ve got a gift waiting for you. Happy Hiking!.
         /// </summary>
         public static string Chat_FTUE_HappyHiking {
             get {
@@ -394,7 +394,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Personalise your chat with gorgeus themes..
+        ///   Looks up a localized string similar to Personalise your chat with gorgeous themes..
         /// </summary>
         public static string Chat_FTUE_personalise {
             get {

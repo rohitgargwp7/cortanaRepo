@@ -832,8 +832,8 @@
             <Grid HorizontalAlignment="Stretch">
                 <Image x:Name="icon" Grid.Column="0" Source="images\hike_header.png" Height="40" Margin="4,25,0,0" HorizontalAlignment="Left"/>
             </Grid>
-            <Grid Name="gridToggleStatus" Grid.Column="1" Margin="0,25,30,0" Height="50" Width="80" Tap="ToggleStatusUpdateNotification" HorizontalAlignment="Right" VerticalAlignment="Stretch" >
-                <Image Name="imgToggleStatus" MaxHeight="30" HorizontalAlignment="Center"/>
+            <Grid Name="gridToggleStatus" Grid.Column="1" Margin="0,25,30,0" Tap="ToggleStatusUpdateNotification" HorizontalAlignment="Right" VerticalAlignment="Stretch" >
+                <Image Name="imgToggleStatus" MaxHeight="30" Margin="20,12" HorizontalAlignment="Center"/>
             </Grid>
             <Grid Grid.Column="2" Margin="0,25,0,0" Height="50" Tap="notification_Tap" HorizontalAlignment="Right" VerticalAlignment="Stretch">
                 <Grid Margin="0,0,20,0">
@@ -911,7 +911,7 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
                         <Grid x:Name="cohProgressBar" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="4" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
-                            <ProgressBar VerticalContentAlignment="Center" IsIndeterminate="True" IsEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Center"></ProgressBar>
+                            <ProgressBar VerticalContentAlignment="Center" Background="Transparent" IsIndeterminate="True" IsEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Center"></ProgressBar>
                         </Grid>
                         <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
                             <TextBlock Name="txtCircleOfFriends" Visibility="Collapsed" FontSize="24"  FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}"/>

@@ -252,7 +252,7 @@ namespace windows_client.View
 
         private void txtStatus_GotFocus(object sender, RoutedEventArgs e)
         {
-            gridContent.Height = 210;
+            gridContent.Height = 200;
             svStatusText.Height = 165;
             txtStatus.Hint = string.Empty;//done intentionally
             if (hintText == string.Empty)
@@ -329,9 +329,8 @@ namespace windows_client.View
 
         private void txtStatus_LostFocus_1(object sender, RoutedEventArgs e)
         {
-            gridContent.Height = 615;
-            svStatusText.Height = 565;
-
+            gridContent.Height = 605;
+            svStatusText.Height = 550;
         }
     }
 }

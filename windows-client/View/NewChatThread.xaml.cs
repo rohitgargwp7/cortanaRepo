@@ -1956,20 +1956,21 @@ namespace windows_client.View
 
         }
 
-        Object obj = new object();
         //this function is called from UI thread only. No need to synch.
         private void ScrollToBottom()
         {
             try
             {
-                if (this.ocMessages.Count > 0 && (!IsMute || this.ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
+                if (this.ocMessages.Count > 0 && (!IsMute || _userTappedJumpToBottom || this.ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
                 {
+                    _userTappedJumpToBottom = false;
+
                     JumpToBottomGrid.Visibility = Visibility.Collapsed;
+                    _unreadMessageCounter = 0;
                     if (vScrollBar != null && llsViewPort != null && ((vScrollBar.Maximum - vScrollBar.Value) < 2000))
                         llsViewPort.SetViewportOrigin(new System.Windows.Point(0, llsViewPort.Bounds.Height));
                     else
                         llsMessages.ScrollTo(ocMessages[ocMessages.Count - 1]);
-
                 }
             }
             catch (Exception ex)
@@ -2129,6 +2130,10 @@ namespace windows_client.View
                 muteGroupMenuItem.Text = AppResources.SelectUser_UnMuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
+
+            InAppTipUC tip = LayoutRoot.FindName("tip8") as InAppTipUC;
+            if (tip != null)
+                tip.Margin = IsMute ? new Thickness(0, 125, 20, 0) : new Thickness(0, 80, 20, 0);
         }
 
         private void blockUnblock_Click(object sender, EventArgs e)
@@ -2279,6 +2284,10 @@ namespace windows_client.View
                         // if transfer was not placed because of queue limit reached then display limit reached message
                         if (!transferPlaced && !FileTransferManager.Instance.IsTransferPossible())
                             MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
+
+                        if (transferPlaced && !msgMap.ContainsKey(convMessage.MessageId))
+                            msgMap.Add(convMessage.MessageId, convMessage);
+
                     }
                 }
                 else
@@ -2679,8 +2688,13 @@ namespace windows_client.View
                             attachments.Remove(convMessage.MessageId);
 
                             // due to perception fix message status would have been changed to read. Need to change it back to unconfirmed.
-                            if (convMessage.IsSent && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
-                                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                            if (convMessage.IsSent)
+                            {
+                                if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.CANCELED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED)
+                                    convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                                else if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                                    convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                            }
                         }
 
                         if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.CANCELED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
@@ -4390,6 +4404,7 @@ namespace windows_client.View
                         toast.Background = (SolidColorBrush)App.Current.Resources["PhoneAccentBrush"];
                         toast.ImageSource = UI_Utils.Instance.HikeToastImage;
                         toast.VerticalContentAlignment = VerticalAlignment.Center;
+                        toast.MaxHeight = 60;
                         toast.Show();
 
                     });
@@ -5382,6 +5397,9 @@ namespace windows_client.View
         {
             _patternNotLoaded = false;
 
+            if (App.ViewModel.SelectedBackground == null)
+                return;
+
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
             if ((isGroupChat && !isGroupAlive) || (!isOnHike && mCredits <= 0))
@@ -5430,6 +5448,10 @@ namespace windows_client.View
         private async void CreateBackgroundImage()
         {
             await Task.Delay(1);
+
+            if (App.ViewModel.SelectedBackground == null)
+                return;
+
             _tileBitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
             {
                 CreateOptions = BitmapCreateOptions.None
@@ -5744,11 +5766,11 @@ namespace windows_client.View
             }
         }
 
+        bool _userTappedJumpToBottom = false;
         private void JumpToBottom_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            _userTappedJumpToBottom = true;
             ScrollToBottom();
-            JumpToBottomGrid.Visibility = Visibility.Collapsed;
-            _unreadMessageCounter = 0;
         }
 
         private void llsMessages_ItemUnRealized(object sender, ItemRealizationEventArgs e)
@@ -5772,7 +5794,8 @@ namespace windows_client.View
                 return;
             if (vScrollBar != null && (ocMessages != null && ocMessages.Count > 6) && vScrollBar.Maximum < 1000000)
             {
-                if ((vScrollBar.Maximum - vScrollBar.Value) > 500)
+                //show jump to bottom for mute chat for incoming messages as scroll to bottom wont work for mute gcs
+                if ((vScrollBar.Maximum - vScrollBar.Value) > 500 || (IsMute && increaseUnreadCounter))
                 {
                     if (increaseUnreadCounter)
                         _unreadMessageCounter += 1;
@@ -6164,6 +6187,12 @@ namespace windows_client.View
                     case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
                         downloadDialogueImage.Source = UI_Utils.Instance.SmileyExpressionsOverlay;
                         break;
+                    case StickerHelper.CATEGORY_LOVE:
+                        downloadDialogueImage.Source = UI_Utils.Instance.LoveOverlay;
+                        break;
+                    case StickerHelper.CATEGORY_ANGRY:
+                        downloadDialogueImage.Source = UI_Utils.Instance.AngryOverlay;
+                        break;
                 }
                 overlayRectangle.Tap += overlayRectangle_Tap_1;
                 overlayRectangle.Visibility = Visibility.Visible;
@@ -6235,23 +6264,15 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null)
-                {
-                    listStickerCategories.Add(stickerCategory);
-                }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_LOVE)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
-                {
-                    listStickerCategories.Add(stickerCategory);
-                }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_ANGRY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
@@ -6263,6 +6284,23 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+               
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
