@@ -2047,7 +2047,9 @@ hike पिछली बार दिखे के साथ आपको गो
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>हम आपके उपहार के साथ आपकी प्रतीक्षा कर रहे हैं। हाइकिंग का मज़ा लें!</value>
+    <value>प्रेम के महीने का उत्सव मनाएँ!
+
+हम आपके लिए उपहार लाए हैं!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">

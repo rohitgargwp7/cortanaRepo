@@ -2045,7 +2045,7 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>Tenemos un regalo para ti ¡Disfruta de hike!</value>
+    <value>Celebra el mes del amor!¡Tenemos un regalo para ti!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">
