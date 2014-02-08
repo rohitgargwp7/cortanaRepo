@@ -2046,11 +2046,11 @@ Download it now http://hike.in and join the fun!</value>
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>We've got a gift waiting for you. Happy Hiking!</value>
+    <value>Celebrate the month of love! We have a gift for you...</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">
-    <value>Open gift ...</value>
+    <value>Open Gift</value>
     <comment>max chars(30)</comment>
   </data>
   <data name="Chat_FTUE_personalise" xml:space="preserve">

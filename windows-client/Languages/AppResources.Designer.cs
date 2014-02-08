@@ -376,7 +376,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We&apos;ve got a gift waiting for you. Happy Hiking!.
+        ///   Looks up a localized string similar to Celebrate the month of love! We have a gift for you....
         /// </summary>
         public static string Chat_FTUE_HappyHiking {
             get {
@@ -385,7 +385,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open gift ....
+        ///   Looks up a localized string similar to Open Gift.
         /// </summary>
         public static string Chat_FTUE_OpenGift {
             get {
