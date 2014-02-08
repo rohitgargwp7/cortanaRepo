@@ -503,6 +503,27 @@ namespace windows_client.Model
             get { return String.IsNullOrEmpty(DispMessage) ? Visibility.Collapsed : Visibility.Visible; }
         }
 
+        public Visibility NormalNudgeVisibility
+        {
+            get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Collapsed : Visibility.Visible; }
+        }
+
+        public Visibility SpecialNudgeVisibility
+        {
+            get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Visible : Visibility.Collapsed; }
+        }
+
+        public BitmapImage NudgeImage
+        {
+            get
+            {
+                if (IsSent)
+                    return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? UI_Utils.Instance.HeartSentNudgeImage : UI_Utils.Instance.SentNudgeImage;
+                else
+                    return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? UI_Utils.Instance.HeartReceivedNudgeImage : UI_Utils.Instance.ReceivedNudgeImage;
+            }
+        }
+
         bool _changingState;
         public bool ChangingState
         {
@@ -1287,6 +1308,9 @@ namespace windows_client.Model
             NotifyPropertyChanged("BubbleBackGroundColor");
             NotifyPropertyChanged("SdrImage");
             NotifyPropertyChanged("NotificationImage");
+            NotifyPropertyChanged("NudgeImage");
+            NotifyPropertyChanged("SpecialNudgeVisibility");
+            NotifyPropertyChanged("NormalNudgeVisibility");
         }
 
         public Visibility SendAsSMSVisibility

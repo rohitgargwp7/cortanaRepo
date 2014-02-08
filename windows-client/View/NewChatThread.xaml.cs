@@ -5468,9 +5468,16 @@ namespace windows_client.View
                     }
 
                     _background = wb1;
+                    chatBackground.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+                    chatBackground.VerticalAlignment = System.Windows.VerticalAlignment.Top;
                 }
                 else
+                {
+                    chatBackground.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                    chatBackground.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
                     _background = source;
+                }
 
                 chatBackground.Source = _background;
 

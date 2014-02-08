@@ -132,6 +132,10 @@ namespace windows_client.utils
         private BitmapImage unmuteIcon;
         private BitmapImage circles;
         private BitmapImage hikeToastImage;
+        private BitmapImage receivedNudgeImage;
+        private BitmapImage sentNudgeImage;
+        private BitmapImage heartReceivedNudgeImage;
+        private BitmapImage heartSentNudgeImage;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
         private string[] defaultAvatarFileNames;
@@ -1142,6 +1146,50 @@ namespace windows_client.utils
                     lastSeenClockImageBlack = new BitmapImage(new Uri("/View/images/last_seen_clock_black.png", UriKind.Relative));
 
                 return lastSeenClockImageBlack;
+            }
+        }
+
+        public BitmapImage HeartReceivedNudgeImage
+        {
+            get
+            {
+                if (heartReceivedNudgeImage == null)
+                    heartReceivedNudgeImage = new BitmapImage(new Uri("/View/images/heartsNudge.png", UriKind.Relative));
+
+                return heartReceivedNudgeImage;
+            }
+        }
+
+        public BitmapImage HeartSentNudgeImage
+        {
+            get
+            {
+                if (heartSentNudgeImage == null)
+                    heartSentNudgeImage = new BitmapImage(new Uri("/View/images/heartsNudge.png", UriKind.Relative));
+
+                return heartSentNudgeImage;
+            }
+        }
+
+        public BitmapImage ReceivedNudgeImage
+        {
+            get
+            {
+                if (receivedNudgeImage == null)
+                    receivedNudgeImage = new BitmapImage(new Uri("/View/images/nudge_received.png", UriKind.Relative));
+
+                return receivedNudgeImage;
+            }
+        }
+
+        public BitmapImage SentNudgeImage
+        {
+            get
+            {
+                if (sentNudgeImage == null)
+                    sentNudgeImage = new BitmapImage(new Uri("/View/images/nudge_sent.png", UriKind.Relative));
+
+                return sentNudgeImage;
             }
         }
 
