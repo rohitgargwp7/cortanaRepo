@@ -329,14 +329,14 @@ namespace windows_client.utils
 
             BackgroundList.Add(new ChatBackground()
             {
-                ID = "24",
+                ID = "23",
                 Background = "#ff707461",
                 SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = false,
-                Position = 24,
+                Position = 23,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbOwl.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbOwl.png"
             });
