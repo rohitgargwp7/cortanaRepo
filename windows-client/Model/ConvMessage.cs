@@ -513,15 +513,6 @@ namespace windows_client.Model
             get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Visible : Visibility.Collapsed; }
         }
 
-        public BitmapImage NudgeImage
-        {
-            get
-            {
-                return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? UI_Utils.Instance.HeartNudgeImage 
-                    : IsSent ? UI_Utils.Instance.SentNudgeImage : UI_Utils.Instance.ReceivedNudgeImage;
-            }
-        }
-
         bool _changingState;
         public bool ChangingState
         {
