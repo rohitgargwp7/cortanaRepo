@@ -517,10 +517,8 @@ namespace windows_client.Model
         {
             get
             {
-                if (IsSent)
-                    return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? UI_Utils.Instance.HeartSentNudgeImage : UI_Utils.Instance.SentNudgeImage;
-                else
-                    return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? UI_Utils.Instance.HeartReceivedNudgeImage : UI_Utils.Instance.ReceivedNudgeImage;
+                return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? UI_Utils.Instance.HeartNudgeImage 
+                    : IsSent ? UI_Utils.Instance.SentNudgeImage : UI_Utils.Instance.ReceivedNudgeImage;
             }
         }
 

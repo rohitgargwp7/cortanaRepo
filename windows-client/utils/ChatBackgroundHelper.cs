@@ -249,16 +249,16 @@ namespace windows_client.utils
         /// <returns></returns>
         public String SetDefaultBackground(string msisdn)
         {
-            int index = random.Next(3);
+            int id = random.Next(3);
 
-            if (index == 0)
-                index = 4;
-            else if (index == 1)
-                index = 15;
+            if (id == 0)
+                id = 4;
+            else if (id == 1)
+                id = 15;
             else
-                index = 11;
+                id = 11;
 
-            App.ViewModel.SelectedBackground = BackgroundList.Where(b => b.ID == index.ToString()).First();
+            App.ViewModel.SelectedBackground = BackgroundList.Where(b => b.ID == id.ToString()).First();
             UpdateChatBgMap(msisdn, App.ViewModel.SelectedBackground.ID);
 
             return App.ViewModel.SelectedBackground.ID;

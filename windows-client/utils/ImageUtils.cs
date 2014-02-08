@@ -134,8 +134,7 @@ namespace windows_client.utils
         private BitmapImage hikeToastImage;
         private BitmapImage receivedNudgeImage;
         private BitmapImage sentNudgeImage;
-        private BitmapImage heartReceivedNudgeImage;
-        private BitmapImage heartSentNudgeImage;
+        private BitmapImage heartNudgeImage;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
         private string[] defaultAvatarFileNames;
@@ -1149,25 +1148,14 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage HeartReceivedNudgeImage
+        public BitmapImage HeartNudgeImage
         {
             get
             {
-                if (heartReceivedNudgeImage == null)
-                    heartReceivedNudgeImage = new BitmapImage(new Uri("/View/images/heartsNudge.png", UriKind.Relative));
+                if (heartNudgeImage == null)
+                    heartNudgeImage = new BitmapImage(new Uri("/View/images/heartsNudge.png", UriKind.Relative));
 
-                return heartReceivedNudgeImage;
-            }
-        }
-
-        public BitmapImage HeartSentNudgeImage
-        {
-            get
-            {
-                if (heartSentNudgeImage == null)
-                    heartSentNudgeImage = new BitmapImage(new Uri("/View/images/heartsNudge.png", UriKind.Relative));
-
-                return heartSentNudgeImage;
+                return heartNudgeImage;
             }
         }
 
