@@ -535,6 +535,7 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\images\ChatBgFTUE\chatthemes_ftuegraphic.png" />
     <Content Include="View\images\hike_toast_image.png" />
     <Content Include="View\images\cancel_black.png" />
     <Content Include="View\images\cancel_white.png" />
