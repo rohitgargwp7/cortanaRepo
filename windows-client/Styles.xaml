@@ -400,7 +400,7 @@
             <DataTemplate x:Key="chatThemeBackgroundItemTemplate93x93">
                 <Grid Margin="0" Width="93" Height="93">
                     <Border Background="{Binding BackgroundColor}" Width="83" Height="83" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" Canvas.ZIndex="-2" Visibility="{Binding BackgroundVisibility}"/>
-                    <Image Source="{Binding ImagePattern}" Stretch="{Binding ThumbnailStretch}" Height="83" Width="83" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Image Source="{Binding ThumbnailPattern}" Stretch="Uniform" Height="83" Width="83" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <Grid Canvas.ZIndex="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding DefaultImageVisibility}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
