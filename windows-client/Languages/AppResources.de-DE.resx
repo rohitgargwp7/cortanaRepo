@@ -2039,9 +2039,7 @@
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>Feiere den Monat der Liebe!
-
-Wir möchten dir was schenken!</value>
+    <value>Feiere den Monat der Liebe! Wir möchten dir was schenken!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">
