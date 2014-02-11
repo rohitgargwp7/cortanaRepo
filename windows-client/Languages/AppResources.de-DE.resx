@@ -2016,7 +2016,7 @@
     <value>{0} hat soeben das Chatmotiv geändert. Um die neuen Chatmotive nutzen zu können, musst du hike aktualisieren. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Weitere herrliche Motive gibt es hier...</value>
+    <value>Schauen Sie sich das besondere "Ich liebe dich" Thema!</value>
   </data>
   <data name="ChatThemeHeader_Txt" xml:space="preserve">
     <value>Chatmotive</value>
@@ -2039,7 +2039,7 @@
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>Wir haben ein Geschenk für dich. Viel Spaß mit Hike!</value>
+    <value>Feiere den Monat der Liebe! Wir möchten dir was schenken!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">

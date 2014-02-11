@@ -260,6 +260,10 @@ namespace windows_client.Misc
             }
         }
 
+        /// <summary>
+        /// Load individual group cache to save memory (Lazy loading)
+        /// </summary>
+        /// <param name="grpId"></param>
         public void LoadGroupParticipants(string grpId)
         {
             if (groupCache.ContainsKey(grpId))
@@ -335,6 +339,9 @@ namespace windows_client.Misc
             }
         }
 
+        /// <summary>
+        /// Load entire group cache to perform operation on all groups
+        /// </summary>
         public void LoadGroupCache()
         {
             Logging.LogWriter.Instance.WriteToLog(string.Format("All groups loading into memory request recieved "));
@@ -348,7 +355,11 @@ namespace windows_client.Misc
                         return;
                     for (int i = 0; i < files.Length; i++)
                     {
-                        string grpId = files[i].Replace("_", ":");
+                        var index = files[i].LastIndexOf("_");
+                        StringBuilder sb = new StringBuilder(files[i]);
+                        sb[index] = ':';
+                        string grpId = sb.ToString();
+
                         if (groupCache.ContainsKey(grpId)) // if this group is already loaded ignore
                             continue;
 

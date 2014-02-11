@@ -39,14 +39,6 @@ namespace windows_client.Model
             }
         }
 
-        public Stretch ThumbnailStretch
-        {
-            get
-            {
-                return IsTile ? Stretch.UniformToFill : Stretch.None;
-            }
-        }
-
         SolidColorBrush _sentBubbleBgColor;
         public SolidColorBrush SentBubbleBgColor
         {
@@ -95,15 +87,15 @@ namespace windows_client.Model
             }
         }
 
-        BitmapImage _imagePattern;
-        public BitmapImage ImagePattern
+        BitmapImage _thumbnailPattern;
+        public BitmapImage ThumbnailPattern
         {
             get
             {
-                if (_imagePattern == null)
-                    _imagePattern = new BitmapImage(new Uri(ImagePath, UriKind.Relative));
+                if (_thumbnailPattern == null)
+                    _thumbnailPattern = new BitmapImage(new Uri(ThumbnailPath, UriKind.Relative));
 
-                return _imagePattern;
+                return _thumbnailPattern;
             }
         }
 
@@ -168,7 +160,7 @@ namespace windows_client.Model
         public string BubbleForeground;
         public string Foreground;
         public Int32 Position;
-        public string Thumbnail;
+        public string ThumbnailPath;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

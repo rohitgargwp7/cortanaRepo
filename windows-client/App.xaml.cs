@@ -966,6 +966,10 @@ namespace windows_client
             {
                 WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, true);
             }
+            else if (Utils.compareVersion(_currentVersion, "2.5.1.0") < 0)//if it is upgrade
+            {
+                WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, false);
+            }
             #endregion
             #region Enter to send
 

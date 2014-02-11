@@ -2023,7 +2023,7 @@
     <value>{0} только что изменил(а) тему чата. Для использования новых тем чата обновите hike. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Другие темы доступны здесь...</value>
+    <value>Проверить специальные «Я тебя люблю» тема!</value>
   </data>
   <data name="ChatThemeHeader_Txt" xml:space="preserve">
     <value>темы чата</value>
@@ -2046,7 +2046,7 @@
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>Мы хотим сделать вам подарок. Счастливого общения!</value>
+    <value>Отпразднуйте месяц любви! У нас для вас подарок!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">
