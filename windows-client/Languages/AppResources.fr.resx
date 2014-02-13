@@ -2024,7 +2024,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <value>{0} vient de changer le thème du tchat. Pour utiliser les nouveaux thèmes de tchat, mets à jour hike. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Plus de thèmes magnifiques ici...</value>
+    <value>Découvrez l'extraordinaire « Je t'aime » thème !</value>
   </data>
   <data name="ChatThemeHeader_Txt" xml:space="preserve">
     <value>thèmes de tchat</value>
@@ -2047,7 +2047,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>Nous avons un cadeau pour toi. Bon Hiking !</value>
+    <value>Fête le mois de l'amour ! On a un cadeau pour toi !</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">

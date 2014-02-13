@@ -1169,15 +1169,18 @@ namespace windows_client.View
                 sendMsgTxtbox.Hint = hintText = ON_GROUP_TEXT;
 
             initBlockUnblockState();
-
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CHAT_FTUE))
+            Object showNormalFtue;
+            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.CHAT_FTUE, out showNormalFtue) && ((bool)showNormalFtue))
             {
                 SendBackgroundChangedPacket(ChatBackgroundHelper.Instance.SetDefaultBackground(mContactNumber));
                 PhoneApplicationService.Current.State.Remove(HikeConstants.CHAT_FTUE);
             }
             else
+            {
+                if (showNormalFtue != null && !(bool)showNormalFtue)
+                    App.ViewModel.ResetInAppTip(8);
                 ChatBackgroundHelper.Instance.SetSelectedBackgorundFromMap(mContactNumber);
-
+            }
             if (!mUserIsBlocked)
             {
                 UpdateChatStatus();
@@ -5492,9 +5495,16 @@ namespace windows_client.View
                     }
 
                     _background = wb1;
+                    chatBackground.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+                    chatBackground.VerticalAlignment = System.Windows.VerticalAlignment.Top;
                 }
                 else
+                {
+                    chatBackground.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                    chatBackground.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
                     _background = source;
+                }
 
                 chatBackground.Source = _background;
 
@@ -6300,7 +6310,7 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-               
+
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);

@@ -2023,7 +2023,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>{0} alterou o tema do bate-papo. Para usar os novos temas de bate-papo, atualize o hike. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Mais temas lindos aqui...</value>
+    <value>Confira o especial 'Eu te amo' tema!</value>
   </data>
   <data name="ChatThemeHeader_Txt" xml:space="preserve">
     <value>temas do bate-papo</value>
@@ -2046,7 +2046,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>Há um presente esperando você. Aproveite o hike!</value>
+    <value>Celebre o mês do amor! Temos um presente para você ...</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">

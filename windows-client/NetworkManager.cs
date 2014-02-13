@@ -941,6 +941,32 @@ namespace windows_client
                 List<GroupParticipant> dndList = new List<GroupParticipant>(1);
                 GroupChatState gcState = AddGroupmembers(arr, grpId, dndList);
 
+                #region META DATA CHAT BACKGROUND
+
+                JObject metaData = (JObject)jsonObj[HikeConstants.METADATA];
+                if (metaData != null)
+                {
+                    try
+                    {
+                        JObject chatBg = (JObject)metaData[HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS];
+                        if (chatBg != null)
+                        {
+                            bool hasCustomBg = false;
+                            JToken custom;
+                            if (chatBg.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
+                                hasCustomBg = (bool)custom;
+
+                            if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
+                                pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, grpId);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN with chat background, Exception : " + ex.StackTrace);
+                    }
+                }
+                #endregion
+
                 #region NEW GROUP
                 if (gcState == GroupChatState.NEW_GROUP) // this group is created by someone else
                 {
@@ -1019,53 +1045,32 @@ namespace windows_client
                     }
                 }
                 #endregion
-                #region META DATA
 
-                JObject metaData = (JObject)jsonObj[HikeConstants.METADATA];
-                if (metaData != null)
-                {
-                    #region GROUP NAME
+                //To:do handle meta dat for group name in next release
+                //#region META DATA GROUP NAME
 
-                    JToken gName;
-                    string groupName;
-                    //To:Do pubsub for gcn is not raised, also grpId will not exist, this implementation will not work
-                    if (metaData.TryGetValue(HikeConstants.NAME, out gName))
-                    {
-                        ConversationListObject cObj;
-                        groupName = gName.ToString();
-                        if (App.ViewModel.ConvMap.TryGetValue(grpId, out cObj))
-                        {
-                            if (cObj.ContactName != groupName)
-                                ConversationTableUtils.updateGroupName(grpId, groupName);
-                        }
-                    }
+                //metaData = (JObject)jsonObj[HikeConstants.METADATA];
+                //if (metaData != null)
+                //{
+                //    #region GROUP NAME
 
-                    #endregion
+                //    JToken gName;
+                //    string groupName;
+                //    //To:Do pubsub for gcn is not raised, also grpId will not exist, this implementation will not work
+                //    if (metaData.TryGetValue(HikeConstants.NAME, out gName))
+                //    {
+                //        ConversationListObject cObj;
+                //        groupName = gName.ToString();
+                //        if (App.ViewModel.ConvMap.TryGetValue(grpId, out cObj))
+                //        {
+                //            if (cObj.ContactName != groupName)
+                //                ConversationTableUtils.updateGroupName(grpId, groupName);
+                //        }
+                //    }
 
-                    #region CHAT BACKGROUND
-
-                    try
-                    {
-                        JObject chatBg = (JObject)metaData[HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS];
-                        if (chatBg != null)
-                        {
-                            bool hasCustomBg = false;
-                            JToken custom;
-                            if (chatBg.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
-                                hasCustomBg = (bool)custom;
-
-                            if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
-                                pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, grpId);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN with chat background, Exception : " + ex.StackTrace);
-                    }
-
-                    #endregion
-                }
-                #endregion
+                //    #endregion
+                //}
+                //#endregion
 
                 ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);
                 if (obj == null)
