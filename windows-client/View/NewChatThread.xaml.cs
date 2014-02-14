@@ -5397,6 +5397,7 @@ namespace windows_client.View
             else
             {
                 headerBackground.Visibility = Visibility.Visible;
+                headerBackground.Background = App.ViewModel.SelectedBackground.BackgroundColor;
                 chatThemeHeaderTxt.Foreground = userName.Foreground = lastSeenTxt.Foreground = UI_Utils.Instance.White;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageWhite;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageWhite;
