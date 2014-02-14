@@ -1432,6 +1432,12 @@ namespace windows_client.View
                                             try
                                             {
                                                 App.ViewModel.StatusList.Remove(f);
+
+                                                if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
+                                                {
+                                                    string firstName = Utils.GetFirstName(accountName.Text);
+                                                    App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
+                                                }
                                             }
                                             catch (Exception e)
                                             {
@@ -2426,12 +2432,15 @@ namespace windows_client.View
             NavigationService.Navigate(nextPage);
         }
 
+        bool buttonTapped = false;
+
         private void yes_Click(object sender, RoutedEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
             FriendRequestStatusUpdate fObj = (sender as Button).DataContext as FriendRequestStatusUpdate;
             if (fObj != null)
             {
+                buttonTapped = true;
                 App.ViewModel.StatusList.Remove(fObj);
                 FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                 if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
@@ -2498,6 +2507,7 @@ namespace windows_client.View
             FriendRequestStatusUpdate fObj = (sender as Button).DataContext as FriendRequestStatusUpdate;
             if (fObj != null)
             {
+                buttonTapped = true;
                 JObject data = new JObject();
                 data["id"] = fObj.Msisdn;
                 JObject obj = new JObject();
@@ -2506,6 +2516,13 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 App.ViewModel.StatusList.Remove(fObj);
                 App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
+
+                if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
+                {
+                    string firstName = Utils.GetFirstName(accountName.Text);
+                    App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
+                }
+
                 MiscDBUtil.SavePendingRequests();
                 FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
             }
@@ -2569,6 +2586,12 @@ namespace windows_client.View
 
         private void statusItem_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (buttonTapped)
+            {
+                buttonTapped = false;
+                return;
+            }
+
             BaseStatusUpdate status = (sender as Grid).DataContext as BaseStatusUpdate;
             if (status == null)
                 return;
