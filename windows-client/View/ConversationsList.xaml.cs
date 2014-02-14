@@ -24,7 +24,6 @@ using windows_client.ViewModel;
 using Microsoft.Phone.Net.NetworkInformation;
 using System.Collections.ObjectModel;
 using windows_client.Controls;
-using windows_client.Controls.StatusUpdate;
 using Coding4Fun.Phone.Controls;
 using System.Windows.Media;
 using System.Linq;
@@ -144,7 +143,7 @@ namespace windows_client.View
                 BindFriendsAsync();
 
             this.llsConversations.SelectedItem = null;
-            this.statusLLS.SelectedIndex = -1;
+            this.statusLLS.SelectedItem = null;
                
             App.IS_TOMBSTONED = false;
             App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
@@ -318,10 +317,7 @@ namespace windows_client.View
         }
         #endregion
 
-        private void CircleOfFriends_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            launchPagePivot.SelectedIndex = 1;
-        }
+        
         #endregion
 
         #region ConvList Page
@@ -891,8 +887,8 @@ namespace windows_client.View
 
                         foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
                         {
-                            FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click, statusBubblePhoto_Tap);
-                            App.ViewModel.StatusList.Add(frs);
+                            var friendRequest = new FriendRequestStatusUpdate(co);
+                            App.ViewModel.StatusList.Add(friendRequest);
                         }
 
                         if (statusMessagesFromDB != null)
@@ -906,11 +902,9 @@ namespace windows_client.View
                                 if (i < TotalUnreadStatuses)
                                     statusMessagesFromDB[i].IsUnread = true;
 
-                                StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], true,
-                                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap);
-
-                                if (statusUpdate != null)
-                                    App.ViewModel.StatusList.Add(statusUpdate);
+                                var status = StatusUpdateHelper.Instance.CreateStatusUpdate(statusMessagesFromDB[i], true);
+                                if (status != null)
+                                    App.ViewModel.StatusList.Add(status);
                             }
                         }
 
@@ -919,7 +913,7 @@ namespace windows_client.View
                         if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
                         {
                             string firstName = Utils.GetFirstName(accountName.Text);
-                            App.ViewModel.StatusList.Add(new DefaultStatusUpdateUC(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName), CircleOfFriends_Tap, UpdateStatus_Tap));
+                            App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
                         }
 
                         RefreshBarCount = 0;
@@ -1080,10 +1074,10 @@ namespace windows_client.View
                             if (ProTipHelper.CurrentProTip != null)
                                 index = 1;
 
-                            if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC)
+                            if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus)
                                 App.ViewModel.StatusList.RemoveAt(index);
 
-                            FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click, statusBubblePhoto_Tap);
+                            FriendRequestStatusUpdate frs = new FriendRequestStatusUpdate(co);
                             App.ViewModel.StatusList.Insert(index, frs);
 
                         }
@@ -1168,7 +1162,6 @@ namespace windows_client.View
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-
                     if (sm.Msisdn == App.MSISDN || sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
                     {
                         if (sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
@@ -1182,22 +1175,22 @@ namespace windows_client.View
 
                             txtStatus.Text = sm.Message;
                         }
+                        
                         // if status list is not loaded simply ignore this packet , as then this packet will
                         // be shown twice , one here and one from DB.
                         if (isStatusMessagesLoaded)
                         {
-                            StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(sm, true,
-                                statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap);
-                            if (statusUpdate != null)
+                            var status = StatusUpdateHelper.Instance.CreateStatusUpdate(sm, true);
+                            if (status != null)
                             {
                                 int index = 0;
                                 if (ProTipHelper.CurrentProTip != null)
                                     index = 1;
 
-                                if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC)
+                                if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus)
                                     App.ViewModel.StatusList.RemoveAt(index);
                                 int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
-                                App.ViewModel.StatusList.Insert(count + index, statusUpdate);
+                                App.ViewModel.StatusList.Insert(count + index, status);
                             }
                         }
                     }
@@ -1205,6 +1198,13 @@ namespace windows_client.View
                     {
                         if (!sm.ShowOnTimeline)
                             return;
+                        
+                        //if its image update and status are laoded, update each status userImage async
+                        if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE && isStatusMessagesLoaded)
+                        {
+                            UpdateUserImageInStatus(sm);
+                        }
+                        
                         // here we have to check 2 way firendship
                         if (launchPagePivot.SelectedIndex == 3)
                         {
@@ -1216,18 +1216,17 @@ namespace windows_client.View
                             // be shown twice , one here and one from DB.
                             if (isStatusMessagesLoaded)
                             {
-                                StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(sm, true,
-                                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap);
-                                if (statusUpdate != null)
+                                var status = StatusUpdateHelper.Instance.CreateStatusUpdate(sm, true);
+                                if (status != null)
                                 {
                                     int index = 0;
                                     if (ProTipHelper.CurrentProTip != null)
                                         index = 1;
 
-                                    if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC)
+                                    if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus)
                                         App.ViewModel.StatusList.RemoveAt(index);
                                     int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
-                                    App.ViewModel.StatusList.Insert(count + index, statusUpdate);
+                                    App.ViewModel.StatusList.Insert(count + index, status);
                                 }
                             }
                         }
@@ -1252,7 +1251,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    StatusUpdateBox sb = obj as StatusUpdateBox;
+                    BaseStatusUpdate sb = obj as BaseStatusUpdate;
                     if (sb != null)
                     {
                         App.ViewModel.StatusList.Remove(sb);
@@ -1265,7 +1264,7 @@ namespace windows_client.View
                         if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
                         {
                             string firstName = Utils.GetFirstName(accountName.Text);
-                            App.ViewModel.StatusList.Add(new DefaultStatusUpdateUC(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName), CircleOfFriends_Tap, UpdateStatus_Tap));
+                            App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
                         }
                     }
                 });
@@ -1419,9 +1418,9 @@ namespace windows_client.View
                         {
                             for (int i = 0; i < App.ViewModel.StatusList.Count; i++)
                             {
-                                if (App.ViewModel.StatusList[i] is FriendRequestStatus)
+                                if (App.ViewModel.StatusList[i] is FriendRequestStatusUpdate)
                                 {
-                                    FriendRequestStatus f = App.ViewModel.StatusList[i] as FriendRequestStatus;
+                                    FriendRequestStatusUpdate f = App.ViewModel.StatusList[i] as FriendRequestStatusUpdate;
                                     if (f.Msisdn == c.Msisdn)
                                     {
                                         Dispatcher.BeginInvoke(() =>
@@ -1622,6 +1621,17 @@ namespace windows_client.View
                 ShowAppUpdateAvailableMessage();
             }
             #endregion
+        }
+
+        private async void UpdateUserImageInStatus(StatusMessage sm)
+        {
+            await Task.Delay(1);
+
+            foreach (var status in App.ViewModel.StatusList)
+            {
+                if (status.Msisdn == sm.Msisdn)
+                    status.UpdateImage();
+            }
         }
 
         #endregion
@@ -2376,32 +2386,32 @@ namespace windows_client.View
             if (ProTipHelper.CurrentProTip != null)
                 index = 1;
 
-            if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC && FreshStatusUpdates != null && FreshStatusUpdates.Count > 0)
+            if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus && FreshStatusUpdates != null && FreshStatusUpdates.Count > 0)
                 App.ViewModel.StatusList.RemoveAt(index);
 
             // this fix will solve the possible crash , suggested by nitesh
             int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count + index : index;
             for (int i = 0; i < (FreshStatusUpdates != null ? FreshStatusUpdates.Count : 0); i++)
             {
-                StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(FreshStatusUpdates[i], true,
-                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap);
-                if (statusUpdate != null)
+                var status = StatusUpdateHelper.Instance.CreateStatusUpdate(FreshStatusUpdates[i], true);
+                if (status != null)
                 {
-                    App.ViewModel.StatusList.Insert(pendingCount, statusUpdate);
+                    App.ViewModel.StatusList.Insert(pendingCount, status);
                 }
             }
 
             if (pendingCount > index)
             {
-                if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC)
+                if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus)
                     App.ViewModel.StatusList.RemoveAt(index);
 
                 if (App.ViewModel.StatusList.Count > pendingCount)
-                    statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount]);
+                    statusLLS.ScrollTo(App.ViewModel.StatusList[pendingCount]);
             }
 
             RefreshBarCount = 0;
         }
+
         private void postStatusBtn_Click(object sender, EventArgs e)
         {
             if (TutorialStatusUpdate.Visibility == Visibility.Visible)
@@ -2416,83 +2426,89 @@ namespace windows_client.View
             NavigationService.Navigate(nextPage);
         }
 
-        private void yes_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        private void yes_Click(object sender, RoutedEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
-            FriendRequestStatus fObj = (sender as Button).DataContext as FriendRequestStatus;
-            App.ViewModel.StatusList.Remove(fObj);
-            FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
-            if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
-                return;
+            FriendRequestStatusUpdate fObj = (sender as Button).DataContext as FriendRequestStatusUpdate;
+            if (fObj != null)
+            {
+                App.ViewModel.StatusList.Remove(fObj);
+                FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
+                if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
+                    return;
 
-            ConversationListObject cObj = null;
-            ContactInfo cn = null;
-            if (App.ViewModel.ConvMap.ContainsKey(fObj.Msisdn))
-            {
-                cObj = App.ViewModel.ConvMap[fObj.Msisdn];
-                cObj.IsFav = true;
-            }
-            else
-            {
-                if (App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
-                    cn = App.ViewModel.ContactsCache[fObj.Msisdn];
+                ConversationListObject cObj = null;
+                ContactInfo cn = null;
+                if (App.ViewModel.ConvMap.ContainsKey(fObj.Msisdn))
+                {
+                    cObj = App.ViewModel.ConvMap[fObj.Msisdn];
+                    cObj.IsFav = true;
+                }
                 else
                 {
-                    cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
-                    if (cn != null)
-                        App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
+                    if (App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
+                        cn = App.ViewModel.ContactsCache[fObj.Msisdn];
+                    else
+                    {
+                        cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
+                        if (cn != null)
+                            App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
+                    }
+                    bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
+                    cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
                 }
-                bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
-                cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
+                if (cn == null && App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
+                {
+                    cn = App.ViewModel.ContactsCache[fObj.Msisdn];
+                    cn.IsUsedAtMiscPlaces = true;
+                }
+                if (cn != null)
+                {
+                    hikeContactList.Remove(cn);
+                    cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
+                }
+                App.ViewModel.FavList.Insert(0, cObj);
+                App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
+                cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
+                JObject data = new JObject();
+                data["id"] = fObj.Msisdn;
+                JObject obj = new JObject();
+                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+                obj[HikeConstants.DATA] = data;
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                MiscDBUtil.SaveFavourites();
+                MiscDBUtil.SaveFavourites(cObj);
+                MiscDBUtil.SavePendingRequests();
+                int count = 0;
+                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+                if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
+                {
+                    emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
+                    favourites.Visibility = System.Windows.Visibility.Visible;
+                }
+                StatusMessage sm = new StatusMessage(fObj.Msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1);
+                mPubSub.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
+                mPubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
             }
-            if (cn == null && App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
-            {
-                cn = App.ViewModel.ContactsCache[fObj.Msisdn];
-                cn.IsUsedAtMiscPlaces = true;
-            }
-            if (cn != null)
-            {
-                hikeContactList.Remove(cn);
-                cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
-            }
-            App.ViewModel.FavList.Insert(0, cObj);
-            App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
-            cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
-            JObject data = new JObject();
-            data["id"] = fObj.Msisdn;
-            JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
-            obj[HikeConstants.DATA] = data;
-            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-            MiscDBUtil.SaveFavourites();
-            MiscDBUtil.SaveFavourites(cObj);
-            MiscDBUtil.SavePendingRequests();
-            int count = 0;
-            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-            App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
-            if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
-            {
-                emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
-                favourites.Visibility = System.Windows.Visibility.Visible;
-            }
-            StatusMessage sm = new StatusMessage(fObj.Msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1);
-            mPubSub.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
-            mPubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
         }
 
-        private void no_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        private void no_Click(object sender, RoutedEventArgs e)
         {
-            FriendRequestStatus fObj = (sender as Button).DataContext as FriendRequestStatus;
-            JObject data = new JObject();
-            data["id"] = fObj.Msisdn;
-            JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
-            obj[HikeConstants.DATA] = data;
-            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-            App.ViewModel.StatusList.Remove(fObj);
-            App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
-            MiscDBUtil.SavePendingRequests();
-            FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
+            FriendRequestStatusUpdate fObj = (sender as Button).DataContext as FriendRequestStatusUpdate;
+            if (fObj != null)
+            {
+                JObject data = new JObject();
+                data["id"] = fObj.Msisdn;
+                JObject obj = new JObject();
+                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
+                obj[HikeConstants.DATA] = data;
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                App.ViewModel.StatusList.Remove(fObj);
+                App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
+                MiscDBUtil.SavePendingRequests();
+                FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
+            }
         }
 
         private void notification_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -2513,12 +2529,12 @@ namespace windows_client.View
                     {
                         int x = pendingCount - UnreadFriendRequests;
                         if (x >= 0 && App.ViewModel.StatusList.Count > (x + index))
-                            statusLLS.ScrollIntoView(App.ViewModel.StatusList[x + index]); //handling index out of bounds exception
+                            statusLLS.ScrollTo(App.ViewModel.StatusList[x + index]); //handling index out of bounds exception
                     }
                     //scroll to latest unread status
                     else if ((App.ViewModel.StatusList.Count > (pendingCount + index)) && RefreshBarCount > 0) //handling index out of bounds exception
                     {
-                        statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount + index]);
+                        statusLLS.ScrollTo(App.ViewModel.StatusList[pendingCount + index]);
                     }
                 }
             }
@@ -2526,12 +2542,12 @@ namespace windows_client.View
 
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (statusLLS.SelectedItem != null && statusLLS.SelectedItem is ImageStatusUpdate)
+            string[] statusImageInfo = new string[2];
+            ImageStatus statusUpdate = (sender as Image).DataContext as ImageStatus;
+            if (statusUpdate != null)
             {
-                string[] statusImageInfo = new string[2];
-                ImageStatusUpdate statusUpdate = (statusLLS.SelectedItem as ImageStatusUpdate);
                 statusImageInfo[0] = statusUpdate.Msisdn;
-                statusImageInfo[1] = statusUpdate.serverId;
+                statusImageInfo[1] = statusUpdate.ServerId;
                 PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = statusImageInfo;
                 Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
                 NavigationService.Navigate(nextPage);
@@ -2541,82 +2557,83 @@ namespace windows_client.View
         //tap event of photo in status bubble
         private void statusBubblePhoto_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (statusLLS.SelectedItem != null && statusLLS.SelectedItem is StatusUpdateBox)
+            BaseStatusUpdate sb = (sender as Image).DataContext as BaseStatusUpdate;
+            if (sb == null)
+                return;
+            Object[] obj = new Object[2];
+            obj[0] = sb.Msisdn;
+            obj[1] = sb.UserName;
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = obj;
+            NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+        }
+
+        private void statusItem_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            BaseStatusUpdate status = (sender as Grid).DataContext as BaseStatusUpdate;
+            if (status == null)
+                return;
+
+            if (status.Msisdn == App.MSISDN)
             {
-                StatusUpdateBox sb = statusLLS.SelectedItem as StatusUpdateBox;
-                if (sb == null)
-                    return;
                 Object[] obj = new Object[2];
-                obj[0] = sb.Msisdn;
-                obj[1] = sb.UserName;
+                obj[0] = status.Msisdn;
+                obj[1] = status.UserName;
                 PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = obj;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+                return;
             }
-        }
 
-        private void statusBox_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (statusLLS.SelectedItem != null && statusLLS.SelectedItem is StatusUpdateBox)
+            if (App.ViewModel.ConvMap.ContainsKey(status.Msisdn))
+                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = App.ViewModel.ConvMap[status.Msisdn];
+            else
             {
-                StatusUpdateBox stsBox = statusLLS.SelectedItem as StatusUpdateBox;
-                if (stsBox == null)
-                    return;
-
-                if (stsBox.Msisdn == App.MSISDN)
+                ConversationListObject cFav = App.ViewModel.GetFav(status.Msisdn);
+                if (cFav != null)
                 {
-                    Object[] obj = new Object[2];
-                    obj[0] = stsBox.Msisdn;
-                    obj[1] = stsBox.UserName;
-                    PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = obj;
-                    NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
-                    return;
+                    if (!_isFavListBound)
+                        cFav.Avatar = MiscDBUtil.getThumbNailForMsisdn(cFav.Msisdn);
+
+                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = cFav;
                 }
-                if (App.ViewModel.ConvMap.ContainsKey(stsBox.Msisdn))
-                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = App.ViewModel.ConvMap[stsBox.Msisdn];
                 else
                 {
-                    ConversationListObject cFav = App.ViewModel.GetFav(stsBox.Msisdn);
-                    if (cFav != null)
+                    ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
+                    if (contactInfo == null)
                     {
-                        if (!_isFavListBound)
-                            cFav.Avatar = MiscDBUtil.getThumbNailForMsisdn(cFav.Msisdn);
-
-                        PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = cFav;
+                        contactInfo = new ContactInfo();
+                        contactInfo.Msisdn = status.Msisdn;
+                        contactInfo.OnHike = true;
                     }
-                    else
-                    {
-                        ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(stsBox.Msisdn);
-                        if (contactInfo == null)
-                        {
-                            contactInfo = new ContactInfo();
-                            contactInfo.Msisdn = stsBox.Msisdn;
-                            contactInfo.OnHike = true;
-                        }
-                        PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
-                    }
+                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
                 }
-                NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
             }
+
+            NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
         }
 
-        private void UpdateStatus_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void UpdateStatus_Click(object sender, RoutedEventArgs e)
         {
             Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
+        }
+
+        private void CircleOfFriends_Click(object sender, RoutedEventArgs e)
+        {
+            launchPagePivot.SelectedIndex = 1;
         }
 
         #endregion
 
         #region Pro Tips
 
-        private void dismissProTip_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        private void dismissProTip_Click(object sender, RoutedEventArgs e)
         {
             bool isPresent = false;
             int i;
 
             for (i = 0; i < App.ViewModel.StatusList.Count; i++)
             {
-                if (App.ViewModel.StatusList[i] is ProTipUC)
+                if (App.ViewModel.StatusList[i] is ProTipStatusUpdate)
                 {
                     isPresent = true;
                     break;
@@ -2666,11 +2683,11 @@ namespace windows_client.View
         {
             if (ProTipHelper.CurrentProTip != null)
             {
-                if (App.ViewModel.StatusList != null && App.ViewModel.StatusList.Count > 0 && App.ViewModel.StatusList[0] is ProTipUC)
+                if (App.ViewModel.StatusList != null && App.ViewModel.StatusList.Count > 0 && App.ViewModel.StatusList[0] is ProTipStatusUpdate)
                     App.ViewModel.StatusList.RemoveAt(0);
 
-                var proTipUc = new ProTipUC(ProTipImage_Tapped, dismissProTip_Click);
-                App.ViewModel.StatusList.Insert(0, proTipUc);
+                var proTipStatus = new ProTipStatusUpdate();
+                App.ViewModel.StatusList.Insert(0, proTipStatus);
 
                 ProTipCount = 1;
             }
@@ -3077,6 +3094,5 @@ namespace windows_client.View
         }
 
         #endregion
-
     }
 }

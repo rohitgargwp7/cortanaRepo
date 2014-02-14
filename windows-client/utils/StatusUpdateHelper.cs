@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using windows_client.Controls.StatusUpdate;
 using windows_client.DbUtils;
 using windows_client.Languages;
 using windows_client.Model;
@@ -43,10 +42,7 @@ namespace windows_client.utils
         {
         }
 
-        public StatusUpdateBox createStatusUIObject(StatusMessage status, bool isShowOnTimeline,
-            EventHandler<System.Windows.Input.GestureEventArgs> statusBoxTap,
-            EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap,
-            EventHandler<System.Windows.Input.GestureEventArgs> enlargePic_Tap)
+        public BaseStatusUpdate CreateStatusUpdate(StatusMessage status, bool isShowOnTimeline)
         {
             if (status == null) // TODO : Madhur garg : To handle null where this function is called
                 return null;
@@ -62,7 +58,7 @@ namespace windows_client.utils
             else
             {
                 ConversationListObject co = Utils.GetConvlistObj(status.Msisdn);
-                
+
                 if (co != null)
                 {
                     userName = co.NameToShow;
@@ -71,16 +67,16 @@ namespace windows_client.utils
                 else
                 {
                     ContactInfo cn = null;
-            
+
                     if (App.ViewModel.ContactsCache.ContainsKey(status.Msisdn))
                         cn = App.ViewModel.ContactsCache[status.Msisdn];
                     else
                     {
                         cn = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
-                        
+
                         if (cn == null)
                             cn = new ContactInfo(status.Msisdn, null, true);
-                        
+
                         cn.FriendStatus = FriendsTableUtils.FriendStatusEnum.FRIENDS;
                         App.ViewModel.ContactsCache[status.Msisdn] = cn;
                     }
@@ -90,44 +86,39 @@ namespace windows_client.utils
                 }
             }
 
-            StatusUpdateBox statusUpdateBox = null;
-            
+            BaseStatusUpdate statusUpdate = null;
+
             switch (status.Status_Type)
             {
                 case StatusMessage.StatusType.PROFILE_PIC_UPDATE:
                     byte[] statusImageBytes = null;
                     bool isThumbnail;
                     MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.ServerId, out statusImageBytes, out isThumbnail);
-                    statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status, isShowOnTimeline,
-                        UI_Utils.Instance.createImageFromBytes(statusImageBytes), statusBubbleImageTap);
-                    if (enlargePic_Tap != null)
-                        (statusUpdateBox as ImageStatusUpdate).statusImage.Tap += enlargePic_Tap;
+                    statusUpdate = new ImageStatus(userName, userProfileThumbnail, status, isShowOnTimeline,
+                        UI_Utils.Instance.createImageFromBytes(statusImageBytes));
                     break;
-            
+
                 case StatusMessage.StatusType.IS_NOW_FRIEND:
                 case StatusMessage.StatusType.TEXT_UPDATE:
-                    statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status, isShowOnTimeline, statusBubbleImageTap);
+                    statusUpdate = new TextStatus(userName, userProfileThumbnail, status, isShowOnTimeline);
                     break;
             }
 
-            if (statusBoxTap != null)
-                statusUpdateBox.Tap += statusBoxTap;
-            
-            return statusUpdateBox;
+            return statusUpdate;
         }
 
-        public void deleteMyStatus(StatusUpdateBox sb)
+        public void DeleteMyStatus(BaseStatusUpdate sb)
         {
             AccountUtils.deleteStatus(new AccountUtils.parametrisedPostResponseFunction(deleteStatus_Callback),
-                AccountUtils.BASE + "/user/status/" + sb.serverId, sb);
+                AccountUtils.BASE + "/user/status/" + sb.ServerId, sb);
         }
 
         private void deleteStatus_Callback(JObject jObj, Object obj)
         {
-            if (jObj != null && HikeConstants.OK == (string)jObj[HikeConstants.STAT] && obj != null && obj is StatusUpdateBox)
+            if (jObj != null && HikeConstants.OK == (string)jObj[HikeConstants.STAT] && obj != null && obj is BaseStatusUpdate)
             {
-                StatusUpdateBox sb = obj as StatusUpdateBox;
-                StatusMsgsTable.DeleteStatusMsg(sb.serverId);
+                BaseStatusUpdate sb = obj as BaseStatusUpdate;
+                StatusMsgsTable.DeleteStatusMsg(sb.ServerId);
                 App.HikePubSubInstance.publish(HikePubSub.STATUS_DELETED, sb);
             }
             else
