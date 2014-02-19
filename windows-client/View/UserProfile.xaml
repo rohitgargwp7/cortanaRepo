@@ -93,8 +93,8 @@
                                 <DataTemplate>
                                     <Grid HorizontalAlignment="Stretch" Margin="12" Background="Transparent">
                                         <toolkit:ContextMenuService.ContextMenu>
-                                            <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
-                                                <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                            <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Visibility="{Binding DeleteOptionVisibility}">
+                                                <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
                                         <Grid.RowDefinitions>
@@ -125,8 +125,8 @@
                                 <DataTemplate>
                                     <Grid HorizontalAlignment="Stretch" Margin="12" Background="Transparent">
                                         <toolkit:ContextMenuService.ContextMenu>
-                                            <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
-                                                <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                            <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Visibility="{Binding DeleteOptionVisibility}">
+                                                <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
                                         <Grid.ColumnDefinitions>

@@ -1055,11 +1055,14 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Rectangle x:Name="refreshStatusBackground" Grid.Row="0" Visibility="Collapsed" Fill="#e9ecee" Height="45" Margin="12,0,0,24" Tap="refreshStatuses_Tap"/>
-                    <StackPanel x:Name="refreshBarPanel" Orientation="Horizontal"  Grid.Row="0" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center" Tap="refreshStatuses_Tap" Height="45" Margin="12,0,0,24" >
-                        <TextBlock x:Name="refreshStatusText" Text="2 new updates" FontSize="22" Foreground="#4a4a44" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <Image Source="/View/images/refresh_bar_arrow.png" Margin="8,3,0,0" MaxWidth="22" ></Image>
-                    </StackPanel>
+                    <Button x:Name="refreshBarButton" Style="{StaticResource ButtonWithNoPressedStateStyle}" Click="refreshStatuses_Tap" Visibility="Collapsed" Height="45" Background="#e9ecee" BorderBrush="#e9ecee" Margin="0,0,0,5">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Height="45">
+                                <TextBlock x:Name="refreshStatusText" FontSize="22" Foreground="#4a4a44" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,0"/>
+                                <Image Source="/View/images/refresh_bar_arrow.png" MaxWidth="22" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
                     <phone:LongListSelector x:Name="statusLLS" Grid.Row="1">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
@@ -1114,7 +1117,7 @@
                                                     </Grid>
                                                 </Grid>
                                                 <local:MyRichTextBox Margin="-12,12,0,0" HorizontalAlignment="Left" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" FontSize="28" Grid.Row="1" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450"/>
-                                                <Image HorizontalAlignment="Left" Source="{Binding StatusImage}" Margin="0,12,0,0" Grid.Row="2" VerticalAlignment="Top" Height="250" Stretch="UniformToFill" Tap="enlargePic_Tap"/>
+                                                <Image HorizontalAlignment="Left" Source="{Binding StatusImage}" Margin="0,12,0,10" Grid.Row="2" VerticalAlignment="Top" Height="250" Stretch="UniformToFill" Tap="enlargePic_Tap"/>
                                             </Grid>
                                         </DataTemplate>
                                     </templateSelector:StatusTemplateSelector.DTImageStatus>

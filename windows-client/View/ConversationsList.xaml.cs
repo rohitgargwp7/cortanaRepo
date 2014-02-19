@@ -136,7 +136,16 @@ namespace windows_client.View
                 TotalUnreadStatuses = 0;
 
                 if (isStatusMessagesLoaded)
+                {
                     statusLLS.ItemsSource = App.ViewModel.StatusList;
+
+                    if (_statusSelectedIndex >= 0)
+                    {
+                        //retain scroll position
+                        statusLLS.ScrollTo(statusLLS.ItemsSource[_statusSelectedIndex]);
+                        _statusSelectedIndex = -1;
+                    }
+                }
             }
 
             if (_isFavListBound && launchPagePivot.SelectedIndex == 1)
@@ -583,6 +592,27 @@ namespace windows_client.View
                 rewardsPanel.Visibility = Visibility.Visible;
 
             txtStatus.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
+            SetUserLastStatus();
+
+            int rew_val = 0;
+
+            string name;
+            appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
+            if (name != null)
+                accountName.Text = name;
+            int smsCount = 0;
+            App.appSettings.TryGetValue<int>(App.SMS_SETTING, out smsCount);
+            creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, smsCount);
+
+            Stopwatch st = Stopwatch.StartNew();
+            avatarImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("Time to fetch profile image : {0}", msec);
+        }
+
+        private void SetUserLastStatus()
+        {
             int moodId;
             string lastStatus = StatusMsgsTable.GetLastStatusMessage(out moodId);
             if (!string.IsNullOrEmpty(lastStatus))
@@ -605,21 +635,6 @@ namespace windows_client.View
                 txtStatus.Text = AppResources.Conversations_DefaultStatus_Txt;
                 //todo:change default status
             }
-            int rew_val = 0;
-
-            string name;
-            appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
-            if (name != null)
-                accountName.Text = name;
-            int smsCount = 0;
-            App.appSettings.TryGetValue<int>(App.SMS_SETTING, out smsCount);
-            creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, smsCount);
-
-            Stopwatch st = Stopwatch.StartNew();
-            avatarImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to fetch profile image : {0}", msec);
         }
 
         #endregion
@@ -1266,6 +1281,9 @@ namespace windows_client.View
                             string firstName = Utils.GetFirstName(accountName.Text);
                             App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
                         }
+
+                        if(sb.Msisdn == App.MSISDN && sb is TextStatus)
+                            SetUserLastStatus();
                     }
                 });
             }
@@ -2258,16 +2276,14 @@ namespace windows_client.View
                     {
                         if (_refreshBarCount == 0 && value > 0)
                         {
-                            refreshStatusBackground.Visibility = System.Windows.Visibility.Visible;
-                            refreshBarPanel.Visibility = System.Windows.Visibility.Visible;
-                        }
+                            refreshBarButton.Visibility = System.Windows.Visibility.Visible;
+                        } 
                         else if (_refreshBarCount > 0 && value == 0)
                         {
-                            refreshStatusBackground.Visibility = System.Windows.Visibility.Collapsed;
-                            refreshBarPanel.Visibility = System.Windows.Visibility.Collapsed;
+                            refreshBarButton.Visibility = System.Windows.Visibility.Collapsed;
                             FreshStatusUpdates.Clear();
                         }
-                        if (refreshBarPanel.Visibility == System.Windows.Visibility.Visible && value > 0)
+                        if (refreshBarButton.Visibility == System.Windows.Visibility.Visible && value > 0)
                         {
                             if (value == 1)
                                 refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_SingleStatus, value);
@@ -2381,7 +2397,7 @@ namespace windows_client.View
                 notificationCountTxtBlk.Text = newCounterValue.ToString();
         }
 
-        private void refreshStatuses_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void refreshStatuses_Tap(object sender, RoutedEventArgs e)
         {
             UpdatePendingStatusFromRefreshBar();
         }
@@ -2557,12 +2573,16 @@ namespace windows_client.View
             }
         }
 
+        int _statusSelectedIndex = -1;
+
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             string[] statusImageInfo = new string[2];
             ImageStatus statusUpdate = (sender as Image).DataContext as ImageStatus;
             if (statusUpdate != null)
             {
+                _statusSelectedIndex = App.ViewModel.StatusList.IndexOf(statusUpdate);
+
                 statusImageInfo[0] = statusUpdate.Msisdn;
                 statusImageInfo[1] = statusUpdate.ServerId;
                 PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = statusImageInfo;
@@ -2577,6 +2597,9 @@ namespace windows_client.View
             BaseStatusUpdate sb = (sender as Image).DataContext as BaseStatusUpdate;
             if (sb == null)
                 return;
+
+            _statusSelectedIndex = App.ViewModel.StatusList.IndexOf(sb);
+
             Object[] obj = new Object[2];
             obj[0] = sb.Msisdn;
             obj[1] = sb.UserName;
@@ -2595,6 +2618,8 @@ namespace windows_client.View
             BaseStatusUpdate status = (sender as Grid).DataContext as BaseStatusUpdate;
             if (status == null)
                 return;
+
+            _statusSelectedIndex = App.ViewModel.StatusList.IndexOf(status);
 
             if (status.Msisdn == App.MSISDN)
             {

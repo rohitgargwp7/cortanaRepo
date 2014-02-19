@@ -20,6 +20,7 @@ using System.Diagnostics;
 using Microsoft.Phone.UserData;
 using System.ComponentModel;
 using windows_client.Misc;
+using System.Linq;
 
 namespace windows_client.View
 {
@@ -132,10 +133,11 @@ namespace windows_client.View
                       if (msisdn == App.MSISDN)
                       {
                           statusList.Remove(sb);
+
+                          if (statusList.Count == 0)
+                              ShowEmptyStatus();
                       }
                   });
-
-                //todo:handle ui to show zero status
             }
             #endregion
             #region FRIEND_RELATIONSHIP_CHANGE
@@ -1056,7 +1058,6 @@ namespace windows_client.View
 
         private void ShowEmptyStatus()
         {
-
             if (msisdn == App.MSISDN)
             {
                 txtSmsUserNameBlk1.Text = string.Empty;
@@ -1074,6 +1075,9 @@ namespace windows_client.View
             btnInvite.Visibility = Visibility.Collapsed;
             imgInviteLock.Source = null;//left null so that it occupies blank space
             imgInviteLock.Visibility = Visibility.Visible;
+
+            gridSmsUser.Visibility = Visibility.Visible;
+            gridHikeUser.Visibility = Visibility.Collapsed;
         }
 
         private void ShowNonHikeUser()

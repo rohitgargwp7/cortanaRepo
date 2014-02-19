@@ -316,6 +316,20 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static Func<HikeChatsDb, IQueryable<StatusMessage>> GetFirstTextStatusUpdate
+        {
+            get
+            {
+                Func<HikeChatsDb, IQueryable<StatusMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, IQueryable<StatusMessage>>
+                ((HikeChatsDb hdc) =>
+                    from o in hdc.statusMessage
+                    where o.Status_Type == StatusMessage.StatusType.TEXT_UPDATE
+                    select o);
+                return q;
+            }
+        }
+
         public static Func<HikeChatsDb, string, int, IQueryable<StatusMessage>> GetUnReadStatusMsgsForMsisdn
         {
             get

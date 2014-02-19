@@ -101,6 +101,14 @@ namespace windows_client.Model
             }
         }
 
+        Visibility DeleteOptionVisibility
+        {
+            get
+            {
+                return App.MSISDN == Msisdn ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
         private string _text;
         public string Text
         {

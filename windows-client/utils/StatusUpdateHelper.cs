@@ -119,6 +119,14 @@ namespace windows_client.utils
             {
                 BaseStatusUpdate sb = obj as BaseStatusUpdate;
                 StatusMsgsTable.DeleteStatusMsg(sb.ServerId);
+                
+                var status = StatusMsgsTable.GetUserLastStatusMsg();
+                
+                if (status == null)
+                    StatusMsgsTable.DeleteLastStatusFile();
+                else
+                    StatusMsgsTable.SaveLastStatusMessage(status.Message, status.MoodId);
+                
                 App.HikePubSubInstance.publish(HikePubSub.STATUS_DELETED, sb);
             }
             else
