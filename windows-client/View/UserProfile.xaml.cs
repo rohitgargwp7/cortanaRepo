@@ -11,7 +11,6 @@ using System.IO;
 using System.Windows.Media.Imaging;
 using windows_client.utils;
 using windows_client.Languages;
-using windows_client.Controls.StatusUpdate;
 using Microsoft.Phone.Tasks;
 using System.Net.NetworkInformation;
 using Newtonsoft.Json.Linq;
@@ -35,7 +34,7 @@ namespace windows_client.View
         string nameToShow = null;
         string firstName = null;
         bool isOnHike = false;
-        private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
+        private ObservableCollection<BaseStatusUpdate> statusList = new ObservableCollection<BaseStatusUpdate>();
         private ApplicationBar appBar;
         ApplicationBarIconButton editProfile_button;
         ApplicationBarIconButton addToContactsAppBarButton;
@@ -100,13 +99,21 @@ namespace windows_client.View
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE)
+                        avatarImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
+
                     if (isStatusLoaded)
                     {
-                        StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(sm, false, null, null, enlargePic_Tap);
+                        var statusUpdate = StatusUpdateHelper.Instance.CreateStatusUpdate(sm, false);
                         if (statusUpdate != null)
                         {
                             statusList.Insert(0, statusUpdate);
-                            this.statusLLS.ItemsSource = statusList;
+
+                            if(statusLLS.ItemsSource == null)
+                                statusLLS.ItemsSource = statusList;
+
+                            statusLLS.ScrollTo(statusLLS.ItemsSource[0]);
+
                             gridHikeUser.Visibility = Visibility.Visible;
                             gridSmsUser.Visibility = Visibility.Collapsed;
                         }
@@ -117,7 +124,7 @@ namespace windows_client.View
             #region STATUS_DELETED
             if (HikePubSub.STATUS_DELETED == type)
             {
-                StatusUpdateBox sb = obj as StatusUpdateBox;
+                var sb = obj as BaseStatusUpdate;
                 if (sb == null)
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -597,6 +604,7 @@ namespace windows_client.View
                 isProfilePicTapped = false;
             });
         }
+
         #endregion
 
         #region STATUS MESSAGES
@@ -626,8 +634,7 @@ namespace windows_client.View
             {
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
-                    StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null,
-                        null, enlargePic_Tap);
+                    var statusUpdate = StatusUpdateHelper.Instance.CreateStatusUpdate(statusMessagesFromDB[i], false);
                     if (statusUpdate != null)
                         statusList.Add(statusUpdate);
                 }
@@ -646,13 +653,12 @@ namespace windows_client.View
 
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            ImageStatusUpdate imgStUp = statusLLS.SelectedItem as ImageStatusUpdate;
-            if (imgStUp == null)
+            ImageStatus statusUpdate = (sender as Image).DataContext as ImageStatus;
+            if (statusUpdate == null)
                 return;
             string[] statusImageInfo = new string[2];
-            ImageStatusUpdate statusUpdate = (statusLLS.SelectedItem as ImageStatusUpdate);
             statusImageInfo[0] = statusUpdate.Msisdn;
-            statusImageInfo[1] = statusUpdate.serverId;
+            statusImageInfo[1] = statusUpdate.ServerId;
             PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = statusImageInfo;
             Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
@@ -1190,7 +1196,9 @@ namespace windows_client.View
         }
 
         #region ADD USER TO CONTATCS
+        
         ContactInfo contactInfo;
+
         private void AddUserToContacts_Click(object sender, EventArgs e)
         {
             ContactUtils.saveContact(msisdn, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
@@ -1408,6 +1416,22 @@ namespace windows_client.View
          
             if (contextMenu != null)
                 contextMenu.IsOpen = true;
+        }
+
+        private void ContextMenu_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ContextMenu contextMenu = sender as ContextMenu;
+
+            contextMenu.ClearValue(FrameworkElement.DataContextProperty);
+        }
+
+        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
+        {
+            BaseStatusUpdate update = ((sender as MenuItem).DataContext as BaseStatusUpdate);
+            if (update != null)
+            {
+                StatusUpdateHelper.Instance.DeleteMyStatus(update);
+            }
         }
     }
 }

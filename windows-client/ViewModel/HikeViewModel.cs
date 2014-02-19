@@ -9,7 +9,6 @@ using windows_client.DbUtils;
 using windows_client.Controls;
 using windows_client.View;
 using Microsoft.Phone.Controls;
-using windows_client.Controls.StatusUpdate;
 using System.Diagnostics;
 using System.Windows.Controls;
 using windows_client.Languages;
@@ -37,9 +36,8 @@ namespace windows_client.ViewModel
 
         private ObservableCollection<ConversationListObject> _favList = null;
 
-        private ObservableCollection<StatusUpdateBox> _statusList = new ObservableCollection<StatusUpdateBox>();
-
-        public ObservableCollection<StatusUpdateBox> StatusList
+        ObservableCollection<BaseStatusUpdate> _statusList = new ObservableCollection<BaseStatusUpdate>();
+        public ObservableCollection<BaseStatusUpdate> StatusList
         {
             get
             {
@@ -350,7 +348,6 @@ namespace windows_client.ViewModel
 
         public void onEventReceived(string type, object obj)
         {
-
             #region MESSAGE_RECEIVED
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
@@ -795,9 +792,10 @@ namespace windows_client.ViewModel
                 App.HikePubSubInstance.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
                 App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
             }
-            foreach (StatusUpdateBox sb in App.ViewModel.StatusList)
+
+            foreach (BaseStatusUpdate sb in App.ViewModel.StatusList)
             {
-                if (sb is FriendRequestStatus)
+                if (sb is FriendRequestStatusUpdate)
                 {
                     if (sb.Msisdn == msisdn)
                     {
