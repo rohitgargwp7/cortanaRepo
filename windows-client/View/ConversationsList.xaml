@@ -1171,7 +1171,7 @@
                                                             <RowDefinition Height="Auto"/>
                                                             <RowDefinition Height="Auto"/>
                                                         </Grid.RowDefinitions>
-                                                        <TextBlock Text="{Binding UserName}" FontSize="30" FontFamily="Segoe WP Semibold" Tap="statusBubblePhoto_Tap"/>
+                                                        <TextBlock Text="{Binding UserName}" FontSize="30" FontFamily="Segoe WP Semibold"/>
                                                         <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Column="1" Grid.Row="1" Foreground="#888888"/>
                                                     </Grid>
                                                 </Grid>
