@@ -58,6 +58,7 @@ namespace windows_client.Controls
                 SetValue(ColorProperty, value);
             }
         }
+
         private static void TextPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             try
@@ -65,18 +66,44 @@ namespace windows_client.Controls
                 var richTextBox = (MyRichTextBox)dependencyObject;
                 var text = (string)dependencyPropertyChangedEventArgs.NewValue;
 
-                if (text == richTextBox.lastText)
-                    return;
-                richTextBox.lastText = text;
-
-                var paragraph = richTextBox.LinkifyAll ? SmileyParser.Instance.LinkifyAllPerTextBlock(text, (SolidColorBrush)richTextBox.TextForeground) : SmileyParser.Instance.LinkifyEmoticons(text);
-                richTextBox.Blocks.Clear();
-                richTextBox.Blocks.Add(paragraph);
+                richTextBox.LinkifyText(text);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
         }
+
+        internal void LinkifyText(string text)
+        {
+            if (text == lastText)
+                return;
+            lastText = text;
+
+            var paragraph = LinkifyAll ? SmileyParser.Instance.LinkifyAllPerTextBlock(text, TextForeground, new SmileyParser.ViewMoreEventDelegate(viewMore_CallBack), new SmileyParser.HyperLinkEventDelegate(hyperlink_CallBack)) : SmileyParser.Instance.LinkifyEmoticons(text);
+            Blocks.Clear();
+            Blocks.Add(paragraph);
+        }
+
+        void hyperlink_CallBack(object obj, bool val)
+        {
+            object[] param = new object[2];
+            param[0] = obj;
+            param[1] = val;
+
+            var abc = new SmileyParser.ViewMoreEventDelegate(viewMore_CallBack);
+
+            if (HyperlinkClicked != null)
+                HyperlinkClicked(param, null);
+        }
+
+        void viewMore_CallBack(object obj)
+        {
+            if (ViewMoreClicked != null)
+                ViewMoreClicked(obj, null);
+        }
+
+        public event EventHandler<EventArgs> HyperlinkClicked;
+        public event EventHandler<EventArgs> ViewMoreClicked;
     }
 }

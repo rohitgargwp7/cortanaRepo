@@ -40,6 +40,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using windows_client.FileTransfers;
 using System.Windows.Input;
+using System.Windows.Documents;
 
 namespace windows_client.View
 {
@@ -6955,6 +6956,12 @@ namespace windows_client.View
 
         private void ChatMessageSelected(object sender, SelectionChangedEventArgs e)
         {
+            if (_hyperlinkedClicked)
+            {
+                _hyperlinkedClicked = false;
+                return;
+            }
+
             ConvMessage msg = llsMessages.SelectedItem as ConvMessage;
 
             if (msg != null)
@@ -7072,5 +7079,46 @@ namespace windows_client.View
             }
         }
 
+        //hyperlink was clicked in bubble. dont perform actions like h2h offline.
+        bool _hyperlinkedClicked = false;
+
+        void Hyperlink_Clicked(object s, EventArgs e)
+        {
+            _hyperlinkedClicked = true;
+
+            var obj = s as object[];
+            Hyperlink caller = obj[0] as Hyperlink;
+            var val = (bool)obj[1];
+
+            if (val)
+            {
+                var task = new WebBrowserTask() { Uri = new Uri(caller.TargetName) };
+                task.Show();
+            }
+            else
+            {
+                var phoneCallTask = new PhoneCallTask();
+                var targetPhoneNumber = caller.TargetName.Replace("-", "");
+                targetPhoneNumber = targetPhoneNumber.Trim();
+                targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
+                phoneCallTask.PhoneNumber = targetPhoneNumber;
+                try
+                {
+                    phoneCallTask.Show();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NewChatThread:: Hyperlink_Clicked : " + ex.StackTrace);
+                }
+            }
+        }
+
+        void ViewMoreMessage_Clicked(object s, EventArgs e)
+        {
+            Hyperlink hp = s as Hyperlink;
+            PhoneApplicationService.Current.State[HikeConstants.VIEW_MORE_MESSAGE_OBJ] = hp.TargetName;
+            var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
+            currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.Relative));
+        }
     }
 }

@@ -2448,7 +2448,7 @@ namespace windows_client.View
             NavigationService.Navigate(nextPage);
         }
 
-        bool buttonTapped = false;
+        bool _buttonInsideStatusUpdateTapped = false;
 
         private void yes_Click(object sender, RoutedEventArgs e)
         {
@@ -2456,7 +2456,7 @@ namespace windows_client.View
             FriendRequestStatusUpdate fObj = (sender as Button).DataContext as FriendRequestStatusUpdate;
             if (fObj != null)
             {
-                buttonTapped = true;
+                _buttonInsideStatusUpdateTapped = true;
                 App.ViewModel.StatusList.Remove(fObj);
                 FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                 if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
@@ -2523,7 +2523,7 @@ namespace windows_client.View
             FriendRequestStatusUpdate fObj = (sender as Button).DataContext as FriendRequestStatusUpdate;
             if (fObj != null)
             {
-                buttonTapped = true;
+                _buttonInsideStatusUpdateTapped = true;
                 JObject data = new JObject();
                 data["id"] = fObj.Msisdn;
                 JObject obj = new JObject();
@@ -2609,17 +2609,23 @@ namespace windows_client.View
 
         private void statusItem_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (buttonTapped)
+            if (_buttonInsideStatusUpdateTapped)
             {
-                buttonTapped = false;
+                _buttonInsideStatusUpdateTapped = false;
                 return;
-            }
-
+            } 
+            
             BaseStatusUpdate status = (sender as Grid).DataContext as BaseStatusUpdate;
             if (status == null)
                 return;
 
             _statusSelectedIndex = App.ViewModel.StatusList.IndexOf(status);
+
+            if (_hyperlinkedInsideStatusUpdateClicked)
+            {
+                _hyperlinkedInsideStatusUpdateClicked = false;
+                return;
+            }
 
             if (status.Msisdn == App.MSISDN)
             {
@@ -2877,6 +2883,7 @@ namespace windows_client.View
 
         bool showNormalFtue;
         bool animationPartOneCompleted;
+
         void StartSnowAnimation()
         {
             overlaySnow.Visibility = Visibility.Visible;
@@ -3142,5 +3149,54 @@ namespace windows_client.View
         }
 
         #endregion
+
+        //hyperlink was clicked in bubble. dont perform actions like page navigation.
+        private bool _hyperlinkedInsideStatusUpdateClicked;
+
+        void Hyperlink_Clicked(object s, EventArgs e)
+        {
+            _hyperlinkedInsideStatusUpdateClicked = true;
+
+            var obj = s as object[];
+            Hyperlink caller = obj[0] as Hyperlink;
+            var val = (bool)obj[1];
+
+            if (val)
+            {
+                var task = new WebBrowserTask() { Uri = new Uri(caller.TargetName) };
+                try
+                {
+                    task.Show();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NewChatThread:: Hyperlink_Clicked : " + ex.StackTrace);
+                }
+            }
+            else
+            {
+                var phoneCallTask = new PhoneCallTask();
+                var targetPhoneNumber = caller.TargetName.Replace("-", "");
+                targetPhoneNumber = targetPhoneNumber.Trim();
+                targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
+                phoneCallTask.PhoneNumber = targetPhoneNumber;
+                try
+                {
+                    phoneCallTask.Show();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NewChatThread:: Hyperlink_Clicked : " + ex.StackTrace);
+                }
+            }
+        }
+
+        void ViewMoreMessage_Clicked(object s, EventArgs e)
+        {
+            Hyperlink hp = s as Hyperlink;
+            PhoneApplicationService.Current.State[HikeConstants.VIEW_MORE_MESSAGE_OBJ] = hp.TargetName;
+            var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
+            currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.Relative));
+        }
     }
 }

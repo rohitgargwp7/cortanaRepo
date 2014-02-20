@@ -1116,8 +1116,8 @@
                                                         <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Column="1" Grid.Row="1" Foreground="#888888"/>
                                                     </Grid>
                                                 </Grid>
-                                                <local:MyRichTextBox Margin="-12,12,0,0" HorizontalAlignment="Left" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" FontSize="28" Grid.Row="1" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450"/>
-                                                <Image HorizontalAlignment="Left" Source="{Binding StatusImage}" Margin="0,12,0,10" Grid.Row="2" VerticalAlignment="Top" Height="250" Stretch="UniformToFill" Tap="enlargePic_Tap"/>
+                                                <local:MyRichTextBox Margin="-12,12,0,0" HorizontalAlignment="Left" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" FontSize="28" Grid.Row="1" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450"  ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
+                                                <Image Source="{Binding StatusImage}" Margin="0,12,0,10" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Height="250" Stretch="UniformToFill" Tap="enlargePic_Tap"/>
                                             </Grid>
                                         </DataTemplate>
                                     </templateSelector:StatusTemplateSelector.DTImageStatus>
@@ -1141,8 +1141,8 @@
                                                         </Grid.RowDefinitions>
                                                         <TextBlock FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_TeamHike_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18"/>
                                                         <StackPanel Grid.Row="1">
-                                                            <local:MyRichTextBox Margin="-12,0,0,0" Text="{Binding Text}" FontSize="22" Visibility="{Binding ProTipTextVisibility}" FontFamily="Segoe WP Semibold" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="350"/>
-                                                            <local:MyRichTextBox Margin="-12,0,0,0" Text="{Binding Content}" FontSize="20" Visibility="{Binding ProTipContentVisibility}" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="350"/>
+                                                            <local:MyRichTextBox Margin="-12,0,0,0" Text="{Binding Text}" FontSize="22" Visibility="{Binding ProTipTextVisibility}" FontFamily="Segoe WP Semibold" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="350" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
+                                                            <local:MyRichTextBox Margin="-12,0,0,0" Text="{Binding Content}" FontSize="20" Visibility="{Binding ProTipContentVisibility}" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="350" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Grid>
@@ -1175,7 +1175,7 @@
                                                         <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Column="1" Grid.Row="1" Foreground="#888888"/>
                                                     </Grid>
                                                 </Grid>
-                                                <local:MyRichTextBox Margin="-12,12,0,0" Foreground="{Binding StatusTextForeground}" HorizontalAlignment="Left" Text="{Binding Text}" FontSize="28" Grid.Row="1" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450"/>
+                                                <local:MyRichTextBox Margin="-12,12,0,0" Foreground="{Binding StatusTextForeground}" HorizontalAlignment="Left" Text="{Binding Text}" FontSize="28" Grid.Row="1" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                             </Grid>
                                         </DataTemplate>
                                     </templateSelector:StatusTemplateSelector.DTTextStatus>

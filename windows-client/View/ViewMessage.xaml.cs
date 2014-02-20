@@ -8,6 +8,9 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Windows.Media;
+using System.Windows.Documents;
+using Microsoft.Phone.Tasks;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
@@ -22,9 +25,9 @@ namespace windows_client.View
         void ShowMessage()
         {
             Object messageObj;
-            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.MESSAGE_OBJ_FROM_CT, out messageObj))
+            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.VIEW_MORE_MESSAGE_OBJ, out messageObj))
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.MESSAGE_OBJ_FROM_CT);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.VIEW_MORE_MESSAGE_OBJ);
                 SolidColorBrush phoneForeground = new SolidColorBrush((Color)Application.Current.Resources["PhoneForegroundColor"]);
                 string message = (string)messageObj;
                 string tempString = message;
@@ -34,11 +37,33 @@ namespace windows_client.View
                     string currentString = tempString.Substring(0, maxChar);
                     tempString = tempString.Substring(maxChar);
                     RichTextBox rtb = new RichTextBox() { TextWrapping = TextWrapping.Wrap };
-                    rtb.Blocks.Add(SmileyParser.Instance.LinkifyAll(currentString, phoneForeground));
+                    rtb.Blocks.Add(SmileyParser.Instance.LinkifyAll(currentString, phoneForeground, new SmileyParser.HyperLinkEventDelegate(hyperlink_Click_CallBack)));
                     stMessage.Children.Add(rtb);
                 }
             }
 
+        }
+
+        void hyperlink_Click_CallBack(object obj, bool val)
+        {
+            Hyperlink caller = obj as Hyperlink;
+
+            if (val == false)
+            {
+                PhoneCallTask phoneCallTask = new PhoneCallTask();
+                string targetPhoneNumber = caller.TargetName.Replace("-", "");
+                targetPhoneNumber = targetPhoneNumber.Trim();
+                targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
+                phoneCallTask.PhoneNumber = targetPhoneNumber;
+                try
+                {
+                    phoneCallTask.Show();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("SmileyParser:: selectUserBtn_Click : " + ex.StackTrace);
+                }
+            }
         }
 
         const int MAX_CHARS_PER_LINE = 40;
