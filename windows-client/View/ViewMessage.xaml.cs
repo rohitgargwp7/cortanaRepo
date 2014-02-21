@@ -46,24 +46,7 @@ namespace windows_client.View
 
         void hyperlink_Click_CallBack(object obj, bool val)
         {
-            Hyperlink caller = obj as Hyperlink;
-
-            if (val == false)
-            {
-                PhoneCallTask phoneCallTask = new PhoneCallTask();
-                string targetPhoneNumber = caller.TargetName.Replace("-", "");
-                targetPhoneNumber = targetPhoneNumber.Trim();
-                targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
-                phoneCallTask.PhoneNumber = targetPhoneNumber;
-                try
-                {
-                    phoneCallTask.Show();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("SmileyParser:: selectUserBtn_Click : " + ex.StackTrace);
-                }
-            }
+            App.ViewModel.Hyperlink_Clicked(obj);
         }
 
         const int MAX_CHARS_PER_LINE = 40;

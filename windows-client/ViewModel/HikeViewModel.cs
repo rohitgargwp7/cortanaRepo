@@ -20,6 +20,9 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using windows_client.Misc;
 using System.Threading;
+using System.Windows.Documents;
+using Microsoft.Phone.Shell;
+using Microsoft.Phone.Tasks;
 
 namespace windows_client.ViewModel
 {
@@ -808,6 +811,43 @@ namespace windows_client.ViewModel
                     break;
                 }
             }
+        }
+
+        public void Hyperlink_Clicked(object s)
+        {
+            var obj = s as object[];
+            Hyperlink caller = obj[0] as Hyperlink;
+            var val = (bool)obj[1];
+
+            if (val)
+            {
+                var task = new WebBrowserTask() { Uri = new Uri(caller.TargetName) };
+                task.Show();
+            }
+            else
+            {
+                var phoneCallTask = new PhoneCallTask();
+                var targetPhoneNumber = caller.TargetName.Replace("-", "");
+                targetPhoneNumber = targetPhoneNumber.Trim();
+                targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
+                phoneCallTask.PhoneNumber = targetPhoneNumber;
+                try
+                {
+                    phoneCallTask.Show();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
+                }
+            }
+        }
+
+        public void ViewMoreMessage_Clicked(object s)
+        {
+            Hyperlink hp = s as Hyperlink;
+            PhoneApplicationService.Current.State[HikeConstants.VIEW_MORE_MESSAGE_OBJ] = hp.TargetName;
+            var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
+            currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.Relative));
         }
     }
 }

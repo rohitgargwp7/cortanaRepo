@@ -7082,43 +7082,16 @@ namespace windows_client.View
         //hyperlink was clicked in bubble. dont perform actions like h2h offline.
         bool _hyperlinkedClicked = false;
 
-        void Hyperlink_Clicked(object s, EventArgs e)
+        void Hyperlink_Clicked(object sender, EventArgs e)
         {
             _hyperlinkedClicked = true;
 
-            var obj = s as object[];
-            Hyperlink caller = obj[0] as Hyperlink;
-            var val = (bool)obj[1];
-
-            if (val)
-            {
-                var task = new WebBrowserTask() { Uri = new Uri(caller.TargetName) };
-                task.Show();
-            }
-            else
-            {
-                var phoneCallTask = new PhoneCallTask();
-                var targetPhoneNumber = caller.TargetName.Replace("-", "");
-                targetPhoneNumber = targetPhoneNumber.Trim();
-                targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
-                phoneCallTask.PhoneNumber = targetPhoneNumber;
-                try
-                {
-                    phoneCallTask.Show();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("NewChatThread:: Hyperlink_Clicked : " + ex.StackTrace);
-                }
-            }
+            App.ViewModel.Hyperlink_Clicked(sender);
         }
 
-        void ViewMoreMessage_Clicked(object s, EventArgs e)
+        void ViewMoreMessage_Clicked(object sender, EventArgs e)
         {
-            Hyperlink hp = s as Hyperlink;
-            PhoneApplicationService.Current.State[HikeConstants.VIEW_MORE_MESSAGE_OBJ] = hp.TargetName;
-            var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
-            currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.Relative));
+            App.ViewModel.Hyperlink_Clicked(sender);
         }
     }
 }
