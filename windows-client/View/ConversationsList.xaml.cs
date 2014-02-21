@@ -1177,6 +1177,12 @@ namespace windows_client.View
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    //if its image update and status are laoded, update each status userImage async
+                    if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE && isStatusMessagesLoaded)
+                    {
+                        UpdateUserImageInStatus(sm);
+                    } 
+                    
                     if (sm.Msisdn == App.MSISDN || sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
                     {
                         if (sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
@@ -1213,12 +1219,6 @@ namespace windows_client.View
                     {
                         if (!sm.ShowOnTimeline)
                             return;
-                        
-                        //if its image update and status are laoded, update each status userImage async
-                        if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE && isStatusMessagesLoaded)
-                        {
-                            UpdateUserImageInStatus(sm);
-                        }
                         
                         // here we have to check 2 way firendship
                         if (launchPagePivot.SelectedIndex == 3)
@@ -2448,7 +2448,7 @@ namespace windows_client.View
             NavigationService.Navigate(nextPage);
         }
 
-        bool buttonTapped = false;
+        bool _buttonInsideStatusUpdateTapped = false;
 
         private void yes_Click(object sender, RoutedEventArgs e)
         {
@@ -2456,7 +2456,7 @@ namespace windows_client.View
             FriendRequestStatusUpdate fObj = (sender as Button).DataContext as FriendRequestStatusUpdate;
             if (fObj != null)
             {
-                buttonTapped = true;
+                _buttonInsideStatusUpdateTapped = true;
                 App.ViewModel.StatusList.Remove(fObj);
                 FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                 if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
@@ -2523,7 +2523,7 @@ namespace windows_client.View
             FriendRequestStatusUpdate fObj = (sender as Button).DataContext as FriendRequestStatusUpdate;
             if (fObj != null)
             {
-                buttonTapped = true;
+                _buttonInsideStatusUpdateTapped = true;
                 JObject data = new JObject();
                 data["id"] = fObj.Msisdn;
                 JObject obj = new JObject();
@@ -2609,17 +2609,23 @@ namespace windows_client.View
 
         private void statusItem_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (buttonTapped)
+            if (_buttonInsideStatusUpdateTapped)
             {
-                buttonTapped = false;
+                _buttonInsideStatusUpdateTapped = false;
                 return;
-            }
-
+            } 
+            
             BaseStatusUpdate status = (sender as Grid).DataContext as BaseStatusUpdate;
-            if (status == null)
+            if (status == null || status is ProTipStatusUpdate)
                 return;
 
             _statusSelectedIndex = App.ViewModel.StatusList.IndexOf(status);
+
+            if (_hyperlinkedInsideStatusUpdateClicked)
+            {
+                _hyperlinkedInsideStatusUpdateClicked = false;
+                return;
+            }
 
             if (status.Msisdn == App.MSISDN)
             {
@@ -2877,6 +2883,7 @@ namespace windows_client.View
 
         bool showNormalFtue;
         bool animationPartOneCompleted;
+
         void StartSnowAnimation()
         {
             overlaySnow.Visibility = Visibility.Visible;
@@ -3142,5 +3149,22 @@ namespace windows_client.View
         }
 
         #endregion
+
+        //hyperlink was clicked in bubble. dont perform actions like page navigation.
+        private bool _hyperlinkedInsideStatusUpdateClicked;
+
+        void Hyperlink_Clicked(object sender, EventArgs e)
+        {
+            _hyperlinkedInsideStatusUpdateClicked = true;
+
+            App.ViewModel.Hyperlink_Clicked(sender);
+        }
+
+        void ViewMoreMessage_Clicked(object sender, EventArgs e)
+        {
+            _hyperlinkedInsideStatusUpdateClicked = true;
+
+            App.ViewModel.ViewMoreMessage_Clicked(sender);
+        }
     }
 }

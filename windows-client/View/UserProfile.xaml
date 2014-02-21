@@ -7,7 +7,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-    xmlns:status="clr-namespace:windows_client.Controls.StatusUpdate"
     xmlns:templateSelector="clr-namespace:windows_client.TemplateSelectors"
     xmlns:local="clr-namespace:windows_client.Controls"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -113,11 +112,11 @@
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="Auto"/>
                                                 </Grid.RowDefinitions>
-                                                <local:MyRichTextBox Margin="-12,0,0,0" HorizontalAlignment="Left" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" FontSize="28" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450"/>
+                                                <local:MyRichTextBox Margin="-12,0,0,0" HorizontalAlignment="Left" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" FontSize="28" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                                 <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Column="1" Grid.Row="1" Foreground="#888888"/>
                                             </Grid>
                                         </Grid>
-                                        <Image HorizontalAlignment="Left" Source="{Binding StatusImage}" Margin="0,12,0,0" Grid.Row="2" VerticalAlignment="Top" Height="250" Stretch="UniformToFill" Tap="enlargePic_Tap"/>
+                                        <Image Source="{Binding StatusImage}" Margin="0,12,0,0" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Height="250" Stretch="UniformToFill" Tap="enlargePic_Tap" />
                                     </Grid>
                                 </DataTemplate>
                             </templateSelector:StatusTemplateSelector.DTImageStatus>
@@ -139,7 +138,7 @@
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
-                                            <local:MyRichTextBox Margin="-12,0,0,0" Foreground="{Binding StatusTextForeground}" HorizontalAlignment="Left" Text="{Binding Text}" FontSize="28" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450"/>
+                                            <local:MyRichTextBox Margin="-12,0,0,0" Foreground="{Binding StatusTextForeground}" HorizontalAlignment="Left" Text="{Binding Text}" FontSize="28" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                             <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Column="1" Grid.Row="1" Foreground="#888888"/>
                                         </Grid>
                                     </Grid>

@@ -40,6 +40,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using windows_client.FileTransfers;
 using System.Windows.Input;
+using System.Windows.Documents;
 
 namespace windows_client.View
 {
@@ -6955,6 +6956,12 @@ namespace windows_client.View
 
         private void ChatMessageSelected(object sender, SelectionChangedEventArgs e)
         {
+            if (_hyperlinkedClicked)
+            {
+                _hyperlinkedClicked = false;
+                return;
+            }
+
             ConvMessage msg = llsMessages.SelectedItem as ConvMessage;
 
             if (msg != null)
@@ -7072,5 +7079,19 @@ namespace windows_client.View
             }
         }
 
+        //hyperlink was clicked in bubble. dont perform actions like h2h offline.
+        bool _hyperlinkedClicked = false;
+
+        void Hyperlink_Clicked(object sender, EventArgs e)
+        {
+            _hyperlinkedClicked = true;
+
+            App.ViewModel.Hyperlink_Clicked(sender);
+        }
+
+        void ViewMoreMessage_Clicked(object sender, EventArgs e)
+        {
+            App.ViewModel.ViewMoreMessage_Clicked(sender);
+        }
     }
 }

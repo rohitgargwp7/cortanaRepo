@@ -21,6 +21,7 @@ using Microsoft.Phone.UserData;
 using System.ComponentModel;
 using windows_client.Misc;
 using System.Linq;
+using System.Windows.Documents;
 
 namespace windows_client.View
 {
@@ -100,7 +101,7 @@ namespace windows_client.View
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE)
+                    if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE && App.MSISDN != msisdn)
                         avatarImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
 
                     if (isStatusLoaded)
@@ -1436,6 +1437,16 @@ namespace windows_client.View
             {
                 StatusUpdateHelper.Instance.DeleteMyStatus(update);
             }
+        }
+
+        void Hyperlink_Clicked(object sender, EventArgs e)
+        {
+            App.ViewModel.Hyperlink_Clicked(sender);
+        }
+
+        void ViewMoreMessage_Clicked(object sender, EventArgs e)
+        {
+            App.ViewModel.ViewMoreMessage_Clicked(sender);
         }
     }
 }

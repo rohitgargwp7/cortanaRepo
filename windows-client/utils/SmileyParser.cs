@@ -884,25 +884,8 @@ namespace windows_client
             }
             return p;
         }
-        private void selectUserBtn_Click(object sender, RoutedEventArgs e)
-        {
-            Hyperlink caller = sender as Hyperlink;
-            PhoneCallTask phoneCallTask = new PhoneCallTask();
-            string targetPhoneNumber = caller.TargetName.Replace("-", "");
-            targetPhoneNumber = targetPhoneNumber.Trim();
-            targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
-            phoneCallTask.PhoneNumber = targetPhoneNumber;
-            try
-            {
-                phoneCallTask.Show();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("SmileyParser:: selectUserBtn_Click : " + ex.StackTrace);
-            }
-        }
 
-        public Paragraph LinkifyAllPerTextBlock(string originalMessage, SolidColorBrush foreground)
+        public Paragraph LinkifyAllPerTextBlock(string originalMessage, SolidColorBrush foreground, ViewMoreEventDelegate viewMoreClicked, HyperLinkEventDelegate hyperlinkClicked)
         {
             int maxChar = GetMaxCharForBlock(originalMessage);
             bool isMessageExtended = false;
@@ -912,7 +895,7 @@ namespace windows_client
                 message = originalMessage.Substring(0, maxChar + 1);
                 isMessageExtended = true;
             }
-            var p = LinkifyAll(message, foreground);
+            var p = LinkifyAll(message, foreground, hyperlinkClicked);
             if (isMessageExtended)
             {
                 p.Inlines.Add(new LineBreak());
@@ -923,20 +906,18 @@ namespace windows_client
                 MyLink.TargetName = originalMessage;
                 MyLink.Inlines.Add(AppResources.ViewFullMessage_Txt);
 
-                MyLink.Click += ViewFullMessage_Click;
+                MyLink.Click += (ss,ee)=>{
+                    if (viewMoreClicked != null)
+                        viewMoreClicked(ss);
+                };
+
                 p.Inlines.Add(MyLink);
             }
 
             return p;
         }
-        private void ViewFullMessage_Click(object sender, RoutedEventArgs e)
-        {
-            Hyperlink hp = sender as Hyperlink;
-            PhoneApplicationService.Current.State[HikeConstants.MESSAGE_OBJ_FROM_CT] = hp.TargetName;
-            var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
-            currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.RelativeOrAbsolute));
-        }
-        public Paragraph LinkifyAll(string message, SolidColorBrush foreground)
+
+        public Paragraph LinkifyAll(string message, SolidColorBrush foreground, HyperLinkEventDelegate hyperlinkClicked)
         {
             MatchCollection matchCollection = ChatThreadRegex.Matches(message);
             var p = new Paragraph();
@@ -982,13 +963,23 @@ namespace windows_client
                             url = "http://" + regexMatch;
                         if (regexType == RegexType.PHONE_NO)
                         {
-                            MyLink.Click += new RoutedEventHandler(selectUserBtn_Click);
+                            MyLink.Click += (ss, ee) =>
+                            {
+                                if (hyperlinkClicked != null)
+                                    hyperlinkClicked(ss, false);
+                            };
+
                             MyLink.TargetName = regexMatch;
                         }
                         else
                         {
-                            MyLink.NavigateUri = new Uri(url);
-                            MyLink.TargetName = "_blank";
+                            MyLink.TargetName = url;
+
+                            MyLink.Click += (ss, ee) =>
+                            {
+                                if (hyperlinkClicked != null)
+                                    hyperlinkClicked(ss, true);
+                            };
                         }
                         MyLink.Inlines.Add(regexMatch);
                         p.Inlines.Add(MyLink);
@@ -1082,5 +1073,8 @@ namespace windows_client
             }
             return charCount;
         }
+
+        public delegate void ViewMoreEventDelegate(object obj);
+        public delegate void HyperLinkEventDelegate(object obj, bool isUrl);
     }
 }
