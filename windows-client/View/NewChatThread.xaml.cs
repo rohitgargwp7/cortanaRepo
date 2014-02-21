@@ -7091,7 +7091,7 @@ namespace windows_client.View
 
         void ViewMoreMessage_Clicked(object sender, EventArgs e)
         {
-            App.ViewModel.Hyperlink_Clicked(sender);
+            App.ViewModel.ViewMoreMessage_Clicked(sender);
         }
     }
 }

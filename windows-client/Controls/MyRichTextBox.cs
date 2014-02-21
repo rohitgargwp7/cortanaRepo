@@ -91,8 +91,6 @@ namespace windows_client.Controls
             param[0] = obj;
             param[1] = val;
 
-            var abc = new SmileyParser.ViewMoreEventDelegate(viewMore_CallBack);
-
             if (HyperlinkClicked != null)
                 HyperlinkClicked(param, null);
         }

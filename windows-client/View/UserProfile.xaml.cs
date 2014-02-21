@@ -101,7 +101,7 @@ namespace windows_client.View
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE)
+                    if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE && App.MSISDN != msisdn)
                         avatarImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
 
                     if (isStatusLoaded)
@@ -1446,7 +1446,7 @@ namespace windows_client.View
 
         void ViewMoreMessage_Clicked(object sender, EventArgs e)
         {
-            App.ViewModel.Hyperlink_Clicked(sender);
+            App.ViewModel.ViewMoreMessage_Clicked(sender);
         }
     }
 }

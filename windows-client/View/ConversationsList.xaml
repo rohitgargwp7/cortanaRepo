@@ -1122,7 +1122,7 @@
                                     </templateSelector:StatusTemplateSelector.DTImageStatus>
                                     <templateSelector:StatusTemplateSelector.DTProTip>
                                         <DataTemplate>
-                                            <Grid HorizontalAlignment="Stretch" Margin="12" Background="Transparent">
+                                            <Grid HorizontalAlignment="Stretch" Tap="statusItem_Tap" Margin="12" Background="Transparent">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="Auto"/>

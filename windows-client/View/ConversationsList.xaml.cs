@@ -1177,6 +1177,12 @@ namespace windows_client.View
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    //if its image update and status are laoded, update each status userImage async
+                    if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE && isStatusMessagesLoaded)
+                    {
+                        UpdateUserImageInStatus(sm);
+                    } 
+                    
                     if (sm.Msisdn == App.MSISDN || sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
                     {
                         if (sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
@@ -1213,12 +1219,6 @@ namespace windows_client.View
                     {
                         if (!sm.ShowOnTimeline)
                             return;
-                        
-                        //if its image update and status are laoded, update each status userImage async
-                        if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE && isStatusMessagesLoaded)
-                        {
-                            UpdateUserImageInStatus(sm);
-                        }
                         
                         // here we have to check 2 way firendship
                         if (launchPagePivot.SelectedIndex == 3)
@@ -2616,7 +2616,7 @@ namespace windows_client.View
             } 
             
             BaseStatusUpdate status = (sender as Grid).DataContext as BaseStatusUpdate;
-            if (status == null)
+            if (status == null || status is ProTipStatusUpdate)
                 return;
 
             _statusSelectedIndex = App.ViewModel.StatusList.IndexOf(status);
@@ -3153,50 +3153,18 @@ namespace windows_client.View
         //hyperlink was clicked in bubble. dont perform actions like page navigation.
         private bool _hyperlinkedInsideStatusUpdateClicked;
 
-        void Hyperlink_Clicked(object s, EventArgs e)
+        void Hyperlink_Clicked(object sender, EventArgs e)
         {
             _hyperlinkedInsideStatusUpdateClicked = true;
 
-            var obj = s as object[];
-            Hyperlink caller = obj[0] as Hyperlink;
-            var val = (bool)obj[1];
-
-            if (val)
-            {
-                var task = new WebBrowserTask() { Uri = new Uri(caller.TargetName) };
-                try
-                {
-                    task.Show();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("NewChatThread:: Hyperlink_Clicked : " + ex.StackTrace);
-                }
-            }
-            else
-            {
-                var phoneCallTask = new PhoneCallTask();
-                var targetPhoneNumber = caller.TargetName.Replace("-", "");
-                targetPhoneNumber = targetPhoneNumber.Trim();
-                targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
-                phoneCallTask.PhoneNumber = targetPhoneNumber;
-                try
-                {
-                    phoneCallTask.Show();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("NewChatThread:: Hyperlink_Clicked : " + ex.StackTrace);
-                }
-            }
+            App.ViewModel.Hyperlink_Clicked(sender);
         }
 
-        void ViewMoreMessage_Clicked(object s, EventArgs e)
+        void ViewMoreMessage_Clicked(object sender, EventArgs e)
         {
-            Hyperlink hp = s as Hyperlink;
-            PhoneApplicationService.Current.State[HikeConstants.VIEW_MORE_MESSAGE_OBJ] = hp.TargetName;
-            var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
-            currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.Relative));
+            _hyperlinkedInsideStatusUpdateClicked = true;
+
+            App.ViewModel.ViewMoreMessage_Clicked(sender);
         }
     }
 }

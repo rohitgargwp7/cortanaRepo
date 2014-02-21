@@ -813,9 +813,9 @@ namespace windows_client.ViewModel
             }
         }
 
-        public void Hyperlink_Clicked(object s)
+        public void Hyperlink_Clicked(object sender)
         {
-            var obj = s as object[];
+            var obj = sender as object[];
             Hyperlink caller = obj[0] as Hyperlink;
             var val = (bool)obj[1];
 
@@ -842,9 +842,9 @@ namespace windows_client.ViewModel
             }
         }
 
-        public void ViewMoreMessage_Clicked(object s)
+        public void ViewMoreMessage_Clicked(object obj)
         {
-            Hyperlink hp = s as Hyperlink;
+            Hyperlink hp = obj as Hyperlink;
             PhoneApplicationService.Current.State[HikeConstants.VIEW_MORE_MESSAGE_OBJ] = hp.TargetName;
             var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
             currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.Relative));
