@@ -29,7 +29,6 @@ namespace windows_client.View
         private BitmapImage blankImage;
         private BitmapImage microphoneImage;
         private BitmapImage speakerImage;
-        private TimeSpan _duration;
 
         private BitmapImage recordIcon = new BitmapImage(new Uri("/View/images/icon_record.png", UriKind.Relative));
         private BitmapImage playIcon = new BitmapImage(new Uri("/View/images/icon_play.png", UriKind.Relative));
@@ -73,8 +72,6 @@ namespace windows_client.View
             dt.Interval = TimeSpan.FromMilliseconds(33);
             dt.Tick += new EventHandler(dt_Tick);
             dt.Start();
-
-            _duration = microphone.BufferDuration;
 
             blankImage = new BitmapImage(new Uri("Images/blank.png", UriKind.RelativeOrAbsolute));
             microphoneImage = new BitmapImage(new Uri("images/microphone.png", UriKind.RelativeOrAbsolute));

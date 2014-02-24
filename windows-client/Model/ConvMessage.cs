@@ -554,6 +554,16 @@ namespace windows_client.Model
             get { return String.IsNullOrEmpty(DispMessage) ? Visibility.Collapsed : Visibility.Visible; }
         }
 
+        public Visibility NormalNudgeVisibility
+        {
+            get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Collapsed : Visibility.Visible; }
+        }
+
+        public Visibility SpecialNudgeVisibility
+        {
+            get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Visible : Visibility.Collapsed; }
+        }
+
         bool _changingState;
         public bool ChangingState
         {
@@ -1341,6 +1351,9 @@ namespace windows_client.Model
             NotifyPropertyChanged("BubbleBackGroundColor");
             NotifyPropertyChanged("SdrImage");
             NotifyPropertyChanged("NotificationImage");
+            NotifyPropertyChanged("NudgeImage");
+            NotifyPropertyChanged("SpecialNudgeVisibility");
+            NotifyPropertyChanged("NormalNudgeVisibility");
         }
 
         public Visibility SendAsSMSVisibility
@@ -1887,6 +1900,8 @@ namespace windows_client.Model
                 }
                 else
                     this._message = GetMsgText(GroupManager.Instance.GroupCache[toVal], true);
+
+                this._message = this._message.Replace(";", "");// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
             }
 
             else if (this.participantInfoState == ParticipantInfoState.GROUP_END)

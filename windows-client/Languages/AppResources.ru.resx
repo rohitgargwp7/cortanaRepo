@@ -1925,9 +1925,6 @@
   <data name="ChatBg_Changed_Text" xml:space="preserve">
     <value>{0} сменил(а) тему чата</value>
   </data>
-  <data name="Default_Txt" xml:space="preserve">
-    <value>по умолчанию</value>
-  </data>
   <data name="FT_MaxFiles_Txt" xml:space="preserve">
     <value>Более 50 файлов ожидают передачи. Попробуйте еще раз позже.</value>
   </data>
@@ -2022,21 +2019,23 @@
   <data name="Search_Hint_Txt" xml:space="preserve">
     <value>поиск</value>
   </data>
-  <data name="Save_ChatTheme_Txt" xml:space="preserve">
-    <value>сохранить тему</value>
-  </data>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
-    <value>{0} просто изменил тему чата. Чтобы использовать новые темы чат, обновить hike. http://hike.in.</value>
-  </data>
-  <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
-    <value>изменить тему чата</value>
-    <comment>max chars(18)</comment>
+    <value>{0} только что изменил(а) тему чата. Для использования новых тем чата обновите hike. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Более великолепные темы здесь...</value>
+    <value>Проверить специальные «Я тебя люблю» тема!</value>
   </data>
-  <data name="Settings_ChatThemeNotification_SwitchHeader" xml:space="preserve">
-    <value>Уведомления о темах чата</value>
+  <data name="ChatThemeHeader_Txt" xml:space="preserve">
+    <value>темы чата</value>
+  </data>
+  <data name="Sent_As_SMS" xml:space="preserve">
+    <value>Отправить как SMS - {0}</value>
+  </data>
+  <data name="ChatThemeMessage" xml:space="preserve">
+    <value>Тема чата изменится для вас и вашего друга</value>
+  </data>
+  <data name="Done_Txt" xml:space="preserve">
+    <value>готово</value>
   </data>
   <data name="Chat_FTUE_chatThemes" xml:space="preserve">
     <value>Темы чата!</value>
@@ -2047,7 +2046,7 @@
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>Что за праздники без подарков? Приятного общения!</value>
+    <value>Отпразднуйте месяц любви! У нас для вас подарок!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">
@@ -2058,19 +2057,22 @@
     <value>Придайте индивидуальности чату с помощью великолепных тем.</value>
     <comment>max chars(80)</comment>
   </data>
-  <data name="ChatThemeHeader_Txt" xml:space="preserve">
-    <value>чат темы</value>
-  </data>
-  <data name="ChatThemeMessage" xml:space="preserve">
-    <value>После того как вы выберите «Готово», тема чата будет меняться для вас и вашего друга.</value>
-  </data>
   <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
-    <value>После того как вы выберите «Готово», тема чата будет меняться для группы.</value>
+    <value>Тема чата изменится для всей группы</value>
   </data>
-  <data name="Done_Txt" xml:space="preserve">
-    <value>Договорились</value>
+  <data name="User_Info_Txt" xml:space="preserve">
+    <value>профиль</value>
   </data>
-  <data name="Sent_As_SMS" xml:space="preserve">
-    <value>Отправить как SMS - {0}</value>
+  <data name="ConversationList_grp_istyping_txt" xml:space="preserve">
+    <value>{0} пишет...</value>
+  </data>
+  <data name="ConversationList_istyping_txt" xml:space="preserve">
+    <value>пишет...</value>
+  </data>
+  <data name="MicrophoneNotFound_ErrorTxt" xml:space="preserve">
+    <value>Проверьте микрофон своего телефона и попробуйте еще раз.</value>
+  </data>
+  <data name="MicrophoneNotFound_HeaderTxt" xml:space="preserve">
+    <value>Ошибка записи!</value>
   </data>
 </root>

@@ -246,6 +246,10 @@ namespace windows_client.Misc
             }
         }
 
+        /// <summary>
+        /// Load individual group cache to save memory (Lazy loading)
+        /// </summary>
+        /// <param name="grpId"></param>
         public void LoadGroupParticipants(string grpId)
         {
             if (groupCache.ContainsKey(grpId))
@@ -312,6 +316,9 @@ namespace windows_client.Misc
             }
         }
 
+        /// <summary>
+        /// Load entire group cache to perform operation on all groups
+        /// </summary>
         public void LoadGroupCache()
         {
             lock (readWriteLock)
@@ -323,7 +330,11 @@ namespace windows_client.Misc
                         return;
                     for (int i = 0; i < files.Length; i++)
                     {
-                        string grpId = files[i].Replace("_", ":");
+                        var index = files[i].LastIndexOf("_");
+                        StringBuilder sb = new StringBuilder(files[i]);
+                        sb[index] = ':';
+                        string grpId = sb.ToString();
+
                         if (groupCache.ContainsKey(grpId)) // if this group is already loaded ignore
                             continue;
 
@@ -460,7 +471,7 @@ namespace windows_client.Misc
             if (allGrpsInfo == null || allGrpsInfo.Count == 0) // if no grp exists , do nothing
                 return;
 
-            foreach (string grpId in groupCache.Keys)
+            foreach (string grpId in groupCache.Keys.ToList())
             {
                 GroupParticipant gp = GetParticipant(grpId, cn.Msisdn);
                 if (gp != null) // represents this contact lies in the group

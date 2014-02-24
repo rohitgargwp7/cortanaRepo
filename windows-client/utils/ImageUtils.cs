@@ -100,6 +100,8 @@ namespace windows_client.utils
         private BitmapImage smileyExpressionsOverlay;
         private BitmapImage avatarsOverlay;
         private BitmapImage indiansOverlay;
+        private BitmapImage loveOverlay;
+        private BitmapImage angryOverlay;
         private BitmapImage recentIcon;
         private BitmapImage humanoidInactive;
         private BitmapImage humanoid2Inactive;
@@ -111,6 +113,8 @@ namespace windows_client.utils
         private BitmapImage smileyExpressionsInactive;
         private BitmapImage avatarsInactive;
         private BitmapImage indianInactive;
+        private BitmapImage loveInactive;
+        private BitmapImage angryInactive;
         private BitmapImage humanoidActive;
         private BitmapImage humanoid2Active;
         private BitmapImage doggyActive;
@@ -121,6 +125,8 @@ namespace windows_client.utils
         private BitmapImage smileyExpressionsActive;
         private BitmapImage avatarsActive;
         private BitmapImage indianActive;
+        private BitmapImage loveActive;
+        private BitmapImage angryActive;
         private BitmapImage muteIcon;
         private BitmapImage muteIconForConversationView;
         private BitmapImage unmuteIcon;
@@ -622,8 +628,7 @@ namespace windows_client.utils
             {
                 if (hikeToastImage == null)
                 {
-                    hikeToastImage = new BitmapImage(new Uri("/hike_small.png", UriKind.RelativeOrAbsolute));
-                    hikeToastImage.DecodePixelWidth = 14;
+                    hikeToastImage = new BitmapImage(new Uri("/View/images/hike_toast_image.png", UriKind.RelativeOrAbsolute));
                 }
 
                 return hikeToastImage;
@@ -1436,6 +1441,26 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage AngryOverlay
+        {
+            get
+            {
+                if (angryOverlay == null)
+                    angryOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/hotheads_overlay.png", UriKind.Relative));
+
+                return angryOverlay;
+            }
+        }
+        public BitmapImage LoveOverlay
+        {
+            get
+            {
+                if (loveOverlay == null)
+                    loveOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/iloveyou_overlay.png", UriKind.Relative));
+
+                return loveOverlay;
+            }
+        }
         public BitmapImage ExpressionsOverlay
         {
             get
@@ -1584,6 +1609,28 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage LoveInactive
+        {
+            get
+            {
+                if (loveInactive == null)
+                {
+                    loveInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/love_inactive.png", UriKind.Relative));
+                }
+                return loveInactive;
+            }
+        }
+        public BitmapImage AngryInactive
+        {
+            get
+            {
+                if (angryInactive == null)
+                {
+                    angryInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/angry_inactive.png", UriKind.Relative));
+                }
+                return angryInactive;
+            }
+        }
         public BitmapImage HumanoidActive
         {
             get
@@ -1704,6 +1751,28 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage AngryActive
+        {
+            get
+            {
+                if (angryActive == null)
+                {
+                    angryActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/angry_active.png", UriKind.Relative));
+                }
+                return angryActive;
+            }
+        }
+        public BitmapImage LoveActive
+        {
+            get
+            {
+                if (loveActive == null)
+                {
+                    loveActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/love_active.png", UriKind.Relative));
+                }
+                return loveActive;
+            }
+        }
         #endregion
 
         public BitmapImage RecentIcon
@@ -1952,8 +2021,54 @@ namespace windows_client.utils
             {
                 Debug.WriteLine("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
             }
+
+            try
+            {
+                var aspectratio = (double)bitmapImage.PixelHeight / bitmapImage.PixelWidth;
+                int toWidth = 0;
+
+                if (bitmapImage.PixelWidth > 480 && bitmapImage.PixelHeight > 800)
+                    toWidth = bitmapImage.PixelWidth > bitmapImage.PixelHeight ? 480 : Convert.ToInt32(800 / aspectratio);
+                else if (bitmapImage.PixelWidth > 480)
+                    toWidth = 480;
+                else if (bitmapImage.PixelHeight > 800)
+                    toWidth = Convert.ToInt32(800 / aspectratio);
+
+                if (toWidth != 0)
+                    return getCompressedImage(imagebytes, toWidth);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("IMAGE UTILS :: Exception while calculating aspect ratio  for compressed image: " + ex.StackTrace);
+            }
+
             return bitmapImage;
         }
+
+        BitmapImage getCompressedImage(byte[] imagebytes, int toWidth)
+        {
+            if (imagebytes == null || imagebytes.Length == 0)
+                return null;
+            BitmapImage bitmapImage = null;
+            try
+            {
+                using (var memStream = new MemoryStream(imagebytes))
+                {
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    bitmapImage = new BitmapImage() { DecodePixelWidth = toWidth };
+                    //If you specify BackgroundCreation in the CreateOptions of a BitmapImage, you have to specify only DecodePixelHeight.
+                    //The DecodePixelWidth property is ignored when you specify BackgroundCreation.
+                    bitmapImage.SetSource(memStream);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("IMAGE UTILS :: Exception while creating compressed bitmap image from memstream : " + e.StackTrace);
+            }
+
+            return bitmapImage;
+        }
+
         public void createImageFromBytes(byte[] imagebytes, BitmapImage bitmapImage)
         {
             if (imagebytes == null || imagebytes.Length == 0)
@@ -1973,6 +2088,7 @@ namespace windows_client.utils
                 Debug.WriteLine("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
             }
         }
+
         /// <summary>
         /// Call this function only if you want to cache the Bitmap Image
         /// </summary>

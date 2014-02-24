@@ -79,6 +79,17 @@ namespace windows_client.Model
             }
         }
 
+        /// <summary>
+        /// use where we dont need to show typing notification
+        /// </summary>
+        public string ToastText
+        {
+            get
+            {
+                return _lastMessage;
+            }
+        }
+
         [DataMember]
         public long TimeStamp
         {
@@ -298,7 +309,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (_messageStatus == ConvMessage.State.RECEIVED_UNREAD && string.IsNullOrEmpty(_typingNotificationText))
+                if (_messageStatus == ConvMessage.State.RECEIVED_UNREAD && string.IsNullOrEmpty(_typingNotificationText) && !IsLastMsgStatusUpdate)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
@@ -340,7 +351,10 @@ namespace windows_client.Model
             set
             {
                 if (value != _isFirstMsg)
+                {
                     _isFirstMsg = value;
+                    NotifyPropertyChanged("UnreadCircleVisibility");
+                }
             }
         }
 
@@ -505,10 +519,7 @@ namespace windows_client.Model
             get
             {
                 if (IsGroupChat && _isGroupAlive == null)
-                {
-                    var gi = GroupTableUtils.getGroupInfoForId(_msisdn);
-                    _isGroupAlive = gi != null ? gi.GroupAlive : false;
-                }
+                    _isGroupAlive = GroupTableUtils.IsGroupAlive(_msisdn);
 
                 return (bool)_isGroupAlive;
             }

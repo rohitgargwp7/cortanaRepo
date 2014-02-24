@@ -240,23 +240,25 @@ namespace windows_client.View
             }
             else
             {
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
+                App.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        IsFacebookConnected = false;
+                        ChangeElementsState(true);
+                    });
             }
+
         }
 
         public void SocialDeleteFB(JObject obj)
         {
-            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     IsFacebookConnected = false;
                     ChangeElementsState(true);
                     MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, MessageBoxButton.OK);
                 });
-            }
-            else
-            {
-            }
         }
 
         private void twitterBtn_Click(object sender, RoutedEventArgs e)
@@ -290,19 +292,28 @@ namespace windows_client.View
                     MessageBox.Show(AppResources.FreeSMS_TwPostSuccess_MsgBx, AppResources.FreeSMS_TwPost_MsgBxCaption, MessageBoxButton.OK);
                 });
             }
-        }
-
-        public void SocialDeleteTW(JObject obj)
-        {
-            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+            else
             {
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
+                App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
+                
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     IsTwitterConnected = false;
                     ChangeElementsState(true);
-                    MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkTwSuccess_MsgBxCaptn, MessageBoxButton.OK);
                 });
             }
+        }
+
+        public void SocialDeleteTW(JObject obj)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                IsTwitterConnected = false;
+                ChangeElementsState(true);
+                MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkTwSuccess_MsgBxCaptn, MessageBoxButton.OK);
+            });
         }
 
         private void initializeCredits()

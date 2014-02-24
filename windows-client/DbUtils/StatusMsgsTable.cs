@@ -106,13 +106,22 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static StatusMessage GetUserLastStatusMsg()
+        {
+            List<StatusMessage> res;
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                res = DbCompiledQueries.GetFirstTextStatusUpdate(context).ToList<StatusMessage>();
+                return (res == null || res.Count == 0) ? null : res.Last() as StatusMessage;
+            }
+        }
+
         public static void DeleteAllStatusMsgs()
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 try
                 {
-
                     context.statusMessage.DeleteAllOnSubmit<StatusMessage>(context.GetTable<StatusMessage>());
                     context.SubmitChanges();
                 }
@@ -213,7 +222,6 @@ namespace windows_client.DbUtils
                     {
                         if (store.FileExists(LAST_STATUS_FILENAME))
                         {
-
                             using (var file = store.OpenFile(LAST_STATUS_FILENAME, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                             {
                                 using (BinaryReader reader = new BinaryReader(file))

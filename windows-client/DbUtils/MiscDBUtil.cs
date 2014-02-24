@@ -75,7 +75,8 @@ namespace windows_client.DbUtils
             #endregion
             #region DELETE USERS, BLOCKLIST
 
-            App.ViewModel.BlockedHashset.Clear();
+            //BLockhasshSet.clear() reinitiates blocklist with default value preventing blocklist to have actual values so use this function to clear blocklist
+            App.ViewModel.ClearBLockedHashSet();
             App.ViewModel.ContactsCache.Clear();
 
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
@@ -198,7 +199,7 @@ namespace windows_client.DbUtils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (!store.DirectoryExists(PROFILE_PICS))
                             store.CreateDirectory(PROFILE_PICS);
@@ -306,7 +307,7 @@ namespace windows_client.DbUtils
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (isUpdated && store.FileExists(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX))
                         {
@@ -473,13 +474,13 @@ namespace windows_client.DbUtils
 
             Attachment attachment = null;
             string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
-            
+
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
                 if (store.DirectoryExists(fileDirectory))
                 {
                     var fName = fileDirectory + "/" + id;
-                    if(store.FileExists(fName))
+                    if (store.FileExists(fName))
                     {
                         using (var file = store.OpenFile(fName, FileMode.Open, FileAccess.Read))
                         {

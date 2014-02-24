@@ -45,7 +45,6 @@ namespace windows_client.View
         private string charsEntered;
         ContactInfo contactInfoObj;
         private readonly int MAX_USERS_ALLOWED_IN_GROUP = 50;
-        private int defaultGroupmembers = 0;
         private ProgressIndicatorControl progressIndicator;
         private StringBuilder stringBuilderForContactNames = new StringBuilder();
         private bool _showExistingGroups;
@@ -63,9 +62,11 @@ namespace windows_client.View
         Dictionary<string, List<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, List<Group<ContactInfo>>>();
         HashSet<string> blockedSet = null;
 
-        private int smsUserCount = 0;
-        private int existingGroupUsers = 1; // 1 because owner of the group is already included
+        int _addedUsers = 0;
 
+        private int smsUserCount = 0;
+
+        private int existingGroupUsers = 1; // 1 because owner of the group is already included
         public int ExistingGroupUsers
         {
             get
@@ -94,7 +95,7 @@ namespace windows_client.View
                         }
                         else
                         {
-                            if (existingGroupUsers - defaultGroupmembers > 0)
+                            if (_addedUsers > 0)
                             {
                                 if (!doneIconButton.IsEnabled)
                                     doneIconButton.IsEnabled = true;
@@ -396,10 +397,10 @@ namespace windows_client.View
         private List<Group<ContactInfo>> getGroupedList(List<ContactInfo> allContactsList)
         {
             List<GroupParticipant> activeExistingGroupMembers = null;
-
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
             {
                 isExistingGroup = true;
+                existingGroupUsers = 0;
                 activeExistingGroupMembers = PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] as List<GroupParticipant>;
 
                 //TODO start this loop from end, after sorting is done on onHike status
@@ -412,7 +413,7 @@ namespace windows_client.View
                     }
                     existingGroupUsers++;
                 }
-                defaultGroupmembers = ExistingGroupUsers;
+                existingGroupUsers += _addedUsers;
             }
 
             List<Group<ContactInfo>> glist = createGroups();
@@ -558,7 +559,7 @@ namespace windows_client.View
             Contact contact = null;
             foreach (Contact c in contacts)
             {
-                if (c.DisplayName == contactInfoObj.Name)
+                if (c.DisplayName.Trim() == contactInfoObj.Name)
                 {
                     contact = c;
                     break;
@@ -820,6 +821,7 @@ namespace windows_client.View
                 if (!cn.OnHike)
                     smsUserCount--;
                 ExistingGroupUsers--;
+                _addedUsers--;
             }
         }
 
@@ -864,6 +866,7 @@ namespace windows_client.View
             if (!contact.OnHike)
                 smsUserCount++;
             ExistingGroupUsers++;
+            _addedUsers++;
 
             charsEntered = "";
         }
@@ -1029,8 +1032,8 @@ namespace windows_client.View
                 canGoBack = true;
                 return;
             }
+           
 
-            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
             List<ContactInfo.DelContacts> hikeIds = null;
             List<ContactInfo> deletedContacts = null;
             // Code to delete the removed contacts
@@ -1083,6 +1086,9 @@ namespace windows_client.View
                     GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo);
                 }
             }
+
+            //should be done after deleting contacts so that delete could remove previous name and update will update new name
+            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
             if (stopContactScanning)
             {
                 stopContactScanning = false;
@@ -1094,6 +1100,14 @@ namespace windows_client.View
                 UsersTableUtils.deleteMultipleRows(hikeIds); // this will delete all rows in HikeUser DB that are not in Addressbook.
             }
 
+            if (deletedContacts != null && deletedContacts.Count > 0)
+            {
+                Object[] obj = new object[2];
+                obj[0] = false;//denotes deleted contact
+                obj[1] = deletedContacts;
+                App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
+            }
+            
             if (updatedContacts != null && updatedContacts.Count > 0)
             {
                 UsersTableUtils.updateContacts(updatedContacts);
@@ -1101,14 +1115,6 @@ namespace windows_client.View
                 Object[] obj = new object[2];
                 obj[0] = true;//denotes updated/added contact
                 obj[1] = updatedContacts;
-                App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
-            }
-
-            if (deletedContacts != null && deletedContacts.Count > 0)
-            {
-                Object[] obj = new object[2];
-                obj[0] = false;//denotes deleted contact
-                obj[1] = deletedContacts;
                 App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
             }
 
@@ -1182,7 +1188,7 @@ namespace windows_client.View
             // should be Group Chat
             // if new group then number of users should be greater than equal to 3 
             // if existing group then added user should atleast be 1
-            if (isGroupChat && ((!isExistingGroup && existingGroupUsers >= 3) || (isExistingGroup && (existingGroupUsers - defaultGroupmembers > 0))))
+            if (isGroupChat && ((!isExistingGroup && existingGroupUsers >= 3) || (isExistingGroup && _addedUsers > 0)))
             {
                 doneIconButton.IsEnabled = true;
             }
@@ -1221,6 +1227,7 @@ namespace windows_client.View
                         return;
                     }
                     ExistingGroupUsers--;
+                    _addedUsers--;
                     if (!contactsForgroup[k].OnHike)
                         smsUserCount--;
                     contactsForgroup.RemoveAt(k);

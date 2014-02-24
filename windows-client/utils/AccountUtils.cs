@@ -15,7 +15,6 @@ using windows_client.Controls;
 using System.Threading;
 using windows_client.DbUtils;
 using windows_client.Misc;
-using windows_client.Controls.StatusUpdate;
 
 namespace windows_client.utils
 {
@@ -312,13 +311,13 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.GET_STICKERS, stickerJson, finalCallBackFunc, obj });
         }
 
-        public static void GetSingleSticker(ConvMessage convMessage,int resId, parametrisedPostResponseFunction finalCallBackFunc)
+        public static void GetSingleSticker(ConvMessage convMessage, int resId, parametrisedPostResponseFunction finalCallBackFunc)
         {
             if (convMessage == null || convMessage.StickerObj == null)
                 return;
 
             string requestUrl = string.Format("{0}/stickers?catId={1}&stId={2}&resId={3}", BASE, convMessage.StickerObj.Category, convMessage.StickerObj.Id, resId);
-            
+
             HttpWebRequest req = HttpWebRequest.Create(new Uri(requestUrl)) as HttpWebRequest;
             AddToken(req);
             req.Method = "GET";
@@ -518,7 +517,7 @@ namespace windows_client.utils
                 #region GET STICKERS
                 case RequestType.GET_STICKERS:
                     data = vars[2] as JObject;
-                    finalCallbackFunction = vars[3] ;
+                    finalCallbackFunction = vars[3];
                     obj = vars[4];
                     break;
                 #endregion
@@ -559,7 +558,7 @@ namespace windows_client.utils
             request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();//to disaable caching if GET result
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
-        
+
         public static void createNokiaPlacesGetRequest(string requestUrl, postResponseFunction callback)
         {
             HttpWebRequest request = null;
@@ -575,8 +574,9 @@ namespace windows_client.utils
 
             if (setCookie)
                 AddToken(request);
-            
+
             request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
+            request.Headers["Cache-control"] = "no-transform";
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback, metadata });
         }
 
@@ -982,18 +982,18 @@ namespace windows_client.utils
                         kv = keyVals.Current;
                         JArray entries = (JArray)addressbook[kv.Key];
                         List<ContactInfo> cList = new_contacts_by_id[kv.Key];
-                        
+
                         for (int i = 0; i < entries.Count; ++i)
                         {
                             JObject entry = (JObject)entries[i];
                             string msisdn = (string)entry["msisdn"];
-                        
+
                             if (string.IsNullOrWhiteSpace(msisdn))
                             {
                                 count++;
                                 continue;
                             }
-                            
+
                             bool onhike = (bool)entry["onhike"];
                             ContactInfo cinfo = cList[i];
                             ContactInfo cn = new ContactInfo(kv.Key, msisdn, cinfo.Name, onhike, cinfo.PhoneNo, cinfo.PhoneNoKind);
@@ -1032,7 +1032,7 @@ namespace windows_client.utils
                                 else // fav and pending case
                                 {
                                     ConversationListObject c = App.ViewModel.GetFav(cn.Msisdn);
-                                
+
                                     if (c != null) // this user is in favs
                                     {
                                         c.ContactName = cn.Name;
@@ -1049,7 +1049,7 @@ namespace windows_client.utils
                                         }
                                     }
                                 }
-                            
+
                                 GroupManager.Instance.RefreshGroupCache(cn, allGroupsInfo);
                             }
 
@@ -1065,17 +1065,17 @@ namespace windows_client.utils
 
                 if (isFavSaved)
                     MiscDBUtil.SaveFavourites();
-                
+
                 if (isPendingSaved)
                     MiscDBUtil.SavePendingRequests();
-                
+
                 msisdns = null;
                 Debug.WriteLine("Total contacts with no msisdn : {0}", count);
                 Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
-                
+
                 if (!isRefresh)
                     App.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, msgToShow);
-                
+
                 return server_contacts;
             }
 

@@ -546,7 +546,7 @@ namespace windows_client
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
-            if (!isNewInstall && Utils.compareVersion("2.5.0.1", _currentVersion) == 1)
+            if (!isNewInstall && Utils.compareVersion("2.5.1.1", _currentVersion) == 1)
             {
                 instantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
@@ -785,7 +785,7 @@ namespace windows_client
 
             #endregion
             #region STCIKERS
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.5.0.0") < 0)
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.5.1.0") < 0)//todo:update to next market build
             {
                 if (!isNewInstall && Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
                     StickerCategory.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
@@ -921,7 +921,7 @@ namespace windows_client
                     }
 
                     //Reset in app tip for new stickers
-                    if (Utils.compareVersion(_currentVersion, "2.5.0.0") < 0)
+                    if (Utils.compareVersion(_currentVersion, "2.5.1.0") < 0)//todo:update it to market version
                         App.ViewModel.ResetInAppTip(1);
                 }
 
@@ -965,6 +965,10 @@ namespace windows_client
             {
                 WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, true);
             }
+            else if (Utils.compareVersion(_currentVersion, "2.5.1.0") < 0)//if it is upgrade
+            {
+                WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, false);
+            }
             #endregion
             #region Enter to send
 
@@ -975,7 +979,7 @@ namespace windows_client
                     appSettings[App.HIKEJINGLE_PREF] = (bool)true;
                     App.WriteToIsoStorageSettings(App.ENTER_TO_SEND, false);
                 }
-                else if (Utils.compareVersion(_currentVersion, "2.5.0.1") < 0)
+                else if (Utils.compareVersion(_currentVersion, "2.5.1.0") < 0)
                 {
                     SendEnterToSendStatusToServer();
                 }
@@ -1213,7 +1217,7 @@ namespace windows_client
             if (App.HikePubSubInstance != null)
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
-        
+
         public static void SendEnterToSendStatusToServer()
         {
             var jobj = new JObject();

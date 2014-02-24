@@ -1907,7 +1907,7 @@
     <value>Verdiene Frei-SMS für jeden Freund, der auf deine Empfehlung hin Mitglied bei hike wird</value>
   </data>
   <data name="On_Hike" xml:space="preserve">
-    <value>per Hike</value>
+    <value>per hike</value>
   </data>
   <data name="On_SMS" xml:space="preserve">
     <value>per SMS</value>
@@ -1917,9 +1917,6 @@
   </data>
   <data name="ChatBg_Changed_Text" xml:space="preserve">
     <value>{0} hat das Chatmotiv geändert</value>
-  </data>
-  <data name="Default_Txt" xml:space="preserve">
-    <value>Standard</value>
   </data>
   <data name="FT_MaxFiles_Txt" xml:space="preserve">
     <value>Es stehen über 50 Dateiübertragungen aus. Versuche es später noch einmal. </value>
@@ -2015,21 +2012,23 @@
   <data name="Search_Hint_Txt" xml:space="preserve">
     <value>Suchen</value>
   </data>
-  <data name="Save_ChatTheme_Txt" xml:space="preserve">
-    <value>Motiv speichern</value>
-  </data>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
-    <value>{0} verändert nur das Chat-Thema. Um die neue Chat-Themen zu verwenden, aktualisieren Sie hike. http://hike.in.</value>
-  </data>
-  <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
-    <value>Chatmotiv ändern</value>
-    <comment>max chars(18)</comment>
+    <value>{0} hat soeben das Chatmotiv geändert. Um die neuen Chatmotive nutzen zu können, musst du hike aktualisieren. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Mehr wunderschöne Themen hier...</value>
+    <value>Schauen Sie sich das besondere "Ich liebe dich" Thema!</value>
   </data>
-  <data name="Settings_ChatThemeNotification_SwitchHeader" xml:space="preserve">
-    <value>Benachrichtigung zu Chatmotiven</value>
+  <data name="ChatThemeHeader_Txt" xml:space="preserve">
+    <value>Chatmotive</value>
+  </data>
+  <data name="Sent_As_SMS" xml:space="preserve">
+    <value>Als SMS gesendet - {0}</value>
+  </data>
+  <data name="ChatThemeMessage" xml:space="preserve">
+    <value>Das Chatmotiv ändert sich sowohl für deinen Freund als auch für dich</value>
+  </data>
+  <data name="Done_Txt" xml:space="preserve">
+    <value>Fertig</value>
   </data>
   <data name="Chat_FTUE_chatThemes" xml:space="preserve">
     <value>Chatmotive!</value>
@@ -2040,7 +2039,7 @@
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>Was wäre Weihnachten ohne Geschenke? Viel Spaß mit Hike!</value>
+    <value>Feiere den Monat der Liebe! Wir möchten dir was schenken!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">
@@ -2051,19 +2050,22 @@
     <value>Personalisiere deinen Chat mit herrlichen Motiven.</value>
     <comment>max chars(80)</comment>
   </data>
-  <data name="ChatThemeHeader_Txt" xml:space="preserve">
-    <value>Chat Themen</value>
-  </data>
-  <data name="ChatThemeMessage" xml:space="preserve">
-    <value>Sobald Sie "fertig" auswählen, ändert sich das Chat-Thema für Sie und Ihr Freund.</value>
-  </data>
   <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
-    <value>Sobald Sie "fertig" auswählen, ändert sich das Chat-Thema für die Gruppe.</value>
+    <value>Das Chatmotiv ändert sich für die gesamte Gruppe</value>
   </data>
-  <data name="Done_Txt" xml:space="preserve">
-    <value>fertig</value>
+  <data name="User_Info_Txt" xml:space="preserve">
+    <value>Profil anzeigen</value>
   </data>
-  <data name="Sent_As_SMS" xml:space="preserve">
-    <value>Als SMS versendet - {0}</value>
+  <data name="ConversationList_grp_istyping_txt" xml:space="preserve">
+    <value>{0} schreibt etwas ...</value>
+  </data>
+  <data name="ConversationList_istyping_txt" xml:space="preserve">
+    <value>schreibt etwas ...</value>
+  </data>
+  <data name="MicrophoneNotFound_ErrorTxt" xml:space="preserve">
+    <value>Überprüfe das Mikrofon deines Telefons und versuche es erneut.</value>
+  </data>
+  <data name="MicrophoneNotFound_HeaderTxt" xml:space="preserve">
+    <value>Keine Aufnahme möglich!</value>
   </data>
 </root>

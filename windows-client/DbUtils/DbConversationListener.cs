@@ -354,8 +354,8 @@ namespace windows_client.DbUtils
                         if (fInfo.FileState == FileTransferState.CANCELED)
                         {
                             state = Attachment.AttachmentState.CANCELED;
-                            
-                            if(convMessage.IsSent)
+
+                            if (convMessage.IsSent)
                                 convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
                         }
                         else if (fInfo.FileState == FileTransferState.COMPLETED)
@@ -382,7 +382,7 @@ namespace windows_client.DbUtils
                             state = Attachment.AttachmentState.NOT_STARTED;
                         else if (fInfo.FileState == FileTransferState.DOES_NOT_EXIST)
                             state = Attachment.AttachmentState.FAILED;
-                        
+
                         if (fInfo.FileState == FileTransferState.COMPLETED)
                             convMessage.ProgressBarValue = 100;
 
@@ -487,12 +487,18 @@ namespace windows_client.DbUtils
                 return;
             addSentMessageToMsgMap(convMessage);
 
-            if (App.ViewModel.MessageListPageCollection.Contains(convObj))//cannot use convMap here because object has pushed to map but not to ui
+            int index = App.ViewModel.MessageListPageCollection.IndexOf(convObj);
+            //cannot use convMap here because object has pushed to map but not to ui
+            if (index < 0)//not present in convmap
             {
-                App.ViewModel.MessageListPageCollection.Remove(convObj);
+                App.ViewModel.MessageListPageCollection.Insert(0, convObj);
             }
+            else if (index > 0)
+            {
+                App.ViewModel.MessageListPageCollection.RemoveAt(index);
+                App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+            }//if already at zero, do nothing
 
-            App.ViewModel.MessageListPageCollection.Insert(0, convObj);
             if (App.ViewModel.ConversationListPage != null)
                 App.ViewModel.ConversationListPage.ConversationListUpdated = true;
         }

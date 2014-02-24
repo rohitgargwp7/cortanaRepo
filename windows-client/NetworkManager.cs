@@ -578,12 +578,12 @@ namespace windows_client
                                                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                                                 {
                                                     string name = null;
-                                                    bool thrAreFavs = false;
+                                                    bool thrAreFavs = false, isFav;
                                                     KeyValuePair<string, JToken> fkkvv;
                                                     IEnumerator<KeyValuePair<string, JToken>> kVals = favJSON.GetEnumerator();
                                                     while (kVals.MoveNext()) // this will iterate throught the list
                                                     {
-                                                        bool isFav = true; // true for fav , false for pending
+                                                        isFav = true; // true for fav , false for pending
                                                         fkkvv = kVals.Current; // kkvv contains favourites MSISDN
 
                                                         if (App.ViewModel.BlockedHashset.Contains(fkkvv.Key)) // if this user is blocked ignore him
@@ -594,6 +594,7 @@ namespace windows_client
                                                         if (pendingJSON.TryGetValue(HikeConstants.REQUEST_PENDING, out pToken))
                                                         {
                                                             bool rp = false;
+                                                            thrAreFavs = true;
                                                             if (pToken != null)
                                                             {
                                                                 try
@@ -615,6 +616,20 @@ namespace windows_client
                                                             {
                                                                 isFav = false;
                                                                 FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
+
+                                                                ConversationListObject favObj;
+                                                                if (App.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
+                                                                    favObj = App.ViewModel.ConvMap[fkkvv.Key];
+                                                                else
+                                                                {
+                                                                    ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(fkkvv.Key);
+                                                                    if (ci != null)
+                                                                        name = ci.Name;
+
+                                                                    favObj = new ConversationListObject(fkkvv.Key, name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(fkkvv.Key) : null);
+                                                                }
+
+                                                                this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
                                                             }
                                                             else // pending is false
                                                             {
@@ -624,24 +639,13 @@ namespace windows_client
                                                             }
                                                         }
                                                         else
-                                                            FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
-                                                        Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
-                                                        LoadFavAndPending(isFav, fkkvv.Key); // true for favs
-                                                        thrAreFavs = true;
-
-                                                        ConversationListObject favObj;
-                                                        if (App.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
-                                                            favObj = App.ViewModel.ConvMap[fkkvv.Key];
-                                                        else
                                                         {
-                                                            ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(fkkvv.Key);
-                                                            if (ci != null)
-                                                                name = ci.Name;
-
-                                                            favObj = new ConversationListObject(fkkvv.Key, name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(fkkvv.Key) : null);
+                                                            thrAreFavs = true;
+                                                            FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                                                         }
 
-                                                        this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
+                                                        Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
+                                                        LoadFavAndPending(isFav, fkkvv.Key); // true for favs
                                                     }
 
                                                     if (thrAreFavs)
@@ -938,6 +942,32 @@ namespace windows_client
                 List<GroupParticipant> dndList = new List<GroupParticipant>(1);
                 GroupChatState gcState = AddGroupmembers(arr, grpId, dndList);
 
+                #region META DATA CHAT BACKGROUND
+
+                JObject metaData = (JObject)jsonObj[HikeConstants.METADATA];
+                if (metaData != null)
+                {
+                    try
+                    {
+                        JObject chatBg = (JObject)metaData[HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS];
+                        if (chatBg != null)
+                        {
+                            bool hasCustomBg = false;
+                            JToken custom;
+                            if (chatBg.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
+                                hasCustomBg = (bool)custom;
+
+                            if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
+                                pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, grpId);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN with chat background, Exception : " + ex.StackTrace);
+                    }
+                }
+                #endregion
+
                 #region NEW GROUP
                 if (gcState == GroupChatState.NEW_GROUP) // this group is created by someone else
                 {
@@ -950,7 +980,7 @@ namespace windows_client
                         if (dndMembersList != null && dndMembersList.Count > 0)
                         {
                             string dndMsg = GetDndMsg(dndMembersList);
-                            convMessage.Message += ";" + dndMsg;
+                            convMessage.Message = convMessage.Message.Replace(";", "") + ";" + dndMsg.Replace(";", "");// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
                         }
                     }
                     catch (Exception ex)
@@ -1007,7 +1037,7 @@ namespace windows_client
                         if (dndMembersList != null && dndMembersList.Count > 0)
                         {
                             string dndMsg = GetDndMsg(dndMembersList);
-                            convMessage.Message += ";" + dndMsg;
+                            convMessage.Message = convMessage.Message.Replace(";", "") + ";" + dndMsg.Replace(";", "");// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
                         }
                     }
                     catch
@@ -1016,52 +1046,32 @@ namespace windows_client
                     }
                 }
                 #endregion
-                #region META DATA
 
-                JObject metaData = (JObject)jsonObj[HikeConstants.METADATA];
-                if (metaData != null)
-                {
-                    #region GROUP NAME
+                //To:do handle meta dat for group name in next release
+                //#region META DATA GROUP NAME
 
-                    JToken gName;
-                    string groupName;
-                    if (metaData.TryGetValue(HikeConstants.NAME, out gName))
-                    {
-                        ConversationListObject cObj;
-                        groupName = gName.ToString();
-                        if (App.ViewModel.ConvMap.TryGetValue(grpId, out cObj))
-                        {
-                            if (cObj.ContactName != groupName)
-                                ConversationTableUtils.updateGroupName(grpId, groupName);
-                        }
-                    }
+                //metaData = (JObject)jsonObj[HikeConstants.METADATA];
+                //if (metaData != null)
+                //{
+                //    #region GROUP NAME
 
-                    #endregion
+                //    JToken gName;
+                //    string groupName;
+                //    //To:Do pubsub for gcn is not raised, also grpId will not exist, this implementation will not work
+                //    if (metaData.TryGetValue(HikeConstants.NAME, out gName))
+                //    {
+                //        ConversationListObject cObj;
+                //        groupName = gName.ToString();
+                //        if (App.ViewModel.ConvMap.TryGetValue(grpId, out cObj))
+                //        {
+                //            if (cObj.ContactName != groupName)
+                //                ConversationTableUtils.updateGroupName(grpId, groupName);
+                //        }
+                //    }
 
-                    #region CHAT BACKGROUND
-
-                    try
-                    {
-                        JObject chatBg = (JObject)metaData[HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS];
-                        if (chatBg != null)
-                        {
-                            bool hasCustomBg = false;
-                            JToken custom;
-                            if (chatBg.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
-                                hasCustomBg = (bool)custom;
-
-                            if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
-                                pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, grpId);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN with chat background, Exception : " + ex.StackTrace);
-                    }
-
-                    #endregion
-                }
-                #endregion
+                //    #endregion
+                //}
+                //#endregion
 
                 ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);
                 if (obj == null)
@@ -1191,7 +1201,7 @@ namespace windows_client
                     string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
                     GroupManager.Instance.LoadGroupParticipants(groupId);
                     GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, fromMsisdn, groupId);
-                    if (gp==null || gp.HasLeft)
+                    if (gp == null || gp.HasLeft)
                         return;
 
                     ConvMessage convMsg = new ConvMessage(jsonObj, false, false);
@@ -1409,7 +1419,6 @@ namespace windows_client
 
                     if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
                         id = idToken.ToString();
-
                     #region HANDLE PROFILE PIC UPDATE
                     if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
                     {
@@ -1679,18 +1688,27 @@ namespace windows_client
 
                     var to = (string)jsonObj[HikeConstants.TO];
 
-                    var sender = !String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to) ? to : msisdn;
+                    if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to))
+                        GroupManager.Instance.LoadGroupParticipants(to);
 
-                    ChatThemeData bg = null;
-                    if (ChatBackgroundHelper.Instance.ChatBgMap.TryGetValue(sender, out bg))
+                    if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to) && !GroupManager.Instance.GroupCache.ContainsKey(to))
                     {
-                        if (bg.Timestamp >= ts)
-                            return;
+                        Debug.WriteLine("OnMesage: Chat backgrounds: Group not found - {0}", to);
+                        return;
                     }
+
+                    var sender = !String.IsNullOrEmpty(to) ? to : msisdn;
 
                     var data = (JObject)jsonObj[HikeConstants.DATA];
                     var bgId = (string)data[HikeConstants.BACKGROUND_ID];
                     
+                    ChatThemeData bg = null;
+                    if (ChatBackgroundHelper.Instance.ChatBgMap.TryGetValue(sender, out bg))
+                    {
+                        if (bg.Timestamp >= ts || bg.BackgroundId == bgId)
+                            return;
+                    }
+
                     bool hasCustomBg = false;
                     JToken custom;
                     if (data.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
