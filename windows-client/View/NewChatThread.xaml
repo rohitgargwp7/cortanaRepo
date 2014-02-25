@@ -1171,13 +1171,13 @@
                                         HorizontalContentAlignment="Center" 
                                         IsEnabled="False" IsTabStop="True" Opacity="0"/>
 
-        <Rectangle Canvas.ZIndex="0" x:Name="overlayRectangle" Grid.Row="0" Grid.RowSpan="3" Fill="#000000" Visibility="Collapsed" Opacity="0.3" ></Rectangle>
-        <StackPanel x:Name="OverlayMessagePanel" Visibility="Collapsed" Opacity="1" Grid.Row="1" Height="320" VerticalAlignment="Center" Margin="25,0,25,0" Orientation="Vertical">
-            <Image Source="images\ic_block_active.png" Height="79" Width="78"></Image>
-            <TextBlock Name="BlockTxtBlk" HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.SelectUser_BlockMsg_Txt, Source={StaticResource LocalizedStrings}}" Foreground="#FFFFFF" FontSize="30"></TextBlock>
-            <Button Height="75" Name="btnBlockUnblock" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"></Button>
+        <Border Canvas.ZIndex="4" x:Name="overlayBorder" Grid.Row="0" Grid.RowSpan="3" Background="Black" Visibility="Collapsed" Opacity="0.7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <StackPanel Canvas.ZIndex="4" x:Name="overlayMessagePanel" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Center" Margin="25,0,25,0" Orientation="Vertical">
+            <Image Source="images\ic_block_active.png" Height="79" Width="78"/>
+            <TextBlock Name="BlockTxtBlk" HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.SelectUser_BlockMsg_Txt, Source={StaticResource LocalizedStrings}}" Foreground="#FFFFFF" FontSize="30"/>
+            <Button Height="75" Name="btnBlockUnblock" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"/>
         </StackPanel>
-        <Grid Canvas.ZIndex="4"   x:Name="gridDownloadStickers" Visibility="Collapsed" Width="340" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Center" Margin="0 0 0 0" Tap="overlayRectangle_Tap_1">
+        <Grid Canvas.ZIndex="4" x:Name="gridDownloadStickers" Visibility="Collapsed" Width="340" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Center" Margin="0 0 0 0" Tap="overlayBorder_Tapped">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -1191,16 +1191,15 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Image Name="downloadDialogueImage" Grid.ColumnSpan="2" Grid.RowSpan="2" Width="368" ></Image>
-                <Button Name="btnDownload" Width="150" Foreground="White" Grid.Row="2" Grid.Column="2" Content="{Binding Path= LocalizedResources.Download_txt, Source={StaticResource LocalizedStrings}}" VerticalContentAlignment="Center" VerticalAlignment="Bottom" FontFamily="Segoe WP Regular" FontSize="18" Height="70" BorderBrush="#3d3d3d" Background="#3d3d3d" Tap="downloadStickers_Tap" Margin="10 0 0 10"></Button>
+                <Image Name="downloadDialogueImage" Grid.ColumnSpan="2" Grid.RowSpan="2" Width="368"/>
+                <Button Name="btnDownload" Width="150" Foreground="White" Grid.Row="2" Grid.Column="2" Content="{Binding Path= LocalizedResources.Download_txt, Source={StaticResource LocalizedStrings}}" VerticalContentAlignment="Center" VerticalAlignment="Bottom" FontFamily="Segoe WP Regular" FontSize="18" Height="70" BorderBrush="#3d3d3d" Background="#3d3d3d" Tap="downloadStickers_Tap" Margin="10 0 0 10"/>
                 <Button Name="btnFree" Background="#7aa700" Grid.Row="2" Foreground="White" Grid.Column="2" Width="70" Height="50" Content="{Binding Path= LocalizedResources.Free_txt, Source={StaticResource LocalizedStrings}}" Padding="0" VerticalAlignment="Bottom" FontFamily="Segoe WP Regular" FontSize="12" BorderThickness="0" Margin="105 0 0 45" Tap="downloadStickers_Tap" />
             </Grid>
             <Grid Grid.Row="1" Background="#2c2c2c" Height="30" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
                 <TextBlock FontFamily="Segoe WP SemiLight" Foreground="#878787" FontSize="16" Text="{Binding Path= LocalizedResources.InternetChargesMayApply_txt, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" />
             </Grid>
         </Grid>
-        <Rectangle x:Name="overlayForNudge" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="3" Fill="Black"/>
-        <Grid x:Name="nudgeTuteGrid" Visibility="Collapsed" Grid.Row="1" Width="300" VerticalAlignment="Center"  Background="White">
+        <Grid Canvas.ZIndex="4" x:Name="nudgeTuteGrid" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="3" Width="300" VerticalAlignment="Center" Background="White">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>

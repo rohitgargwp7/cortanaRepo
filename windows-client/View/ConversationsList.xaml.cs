@@ -2773,6 +2773,9 @@ namespace windows_client.View
                 return;
             }
 
+            if (ApplicationBar == deleteAppBar)
+                return;
+
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = convListObj;
 
             string uri = "/View/NewChatThread.xaml";

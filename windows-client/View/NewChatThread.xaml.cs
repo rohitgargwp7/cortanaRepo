@@ -1464,10 +1464,9 @@ namespace windows_client.View
         {
             if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
             {
-                overlayForNudge.Visibility = Visibility.Visible;
-                overlayForNudge.Opacity = 0.7;
+                EnableDisableUI(false);
+                overlayBorder.Visibility = Visibility.Visible;
                 nudgeTuteGrid.Visibility = Visibility.Visible;
-                llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = false;
             }
             else
             {
@@ -1477,12 +1476,13 @@ namespace windows_client.View
 
         private void dismissNudgeTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            overlayForNudge.Visibility = Visibility.Collapsed;
+            overlayBorder.Visibility = Visibility.Collapsed;
             nudgeTuteGrid.Visibility = Visibility.Collapsed;
-            llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
             this.ApplicationBar = appBar;
+            EnableDisableUI(true); 
+            
             App.RemoveKeyFromAppSettings(App.SHOW_NUDGE_TUTORIAL);
-
+            
             int val;
             App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out val);
             App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, ++val);
@@ -1998,14 +1998,8 @@ namespace windows_client.View
             {
                 if (mUserIsBlocked)
                 {
-                    //sendMsgBtn.IsEnabled = false;
                     showOverlay(true);
                     appBar.IsMenuEnabled = false;
-                }
-                else
-                {
-                    //sendMsgBtn.IsEnabled = true;
-                    showOverlay(false);
                 }
             });
         }
@@ -4090,13 +4084,13 @@ namespace windows_client.View
                 {
                     if (!isGroupChat)
                     {
-                        sendMsgTxtbox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(SendMsgBtn_Tap);
+                        sendMsgTxtbox.Tap += SendMsgBtn_Tap;
                         sendMsgTxtbox.IsReadOnly = true;
                     }
                 }
                 else
                 {
-                    sendMsgTxtbox.Tap -= new EventHandler<System.Windows.Input.GestureEventArgs>(SendMsgBtn_Tap);
+                    sendMsgTxtbox.Tap -= SendMsgBtn_Tap;
                     sendMsgTxtbox.IsReadOnly = false;
                 }
             });
@@ -4115,7 +4109,7 @@ namespace windows_client.View
                 btnBlockUnblock.Content = AppResources.FreeSMS_InviteNow_Btn;
                 btnBlockUnblock.Click -= blockUnblock_Click;
                 btnBlockUnblock.Click += inviteUserBtn_Click;
-                overlayRectangle.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(NoFreeSmsOverlay_Tap);
+                overlayBorder.Tap += NoFreeSmsOverlay_Tap;
             }
             else
             {
@@ -4123,7 +4117,7 @@ namespace windows_client.View
                 btnBlockUnblock.Content = UNBLOCK_USER;
                 btnBlockUnblock.Click += blockUnblock_Click;
                 btnBlockUnblock.Click -= inviteUserBtn_Click;
-                overlayRectangle.Tap -= new EventHandler<System.Windows.Input.GestureEventArgs>(NoFreeSmsOverlay_Tap);
+                overlayBorder.Tap -= NoFreeSmsOverlay_Tap;
             }
         }
 
@@ -4137,42 +4131,33 @@ namespace windows_client.View
 
         private void showOverlay(bool show)
         {
+            EnableDisableUI(!show);
+
             if (show)
             {
-                overlayRectangle.Visibility = System.Windows.Visibility.Visible;
-                overlayRectangle.Opacity = 0.85;
-                HikeTitle.IsHitTestVisible = false;
-                llsMessages.IsHitTestVisible = false;
-                bottomPanel.IsHitTestVisible = false;
-                OverlayMessagePanel.Visibility = Visibility.Visible;
-                stickersIconButton.IsEnabled = false;
-                emoticonsIconButton.IsEnabled = false;
-                sendIconButton.IsEnabled = enableSendMsgButton = false;
-                fileTransferIconButton.IsEnabled = false;
+                overlayBorder.Visibility = Visibility.Visible;
+                overlayMessagePanel.Visibility = Visibility.Visible;
             }
             else
             {
-                overlayRectangle.Visibility = System.Windows.Visibility.Collapsed;
-                HikeTitle.IsHitTestVisible = true;
-                llsMessages.IsHitTestVisible = true;
-                bottomPanel.IsHitTestVisible = true;
-                OverlayMessagePanel.Visibility = Visibility.Collapsed;
-                if (isGroupChat && !isGroupAlive)
-                {
-                    stickersIconButton.IsEnabled = false;
-                    emoticonsIconButton.IsEnabled = false;
-                    sendIconButton.IsEnabled = enableSendMsgButton = false;
-                    fileTransferIconButton.IsEnabled = false;
-                }
-                else if (!showNoSmsLeftOverlay)
-                {
-                    stickersIconButton.IsEnabled = true;
-                    emoticonsIconButton.IsEnabled = true;
-                    enableSendMsgButton = true;
-                    sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
-                    fileTransferIconButton.IsEnabled = true;
-                }
+                overlayBorder.Visibility = Visibility.Collapsed;
+                overlayMessagePanel.Visibility = Visibility.Collapsed;
             }
+        }
+
+        private void EnableDisableUI(bool enable)
+        {
+            HikeTitle.IsHitTestVisible = enable;
+            llsMessages.IsHitTestVisible = enable;
+            bottomPanel.IsHitTestVisible = enable;
+            WalkieTalkieMicIcon.IsHitTestVisible = enable;
+            sendMsgTxtbox.IsHitTestVisible = enable;
+
+            appBar.IsMenuEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
+            stickersIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
+            emoticonsIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
+            sendIconButton.IsEnabled = enableSendMsgButton = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
+            fileTransferIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
         }
 
         #endregion
@@ -4880,26 +4865,14 @@ namespace windows_client.View
         private void groupChatEnd()
         {
             isGroupAlive = false;
-            WalkieTalkieMicIcon.IsHitTestVisible = false;
-            sendMsgTxtbox.IsHitTestVisible = false;
-            appBar.IsMenuEnabled = false;
-            sendIconButton.IsEnabled = enableSendMsgButton = false;
-            stickersIconButton.IsEnabled = false;
-            emoticonsIconButton.IsEnabled = false;
-            fileTransferIconButton.IsEnabled = false;
+            EnableDisableUI(false);
             chatPaint.Opacity = 0.5;
         }
 
         private void groupChatAlive()
         {
             isGroupAlive = true;
-            sendMsgTxtbox.IsHitTestVisible = true;
-            appBar.IsMenuEnabled = true;
-            enableSendMsgButton = true;
-            sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
-            stickersIconButton.IsEnabled = true;
-            emoticonsIconButton.IsEnabled = true;
-            fileTransferIconButton.IsEnabled = true;
+            EnableDisableUI(true);
         }
 
         #endregion
@@ -6132,10 +6105,8 @@ namespace windows_client.View
 
         public void ShowDownloadOverlay(bool show)
         {
-            sendIconButton.IsEnabled = !show ? sendMsgTxtbox.Text.Length > 0 : false;
-            stickersIconButton.IsEnabled = !show;
-            emoticonsIconButton.IsEnabled = !show;
-            fileTransferIconButton.IsEnabled = !show;
+            EnableDisableUI(!show);
+
             if (show)
             {
                 switch (_selectedCategory)
@@ -6183,14 +6154,16 @@ namespace windows_client.View
                         downloadDialogueImage.Source = UI_Utils.Instance.AngryOverlay;
                         break;
                 }
-                overlayRectangle.Tap += overlayRectangle_Tap_1;
-                overlayRectangle.Visibility = Visibility.Visible;
+
+                overlayBorder.Tap += overlayBorder_Tapped;
+
+                overlayBorder.Visibility = Visibility.Visible;
                 gridDownloadStickers.Visibility = Visibility.Visible;
-                llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = false;
             }
             else
             {
-                overlayRectangle.Tap -= overlayRectangle_Tap_1;
+                overlayBorder.Tap -= overlayBorder_Tapped;
+
                 if (btnDownload.IsHitTestVisible == false)
                 {
                     btnDownload.IsHitTestVisible = true;
@@ -6200,9 +6173,9 @@ namespace windows_client.View
                     if (stickerCategory.ShowDownloadMessage)
                         stickerCategory.SetDownloadMessage(false);
                 }
-                overlayRectangle.Visibility = Visibility.Collapsed;
+
+                overlayBorder.Visibility = Visibility.Collapsed;
                 gridDownloadStickers.Visibility = Visibility.Collapsed;
-                llsMessages.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
             }
         }
 
@@ -6910,7 +6883,7 @@ namespace windows_client.View
             }
         }
 
-        private void overlayRectangle_Tap_1(object sender, System.Windows.Input.GestureEventArgs e)
+        private void overlayBorder_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ShowDownloadOverlay(false);
             StickerCategory s2 = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);

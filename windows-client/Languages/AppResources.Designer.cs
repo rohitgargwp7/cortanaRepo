@@ -232,7 +232,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Block.
+        ///   Looks up a localized string similar to block.
         /// </summary>
         public static string Block_Txt {
             get {
@@ -4658,7 +4658,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unblock.
+        ///   Looks up a localized string similar to unblock.
         /// </summary>
         public static string UnBlock_Txt {
             get {
