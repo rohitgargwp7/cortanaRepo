@@ -395,13 +395,32 @@ namespace windows_client.Model
             }
         }
 
+        bool _isSelected = false;
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    NotifyPropertyChanged("AvatarImage");
+                }
+            }
+        }
+
         public BitmapImage AvatarImage
         {
             get
             {
                 try
                 {
-                    if (empImage != null) // if image is already set return that
+                    if (_isSelected)
+                        return UI_Utils.Instance.ProfileTickImage;
+                    else if (empImage != null) // if image is already set return that
                         return empImage;
                     else if (_avatar == null)
                     {
@@ -639,7 +658,6 @@ namespace windows_client.Model
         }
 
         #endregion
-
 
         public void Write(BinaryWriter writer)
         {

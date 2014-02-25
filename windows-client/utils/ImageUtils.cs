@@ -163,6 +163,8 @@ namespace windows_client.utils
         private BitmapImage overlayRupeeImage;
         private BitmapImage overlaySmsImage;
 
+        BitmapImage profileTickImage;
+
         #endregion
 
         #region STATUS UPDATE CUSTOM CONTROLS
@@ -1835,6 +1837,17 @@ namespace windows_client.utils
 
         public Thickness ZeroThickness = new Thickness(0, 0, 0, 0);
         public Thickness NewCategoryThickness = new Thickness(0, 5, 0, 0);
+
+        public BitmapImage ProfileTickImage
+        {
+            get
+            {
+                if (profileTickImage == null)
+                    profileTickImage = new BitmapImage(new Uri("/View/Images/Item_Selected.png", UriKind.Relative));
+
+                return profileTickImage;
+            }
+        }
 
         #endregion
 

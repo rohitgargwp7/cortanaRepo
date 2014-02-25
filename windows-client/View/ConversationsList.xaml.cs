@@ -47,11 +47,13 @@ namespace windows_client.View
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
         private ApplicationBar appBar;
+        private ApplicationBar deleteAppBar;
         private BitmapImage _avatarImageBitmap = new BitmapImage();
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarIconButton composeIconButton;
         ApplicationBarIconButton postStatusIconButton;
         ApplicationBarIconButton groupChatIconButton;
+        ApplicationBarIconButton deleteChatIconButton;
         //ApplicationBarIconButton addFriendIconButton;
         private bool isStatusUpdatesMute;
         private bool isStatusMessagesLoaded = false;
@@ -444,14 +446,7 @@ namespace windows_client.View
         private void initAppBar()
         {
             appBar = new ApplicationBar();
-            //appBar.Mode = ApplicationBarMode.Minimized;
-            //appBar.Opacity = 0;
-            appBar.IsVisible = true;
-            appBar.IsMenuEnabled = false;
-            appBar.Mode = ApplicationBarMode.Default;
-            appBar.IsMenuEnabled = true;
-            appBar.Opacity = 1;
-
+            
             /* Add icons */
             groupChatIconButton = new ApplicationBarIconButton();
             groupChatIconButton.IconUri = new Uri("/View/images/icon_group.png", UriKind.Relative);
@@ -485,6 +480,32 @@ namespace windows_client.View
             //App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue);
             //toggleStatusUpdatesMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
             //appBar.MenuItems.Add(toggleStatusUpdatesMenu);
+
+            deleteAppBar = new ApplicationBar();
+            deleteChatIconButton = new ApplicationBarIconButton();
+            deleteChatIconButton.IconUri = new Uri("/View/images/icon_delete.png", UriKind.Relative);
+            deleteChatIconButton.Text = AppResources.Delete_Txt;
+            deleteChatIconButton.Click += deleteChatIconButton_Click;
+            deleteChatIconButton.IsEnabled = true;
+            deleteAppBar.Buttons.Add(deleteChatIconButton);
+        }
+
+        void deleteChatIconButton_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < App.ViewModel.MessageListPageCollection.Count;)
+            {
+                if (App.ViewModel.MessageListPageCollection[i].IsSelected)
+                {
+                    var conv = App.ViewModel.MessageListPageCollection[i];
+                    App.ViewModel.MessageListPageCollection.RemoveAt(i);
+                    deleteConversation(conv);
+                    continue;
+                }
+
+                i++;
+            }
+
+            ChangeAppBarOnConvSelected();
         }
 
         public static void ReloadConversations() // running on some background thread
@@ -2760,7 +2781,15 @@ namespace windows_client.View
             ConversationListObject convListObj = llsConversations.SelectedItem as ConversationListObject;
             if (convListObj == null)
                 return;
+
             llsConversations.SelectedItem = null;
+
+            if (_profileImageTapped)
+            {
+                _profileImageTapped = false;
+                return;
+            }
+
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = convListObj;
 
             string uri = "/View/NewChatThread.xaml";
@@ -3166,5 +3195,42 @@ namespace windows_client.View
 
             App.ViewModel.ViewMoreMessage_Clicked(sender);
         }
+
+        bool _profileImageTapped = false;
+        private void profileImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            _profileImageTapped = true;
+
+            var conv = (sender as Grid).DataContext as ConversationListObject;
+
+            if (conv != null)
+                conv.IsSelected = !conv.IsSelected;
+
+            ChangeAppBarOnConvSelected();
+        }
+
+        private void ChangeAppBarOnConvSelected()
+        {
+            if (App.ViewModel.MessageListPageCollection.Where(c => c.IsSelected == true).Count() > 0)
+            {
+                if (ApplicationBar != deleteAppBar)
+                {
+                    launchPagePivot.IsLocked = true;
+                    ApplicationBar = deleteAppBar;
+                    notificationCountGrid.Visibility = Visibility.Collapsed;
+                }
+            }
+            else if (ApplicationBar != appBar)
+            {
+                launchPagePivot.IsLocked = false;
+                ApplicationBar = appBar;
+                notificationCountGrid.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void Grid_Hold(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            e.Handled = ApplicationBar == deleteAppBar;
+        } 
     }
 }
