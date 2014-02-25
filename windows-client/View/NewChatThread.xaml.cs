@@ -1164,7 +1164,9 @@ namespace windows_client.View
             if (isGroupChat)
                 sendMsgTxtbox.Hint = hintText = ON_GROUP_TEXT;
 
-            initBlockUnblockState();
+            if (isGroupAlive)
+                initBlockUnblockState();
+
             Object showNormalFtue;
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.CHAT_FTUE, out showNormalFtue) && ((bool)showNormalFtue))
             {
@@ -2164,9 +2166,13 @@ namespace windows_client.View
                     if (inviteMenuItem != null)
                         inviteMenuItem.IsEnabled = true;
                 }
+
                 mUserIsBlocked = false;
                 showOverlay(false);
                 appBar.IsMenuEnabled = true;
+
+                if (!isGroupChat)
+                    lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
 
                 UpdateChatStatus();
                 GetOnHikeStatus();
@@ -4156,7 +4162,8 @@ namespace windows_client.View
             appBar.IsMenuEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
             stickersIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
             emoticonsIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
-            sendIconButton.IsEnabled = enableSendMsgButton = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
+            enableSendMsgButton = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
+            sendIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay || sendMsgTxtbox.Text.Length <= 0 ? false : enable;
             fileTransferIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
         }
 
