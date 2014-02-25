@@ -788,7 +788,8 @@ namespace windows_client.View
             }
             #endregion
             #region MULTIPLE IMAGES
-            if (!App.IS_TOMBSTONED && App.ViewModel.MultiplePhotos != null)
+
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
             {
                 MultipleImagesTransfer();
             }
@@ -3844,7 +3845,7 @@ namespace windows_client.View
         {
             try
             {
-                NavigationService.Navigate(new Uri("/View/MultipleImageSelect.xaml", UriKind.RelativeOrAbsolute));
+                NavigationService.Navigate(new Uri("/View/ViewPhotoAlbums.xaml", UriKind.RelativeOrAbsolute));
                 //photoChooserTask.Show();
                 attachmentMenu.Visibility = Visibility.Collapsed;
             }
@@ -5052,17 +5053,17 @@ namespace windows_client.View
 
         private void MultipleImagesTransfer()
         {
-            if (App.ViewModel.MultiplePhotos != null)
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
             {
-                foreach (Picture pic in App.ViewModel.MultiplePhotos)
+                List<PhotoClass> listPic = PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] as List<PhotoClass>;
+
+                foreach (PhotoClass pic in listPic)
                 {
-                    BitmapImage bmp = new BitmapImage();
-                    bmp.SetSource(pic.GetImage());
-                    SendImage(bmp, "image_" + TimeUtils.getCurrentTimeStamp().ToString());
-                    pic.Dispose();
+                    SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString());
+                    pic.Pic.Dispose();
                 }
 
-                App.ViewModel.MultiplePhotos = null;
+                PhoneApplicationService.Current.State.Remove(HikeConstants.MULTIPLE_IMAGES);
             }
 
         }
