@@ -9,7 +9,6 @@ using windows_client.DbUtils;
 using windows_client.Controls;
 using windows_client.View;
 using Microsoft.Phone.Controls;
-using windows_client.Controls.StatusUpdate;
 using System.Diagnostics;
 using System.Windows.Controls;
 using windows_client.Languages;
@@ -21,8 +20,9 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using windows_client.Misc;
 using System.Threading;
-using System.Windows.Media.Imaging;
-using Microsoft.Xna.Framework.Media;
+using System.Windows.Documents;
+using Microsoft.Phone.Shell;
+using Microsoft.Phone.Tasks;
 
 namespace windows_client.ViewModel
 {
@@ -39,9 +39,8 @@ namespace windows_client.ViewModel
 
         private ObservableCollection<ConversationListObject> _favList = null;
 
-        private ObservableCollection<StatusUpdateBox> _statusList = new ObservableCollection<StatusUpdateBox>();
-
-        public ObservableCollection<StatusUpdateBox> StatusList
+        ObservableCollection<BaseStatusUpdate> _statusList = new ObservableCollection<BaseStatusUpdate>();
+        public ObservableCollection<BaseStatusUpdate> StatusList
         {
             get
             {
@@ -352,7 +351,6 @@ namespace windows_client.ViewModel
 
         public void onEventReceived(string type, object obj)
         {
-
             #region MESSAGE_RECEIVED
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
@@ -496,12 +494,6 @@ namespace windows_client.ViewModel
             {
                 return _contactsCache;
             }
-        }
-
-        public List<Picture> MultiplePhotos
-        {
-            get;
-            set;
         }
 
         #region In Apptips
@@ -803,9 +795,10 @@ namespace windows_client.ViewModel
                 App.HikePubSubInstance.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
                 App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
             }
-            foreach (StatusUpdateBox sb in App.ViewModel.StatusList)
+
+            foreach (BaseStatusUpdate sb in App.ViewModel.StatusList)
             {
-                if (sb is FriendRequestStatus)
+                if (sb is FriendRequestStatusUpdate)
                 {
                     if (sb.Msisdn == msisdn)
                     {
@@ -818,6 +811,43 @@ namespace windows_client.ViewModel
                     break;
                 }
             }
+        }
+
+        public void Hyperlink_Clicked(object sender)
+        {
+            var obj = sender as object[];
+            Hyperlink caller = obj[0] as Hyperlink;
+            var val = (bool)obj[1];
+
+            if (val)
+            {
+                var task = new WebBrowserTask() { Uri = new Uri(caller.TargetName) };
+                task.Show();
+            }
+            else
+            {
+                var phoneCallTask = new PhoneCallTask();
+                var targetPhoneNumber = caller.TargetName.Replace("-", "");
+                targetPhoneNumber = targetPhoneNumber.Trim();
+                targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
+                phoneCallTask.PhoneNumber = targetPhoneNumber;
+                try
+                {
+                    phoneCallTask.Show();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
+                }
+            }
+        }
+
+        public void ViewMoreMessage_Clicked(object obj)
+        {
+            Hyperlink hp = obj as Hyperlink;
+            PhoneApplicationService.Current.State[HikeConstants.VIEW_MORE_MESSAGE_OBJ] = hp.TargetName;
+            var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
+            currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.Relative));
         }
     }
 }

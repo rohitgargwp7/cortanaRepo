@@ -165,22 +165,6 @@
     <Compile Include="Controls\Snowflake.xaml.cs">
       <DependentUpon>Snowflake.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\StatusUpdate\DefaultStatusUpdateUC.xaml.cs">
-      <DependentUpon>DefaultStatusUpdateUC.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\StatusUpdate\FriendRequestStatus.xaml.cs">
-      <DependentUpon>FriendRequestStatus.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\StatusUpdate\ProTipUC.xaml.cs">
-      <DependentUpon>ProTipUC.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\StatusUpdate\TextStatusUpdate.xaml.cs">
-      <DependentUpon>TextStatusUpdate.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\StatusUpdate\ImageStatusUpdate.xaml.cs">
-      <DependentUpon>ImageStatusUpdate.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\StatusUpdate\StatusUpdateBox.cs" />
     <Compile Include="Controls\StickerPivotItem.xaml.cs">
       <DependentUpon>StickerPivotItem.xaml</DependentUpon>
     </Compile>
@@ -225,6 +209,12 @@
     <Compile Include="Model\MultiplePhoto\Photo.cs" />
     <Compile Include="Model\StatusMessage.cs" />
     <Compile Include="Model\HikeToolTip.cs" />
+    <Compile Include="Model\StatusUpdates\DefaultStatusUpdate.cs" />
+    <Compile Include="Model\StatusUpdates\FriendRequestStatusUpdate.cs" />
+    <Compile Include="Model\StatusUpdates\ImageStatusUpdate.cs" />
+    <Compile Include="Model\StatusUpdates\ProTipStatusUpdate.cs" />
+    <Compile Include="Model\StatusUpdates\BaseStatusUpdate.cs" />
+    <Compile Include="Model\StatusUpdates\TextStatusUpdate.cs" />
     <Compile Include="Model\TypingNotification.cs" />
     <Compile Include="Mqtt\ConnectCB.cs" />
     <Compile Include="Mqtt\DisconnectCB.cs" />
@@ -234,6 +224,8 @@
     <Compile Include="Mqtt\SubscribeCB.cs" />
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
+    <Compile Include="TemplateSelectors\ChatThreadTemplateSelector.cs" />
+    <Compile Include="TemplateSelectors\StatusTemplateSelector.cs" />
     <Compile Include="utils\AccountUtils.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
@@ -374,26 +366,6 @@
     <Page Include="Controls\Snowflake.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\StatusUpdate\DefaultStatusUpdateUC.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\StatusUpdate\FriendRequestStatus.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\StatusUpdate\ProTipUC.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\StatusUpdate\TextStatusUpdate.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\StatusUpdate\ImageStatusUpdate.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\StickerPivotItem.xaml">
       <SubType>Designer</SubType>

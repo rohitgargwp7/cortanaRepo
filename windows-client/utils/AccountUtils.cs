@@ -15,7 +15,6 @@ using windows_client.Controls;
 using System.Threading;
 using windows_client.DbUtils;
 using windows_client.Misc;
-using windows_client.Controls.StatusUpdate;
 
 namespace windows_client.utils
 {

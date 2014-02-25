@@ -1327,10 +1327,6 @@ Download it now http://hike.in and join the fun!</value>
     <value>account</value>
     <comment>Profile (xaml)</comment>
   </data>
-  <data name="Delete_Txt_Caps" xml:space="preserve">
-    <value>delete</value>
-    <comment>Privacy page (xaml)</comment>
-  </data>
   <data name="Logout_Txt" xml:space="preserve">
     <value>logout</value>
     <comment>Privacy page (xaml)</comment>
