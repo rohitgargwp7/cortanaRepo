@@ -484,6 +484,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to clear chat.
+        /// </summary>
+        public static string Clear_Chat_Txt {
+            get {
+                return ResourceManager.GetString("Clear_Chat_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You will now be able to see updates from {0} here..
         /// </summary>
         public static string ConfimFriendTimeline_Txt {

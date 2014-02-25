@@ -1664,6 +1664,11 @@ namespace windows_client.View
                 muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
                 appBar.MenuItems.Add(muteGroupMenuItem);
 
+                ApplicationBarMenuItem clearChatItem = new ApplicationBarMenuItem();
+                clearChatItem.Text = AppResources.Clear_Chat_Txt ;
+                clearChatItem.Click += clearChatItem_Click;
+                appBar.MenuItems.Add(clearChatItem);
+
                 ApplicationBarMenuItem leaveMenuItem = new ApplicationBarMenuItem();
                 leaveMenuItem.Text = AppResources.SelectUser_LeaveGrp_Txt;
                 leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
@@ -2068,6 +2073,12 @@ namespace windows_client.View
             {
                 Debug.WriteLine("NewChatThread.xaml ::  callUser_Click , Exception : " + ex.StackTrace);
             }
+        }
+
+        void clearChatItem_Click(object sender, EventArgs e)
+        {
+            ocMessages.Clear();
+            MessagesTableUtils.deleteAllMessagesForMsisdn(mContactNumber);
         }
 
         private void addUser_Click(object sender, EventArgs e)
