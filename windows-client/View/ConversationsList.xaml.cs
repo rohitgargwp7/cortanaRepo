@@ -1444,7 +1444,6 @@ namespace windows_client.View
             #region BLOCK_USER
             else if (HikePubSub.BLOCK_USER == type)
             {
-                //TODO : Madhur Garg , you can handle bug#3999 https://hike.fogbugz.com/default.asp?3999 here 
                 if (obj is ContactInfo)
                 {
                     ContactInfo c = obj as ContactInfo;
@@ -1915,22 +1914,6 @@ namespace windows_client.View
         }
 
 
-        #endregion
-
-        #region Emoticons
-        private static Thickness imgMargin = new Thickness(0, 5, 0, 0);
-
-        private void RichTextBox_Loaded(object sender, RoutedEventArgs e)
-        {
-            //TODO read message upto the length it woud be shown on screen
-            var richTextBox = sender as RichTextBox;
-            if (richTextBox.Tag == null)
-                return;
-            string messageString = richTextBox.Tag.ToString();
-            Paragraph linkified = SmileyParser.Instance.LinkifyEmoticons(messageString);
-            richTextBox.Blocks.Clear();
-            richTextBox.Blocks.Add(linkified);
-        }
         #endregion
 
         private void disableAppBar()

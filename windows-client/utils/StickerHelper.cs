@@ -18,7 +18,6 @@ namespace windows_client.utils
 
     public class StickerHelper
     {
-        //to:do confirm category names with server
         public const string CATEGORY_RECENT = "recent";
         public const string CATEGORY_HUMANOID = "humanoid";
         public const string CATEGORY_HUMANOID2 = "humanoid2";

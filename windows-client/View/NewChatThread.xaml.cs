@@ -5181,16 +5181,6 @@ namespace windows_client.View
             }
         }
 
-        //TODO - MG try to use sametap event for header n statusBubble
-        private void statusBubble_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
-        {
-            if (!isContextMenuTapped && !isGroupChat && !_isHikeBot)
-            {
-                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
-                NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
-            }
-        }
-
         private void userHeader_Tap(object sender, EventArgs e)
         {
             if (openChatBackgroundButton.Opacity == 0)

@@ -1077,7 +1077,7 @@ namespace windows_client.utils
                 if (userProfileLockImage == null)
                 {
                     if (Utils.isDarkTheme())
-                        userProfileLockImage = new BitmapImage(new Uri("/View/images/user_lock_white.png", UriKind.Relative));//todo:add white image
+                        userProfileLockImage = new BitmapImage(new Uri("/View/images/user_lock_white.png", UriKind.Relative));
                     else
                         userProfileLockImage = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
                 }
