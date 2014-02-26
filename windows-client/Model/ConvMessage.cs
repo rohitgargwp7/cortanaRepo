@@ -236,7 +236,7 @@ namespace windows_client.Model
             }
         }
 
-        [Column(IsDbGenerated = false)]
+        [Column(IsDbGenerated = false, UpdateCheck = UpdateCheck.Never)]
         public State MessageStatus
         {
             get
@@ -249,7 +249,6 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
-                    MessageStatusChanged = true;
                     NotifyPropertyChanged("SdrImage");
                     NotifyPropertyChanged("MessageStatus");
                     NotifyPropertyChanged("SendAsSMSVisibility");
@@ -356,12 +355,6 @@ namespace windows_client.Model
             }
         }
 
-        public bool MessageStatusChanged
-        {
-            get;
-            set;
-        }
-
         [Column(CanBeNull = true)]
         public string ReadByInfo
         {
@@ -373,9 +366,7 @@ namespace windows_client.Model
             {
                 if (_readByInfo != value)
                 {
-                    if (!MessageStatusChanged)
-                        NotifyPropertyChanging("ReadByInfo");
-
+                    NotifyPropertyChanging("ReadByInfo");
                     _readByInfo = value;
                     NotifyPropertyChanged("ReadByInfo");
                 }

@@ -2736,10 +2736,6 @@ namespace windows_client.View
                             JObject meataDataJson = JObject.Parse(convMessage.MetaDataString);
                             convMessage.StickerObj = new Sticker((string)meataDataJson[HikeConstants.CATEGORY_ID], (string)meataDataJson[HikeConstants.STICKER_ID], null, true);
                             GetHighResStickerForUi(convMessage);
-                            chatBubble = convMessage;
-                            if (!convMessage.IsSent)
-                                chatBubble.GroupMemberName = isGroupChat ?
-                                   GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                         }
                         else
                         {
@@ -2749,19 +2745,19 @@ namespace windows_client.View
                                 if (message.Length > 0)
                                     convMessage.Message = message;
                             }
-                            if (convMessage.IsSent)
-                            {
-                                chatBubble = convMessage;//todo:split
-                                if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
-                                    || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
-                                    msgMap.Add(convMessage.MessageId, chatBubble);
-                            }
-                            else
-                            {
-                                chatBubble = convMessage;
-                                chatBubble.GroupMemberName = isGroupChat ?
-                                    GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
-                            }
+                        }
+
+                        chatBubble = convMessage;
+                        if (convMessage.IsSent)
+                        {
+                            if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                                || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
+                                msgMap.Add(convMessage.MessageId, chatBubble);
+                        }
+                        else
+                        {
+                            chatBubble.GroupMemberName = isGroupChat ?
+                                GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                         }
                     }
                     if (!readFromDb)

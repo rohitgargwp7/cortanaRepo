@@ -418,12 +418,16 @@ namespace windows_client.DbUtils
         {
             bool shouldSubmit = false;
             string msisdn = null;
+            List<ConvMessage> messageList = new List<ConvMessage>();
+
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 for (int i = 0; i < ids.Length; i++)
+                    messageList.Add(DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).FirstOrDefault<ConvMessage>());
+
+                foreach (var message in messageList)
                 {
                     var val = status;
-                    ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).FirstOrDefault<ConvMessage>();
 
                     if (message != null)
                     {
@@ -442,33 +446,42 @@ namespace windows_client.DbUtils
                             if (fromUser == null || fromUser == message.Msisdn)
                             {
                                 message.MessageStatus = (ConvMessage.State)val;
-                              
+
                                 msisdn = message.Msisdn;
-                                shouldSubmit = true;
-                            }
-                        }
-
-                        if (sender != null)
-                        {
-                            if (message.ReadByArray == null)
-                                message.ReadByArray = new JArray();
-
-                            if (!message.ReadByArray.Contains(sender))
-                            {
-                                message.ReadByArray.Add(sender);
-                                message.ReadByInfo = message.ReadByArray.ToString();
                                 shouldSubmit = true;
                             }
                         }
                     }
                 }
+
                 if (shouldSubmit)
                     SubmitWithConflictResolve(context);
+               
                 shouldSubmit = false;
 
-                return msisdn;
+                foreach (var message in messageList)
+                {
+                    if (message != null && sender != null)
+                    {
+                        if (message.ReadByArray == null)
+                            message.ReadByArray = new JArray();
+
+                        if (!message.ReadByArray.Contains(sender))
+                        {
+                            message.ReadByArray.Add(sender);
+                            message.ReadByInfo = message.ReadByArray.ToString();
+                            shouldSubmit = true;
+                        }
+                    }
+                }
+
+                if (shouldSubmit)
+                    SubmitWithConflictResolve(context);
             }
 
+            messageList.Clear();
+
+            return msisdn;
         }
 
         public static void deleteAllMessages()
