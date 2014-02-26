@@ -105,6 +105,8 @@ namespace windows_client.Model
                     _timeStamp = value;
                     NotifyPropertyChanged("TimeStamp");
                     NotifyPropertyChanged("FormattedTimeStamp");
+                    NotifyPropertyChanged("TimeStampVisibility");
+                    NotifyPropertyChanged("MuteIconTimeStampVisibility");
                 }
             }
         }
@@ -212,6 +214,7 @@ namespace windows_client.Model
                     _muteVal = value;
 
                 NotifyPropertyChanged("MuteIconVisibility");
+                NotifyPropertyChanged("MuteIconTimeStampVisibility");
             }
         }
 
@@ -369,11 +372,27 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility TimeStampVisibility
+        {
+            get
+            {
+                return String.IsNullOrEmpty(LastMessage) ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        public Visibility MuteIconTimeStampVisibility
+        {
+            get
+            {
+                return TimeStampVisibility == Visibility.Visible || MuteIconVisibility == Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
         public string FormattedTimeStamp
         {
             get
             {
-                return TimeUtils.getTimeString(_timeStamp);
+                return TimeUtils.getTimeString(TimeStamp);
             }
         }
 
