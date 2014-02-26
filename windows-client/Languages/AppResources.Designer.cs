@@ -2633,29 +2633,29 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to read by {0} and {1} others.
+        /// </summary>
+        public static string MessageStatus_ReadByMoreThanThree {
+            get {
+                return ResourceManager.GetString("MessageStatus_ReadByMoreThanThree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to read by {0}.
         /// </summary>
-        public static string MessageStatus_ReadBySingle {
+        public static string MessageStatus_ReadByOneOrTwo {
             get {
-                return ResourceManager.GetString("MessageStatus_ReadBySingle", resourceCulture);
+                return ResourceManager.GetString("MessageStatus_ReadByOneOrTwo", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to read by {0} and 1 other.
         /// </summary>
-        public static string MessageStatus_ReadByTwo {
+        public static string MessageStatus_ReadByThree {
             get {
-                return ResourceManager.GetString("MessageStatus_ReadByTwo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to read by {0} and {1} others.
-        /// </summary>
-        public static string MessageStatus_ReadByTwoOrMore {
-            get {
-                return ResourceManager.GetString("MessageStatus_ReadByTwoOrMore", resourceCulture);
+                return ResourceManager.GetString("MessageStatus_ReadByThree", resourceCulture);
             }
         }
         

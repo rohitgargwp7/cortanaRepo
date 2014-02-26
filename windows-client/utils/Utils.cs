@@ -630,11 +630,11 @@ namespace windows_client.utils
             }
 
             if (count == 0)
-                readBy = string.Format(AppResources.MessageStatus_ReadBySingle, readBy);
+                readBy = string.Format(AppResources.MessageStatus_ReadByOneOrTwo, readBy);
             else if (count == 1)
-                readBy = string.Format(AppResources.MessageStatus_ReadByTwo, readBy);
+                readBy = string.Format(AppResources.MessageStatus_ReadByThree, readBy);
             else
-                readBy = string.Format(AppResources.MessageStatus_ReadByTwoOrMore, readBy, count);
+                readBy = string.Format(AppResources.MessageStatus_ReadByMoreThanThree, readBy, count);
 
             return readBy;
         }
