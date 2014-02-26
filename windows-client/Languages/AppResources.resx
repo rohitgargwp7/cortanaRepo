@@ -1327,10 +1327,6 @@ Download it now http://hike.in and join the fun!</value>
     <value>account</value>
     <comment>Profile (xaml)</comment>
   </data>
-  <data name="Delete_Txt_Caps" xml:space="preserve">
-    <value>delete</value>
-    <comment>Privacy page (xaml)</comment>
-  </data>
   <data name="Logout_Txt" xml:space="preserve">
     <value>logout</value>
     <comment>Privacy page (xaml)</comment>
@@ -2023,7 +2019,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>{0} just changed the chat theme. To use the new chat themes, upgrade hike. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>More gorgeous themes here...</value>
+    <value>Check out the special 'I Love You' Theme!</value>
   </data>
   <data name="ChatThemeHeader_Txt" xml:space="preserve">
     <value>chat themes</value>
@@ -2046,15 +2042,15 @@ Download it now http://hike.in and join the fun!</value>
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>What are holidays without any gifts? Happy Hiking!</value>
+    <value>Celebrate the month of love! We have a gift for you...</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">
-    <value>Open gift ...</value>
+    <value>Open Gift</value>
     <comment>max chars(30)</comment>
   </data>
   <data name="Chat_FTUE_personalise" xml:space="preserve">
-    <value>Personalise your chat with gorgeus themes.</value>
+    <value>Personalise your chat with gorgeous themes.</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">

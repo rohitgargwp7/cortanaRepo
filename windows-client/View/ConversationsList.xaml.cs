@@ -24,7 +24,6 @@ using windows_client.ViewModel;
 using Microsoft.Phone.Net.NetworkInformation;
 using System.Collections.ObjectModel;
 using windows_client.Controls;
-using windows_client.Controls.StatusUpdate;
 using Coding4Fun.Phone.Controls;
 using System.Windows.Media;
 using System.Linq;
@@ -130,27 +129,31 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (overlaySnow.Visibility == Visibility.Visible)
-            {
-                overlaySnow.Visibility = Visibility.Collapsed;
-                launchPagePivot.IsHitTestVisible = true;
-                appBar.IsVisible = true;
-                SystemTray.IsVisible = true;
-            }
+
+
             if (launchPagePivot.SelectedIndex == 3)
             {
                 TotalUnreadStatuses = 0;
 
                 if (isStatusMessagesLoaded)
+                {
                     statusLLS.ItemsSource = App.ViewModel.StatusList;
+
+                    if (_statusSelectedIndex >= 0)
+                    {
+                        //retain scroll position
+                        statusLLS.ScrollTo(statusLLS.ItemsSource[_statusSelectedIndex]);
+                        _statusSelectedIndex = -1;
+                    }
+                }
             }
 
             if (_isFavListBound && launchPagePivot.SelectedIndex == 1)
                 BindFriendsAsync();
 
             this.llsConversations.SelectedItem = null;
-            this.statusLLS.SelectedIndex = -1;
-
+            this.statusLLS.SelectedItem = null;
+               
             App.IS_TOMBSTONED = false;
             App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
             App.newChatThreadPage = null;
@@ -158,8 +161,18 @@ namespace windows_client.View
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
 
-            if (appSettings.Contains(HikeConstants.SHOW_CHAT_FTUE))
-                StartSnowAnimation();
+            if (appSettings.TryGetValue(HikeConstants.SHOW_CHAT_FTUE, out showNormalFtue))
+            {
+                if (!animationPartOneCompleted)
+                    StartSnowAnimation();
+            }
+            else if (overlaySnow.Visibility == Visibility.Visible)
+            {
+                overlaySnow.Visibility = Visibility.Collapsed;
+                launchPagePivot.IsHitTestVisible = true;
+                appBar.IsVisible = true;
+                SystemTray.IsVisible = true;
+            }
 
             if (firstLoad)
             {
@@ -313,10 +326,7 @@ namespace windows_client.View
         }
         #endregion
 
-        private void CircleOfFriends_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            launchPagePivot.SelectedIndex = 1;
-        }
+        
         #endregion
 
         #region ConvList Page
@@ -412,11 +422,17 @@ namespace windows_client.View
                     //cannot use convMap here because object has pushed to map but not to ui
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                      {
-                         if (App.ViewModel.MessageListPageCollection.Contains(convObj))
+                         int index = App.ViewModel.MessageListPageCollection.IndexOf(convObj);
+                         if (index < 0)//not present in oc
                          {
-                             App.ViewModel.MessageListPageCollection.Remove(convObj);
+                             App.ViewModel.MessageListPageCollection.Insert(0, convObj);
                          }
-                         App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                         else if (index > 0)
+                         {
+                             App.ViewModel.MessageListPageCollection.RemoveAt(index);
+                             App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                         }//if already at zero, do nothing
+
                          emptyScreenImage.Opacity = 0;
                          emptyScreenTip.Opacity = 0;
                      });
@@ -576,6 +592,27 @@ namespace windows_client.View
                 rewardsPanel.Visibility = Visibility.Visible;
 
             txtStatus.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
+            SetUserLastStatus();
+
+            int rew_val = 0;
+
+            string name;
+            appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
+            if (name != null)
+                accountName.Text = name;
+            int smsCount = 0;
+            App.appSettings.TryGetValue<int>(App.SMS_SETTING, out smsCount);
+            creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, smsCount);
+
+            Stopwatch st = Stopwatch.StartNew();
+            avatarImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("Time to fetch profile image : {0}", msec);
+        }
+
+        private void SetUserLastStatus()
+        {
             int moodId;
             string lastStatus = StatusMsgsTable.GetLastStatusMessage(out moodId);
             if (!string.IsNullOrEmpty(lastStatus))
@@ -598,21 +635,6 @@ namespace windows_client.View
                 txtStatus.Text = AppResources.Conversations_DefaultStatus_Txt;
                 //todo:change default status
             }
-            int rew_val = 0;
-
-            string name;
-            appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
-            if (name != null)
-                accountName.Text = name;
-            int smsCount = 0;
-            App.appSettings.TryGetValue<int>(App.SMS_SETTING, out smsCount);
-            creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, smsCount);
-
-            Stopwatch st = Stopwatch.StartNew();
-            avatarImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to fetch profile image : {0}", msec);
         }
 
         #endregion
@@ -741,23 +763,23 @@ namespace windows_client.View
         }
 
         bool isContactListLoaded = false;
+        int _oldIndex = 0, _newIndex = 0;
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            PivotItem pItem = e.AddedItems[0] as PivotItem;
-            var panorama = pItem.Parent as Pivot;
-            var selectedIndex = panorama.SelectedIndex;
+            _oldIndex = _newIndex;
+            _newIndex = (sender as Pivot).SelectedIndex;
 
-            if (selectedIndex != 3 && RefreshBarCount > 0)
+            if (_newIndex != 3 && _oldIndex == 3 && RefreshBarCount > 0)
                 UpdatePendingStatusFromRefreshBar();
 
-            if (selectedIndex == 0)
+            if (_newIndex == 0)
             {
                 if (!appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Insert(0, delConvsMenu);
 
                 gridToggleStatus.Visibility = Visibility.Collapsed;
             }
-            else if (selectedIndex == 1) // favourite
+            else if (_newIndex == 1) // favourite
             {
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
@@ -850,11 +872,11 @@ namespace windows_client.View
                 }
                 #endregion
             }
-            else if (selectedIndex == 2)
+            else if (_newIndex == 2)
             {
                 gridToggleStatus.Visibility = Visibility.Collapsed;
             }
-            else if (selectedIndex == 3)
+            else if (_newIndex == 3)
             {
                 ProTipCount = 0;
 
@@ -880,8 +902,8 @@ namespace windows_client.View
 
                         foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
                         {
-                            FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click, statusBubblePhoto_Tap);
-                            App.ViewModel.StatusList.Add(frs);
+                            var friendRequest = new FriendRequestStatusUpdate(co);
+                            App.ViewModel.StatusList.Add(friendRequest);
                         }
 
                         if (statusMessagesFromDB != null)
@@ -895,11 +917,9 @@ namespace windows_client.View
                                 if (i < TotalUnreadStatuses)
                                     statusMessagesFromDB[i].IsUnread = true;
 
-                                StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], true,
-                                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap);
-
-                                if (statusUpdate != null)
-                                    App.ViewModel.StatusList.Add(statusUpdate);
+                                var status = StatusUpdateHelper.Instance.CreateStatusUpdate(statusMessagesFromDB[i], true);
+                                if (status != null)
+                                    App.ViewModel.StatusList.Add(status);
                             }
                         }
 
@@ -908,7 +928,7 @@ namespace windows_client.View
                         if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
                         {
                             string firstName = Utils.GetFirstName(accountName.Text);
-                            App.ViewModel.StatusList.Add(new DefaultStatusUpdateUC(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName), CircleOfFriends_Tap, UpdateStatus_Tap));
+                            App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
                         }
 
                         RefreshBarCount = 0;
@@ -940,7 +960,7 @@ namespace windows_client.View
                         statusLLS.ItemsSource = App.ViewModel.StatusList;
                 }
             }
-            if (selectedIndex != 3)
+            if (_newIndex != 3)
             {
                 if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
                     TotalUnreadStatuses = 0;
@@ -1069,10 +1089,10 @@ namespace windows_client.View
                             if (ProTipHelper.CurrentProTip != null)
                                 index = 1;
 
-                            if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC)
+                            if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus)
                                 App.ViewModel.StatusList.RemoveAt(index);
 
-                            FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click, statusBubblePhoto_Tap);
+                            FriendRequestStatusUpdate frs = new FriendRequestStatusUpdate(co);
                             App.ViewModel.StatusList.Insert(index, frs);
 
                         }
@@ -1157,7 +1177,12 @@ namespace windows_client.View
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-
+                    //if its image update and status are laoded, update each status userImage async
+                    if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE && isStatusMessagesLoaded)
+                    {
+                        UpdateUserImageInStatus(sm);
+                    } 
+                    
                     if (sm.Msisdn == App.MSISDN || sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
                     {
                         if (sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
@@ -1171,22 +1196,22 @@ namespace windows_client.View
 
                             txtStatus.Text = sm.Message;
                         }
+                        
                         // if status list is not loaded simply ignore this packet , as then this packet will
                         // be shown twice , one here and one from DB.
                         if (isStatusMessagesLoaded)
                         {
-                            StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(sm, true,
-                                statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap);
-                            if (statusUpdate != null)
+                            var status = StatusUpdateHelper.Instance.CreateStatusUpdate(sm, true);
+                            if (status != null)
                             {
                                 int index = 0;
                                 if (ProTipHelper.CurrentProTip != null)
                                     index = 1;
 
-                                if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC)
+                                if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus)
                                     App.ViewModel.StatusList.RemoveAt(index);
                                 int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
-                                App.ViewModel.StatusList.Insert(count + index, statusUpdate);
+                                App.ViewModel.StatusList.Insert(count + index, status);
                             }
                         }
                     }
@@ -1194,6 +1219,7 @@ namespace windows_client.View
                     {
                         if (!sm.ShowOnTimeline)
                             return;
+                        
                         // here we have to check 2 way firendship
                         if (launchPagePivot.SelectedIndex == 3)
                         {
@@ -1205,18 +1231,17 @@ namespace windows_client.View
                             // be shown twice , one here and one from DB.
                             if (isStatusMessagesLoaded)
                             {
-                                StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(sm, true,
-                                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap);
-                                if (statusUpdate != null)
+                                var status = StatusUpdateHelper.Instance.CreateStatusUpdate(sm, true);
+                                if (status != null)
                                 {
                                     int index = 0;
                                     if (ProTipHelper.CurrentProTip != null)
                                         index = 1;
 
-                                    if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC)
+                                    if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus)
                                         App.ViewModel.StatusList.RemoveAt(index);
                                     int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
-                                    App.ViewModel.StatusList.Insert(count + index, statusUpdate);
+                                    App.ViewModel.StatusList.Insert(count + index, status);
                                 }
                             }
                         }
@@ -1241,7 +1266,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    StatusUpdateBox sb = obj as StatusUpdateBox;
+                    BaseStatusUpdate sb = obj as BaseStatusUpdate;
                     if (sb != null)
                     {
                         App.ViewModel.StatusList.Remove(sb);
@@ -1254,8 +1279,11 @@ namespace windows_client.View
                         if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
                         {
                             string firstName = Utils.GetFirstName(accountName.Text);
-                            App.ViewModel.StatusList.Add(new DefaultStatusUpdateUC(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName), CircleOfFriends_Tap, UpdateStatus_Tap));
+                            App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
                         }
+
+                        if(sb.Msisdn == App.MSISDN && sb is TextStatus)
+                            SetUserLastStatus();
                     }
                 });
             }
@@ -1408,9 +1436,9 @@ namespace windows_client.View
                         {
                             for (int i = 0; i < App.ViewModel.StatusList.Count; i++)
                             {
-                                if (App.ViewModel.StatusList[i] is FriendRequestStatus)
+                                if (App.ViewModel.StatusList[i] is FriendRequestStatusUpdate)
                                 {
-                                    FriendRequestStatus f = App.ViewModel.StatusList[i] as FriendRequestStatus;
+                                    FriendRequestStatusUpdate f = App.ViewModel.StatusList[i] as FriendRequestStatusUpdate;
                                     if (f.Msisdn == c.Msisdn)
                                     {
                                         Dispatcher.BeginInvoke(() =>
@@ -1422,6 +1450,12 @@ namespace windows_client.View
                                             try
                                             {
                                                 App.ViewModel.StatusList.Remove(f);
+
+                                                if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
+                                                {
+                                                    string firstName = Utils.GetFirstName(accountName.Text);
+                                                    App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
+                                                }
                                             }
                                             catch (Exception e)
                                             {
@@ -1568,7 +1602,7 @@ namespace windows_client.View
                             bool isNewUserAdded = false;
                             foreach (ContactInfo cinfo in listAddedContacts)
                             {
-                                if (cinfo.OnHike && !App.ViewModel.Isfavourite(cinfo.Msisdn) && !App.ViewModel.ContactsCache.ContainsKey(cinfo.Msisdn))
+                                if (cinfo.OnHike && !App.ViewModel.Isfavourite(cinfo.Msisdn) && hikeContactList.Where(c => c.Msisdn == cinfo.Msisdn).Count() == 0)
                                 {
                                     hikeContactList.Add(cinfo);
                                     isNewUserAdded = true;
@@ -1592,6 +1626,7 @@ namespace windows_client.View
                            foreach (ContactInfo cinfo in listDeletedContacts)
                            {
                                hikeContactList.Remove(cinfo);
+                               App.ViewModel.ContactsCache.Remove(cinfo.Msisdn);
                            }
                            cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                            if (hikeContactList.Count == 0)
@@ -1610,6 +1645,17 @@ namespace windows_client.View
                 ShowAppUpdateAvailableMessage();
             }
             #endregion
+        }
+
+        private async void UpdateUserImageInStatus(StatusMessage sm)
+        {
+            await Task.Delay(1);
+
+            foreach (var status in App.ViewModel.StatusList)
+            {
+                if (status.Msisdn == sm.Msisdn)
+                    status.UpdateImage();
+            }
         }
 
         #endregion
@@ -1719,6 +1765,13 @@ namespace windows_client.View
 
         #region CONTEXT MENUS
 
+        private void ContextMenu_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ContextMenu contextMenu = sender as ContextMenu;
+
+            contextMenu.ClearValue(FrameworkElement.DataContextProperty);
+        }
+
         private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chat_Confirmation, AppResources.Conversations_DelChat_Txt, MessageBoxButton.OKCancel);
@@ -1772,8 +1825,11 @@ namespace windows_client.View
                     if (App.ViewModel.ContactsCache.ContainsKey(convObj.Msisdn))
                         c = App.ViewModel.ContactsCache[convObj.Msisdn];
                     else
+                    {
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
-                    c.Avatar = convObj.Avatar;
+                        c.Avatar = convObj.Avatar;
+                    }
+
                     c.IsUsedAtMiscPlaces = true;
                     if (c.Msisdn != App.MSISDN && isContactListLoaded)
                     {
@@ -2070,8 +2126,11 @@ namespace windows_client.View
                     if (App.ViewModel.ContactsCache.ContainsKey(convObj.Msisdn))
                         c = App.ViewModel.ContactsCache[convObj.Msisdn];
                     else
+                    {
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
-                    c.Avatar = convObj.Avatar;
+                        c.Avatar = convObj.Avatar;
+                    }
+
                     c.IsUsedAtMiscPlaces = true;
                     if (c.Msisdn != App.MSISDN)
                     {
@@ -2138,7 +2197,8 @@ namespace windows_client.View
                 }
                 else
                 {
-                    cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, contactInfo.Avatar);
+                    var bytes = contactInfo.Avatar == null ? UI_Utils.Instance.ConvertToBytes(contactInfo.AvatarImage) : contactInfo.Avatar;
+                    cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, bytes);
                 }
                 contactInfo.IsUsedAtMiscPlaces = true;
                 hikeContactList.Remove(contactInfo);
@@ -2214,26 +2274,25 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        if (_refreshBarCount == 0 && value > 0)
+                        {
+                            refreshBarButton.Visibility = System.Windows.Visibility.Visible;
+                        } 
+                        else if (_refreshBarCount > 0 && value == 0)
+                        {
+                            refreshBarButton.Visibility = System.Windows.Visibility.Collapsed;
+                            FreshStatusUpdates.Clear();
+                        }
+                        if (refreshBarButton.Visibility == System.Windows.Visibility.Visible && value > 0)
+                        {
+                            if (value == 1)
+                                refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_SingleStatus, value);
+                            else
+                                refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_Status, value);
+                        }
+
                         if (launchPagePivot.SelectedIndex == 3)
                         {
-                            if (_refreshBarCount == 0 && value > 0)
-                            {
-                                refreshStatusBackground.Visibility = System.Windows.Visibility.Visible;
-                                refreshBarPanel.Visibility = System.Windows.Visibility.Visible;
-                            }
-                            else if (_refreshBarCount > 0 && value == 0)
-                            {
-                                refreshStatusBackground.Visibility = System.Windows.Visibility.Collapsed;
-                                refreshBarPanel.Visibility = System.Windows.Visibility.Collapsed;
-                                FreshStatusUpdates.Clear();
-                            }
-                            if (refreshBarPanel.Visibility == System.Windows.Visibility.Visible && value > 0)
-                            {
-                                if (value == 1)
-                                    refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_SingleStatus, value);
-                                else
-                                    refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_Status, value);
-                            }
                             setNotificationCounter(0);
                         }
                         else
@@ -2338,8 +2397,7 @@ namespace windows_client.View
                 notificationCountTxtBlk.Text = newCounterValue.ToString();
         }
 
-
-        private void refreshStatuses_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void refreshStatuses_Tap(object sender, RoutedEventArgs e)
         {
             UpdatePendingStatusFromRefreshBar();
         }
@@ -2350,32 +2408,32 @@ namespace windows_client.View
             if (ProTipHelper.CurrentProTip != null)
                 index = 1;
 
-            if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC && FreshStatusUpdates != null && FreshStatusUpdates.Count > 0)
+            if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus && FreshStatusUpdates != null && FreshStatusUpdates.Count > 0)
                 App.ViewModel.StatusList.RemoveAt(index);
 
             // this fix will solve the possible crash , suggested by nitesh
             int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count + index : index;
             for (int i = 0; i < (FreshStatusUpdates != null ? FreshStatusUpdates.Count : 0); i++)
             {
-                StatusUpdateBox statusUpdate = StatusUpdateHelper.Instance.createStatusUIObject(FreshStatusUpdates[i], true,
-                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap);
-                if (statusUpdate != null)
+                var status = StatusUpdateHelper.Instance.CreateStatusUpdate(FreshStatusUpdates[i], true);
+                if (status != null)
                 {
-                    App.ViewModel.StatusList.Insert(pendingCount, statusUpdate);
+                    App.ViewModel.StatusList.Insert(pendingCount, status);
                 }
             }
 
             if (pendingCount > index)
             {
-                if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatusUpdateUC)
+                if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus)
                     App.ViewModel.StatusList.RemoveAt(index);
 
                 if (App.ViewModel.StatusList.Count > pendingCount)
-                    statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount]);
+                    statusLLS.ScrollTo(App.ViewModel.StatusList[pendingCount]);
             }
 
             RefreshBarCount = 0;
         }
+
         private void postStatusBtn_Click(object sender, EventArgs e)
         {
             if (TutorialStatusUpdate.Visibility == Visibility.Visible)
@@ -2390,83 +2448,100 @@ namespace windows_client.View
             NavigationService.Navigate(nextPage);
         }
 
-        private void yes_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        bool _buttonInsideStatusUpdateTapped = false;
+
+        private void yes_Click(object sender, RoutedEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
-            FriendRequestStatus fObj = (sender as Button).DataContext as FriendRequestStatus;
-            App.ViewModel.StatusList.Remove(fObj);
-            FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
-            if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
-                return;
+            FriendRequestStatusUpdate fObj = (sender as Button).DataContext as FriendRequestStatusUpdate;
+            if (fObj != null)
+            {
+                _buttonInsideStatusUpdateTapped = true;
+                App.ViewModel.StatusList.Remove(fObj);
+                FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
+                if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
+                    return;
 
-            ConversationListObject cObj = null;
-            ContactInfo cn = null;
-            if (App.ViewModel.ConvMap.ContainsKey(fObj.Msisdn))
-            {
-                cObj = App.ViewModel.ConvMap[fObj.Msisdn];
-                cObj.IsFav = true;
-            }
-            else
-            {
-                if (App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
-                    cn = App.ViewModel.ContactsCache[fObj.Msisdn];
+                ConversationListObject cObj = null;
+                ContactInfo cn = null;
+                if (App.ViewModel.ConvMap.ContainsKey(fObj.Msisdn))
+                {
+                    cObj = App.ViewModel.ConvMap[fObj.Msisdn];
+                    cObj.IsFav = true;
+                }
                 else
                 {
-                    cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
-                    if (cn != null)
-                        App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
+                    if (App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
+                        cn = App.ViewModel.ContactsCache[fObj.Msisdn];
+                    else
+                    {
+                        cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
+                        if (cn != null)
+                            App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
+                    }
+                    bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
+                    cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
                 }
-                bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
-                cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
+                if (cn == null && App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
+                {
+                    cn = App.ViewModel.ContactsCache[fObj.Msisdn];
+                    cn.IsUsedAtMiscPlaces = true;
+                }
+                if (cn != null)
+                {
+                    hikeContactList.Remove(cn);
+                    cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
+                }
+                App.ViewModel.FavList.Insert(0, cObj);
+                App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
+                cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
+                JObject data = new JObject();
+                data["id"] = fObj.Msisdn;
+                JObject obj = new JObject();
+                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+                obj[HikeConstants.DATA] = data;
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                MiscDBUtil.SaveFavourites();
+                MiscDBUtil.SaveFavourites(cObj);
+                MiscDBUtil.SavePendingRequests();
+                int count = 0;
+                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+                if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
+                {
+                    emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
+                    favourites.Visibility = System.Windows.Visibility.Visible;
+                }
+                StatusMessage sm = new StatusMessage(fObj.Msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1);
+                mPubSub.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
+                mPubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
             }
-            if (cn == null && App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
-            {
-                cn = App.ViewModel.ContactsCache[fObj.Msisdn];
-                cn.IsUsedAtMiscPlaces = true;
-            }
-            if (cn != null)
-            {
-                hikeContactList.Remove(cn);
-                cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
-            }
-            App.ViewModel.FavList.Insert(0, cObj);
-            App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
-            cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
-            JObject data = new JObject();
-            data["id"] = fObj.Msisdn;
-            JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
-            obj[HikeConstants.DATA] = data;
-            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-            MiscDBUtil.SaveFavourites();
-            MiscDBUtil.SaveFavourites(cObj);
-            MiscDBUtil.SavePendingRequests();
-            int count = 0;
-            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-            App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
-            if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
-            {
-                emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
-                favourites.Visibility = System.Windows.Visibility.Visible;
-            }
-            StatusMessage sm = new StatusMessage(fObj.Msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1);
-            mPubSub.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
-            mPubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
         }
 
-        private void no_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        private void no_Click(object sender, RoutedEventArgs e)
         {
-            FriendRequestStatus fObj = (sender as Button).DataContext as FriendRequestStatus;
-            JObject data = new JObject();
-            data["id"] = fObj.Msisdn;
-            JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
-            obj[HikeConstants.DATA] = data;
-            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-            App.ViewModel.StatusList.Remove(fObj);
-            App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
-            MiscDBUtil.SavePendingRequests();
-            FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
+            FriendRequestStatusUpdate fObj = (sender as Button).DataContext as FriendRequestStatusUpdate;
+            if (fObj != null)
+            {
+                _buttonInsideStatusUpdateTapped = true;
+                JObject data = new JObject();
+                data["id"] = fObj.Msisdn;
+                JObject obj = new JObject();
+                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
+                obj[HikeConstants.DATA] = data;
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                App.ViewModel.StatusList.Remove(fObj);
+                App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
+
+                if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
+                {
+                    string firstName = Utils.GetFirstName(accountName.Text);
+                    App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
+                }
+
+                MiscDBUtil.SavePendingRequests();
+                FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
+            }
         }
 
         private void notification_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -2487,107 +2562,132 @@ namespace windows_client.View
                     {
                         int x = pendingCount - UnreadFriendRequests;
                         if (x >= 0 && App.ViewModel.StatusList.Count > (x + index))
-                            statusLLS.ScrollIntoView(App.ViewModel.StatusList[x + index]); //handling index out of bounds exception
+                            statusLLS.ScrollTo(App.ViewModel.StatusList[x + index]); //handling index out of bounds exception
                     }
                     //scroll to latest unread status
                     else if ((App.ViewModel.StatusList.Count > (pendingCount + index)) && RefreshBarCount > 0) //handling index out of bounds exception
                     {
-                        statusLLS.ScrollIntoView(App.ViewModel.StatusList[pendingCount + index]);
+                        statusLLS.ScrollTo(App.ViewModel.StatusList[pendingCount + index]);
                     }
                 }
             }
         }
 
+        int _statusSelectedIndex = -1;
+
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (statusLLS.SelectedItem != null && statusLLS.SelectedItem is ImageStatusUpdate)
+            string[] statusImageInfo = new string[2];
+            ImageStatus statusUpdate = (sender as Image).DataContext as ImageStatus;
+            if (statusUpdate != null)
             {
-                string[] statusImageInfo = new string[2];
-                ImageStatusUpdate statusUpdate = (statusLLS.SelectedItem as ImageStatusUpdate);
+                _statusSelectedIndex = App.ViewModel.StatusList.IndexOf(statusUpdate);
+
                 statusImageInfo[0] = statusUpdate.Msisdn;
-                statusImageInfo[1] = statusUpdate.serverId;
+                statusImageInfo[1] = statusUpdate.ServerId;
                 PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = statusImageInfo;
                 Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
                 NavigationService.Navigate(nextPage);
             }
         }
 
-
         //tap event of photo in status bubble
         private void statusBubblePhoto_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (statusLLS.SelectedItem != null && statusLLS.SelectedItem is StatusUpdateBox)
+            BaseStatusUpdate sb = (sender as Image).DataContext as BaseStatusUpdate;
+            if (sb == null)
+                return;
+
+            _statusSelectedIndex = App.ViewModel.StatusList.IndexOf(sb);
+
+            Object[] obj = new Object[2];
+            obj[0] = sb.Msisdn;
+            obj[1] = sb.UserName;
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = obj;
+            NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+        }
+
+        private void statusItem_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (_buttonInsideStatusUpdateTapped)
             {
-                StatusUpdateBox sb = statusLLS.SelectedItem as StatusUpdateBox;
-                if (sb == null)
-                    return;
+                _buttonInsideStatusUpdateTapped = false;
+                return;
+            } 
+            
+            BaseStatusUpdate status = (sender as Grid).DataContext as BaseStatusUpdate;
+            if (status == null || status is ProTipStatusUpdate)
+                return;
+
+            _statusSelectedIndex = App.ViewModel.StatusList.IndexOf(status);
+
+            if (_hyperlinkedInsideStatusUpdateClicked)
+            {
+                _hyperlinkedInsideStatusUpdateClicked = false;
+                return;
+            }
+
+            if (status.Msisdn == App.MSISDN)
+            {
                 Object[] obj = new Object[2];
-                obj[0] = sb.Msisdn;
-                obj[1] = sb.UserName;
+                obj[0] = status.Msisdn;
+                obj[1] = status.UserName;
                 PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = obj;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+                return;
             }
-        }
 
-        private void statusBox_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (statusLLS.SelectedItem != null && statusLLS.SelectedItem is StatusUpdateBox)
+            if (App.ViewModel.ConvMap.ContainsKey(status.Msisdn))
+                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = App.ViewModel.ConvMap[status.Msisdn];
+            else
             {
-                StatusUpdateBox stsBox = statusLLS.SelectedItem as StatusUpdateBox;
-                if (stsBox == null)
-                    return;
-
-                if (stsBox.Msisdn == App.MSISDN)
+                ConversationListObject cFav = App.ViewModel.GetFav(status.Msisdn);
+                if (cFav != null)
                 {
-                    Object[] obj = new Object[2];
-                    obj[0] = stsBox.Msisdn;
-                    obj[1] = stsBox.UserName;
-                    PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = obj;
-                    NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
-                    return;
+                    if (!_isFavListBound)
+                        cFav.Avatar = MiscDBUtil.getThumbNailForMsisdn(cFav.Msisdn);
+
+                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = cFav;
                 }
-                if (App.ViewModel.ConvMap.ContainsKey(stsBox.Msisdn))
-                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = App.ViewModel.ConvMap[stsBox.Msisdn];
                 else
                 {
-                    ConversationListObject cFav = App.ViewModel.GetFav(stsBox.Msisdn);
-                    if (cFav != null)
-                        PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = cFav;
-                    else
+                    ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
+                    if (contactInfo == null)
                     {
-                        ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(stsBox.Msisdn);
-                        if (contactInfo == null)
-                        {
-                            contactInfo = new ContactInfo();
-                            contactInfo.Msisdn = stsBox.Msisdn;
-                            contactInfo.OnHike = true;
-                        }
-                        PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
+                        contactInfo = new ContactInfo();
+                        contactInfo.Msisdn = status.Msisdn;
+                        contactInfo.OnHike = true;
                     }
+                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
                 }
-                NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
             }
+
+            NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
         }
 
-        private void UpdateStatus_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void UpdateStatus_Click(object sender, RoutedEventArgs e)
         {
             Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
         }
 
+        private void CircleOfFriends_Click(object sender, RoutedEventArgs e)
+        {
+            launchPagePivot.SelectedIndex = 1;
+        }
 
         #endregion
 
         #region Pro Tips
 
-        private void dismissProTip_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        private void dismissProTip_Click(object sender, RoutedEventArgs e)
         {
             bool isPresent = false;
             int i;
 
             for (i = 0; i < App.ViewModel.StatusList.Count; i++)
             {
-                if (App.ViewModel.StatusList[i] is ProTipUC)
+                if (App.ViewModel.StatusList[i] is ProTipStatusUpdate)
                 {
                     isPresent = true;
                     break;
@@ -2637,11 +2737,11 @@ namespace windows_client.View
         {
             if (ProTipHelper.CurrentProTip != null)
             {
-                if (App.ViewModel.StatusList != null && App.ViewModel.StatusList.Count > 0 && App.ViewModel.StatusList[0] is ProTipUC)
+                if (App.ViewModel.StatusList != null && App.ViewModel.StatusList.Count > 0 && App.ViewModel.StatusList[0] is ProTipStatusUpdate)
                     App.ViewModel.StatusList.RemoveAt(0);
 
-                var proTipUc = new ProTipUC(ProTipImage_Tapped, dismissProTip_Click);
-                App.ViewModel.StatusList.Insert(0, proTipUc);
+                var proTipStatus = new ProTipStatusUpdate();
+                App.ViewModel.StatusList.Insert(0, proTipStatus);
 
                 ProTipCount = 1;
             }
@@ -2778,113 +2878,135 @@ namespace windows_client.View
         #endregion
 
         #region Snowflake animation
-        int count = 0;
-        DispatcherTimer t;
+        //int count = 0;
+        //DispatcherTimer t;
+
+        bool showNormalFtue;
+        bool animationPartOneCompleted;
+
         void StartSnowAnimation()
         {
             overlaySnow.Visibility = Visibility.Visible;
             launchPagePivot.IsHitTestVisible = false;
             appBar.IsVisible = false;
             SystemTray.IsVisible = false;
-            gridSnowFlakes.Opacity = 0;
-            for (int i = 0; i < 120; i++)
-                Snow(true);
-
-            //done so that on app minimise and relaunch this doesnot happen twice
-            if (t == null)
-            {
-                t = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(6) };
-                t.Stop();
-            }
-            t.Tick -= t_Tick;
-            t.Tick += t_Tick;
-
-            t.Start();
-        }
-
-        void t_Tick(object sender, EventArgs e)
-        {
-            Snow(false);
-            if (count > 5)
-            {
-                if (count > 22)
-                    gridSnowFlakes.Opacity = 0.88;
-                else
-                    gridSnowFlakes.Opacity = (count) * 0.04;
-            }
-
-            if (count++ == 35)
-                Storyboard1.Begin();
-        }
-
-        Random _Random = new Random((int)DateTime.Now.Ticks);
-        private void Snow(bool isInitial)
-        {
-            if (!isInitial && (int)gridSnowFlakes.ActualHeight == 0)
-                return;
-            var x = _Random.Next(isInitial ? 0 : -100, isInitial ? 500 : (int)gridSnowFlakes.ActualWidth + 50);
-            var y = _Random.Next(isInitial ? 100 : -100, isInitial ? 700 : _Random.Next(200, _Random.Next(600, (int)gridSnowFlakes.ActualHeight - 100)));
-
-            double s;
-            var number = _Random.Next(0, 100);
-            if (number < 99)
-                s = _Random.Next(1, _Random.Next(4, 7)) * .1;
-            else
-                s = _Random.Next(10, 13) * .1;
-            //var r = _Random.Next(0, 270);
-            var flake = new Snowflake
-            {
-                RenderTransform = new CompositeTransform
+            gridSnowFlakes.Opacity = 0.8;
+            StoryBoard0.Begin();
+            StoryBoard0.Completed += (a, b) =>
                 {
-                    TranslateX = x,
-                    TranslateY = y,
-                    ScaleX = s,
-                    ScaleY = s,
-                    // Rotation = r,
-                },
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
+                    Storyboard1.Begin();
+                };
+
+            Storyboard1.Completed += (a, b) =>
+            {
+                animationPartOneCompleted = true;
             };
-            gridSnowFlakes.Children.Add(flake);
-            var d = TimeSpan.FromSeconds(_Random.Next(2, 6));
+            //for (int i = 0; i < 120; i++)
+            //    Snow(true);
 
-            x += _Random.Next(_Random.Next(-200, 0), _Random.Next(200, 500));
-            var ax = new DoubleAnimation { To = x, Duration = d };
-            Storyboard.SetTarget(ax, flake.RenderTransform);
-            Storyboard.SetTargetProperty(ax, new PropertyPath("TranslateX"));
+            ////done so that on app minimise and relaunch this doesnot happen twice
+            //if (t == null)
+            //{
+            //    t = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(6) };
+            //    t.Stop();
+            //}
+            //t.Tick -= t_Tick;
+            //t.Tick += t_Tick;
 
-            y = s > 0.9 && !isInitial ? (int)gridSnowFlakes.ActualHeight : (int)(_Random.Next(y, isInitial ? y + 400 : (int)gridSnowFlakes.ActualHeight + 200));
-            var ay = new DoubleAnimation { To = y, Duration = d };
-            Storyboard.SetTarget(ay, flake.RenderTransform);
-            Storyboard.SetTargetProperty(ay, new PropertyPath("TranslateY"));
-
-            //r += _Random.Next(90, 360);
-            //var ar = new DoubleAnimation { To = r, Duration = d };
-            //Storyboard.SetTarget(ar, flake.RenderTransform);
-            //Storyboard.SetTargetProperty(ar, new PropertyPath("Rotation"));
-
-            var story = new Storyboard();
-            story.Completed += (sender, e) => gridSnowFlakes.Children.Remove(flake);
-            story.Children.Add(ax);
-            story.Children.Add(ay);
-            //story.Children.Add(ar);
-            story.Begin();
+            //t.Start();
         }
+
+        //void t_Tick(object sender, EventArgs e)
+        //{
+        //    Snow(false);
+        //    if (count > 5)
+        //    {
+        //        if (count > 22)
+        //            gridSnowFlakes.Opacity = 0.88;
+        //        else
+        //            gridSnowFlakes.Opacity = (count) * 0.04;
+        //    }
+
+        //    if (count++ == 35)
+        //        Storyboard1.Begin();
+        //}
+
+        //Random _Random = new Random((int)DateTime.Now.Ticks);
+        //private void Snow(bool isInitial)
+        //{
+        //    if (!isInitial && (int)gridSnowFlakes.ActualHeight == 0)
+        //        return;
+        //    var x = _Random.Next(isInitial ? 0 : -100, isInitial ? 500 : (int)gridSnowFlakes.ActualWidth + 50);
+        //    var y = _Random.Next(isInitial ? 100 : -100, isInitial ? 700 : _Random.Next(200, _Random.Next(600, (int)gridSnowFlakes.ActualHeight - 100)));
+
+        //    double s;
+        //    var number = _Random.Next(0, 100);
+        //    if (number < 99)
+        //        s = _Random.Next(1, _Random.Next(4, 7)) * .1;
+        //    else
+        //        s = _Random.Next(10, 13) * .1;
+        //    //var r = _Random.Next(0, 270);
+        //    var flake = new Snowflake
+        //    {
+        //        RenderTransform = new CompositeTransform
+        //        {
+        //            TranslateX = x,
+        //            TranslateY = y,
+        //            ScaleX = s,
+        //            ScaleY = s,
+        //            // Rotation = r,
+        //        },
+        //        HorizontalAlignment = HorizontalAlignment.Left,
+        //        VerticalAlignment = VerticalAlignment.Top,
+        //    };
+        //    gridSnowFlakes.Children.Add(flake);
+        //    var d = TimeSpan.FromSeconds(_Random.Next(2, 6));
+
+        //    x += _Random.Next(_Random.Next(-200, 0), _Random.Next(200, 500));
+        //    var ax = new DoubleAnimation { To = x, Duration = d };
+        //    Storyboard.SetTarget(ax, flake.RenderTransform);
+        //    Storyboard.SetTargetProperty(ax, new PropertyPath("TranslateX"));
+
+        //    y = s > 0.9 && !isInitial ? (int)gridSnowFlakes.ActualHeight : (int)(_Random.Next(y, isInitial ? y + 400 : (int)gridSnowFlakes.ActualHeight + 200));
+        //    var ay = new DoubleAnimation { To = y, Duration = d };
+        //    Storyboard.SetTarget(ay, flake.RenderTransform);
+        //    Storyboard.SetTargetProperty(ay, new PropertyPath("TranslateY"));
+
+        //    //r += _Random.Next(90, 360);
+        //    //var ar = new DoubleAnimation { To = r, Duration = d };
+        //    //Storyboard.SetTarget(ar, flake.RenderTransform);
+        //    //Storyboard.SetTargetProperty(ar, new PropertyPath("Rotation"));
+
+        //    var story = new Storyboard();
+        //    story.Completed += (sender, e) => gridSnowFlakes.Children.Remove(flake);
+        //    story.Children.Add(ax);
+        //    story.Children.Add(ay);
+        //    //story.Children.Add(ar);
+        //    story.Begin();
+        //}
+
         private void TextBlock_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            Storyboard3.Begin();
-            GiveSpinTxtBlock.Text = App.ViewModel.MessageListPageCollection.Count > 0 ? AppResources.Chat_FTUE_giveSpin : AppResources.OK;
-            Storyboard3.Completed += (a, b) =>
-                {
-                    t.Stop();
-                    gridAnimation.Tap += GridAnimationTap;
-                };
+            if (showNormalFtue)
+            {
+                Storyboard3.Begin();
+                GiveSpinTxtBlock.Text = App.ViewModel.MessageListPageCollection.Count > 0 ? AppResources.Chat_FTUE_giveSpin : AppResources.OK;
+                Storyboard3.Completed += (a, b) =>
+                    {
+                        //t.Stop();
+                        gridAnimation.Tap += GridAnimationTap;
+                    };
+            }
+            else
+            {
+                GridAnimationTap(null, null);
+            }
         }
 
 
         private void GridAnimationTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            t.Stop();
+            //t.Stop();
             gridSnowFlakes.Children.Clear();
 
             App.RemoveKeyFromAppSettings(HikeConstants.SHOW_CHAT_FTUE);
@@ -2893,7 +3015,7 @@ namespace windows_client.View
             {
 
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
-                PhoneApplicationService.Current.State[HikeConstants.CHAT_FTUE] = true;
+                PhoneApplicationService.Current.State[HikeConstants.CHAT_FTUE] = showNormalFtue;
                 string uri = "/View/NewChatThread.xaml";
                 NavigationService.Navigate(new Uri(uri, UriKind.Relative));
             }
@@ -2912,11 +3034,11 @@ namespace windows_client.View
             ConversationListObject obj = null;
             try
             {
-                var list = App.ViewModel.MessageListPageCollection.Where(f => f.IsFav && f.IsOnhike);
+                var list = App.ViewModel.MessageListPageCollection.Where(f => f.IsFav && f.IsOnhike && !f.IsGroupChat);
 
                 if (list.Count() == 0)
                 {
-                    list = App.ViewModel.MessageListPageCollection.Where(f => f.IsOnhike);
+                    list = App.ViewModel.MessageListPageCollection.Where(f => f.IsOnhike && !f.IsGroupChat);
                     if (list.Count() == 0)
                     {
                         if (App.ViewModel.MessageListPageCollection.Count > 0)
@@ -2958,7 +3080,7 @@ namespace windows_client.View
         }
 
         #region Typing Notification
-        
+
         void ShowTypingNotification(object sender, object[] vals)
         {
             string typerMsisdn = (string)vals[0];
@@ -3025,8 +3147,24 @@ namespace windows_client.View
                 return;
             convListObj.TypingNotificationText = null;
         }
-        
+
         #endregion
 
+        //hyperlink was clicked in bubble. dont perform actions like page navigation.
+        private bool _hyperlinkedInsideStatusUpdateClicked;
+
+        void Hyperlink_Clicked(object sender, EventArgs e)
+        {
+            _hyperlinkedInsideStatusUpdateClicked = true;
+
+            App.ViewModel.Hyperlink_Clicked(sender);
+        }
+
+        void ViewMoreMessage_Clicked(object sender, EventArgs e)
+        {
+            _hyperlinkedInsideStatusUpdateClicked = true;
+
+            App.ViewModel.ViewMoreMessage_Clicked(sender);
+        }
     }
 }

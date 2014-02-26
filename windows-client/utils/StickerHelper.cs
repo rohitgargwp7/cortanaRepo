@@ -30,6 +30,8 @@ namespace windows_client.utils
         public const string CATEGORY_TROLL = "rageface";
         public const string CATEGORY_AVATARS = "avatars";
         public const string CATEGORY_INDIANS = "indian";
+        public const string CATEGORY_LOVE = "love";
+        public const string CATEGORY_ANGRY = "angry";
 
         public const string _stickerWVGAPath = "/View/images/stickers/WVGA/{0}/{1}";
         public const string _sticker720path = "/View/images/stickers/720p/{0}/{1}";
@@ -171,6 +173,8 @@ namespace windows_client.utils
             StickerCategory.CreateCategory(CATEGORY_INDIANS);
             StickerCategory.CreateCategory(CATEGORY_HUMANOID2);
             StickerCategory.CreateCategory(CATEGORY_SMILEY_EXPRESSIONS);
+            StickerCategory.CreateCategory(CATEGORY_LOVE);
+            StickerCategory.CreateCategory(CATEGORY_ANGRY);
         }
 
         /// <summary>
@@ -216,7 +220,7 @@ namespace windows_client.utils
 
             try
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     string fileName = StickerCategory.STICKERS_DIR + "\\" + (isHighres ? StickerCategory.HIGH_RESOLUTION_DIR : StickerCategory.LOW_RESOLUTION_DIR) + "\\" + category + "\\" + stickerId;
                     if (store.FileExists(fileName))
@@ -357,7 +361,7 @@ namespace windows_client.utils
         {
             lock (readWriteLock)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     string fileName = StickerCategory.STICKERS_DIR + "\\" + RECENTS_FILE;
                     if (store.FileExists(fileName))
@@ -403,7 +407,7 @@ namespace windows_client.utils
             {
                 await Task.Delay(1);
 
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     if (!store.DirectoryExists(StickerCategory.STICKERS_DIR))
                     {

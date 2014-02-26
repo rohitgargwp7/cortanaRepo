@@ -4,6 +4,8 @@ using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using System.Net.NetworkInformation;
 using Microsoft.Phone.Reactive;
+using Microsoft.Phone.Shell;
+using System.Linq;
 
 namespace windows_client.utils
 {
@@ -189,6 +191,25 @@ namespace windows_client.utils
         {
             if (App.appSettings.Contains(App.UID_SETTING) && !string.IsNullOrEmpty(_latestPushToken) && NetworkInterface.GetIsNetworkAvailable())
                 AccountUtils.postPushNotification(_latestPushToken, new AccountUtils.postResponseFunction(postPushNotification_Callback));
+        }
+
+        public void ClearTile()
+        {
+            ShellTile flipTile = ShellTile.ActiveTiles.FirstOrDefault();
+
+            if (flipTile != null)
+            {
+                IconicTileData newTileData = new IconicTileData()
+                {
+                    Count = 0,
+                    Title = "",
+                    WideContent1 = "",
+                    WideContent2 = "",
+                    WideContent3 = ""
+                };
+
+                flipTile.Update(newTileData);
+            }
         }
     }
 }

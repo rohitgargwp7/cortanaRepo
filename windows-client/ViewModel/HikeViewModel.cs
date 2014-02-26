@@ -9,7 +9,6 @@ using windows_client.DbUtils;
 using windows_client.Controls;
 using windows_client.View;
 using Microsoft.Phone.Controls;
-using windows_client.Controls.StatusUpdate;
 using System.Diagnostics;
 using System.Windows.Controls;
 using windows_client.Languages;
@@ -22,7 +21,9 @@ using System.Linq;
 using windows_client.Misc;
 using System.Threading;
 using Microsoft.Phone.Shell;
-using System.Threading.Tasks;
+using System.Windows.Documents;
+using Microsoft.Phone.Tasks;
+using Microsoft.Phone.Shell;
 
 namespace windows_client.ViewModel
 {
@@ -39,9 +40,8 @@ namespace windows_client.ViewModel
 
         private ObservableCollection<ConversationListObject> _favList = null;
 
-        private ObservableCollection<StatusUpdateBox> _statusList = new ObservableCollection<StatusUpdateBox>();
-
-        public ObservableCollection<StatusUpdateBox> StatusList
+        ObservableCollection<BaseStatusUpdate> _statusList = new ObservableCollection<BaseStatusUpdate>();
+        public ObservableCollection<BaseStatusUpdate> StatusList
         {
             get
             {
@@ -352,7 +352,6 @@ namespace windows_client.ViewModel
 
         public void onEventReceived(string type, object obj)
         {
-
             #region MESSAGE_RECEIVED
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
@@ -362,9 +361,18 @@ namespace windows_client.ViewModel
                         ConversationListObject mObj = (ConversationListObject)vals[1];
                         if (mObj == null)
                             return;
-                        App.ViewModel.MessageListPageCollection.Remove(mObj);
+
                         App.ViewModel.ConvMap[mObj.Msisdn] = mObj;
-                        App.ViewModel.MessageListPageCollection.Insert(0, mObj);
+                        int index = App.ViewModel.MessageListPageCollection.IndexOf(mObj);
+                        if (index < 0)//not present in oc
+                        {
+                            App.ViewModel.MessageListPageCollection.Insert(0, mObj);
+                        }
+                        else if (index > 0)
+                        {
+                            App.ViewModel.MessageListPageCollection.RemoveAt(index);
+                            App.ViewModel.MessageListPageCollection.Insert(0, mObj);
+                        }//if already at zero, do nothing
                     });
             }
             #endregion
@@ -527,7 +535,7 @@ namespace windows_client.ViewModel
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 180, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 262, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 30, 0), FullTipMargin = new Thickness(10, 0, 10, 55) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 15, 0), FullTipMargin = new Thickness(10, 0, 10, 55) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 75, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_7, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
@@ -640,7 +648,12 @@ namespace windows_client.ViewModel
                 }
 
                 inAppTipUC.Tip = tip.Tip;
-                inAppTipUC.Margin = tip.FullTipMargin;
+
+                if (index == 8 && App.newChatThreadPage != null && App.newChatThreadPage.IsMute)
+                    inAppTipUC.Margin = new Thickness(0, 125, 20, 0);
+                else
+                    inAppTipUC.Margin = tip.FullTipMargin;
+
                 inAppTipUC.TipIndex = index;
 
                 inAppTipUC.Dismissed += inAppTipUC_Dismissed;
@@ -783,9 +796,10 @@ namespace windows_client.ViewModel
                 App.HikePubSubInstance.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
                 App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
             }
-            foreach (StatusUpdateBox sb in App.ViewModel.StatusList)
+
+            foreach (BaseStatusUpdate sb in App.ViewModel.StatusList)
             {
-                if (sb is FriendRequestStatus)
+                if (sb is FriendRequestStatusUpdate)
                 {
                     if (sb.Msisdn == msisdn)
                     {
@@ -898,6 +912,43 @@ namespace windows_client.ViewModel
                     PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
                 }
             }
+        }
+       
+        public void Hyperlink_Clicked(object sender)
+        {
+            var obj = sender as object[];
+            Hyperlink caller = obj[0] as Hyperlink;
+            var val = (bool)obj[1];
+
+            if (val)
+            {
+                var task = new WebBrowserTask() { Uri = new Uri(caller.TargetName) };
+                task.Show();
+            }
+            else
+            {
+                var phoneCallTask = new PhoneCallTask();
+                var targetPhoneNumber = caller.TargetName.Replace("-", "");
+                targetPhoneNumber = targetPhoneNumber.Trim();
+                targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
+                phoneCallTask.PhoneNumber = targetPhoneNumber;
+                try
+                {
+                    phoneCallTask.Show();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
+                }
+            }
+        }
+
+        public void ViewMoreMessage_Clicked(object obj)
+        {
+            Hyperlink hp = obj as Hyperlink;
+            PhoneApplicationService.Current.State[HikeConstants.VIEW_MORE_MESSAGE_OBJ] = hp.TargetName;
+            var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
+            currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.Relative));
         }
     }
 }

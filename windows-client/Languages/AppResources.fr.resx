@@ -1926,9 +1926,6 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
   <data name="ChatBg_Changed_Text" xml:space="preserve">
     <value>{0} a changé le thème de tchat</value>
   </data>
-  <data name="Default_Txt" xml:space="preserve">
-    <value>par défaut</value>
-  </data>
   <data name="FT_MaxFiles_Txt" xml:space="preserve">
     <value>Plus de 50 transferts de fichier sont en attente. Réessaie plus tard.</value>
   </data>
@@ -2023,21 +2020,23 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
   <data name="Search_Hint_Txt" xml:space="preserve">
     <value>rechercher</value>
   </data>
-  <data name="Save_ChatTheme_Txt" xml:space="preserve">
-    <value>enregistrer le thème</value>
-  </data>
   <data name="ChatBg_NotChanged_Text" xml:space="preserve">
-    <value>{0} vient de changer le thème du chat. Pour utiliser les nouveaux thèmes de discussion, mise à niveau hike. http://hike.in.</value>
-  </data>
-  <data name="Change_Background_App_Bar_Menu_Txt" xml:space="preserve">
-    <value>modif. thème tchat</value>
-    <comment>max chars(18)</comment>
+    <value>{0} vient de changer le thème du tchat. Pour utiliser les nouveaux thèmes de tchat, mets à jour hike. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Plus magnifiques thèmes ici...</value>
+    <value>Découvrez l'extraordinaire « Je t'aime » thème !</value>
   </data>
-  <data name="Settings_ChatThemeNotification_SwitchHeader" xml:space="preserve">
-    <value>Alertes thèmes de tchat</value>
+  <data name="ChatThemeHeader_Txt" xml:space="preserve">
+    <value>thèmes de tchat</value>
+  </data>
+  <data name="Sent_As_SMS" xml:space="preserve">
+    <value>Envoyé comme SMS - {0}</value>
+  </data>
+  <data name="ChatThemeMessage" xml:space="preserve">
+    <value>Le thème de tchat va changer pour toi et ton ami(e).</value>
+  </data>
+  <data name="Done_Txt" xml:space="preserve">
+    <value>terminé</value>
   </data>
   <data name="Chat_FTUE_chatThemes" xml:space="preserve">
     <value>Thèmes de tchat !</value>
@@ -2048,7 +2047,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>Des fêtes sans cadeaux, à quoi ça rime ? "Hike" bien !</value>
+    <value>Fête le mois de l'amour ! On a un cadeau pour toi !</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">
@@ -2059,19 +2058,22 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <value>Personnalise tes tchats avec de superbes thèmes.</value>
     <comment>max chars(80)</comment>
   </data>
-  <data name="ChatThemeHeader_Txt" xml:space="preserve">
-    <value>chat thèmes</value>
-  </data>
-  <data name="ChatThemeMessage" xml:space="preserve">
-    <value>Une fois que vous sélectionnez « fait », le thème du chat va changer pour vous et votre ami.</value>
-  </data>
   <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
-    <value>Une fois que vous sélectionnez « fait », le thème du chat va changer pour le groupe.</value>
+    <value>Le thème de tchat va changer pour tout le groupe.</value>
   </data>
-  <data name="Done_Txt" xml:space="preserve">
-    <value>fait</value>
+  <data name="User_Info_Txt" xml:space="preserve">
+    <value>voir le profil</value>
   </data>
-  <data name="Sent_As_SMS" xml:space="preserve">
-    <value>Envoyé sous forme de SMS - {0}</value>
+  <data name="ConversationList_grp_istyping_txt" xml:space="preserve">
+    <value>{0} écrit...</value>
+  </data>
+  <data name="ConversationList_istyping_txt" xml:space="preserve">
+    <value>écrit...</value>
+  </data>
+  <data name="MicrophoneNotFound_ErrorTxt" xml:space="preserve">
+    <value>Vérifie ton micro et réessaie.</value>
+  </data>
+  <data name="MicrophoneNotFound_HeaderTxt" xml:space="preserve">
+    <value>Enregistrement impossible !</value>
   </data>
 </root>

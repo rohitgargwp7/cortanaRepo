@@ -146,6 +146,10 @@ namespace windows_client.utils
                         return _isSelected ? UI_Utils.Instance.IndianActive : UI_Utils.Instance.IndianInactive;
                     case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
                         return _isSelected ? UI_Utils.Instance.SmileyExpressionsActive : UI_Utils.Instance.SmileyExpressionsInactive;
+                    case StickerHelper.CATEGORY_ANGRY:
+                        return _isSelected ? UI_Utils.Instance.AngryActive : UI_Utils.Instance.AngryInactive;
+                    case StickerHelper.CATEGORY_LOVE:
+                        return _isSelected ? UI_Utils.Instance.LoveActive : UI_Utils.Instance.LoveInactive;
                     default:
                         return new BitmapImage();
                 }
