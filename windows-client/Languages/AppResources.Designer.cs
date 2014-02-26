@@ -2606,6 +2606,69 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to delivered.
+        /// </summary>
+        public static string MessageStatus_Delivered {
+            get {
+                return ResourceManager.GetString("MessageStatus_Delivered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to read.
+        /// </summary>
+        public static string MessageStatus_Read {
+            get {
+                return ResourceManager.GetString("MessageStatus_Read", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to read by everyone.
+        /// </summary>
+        public static string MessageStatus_ReadByEveryone {
+            get {
+                return ResourceManager.GetString("MessageStatus_ReadByEveryone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to read by {0}.
+        /// </summary>
+        public static string MessageStatus_ReadBySingle {
+            get {
+                return ResourceManager.GetString("MessageStatus_ReadBySingle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to read by {0} and 1 other.
+        /// </summary>
+        public static string MessageStatus_ReadByTwo {
+            get {
+                return ResourceManager.GetString("MessageStatus_ReadByTwo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to read by {0} and {1} others.
+        /// </summary>
+        public static string MessageStatus_ReadByTwoOrMore {
+            get {
+                return ResourceManager.GetString("MessageStatus_ReadByTwoOrMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to sent.
+        /// </summary>
+        public static string MessageStatus_Sent {
+            get {
+                return ResourceManager.GetString("MessageStatus_Sent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to messaging.
         /// </summary>
         public static string Messaging_Txt {

@@ -584,22 +584,22 @@ namespace windows_client.utils
             {
                 case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
                 case ConvMessage.State.SENT_CONFIRMED:
-                    return "sent";
+                    return AppResources.MessageStatus_Sent;
                 case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
                 case ConvMessage.State.SENT_DELIVERED:
-                    return "delivered";
+                    return AppResources.MessageStatus_Delivered;
                 case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                 case ConvMessage.State.SENT_DELIVERED_READ:
-                    return isGroupChat ? GetReadBy(obj, id) : "read";
+                    return isGroupChat ? GetReadBy(obj, id) : AppResources.MessageStatus_Read;
                 default:
-                    return "";
+                    return String.Empty;
             }
         }
 
         public static String GetReadBy(JArray obj, string id)
         {
             if (obj == null)
-                return "read by everyone";
+                return AppResources.MessageStatus_ReadByEveryone;
 
             string readBy = "";
 
@@ -607,7 +607,7 @@ namespace windows_client.utils
             list = list.Distinct().ToList();
 
             if (list.Count == GroupManager.Instance.GroupCache[id].Count)
-                return "read by everyone";
+                return AppResources.MessageStatus_ReadByEveryone;
 
             int count = 0;
             list.Reverse();
@@ -630,11 +630,11 @@ namespace windows_client.utils
             }
 
             if (count == 0)
-                readBy = string.Format("read by {0}", readBy);
+                readBy = string.Format(AppResources.MessageStatus_ReadBySingle, readBy);
             else if (count == 1)
-                readBy = string.Format("read by {0} and 1 other", readBy);
+                readBy = string.Format(AppResources.MessageStatus_ReadByTwo, readBy);
             else
-                readBy = string.Format("read by {0} and {1} others", readBy, count);
+                readBy = string.Format(AppResources.MessageStatus_ReadByTwoOrMore, readBy, count);
 
             return readBy;
         }

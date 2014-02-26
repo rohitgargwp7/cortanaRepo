@@ -2071,4 +2071,25 @@ Download it now http://hike.in and join the fun!</value>
   <data name="MicrophoneNotFound_HeaderTxt" xml:space="preserve">
     <value>Unable to record!</value>
   </data>
+  <data name="MessageStatus_Delivered" xml:space="preserve">
+    <value>delivered</value>
+  </data>
+  <data name="MessageStatus_Read" xml:space="preserve">
+    <value>read</value>
+  </data>
+  <data name="MessageStatus_ReadByEveryone" xml:space="preserve">
+    <value>read by everyone</value>
+  </data>
+  <data name="MessageStatus_ReadBySingle" xml:space="preserve">
+    <value>read by {0}</value>
+  </data>
+  <data name="MessageStatus_ReadByTwo" xml:space="preserve">
+    <value>read by {0} and 1 other</value>
+  </data>
+  <data name="MessageStatus_ReadByTwoOrMore" xml:space="preserve">
+    <value>read by {0} and {1} others</value>
+  </data>
+  <data name="MessageStatus_Sent" xml:space="preserve">
+    <value>sent</value>
+  </data>
 </root>
