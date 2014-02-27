@@ -6822,11 +6822,14 @@ namespace windows_client.View
                      {
                          var indexToInsert = ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
 
+                         if (_readByMessage != null && ocMessages.Contains(_readByMessage) && ocMessages.IndexOf(_readByMessage) == indexToInsert && !ocMessages.Contains(_h2hofflineToolTip))
+                             ocMessages.Remove(_readByMessage);
+                         
                          if (App.ViewModel.DictInAppTip != null && !isInAppTipVisible)
                          {
                              HikeToolTip tip;
                              App.ViewModel.DictInAppTip.TryGetValue(6, out tip);
-
+                             
                              if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown) && _h2hofflineToolTip == null)
                              {
                                  _h2hofflineToolTip = new ConvMessage();
@@ -6856,9 +6859,6 @@ namespace windows_client.View
                                  return;
                              }
                          }
-
-                         if (_readByMessage != null && ocMessages.Contains(_readByMessage) && ocMessages.IndexOf(_readByMessage) == indexToInsert)
-                             ocMessages.Remove(_readByMessage);
 
                          if (_h2hofflineToolTip != null)
                          {
@@ -7070,7 +7070,7 @@ namespace windows_client.View
 
         #region Read By
 
-        ConvMessage _lastSentMessage = null, _readByMessage = null;
+        ConvMessage _lastSentMessage = null, _readByMessage = null, _previouslastSentMessage = null;
 
         void UpdateLastSentMessageStatusOnUI()
         {
@@ -7081,7 +7081,7 @@ namespace windows_client.View
                 try
                 {
                     var msgList = (from message in ocMessages
-                                   where message.IsSent == true
+                                   where message.IsSent == true && message.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO
                                    select message);
 
                     _lastSentMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
@@ -7110,17 +7110,23 @@ namespace windows_client.View
 
                     try
                     {
-                        this.ocMessages.Remove(_readByMessage);
-                        indexToInsert = ocMessages.IndexOf(_lastSentMessage) + 1;
+                        if (ocMessages.Contains(_readByMessage))
+                        {
+                            this.ocMessages.Remove(_readByMessage);
+                            indexToInsert = ocMessages.IndexOf(_lastSentMessage) + 1;
+                        }
                     }
-                    catch
-                    {
-                    }
+                    catch { }
 
                     this.ocMessages.Insert(indexToInsert, _readByMessage);
 
-                    if (indexToInsert == ocMessages.Count - 1)
-                        ScrollToBottom();
+                    if (_previouslastSentMessage != _lastSentMessage)
+                    {
+                        if (indexToInsert == ocMessages.Count - 1)
+                            ScrollToBottom();
+
+                        _previouslastSentMessage = _lastSentMessage;
+                    }
                 }
                 else
                 {
