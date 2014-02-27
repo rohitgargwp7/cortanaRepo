@@ -294,17 +294,5 @@ namespace windows_client.View
                 NavigationService.Navigate(new Uri("/View/PreviewImages.xaml", UriKind.RelativeOrAbsolute));
             }
         }
-
-        private void llsAllPhotos_ItemRealized(object sender, ItemRealizationEventArgs e)
-        {
-
-        }
-
-        private void llsAllPhotos_ItemUnrealized(object sender, ItemRealizationEventArgs e)
-        {
-            Debug.WriteLine("I am here");
-        }
-
-
     }
 }

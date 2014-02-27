@@ -138,8 +138,6 @@
                                         JumpListStyle="{StaticResource JumpListStyle}" 
                                         IsGroupingEnabled="True"
                                         LayoutMode="Grid" 
-                                                           ItemRealized="llsAllPhotos_ItemRealized"
-                                                           ItemUnrealized="llsAllPhotos_ItemUnrealized"
                                         GridCellSize="106,106" SelectionChanged="llsPhotos_SelectionChanged" Margin="24 0 0 0"/>
                         </Grid>
                     </controls:PivotItem>

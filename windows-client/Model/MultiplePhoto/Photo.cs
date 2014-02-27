@@ -16,7 +16,6 @@ namespace windows_client.Model
     {
         Picture _pic;
         BitmapImage _thumbnail;
-        BitmapImage _image;
         bool _isSelected;
 
         public BitmapImage Thumbnail
@@ -43,19 +42,14 @@ namespace windows_client.Model
         {
             get
             {
-                if (_image == null)
+                BitmapImage _image = new BitmapImage();
+
+                if (_pic != null)
                 {
-                    _image = new BitmapImage();
-
-                    if (_pic != null)
-                    {
-                        int toWidth = UI_Utils.Instance.GetMaxToWidthForImage(_pic.Height, _pic.Width);
-                        if (toWidth != 0)
-                            _image.DecodePixelWidth = toWidth;
-                        _image.SetSource(_pic.GetImage());
-                    }
-
-
+                    int toWidth = UI_Utils.Instance.GetMaxToWidthForImage(_pic.Height, _pic.Width);
+                    if (toWidth != 0)
+                        _image.DecodePixelWidth = toWidth;
+                    _image.SetSource(_pic.GetImage());
                 }
                 return _image;
             }
