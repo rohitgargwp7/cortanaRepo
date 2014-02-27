@@ -259,6 +259,8 @@ namespace windows_client.View
                 ToggleAppBarIcons(false);
                 e.Cancel = true;
             }
+            else
+                App.ViewModel.ClearMFtImageCache();
             base.OnBackKeyPress(e);
         }
 
@@ -293,6 +295,12 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] = new List<PhotoClass>() { picture };
                 NavigationService.Navigate(new Uri("/View/PreviewImages.xaml", UriKind.RelativeOrAbsolute));
             }
+        }
+
+        protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
+        {
+            App.ViewModel.ClearMFtImageCache();
+            base.OnRemovedFromJournal(e);
         }
     }
 }

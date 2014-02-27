@@ -112,6 +112,8 @@ namespace windows_client.View
                 NavigationService.RemoveBackEntry();
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();
+
+            App.ViewModel.ClearMFtImageCache();
         }
 
 

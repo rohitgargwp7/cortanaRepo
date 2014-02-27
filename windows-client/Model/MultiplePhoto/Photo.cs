@@ -15,27 +15,13 @@ namespace windows_client.Model
     public class PhotoClass : INotifyPropertyChanged
     {
         Picture _pic;
-        BitmapImage _thumbnail;
         bool _isSelected;
 
         public BitmapImage Thumbnail
         {
             get
             {
-                if (_thumbnail == null)
-                {
-                    if (AddMoreImage)
-                    {
-                        _thumbnail = new BitmapImage(new Uri("/View/images/add.png", UriKind.RelativeOrAbsolute));
-                    }
-                    else
-                    {
-                        _thumbnail = new BitmapImage();
-                        if (_pic != null)
-                            _thumbnail.SetSource(_pic.GetThumbnail());
-                    }
-                }
-                return _thumbnail;
+                return AddMoreImage ? new BitmapImage(new Uri("/View/images/add.png", UriKind.RelativeOrAbsolute)) : App.ViewModel.GetMftImageCache(_pic);
             }
         }
         public BitmapImage ImageSource

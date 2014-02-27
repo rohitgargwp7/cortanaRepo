@@ -12,7 +12,6 @@ namespace windows_client.Model
     {
         private string _albumName;
         private Picture _albumPicture;
-        private BitmapImage _albumImage;
 
         public AlbumClass(string albumName)
         {
@@ -43,13 +42,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (_albumImage == null)
-                {
-                    _albumImage = new BitmapImage();
-                    if (_albumPicture != null)
-                        _albumImage.SetSource(_albumPicture.GetThumbnail());
-                }
-                return _albumImage;
+                return App.ViewModel.GetMftImageCache(_albumPicture);
             }
         }
 
