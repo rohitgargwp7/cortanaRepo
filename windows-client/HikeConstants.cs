@@ -3,7 +3,7 @@ using windows_client.utils;
 
 namespace windows_client
 {
-    public class HikeConstants
+    public class    HikeConstants
     {
         public static readonly string MESSAGE = "msg";
         public static readonly string UI_TOPIC = "/u";
@@ -304,7 +304,7 @@ namespace windows_client
         public static string OBJ_FROM_BLOCKED_LIST = "objFrmBlckList";
         public static readonly string PAGE_TO_NAVIGATE_TO = "pageToNavigateTo";
         public static readonly string LAUNCH_FROM_UPGRADEPAGE = "launchFromUpgradePage";
-        public static readonly string MESSAGE_OBJ_FROM_CT = "msgCT";
+        public static readonly string VIEW_MORE_MESSAGE_OBJ = "viewMoreMsg";
         public static string USERINFO_FROM_CONVERSATION_PAGE = "userInfoFromConvPage";
         public static string USERINFO_FROM_CHATTHREAD_PAGE = "userInfoFromChatThread";
         public static string USERINFO_FROM_GROUPCHAT_PAGE = "userInfoFromGroupChatThread";

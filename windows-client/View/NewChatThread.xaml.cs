@@ -40,6 +40,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using windows_client.FileTransfers;
 using System.Windows.Input;
+using System.Windows.Documents;
 
 namespace windows_client.View
 {
@@ -5403,6 +5404,7 @@ namespace windows_client.View
             else
             {
                 headerBackground.Visibility = Visibility.Visible;
+                headerBackground.Background = App.ViewModel.SelectedBackground.BackgroundColor;
                 chatThemeHeaderTxt.Foreground = userName.Foreground = lastSeenTxt.Foreground = UI_Utils.Instance.White;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageWhite;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageWhite;
@@ -6960,6 +6962,12 @@ namespace windows_client.View
 
         private void ChatMessageSelected(object sender, SelectionChangedEventArgs e)
         {
+            if (_hyperlinkedClicked)
+            {
+                _hyperlinkedClicked = false;
+                return;
+            }
+
             ConvMessage msg = llsMessages.SelectedItem as ConvMessage;
 
             if (msg != null)
@@ -7077,191 +7085,19 @@ namespace windows_client.View
             }
         }
 
-    }
+        //hyperlink was clicked in bubble. dont perform actions like h2h offline.
+        bool _hyperlinkedClicked = false;
 
-    public class ChatThreadTemplateSelector : TemplateSelector
-    {
-        #region Properties
-
-        public DataTemplate DtInAppTip
+        void Hyperlink_Clicked(object sender, EventArgs e)
         {
-            get;
-            set;
+            _hyperlinkedClicked = true;
+
+            App.ViewModel.Hyperlink_Clicked(sender);
         }
 
-        public DataTemplate DtH2HOfflineInAppTip
+        void ViewMoreMessage_Clicked(object sender, EventArgs e)
         {
-            get;
-            set;
-        }
-
-        public DataTemplate DtForceSMSNotification
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtNotificationBubble
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtTypingNotificationBubble
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtRecievedBubbleLocation
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtRecievedBubbleText
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtRecievedBubbleFile
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtRecievedBubbleAudioFile
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtRecievedBubbleNudge
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtRecievedBubbleContact
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtRecievedSticker
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtSentBubbleText
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtSentBubbleFile
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtSentBubbleLocation
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtSentBubbleAudioFile
-        {
-            get;
-            set;
-        }
-        public DataTemplate DtSentBubbleNudge
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtSentBubbleContact
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtStatusUpdateBubble
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtSentSticker
-        {
-            get;
-            set;
-        }
-
-        #endregion
-
-        public override DataTemplate SelectTemplate(object item, DependencyObject container)
-        {
-            // Determine which template to return;
-            ConvMessage convMesssage = (ConvMessage)item;
-            if (App.newChatThreadPage != null)
-            {
-                if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                {
-                    if (convMesssage.IsSent)
-                    {
-                        if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
-                            return DtSentBubbleNudge;
-                        if (convMesssage.StickerObj != null)
-                            return DtSentSticker;
-                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                            return DtSentBubbleContact;
-                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                            return DtSentBubbleAudioFile;
-                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                            return DtSentBubbleLocation;
-                        else if (convMesssage.FileAttachment != null)
-                            return DtSentBubbleFile;
-                        else
-                            return DtSentBubbleText;
-                    }
-                    else
-                    {
-                        if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
-                            return DtRecievedBubbleNudge;
-                        if (convMesssage.StickerObj != null)
-                            return DtRecievedSticker;
-                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                            return DtRecievedBubbleContact;
-                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                            return DtRecievedBubbleAudioFile;
-                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                            return DtRecievedBubbleLocation;
-                        else if (convMesssage.FileAttachment != null)
-                            return DtRecievedBubbleFile;
-                        else
-                            return DtRecievedBubbleText;
-                    }
-                }
-                else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.IN_APP_TIP)
-                    return DtInAppTip;
-                else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
-                    return DtH2HOfflineInAppTip;
-                else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
-                    return DtForceSMSNotification;
-                else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
-                    return DtStatusUpdateBubble;
-                else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.TYPING_NOTIFICATION)
-                    return DtTypingNotificationBubble;
-                else
-                    return DtNotificationBubble;
-            }
-            else
-                return (new DataTemplate());
+            App.ViewModel.ViewMoreMessage_Clicked(sender);
         }
     }
 }

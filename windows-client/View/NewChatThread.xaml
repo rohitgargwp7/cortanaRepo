@@ -11,6 +11,7 @@
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     xmlns:c4fToolkit="clr-namespace:Coding4Fun.Phone.Controls;assembly=Coding4Fun.Phone.Controls"
     xmlns:view="clr-namespace:windows_client.View"
+    xmlns:templateSelector="clr-namespace:windows_client.TemplateSelectors"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -85,7 +86,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <Grid x:Name="HikeTitle" HorizontalAlignment="Stretch">
-            <Border x:Name="headerBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.4"/>
+            <Border x:Name="headerBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.75"/>
             <StackPanel Orientation="Vertical">
                 <Border HorizontalAlignment="Stretch" Height="45" BorderThickness="1" BorderBrush="#414141" Background="#414141" x:Name="gcMuteGrid" Visibility="Collapsed">
                     <Grid HorizontalAlignment="Stretch" Margin="12,0">
@@ -163,12 +164,12 @@
             </Grid>
         </Grid>
 
-        <Grid Grid.Row="1" Margin="0,5,0,0">
+        <Grid Grid.Row="1">
             <phone:LongListSelector Name="llsMessages" Style="{StaticResource llsMessagesStyle}"  ItemUnrealized="llsMessages_ItemUnRealized" ItemRealized="llsMessages_ItemRealized" SelectionChanged="ChatMessageSelected" DoubleTap="MessageList_DoubleTap" HorizontalContentAlignment="Stretch" Margin="0,0,0,5" >
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                        <view:ChatThreadTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
-                            <view:ChatThreadTemplateSelector.DtH2HOfflineInAppTip>
+                        <templateSelector:ChatThreadTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
+                            <templateSelector:ChatThreadTemplateSelector.DtH2HOfflineInAppTip>
                                 <DataTemplate>
                                     <Grid Background="Transparent" Margin="12,-5,12,5" HorizontalAlignment="Stretch" Tap="H2hOfflineToolTip_Tapped">
                                         <Grid.RowDefinitions>
@@ -189,8 +190,8 @@
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtH2HOfflineInAppTip>
-                            <view:ChatThreadTemplateSelector.DtInAppTip>
+                            </templateSelector:ChatThreadTemplateSelector.DtH2HOfflineInAppTip>
+                            <templateSelector:ChatThreadTemplateSelector.DtInAppTip>
                                 <DataTemplate>
                                     <Grid Background="Transparent" Margin="12,5,12,5" HorizontalAlignment="Stretch" Tap="TipDismiss_Tap">
                                         <Grid.RowDefinitions>
@@ -211,15 +212,15 @@
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtInAppTip>
-                            <view:ChatThreadTemplateSelector.DtForceSMSNotification>
+                            </templateSelector:ChatThreadTemplateSelector.DtInAppTip>
+                            <templateSelector:ChatThreadTemplateSelector.DtForceSMSNotification>
                                 <DataTemplate>
                                     <Grid HorizontalAlignment="Right" Margin="0,-8,12,5" >
                                         <TextBlock FontSize="16" MaxWidth="{Binding MessageBubbleWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" TextAlignment="Right"/>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtForceSMSNotification>
-                            <view:ChatThreadTemplateSelector.DtNotificationBubble>
+                            </templateSelector:ChatThreadTemplateSelector.DtForceSMSNotification>
+                            <templateSelector:ChatThreadTemplateSelector.DtNotificationBubble>
                                 <DataTemplate x:Name="dtNotificationBubble">
                                     <Grid Margin="12,10">
                                         <Border BorderThickness="1" Opacity="0.4" Margin="0,-3" Background="{Binding BorderBackgroundColor}" BorderBrush="Black" HorizontalAlignment="Stretch" />
@@ -236,15 +237,15 @@
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtNotificationBubble>
-                            <view:ChatThreadTemplateSelector.DtTypingNotificationBubble>
+                            </templateSelector:ChatThreadTemplateSelector.DtNotificationBubble>
+                            <templateSelector:ChatThreadTemplateSelector.DtTypingNotificationBubble>
                                 <DataTemplate x:Name="dtTypingNotificationBubble" >
                                     <Grid HorizontalAlignment="Left" Margin="12 10 0 10">
                                         <Image Source="/View/images/typing.png" Height="20" Width="40" HorizontalAlignment="Left"></Image>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtTypingNotificationBubble>
-                            <view:ChatThreadTemplateSelector.DtRecievedBubbleText>
+                            </templateSelector:ChatThreadTemplateSelector.DtTypingNotificationBubble>
+                            <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleText>
                                 <DataTemplate x:Name="dtRecievedBubbleText" >
                                     <Grid Background="Transparent" Margin="12 0 0 14"  HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
@@ -269,13 +270,13 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
-                                            <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Grid.Row="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" />
+                                            <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Grid.Row="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                             <TextBlock Grid.Row="2" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="0,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.4"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtRecievedBubbleText>
-                            <view:ChatThreadTemplateSelector.DtRecievedBubbleFile>
+                            </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleText>
+                            <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleFile>
                                 <DataTemplate x:Name="dtRecievedBubbleFile">
                                     <Grid Background="Transparent" Margin="12 0 0 14" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
@@ -332,8 +333,8 @@
                                         </Button>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtRecievedBubbleFile>
-                            <view:ChatThreadTemplateSelector.DtRecievedBubbleLocation>
+                            </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleFile>
+                            <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleLocation>
                                 <DataTemplate x:Name="dtRecievedBubbleLocation" >
                                     <Grid Background="Transparent" Margin="12 0 0 14" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
@@ -378,8 +379,8 @@
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtRecievedBubbleLocation>
-                            <view:ChatThreadTemplateSelector.DtRecievedBubbleAudioFile>
+                            </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleLocation>
+                            <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleAudioFile>
                                 <DataTemplate x:Name="dtRecievedBubbleAudioFile" >
                                     <Grid Background="Transparent" Margin="12 0 0 14" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
@@ -448,8 +449,8 @@
                                         </Button>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtRecievedBubbleAudioFile>
-                            <view:ChatThreadTemplateSelector.DtRecievedBubbleNudge>
+                            </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleAudioFile>
+                            <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleNudge>
                                 <DataTemplate x:Name="dtRecievedBubbleNudge" >
                                     <Grid Background="Transparent" Margin="12 0 0 14" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
@@ -476,8 +477,8 @@
                                         <Image Grid.Row="1" Height="61" Stretch="Uniform" Margin="4,0,0,10" Source="/View/images/heartsNudge.png" Visibility="{Binding SpecialNudgeVisibility}"/>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtRecievedBubbleNudge>
-                            <view:ChatThreadTemplateSelector.DtRecievedBubbleContact>
+                            </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleNudge>
+                            <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleContact>
                                 <DataTemplate x:Name="dtRecievedBubbleContact" >
                                     <Grid Background="Transparent" Margin="12 0 0 14" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
@@ -516,8 +517,8 @@
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtRecievedBubbleContact>
-                            <view:ChatThreadTemplateSelector.DtRecievedSticker>
+                            </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleContact>
+                            <templateSelector:ChatThreadTemplateSelector.DtRecievedSticker>
                                 <DataTemplate x:Name="dtRecievedSticker">
                                     <Grid Background="Transparent" Margin="12 5 0 5"  HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
@@ -561,8 +562,8 @@
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtRecievedSticker>
-                            <view:ChatThreadTemplateSelector.DtSentBubbleText>
+                            </templateSelector:ChatThreadTemplateSelector.DtRecievedSticker>
+                            <templateSelector:ChatThreadTemplateSelector.DtSentBubbleText>
                                 <DataTemplate x:Name="dtSentBubbleText" >
                                     <Grid Background="Transparent" Margin="0 12 12 10" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
@@ -588,14 +589,15 @@
                                             </Grid.ColumnDefinitions>
                                             <Border Grid.RowSpan="2" Grid.Column="1" Background="{Binding BubbleBackGroundColor}"/>
                                             <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"/>
-                                            <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Grid.Row="0" Grid.Column="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" />
+                                            <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Grid.Row="0" Grid.Column="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" 
+                                                                 LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" />
                                             <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,24,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" />
                                         </Grid>
                                         <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16" Fill="{Binding BubbleBackGroundColor}"/>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtSentBubbleText>
-                            <view:ChatThreadTemplateSelector.DtSentBubbleLocation>
+                            </templateSelector:ChatThreadTemplateSelector.DtSentBubbleText>
+                            <templateSelector:ChatThreadTemplateSelector.DtSentBubbleLocation>
                                 <DataTemplate x:Name="DtSentBubbleLocation" >
                                     <Grid Background="Transparent" Margin="0 12 12 10" HorizontalAlignment="Right"   >
                                         <toolkit:ContextMenuService.ContextMenu>
@@ -644,8 +646,8 @@
                                         <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16" Fill="{Binding BubbleBackGroundColor}"  />
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtSentBubbleLocation>
-                            <view:ChatThreadTemplateSelector.DtSentBubbleFile>
+                            </templateSelector:ChatThreadTemplateSelector.DtSentBubbleLocation>
+                            <templateSelector:ChatThreadTemplateSelector.DtSentBubbleFile>
                                 <DataTemplate x:Name="dtSentBubbleFile" >
                                     <Grid Background="Transparent" Margin="0 12 12 10" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
@@ -697,8 +699,8 @@
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtSentBubbleFile>
-                            <view:ChatThreadTemplateSelector.DtSentBubbleAudioFile>
+                            </templateSelector:ChatThreadTemplateSelector.DtSentBubbleFile>
+                            <templateSelector:ChatThreadTemplateSelector.DtSentBubbleAudioFile>
                                 <DataTemplate x:Name="dtSentBubbleAudioFile" >
                                     <Grid Background="Transparent" Margin="0 12 12 10" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
@@ -761,8 +763,8 @@
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtSentBubbleAudioFile>
-                            <view:ChatThreadTemplateSelector.DtSentBubbleNudge>
+                            </templateSelector:ChatThreadTemplateSelector.DtSentBubbleAudioFile>
+                            <templateSelector:ChatThreadTemplateSelector.DtSentBubbleNudge>
                                 <DataTemplate x:Name="dtSentBubbleNudge" >
                                     <Grid Background="Transparent" Margin="0 12 12 10" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
@@ -790,8 +792,8 @@
                                         <Image Grid.Column="1" Height="61" Stretch="Uniform" Margin="0,0,4,10" HorizontalAlignment="Right" Source="/View/images/heartsNudge.png" Visibility="{Binding SpecialNudgeVisibility}"/>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtSentBubbleNudge>
-                            <view:ChatThreadTemplateSelector.DtSentBubbleContact>
+                            </templateSelector:ChatThreadTemplateSelector.DtSentBubbleNudge>
+                            <templateSelector:ChatThreadTemplateSelector.DtSentBubbleContact>
                                 <DataTemplate x:Name="dtSentBubbleContact" >
                                     <Grid Background="Transparent" Margin="0 12 12 10" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
@@ -837,8 +839,8 @@
                                         <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtSentBubbleContact>
-                            <view:ChatThreadTemplateSelector.DtSentSticker>
+                            </templateSelector:ChatThreadTemplateSelector.DtSentBubbleContact>
+                            <templateSelector:ChatThreadTemplateSelector.DtSentSticker>
                                 <DataTemplate x:Name="dtSentSticker">
                                     <Grid Background="Transparent" HorizontalAlignment="Right" Margin="0 5 12 5">
                                         <toolkit:ContextMenuService.ContextMenu>
@@ -872,8 +874,8 @@
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtSentSticker>
-                            <view:ChatThreadTemplateSelector.DtStatusUpdateBubble>
+                            </templateSelector:ChatThreadTemplateSelector.DtSentSticker>
+                            <templateSelector:ChatThreadTemplateSelector.DtStatusUpdateBubble>
                                 <DataTemplate x:Name="dtStatusUpdateBubble">
                                     <Grid Margin="0,5" HorizontalAlignment="Stretch">
                                         <Border Background="Black" Opacity="0.2"/>
@@ -894,8 +896,8 @@
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
-                            </view:ChatThreadTemplateSelector.DtStatusUpdateBubble>
-                        </view:ChatThreadTemplateSelector>
+                            </templateSelector:ChatThreadTemplateSelector.DtStatusUpdateBubble>
+                        </templateSelector:ChatThreadTemplateSelector>
                     </DataTemplate>
                 </phone:LongListSelector.ItemTemplate>
             </phone:LongListSelector>

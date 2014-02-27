@@ -8,7 +8,6 @@ using windows_client.DbUtils;
 using windows_client.utils;
 using System.Diagnostics;
 using System.Windows.Media;
-using windows_client.Controls.StatusUpdate;
 namespace windows_client.View
 {
     public partial class DisplayImage : PhoneApplicationPage

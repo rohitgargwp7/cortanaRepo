@@ -15,13 +15,12 @@ using windows_client.Controls;
 using System.Threading;
 using windows_client.DbUtils;
 using windows_client.Misc;
-using windows_client.Controls.StatusUpdate;
 
 namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static readonly bool IS_PRODUCTION = true;
+        private static readonly bool IS_PRODUCTION = false;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 

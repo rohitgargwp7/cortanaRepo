@@ -6,8 +6,9 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-   xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-    xmlns:status="clr-namespace:windows_client.Controls.StatusUpdate"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:templateSelector="clr-namespace:windows_client.TemplateSelectors"
+    xmlns:local="clr-namespace:windows_client.Controls"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -83,13 +84,70 @@
             </StackPanel>
         </Grid>
         <Grid Name="gridHikeUser" Grid.Row="2" >
-            <ListBox x:Name="statusLLS" Margin="12,0,12,20" Grid.Row="0">
-                <ListBox.ItemTemplate>
+            <phone:LongListSelector x:Name="statusLLS" Margin="12,0,12,20">
+                <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                        <status:StatusUpdateBox></status:StatusUpdateBox>
+                        <templateSelector:StatusTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
+                            <templateSelector:StatusTemplateSelector.DTImageStatus>
+                                <DataTemplate>
+                                    <Grid HorizontalAlignment="Stretch" Margin="12" Background="Transparent">
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Visibility="{Binding DeleteOptionVisibility}">
+                                                <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid HorizontalAlignment="Left">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Source="{Binding UserImage}" MaxHeight="40" MaxWidth="40" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                            <Grid Grid.Column="1" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <local:MyRichTextBox Margin="-12,0,0,0" HorizontalAlignment="Left" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" FontSize="28" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
+                                                <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Column="1" Grid.Row="1" Foreground="#888888"/>
+                                            </Grid>
+                                        </Grid>
+                                        <Image Source="{Binding StatusImage}" Margin="0,12,0,0" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Height="250" Stretch="UniformToFill" Tap="enlargePic_Tap" />
+                                    </Grid>
+                                </DataTemplate>
+                            </templateSelector:StatusTemplateSelector.DTImageStatus>
+                            <templateSelector:StatusTemplateSelector.DTTextStatus>
+                                <DataTemplate>
+                                    <Grid HorizontalAlignment="Stretch" Margin="12" Background="Transparent">
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Visibility="{Binding DeleteOptionVisibility}">
+                                                <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Source="{Binding UserImage}" MaxHeight="40" MaxWidth="40" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                        <Grid Grid.Column="1" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <local:MyRichTextBox Margin="-12,0,0,0" Foreground="{Binding StatusTextForeground}" HorizontalAlignment="Left" Text="{Binding Text}" FontSize="28" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
+                                            <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Column="1" Grid.Row="1" Foreground="#888888"/>
+                                        </Grid>
+                                    </Grid>
+                                </DataTemplate>
+                            </templateSelector:StatusTemplateSelector.DTTextStatus>
+                        </templateSelector:StatusTemplateSelector>
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                </phone:LongListSelector.ItemTemplate>
+            </phone:LongListSelector>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

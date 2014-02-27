@@ -68,14 +68,14 @@ namespace windows_client.View
 
         private void ViewLogs_tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.MESSAGE_OBJ_FROM_CT] = Logging.LogWriter.Instance.ReadFile();
+            PhoneApplicationService.Current.State[HikeConstants.VIEW_MORE_MESSAGE_OBJ] = Logging.LogWriter.Instance.ReadFile();
             var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
             currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.RelativeOrAbsolute));
         }
 
         private void ViewMqtt_tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.MESSAGE_OBJ_FROM_CT] = MQttLogging.LogWriter.Instance.ReadFile();
+            PhoneApplicationService.Current.State[HikeConstants.VIEW_MORE_MESSAGE_OBJ] = MQttLogging.LogWriter.Instance.ReadFile();
             var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
             currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.RelativeOrAbsolute));
         }
