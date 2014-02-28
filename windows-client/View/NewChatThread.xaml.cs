@@ -90,6 +90,7 @@ namespace windows_client.View
         private long lastTextChangedTime;
         private long lastTypingNotificationSentTime;
         private long lastTypingNotificationShownTime;
+        private bool endTypingSent = true;
 
         private HikePubSub mPubSub;
         DispatcherTimer _h2hOfflineTimer;
@@ -3242,6 +3243,7 @@ namespace windows_client.View
                 return;
             }
             lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
+
             scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(HikeConstants.SEND_END_TYPING_TIMER));
 
             sendStartTypingNotification();
@@ -3304,6 +3306,7 @@ namespace windows_client.View
             if (message == "" || (!isOnHike && mCredits <= 0))
                 return;
 
+            endTypingSent = true;
             sendTypingNotification(false);
 
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
@@ -3478,7 +3481,8 @@ namespace windows_client.View
                 Object[] obj = new Object[1];
                 obj[0] = convMessage.MetaDataString;
                 Sticker sticker = new Sticker(convMessage.StickerObj.Category, convMessage.StickerObj.Id, null, false);
-                HikeViewModel.stickerHelper.recentStickerHelper.AddSticker(sticker);
+                if (HikeViewModel.stickerHelper.CheckLowResStickerExists(convMessage.StickerObj.Category, convMessage.StickerObj.Id))
+                    HikeViewModel.stickerHelper.recentStickerHelper.AddSticker(sticker);
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = obj;//done this way to distinguish it from message
             }
             else if (convMessage.FileAttachment == null)
@@ -4203,7 +4207,9 @@ namespace windows_client.View
             {
                 long timeElapsed = TimeUtils.getCurrentTimeStamp() - lastTypingNotificationShownTime;
                 if (timeElapsed >= HikeConstants.TYPING_NOTIFICATION_AUTOHIDE)
+                {
                     HideTypingNotification();
+                }
             }
         }
 
@@ -4246,8 +4252,9 @@ namespace windows_client.View
         private void sendEndTypingNotification()
         {
             long currentTime = TimeUtils.getCurrentTimeStamp();
-            if (currentTime - lastTextChangedTime >= HikeConstants.SEND_END_TYPING_TIMER)
+            if (currentTime - lastTextChangedTime >= HikeConstants.SEND_END_TYPING_TIMER && !endTypingSent)
             {
+                endTypingSent = true;
                 sendTypingNotification(false);
             }
         }
@@ -4256,6 +4263,7 @@ namespace windows_client.View
         {
             if (TimeUtils.getCurrentTimeStamp() - lastTypingNotificationSentTime > HikeConstants.SEND_START_TYPING_TIMER)
             {
+                endTypingSent = false;
                 lastTypingNotificationSentTime = TimeUtils.getCurrentTimeStamp();
                 sendTypingNotification(true);
             }
