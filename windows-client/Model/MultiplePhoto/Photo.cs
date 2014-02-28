@@ -85,7 +85,7 @@ namespace windows_client.Model
         {
             get
             {
-                return IsSelected ? UI_Utils.Instance.HikeBlue : UI_Utils.Instance.Transparent;
+                return IsSelected ? UI_Utils.Instance.PhoneThemeColor : UI_Utils.Instance.Transparent;
             }
         }
 

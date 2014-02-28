@@ -7,10 +7,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
+    toolkit:TiltEffect.IsTiltEnabled="True"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="False">
 
@@ -40,7 +42,7 @@
                     </Rectangle.Fill>
                 </Rectangle>-->
                 <StackPanel Opacity="0.5" Background="Black"/>
-                <TextBlock Name="headerText" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" FontSize="60" />
+                <TextBlock Name="headerText" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" Foreground="White" FontSize="60" />
 
                 <StackPanel Background="Black" Opacity="0.5" Grid.Row="2"/>
                 <ListBox Name="lbThumbnails" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.Row="2" SelectionChanged="lbThumbnails_SelectionChanged" VerticalAlignment="Bottom" Margin="0 0 0 72">
@@ -52,7 +54,7 @@
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid Margin="10 5 0 10">
+                            <Grid Margin="10 5 0 10" Background="{StaticResource PhoneAccentBrush}">
                                 <Border BorderBrush="{Binding ThumbnailBorder}" Width="100" Height="100" BorderThickness="4" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Canvas.ZIndex="1" />
                                 <Image Source="{Binding Thumbnail}" Height="100" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Grid>
