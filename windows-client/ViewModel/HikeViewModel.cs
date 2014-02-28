@@ -821,6 +821,8 @@ namespace windows_client.ViewModel
 
             if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is string)
             {
+                contactsForForward = contactsForForward.Distinct(new ContactInfo.MsisdnComparer()).ToList();
+
                 foreach (var contact in contactsForForward)
                 {
                     var msg = (string)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];

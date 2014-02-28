@@ -490,5 +490,22 @@ namespace windows_client.Model
                 }
             }
         }
+
+        public class MsisdnComparer : IEqualityComparer<ContactInfo>
+        {
+            public bool Equals(ContactInfo x, ContactInfo y)
+            {
+                return x.Msisdn == y.Msisdn;
+            }
+
+            public int GetHashCode(ContactInfo obj)
+            {
+                const int prime = 31;
+                int result = 1;
+                result = prime * result + (string.IsNullOrWhiteSpace(obj.Name) ? 0 : obj.Name.GetHashCode());
+                result = prime * result + (obj.PhoneNo == null ? 0 : obj.PhoneNo.GetHashCode());
+                return result;
+            }
+        }
     }
 }

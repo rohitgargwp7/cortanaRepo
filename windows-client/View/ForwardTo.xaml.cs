@@ -34,7 +34,6 @@ namespace windows_client.View
 
         int _smsUserCount = 0;
         private int _smsCredits;
-        int _selectedContacts = 0;
         private byte _maxCharGroups = 26;
         private string _charsEntered;
 
@@ -755,62 +754,65 @@ namespace windows_client.View
                     //count sms users
                     if (cInfo.IsSelected)
                     {
-                        if (!Utils.isGroupConversation(cInfo.Msisdn))
+                        if (!_contactsForForward.Contains(cInfo))
                         {
-                            if (!cInfo.OnHike)
-                                _smsUserCount++;
-                        }
-                        else
-                            _smsUserCount += GroupManager.Instance.GetSMSParticiantCount(cInfo.Msisdn);
+                            if (!Utils.isGroupConversation(cInfo.Msisdn))
+                            {
+                                if (!cInfo.OnHike)
+                                    _smsUserCount++;
+                            }
+                            else
+                                _smsUserCount += GroupManager.Instance.GetSMSParticiantCount(cInfo.Msisdn);
 
-                        if (_smsUserCount > _smsCredits)
-                        {
-                            MessageBox.Show(AppResources.H2HOfline_Confirmation_Message);
+                            if (_smsUserCount > _smsCredits)
+                            {
+                                MessageBox.Show(AppResources.H2HOfline_Confirmation_Message);
 
-                            _selectedContacts++;
-                            cInfo.IsSelected = false;
-                            _smsUserCount = oldSmsCount;
+                                cInfo.IsSelected = false;
+                                _smsUserCount = oldSmsCount;
+                            }
+                            else
+                                _contactsForForward.Add(cInfo);
                         }
-                        else
-                            _contactsForForward.Add(cInfo);
                     }
                     else
                     {
-                        if (!Utils.isGroupConversation(cInfo.Msisdn))
-                        {
-                            if (!cInfo.OnHike)
-                                _smsUserCount--;
-                        }
-                        else
-                            _smsUserCount -= GroupManager.Instance.GetSMSParticiantCount(cInfo.Msisdn);
-
                         if (_contactsForForward.Contains(cInfo))
+                        {
+                            if (!Utils.isGroupConversation(cInfo.Msisdn))
+                            {
+                                if (!cInfo.OnHike)
+                                    _smsUserCount--;
+                            }
+                            else
+                                _smsUserCount -= GroupManager.Instance.GetSMSParticiantCount(cInfo.Msisdn);
+
                             _contactsForForward.Remove(cInfo);
+                        }
                     }
                 }
                 else
                     _contactsForForward.Add(cInfo);
 
-                if (cInfo.IsSelected)
-                    _selectedContacts++;
-                else
-                    _selectedContacts--;
-
-                _doneIconButton.IsEnabled = _selectedContacts > 0 ? true : false;
+                _doneIconButton.IsEnabled = _contactsForForward.Count > 0 ? true : false;
             }
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             var cInfo = (sender as FrameworkElement).DataContext as ContactInfo;
-            cInfo.IsSelected = false;
+            
+            if (cInfo.IsSelected) return;
+            
             CheckUnCheckContact(cInfo);
         }
 
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             var cInfo = (sender as FrameworkElement).DataContext as ContactInfo;
-            cInfo.IsSelected = true;
+
+            if (!cInfo.IsSelected) return;
+
             CheckUnCheckContact(cInfo);
         }
     }
