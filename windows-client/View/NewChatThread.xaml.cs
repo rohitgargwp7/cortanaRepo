@@ -135,7 +135,7 @@ namespace windows_client.View
             }
         }
 
-        private ObservableCollection<ConvMessage> _ocMessages;
+        private ObservableCollection<ConvMessage> ocMessages;
 
         public bool IsSMSOptionValid = true;
         Pivot pivotStickers = null;
@@ -251,7 +251,7 @@ namespace windows_client.View
 
             FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI += FileTransferStatusUpdated;
 
-            _ocMessages = new ObservableCollection<ConvMessage>();
+            ocMessages = new ObservableCollection<ConvMessage>();
             lruStickerCache = new LruCache<string, BitmapImage>(10, 0);
 
             walkieTalkie.Source = UI_Utils.Instance.WalkieTalkieBigImage;
@@ -402,12 +402,12 @@ namespace windows_client.View
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, TimeUtils.getCurrentTimeStamp());
                         _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
 
-                        if (_h2hofflineToolTip != null && _ocMessages.Contains(_h2hofflineToolTip))
+                        if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
                         {
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                                 {
-                                    if (_h2hofflineToolTip != null && _ocMessages.Contains(_h2hofflineToolTip))
-                                        _ocMessages.Remove(_h2hofflineToolTip);
+                                    if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
+                                        ocMessages.Remove(_h2hofflineToolTip);
                                 });
                         }
 
@@ -417,7 +417,7 @@ namespace windows_client.View
                             {
                                 if (_isSendAllAsSMSVisible)
                                 {
-                                    _ocMessages.Remove(_tap2SendAsSMSMessage);
+                                    ocMessages.Remove(_tap2SendAsSMSMessage);
                                     _isSendAllAsSMSVisible = false;
                                 }
                             });
@@ -536,7 +536,7 @@ namespace windows_client.View
                 isGC = true;
             }
 
-            this.llsMessages.ItemsSource = _ocMessages;
+            this.llsMessages.ItemsSource = ocMessages;
 
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
@@ -933,8 +933,8 @@ namespace windows_client.View
                 ResumeBackgroundAudio();
             }
 
-            _ocMessages.Clear();
-            _ocMessages = null;
+            ocMessages.Clear();
+            ocMessages = null;
 
             if (!NavigationService.CanGoBack || App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)// if no page to go back in this case back would go to conversation list
             {
@@ -1398,9 +1398,9 @@ namespace windows_client.View
                 if (appBar.MenuItems.Contains(inviteMenuItem))
                     appBar.MenuItems.Remove(inviteMenuItem);
 
-                if (_ocMessages != null && _ocMessages.Count > 0)
+                if (ocMessages != null && ocMessages.Count > 0)
                 {
-                    foreach (var msg in _ocMessages)
+                    foreach (var msg in ocMessages)
                     {
                         if (msg.IsSms)
                             msg.IsSms = false;
@@ -1850,8 +1850,8 @@ namespace windows_client.View
                 NetworkManager.turnOffNetworkManager = false;
                 if (_isHikeBot && mContactNumber == HikeConstants.FTUE_HIKEBOT_MSISDN)
                 {
-                    if (_ocMessages.Count > 0)
-                        llsMessages.ScrollTo(_ocMessages[0]);
+                    if (ocMessages.Count > 0)
+                        llsMessages.ScrollTo(ocMessages[0]);
                 }
             });
         }
@@ -1896,7 +1896,7 @@ namespace windows_client.View
         {
             try
             {
-                if (_ocMessages.Count > 0 && (!IsMute || _userTappedJumpToBottom || _ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
+                if (ocMessages.Count > 0 && (!IsMute || _userTappedJumpToBottom || ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
                 {
                     _userTappedJumpToBottom = false;
 
@@ -1905,7 +1905,7 @@ namespace windows_client.View
                     if (vScrollBar != null && llsViewPort != null && ((vScrollBar.Maximum - vScrollBar.Value) < 2000))
                         llsViewPort.SetViewportOrigin(new System.Windows.Point(0, llsViewPort.Bounds.Height));
                     else
-                        llsMessages.ScrollTo(_ocMessages[_ocMessages.Count - 1]);
+                        llsMessages.ScrollTo(ocMessages[ocMessages.Count - 1]);
                 }
             }
             catch (Exception ex)
@@ -2060,7 +2060,7 @@ namespace windows_client.View
             {
                 IsMute = true;
                 obj[HikeConstants.TYPE] = "mute";
-                App.ViewModel.ConvMap[mContactNumber].MuteVal = _ocMessages.Count;
+                App.ViewModel.ConvMap[mContactNumber].MuteVal = ocMessages.Count;
                 ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
                 muteGroupMenuItem.Text = AppResources.SelectUser_UnMuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
@@ -2599,15 +2599,15 @@ namespace windows_client.View
 
         private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived, bool readFromDb = false)
         {
-            if (_isSendAllAsSMSVisible && _ocMessages != null && convMessage.IsSent)
+            if (_isSendAllAsSMSVisible && ocMessages != null && convMessage.IsSent)
             {
-                _ocMessages.Remove(_tap2SendAsSMSMessage);
+                ocMessages.Remove(_tap2SendAsSMSMessage);
                 _isSendAllAsSMSVisible = false;
             }
 
             int insertPosition = 0;
             if (!insertAtTop)
-                insertPosition = _ocMessages.Count;
+                insertPosition = ocMessages.Count;
             try
             {
                 #region NO_INFO
@@ -2698,7 +2698,7 @@ namespace windows_client.View
                         ScheduleMsg(chatBubble);
                     chatBubble.IsSms = !isOnHike;
                     chatBubble.CurrentOrientation = this.Orientation;
-                    _ocMessages.Insert(insertPosition, chatBubble);
+                    ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
                 #endregion
@@ -2710,13 +2710,13 @@ namespace windows_client.View
                     string[] vals = convMessage.Message.Split(';');
                     ConvMessage convMessageNew = new ConvMessage(vals[0], this.Orientation, convMessage);
                     convMessageNew.NotificationType = ConvMessage.MessageType.HIKE_PARTICIPANT_JOINED;
-                    _ocMessages.Insert(insertPosition, convMessageNew);
+                    ocMessages.Insert(insertPosition, convMessageNew);
                     insertPosition++;
                     if (vals.Length == 2)
                     {
                         ConvMessage dndChatBubble = new ConvMessage(vals[1], this.Orientation, convMessage);
                         dndChatBubble.NotificationType = ConvMessage.MessageType.WAITING;
-                        _ocMessages.Insert(insertPosition, dndChatBubble);
+                        ocMessages.Insert(insertPosition, dndChatBubble);
                         insertPosition++;
                     }
                 }
@@ -2741,7 +2741,7 @@ namespace windows_client.View
                         }
                         ConvMessage chatBubble = new ConvMessage(gp.FirstName + text, this.Orientation, convMessage);
                         chatBubble.NotificationType = type;
-                        _ocMessages.Insert(insertPosition, chatBubble);
+                        ocMessages.Insert(insertPosition, chatBubble);
                         insertPosition++;
                     }
                 }
@@ -2775,7 +2775,7 @@ namespace windows_client.View
                         {
                             ConvMessage chatBubble = new ConvMessage(text, this.Orientation, convMessage);
                             chatBubble.NotificationType = type;
-                            _ocMessages.Insert(insertPosition, chatBubble);
+                            ocMessages.Insert(insertPosition, chatBubble);
                             insertPosition++;
                         }
                     }
@@ -2799,7 +2799,7 @@ namespace windows_client.View
                     }
                     ConvMessage wchatBubble = new ConvMessage(string.Format(AppResources.WAITING_TO_JOIN, msgText.ToString()), this.Orientation, convMessage);
                     wchatBubble.NotificationType = ConvMessage.MessageType.WAITING;
-                    _ocMessages.Insert(insertPosition, wchatBubble);
+                    ocMessages.Insert(insertPosition, wchatBubble);
                 }
                 #endregion
                 #region USER_JOINED
@@ -2807,7 +2807,7 @@ namespace windows_client.View
                 {
                     ConvMessage chatBubble = new ConvMessage(convMessage.Message, this.Orientation, convMessage);
                     chatBubble.NotificationType = ConvMessage.MessageType.USER_JOINED_HIKE;
-                    _ocMessages.Insert(insertPosition, chatBubble);
+                    ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
                 #endregion
@@ -2816,7 +2816,7 @@ namespace windows_client.View
                 {
                     ConvMessage chatBubble = new ConvMessage(convMessage.Message, this.Orientation, convMessage);
                     chatBubble.NotificationType = ConvMessage.MessageType.USER_JOINED_HIKE;
-                    _ocMessages.Insert(insertPosition, chatBubble);
+                    ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
                 #endregion
@@ -2825,7 +2825,7 @@ namespace windows_client.View
                 {
                     ConvMessage chatBubble = new ConvMessage(convMessage.Message, this.Orientation, convMessage);
                     chatBubble.NotificationType = ConvMessage.MessageType.SMS_PARTICIPANT_INVITED;
-                    _ocMessages.Insert(insertPosition, chatBubble);
+                    ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
                 #endregion
@@ -2839,7 +2839,7 @@ namespace windows_client.View
                     }
                     ConvMessage chatBubble = new ConvMessage(convMessage.Message, this.Orientation, convMessage);
                     chatBubble.NotificationType = type;
-                    _ocMessages.Insert(insertPosition, chatBubble);
+                    ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
                 #endregion
@@ -2850,7 +2850,7 @@ namespace windows_client.View
                     {
                         ConvMessage chatBubble = new ConvMessage(convMessage.Message, this.Orientation, convMessage);
                         chatBubble.NotificationType = ConvMessage.MessageType.WAITING;
-                        _ocMessages.Insert(insertPosition, chatBubble);
+                        ocMessages.Insert(insertPosition, chatBubble);
                         insertPosition++;
                     }
                 }
@@ -2861,7 +2861,7 @@ namespace windows_client.View
                     string name = convMessage.Message.Substring(0, convMessage.Message.IndexOf(' '));
                     ConvMessage chatBubble = new ConvMessage(name + AppResources.USER_LEFT, this.Orientation, convMessage);
                     chatBubble.NotificationType = ConvMessage.MessageType.PARTICIPANT_LEFT;
-                    _ocMessages.Insert(insertPosition, chatBubble);
+                    ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
                 #endregion
@@ -2870,7 +2870,7 @@ namespace windows_client.View
                 {
                     ConvMessage chatBubble = new ConvMessage(AppResources.GROUP_CHAT_END, this.Orientation, convMessage);
                     chatBubble.NotificationType = ConvMessage.MessageType.GROUP_END;
-                    _ocMessages.Insert(insertPosition, chatBubble);
+                    ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
                 #endregion
@@ -2879,7 +2879,7 @@ namespace windows_client.View
                 {
                     ConvMessage chatBubble = new ConvMessage(convMessage.Message, this.Orientation, convMessage);
                     chatBubble.NotificationType = ConvMessage.MessageType.REWARD;
-                    _ocMessages.Insert(insertPosition, chatBubble);
+                    ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
                 #endregion
@@ -2888,7 +2888,7 @@ namespace windows_client.View
                 {
                     ConvMessage chatBubble = new ConvMessage(convMessage.Message, this.Orientation, convMessage);
                     chatBubble.NotificationType = ConvMessage.MessageType.INTERNATIONAL_USER_BLOCKED;
-                    _ocMessages.Insert(insertPosition, chatBubble);
+                    ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
                 #endregion
@@ -2897,12 +2897,12 @@ namespace windows_client.View
                 {
                     ConvMessage chatBubble = new ConvMessage(AppResources.SMS_INDIA, this.Orientation, convMessage);
                     chatBubble.NotificationType = ConvMessage.MessageType.INTERNATIONAL_USER_BLOCKED;
-                    _ocMessages.Insert(insertPosition, chatBubble);
+                    ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                     string name = convMessage.Message.Substring(0, convMessage.Message.IndexOf(' '));
                     ConvMessage chatBubbleLeft = new ConvMessage(name + AppResources.USER_LEFT, this.Orientation, convMessage);
                     chatBubbleLeft.NotificationType = ConvMessage.MessageType.PARTICIPANT_LEFT;
-                    _ocMessages.Insert(insertPosition, chatBubbleLeft);
+                    ocMessages.Insert(insertPosition, chatBubbleLeft);
                     insertPosition++;
                 }
                 #endregion
@@ -2911,7 +2911,7 @@ namespace windows_client.View
                 {
                     ConvMessage chatBubble = new ConvMessage(convMessage.Message, this.Orientation, convMessage);
                     chatBubble.NotificationType = ConvMessage.MessageType.GROUP_NAME_CHANGED;
-                    _ocMessages.Insert(insertPosition, chatBubble);
+                    ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
                 #endregion
@@ -2930,7 +2930,7 @@ namespace windows_client.View
                             string serverId = (string)jsonObj[HikeConstants.PROFILE_PIC_ID];
                             byte[] imageBytes = MiscDBUtil.GetProfilePicUpdateForID(convMessage.Msisdn, serverId);
                             convMessage.StatusUpdateImage = UI_Utils.Instance.createImageFromBytes(imageBytes);
-                            _ocMessages.Insert(insertPosition, convMessage);
+                            ocMessages.Insert(insertPosition, convMessage);
                             insertPosition++;
                         }
                         catch (Exception e)
@@ -2945,7 +2945,7 @@ namespace windows_client.View
                     {
                         try
                         {
-                            _ocMessages.Insert(insertPosition, convMessage);
+                            ocMessages.Insert(insertPosition, convMessage);
                             insertPosition++;
                         }
                         catch (Exception e)
@@ -2965,7 +2965,7 @@ namespace windows_client.View
                             _toolTipMessage = new ConvMessage();
                             _toolTipMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.IN_APP_TIP;
                             _toolTipMessage.Message = String.Format(AppResources.In_App_Tip_5, mContactName);
-                            _ocMessages.Insert(insertPosition, _toolTipMessage);
+                            ocMessages.Insert(insertPosition, _toolTipMessage);
                             insertPosition++;
                             _isStatusUpdateToolTipShown = true;
 
@@ -2992,7 +2992,7 @@ namespace windows_client.View
                 {
                     ConvMessage chatBubble = new ConvMessage(convMessage.Message, this.Orientation, convMessage);
                     chatBubble.NotificationType = ConvMessage.MessageType.GROUP_PIC_CHANGED;
-                    _ocMessages.Insert(insertPosition, chatBubble);
+                    ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
                 #endregion
@@ -3001,7 +3001,7 @@ namespace windows_client.View
                 {
                     ConvMessage chatBubble = new ConvMessage(convMessage.Message, this.Orientation, convMessage);
                     chatBubble.NotificationType = ConvMessage.MessageType.CHAT_BACKGROUND;
-                    _ocMessages.Insert(insertPosition, chatBubble);
+                    ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
 
                     if (!insertAtTop)
@@ -3468,11 +3468,11 @@ namespace windows_client.View
                 msg.SetAttachmentState(Attachment.AttachmentState.CANCELED);
 
             bool delConv = false;
-            _ocMessages.Remove(msg);
+            ocMessages.Remove(msg);
 
-            if (_h2hofflineToolTip != null && _ocMessages.Contains(_h2hofflineToolTip))
+            if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
             {
-                _ocMessages.Remove(_h2hofflineToolTip);
+                ocMessages.Remove(_h2hofflineToolTip);
                 App.ViewModel.HideToolTip(null, 6);
                 _h2hofflineToolTip = null;
                 ShowForceSMSOnUI();
@@ -3480,7 +3480,7 @@ namespace windows_client.View
 
             if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage == msg)
             {
-                _ocMessages.Remove(_tap2SendAsSMSMessage);
+                ocMessages.Remove(_tap2SendAsSMSMessage);
                 _isSendAllAsSMSVisible = false;
                 ShowForceSMSOnUI();
             }
@@ -3488,13 +3488,13 @@ namespace windows_client.View
             ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
 
             ConvMessage lastMessageBubble = null;
-            if (isTypingNotificationActive && _ocMessages.Count > 1)
+            if (isTypingNotificationActive && ocMessages.Count > 1)
             {
-                lastMessageBubble = _ocMessages[_ocMessages.Count - 2];
+                lastMessageBubble = ocMessages[ocMessages.Count - 2];
             }
-            else if (!isTypingNotificationActive && _ocMessages.Count > 0)
+            else if (!isTypingNotificationActive && ocMessages.Count > 0)
             {
-                lastMessageBubble = _ocMessages[_ocMessages.Count - 1];
+                lastMessageBubble = ocMessages[ocMessages.Count - 1];
             }
 
             if (lastMessageBubble != null)
@@ -3602,9 +3602,9 @@ namespace windows_client.View
 
                 SendForceSMS(convMessage);
 
-                if (_h2hofflineToolTip != null && _ocMessages.Contains(_h2hofflineToolTip))
+                if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
                 {
-                    _ocMessages.Remove(_h2hofflineToolTip);
+                    ocMessages.Remove(_h2hofflineToolTip);
                     App.ViewModel.HideToolTip(null, 6);
                     _h2hofflineToolTip = null;
                     ShowForceSMSOnUI();
@@ -3612,7 +3612,7 @@ namespace windows_client.View
 
                 if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage == convMessage)
                 {
-                    _ocMessages.Remove(_tap2SendAsSMSMessage);
+                    ocMessages.Remove(_tap2SendAsSMSMessage);
                     _isSendAllAsSMSVisible = false;
                     ShowForceSMSOnUI();
                 }
@@ -4209,7 +4209,7 @@ namespace windows_client.View
                         convTypingNotification.CurrentOrientation = this.Orientation;
                         convTypingNotification.GrpParticipantState = ConvMessage.ParticipantInfoState.TYPING_NOTIFICATION;
                     }
-                    _ocMessages.Add(convTypingNotification);
+                    ocMessages.Add(convTypingNotification);
                 }
                 isTypingNotificationActive = true;
                 if (JumpToBottomGrid.Visibility == Visibility.Collapsed)
@@ -4222,8 +4222,8 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if ((!isTypingNotificationEnabled || isTypingNotificationActive) && _ocMessages.Contains(convTypingNotification))
-                    _ocMessages.Remove(convTypingNotification);
+                if ((!isTypingNotificationEnabled || isTypingNotificationActive) && ocMessages.Contains(convTypingNotification))
+                    ocMessages.Remove(convTypingNotification);
                 isTypingNotificationActive = false;
             });
         }
@@ -4411,15 +4411,15 @@ namespace windows_client.View
 
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                          {
-                             if (_h2hofflineToolTip != null && _ocMessages.Contains(_h2hofflineToolTip))
-                                 _ocMessages.Remove(_h2hofflineToolTip);
+                             if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
+                                 ocMessages.Remove(_h2hofflineToolTip);
                          });
 
-                    if (_isSendAllAsSMSVisible && _ocMessages != null && msg == _lastUnDeliveredMessage)
+                    if (_isSendAllAsSMSVisible && ocMessages != null && msg == _lastUnDeliveredMessage)
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            _ocMessages.Remove(_tap2SendAsSMSMessage);
+                            ocMessages.Remove(_tap2SendAsSMSMessage);
                             _isSendAllAsSMSVisible = false;
                             ShowForceSMSOnUI();
                         });
@@ -4506,15 +4506,15 @@ namespace windows_client.View
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (_h2hofflineToolTip != null && _ocMessages.Contains(_h2hofflineToolTip))
-                        _ocMessages.Remove(_h2hofflineToolTip);
+                    if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
+                        ocMessages.Remove(_h2hofflineToolTip);
                 });
 
                 if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage.MessageStatus != ConvMessage.State.SENT_CONFIRMED)
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        _ocMessages.Remove(_tap2SendAsSMSMessage);
+                        ocMessages.Remove(_tap2SendAsSMSMessage);
                         _isSendAllAsSMSVisible = false;
                         ShowForceSMSOnUI();
                     });
@@ -4655,17 +4655,17 @@ namespace windows_client.View
                                 {
                                     if (_isSendAllAsSMSVisible)
                                     {
-                                        _ocMessages.Remove(_tap2SendAsSMSMessage);
+                                        ocMessages.Remove(_tap2SendAsSMSMessage);
                                         _isSendAllAsSMSVisible = false;
                                     }
                                 });
                             }
-                            else if (_h2hofflineToolTip != null && _ocMessages.Contains(_h2hofflineToolTip))
+                            else if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
                             {
                                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                                     {
-                                        if (_h2hofflineToolTip != null && _ocMessages.Contains(_h2hofflineToolTip))
-                                            _ocMessages.Remove(_h2hofflineToolTip);
+                                        if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
+                                            ocMessages.Remove(_h2hofflineToolTip);
                                     });
                             }
                         }
@@ -5345,7 +5345,7 @@ namespace windows_client.View
 
             if (isBubbleColorChanged)
             {
-                foreach (var msg in _ocMessages)
+                foreach (var msg in ocMessages)
                     msg.UpdateChatBubbles();
             }
 
@@ -5612,9 +5612,9 @@ namespace windows_client.View
         #region Orientation Handling
         private void PhoneApplicationPage_OrientationChanged(object sender, OrientationChangedEventArgs e)
         {
-            for (int i = 0; i < _ocMessages.Count; i++)
+            for (int i = 0; i < ocMessages.Count; i++)
             {
-                ConvMessage convMessage = _ocMessages[i];
+                ConvMessage convMessage = ocMessages[i];
                 if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO && !convMessage.HasAttachment)
                     convMessage.CurrentOrientation = e.Orientation;
             }
@@ -5716,7 +5716,7 @@ namespace windows_client.View
         {
             if (_isHikeBot)
                 return;
-            if (vScrollBar != null && (_ocMessages != null && _ocMessages.Count > 6) && vScrollBar.Maximum < 1000000)
+            if (vScrollBar != null && (ocMessages != null && ocMessages.Count > 6) && vScrollBar.Maximum < 1000000)
             {
                 //show jump to bottom for mute chat for incoming messages as scroll to bottom wont work for mute gcs
                 if ((vScrollBar.Maximum - vScrollBar.Value) > 500 || (IsMute && increaseUnreadCounter))
@@ -6631,7 +6631,7 @@ namespace windows_client.View
 
             try
             {
-                var msgList = (from message in _ocMessages
+                var msgList = (from message in ocMessages
                                where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
                                select message);
 
@@ -6699,7 +6699,7 @@ namespace windows_client.View
 
                      try
                      {
-                         var msgList = (from message in _ocMessages
+                         var msgList = (from message in ocMessages
                                         where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
                                         select message);
 
@@ -6712,7 +6712,7 @@ namespace windows_client.View
 
                      if (_lastUnDeliveredMessage != null)
                      {
-                         var indexToInsert = _ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
+                         var indexToInsert = ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
 
                          if (App.ViewModel.DictInAppTip != null && !isInAppTipVisible)
                          {
@@ -6724,7 +6724,7 @@ namespace windows_client.View
                                  _h2hofflineToolTip = new ConvMessage();
                                  _h2hofflineToolTip.GrpParticipantState = ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP;
                                  _h2hofflineToolTip.Message = tip.Tip;
-                                 _ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
+                                 ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
                                  _isStatusUpdateToolTipShown = true;
 
                                  tip.IsShown = true;
@@ -6740,7 +6740,7 @@ namespace windows_client.View
                                  currentShown |= (int)(1 << 6);
                                  App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
 
-                                 if (indexToInsert == _ocMessages.Count - 1)
+                                 if (indexToInsert == ocMessages.Count - 1)
                                      ScrollToBottom();
 
                                  isInAppTipVisible = true;
@@ -6751,8 +6751,8 @@ namespace windows_client.View
 
                          if (_h2hofflineToolTip != null)
                          {
-                             if (!_ocMessages.Contains(_h2hofflineToolTip))
-                                 _ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
+                             if (!ocMessages.Contains(_h2hofflineToolTip))
+                                 ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
 
                              return;
                          }
@@ -6769,9 +6769,9 @@ namespace windows_client.View
                                  _tap2SendAsSMSMessage.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
                          }
 
-                         _ocMessages.Insert(indexToInsert, _tap2SendAsSMSMessage);
+                         ocMessages.Insert(indexToInsert, _tap2SendAsSMSMessage);
 
-                         if (indexToInsert == _ocMessages.Count - 1)
+                         if (indexToInsert == ocMessages.Count - 1)
                              ScrollToBottom();
 
                          _isSendAllAsSMSVisible = true;
@@ -6803,10 +6803,10 @@ namespace windows_client.View
             }
             else
             {
-                if (_ocMessages == null || _ocMessages.Count == 0)
+                if (ocMessages == null || ocMessages.Count == 0)
                     return;
 
-                var convMsgList = (from convMsg in _ocMessages
+                var convMsgList = (from convMsg in ocMessages
                                    where convMsg.MessageStatus == ConvMessage.State.SENT_CONFIRMED
                                    select convMsg).ToList();
 
@@ -6864,7 +6864,7 @@ namespace windows_client.View
         private void TipDismiss_Tap(object sender, System.Windows.Input.GestureEventArgs e) // invoked for status update tooltip #4
         {
             if (_toolTipMessage != null)
-                _ocMessages.Remove(_toolTipMessage);
+                ocMessages.Remove(_toolTipMessage);
 
             App.ViewModel.HideToolTip(null, 4);
         }
@@ -6906,9 +6906,9 @@ namespace windows_client.View
                 {
                     if (_isSendAllAsSMSVisible)
                     {
-                        if (_h2hofflineToolTip != null && _ocMessages.Contains(_h2hofflineToolTip))
+                        if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
                         {
-                            _ocMessages.Remove(_h2hofflineToolTip);
+                            ocMessages.Remove(_h2hofflineToolTip);
                             App.ViewModel.HideToolTip(null, 6);
                             _h2hofflineToolTip = null;
                             ShowForceSMSOnUI();
@@ -6923,7 +6923,7 @@ namespace windows_client.View
                                 SendForceSMS();
 
                                 if (_lastUnDeliveredMessage != null)
-                                    _ocMessages.Remove(_tap2SendAsSMSMessage);
+                                    ocMessages.Remove(_tap2SendAsSMSMessage);
                             }
                             //    else
                             //        FileAttachmentMessage_Tap(sender, e);
@@ -6947,7 +6947,7 @@ namespace windows_client.View
         {
             if (_h2hofflineToolTip != null)
             {
-                _ocMessages.Remove(_h2hofflineToolTip);
+                ocMessages.Remove(_h2hofflineToolTip);
                 App.ViewModel.HideToolTip(null, 6);
                 _h2hofflineToolTip = null;
                 ShowForceSMSOnUI();
