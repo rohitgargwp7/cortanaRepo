@@ -819,15 +819,15 @@ namespace windows_client.ViewModel
             if (!PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
                 return;
 
+            contactsForForward = contactsForForward.Distinct(new ContactInfo.MsisdnComparer()).ToList();
+
             if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is string)
             {
-                contactsForForward = contactsForForward.Distinct(new ContactInfo.MsisdnComparer()).ToList();
-
                 foreach (var contact in contactsForForward)
                 {
                     var msg = (string)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
 
-                    var msisdn = contact.Id == null ? contact.Msisdn : contact.Id;
+                    var msisdn = contact.Msisdn;
                     ConvMessage convMessage = new ConvMessage(msg, msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                     convMessage.IsSms = !contact.OnHike;
                     convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
@@ -847,7 +847,7 @@ namespace windows_client.ViewModel
                 {
                     foreach (var contact in contactsForForward)
                     {
-                        var msisdn = contact.Id == null ? contact.Msisdn : contact.Id;
+                        var msisdn = contact.Msisdn;
                         ConvMessage convMessage = new ConvMessage(AppResources.Sticker_Txt, msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                         convMessage.IsSms = !contact.OnHike;
                         convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
@@ -871,7 +871,7 @@ namespace windows_client.ViewModel
 
                     foreach (var contact in contactsForForward)
                     {
-                        var msisdn = contact.Id == null ? contact.Msisdn : contact.Id;
+                        var msisdn = contact.Msisdn;
                         ConvMessage convMessage = new ConvMessage("", msisdn,
                           TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                         convMessage.IsSms = !contact.OnHike;

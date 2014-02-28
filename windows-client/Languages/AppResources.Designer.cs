@@ -3758,7 +3758,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter Valid Number.
+        ///   Looks up a localized string similar to enter valid number.
         /// </summary>
         public static string SelectUser_EnterValidNo_Txt {
             get {

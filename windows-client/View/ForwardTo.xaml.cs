@@ -56,7 +56,6 @@ namespace windows_client.View
 
         Dictionary<string, List<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, List<Group<ContactInfo>>>();
 
-        string defaultMsg = AppResources.Tap_To_Invite_Txt;
         ContactInfo defaultContact = new ContactInfo(); // this is used to store default phone number 
 
         public ForwardTo()
@@ -213,7 +212,8 @@ namespace windows_client.View
                 {
                     gl[_maxCharGroups][0].Name = _charsEntered;
                     string num = Utils.NormalizeNumber(_charsEntered);
-                    gl[_maxCharGroups][0].ContactListLabel = _charsEntered.Length >= 1 && _charsEntered.Length <= 15 ? defaultMsg : AppResources.SelectUser_EnterValidNo_Txt;
+                    gl[_maxCharGroups][0].Msisdn = num;
+                    gl[_maxCharGroups][0].ContactListLabel = _charsEntered.Length >= 1 && _charsEntered.Length <= 15 ? num : AppResources.SelectUser_EnterValidNo_Txt;
                     gl[_maxCharGroups][0].IsSelected = _contactsForForward.Where(c => c.Msisdn == num).Count() > 0 ? true : false;
                 }
 
@@ -279,6 +279,9 @@ namespace windows_client.View
                 for (int j = 0; j < maxJ; j++)
                 {
                     ContactInfo cn = listToIterate[i][j];
+                    if (cn == null)
+                        continue;
+
                     cn.IsSelected = _contactsForForward.Where(c => c.Msisdn == cn.Msisdn).Count() > 0 ? true : false;
 
                     if (cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered))
@@ -313,11 +316,12 @@ namespace windows_client.View
                     list[_maxCharGroups].Insert(0, defaultContact);
                 }
 
-                list[_maxCharGroups][0].Msisdn = "+" + charsEntered;
+                list[_maxCharGroups][0].Msisdn = Utils.NormalizeNumber(_charsEntered);
 
                 charsEntered = (isPlus ? "+" : "") + charsEntered;
                 list[_maxCharGroups][0].Name = charsEntered;
-                list[_maxCharGroups][0].ContactListLabel = Utils.IsNumberValid(charsEntered) ? defaultMsg : AppResources.SelectUser_EnterValidNo_Txt;
+                list[_maxCharGroups][0].ContactListLabel = Utils.IsNumberValid(charsEntered) ? list[_maxCharGroups][0].Msisdn : AppResources.SelectUser_EnterValidNo_Txt;
+                list[_maxCharGroups][0].IsSelected = _contactsForForward.Where(c => c.Msisdn == defaultContact.Msisdn).Count() > 0;
             }
 
             if (!areCharsNumber && createNewFilteredList)
@@ -756,6 +760,9 @@ namespace windows_client.View
                     {
                         if (!_contactsForForward.Contains(cInfo))
                         {
+                            if (defaultContact == cInfo)
+                                defaultContact = new ContactInfo();
+
                             if (!Utils.isGroupConversation(cInfo.Msisdn))
                             {
                                 if (!cInfo.OnHike)
