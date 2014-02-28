@@ -217,6 +217,7 @@ namespace windows_client.Misc
                                             try
                                             {
                                                 item.Read(reader);
+                                                gpList.Add(item);
                                             }
                                             catch (Exception ex)
                                             {
