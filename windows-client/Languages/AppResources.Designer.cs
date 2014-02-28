@@ -3767,7 +3767,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Forward To.
+        ///   Looks up a localized string similar to FORWARD TO.
         /// </summary>
         public static string SelectUser_Forward_To_Txt {
             get {

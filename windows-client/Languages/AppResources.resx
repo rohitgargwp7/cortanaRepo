@@ -1759,7 +1759,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>send as hike sms</value>
   </data>
   <data name="SelectUser_Forward_To_Txt" xml:space="preserve">
-    <value>Forward To</value>
+    <value>FORWARD TO</value>
     <comment>verb(length 12)</comment>
   </data>
   <data name="Send_All_As_SMS" xml:space="preserve">
