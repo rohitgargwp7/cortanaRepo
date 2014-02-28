@@ -435,6 +435,7 @@ namespace windows_client.Misc
             }
             catch
             {
+                Debug.WriteLine("GetSMSParticiantCount for grpID " + groupId + " is null");
                 return 0;
             }
         }
