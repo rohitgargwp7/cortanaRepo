@@ -63,7 +63,7 @@ namespace windows_client.View
         private void ClearLogs_tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             Logging.LogWriter.Instance.ClearLogs();
-            MQttLogging.LogWriter.Instance.ReadFile();
+            MQttLogging.LogWriter.Instance.ClearLogs();
         }
 
         private void ViewLogs_tap(object sender, System.Windows.Input.GestureEventArgs e)
