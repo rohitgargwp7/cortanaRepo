@@ -461,7 +461,7 @@ namespace windows_client.DbUtils
 
                 foreach (var message in messageList)
                 {
-                    if (message != null && sender != null)
+                    if (message != null && message.IsSent && sender != null)
                     {
                         if (message.ReadByArray == null)
                             message.ReadByArray = new JArray();

@@ -511,6 +511,11 @@ namespace windows_client.DbUtils
             return obj;
         }
 
+        /// <summary>
+        /// Update messag db with messages as Received Read
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <param name="status"></param>
         private void updateDbBatch(long[] ids, int status)
         {
             string msisdn = MessagesTableUtils.updateAllMsgStatus(null, ids, status, null);

@@ -138,6 +138,11 @@ namespace windows_client.View
 
         public bool IsSMSOptionValid = true;
         Pivot pivotStickers = null;
+
+        /// <summary>
+        /// defined as the number of active participants in the current group. Excludes sms users.
+        /// </summary>
+        int _activeUsers = 0;
         #endregion
 
         #region UI VALUES
@@ -1148,6 +1153,8 @@ namespace windows_client.View
                     lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
                 else
                     lastSeenTxt.Text = String.Empty;
+
+                _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == false).Count();
             }
 
             if (!isOnHike)
@@ -1757,6 +1764,7 @@ namespace windows_client.View
                 if (count % 5 == 0)
                     Thread.Sleep(5);
                 messagesList[i].IsSms = !isOnHike;
+
                 #region PERCEPTION FIX ZONE
 
                 // perception fix is only used for msgs of normal type in which SDR applies
@@ -1798,6 +1806,7 @@ namespace windows_client.View
             }
 
             #region perception fix update db
+
             if (idsToUpdate != null && idsToUpdate.Count > 0)
             {
                 BackgroundWorker bw = new BackgroundWorker();
@@ -1811,6 +1820,7 @@ namespace windows_client.View
                 };
                 bw.RunWorkerAsync();
             }
+
             #endregion
 
             UpdateLastSentMessageStatusOnUI();
@@ -4551,7 +4561,7 @@ namespace windows_client.View
                                     msg.ReadByArray.Add(sender);
                                     msg.ReadByInfo = msg.ReadByArray.ToString();
 
-                                    if (msg.ReadByArray.Count == GroupManager.Instance.GroupCache[mContactNumber].Count)
+                                    if (msg.ReadByArray.Count == _activeUsers)
                                         msgMap.Remove(ids[i]);
                                 }
                             }
@@ -4568,39 +4578,54 @@ namespace windows_client.View
                     }
                 }
 
-                #region perception fix for 1-1 chat
+                #region perception fix 
 
-                if (!isGroupChat)
+                if (msgMap.Count > 0)
                 {
-                    if (msgMap.Count > 0)
+                    try
                     {
-                        try
+                        List<long> idsToUpdate = new List<long>();
+                        foreach (var kv in msgMap)
                         {
-                            List<long> idsToUpdate = new List<long>();
-                            foreach (var kv in msgMap)
+                            if (kv.Key < maxId)
                             {
-                                if (kv.Key < maxId)
+                                ConvMessage msg = kv.Value;
+
+                                if (msg.IsSent && (msg.FileAttachment == null || (msg.FileAttachment.FileState == Attachment.AttachmentState.COMPLETED)))
                                 {
-                                    ConvMessage msg = kv.Value;
-                                    if (msg.IsSent && (msg.FileAttachment == null || (msg.FileAttachment.FileState == Attachment.AttachmentState.COMPLETED)))
+                                    if (isGroupChat)
                                     {
-                                        idsToUpdate.Add(kv.Key);
-                                        msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
+                                        if (!String.IsNullOrEmpty(sender))
+                                        {
+                                            if (msg.ReadByArray == null)
+                                                msg.ReadByArray = new JArray();
+
+                                            msg.ReadByArray.Add(sender);
+                                            msg.ReadByInfo = msg.ReadByArray.ToString();
+
+                                        }
                                     }
+                                 
+                                    idsToUpdate.Add(kv.Key);
+
+                                    if (msg.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
+                                        msg.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
+                                    else
+                                        msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
                                 }
                             }
-
-                            // remove these ids from map
-                            foreach (long id in idsToUpdate)
-                                msgMap.Remove(id);
-
-                            MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ, null);
-                            idsToUpdate = null;
                         }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine("NewChatThread :: OnEventRecieved, perception Fix, Exception:" + ex.StackTrace);
-                        }
+
+                        // remove these ids from map
+                        foreach (long id in idsToUpdate)
+                            msgMap.Remove(id);
+
+                        MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ, sender);
+                        idsToUpdate = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NewChatThread :: OnEventRecieved, perception Fix, Exception:" + ex.StackTrace);
                     }
                 }
 
@@ -4836,6 +4861,9 @@ namespace windows_client.View
                 ConvMessage cm = (ConvMessage)obj;
                 if (mContactNumber != cm.Msisdn)
                     return;
+
+                _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == false).Count();
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     try
@@ -4865,6 +4893,8 @@ namespace windows_client.View
                 string eventGroupId = (string)json[HikeConstants.TO];
                 if (eventGroupId != mContactNumber)
                     return;
+
+                _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == false).Count();
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
