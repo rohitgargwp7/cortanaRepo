@@ -34,7 +34,7 @@ namespace windows_client.View
 
         int _smsUserCount = 0;
         private int _smsCredits;
-        private byte _maxCharGroups = 26;
+        private int _maxCharGroups = 26;
         private string _charsEntered;
 
         private string TAP_MSG = AppResources.SelectUser_TapMsg_Txt;
@@ -71,7 +71,6 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.FORWARD_MSG, out obj))
             {
                 _showExistingGroups = true;
-                _maxCharGroups = 27;
                 txtTitle.Visibility = Visibility.Collapsed;
                 txtChat.Text = AppResources.SelectUser_Forward_To_Txt;
                 if (obj is object[])
@@ -273,7 +272,7 @@ namespace windows_client.View
 
             bool createNewFilteredList = true;
 
-            for (int i = start; i < end; i++)
+            for (int i = start; i <= end; i++)
             {
                 int maxJ = listToIterate == null ? 0 : (listToIterate[i] == null ? 0 : listToIterate[i].Count);
                 for (int j = 0; j < maxJ; j++)
@@ -643,6 +642,8 @@ namespace windows_client.View
                 glist[index].Add(c);
             }
 
+            _maxCharGroups = glist.Count - 1;
+
             return glist;
         }
 
@@ -784,18 +785,21 @@ namespace windows_client.View
                     }
                     else
                     {
-                        if (_contactsForForward.Contains(cInfo))
+                        var list = _contactsForForward.Where(x => x.Msisdn == cInfo.Msisdn).ToList();
+                        foreach (var item in list)
                         {
-                            if (!Utils.isGroupConversation(cInfo.Msisdn))
+                            item.IsSelected = false;
+
+                            if (!Utils.isGroupConversation(item.Msisdn))
                             {
-                                if (!cInfo.OnHike)
+                                if (!item.OnHike)
                                     _smsUserCount--;
                             }
                             else
-                                _smsUserCount -= GroupManager.Instance.GetSMSParticiantCount(cInfo.Msisdn);
-
-                            _contactsForForward.Remove(cInfo);
+                                _smsUserCount -= GroupManager.Instance.GetSMSParticiantCount(item.Msisdn);
                         }
+
+                        _contactsForForward.RemoveAll(x => x.Msisdn == cInfo.Msisdn);
                     }
                 }
                 else
