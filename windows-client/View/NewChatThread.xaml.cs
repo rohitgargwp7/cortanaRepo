@@ -3562,7 +3562,7 @@ namespace windows_client.View
             }
             else if (msg == _lastSentMessage)
             {
-                if (_readByMessage != null && ocMessages.Contains(_readByMessage))
+                if (_readByMessage != null)
                     ocMessages.Remove(_readByMessage);
 
                 UpdateLastSentMessageStatusOnUI();
@@ -7123,8 +7123,6 @@ namespace windows_client.View
             {
                 if (_lastSentMessage != null)
                 {
-                    var indexToInsert = ocMessages.IndexOf(_lastSentMessage) + 1;
-
                     if (_readByMessage == null)
                     {
                         _readByMessage = new ConvMessage();
@@ -7138,17 +7136,9 @@ namespace windows_client.View
                     else
                         _readByMessage.Message = Utils.GetMessageStatus(_lastSentMessage.MessageStatus, _lastSentMessage.ReadByArray, _activeUsers, false, mContactNumber);
 
-                    try
-                    {
-                        if (ocMessages.Contains(_readByMessage))
-                        {
-                            this.ocMessages.Remove(_readByMessage);
-                            indexToInsert = ocMessages.IndexOf(_lastSentMessage) + 1;
-                        }
-                    }
-                    catch { }
-
-                    this.ocMessages.Insert(indexToInsert, _readByMessage);
+                    ocMessages.Remove(_readByMessage);
+                    var indexToInsert = ocMessages.IndexOf(_lastSentMessage) + 1;
+                    ocMessages.Insert(indexToInsert, _readByMessage);
 
                     if (_previouslastSentMessage != _lastSentMessage)
                     {
