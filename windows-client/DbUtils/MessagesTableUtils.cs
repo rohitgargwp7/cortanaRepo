@@ -414,16 +414,20 @@ namespace windows_client.DbUtils
         /// <param name="ids"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        public static string updateAllMsgStatus(string fromUser, long[] ids, int status)
+        public static string updateAllMsgStatus(string fromUser, long[] ids, int status, string sender)
         {
             bool shouldSubmit = false;
             string msisdn = null;
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
+            List<ConvMessage> messageList = new List<ConvMessage>();
+
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 for (int i = 0; i < ids.Length; i++)
+                    messageList.Add(DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).FirstOrDefault<ConvMessage>());
+
+                foreach (var message in messageList)
                 {
                     var val = status;
-                    ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).FirstOrDefault<ConvMessage>();
 
                     if (message != null)
                     {
@@ -442,18 +446,47 @@ namespace windows_client.DbUtils
                             if (fromUser == null || fromUser == message.Msisdn)
                             {
                                 message.MessageStatus = (ConvMessage.State)val;
+
                                 msisdn = message.Msisdn;
                                 shouldSubmit = true;
                             }
                         }
                     }
                 }
+
                 if (shouldSubmit)
                     SubmitWithConflictResolve(context);
+
                 shouldSubmit = false;
-                return msisdn;
+
+                //todo look for a solution to prevent exception while comiting two column changes
+
+                if (sender != null)
+                {
+                    foreach (var message in messageList)
+                    {
+                        if (message != null && message.IsSent)
+                        {
+                            if (message.ReadByArray == null)
+                                message.ReadByArray = new JArray();
+
+                            if (!message.ReadByArray.Contains(sender))
+                            {
+                                message.ReadByArray.Add(sender);
+                                message.ReadByInfo = message.ReadByArray.ToString();
+                                shouldSubmit = true;
+                            }
+                        }
+                    }
+
+                    if (shouldSubmit)
+                        SubmitWithConflictResolve(context);
+                }
             }
 
+            messageList.Clear();
+
+            return msisdn;
         }
 
         public static void deleteAllMessages()

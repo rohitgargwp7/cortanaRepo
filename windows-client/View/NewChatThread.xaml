@@ -220,6 +220,13 @@
                                     </Grid>
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtForceSMSNotification>
+                            <templateSelector:ChatThreadTemplateSelector.DtMessageStatus>
+                                <DataTemplate>
+                                    <Grid HorizontalAlignment="Right" Margin="0,-8,24,5" >
+                                        <TextBlock FontSize="16" MaxWidth="{Binding MessageBubbleWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" TextAlignment="Right"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </templateSelector:ChatThreadTemplateSelector.DtMessageStatus>
                             <templateSelector:ChatThreadTemplateSelector.DtNotificationBubble>
                                 <DataTemplate x:Name="dtNotificationBubble">
                                     <Grid Margin="12,10">
