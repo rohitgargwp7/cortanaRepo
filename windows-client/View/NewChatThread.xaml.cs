@@ -142,7 +142,7 @@ namespace windows_client.View
         /// <summary>
         /// defined as the number of active participants in the current group. Excludes sms users.
         /// </summary>
-        int _activeUsers = 0;
+        int _activeUsers = 1;
         #endregion
 
         #region UI VALUES
@@ -1823,8 +1823,6 @@ namespace windows_client.View
 
             #endregion
 
-            UpdateLastSentMessageStatusOnUI();
-
             if (isInitialLaunch && statusObject != null && statusObject is ConversationListObject && !string.IsNullOrEmpty(((ConversationListObject)statusObject).TypingNotificationText))
             {
                 ShowTypingNotification();
@@ -1866,6 +1864,8 @@ namespace windows_client.View
                     if (ocMessages.Count > 0)
                         llsMessages.ScrollTo(ocMessages[0]);
                 }
+
+                UpdateLastSentMessageStatusOnUI();
             });
         }
 
@@ -7129,14 +7129,14 @@ namespace windows_client.View
                     {
                         _readByMessage = new ConvMessage();
                         _readByMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.MESSAGE_STATUS;
-                        _readByMessage.NotificationType = ConvMessage.MessageType.MESSAGE_STATUS;
+                        _readByMessage.NotificationType = ConvMessage.MessageType.UNKNOWN;
                         _readByMessage.MessageStatus = ConvMessage.State.UNKNOWN;
                     }
 
                     if (isGroupChat)
-                        _readByMessage.Message = Utils.GetMessageStatus(_lastSentMessage.MessageStatus, _lastSentMessage.ReadByArray, true, mContactNumber);
+                        _readByMessage.Message = Utils.GetMessageStatus(_lastSentMessage.MessageStatus, _lastSentMessage.ReadByArray, _activeUsers, true, mContactNumber);
                     else
-                        _readByMessage.Message = Utils.GetMessageStatus(_lastSentMessage.MessageStatus, _lastSentMessage.ReadByArray, false, mContactNumber);
+                        _readByMessage.Message = Utils.GetMessageStatus(_lastSentMessage.MessageStatus, _lastSentMessage.ReadByArray, _activeUsers, false, mContactNumber);
 
                     try
                     {

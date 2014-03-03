@@ -98,8 +98,8 @@ namespace windows_client.utils
             JObject requestAccountInfo = new JObject();
             try
             {
-                JObject upgradeJobj=new JObject();
-                upgradeJobj.Add(HikeConstants.UPGRADE,true);
+                JObject upgradeJobj = new JObject();
+                upgradeJobj.Add(HikeConstants.UPGRADE, true);
                 requestAccountInfo.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
                 requestAccountInfo.Add(HikeConstants.DATA, upgradeJobj);
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, requestAccountInfo);
@@ -460,7 +460,7 @@ namespace windows_client.utils
             try
             {
                 int idx = targetPage.IndexOf("msisdn");
-                return targetPage.Substring(idx).Remove(0,7);
+                return targetPage.Substring(idx).Remove(0, 7);
             }
             catch (Exception ex)
             {
@@ -578,7 +578,7 @@ namespace windows_client.utils
             return lastNotificationTime == 0 || ((DateTime.Now.Ticks - lastNotificationTime) / TimeSpan.TicksPerMillisecond > MIN_TIME_BETWEEN_NOTIFICATIONS);
         }
 
-        public static string GetMessageStatus(ConvMessage.State state, JArray obj, bool isGroupChat, string id)
+        public static string GetMessageStatus(ConvMessage.State state, JArray obj, int userCount, bool isGroupChat, string id)
         {
             switch (state)
             {
@@ -590,13 +590,13 @@ namespace windows_client.utils
                     return AppResources.MessageStatus_Delivered;
                 case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                 case ConvMessage.State.SENT_DELIVERED_READ:
-                    return isGroupChat ? GetReadBy(obj, id) : AppResources.MessageStatus_Read;
+                    return isGroupChat ? GetReadBy(obj, userCount, id) : AppResources.MessageStatus_Read;
                 default:
                     return String.Empty;
             }
         }
 
-        public static String GetReadBy(JArray obj, string id)
+        public static String GetReadBy(JArray obj, int userCount, string id)
         {
             if (obj == null)
                 return AppResources.MessageStatus_ReadByEveryone;
@@ -606,7 +606,7 @@ namespace windows_client.utils
             var list = obj.ToObject<List<string>>();
             list = list.Distinct().ToList();
 
-            if (list.Count == GroupManager.Instance.GroupCache[id].Where(g => g.HasLeft == false && g.IsOnHike == false).Count())
+            if (list.Count == userCount)
                 return AppResources.MessageStatus_ReadByEveryone;
 
             int count = 0;
@@ -618,7 +618,7 @@ namespace windows_client.utils
                 list.RemoveRange(3, count);
             }
 
-            for (int i = 0; i < list.Count;i++ )
+            for (int i = 0; i < list.Count; i++)
             {
                 GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, list[i], id);
                 readBy += gp.FirstName;

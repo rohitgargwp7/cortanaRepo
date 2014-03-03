@@ -106,8 +106,7 @@ namespace windows_client.Model
             DEFAULT,
             UNKNOWN,
             FORCE_SMS,
-            CHAT_BACKGROUND,
-            MESSAGE_STATUS
+            CHAT_BACKGROUND
         }
 
         public static ParticipantInfoState fromJSON(JObject obj)

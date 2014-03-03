@@ -459,6 +459,8 @@ namespace windows_client.DbUtils
                
                 shouldSubmit = false;
 
+                //todo look for a solution to prevent exception while comiting two column changes
+
                 foreach (var message in messageList)
                 {
                     if (message != null && message.IsSent && sender != null)
