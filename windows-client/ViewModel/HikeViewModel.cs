@@ -837,8 +837,6 @@ namespace windows_client.ViewModel
 
                     App.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, convMessage);
                 }
-
-                PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
             }
             else if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
             {
@@ -858,8 +856,6 @@ namespace windows_client.ViewModel
 
                         App.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, convMessage);
                     }
-
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
                 }
                 else
                 {
@@ -910,9 +906,9 @@ namespace windows_client.ViewModel
                         vals[1] = sourceFilePath;
                         App.HikePubSubInstance.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
                     }
-
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
                 }
+
+                PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
             }
         }
        

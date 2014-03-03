@@ -908,6 +908,7 @@ namespace windows_client.View
 
         private void ClearPageResources()
         {
+            ocMessages.Clear();
             lruStickerCache.Clear();
         }
 
