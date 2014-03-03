@@ -1154,7 +1154,7 @@ namespace windows_client.View
                 else
                     lastSeenTxt.Text = String.Empty;
 
-                _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == false).Count();
+                _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
             }
 
             if (!isOnHike)
@@ -4862,7 +4862,7 @@ namespace windows_client.View
                 if (mContactNumber != cm.Msisdn)
                     return;
 
-                _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == false).Count();
+                _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -4894,7 +4894,7 @@ namespace windows_client.View
                 if (eventGroupId != mContactNumber)
                     return;
 
-                _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == false).Count();
+                _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
