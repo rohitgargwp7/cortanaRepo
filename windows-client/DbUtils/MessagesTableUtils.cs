@@ -456,29 +456,32 @@ namespace windows_client.DbUtils
 
                 if (shouldSubmit)
                     SubmitWithConflictResolve(context);
-               
+
                 shouldSubmit = false;
 
                 //todo look for a solution to prevent exception while comiting two column changes
 
-                foreach (var message in messageList)
+                if (sender != null)
                 {
-                    if (message != null && message.IsSent && sender != null)
+                    foreach (var message in messageList)
                     {
-                        if (message.ReadByArray == null)
-                            message.ReadByArray = new JArray();
-
-                        if (!message.ReadByArray.Contains(sender))
+                        if (message != null && message.IsSent)
                         {
-                            message.ReadByArray.Add(sender);
-                            message.ReadByInfo = message.ReadByArray.ToString();
-                            shouldSubmit = true;
+                            if (message.ReadByArray == null)
+                                message.ReadByArray = new JArray();
+
+                            if (!message.ReadByArray.Contains(sender))
+                            {
+                                message.ReadByArray.Add(sender);
+                                message.ReadByInfo = message.ReadByArray.ToString();
+                                shouldSubmit = true;
+                            }
                         }
                     }
-                }
 
-                if (shouldSubmit)
-                    SubmitWithConflictResolve(context);
+                    if (shouldSubmit)
+                        SubmitWithConflictResolve(context);
+                }
             }
 
             messageList.Clear();
