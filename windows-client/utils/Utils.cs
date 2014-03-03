@@ -606,7 +606,7 @@ namespace windows_client.utils
             var list = obj.ToObject<List<string>>();
             list = list.Distinct().ToList();
 
-            if (list.Count == GroupManager.Instance.GroupCache[id].Count)
+            if (list.Count == GroupManager.Instance.GroupCache[id].Where(g => g.HasLeft == false && g.IsOnHike == false).Count())
                 return AppResources.MessageStatus_ReadByEveryone;
 
             int count = 0;

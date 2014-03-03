@@ -4503,17 +4503,15 @@ namespace windows_client.View
                          {
                              if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
                                  this.ocMessages.Remove(_h2hofflineToolTip);
-                         });
 
-                    if (_isSendAllAsSMSVisible && ocMessages != null && msg == _lastUnDeliveredMessage)
-                    {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            ocMessages.Remove(_tap2SendAsSMSMessage);
-                            _isSendAllAsSMSVisible = false;
-                            ShowForceSMSOnUI();
-                        });
-                    }
+                             if (_isSendAllAsSMSVisible && ocMessages != null && msg == _lastUnDeliveredMessage)
+                             {
+                                 ocMessages.Remove(_tap2SendAsSMSMessage);
+                                 _isSendAllAsSMSVisible = false;
+                                 ShowForceSMSOnUI();
+                             }
+
+                         });
                 }
                 catch (Exception ex)
                 {
@@ -4600,9 +4598,11 @@ namespace windows_client.View
                                             if (msg.ReadByArray == null)
                                                 msg.ReadByArray = new JArray();
 
-                                            msg.ReadByArray.Add(sender);
-                                            msg.ReadByInfo = msg.ReadByArray.ToString();
-
+                                            if (!msg.ReadByArray.Contains(sender))
+                                            {
+                                                msg.ReadByArray.Add(sender);
+                                                msg.ReadByInfo = msg.ReadByArray.ToString();
+                                            }
                                         }
                                     }
                                  
@@ -7104,9 +7104,7 @@ namespace windows_client.View
 
         void UpdateLastSentMessageStatusOnUI()
         {
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                _lastSentMessage = null;
+            _lastSentMessage = null;
 
                 try
                 {
@@ -7121,6 +7119,8 @@ namespace windows_client.View
                     return;
                 }
 
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
                 if (_lastSentMessage != null)
                 {
                     var indexToInsert = ocMessages.IndexOf(_lastSentMessage) + 1;
