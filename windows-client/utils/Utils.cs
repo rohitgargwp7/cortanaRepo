@@ -12,6 +12,7 @@ using Microsoft.Phone.Info;
 using Microsoft.Phone.Net.NetworkInformation;
 using System.Security.Cryptography;
 using windows_client.Languages;
+using windows_client.Misc;
 
 namespace windows_client.utils
 {
@@ -97,8 +98,8 @@ namespace windows_client.utils
             JObject requestAccountInfo = new JObject();
             try
             {
-                JObject upgradeJobj=new JObject();
-                upgradeJobj.Add(HikeConstants.UPGRADE,true);
+                JObject upgradeJobj = new JObject();
+                upgradeJobj.Add(HikeConstants.UPGRADE, true);
                 requestAccountInfo.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
                 requestAccountInfo.Add(HikeConstants.DATA, upgradeJobj);
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, requestAccountInfo);
@@ -459,7 +460,7 @@ namespace windows_client.utils
             try
             {
                 int idx = targetPage.IndexOf("msisdn");
-                return targetPage.Substring(idx).Remove(0,7);
+                return targetPage.Substring(idx).Remove(0, 7);
             }
             catch (Exception ex)
             {
@@ -575,6 +576,67 @@ namespace windows_client.utils
             appSettings.TryGetValue(HikeConstants.LAST_NOTIFICATION_TIME, out lastNotificationTime);
 
             return lastNotificationTime == 0 || ((DateTime.Now.Ticks - lastNotificationTime) / TimeSpan.TicksPerMillisecond > MIN_TIME_BETWEEN_NOTIFICATIONS);
+        }
+
+        public static string GetMessageStatus(ConvMessage.State state, JArray obj, int userCount, bool isGroupChat, string id)
+        {
+            switch (state)
+            {
+                case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
+                case ConvMessage.State.SENT_CONFIRMED:
+                    return AppResources.MessageStatus_Sent;
+                case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
+                case ConvMessage.State.SENT_DELIVERED:
+                    return AppResources.MessageStatus_Delivered;
+                case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
+                case ConvMessage.State.SENT_DELIVERED_READ:
+                    return isGroupChat ? GetReadBy(obj, userCount, id) : AppResources.MessageStatus_Read;
+                default:
+                    return String.Empty;
+            }
+        }
+
+        public static String GetReadBy(JArray obj, int userCount, string id)
+        {
+            if (obj == null)
+                return AppResources.MessageStatus_ReadByEveryone;
+
+            string readBy = "";
+
+            var list = obj.ToObject<List<string>>();
+            list = list.Distinct().ToList();
+
+            if (list.Count == userCount)
+                return AppResources.MessageStatus_ReadByEveryone;
+
+            int count = 0;
+            list.Reverse();
+
+            if (list.Count > 3)
+            {
+                count = list.Count - 3;
+                list.RemoveRange(3, count);
+            }
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, list[i], id);
+                readBy += gp.FirstName;
+
+                if (i == list.Count - 2)
+                    readBy += " & ";
+                else if (i < list.Count - 2)
+                    readBy += ", ";
+            }
+
+            if (count == 0)
+                readBy = string.Format(AppResources.MessageStatus_ReadByOneOrTwo, readBy);
+            else if (count == 1)
+                readBy = string.Format(AppResources.MessageStatus_ReadByThree, readBy);
+            else
+                readBy = string.Format(AppResources.MessageStatus_ReadByMoreThanThree, readBy, count);
+
+            return readBy;
         }
     }
 }
