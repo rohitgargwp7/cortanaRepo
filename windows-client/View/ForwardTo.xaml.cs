@@ -209,6 +209,9 @@ namespace windows_client.View
 
                 if (gl[_maxCharGroups].Count > 0 && gl[_maxCharGroups][0].Msisdn != null)
                 {
+                    if (gl[_maxCharGroups][0].IsSelected)
+                        gl[_maxCharGroups][0] = defaultContact;
+                    
                     gl[_maxCharGroups][0].Name = _charsEntered;
                     string num = Utils.NormalizeNumber(_charsEntered);
                     gl[_maxCharGroups][0].Msisdn = num;
@@ -216,7 +219,6 @@ namespace windows_client.View
                     gl[_maxCharGroups][0].IsSelected = _contactsForForward.Where(c => c.Msisdn == num).Count() > 0 ? true : false;
                 }
 
-                contactsListBox.ItemsSource = null;
                 contactsListBox.ItemsSource = gl;
                 Thread.Sleep(5);
                 return;
