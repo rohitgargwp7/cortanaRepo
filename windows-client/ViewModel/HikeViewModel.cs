@@ -24,6 +24,8 @@ using Microsoft.Phone.Shell;
 using System.Windows.Documents;
 using Microsoft.Phone.Tasks;
 using Microsoft.Phone.Shell;
+using System.Windows.Media.Imaging;
+using Microsoft.Xna.Framework.Media;
 
 namespace windows_client.ViewModel
 {
@@ -948,5 +950,39 @@ namespace windows_client.ViewModel
             var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
             currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.Relative));
         }
+
+        #region MULTIPLE IMAGE
+
+        public LruCache<long, BitmapImage> lruMultipleImageCache;
+
+        public BitmapImage GetMftImageCache(Picture pic)
+        {
+            if (pic == null)
+                return null;
+
+            if (lruMultipleImageCache == null)
+                lruMultipleImageCache = new LruCache<long, BitmapImage>(50, 0);
+
+            long picKey = pic.Date.Ticks;
+            BitmapImage image = lruMultipleImageCache.GetObject(picKey);
+
+            if (image == null)
+            {
+                image = new BitmapImage();
+                image.SetSource(pic.GetThumbnail());
+                lruMultipleImageCache.AddObject(picKey, image);
+            }
+            return image;
+        }
+
+        public void ClearMFtImageCache()
+        {
+            if (lruMultipleImageCache != null)
+            {
+                lruMultipleImageCache.Clear();
+                lruMultipleImageCache = null;
+            }
+        }
+        #endregion
     }
 }
