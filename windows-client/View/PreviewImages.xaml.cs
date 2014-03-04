@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using windows_client.Model;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
@@ -32,14 +33,14 @@ namespace windows_client.View
 
             picturesUpload = new ApplicationBarIconButton();
             picturesUpload.IconUri = new Uri("/View/images/appbar.send.png", UriKind.RelativeOrAbsolute);
-            picturesUpload.Text = "upload";
+            picturesUpload.Text = AppResources.Send_Txt;
             picturesUpload.Click += OnPicturesUploadClick;
 
             ApplicationBar.Buttons.Add(picturesUpload);
 
             deleteIcon = new ApplicationBarIconButton();
             deleteIcon.IconUri = new Uri("/View/images/appbar.delete.png", UriKind.RelativeOrAbsolute);
-            deleteIcon.Text = "delete";
+            deleteIcon.Text = AppResources.Delete_Txt;
             deleteIcon.Click += deleteIcon_Click;
 
             ApplicationBar.Buttons.Add(deleteIcon);
@@ -74,7 +75,7 @@ namespace windows_client.View
                     listPic.Add(photo);
                 }
             }
-            headerText.Text = string.Format("preview 1 of {0}", totalCount);
+            headerText.Text = string.Format(AppResources.PreviewImages_Header_txt, 1, totalCount);
             lbThumbnails.ItemsSource = listPic;
             lbThumbnails.SelectedIndex = 0;
             pivotPhotos.SelectedIndex = 0;
@@ -153,7 +154,7 @@ namespace windows_client.View
             }
             if (pivotPhotos.SelectedIndex != lbThumbnails.SelectedIndex || (pivotPhotos.SelectedIndex == 0 && lbThumbnails.SelectedIndex == 0))
             {
-                headerText.Text = string.Format("preview {0} of {1}", lbThumbnails.SelectedIndex + 1, totalCount);
+                headerText.Text = string.Format(AppResources.PreviewImages_Header_txt, lbThumbnails.SelectedIndex + 1, totalCount);
 
                 listPic[pivotPhotos.SelectedIndex].IsSelected = false;
                 PhotoClass photo = listPic[lbThumbnails.SelectedIndex];
@@ -169,7 +170,7 @@ namespace windows_client.View
                 return;
             if (pivotPhotos.SelectedIndex != lbThumbnails.SelectedIndex || (pivotPhotos.SelectedIndex == 0 && lbThumbnails.SelectedIndex == 0))
             {
-                headerText.Text = string.Format("preview {0} of {1}", pivotPhotos.SelectedIndex + 1, totalCount);
+                headerText.Text = string.Format(AppResources.PreviewImages_Header_txt, pivotPhotos.SelectedIndex + 1, totalCount);
 
                 listPic[lbThumbnails.SelectedIndex].IsSelected = false;
                 PhotoClass photo = listPic[pivotPhotos.SelectedIndex];

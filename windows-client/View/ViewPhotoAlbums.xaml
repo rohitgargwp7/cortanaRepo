@@ -105,14 +105,14 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,48,0,28">
-            <TextBlock Text="CHOOSE IMAGE" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock Text="{Binding Path=LocalizedResources.ViewAlbums_Header_txt,Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,-30,12,0">
             <Grid Name="gridAlbums">
                 <controls:Pivot Name="pivotAlbums" SelectionChanged="pivotAlbums_SelectionChanged" Margin="0 -20 0 0">
-                    <controls:PivotItem Header="albums" Name="pvtItemAlbums">
+                    <controls:PivotItem Header="{Binding Path=LocalizedResources.ViewAlbums_Pivot_Album_txt,Source={StaticResource LocalizedStrings}}" Name="pvtItemAlbums">
                         <Grid>
                             <ProgressBar x:Name="shellProgressAlbums" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Stretch" Canvas.ZIndex="4" Foreground="White" Background="Transparent"/>
 
@@ -128,7 +128,7 @@
                             </phone:LongListSelector>
                         </Grid>
                     </controls:PivotItem>
-                    <controls:PivotItem Header="pictures" Margin="0" Padding="0">
+                    <controls:PivotItem Header="{Binding Path=LocalizedResources.ViewAlbums_Pivot_Date_txt,Source={StaticResource LocalizedStrings}}" Margin="0" Padding="0">
                         <Grid>
                             <ProgressBar x:Name="shellProgressPhotos" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Stretch" Canvas.ZIndex="-1" Foreground="White" Background="Transparent"/>
                             <toolkit:LongListMultiSelector Name="llsAllPhotos"

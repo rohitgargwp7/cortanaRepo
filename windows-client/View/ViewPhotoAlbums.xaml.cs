@@ -13,6 +13,7 @@ using windows_client.utils;
 using System.Windows.Media;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
@@ -33,12 +34,12 @@ namespace windows_client.View
 
             picturesUpload = new ApplicationBarIconButton();
             picturesUpload.IconUri = new Uri("/View/images/icon_tick.png", UriKind.RelativeOrAbsolute);
-            picturesUpload.Text = "upload";
+            picturesUpload.Text = AppResources.Done_Txt;
             picturesUpload.Click += OnPicturesUploadClick;
 
             multipleSelect = new ApplicationBarIconButton();
             multipleSelect.IconUri = new Uri("/View/images/appbar.select.png", UriKind.RelativeOrAbsolute);
-            multipleSelect.Text = "select";
+            multipleSelect.Text = AppResources.ViewAlbum_AppBar_Select_text;
             multipleSelect.Click += multipleSelect_Click;
 
             appbar.Buttons.Add(multipleSelect);
@@ -271,7 +272,7 @@ namespace windows_client.View
             if (lls.SelectedItems.Count > HikeConstants.MAX_IMAGES_SHARE)
             {
                 lls.SelectedItems.RemoveAt(HikeConstants.MAX_IMAGES_SHARE);
-                MessageBox.Show("Max image selection limit reached");
+                MessageBox.Show(string.Format(AppResources.ViewAlbums_MaxImageSelection, HikeConstants.MAX_IMAGES_SHARE));
             }
         }
         bool isAllPicturesLaoded = false;
