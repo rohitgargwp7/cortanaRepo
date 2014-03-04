@@ -22,7 +22,6 @@ namespace windows_client.View
         ApplicationBarIconButton picturesUpload;
         ApplicationBarIconButton multipleSelect;
         bool isSingleListSelected = true;
-        bool _isFirstLoad = true;
         bool isAllPicturesLaoded = false;
         List<PhotoClass> listPic = null;
 
@@ -285,10 +284,9 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             SystemTray.IsVisible = false;
 
-            if (_isFirstLoad)
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
                 BindAlbums();
-                _isFirstLoad = false;
             }
 
             Object obj;
@@ -323,7 +321,7 @@ namespace windows_client.View
                 //disable multiselect for album images list
                 if (this.ApplicationBar.Buttons.Contains(picturesUpload))
                     ToggleAppBarIcons(false);
-               //go back to pivot view 
+                //go back to pivot view 
                 else
                     ToggleView(true);
                 e.Cancel = true;
