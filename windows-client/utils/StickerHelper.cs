@@ -247,6 +247,39 @@ namespace windows_client.utils
             }
             return;
         }
+
+        /// <summary>
+        /// to check is sticker hidden from pallete
+        /// </summary>
+        /// <param name="category"></param>
+        /// <param name="stickerId"></param>
+        /// <returns></returns>
+        public bool CheckLowResStickerExists(string category, string stickerId)
+        {
+            if (string.IsNullOrEmpty(stickerId) || string.IsNullOrEmpty(category))
+                return false;
+
+            BitmapImage bmp = HikeViewModel.stickerHelper.lruStickers.GetObject(category + "_" + stickerId);
+            if (bmp != null)
+                return true;
+            if ((category == StickerHelper.CATEGORY_DOGGY && StickerHelper.arrayDefaultDoggyStickers.Contains(stickerId))
+                || (category == StickerHelper.CATEGORY_HUMANOID && StickerHelper.arrayDefaultHumanoidStickers.Contains(stickerId)))
+                return true;
+
+            try
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    string fileName = StickerCategory.STICKERS_DIR + "\\" + StickerCategory.LOW_RESOLUTION_DIR + "\\" + category + "\\" + stickerId;
+                    return store.FileExists(fileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("StickerHelper::CheckLowResStickerExists, Exception:" + ex.Message);
+            }
+            return false;
+        }
     }
 
     public class Sticker : IBinarySerializable
