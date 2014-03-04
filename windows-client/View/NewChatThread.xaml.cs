@@ -108,7 +108,6 @@ namespace windows_client.View
         ApplicationBarIconButton emoticonsIconButton = null;
         ApplicationBarIconButton stickersIconButton = null;
         ApplicationBarIconButton fileTransferIconButton = null;
-        private PhotoChooserTask photoChooserTask;
         private CameraCaptureTask cameraCaptureTask;
         private object statusObject = null;
         private int _unreadMessageCounter = 0;
@@ -599,9 +598,6 @@ namespace windows_client.View
             emotList3.ItemsSource = imagePathsForList3;
 
             bw.RunWorkerAsync();
-            photoChooserTask = new PhotoChooserTask();
-            photoChooserTask.ShowCamera = false;
-            photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
             cameraCaptureTask = new CameraCaptureTask();
             cameraCaptureTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
@@ -796,7 +792,13 @@ namespace windows_client.View
                 ContactTransfer();
             }
             #endregion
+            #region MULTIPLE IMAGES
 
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
+            {
+                MultipleImagesTransfer();
+            }
+            #endregion
             if (_patternNotLoaded)
                 CreateBackgroundImage();
         }
@@ -3864,7 +3866,7 @@ namespace windows_client.View
         {
             try
             {
-                photoChooserTask.Show();
+                NavigationService.Navigate(new Uri("/View/ViewPhotoAlbums.xaml", UriKind.RelativeOrAbsolute));
                 attachmentMenu.Visibility = Visibility.Collapsed;
             }
             catch (Exception ex)
@@ -3896,7 +3898,7 @@ namespace windows_client.View
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
 
-        private void sendContact_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void sendContact_Tap(object dsender, System.Windows.Input.GestureEventArgs e)
         {
             if (!spContactTransfer.IsHitTestVisible)
                 return;
@@ -5124,6 +5126,24 @@ namespace windows_client.View
                 App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
             }
         }
+
+        private void MultipleImagesTransfer()
+        {
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
+            {
+                List<PhotoClass> listPic = PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] as List<PhotoClass>;
+
+                foreach (PhotoClass pic in listPic)
+                {
+                    SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString());
+                    pic.Pic.Dispose();
+                }
+
+                PhoneApplicationService.Current.State.Remove(HikeConstants.MULTIPLE_IMAGES);
+            }
+
+        }
+
         // this should be called when one gets tap here msg.
         private void smsUser_Click(object sender, EventArgs e)
         {
