@@ -108,7 +108,6 @@ namespace windows_client.View
         ApplicationBarIconButton emoticonsIconButton = null;
         ApplicationBarIconButton stickersIconButton = null;
         ApplicationBarIconButton fileTransferIconButton = null;
-        private PhotoChooserTask photoChooserTask;
         private CameraCaptureTask cameraCaptureTask;
         private object statusObject = null;
         private int _unreadMessageCounter = 0;
@@ -599,9 +598,6 @@ namespace windows_client.View
             emotList3.ItemsSource = imagePathsForList3;
 
             bw.RunWorkerAsync();
-            photoChooserTask = new PhotoChooserTask();
-            photoChooserTask.ShowCamera = false;
-            photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
             cameraCaptureTask = new CameraCaptureTask();
             cameraCaptureTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
@@ -3871,7 +3867,6 @@ namespace windows_client.View
             try
             {
                 NavigationService.Navigate(new Uri("/View/ViewPhotoAlbums.xaml", UriKind.RelativeOrAbsolute));
-                //photoChooserTask.Show();
                 attachmentMenu.Visibility = Visibility.Collapsed;
             }
             catch (Exception ex)
