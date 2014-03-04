@@ -192,11 +192,11 @@ namespace windows_client.View
 
         }
 
-        private void ToggleAppBarIcons(bool showUpload)
+        private void ToggleAppBarIcons(bool enableMultiselect)
         {
             try
             {
-                if (showUpload)
+                if (enableMultiselect)
                 {
                     this.ApplicationBar.Buttons.RemoveAt(0);
                     picturesUpload.IsEnabled = false;
@@ -292,6 +292,7 @@ namespace windows_client.View
             }
 
             Object obj;
+            //clear multiselect list and update selected items so that if user deleted some items it can be updated
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.MULTIPLE_IMAGES, out obj))
             {
                 List<PhotoClass> listSelectedItems = (List<PhotoClass>)obj;
@@ -316,20 +317,25 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
+            //particular album is selected
             if (gridPhotos.Visibility == Visibility.Visible)
             {
+                //disable multiselect for album images list
                 if (this.ApplicationBar.Buttons.Contains(picturesUpload))
                     ToggleAppBarIcons(false);
+               //go back to pivot view 
                 else
                     ToggleView(true);
                 e.Cancel = true;
             }
             else if (pivotAlbums.SelectedIndex == 1 && this.ApplicationBar.Buttons.Contains(picturesUpload))
             {
+                //disable multiselect for all images list
                 ToggleAppBarIcons(false);
                 e.Cancel = true;
             }
             else
+                //go back and cleat thumbnail cache
                 App.ViewModel.ClearMFtImageCache();
             base.OnBackKeyPress(e);
         }

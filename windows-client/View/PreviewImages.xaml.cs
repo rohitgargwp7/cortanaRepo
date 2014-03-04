@@ -22,6 +22,10 @@ namespace windows_client.View
         ObservableCollection<PhotoClass> listPic;
         ApplicationBarIconButton picturesUpload;
         ApplicationBarIconButton deleteIcon;
+        
+        /// <summary>
+        /// total number of images selected by user for preview
+        /// </summary>
         int totalCount = 0;
         
         public PreviewImages()
@@ -82,6 +86,7 @@ namespace windows_client.View
                     listPic.Add(photo);
                     PivotItem pvt = GetPivotItem(photo);
                     pivotPhotos.Items.Add(pvt);
+                    //marking first object as selected on page load and others as unselected as same object is used on to and fro, it wont get unselected itself
                     if (defaultSelected)
                     {
                         photo.IsSelected = true;
@@ -89,9 +94,8 @@ namespace windows_client.View
                     }
                     else
                         photo.IsSelected = false;
-
-
                 }
+
                 totalCount = listPic.Count;
                 if (listPic.Count < HikeConstants.MAX_IMAGES_SHARE)
                 {
@@ -105,6 +109,7 @@ namespace windows_client.View
             lbThumbnails.SelectedIndex = 0;
             pivotPhotos.SelectedIndex = 0;
 
+            //create a delay so that it gets hidden after ui render
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 shellProgressPhotos.Visibility = Visibility.Collapsed;
@@ -145,6 +150,7 @@ namespace windows_client.View
             Object obj;
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.MULTIPLE_IMAGES, out obj))
             {
+                //update counter so that header text can be updated
                 totalCount--;
                 List<PhotoClass> listSelectedPic = (List<PhotoClass>)obj;
                 int index = lbThumbnails.SelectedIndex;
@@ -152,11 +158,14 @@ namespace windows_client.View
                 pivotPhotos.Items.RemoveAt(index);
                 listPic.RemoveAt(index);
 
+                //if zeroith image is deleted then selected image should be next one else previous one 
+                //it will call selection change event and other ui elements would be updated
                 lbThumbnails.SelectedIndex = index > 0 ? index - 1 : 0;
 
                 if (pivotPhotos.Items.Count == 0 && NavigationService.CanGoBack)
                     NavigationService.GoBack();
 
+                //if add more doesnot exist previously then add it to list
                 if (!listPic[listPic.Count - 1].AddMoreImage)
                 {
                     PhotoClass photo = new PhotoClass(null);//to show add new image
@@ -168,11 +177,13 @@ namespace windows_client.View
 
         private void OnPicturesUploadClick(object sender, EventArgs e)
         {
+            //previous page is viewalbums page and then new chatthread page
             if (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();
 
+            //clear thumbnail cache as it is not required now
             App.ViewModel.ClearMFtImageCache();
         }
 
@@ -180,12 +191,15 @@ namespace windows_client.View
         {
             if (lbThumbnails.SelectedIndex < 0)
                 return;
+
+            //on tapping add more go back to previous page to add more image
             if (listPic[lbThumbnails.SelectedIndex].AddMoreImage)
             {
                 if (NavigationService.CanGoBack)
                     NavigationService.GoBack();
                 return;
             }
+
             if (pivotPhotos.SelectedIndex != lbThumbnails.SelectedIndex || (pivotPhotos.SelectedIndex == 0 && lbThumbnails.SelectedIndex == 0))
             {
                 headerText.Text = string.Format(AppResources.PreviewImages_Header_txt, lbThumbnails.SelectedIndex + 1, totalCount);
