@@ -17,14 +17,14 @@
     shell:SystemTray.IsVisible="False">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <Grid x:Name="LayoutRoot" Background="Black">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" >
+        <Grid x:Name="ContentPanel" Grid.Row="1">
 
             <controls:Pivot Name="pivotPhotos" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0" Padding="0" SelectionChanged="pivotPhotos_SelectionChanged" />
             <Grid>
@@ -41,6 +41,8 @@
                         </LinearGradientBrush>
                     </Rectangle.Fill>
                 </Rectangle>-->
+                <ProgressBar x:Name="shellProgressPhotos" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Stretch" Canvas.ZIndex="-1" Foreground="White" Background="Transparent" Grid.Row="1"/>
+
                 <StackPanel Opacity="0.5" Background="Black"/>
                 <TextBlock Name="headerText" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" Foreground="White" FontSize="60" />
 

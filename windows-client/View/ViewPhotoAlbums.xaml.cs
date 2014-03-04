@@ -23,6 +23,8 @@ namespace windows_client.View
         ApplicationBarIconButton multipleSelect;
         bool isSingleListSelected = true;
         bool _isFirstLoad = true;
+        bool isAllPicturesLaoded = false;
+        List<PhotoClass> listPic = null;
 
         public ViewPhotoAlbums()
         {
@@ -30,6 +32,8 @@ namespace windows_client.View
             ApplicationBar appbar = new ApplicationBar();
             appbar.IsVisible = false;
             appbar.Opacity = 0.5;
+            appbar.BackgroundColor = Colors.Black;
+            appbar.ForegroundColor = Colors.White;
             this.ApplicationBar = appbar;
 
             picturesUpload = new ApplicationBarIconButton();
@@ -43,81 +47,11 @@ namespace windows_client.View
             multipleSelect.Click += multipleSelect_Click;
 
             appbar.Buttons.Add(multipleSelect);
+
+            txtMaxImageSelected.Text = string.Format(AppResources.ViewAlbums_MaxImageSelection, HikeConstants.MAX_IMAGES_SHARE);
         }
 
-        void multipleSelect_Click(object sender, EventArgs e)
-        {
-            ToggleAppBarIcons(true);
-        }
-
-        private void ToggleAppBarIcons(bool showUpload)
-        {
-            try
-            {
-                if (showUpload)
-                {
-                    this.ApplicationBar.Buttons.RemoveAt(0);
-                    picturesUpload.IsEnabled = false;
-                    this.ApplicationBar.Buttons.Add(picturesUpload);
-                    if (isSingleListSelected)
-                    {
-                        pivotAlbums.IsLocked = true;
-                        llsAllPhotos.EnforceIsSelectionEnabled = true;
-                    }
-                    else
-                        llsPhotos.EnforceIsSelectionEnabled = true;
-                }
-                else
-                {
-                    this.ApplicationBar.Buttons.RemoveAt(0);
-                    this.ApplicationBar.Buttons.Add(multipleSelect);
-
-                    if (isSingleListSelected)
-                    {
-                        pivotAlbums.IsLocked = false;
-                        llsAllPhotos.EnforceIsSelectionEnabled = false;
-                    }
-                    else
-                        llsPhotos.EnforceIsSelectionEnabled = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                //llsAllPhotos.EnforceIsSelectionEnabled = true; throwing exception internally
-            }
-        }
-
-        List<PhotoClass> listPic = null;
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-            SystemTray.IsVisible = false;
-
-            if (_isFirstLoad)
-            {
-                BindAlbums();
-                _isFirstLoad = false;
-            }
-
-            Object obj;
-            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.MULTIPLE_IMAGES, out obj))
-            {
-                List<PhotoClass> listSelectedItems = (List<PhotoClass>)obj;
-                LongListMultiSelector lls = isSingleListSelected ? llsAllPhotos : llsPhotos;
-                ToggleAppBarIcons(true);
-                lls.SelectedItems.Clear();
-                foreach (PhotoClass pic in listSelectedItems)
-                {
-                    var container = lls.ContainerFromItem(pic) as LongListMultiSelectorItem;
-                    if (container != null)
-                        container.IsSelected = true;
-                }
-                PhoneApplicationService.Current.State.Remove(HikeConstants.MULTIPLE_IMAGES);
-            }
-        }
-
-        #region ALBUMS
+        #region Albums
         private async Task BindAlbums()
         {
             await Task.Delay(1);
@@ -165,9 +99,21 @@ namespace windows_client.View
             albumNameTxt.Text = album.AlbumName.ToLower();
             llsAlbums.SelectedItem = null;
             ToggleView(false);
-            llsPhotos.ItemsSource = GroupedPhotos(album);
+            llsPhotos.ItemsSource = null;
+            shellProgressPhotos.Visibility = Visibility.Visible;
+            BindAlbumPhotos(album);
         }
 
+        private async Task BindAlbumPhotos(AlbumClass album)
+        {
+            await Task.Delay(1);
+            llsPhotos.ItemsSource = GroupedPhotos(album);
+            //create a delay so that it doesnot pause abruptly
+            Dispatcher.BeginInvoke(() =>
+            {
+                shellProgressPhotos.Visibility = Visibility.Collapsed;
+            });
+        }
         #endregion ALBUMS
 
         #region Photos
@@ -179,7 +125,7 @@ namespace windows_client.View
             //create a delay so that it doesnot pause abruptly
             Dispatcher.BeginInvoke(() =>
                 {
-                    shellProgressPhotos.Visibility = Visibility.Collapsed;
+                    shellProgressAllPhotos.Visibility = Visibility.Collapsed;
                 });
         }
 
@@ -226,6 +172,7 @@ namespace windows_client.View
         }
         #endregion
 
+        #region helper functions
         public void ToggleView(bool showAlbum)
         {
             if (showAlbum)
@@ -243,6 +190,128 @@ namespace windows_client.View
             }
             this.ApplicationBar.IsVisible = !showAlbum;
 
+        }
+
+        private void ToggleAppBarIcons(bool showUpload)
+        {
+            try
+            {
+                if (showUpload)
+                {
+                    this.ApplicationBar.Buttons.RemoveAt(0);
+                    picturesUpload.IsEnabled = false;
+                    this.ApplicationBar.Buttons.Add(picturesUpload);
+                    if (isSingleListSelected)
+                    {
+                        pivotAlbums.IsLocked = true;
+                        llsAllPhotos.EnforceIsSelectionEnabled = true;
+                    }
+                    else
+                        llsPhotos.EnforceIsSelectionEnabled = true;
+                }
+                else
+                {
+                    this.ApplicationBar.Buttons.RemoveAt(0);
+                    this.ApplicationBar.Buttons.Add(multipleSelect);
+
+                    if (isSingleListSelected)
+                    {
+                        pivotAlbums.IsLocked = false;
+                        llsAllPhotos.EnforceIsSelectionEnabled = false;
+                    }
+                    else
+                        llsPhotos.EnforceIsSelectionEnabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                //llsAllPhotos.EnforceIsSelectionEnabled = true; throwing exception internally
+            }
+        }
+        #endregion
+
+        #region event handlers
+
+        void multipleSelect_Click(object sender, EventArgs e)
+        {
+            ToggleAppBarIcons(true);
+        }
+
+        private void llsPhotos_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            LongListMultiSelector lls = isSingleListSelected ? llsAllPhotos : llsPhotos;
+            picturesUpload.IsEnabled = lls.SelectedItems.Count > 0;
+            if (lls.SelectedItems.Count > HikeConstants.MAX_IMAGES_SHARE)
+            {
+                lls.SelectedItems.RemoveAt(HikeConstants.MAX_IMAGES_SHARE);
+                if (MaxLabelsp.Visibility == Visibility.Collapsed)
+                    StoryBoard0.Begin();
+            }
+            else
+            {
+                StoryBoard0.Stop();
+            }
+        }
+
+        private void pivotAlbums_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            this.ApplicationBar.IsVisible = pivotAlbums.SelectedIndex == 1;
+            if (pivotAlbums.SelectedIndex == 1 && !isAllPicturesLaoded)
+            {
+                shellProgressAllPhotos.Visibility = Visibility.Visible;
+                BindPhotos();
+                isAllPicturesLaoded = true;
+            }
+        }
+
+        private void StackPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            FrameworkElement fe = sender as FrameworkElement;
+            if (fe != null)
+            {
+                PhotoClass picture = fe.DataContext as PhotoClass;
+                PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] = new List<PhotoClass>() { picture };
+                NavigationService.Navigate(new Uri("/View/PreviewImages.xaml", UriKind.RelativeOrAbsolute));
+            }
+        }
+
+        #endregion
+
+        #region Page Functions
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            SystemTray.IsVisible = false;
+
+            if (_isFirstLoad)
+            {
+                BindAlbums();
+                _isFirstLoad = false;
+            }
+
+            Object obj;
+            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.MULTIPLE_IMAGES, out obj))
+            {
+                List<PhotoClass> listSelectedItems = (List<PhotoClass>)obj;
+                LongListMultiSelector lls = isSingleListSelected ? llsAllPhotos : llsPhotos;
+                ToggleAppBarIcons(true);
+                lls.SelectedItems.Clear();
+                foreach (PhotoClass pic in listSelectedItems)
+                {
+                    var container = lls.ContainerFromItem(pic) as LongListMultiSelectorItem;
+                    if (container != null)
+                        container.IsSelected = true;
+                }
+                PhoneApplicationService.Current.State.Remove(HikeConstants.MULTIPLE_IMAGES);
+            }
+        }
+
+        protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
+        {
+            App.ViewModel.ClearMFtImageCache();
+            base.OnRemovedFromJournal(e);
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
@@ -265,43 +334,6 @@ namespace windows_client.View
             base.OnBackKeyPress(e);
         }
 
-        private void llsPhotos_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            LongListMultiSelector lls = isSingleListSelected ? llsAllPhotos : llsPhotos;
-            picturesUpload.IsEnabled = lls.SelectedItems.Count > 0;
-            if (lls.SelectedItems.Count > HikeConstants.MAX_IMAGES_SHARE)
-            {
-                lls.SelectedItems.RemoveAt(HikeConstants.MAX_IMAGES_SHARE);
-                MessageBox.Show(string.Format(AppResources.ViewAlbums_MaxImageSelection, HikeConstants.MAX_IMAGES_SHARE));
-            }
-        }
-        bool isAllPicturesLaoded = false;
-        private void pivotAlbums_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            this.ApplicationBar.IsVisible = pivotAlbums.SelectedIndex == 1;
-            if (pivotAlbums.SelectedIndex == 1 && !isAllPicturesLaoded)
-            {
-                shellProgressPhotos.Visibility = Visibility.Visible;
-                BindPhotos();
-                isAllPicturesLaoded = true;
-            }
-        }
-
-        private void StackPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            FrameworkElement fe = sender as FrameworkElement;
-            if (fe != null)
-            {
-                PhotoClass picture = fe.DataContext as PhotoClass;
-                PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] = new List<PhotoClass>() { picture };
-                NavigationService.Navigate(new Uri("/View/PreviewImages.xaml", UriKind.RelativeOrAbsolute));
-            }
-        }
-
-        protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
-        {
-            App.ViewModel.ClearMFtImageCache();
-            base.OnRemovedFromJournal(e);
-        }
+        #endregion
     }
 }

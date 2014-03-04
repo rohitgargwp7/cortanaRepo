@@ -13,6 +13,7 @@ using windows_client.Model;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
 using windows_client.Languages;
+using System.Threading.Tasks;
 
 namespace windows_client.View
 {
@@ -22,13 +23,36 @@ namespace windows_client.View
         ApplicationBarIconButton picturesUpload;
         ApplicationBarIconButton deleteIcon;
         int totalCount = 0;
+        
         public PreviewImages()
         {
             InitializeComponent();
+            InitialiseAppBar();
+           
+            listPic = new ObservableCollection<PhotoClass>();
+            shellProgressPhotos.Visibility = Visibility.Visible;
+           
+            BindPivotPhotos();
+        }
 
+        #region Page Functions
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+        }
+
+        #endregion
+
+        #region Helper Functions
+
+        private void InitialiseAppBar()
+        {
             ApplicationBar appbar = new ApplicationBar();
             appbar.IsVisible = true;
             appbar.Opacity = 0.5;
+            appbar.BackgroundColor = Colors.Black;
+            appbar.ForegroundColor = Colors.White;
             this.ApplicationBar = appbar;
 
             picturesUpload = new ApplicationBarIconButton();
@@ -44,9 +68,10 @@ namespace windows_client.View
             deleteIcon.Click += deleteIcon_Click;
 
             ApplicationBar.Buttons.Add(deleteIcon);
+        }
 
-
-            listPic = new ObservableCollection<PhotoClass>();
+        public void BindPivotPhotos()
+        {
             bool defaultSelected = true;
             Object obj;
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.MULTIPLE_IMAGES, out obj))
@@ -79,7 +104,41 @@ namespace windows_client.View
             lbThumbnails.ItemsSource = listPic;
             lbThumbnails.SelectedIndex = 0;
             pivotPhotos.SelectedIndex = 0;
+
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                shellProgressPhotos.Visibility = Visibility.Collapsed;
+            });
+
         }
+
+        public PivotItem GetPivotItem(PhotoClass photo)
+        {
+            PivotItem pvtItem = new PivotItem();
+
+            Grid grid = new Grid();
+            grid.Margin = new Thickness(0);
+            grid.VerticalAlignment = VerticalAlignment.Stretch;
+            grid.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+            Image img = new Image();
+            img.Source = photo.ImageSource;
+            img.VerticalAlignment = VerticalAlignment.Center;
+            img.HorizontalAlignment = HorizontalAlignment.Center;
+            img.Stretch = Stretch.None;
+            img.Margin = new Thickness(0);
+
+            grid.Children.Add(img);
+            pvtItem.Content = grid;
+            pvtItem.HorizontalAlignment = HorizontalAlignment.Stretch;
+            pvtItem.VerticalAlignment = VerticalAlignment.Stretch;
+            pvtItem.Margin = pvtItem.Padding = new Thickness(0);
+            return pvtItem;
+        }
+
+        #endregion
+
+        #region Event Handlers
 
         void deleteIcon_Click(object sender, EventArgs e)
         {
@@ -115,31 +174,6 @@ namespace windows_client.View
                 NavigationService.GoBack();
 
             App.ViewModel.ClearMFtImageCache();
-        }
-
-
-        public PivotItem GetPivotItem(PhotoClass photo)
-        {
-            PivotItem pvtItem = new PivotItem();
-
-            Grid grid = new Grid();
-            grid.Margin = new Thickness(0);
-            grid.VerticalAlignment = VerticalAlignment.Stretch;
-            grid.HorizontalAlignment = HorizontalAlignment.Stretch;
-
-            Image img = new Image();
-            img.Source = photo.ImageSource;
-            img.VerticalAlignment = VerticalAlignment.Center;
-            img.HorizontalAlignment = HorizontalAlignment.Center;
-            img.Stretch = Stretch.None;
-            img.Margin = new Thickness(0);
-
-            grid.Children.Add(img);
-            pvtItem.Content = grid;
-            pvtItem.HorizontalAlignment = HorizontalAlignment.Stretch;
-            pvtItem.VerticalAlignment = VerticalAlignment.Stretch;
-            pvtItem.Margin = pvtItem.Padding = new Thickness(0);
-            return pvtItem;
         }
 
         private void lbThumbnails_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -180,10 +214,6 @@ namespace windows_client.View
             }
         }
 
-        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
-        {
-            base.OnBackKeyPress(e);
-        }
-
+        #endregion
     }
 }
