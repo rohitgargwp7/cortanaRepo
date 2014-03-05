@@ -55,6 +55,7 @@ namespace windows_client.View
         private ApplicationBarMenuItem _onHikeFilterMenuItem = null;
 
         Dictionary<string, List<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, List<Group<ContactInfo>>>();
+        Dictionary<string, bool> groupListStateDictionary = new Dictionary<string, bool>();
 
         ContactInfo defaultContact = new ContactInfo(); // this is used to store default phone number 
 
@@ -192,17 +193,30 @@ namespace windows_client.View
 
             if (String.IsNullOrWhiteSpace(_charsEntered))
             {
-                contactsListBox.ItemsSource = _completeGroupedContactList;
+                if (!_showSmsContacts)
+                {
+                    if (_filteredGroupedContactList == null)
+                    {
+                        MakeFilteredJumpList();
+                    }
+                    contactsListBox.ItemsSource = _filteredGroupedContactList;
+                }
+                else
+                    contactsListBox.ItemsSource = _completeGroupedContactList;
+
                 return;
             }
 
-            if (groupListDictionary.ContainsKey(_charsEntered))
+            if (groupListDictionary.ContainsKey(_charsEntered) 
+                && groupListStateDictionary.ContainsKey(_charsEntered) 
+                && groupListStateDictionary[_charsEntered] == _showSmsContacts)
             {
                 List<Group<ContactInfo>> gl = groupListDictionary[_charsEntered];
                 
                 if (gl == null)
                 {
                     groupListDictionary.Remove(_charsEntered);
+                    groupListStateDictionary.Remove(_charsEntered);
                     contactsListBox.ItemsSource = null;
                     return;
                 }
@@ -233,7 +247,11 @@ namespace windows_client.View
             bw.RunWorkerCompleted += (s, ev) =>
             {
                 if (_glistFiltered != null)
+                {
                     groupListDictionary[_charsEntered] = _glistFiltered;
+                    groupListStateDictionary[_charsEntered] = _showSmsContacts;
+                }
+
                 contactsListBox.ItemsSource = _glistFiltered;
                 Thread.Sleep(2);
             };
@@ -259,7 +277,9 @@ namespace windows_client.View
 
             if (charsLength > 0)
             {
-                if (groupListDictionary.ContainsKey(charsEntered.Substring(0, charsLength)))
+                if (groupListDictionary.ContainsKey(charsEntered.Substring(0, charsLength)) 
+                    && groupListStateDictionary.ContainsKey(charsEntered.Substring(0, charsLength))
+                    && groupListStateDictionary[charsEntered.Substring(0, charsEntered.Length - 1)] == _showSmsContacts)
                 {
                     listToIterate = groupListDictionary[charsEntered.Substring(0, charsEntered.Length - 1)];
 
