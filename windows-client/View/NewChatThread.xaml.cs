@@ -3573,7 +3573,7 @@ namespace windows_client.View
 
                 UpdateLastSentMessageStatusOnUI();
             }
-           
+
 
             ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
 
@@ -4586,7 +4586,7 @@ namespace windows_client.View
                     }
                 }
 
-                #region perception fix 
+                #region perception fix
 
                 if (msgMap.Count > 0)
                 {
@@ -4615,7 +4615,7 @@ namespace windows_client.View
                                             }
                                         }
                                     }
-                                 
+
                                     idsToUpdate.Add(kv.Key);
 
                                     if (msg.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
@@ -5811,23 +5811,17 @@ namespace windows_client.View
                 {
                     if ((e.Container.Content as ConvMessage).Equals(llsMessages.ItemsSource[0]))
                     {
+                        shellProgress.Visibility = Visibility.Visible;
+
                         BackgroundWorker bw = new BackgroundWorker();
                         bw.DoWork += (s1, ev1) =>
                         {
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                shellProgress.Visibility = Visibility.Visible;
-                            });
-
                             loadMessages(SUBSEQUENT_FETCH_COUNT, false);
                         };
                         bw.RunWorkerAsync();
                         bw.RunWorkerCompleted += (s1, ev1) =>
                         {
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                shellProgress.Visibility = Visibility.Collapsed;
-                            });
+                            shellProgress.Visibility = Visibility.Collapsed;
                         };
                     }
                 }
@@ -6882,12 +6876,12 @@ namespace windows_client.View
 
                          if (_readByMessage != null && ocMessages.Contains(_readByMessage) && ocMessages.IndexOf(_readByMessage) == indexToInsert && !ocMessages.Contains(_h2hofflineToolTip))
                              ocMessages.Remove(_readByMessage);
-                         
+
                          if (App.ViewModel.DictInAppTip != null && !isInAppTipVisible)
                          {
                              HikeToolTip tip;
                              App.ViewModel.DictInAppTip.TryGetValue(6, out tip);
-                             
+
                              if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown) && _h2hofflineToolTip == null)
                              {
                                  _h2hofflineToolTip = new ConvMessage();
@@ -7134,18 +7128,18 @@ namespace windows_client.View
         {
             _lastSentMessage = null;
 
-                try
-                {
-                    var msgList = (from message in ocMessages
-                                   where message.IsSent == true && message.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO
-                                   select message);
+            try
+            {
+                var msgList = (from message in ocMessages
+                               where message.IsSent == true && message.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO
+                               select message);
 
-                    _lastSentMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
-                }
-                catch
-                {
-                    return;
-                }
+                _lastSentMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
+            }
+            catch
+            {
+                return;
+            }
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {

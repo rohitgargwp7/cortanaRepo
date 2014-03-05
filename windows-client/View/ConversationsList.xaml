@@ -1062,7 +1062,7 @@
                             </StackPanel>
                         </Button.Content>
                     </Button>
-                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="1">
+                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="1" ItemRealized="statusLLS_ItemRealized">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
                                 <templateSelector:StatusTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">

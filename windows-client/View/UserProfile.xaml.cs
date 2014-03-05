@@ -111,7 +111,7 @@ namespace windows_client.View
                         {
                             statusList.Insert(0, statusUpdate);
 
-                            if(statusLLS.ItemsSource == null)
+                            if (statusLLS.ItemsSource == null)
                                 statusLLS.ItemsSource = statusList;
 
                             statusLLS.ScrollTo(statusLLS.ItemsSource[0]);
@@ -159,10 +159,10 @@ namespace windows_client.View
                     #region TWO WAY FRIENDS
                     case FriendsTableUtils.FriendStatusEnum.FRIENDS:
 
-                        List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
+                        List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetPaginatedStatusMsgsForMsisdn(msisdn, long.MaxValue, HikeConstants.STATUS_INITIAL_FETCH_COUNT);
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            CreateStatusUi(statusMessagesFromDB);
+                            CreateStatusUi(statusMessagesFromDB, HikeConstants.STATUS_INITIAL_FETCH_COUNT);
                             isStatusLoaded = true;
                         });
 
@@ -170,24 +170,13 @@ namespace windows_client.View
                     #endregion
                     #region REQUEST RECIEVED
                     case FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED:
-                        //if (isInAddressBook)
-                        //{
-
-                        //}
-                        //else
-                        //{
-                        //    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        //      {
-                        //          ShowAddToContacts();
-                        //      });
-                        //}
-
-                        statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
+                        statusMessagesFromDB = StatusMsgsTable.GetPaginatedStatusMsgsForMsisdn(msisdn, long.MaxValue, HikeConstants.STATUS_INITIAL_FETCH_COUNT);
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            CreateStatusUi(statusMessagesFromDB);
+                            CreateStatusUi(statusMessagesFromDB, HikeConstants.STATUS_INITIAL_FETCH_COUNT);
                             isStatusLoaded = true;
                             ShowRequestRecievedPanel();
+
                         });
                         break;
                     #endregion
@@ -247,7 +236,7 @@ namespace windows_client.View
                             AccountUtils.GetOnhikeDate(msisdn, new AccountUtils.postResponseFunction(GetHikeStatus_Callback));
                         else
                             txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, TimeUtils.GetOnHikeSinceDisplay(timeOfJoin));
-                       
+
                         ShowAddAsFriends();
                     });
                 }
@@ -261,7 +250,7 @@ namespace windows_client.View
         }
 
         #endregion
-        
+
         GroupParticipant _groupParticipant;
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -619,29 +608,24 @@ namespace windows_client.View
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (ss, ee) =>
             {
-                statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
+                statusMessagesFromDB = StatusMsgsTable.GetPaginatedStatusMsgsForMsisdn(msisdn, long.MaxValue, HikeConstants.STATUS_INITIAL_FETCH_COUNT);
             };
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (ss, ee) =>
             {
-                CreateStatusUi(statusMessagesFromDB);
+                CreateStatusUi(statusMessagesFromDB, HikeConstants.STATUS_INITIAL_FETCH_COUNT);
                 isStatusLoaded = true;
                 shellProgress.IsVisible = false;
             };
         }
 
+        long lastStatusId = -1;
+        bool hasMoreStatus;
+
         //to be run on ui thread
-        private void CreateStatusUi(List<StatusMessage> statusMessagesFromDB)
+        private void CreateStatusUi(List<StatusMessage> statusMessagesFromDB, int messageFetchCount)
         {
-            if (statusMessagesFromDB != null)
-            {
-                for (int i = 0; i < statusMessagesFromDB.Count; i++)
-                {
-                    var statusUpdate = StatusUpdateHelper.Instance.CreateStatusUpdate(statusMessagesFromDB[i], false);
-                    if (statusUpdate != null)
-                        statusList.Add(statusUpdate);
-                }
-            }
+            AddStatusToList(statusMessagesFromDB, messageFetchCount);
             if (statusList.Count == 0)
             {
                 ShowEmptyStatus();
@@ -652,6 +636,27 @@ namespace windows_client.View
                 gridHikeUser.Visibility = Visibility.Visible;
             }
             this.statusLLS.ItemsSource = statusList;
+        }
+
+        private void AddStatusToList(List<StatusMessage> statusMessagesFromDB, int messageFetchCount)
+        {
+            if (statusMessagesFromDB != null)
+            {
+                hasMoreStatus = false;
+                for (int i = 0; i < statusMessagesFromDB.Count; i++)
+                {
+                    StatusMessage statusMessage = statusMessagesFromDB[i];
+                    if (i == messageFetchCount - 1)
+                    {
+                        hasMoreStatus = true;
+                        lastStatusId = statusMessage.StatusId;
+                        break;
+                    }
+                    var statusUpdate = StatusUpdateHelper.Instance.CreateStatusUpdate(statusMessage, false);
+                    if (statusUpdate != null)
+                        statusList.Add(statusUpdate);
+                }
+            }
         }
 
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1021,7 +1026,7 @@ namespace windows_client.View
             gridHikeUser.Visibility = Visibility.Collapsed;
             btnInvite.Visibility = Visibility.Collapsed;
             addToFavBtn.Visibility = Visibility.Collapsed;
-        
+
             if (!isInAddressBook)
                 ShowAddToContacts();
         }
@@ -1201,7 +1206,7 @@ namespace windows_client.View
         }
 
         #region ADD USER TO CONTATCS
-        
+
         ContactInfo contactInfo;
 
         private void AddUserToContacts_Click(object sender, EventArgs e)
@@ -1251,12 +1256,12 @@ namespace windows_client.View
             int count = 0;
             int duplicates = 0;
             Dictionary<string, List<ContactInfo>> contactListMap = null;
-            
+
             if (contacts == null)
                 return null;
-            
+
             contactListMap = new Dictionary<string, List<ContactInfo>>();
-            
+
             foreach (Contact cn in contacts)
             {
                 CompleteName cName = cn.CompleteName;
@@ -1273,7 +1278,7 @@ namespace windows_client.View
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
                     contactInfo = cInfo;
-                    
+
                     if (contactListMap.ContainsKey(cInfo.Id))
                     {
                         if (!contactListMap[cInfo.Id].Contains(cInfo))
@@ -1295,7 +1300,7 @@ namespace windows_client.View
 
             Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
             Debug.WriteLine("Total contacts with no phone number : {0}", count);
-            
+
             return contactListMap;
         }
 
@@ -1339,11 +1344,11 @@ namespace windows_client.View
                 }
             }
             UsersTableUtils.addContact(contactInfo);
-             App.HikePubSubInstance.publish(HikePubSub.CONTACT_ADDED, contactInfo);
+            App.HikePubSubInstance.publish(HikePubSub.CONTACT_ADDED, contactInfo);
             List<StatusMessage> statusMessagesFromDB = null;
             if (friendStatus >= FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
             {
-                statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
+                statusMessagesFromDB = StatusMsgsTable.GetPaginatedStatusMsgsForMsisdn(msisdn, long.MaxValue, HikeConstants.STATUS_INITIAL_FETCH_COUNT);
             }
 
             nameToShow = contactInfo.Name;
@@ -1374,7 +1379,7 @@ namespace windows_client.View
                 else
                 {
                     addToFavBtn.Visibility = Visibility.Collapsed;
-                    CreateStatusUi(statusMessagesFromDB);
+                    CreateStatusUi(statusMessagesFromDB, HikeConstants.STATUS_INITIAL_FETCH_COUNT);
                     isStatusLoaded = true;
                 }
 
@@ -1418,7 +1423,7 @@ namespace windows_client.View
         {
             TextBlock textBlock = sender as TextBlock;
             ContextMenu contextMenu = ContextMenuService.GetContextMenu(textBlock);
-         
+
             if (contextMenu != null)
                 contextMenu.IsOpen = true;
         }
@@ -1447,6 +1452,32 @@ namespace windows_client.View
         void ViewMoreMessage_Clicked(object sender, EventArgs e)
         {
             App.ViewModel.ViewMoreMessage_Clicked(sender);
+        }
+
+        private void StatusLls_ItemRealised(object sender, ItemRealizationEventArgs e)
+        {
+            if (isStatusLoaded && statusLLS.ItemsSource != null && statusLLS.ItemsSource.Count > 0 && hasMoreStatus)
+            {
+                if (e.ItemKind == LongListSelectorItemKind.Item)
+                {
+                    if ((e.Container.Content as BaseStatusUpdate).Equals(statusLLS.ItemsSource[statusLLS.ItemsSource.Count - 1]))
+                    {
+                        List<StatusMessage> statusMessagesFromDB = null;
+                        shellProgress.IsVisible = true;
+                        BackgroundWorker bw = new BackgroundWorker();
+                        bw.DoWork += (s1, ev1) =>
+                        {
+                            statusMessagesFromDB = StatusMsgsTable.GetPaginatedStatusMsgsForTimeline(lastStatusId, HikeConstants.STATUS_SUBSEQUENT_FETCH_COUNT);
+                        };
+                        bw.RunWorkerAsync();
+                        bw.RunWorkerCompleted += (s1, ev1) =>
+                        {
+                            AddStatusToList(statusMessagesFromDB, HikeConstants.STATUS_SUBSEQUENT_FETCH_COUNT);
+                            shellProgress.IsVisible = false;
+                        };
+                    }
+                }
+            }
         }
     }
 }

@@ -153,7 +153,7 @@ namespace windows_client.View
 
             this.llsConversations.SelectedItem = null;
             this.statusLLS.SelectedItem = null;
-               
+
             App.IS_TOMBSTONED = false;
             App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
             App.newChatThreadPage = null;
@@ -326,7 +326,7 @@ namespace windows_client.View
         }
         #endregion
 
-        
+
         #endregion
 
         #region ConvList Page
@@ -764,6 +764,9 @@ namespace windows_client.View
 
         bool isContactListLoaded = false;
         int _oldIndex = 0, _newIndex = 0;
+        long lastStatusId = -1;
+        bool hasMoreStatus;
+        int currentlyLoadedStatusCount = 0;
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _oldIndex = _newIndex;
@@ -885,13 +888,13 @@ namespace windows_client.View
                 gridToggleStatus.Visibility = Visibility.Visible;
                 if (!isStatusMessagesLoaded)
                 {
-                    List<StatusMessage> statusMessagesFromDB = null;
+                    List<StatusMessage> statusMessagesFromDBUnblocked = new List<StatusMessage>();
                     BackgroundWorker statusBw = new BackgroundWorker();
                     statusBw.DoWork += (sf, ef) =>
                     {
                         App.ViewModel.LoadPendingRequests();
                         //corresponding counters should be handled for eg unread count
-                        statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgsForTimeline();
+                        statusMessagesFromDBUnblocked = GetUnblockedStatusUpdates(HikeConstants.STATUS_INITIAL_FETCH_COUNT);
                     };
                     statusBw.RunWorkerAsync();
                     shellProgress.IsVisible = true;
@@ -906,22 +909,7 @@ namespace windows_client.View
                             App.ViewModel.StatusList.Add(friendRequest);
                         }
 
-                        if (statusMessagesFromDB != null)
-                        {
-                            for (int i = 0; i < statusMessagesFromDB.Count; i++)
-                            {
-                                // if this user is blocked dont show his/her statuses
-                                if (App.ViewModel.BlockedHashset.Contains(statusMessagesFromDB[i].Msisdn))
-                                    continue;
-
-                                if (i < TotalUnreadStatuses)
-                                    statusMessagesFromDB[i].IsUnread = true;
-
-                                var status = StatusUpdateHelper.Instance.CreateStatusUpdate(statusMessagesFromDB[i], true);
-                                if (status != null)
-                                    App.ViewModel.StatusList.Add(status);
-                            }
-                        }
+                        AddStatusToViewModel(statusMessagesFromDBUnblocked, HikeConstants.STATUS_INITIAL_FETCH_COUNT);
 
                         this.statusLLS.ItemsSource = App.ViewModel.StatusList;
 
@@ -964,6 +952,67 @@ namespace windows_client.View
             {
                 if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
                     TotalUnreadStatuses = 0;
+            }
+        }
+
+        private List<StatusMessage> GetUnblockedStatusUpdates(int fetchCount)
+        {
+            List<StatusMessage> statusMessagesFromDBUnblocked = new List<StatusMessage>();
+            hasMoreStatus = false;
+            do
+            {
+                List<StatusMessage> listStatusUpdate = StatusMsgsTable.GetPaginatedStatusMsgsForTimeline(lastStatusId < 0 ? long.MaxValue : lastStatusId, fetchCount);
+
+                if (listStatusUpdate == null || listStatusUpdate.Count == 0)
+                    break;
+                List<StatusMessage> listStatusUpdateCopy = new List<StatusMessage>(listStatusUpdate);
+                for (int i = 0; i < listStatusUpdate.Count; i++)
+                {
+                    lastStatusId = listStatusUpdate[i].StatusId;
+                    if (i == (fetchCount - statusMessagesFromDBUnblocked.Count - 1))
+                    {
+                        hasMoreStatus = true;
+                        break;
+                    }
+                    // if this user is blocked dont show his/her statuses
+                    if (App.ViewModel.BlockedHashset.Contains(listStatusUpdate[i].Msisdn))
+                    {
+                        listStatusUpdateCopy.Remove(listStatusUpdate[i]);
+                        continue;
+                    }
+
+                }
+                statusMessagesFromDBUnblocked.AddRange(listStatusUpdateCopy);
+
+            } while (statusMessagesFromDBUnblocked.Count < fetchCount && hasMoreStatus);
+
+            return statusMessagesFromDBUnblocked;
+        }
+
+        private void AddStatusToViewModel(List<StatusMessage> statusMessagesFromDB, int messageFetchCount)
+        {
+
+            if (statusMessagesFromDB != null)
+            {
+                hasMoreStatus = false;
+                for (int i = 0; i < statusMessagesFromDB.Count; i++)
+                {
+                    StatusMessage statusMessage = statusMessagesFromDB[i];
+                    if (i == messageFetchCount - 1)
+                    {
+                        hasMoreStatus = true;
+                        lastStatusId = statusMessage.StatusId;
+                        break;
+                    }
+
+                    //handle if total unread status are more than total loaded at first time
+                    if (currentlyLoadedStatusCount++ < TotalUnreadStatuses)
+                        statusMessage.IsUnread = true;
+
+                    var status = StatusUpdateHelper.Instance.CreateStatusUpdate(statusMessage, true);
+                    if (status != null)
+                        App.ViewModel.StatusList.Add(status);
+                }
             }
         }
 
@@ -1181,8 +1230,8 @@ namespace windows_client.View
                     if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE && isStatusMessagesLoaded)
                     {
                         UpdateUserImageInStatus(sm);
-                    } 
-                    
+                    }
+
                     if (sm.Msisdn == App.MSISDN || sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
                     {
                         if (sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
@@ -1196,7 +1245,7 @@ namespace windows_client.View
 
                             txtStatus.Text = sm.Message;
                         }
-                        
+
                         // if status list is not loaded simply ignore this packet , as then this packet will
                         // be shown twice , one here and one from DB.
                         if (isStatusMessagesLoaded)
@@ -1219,7 +1268,7 @@ namespace windows_client.View
                     {
                         if (!sm.ShowOnTimeline)
                             return;
-                        
+
                         // here we have to check 2 way firendship
                         if (launchPagePivot.SelectedIndex == 3)
                         {
@@ -1282,7 +1331,7 @@ namespace windows_client.View
                             App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
                         }
 
-                        if(sb.Msisdn == App.MSISDN && sb is TextStatus)
+                        if (sb.Msisdn == App.MSISDN && sb is TextStatus)
                             SetUserLastStatus();
                     }
                 });
@@ -2277,7 +2326,7 @@ namespace windows_client.View
                         if (_refreshBarCount == 0 && value > 0)
                         {
                             refreshBarButton.Visibility = System.Windows.Visibility.Visible;
-                        } 
+                        }
                         else if (_refreshBarCount > 0 && value == 0)
                         {
                             refreshBarButton.Visibility = System.Windows.Visibility.Collapsed;
@@ -2613,8 +2662,8 @@ namespace windows_client.View
             {
                 _buttonInsideStatusUpdateTapped = false;
                 return;
-            } 
-            
+            }
+
             BaseStatusUpdate status = (sender as Grid).DataContext as BaseStatusUpdate;
             if (status == null || status is ProTipStatusUpdate)
                 return;
@@ -2676,6 +2725,31 @@ namespace windows_client.View
             launchPagePivot.SelectedIndex = 1;
         }
 
+        private void statusLLS_ItemRealized(object sender, ItemRealizationEventArgs e)
+        {
+            if (isStatusMessagesLoaded && statusLLS.ItemsSource != null && statusLLS.ItemsSource.Count > 0 && hasMoreStatus)
+            {
+                if (e.ItemKind == LongListSelectorItemKind.Item)
+                {
+                    if ((e.Container.Content as BaseStatusUpdate).Equals(statusLLS.ItemsSource[statusLLS.ItemsSource.Count - 1]))
+                    {
+                        List<StatusMessage> statusMessagesFromDB = null;
+                        shellProgress.IsVisible = true;
+                        BackgroundWorker bw = new BackgroundWorker();
+                        bw.DoWork += (s1, ev1) =>
+                        {
+                            statusMessagesFromDB = GetUnblockedStatusUpdates(HikeConstants.STATUS_SUBSEQUENT_FETCH_COUNT);
+                        };
+                        bw.RunWorkerAsync();
+                        bw.RunWorkerCompleted += (s1, ev1) =>
+                        {
+                            AddStatusToViewModel(statusMessagesFromDB, HikeConstants.STATUS_SUBSEQUENT_FETCH_COUNT);
+                            shellProgress.IsVisible = false;
+                        };
+                    }
+                }
+            }
+        }
         #endregion
 
         #region Pro Tips
@@ -3166,5 +3240,7 @@ namespace windows_client.View
 
             App.ViewModel.ViewMoreMessage_Clicked(sender);
         }
+
+
     }
 }
