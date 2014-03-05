@@ -495,7 +495,7 @@ namespace windows_client.View
             MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chat_Confirmation, AppResources.Conversations_DelChat_Txt, MessageBoxButton.OKCancel);
             if (result != MessageBoxResult.OK)
             {
-                for (int i = 0; i < App.ViewModel.MessageListPageCollection.Count; )
+                for (int i = 0; i < App.ViewModel.MessageListPageCollection.Count; i++)
                     App.ViewModel.MessageListPageCollection[i].IsSelected = false;
 
                 ChangeAppBarOnConvSelected();
