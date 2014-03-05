@@ -280,12 +280,33 @@ namespace windows_client.View
                 for (int j = 0; j < maxJ; j++)
                 {
                     ContactInfo cn = listToIterate[i][j];
-                    if (cn == null)
+                    if (cn == null || (_hideSmsContacts && !cn.OnHike)) // hide sms contacts from search
                         continue;
 
                     cn.IsSelected = _contactsForForward.Where(c => c.Msisdn == cn.Msisdn).Count() > 0 ? true : false;
 
-                    if (cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered))
+                    bool containsCharacter = false;
+
+                    if (Utils.isGroupConversation(cn.Msisdn))
+                    {
+                        var gplist = GroupManager.Instance.GetParticipantList(cn.Msisdn);
+
+                        foreach (var gp in gplist)
+                        {
+                            if (gp.HasLeft)
+                                continue;
+
+                            if( gp.Name.ToLower().Contains(charsEntered) || gp.Msisdn.Contains(charsEntered))
+                            {
+                                containsCharacter =true;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        containsCharacter = cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered);
+
+                    if (containsCharacter)
                     {
                         if (createNewFilteredList)
                         {
