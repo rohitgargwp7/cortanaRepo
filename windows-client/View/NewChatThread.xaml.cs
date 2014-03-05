@@ -925,16 +925,6 @@ namespace windows_client.View
 
                 isOnHike = obj.OnHike;
 
-                /* Check if it is a forwarded msg */
-                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
-                {
-                    NavigationService.RemoveBackEntry(); // remove last chat thread page
-                    if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is string)
-                    {
-                        sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
-                        PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
-                    }
-                }
                 avatarImage = UI_Utils.Instance.GetBitmapImage(mContactNumber, isOnHike);
                 userImage.Source = avatarImage;
             }

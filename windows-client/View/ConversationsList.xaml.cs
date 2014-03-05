@@ -492,6 +492,17 @@ namespace windows_client.View
 
         void deleteChatIconButton_Click(object sender, EventArgs e)
         {
+            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chat_Confirmation, AppResources.Conversations_DelChat_Txt, MessageBoxButton.OKCancel);
+            if (result != MessageBoxResult.OK)
+            {
+                for (int i = 0; i < App.ViewModel.MessageListPageCollection.Count; )
+                    App.ViewModel.MessageListPageCollection[i].IsSelected = false;
+
+                ChangeAppBarOnConvSelected();
+
+                return;
+            }
+
             for (int i = 0; i < App.ViewModel.MessageListPageCollection.Count;)
             {
                 if (App.ViewModel.MessageListPageCollection[i].IsSelected)
@@ -1794,12 +1805,11 @@ namespace windows_client.View
 
         private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chat_Confirmation, AppResources.Conversations_DelChat_Txt, MessageBoxButton.OKCancel);
-            if (result != MessageBoxResult.OK)
-                return;
             ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
             if (convObj != null)
-                deleteConversation(convObj);
+                convObj.IsSelected = true;
+
+            ChangeAppBarOnConvSelected();
         }
 
         private void MenuItem_Click_AddRemoveFav(object sender, RoutedEventArgs e)
