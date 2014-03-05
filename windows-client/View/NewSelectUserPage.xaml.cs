@@ -49,7 +49,6 @@ namespace windows_client.View
         private StringBuilder stringBuilderForContactNames = new StringBuilder();
         private bool _showExistingGroups;
         private byte maxCharGroups = 26;
-        private string senderMsisdn;
         List<ContactInfo> allContactsList = null; // contacts list
 
         private ApplicationBar appBar;
@@ -78,35 +77,40 @@ namespace windows_client.View
                 if (value != existingGroupUsers)
                 {
                     existingGroupUsers = value;
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+
+                    if (doneIconButton != null)
                     {
-                        if (!isExistingGroup) // case if group is new
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            if (existingGroupUsers >= 3)
+                            if (!isExistingGroup) // case if group is new
                             {
-                                if (!doneIconButton.IsEnabled)
-                                    doneIconButton.IsEnabled = true;
+                                if (existingGroupUsers >= 3)
+                                {
+                                    if (!doneIconButton.IsEnabled)
+                                        doneIconButton.IsEnabled = true;
+                                }
+                                else
+                                {
+                                    if (doneIconButton.IsEnabled)
+                                        doneIconButton.IsEnabled = false;
+                                }
                             }
                             else
                             {
-                                if (doneIconButton.IsEnabled)
-                                    doneIconButton.IsEnabled = false;
+                                if (_addedUsers > 0)
+                                {
+                                    if (!doneIconButton.IsEnabled)
+                                        doneIconButton.IsEnabled = true;
+                                }
+                                else
+                                {
+                                    if (doneIconButton.IsEnabled)
+                                        doneIconButton.IsEnabled = false;
+                                }
                             }
-                        }
-                        else
-                        {
-                            if (_addedUsers > 0)
-                            {
-                                if (!doneIconButton.IsEnabled)
-                                    doneIconButton.IsEnabled = true;
-                            }
-                            else
-                            {
-                                if (doneIconButton.IsEnabled)
-                                    doneIconButton.IsEnabled = false;
-                            }
-                        }
-                    });
+                        });
+                    }
+
                 }
             }
         }
@@ -150,23 +154,6 @@ namespace windows_client.View
             else
                 hideSmsContacts = false;
             object obj;
-            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.FORWARD_MSG, out obj))
-            {
-                _showExistingGroups = true;
-                maxCharGroups = 27;
-                txtChat.Visibility = Visibility.Collapsed;
-                txtTitle.Text = AppResources.SelectUser_Forward_To_Txt;
-                if (obj is object[])
-                {
-                    object[] attachmentForwardMessage = (object[])obj;
-                    if (attachmentForwardMessage.Length == 6
-                        && ((string)attachmentForwardMessage[0]).Contains(HikeConstants.CONTACT))
-                    {
-                        hideSmsContacts = false;
-                        isContactShared = true;
-                    }
-                }
-            }
             //case when share contact is called
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
             {
@@ -618,7 +605,7 @@ namespace windows_client.View
             }
             xyz = !xyz;
 
-            if (isGroupChat)
+            if (isGroupChat || PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
                 charsEntered = enterNameTxt.Text.Substring(stringBuilderForContactNames.Length);
             else
                 charsEntered = enterNameTxt.Text.ToLower();
@@ -1032,7 +1019,7 @@ namespace windows_client.View
                 canGoBack = true;
                 return;
             }
-           
+
 
             List<ContactInfo.DelContacts> hikeIds = null;
             List<ContactInfo> deletedContacts = null;
@@ -1107,7 +1094,7 @@ namespace windows_client.View
                 obj[1] = deletedContacts;
                 App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
             }
-            
+
             if (updatedContacts != null && updatedContacts.Count > 0)
             {
                 UsersTableUtils.updateContacts(updatedContacts);

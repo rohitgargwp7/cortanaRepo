@@ -1931,7 +1931,7 @@ namespace windows_client.View
             }
         }
 
-        private void AddNewMessageToUI(ConvMessage convMessage, bool insertAtTop, bool isReceived = false)
+        public void AddNewMessageToUI(ConvMessage convMessage, bool insertAtTop, bool isReceived = false)
         {
             if (isTypingNotificationActive)
             {
@@ -2900,7 +2900,7 @@ namespace windows_client.View
 
                 UpdateLastSentMessageStatusOnUI();
             }
-           
+
             ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
 
             ConvMessage lastMessageBubble = null;
@@ -3018,7 +3018,7 @@ namespace windows_client.View
 
                 SendForceSMS(convMessage);
                 UpdateLastSentMessageStatusOnUI();
-           
+
                 if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
                 {
                     this.ocMessages.Remove(_h2hofflineToolTip);
@@ -4264,9 +4264,9 @@ namespace windows_client.View
                 ConvMessage cm = (ConvMessage)obj;
                 if (mContactNumber != cm.Msisdn)
                     return;
-                
+
                 _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
-                
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     try
@@ -6976,95 +6976,95 @@ namespace windows_client.View
                 return;
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
-                 {
-                     if (lastSeenTxt.Text == AppResources.Online || _isSendAllAsSMSVisible)
-                         return;
+            {
+                if (lastSeenTxt.Text == AppResources.Online || _isSendAllAsSMSVisible)
+                    return;
 
-                     _lastUnDeliveredMessage = null;
+                _lastUnDeliveredMessage = null;
 
-                     try
-                     {
-                         var msgList = (from message in ocMessages
-                                        where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
-                                        select message);
+                try
+                {
+                    var msgList = (from message in ocMessages
+                                   where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
+                                   select message);
 
-                         _lastUnDeliveredMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
-                     }
-                     catch
-                     {
-                         return;
-                     }
+                    _lastUnDeliveredMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
+                }
+                catch
+                {
+                    return;
+                }
 
-                     if (_lastUnDeliveredMessage != null)
-                     {
-                         var indexToInsert = ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
+                if (_lastUnDeliveredMessage != null)
+                {
+                    var indexToInsert = ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
 
-                         if (_readByMessage != null && ocMessages.Contains(_readByMessage) && ocMessages.IndexOf(_readByMessage) == indexToInsert && !ocMessages.Contains(_h2hofflineToolTip))
-                             ocMessages.Remove(_readByMessage);
-                         
-                         if (App.ViewModel.DictInAppTip != null && !isInAppTipVisible)
-                         {
-                             HikeToolTip tip;
-                             App.ViewModel.DictInAppTip.TryGetValue(6, out tip);
-                             
-                             if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown) && _h2hofflineToolTip == null)
-                             {
-                                 _h2hofflineToolTip = new ConvMessage();
-                                 _h2hofflineToolTip.GrpParticipantState = ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP;
-                                 _h2hofflineToolTip.Message = tip.Tip;
-                                 this.ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
-                                 _isStatusUpdateToolTipShown = true;
+                    if (_readByMessage != null && ocMessages.Contains(_readByMessage) && ocMessages.IndexOf(_readByMessage) == indexToInsert && !ocMessages.Contains(_h2hofflineToolTip))
+                        ocMessages.Remove(_readByMessage);
 
-                                 tip.IsShown = true;
-                                 tip.IsCurrentlyShown = true;
+                    if (App.ViewModel.DictInAppTip != null && !isInAppTipVisible)
+                    {
+                        HikeToolTip tip;
+                        App.ViewModel.DictInAppTip.TryGetValue(6, out tip);
 
-                                 int marked;
-                                 App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
-                                 marked |= (int)(1 << 6);
-                                 App.appSettings[App.TIP_MARKED_KEY] = marked;
+                        if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown) && _h2hofflineToolTip == null)
+                        {
+                            _h2hofflineToolTip = new ConvMessage();
+                            _h2hofflineToolTip.GrpParticipantState = ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP;
+                            _h2hofflineToolTip.Message = tip.Tip;
+                            this.ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
+                            _isStatusUpdateToolTipShown = true;
 
-                                 int currentShown;
-                                 App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                                 currentShown |= (int)(1 << 6);
-                                 App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
+                            tip.IsShown = true;
+                            tip.IsCurrentlyShown = true;
 
-                                 if (indexToInsert == ocMessages.Count - 1)
-                                     ScrollToBottom();
+                            int marked;
+                            App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
+                            marked |= (int)(1 << 6);
+                            App.appSettings[App.TIP_MARKED_KEY] = marked;
 
-                                 isInAppTipVisible = true;
+                            int currentShown;
+                            App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
+                            currentShown |= (int)(1 << 6);
+                            App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
 
-                                 return;
-                             }
-                         }
+                            if (indexToInsert == ocMessages.Count - 1)
+                                ScrollToBottom();
 
-                         if (_h2hofflineToolTip != null)
-                         {
-                             if (!ocMessages.Contains(_h2hofflineToolTip))
-                                 this.ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
+                            isInAppTipVisible = true;
 
-                             return;
-                         }
+                            return;
+                        }
+                    }
 
-                         if (_tap2SendAsSMSMessage == null)
-                         {
-                             _tap2SendAsSMSMessage = new ConvMessage();
-                             _tap2SendAsSMSMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION;
-                             _tap2SendAsSMSMessage.NotificationType = ConvMessage.MessageType.FORCE_SMS;
+                    if (_h2hofflineToolTip != null)
+                    {
+                        if (!ocMessages.Contains(_h2hofflineToolTip))
+                            this.ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
 
-                             if (isGroupChat)
-                                 _tap2SendAsSMSMessage.Message = AppResources.Send_All_As_SMS_Group;
-                             else
-                                 _tap2SendAsSMSMessage.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
-                         }
+                        return;
+                    }
 
-                         this.ocMessages.Insert(indexToInsert, _tap2SendAsSMSMessage);
+                    if (_tap2SendAsSMSMessage == null)
+                    {
+                        _tap2SendAsSMSMessage = new ConvMessage();
+                        _tap2SendAsSMSMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION;
+                        _tap2SendAsSMSMessage.NotificationType = ConvMessage.MessageType.FORCE_SMS;
 
-                         if (indexToInsert == ocMessages.Count - 1)
-                             ScrollToBottom();
+                        if (isGroupChat)
+                            _tap2SendAsSMSMessage.Message = AppResources.Send_All_As_SMS_Group;
+                        else
+                            _tap2SendAsSMSMessage.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
+                    }
 
-                         _isSendAllAsSMSVisible = true;
-                     }
-                 });
+                    this.ocMessages.Insert(indexToInsert, _tap2SendAsSMSMessage);
+
+                    if (indexToInsert == ocMessages.Count - 1)
+                        ScrollToBottom();
+
+                    _isSendAllAsSMSVisible = true;
+                }
+            });
         }
 
         void SendForceSMS(ConvMessage message = null)

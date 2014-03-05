@@ -97,6 +97,8 @@ namespace windows_client
         public static readonly int LOCATION_THUMBNAIL_MAX_WIDTH = 220;
         public static readonly int PROFILE_PICS_SIZE = 640; //image which are uploaded on servers
         public static readonly int MAX_THUMBNAILSIZE = 4800;
+        public static readonly byte MAX_IMAGES_SHARE = 15;
+
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
@@ -172,7 +174,7 @@ namespace windows_client
         public const string FTUE_GAMING_MSISDN = "+hike2+";
 
         public static readonly string VERSION = "version";
-        
+
         public static string FAQS_LINK
         {
             get
@@ -279,6 +281,7 @@ namespace windows_client
         public static string SOCIAL = "Social_Request";
         public static string SHOW_GROUP_CHAT_OVERLAY = "sgcol";
         public static string PLAYER_TIMER = "playerTimer";
+        public static string MULTIPLE_IMAGES = "multipleimages";
         public static string LOCATION_MAP_COORDINATE = "locationMapCoordinate";
         public static string LOCATION_DEVICE_COORDINATE = "locationDeviceCoordinate";
         public static string LOCATION_SEARCH = "locationSearch";
