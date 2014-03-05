@@ -198,6 +198,39 @@ namespace windows_client.Model
             }
         }   // this is used in inviteUsers page , when you show hike users
 
+        bool _isSelected;
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                if (value != _isSelected)
+                {
+                    _isSelected = value;
+                    NotifyPropertyChanged("IsSelected");
+                }
+            }
+        }
+
+        String _contactListLabel;
+        public String ContactListLabel
+        {
+            get
+            {
+                return String.IsNullOrEmpty(_contactListLabel) ? Msisdn : _contactListLabel;
+            }
+            set
+            {
+                if (value != _contactListLabel)
+                {
+                    _contactListLabel = value;
+                    NotifyPropertyChanged("ContactListLabel");
+                }
+            }
+        }
 
         public string BlockUnblockText
         {
@@ -268,6 +301,7 @@ namespace windows_client.Model
 
         public ContactInfo(ContactInfo contact)
         {
+            this._id = contact.Id;
             this._msisdn = contact._msisdn;
             this._name = contact._name;
             this._onHike = contact._onHike;
@@ -454,6 +488,19 @@ namespace windows_client.Model
                     Debug.WriteLine("ContactInfo :: AvatarImage : fetch AvatarImage, Exception : " + ex.StackTrace);
                     return null;
                 }
+            }
+        }
+
+        public class MsisdnComparer : IEqualityComparer<ContactInfo>
+        {
+            public bool Equals(ContactInfo x, ContactInfo y)
+            {
+                return x.Msisdn == y.Msisdn;
+            }
+
+            public int GetHashCode(ContactInfo obj)
+            {
+                return obj.Msisdn.GetHashCode();
             }
         }
     }

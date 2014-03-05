@@ -255,6 +255,9 @@
     <Compile Include="View\ConversationsList.xaml.cs">
       <DependentUpon>ConversationsList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ForwardTo.xaml.cs">
+      <DependentUpon>ForwardTo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Preferences.xaml.cs">
       <DependentUpon>Preferences.xaml</DependentUpon>
     </Compile>
@@ -380,6 +383,9 @@
     </Page>
     <Page Include="View\ConversationsList.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ForwardTo.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Preferences.xaml">
