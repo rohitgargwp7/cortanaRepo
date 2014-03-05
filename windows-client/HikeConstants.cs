@@ -99,8 +99,8 @@ namespace windows_client
         public static readonly int MAX_THUMBNAILSIZE = 4800;
        
         public const byte MAX_IMAGES_SHARE = 15;
-        public const int STATUS_INITIAL_FETCH_COUNT = 16;
-        public const int STATUS_SUBSEQUENT_FETCH_COUNT = 10; 
+        public const int STATUS_INITIAL_FETCH_COUNT = 31;
+        public const int STATUS_SUBSEQUENT_FETCH_COUNT = 21; 
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
