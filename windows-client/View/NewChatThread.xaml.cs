@@ -2619,6 +2619,9 @@ namespace windows_client.View
 
         private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived, bool readFromDb = false)
         {
+            if (ocMessages == null)
+                return;
+
             if (_isSendAllAsSMSVisible && ocMessages != null && convMessage.IsSent)
             {
                 ocMessages.Remove(_tap2SendAsSMSMessage);

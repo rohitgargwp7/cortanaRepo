@@ -756,16 +756,16 @@ namespace windows_client.View
             {
                 cInfo.IsSelected = !cInfo.IsSelected;
 
-                if (!_isContactShared && _isFreeSmsOn)
-                {
                     //count sms users
-                    if (cInfo.IsSelected)
+                if (cInfo.IsSelected)
+                {
+                    if (!_contactsForForward.Contains(cInfo))
                     {
-                        if (!_contactsForForward.Contains(cInfo))
-                        {
-                            if (defaultContact == cInfo)
-                                defaultContact = new ContactInfo();
+                        if (defaultContact == cInfo)
+                            defaultContact = new ContactInfo();
 
+                        if (!_isContactShared && _isFreeSmsOn)
+                        {
                             if (!Utils.isGroupConversation(cInfo.Msisdn))
                             {
                                 if (!cInfo.OnHike)
@@ -780,12 +780,17 @@ namespace windows_client.View
 
                                 cInfo.IsSelected = false;
                                 _smsUserCount = oldSmsCount;
+
+                                return;
                             }
-                            else
-                                _contactsForForward.Add(cInfo);
                         }
+
+                        _contactsForForward.Add(cInfo);
                     }
-                    else
+                }
+                else
+                {
+                    if (!_isContactShared && _isFreeSmsOn)
                     {
                         var list = _contactsForForward.Where(x => x.Msisdn == cInfo.Msisdn).ToList();
                         foreach (var item in list)
@@ -800,14 +805,12 @@ namespace windows_client.View
                             else
                                 _smsUserCount -= GroupManager.Instance.GetSMSParticiantCount(item.Msisdn);
                         }
-
-                        _contactsForForward.RemoveAll(x => x.Msisdn == cInfo.Msisdn);
                     }
-                }
-                else
-                    _contactsForForward.Add(cInfo);
 
-                _doneIconButton.IsEnabled = _contactsForForward.Count > 0 ? true : false;
+                    _contactsForForward.RemoveAll(x => x.Msisdn == cInfo.Msisdn);
+                }
+
+                _doneIconButton.IsEnabled = _contactsForForward.Count > 0;
             }
         }
 
