@@ -55,6 +55,11 @@ namespace windows_client.View
         private ApplicationBarMenuItem _onHikeFilterMenuItem = null;
 
         Dictionary<string, List<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, List<Group<ContactInfo>>>();
+        
+        /// <summary>
+        /// maintain state dictionary for showSMScontacts in parallel to groupListDictionary
+        /// so that while searching the value of showsmscontacts is considered too
+        /// </summary>
         Dictionary<string, bool> groupListStateDictionary = new Dictionary<string, bool>();
 
         ContactInfo defaultContact = new ContactInfo(); // this is used to store default phone number 
@@ -318,10 +323,12 @@ namespace windows_client.View
 
                             if( gp.Name.ToLower().Contains(charsEntered) || gp.Msisdn.Contains(charsEntered))
                             {
-                                containsCharacter =true;
+                                containsCharacter = true;
                                 break;
                             }
                         }
+
+                        containsCharacter = containsCharacter || cn.Name.ToLower().Contains(charsEntered);
                     }
                     else
                         containsCharacter = cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered);
