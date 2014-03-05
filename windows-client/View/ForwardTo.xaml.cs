@@ -25,7 +25,7 @@ namespace windows_client.View
     public partial class ForwardTo : PhoneApplicationPage
     {
         private bool _canGoBack = true;
-        private bool _hideSmsContacts;
+        private bool _showSmsContacts;
         private bool _isFreeSmsOn = true;
         private bool _showExistingGroups;
         private bool _stopContactScanning = false;
@@ -63,7 +63,7 @@ namespace windows_client.View
             InitializeComponent();
 
             App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out _isFreeSmsOn);
-            _hideSmsContacts = _isFreeSmsOn ? true : false;
+            _showSmsContacts = _isFreeSmsOn ? true : false;
 
             App.appSettings.TryGetValue(App.SMS_SETTING, out _smsCredits);
 
@@ -79,7 +79,7 @@ namespace windows_client.View
                     if (attachmentForwardMessage.Length == 6
                         && ((string)attachmentForwardMessage[0]).Contains(HikeConstants.CONTACT))
                     {
-                        _hideSmsContacts = false;
+                        _showSmsContacts = false;
                         _isContactShared = true;
                     }
                 }
@@ -94,7 +94,7 @@ namespace windows_client.View
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (s, e) =>
             {
-                if (!_hideSmsContacts)
+                if (!_showSmsContacts)
                 {
                     if (_filteredGroupedContactList == null)
                         MakeFilteredJumpList();
@@ -150,20 +150,20 @@ namespace windows_client.View
 
         private void OnHikeFilter_Click(object sender, EventArgs e)
         {
-            if (_hideSmsContacts)
+            if (_showSmsContacts)
             {
                 if (_filteredGroupedContactList == null)
                 {
                     MakeFilteredJumpList();
                 }
                 contactsListBox.ItemsSource = _filteredGroupedContactList;
-                _hideSmsContacts = !_hideSmsContacts;
+                _showSmsContacts = !_showSmsContacts;
                 _onHikeFilterMenuItem.Text = AppResources.SelectUser_ShowSmsContacts_Txt;
             }
             else
             {
                 contactsListBox.ItemsSource = _completeGroupedContactList;
-                _hideSmsContacts = !_hideSmsContacts;
+                _showSmsContacts = !_showSmsContacts;
                 _onHikeFilterMenuItem.Text = AppResources.SelectUser_HideSmsContacts_Txt;
             }
         }
@@ -280,7 +280,7 @@ namespace windows_client.View
                 for (int j = 0; j < maxJ; j++)
                 {
                     ContactInfo cn = listToIterate[i][j];
-                    if (cn == null || (_hideSmsContacts && !cn.OnHike)) // hide sms contacts from search
+                    if (cn == null || (!_showSmsContacts && !cn.OnHike)) // hide sms contacts from search
                         continue;
 
                     cn.IsSelected = _contactsForForward.Where(c => c.Msisdn == cn.Msisdn).Count() > 0 ? true : false;
@@ -587,7 +587,7 @@ namespace windows_client.View
                 _completeGroupedContactList = GetGroupedList(_allContactsList);
 
                 // this logic handles the case where hide sms contacts is there and user refreshed the list 
-                if (!_hideSmsContacts)
+                if (!_showSmsContacts)
                 {
                     MakeFilteredJumpList();
                     contactsListBox.ItemsSource = _filteredGroupedContactList;
