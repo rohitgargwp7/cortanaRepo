@@ -235,7 +235,7 @@ namespace windows_client.View
                     string num = Utils.NormalizeNumber(_charsEntered);
                     gl[_maxCharGroups][0].Msisdn = num;
                     gl[_maxCharGroups][0].ContactListLabel = _charsEntered.Length >= 1 && _charsEntered.Length <= 15 ? num : AppResources.SelectUser_EnterValidNo_Txt;
-                    gl[_maxCharGroups][0].IsSelected = _contactsForForward.Where(c => c.Msisdn == num).Count() > 0 ? true : false;
+                    gl[_maxCharGroups][0].IsSelected = _contactsForForward.Where(c => c.Msisdn == num).Count() > 0;
                 }
 
                 contactsListBox.ItemsSource = gl;
