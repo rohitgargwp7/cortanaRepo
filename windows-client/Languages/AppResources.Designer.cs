@@ -682,6 +682,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure about deleting these chats?.
+        /// </summary>
+        public static string Conversations_Delete_MoreThan1Chat_Confirmation {
+            get {
+                return ResourceManager.GetString("Conversations_Delete_MoreThan1Chat_Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dismiss.
         /// </summary>
         public static string Conversations_Dismiss_Tip {

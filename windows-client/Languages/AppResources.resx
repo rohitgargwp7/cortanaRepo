@@ -2120,4 +2120,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>select</value>
     <comment>max 10 chars</comment>
   </data>
+  <data name="Conversations_Delete_MoreThan1Chat_Confirmation" xml:space="preserve">
+    <value>Are you sure about deleting these chats?</value>
+  </data>
 </root>

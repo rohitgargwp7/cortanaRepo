@@ -492,11 +492,14 @@ namespace windows_client.View
 
         void deleteChatIconButton_Click(object sender, EventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chat_Confirmation, AppResources.Conversations_DelChat_Txt, MessageBoxButton.OKCancel);
+            var list = App.ViewModel.MessageListPageCollection.Where(c => c.IsSelected == true).ToList();
+            string message = list.Count > 1 ? AppResources.Conversations_Delete_MoreThan1Chat_Confirmation : AppResources.Conversations_Delete_Chat_Confirmation;
+
+            MessageBoxResult result = MessageBox.Show(message, AppResources.Conversations_DelChat_Txt, MessageBoxButton.OKCancel);
             if (result != MessageBoxResult.OK)
             {
-                for (int i = 0; i < App.ViewModel.MessageListPageCollection.Count; i++)
-                    App.ViewModel.MessageListPageCollection[i].IsSelected = false;
+                foreach (var item in list)
+                    item.IsSelected = false;
 
                 ChangeAppBarOnConvSelected();
 
