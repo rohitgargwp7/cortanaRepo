@@ -19,6 +19,12 @@ namespace windows_client.TemplateSelectors
             set;
         }
 
+        public DataTemplate DtMessageStatus
+        {
+            get;
+            set;
+        }
+
         public DataTemplate DtH2HOfflineInAppTip
         {
             get;
@@ -179,6 +185,8 @@ namespace windows_client.TemplateSelectors
                 }
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.IN_APP_TIP)
                     return DtInAppTip;
+                else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.MESSAGE_STATUS)
+                    return DtMessageStatus;
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
                     return DtH2HOfflineInAppTip;
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)

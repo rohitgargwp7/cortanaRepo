@@ -2606,6 +2606,69 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to delivered.
+        /// </summary>
+        public static string MessageStatus_Delivered {
+            get {
+                return ResourceManager.GetString("MessageStatus_Delivered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to read.
+        /// </summary>
+        public static string MessageStatus_Read {
+            get {
+                return ResourceManager.GetString("MessageStatus_Read", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to read by everyone.
+        /// </summary>
+        public static string MessageStatus_ReadByEveryone {
+            get {
+                return ResourceManager.GetString("MessageStatus_ReadByEveryone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to read by {0} and {1} others.
+        /// </summary>
+        public static string MessageStatus_ReadByMoreThanThree {
+            get {
+                return ResourceManager.GetString("MessageStatus_ReadByMoreThanThree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to read by {0}.
+        /// </summary>
+        public static string MessageStatus_ReadByOneOrTwo {
+            get {
+                return ResourceManager.GetString("MessageStatus_ReadByOneOrTwo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to read by {0} and 1 other.
+        /// </summary>
+        public static string MessageStatus_ReadByThree {
+            get {
+                return ResourceManager.GetString("MessageStatus_ReadByThree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to sent.
+        /// </summary>
+        public static string MessageStatus_Sent {
+            get {
+                return ResourceManager.GetString("MessageStatus_Sent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to messaging.
         /// </summary>
         public static string Messaging_Txt {
@@ -3286,6 +3349,15 @@ namespace windows_client.Languages {
         public static string Preferences_Header_Txt {
             get {
                 return ResourceManager.GetString("Preferences_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to preview {0} of {1}.
+        /// </summary>
+        public static string PreviewImages_Header_txt {
+            get {
+                return ResourceManager.GetString("PreviewImages_Header_txt", resourceCulture);
             }
         }
         
@@ -4816,6 +4888,51 @@ namespace windows_client.Languages {
         public static string Video_Txt {
             get {
                 return ResourceManager.GetString("Video_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to select.
+        /// </summary>
+        public static string ViewAlbum_AppBar_Select_text {
+            get {
+                return ResourceManager.GetString("ViewAlbum_AppBar_Select_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT PHOTO.
+        /// </summary>
+        public static string ViewAlbums_Header_txt {
+            get {
+                return ResourceManager.GetString("ViewAlbums_Header_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max {0} photos please!.
+        /// </summary>
+        public static string ViewAlbums_MaxImageSelection {
+            get {
+                return ResourceManager.GetString("ViewAlbums_MaxImageSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to albums.
+        /// </summary>
+        public static string ViewAlbums_Pivot_Album_txt {
+            get {
+                return ResourceManager.GetString("ViewAlbums_Pivot_Album_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to date.
+        /// </summary>
+        public static string ViewAlbums_Pivot_Date_txt {
+            get {
+                return ResourceManager.GetString("ViewAlbums_Pivot_Date_txt", resourceCulture);
             }
         }
         

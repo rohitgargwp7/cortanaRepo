@@ -196,6 +196,7 @@
     <Compile Include="Misc\GroupManager.cs" />
     <Compile Include="Misc\IBinarySerializable.cs" />
     <Compile Include="Misc\Social.cs" />
+    <Compile Include="Model\MultiplePhoto\Album.cs" />
     <Compile Include="Model\Analytics.cs" />
     <Compile Include="Model\Attachment.cs" />
     <Compile Include="Model\ChatBackground.cs" />
@@ -206,6 +207,7 @@
     <Compile Include="Model\Logger.cs" />
     <Compile Include="Model\MessageMetadata.cs" />
     <Compile Include="Model\MiscDatabases.cs" />
+    <Compile Include="Model\MultiplePhoto\Photo.cs" />
     <Compile Include="Model\StatusMessage.cs" />
     <Compile Include="Model\HikeToolTip.cs" />
     <Compile Include="Model\StatusUpdates\DefaultStatusUpdate.cs" />
@@ -281,6 +283,9 @@
     <Compile Include="View\PostStatus.xaml.cs">
       <DependentUpon>PostStatus.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\PreviewImages.xaml.cs">
+      <DependentUpon>PreviewImages.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\RecordVideo.xaml.cs">
       <DependentUpon>RecordVideo.xaml</DependentUpon>
     </Compile>
@@ -331,6 +336,9 @@
     </Compile>
     <Compile Include="View\ViewMessage.xaml.cs">
       <DependentUpon>ViewMessage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ViewPhotoAlbums.xaml.cs">
+      <DependentUpon>ViewPhotoAlbums.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\WelcomePage.xaml.cs">
       <DependentUpon>WelcomePage.xaml</DependentUpon>
@@ -411,6 +419,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\PreviewImages.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\RecordVideo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -477,6 +489,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ViewPhotoAlbums.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\WelcomePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -510,6 +526,10 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\images\add.png" />
+    <Content Include="View\images\appbar.delete.png" />
+    <Content Include="View\images\appbar.select.png" />
+    <Content Include="View\images\appbar.send.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbILoveU.png" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbBeach.png" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbBikers.png" />

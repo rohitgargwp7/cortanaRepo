@@ -219,7 +219,7 @@
   </data>
   <data name="Delete_Txt" xml:space="preserve">
     <value>delete</value>
-    <comment>Chats ContextMenu (xaml)</comment>
+    <comment>Chats ContextMenu (xaml)(max 10 chars)</comment>
   </data>
   <data name="AppBar_Done_Btn" xml:space="preserve">
     <value>done</value>
@@ -2070,5 +2070,51 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="MicrophoneNotFound_HeaderTxt" xml:space="preserve">
     <value>Unable to record!</value>
+  </data>
+  <data name="MessageStatus_Delivered" xml:space="preserve">
+    <value>delivered</value>
+  </data>
+  <data name="MessageStatus_Read" xml:space="preserve">
+    <value>read</value>
+  </data>
+  <data name="MessageStatus_ReadByEveryone" xml:space="preserve">
+    <value>read by everyone</value>
+  </data>
+  <data name="MessageStatus_ReadByMoreThanThree" xml:space="preserve">
+    <value>read by {0} and {1} others</value>
+    <comment>eg. read by a &amp; b and 3 others</comment>
+  </data>
+  <data name="MessageStatus_ReadByOneOrTwo" xml:space="preserve">
+    <value>read by {0}</value>
+    <comment>eg. read by a &amp; b / read by a</comment>
+  </data>
+  <data name="MessageStatus_ReadByThree" xml:space="preserve">
+    <value>read by {0} and 1 other</value>
+    <comment>eg. read by a &amp; b and 1 other</comment>
+  </data>
+  <data name="MessageStatus_Sent" xml:space="preserve">
+    <value>sent</value>
+  </data>
+  <data name="PreviewImages_Header_txt" xml:space="preserve">
+    <value>preview {0} of {1}</value>
+    <comment>{0} and {1} to be replaced by numbers</comment>
+  </data>
+  <data name="ViewAlbums_Header_txt" xml:space="preserve">
+    <value>SELECT PHOTO</value>
+    <comment>Heading in caps (maximum 30 chars)</comment>
+  </data>
+  <data name="ViewAlbums_MaxImageSelection" xml:space="preserve">
+    <value>Max {0} photos please!</value>
+    <comment>{0} to be replaced by number. max chars(25)</comment>
+  </data>
+  <data name="ViewAlbums_Pivot_Album_txt" xml:space="preserve">
+    <value>albums</value>
+  </data>
+  <data name="ViewAlbums_Pivot_Date_txt" xml:space="preserve">
+    <value>date</value>
+  </data>
+  <data name="ViewAlbum_AppBar_Select_text" xml:space="preserve">
+    <value>select</value>
+    <comment>max 10 chars</comment>
   </data>
 </root>
