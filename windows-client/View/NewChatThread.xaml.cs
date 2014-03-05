@@ -110,7 +110,6 @@ namespace windows_client.View
         ApplicationBarIconButton emoticonsIconButton = null;
         ApplicationBarIconButton stickersIconButton = null;
         ApplicationBarIconButton fileTransferIconButton = null;
-        private PhotoChooserTask photoChooserTask;
         private CameraCaptureTask cameraCaptureTask;
         private object statusObject = null;
         private int _unreadMessageCounter = 0;
@@ -445,9 +444,6 @@ namespace windows_client.View
             emotList3.ItemsSource = imagePathsForList3;
 
             bw.RunWorkerAsync();
-            photoChooserTask = new PhotoChooserTask();
-            photoChooserTask.ShowCamera = false;
-            photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
             cameraCaptureTask = new CameraCaptureTask();
             cameraCaptureTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
@@ -640,6 +636,13 @@ namespace windows_client.View
             if (!App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
             {
                 ContactTransfer();
+            }
+            #endregion
+            #region MULTIPLE IMAGES
+
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
+            {
+                MultipleImagesTransfer();
             }
             #endregion
 
@@ -3196,7 +3199,7 @@ namespace windows_client.View
         {
             try
             {
-                photoChooserTask.Show();
+                NavigationService.Navigate(new Uri("/View/ViewPhotoAlbums.xaml", UriKind.RelativeOrAbsolute));
                 attachmentMenu.Visibility = Visibility.Collapsed;
             }
             catch (Exception ex)
@@ -4677,6 +4680,23 @@ namespace windows_client.View
                 vals[1] = bytes;
                 App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
             }
+        }
+
+        private void MultipleImagesTransfer()
+        {
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
+            {
+                List<PhotoClass> listPic = PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] as List<PhotoClass>;
+ 
+                foreach (PhotoClass pic in listPic)
+                {
+                    SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString());
+                    pic.Pic.Dispose();
+                }
+ 
+                PhoneApplicationService.Current.State.Remove(HikeConstants.MULTIPLE_IMAGES);
+            }
+ 
         }
 
         private void FileAttachmentMessage_Tap(object sender, SelectionChangedEventArgs e)
@@ -6915,34 +6935,34 @@ namespace windows_client.View
             {
                 if (lastSeenTxt.Text == AppResources.Online || _isSendAllAsSMSVisible)
                     return;
- 
+
                 _lastUnDeliveredMessage = null;
- 
+
                 try
                 {
                     var msgList = (from message in ocMessages
-                                where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
-                                select message);
- 
+                                   where message.MessageStatus == ConvMessage.State.SENT_CONFIRMED
+                                   select message);
+
                     _lastUnDeliveredMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
                 }
                 catch
                 {
                     return;
                 }
- 
+
                 if (_lastUnDeliveredMessage != null)
                 {
                     var indexToInsert = ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
- 
+
                     if (_readByMessage != null && ocMessages.Contains(_readByMessage) && ocMessages.IndexOf(_readByMessage) == indexToInsert && !ocMessages.Contains(_h2hofflineToolTip))
                         ocMessages.Remove(_readByMessage);
-                         
+
                     if (App.ViewModel.DictInAppTip != null && !isInAppTipVisible)
                     {
                         HikeToolTip tip;
                         App.ViewModel.DictInAppTip.TryGetValue(6, out tip);
-                             
+
                         if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown) && _h2hofflineToolTip == null)
                         {
                             _h2hofflineToolTip = new ConvMessage();
@@ -6950,54 +6970,54 @@ namespace windows_client.View
                             _h2hofflineToolTip.Message = tip.Tip;
                             this.ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
                             _isStatusUpdateToolTipShown = true;
- 
+
                             tip.IsShown = true;
                             tip.IsCurrentlyShown = true;
- 
+
                             int marked;
                             App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
                             marked |= (int)(1 << 6);
                             App.appSettings[App.TIP_MARKED_KEY] = marked;
- 
+
                             int currentShown;
                             App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
                             currentShown |= (int)(1 << 6);
                             App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
- 
-                            if (indexToInsert == ocMessages.Count -1)
+
+                            if (indexToInsert == ocMessages.Count - 1)
                                 ScrollToBottom();
- 
+
                             isInAppTipVisible = true;
- 
+
                             return;
                         }
                     }
- 
+
                     if (_h2hofflineToolTip != null)
                     {
                         if (!ocMessages.Contains(_h2hofflineToolTip))
                             this.ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
- 
+
                         return;
                     }
- 
+
                     if (_tap2SendAsSMSMessage == null)
                     {
                         _tap2SendAsSMSMessage = new ConvMessage();
                         _tap2SendAsSMSMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION;
                         _tap2SendAsSMSMessage.NotificationType = ConvMessage.MessageType.FORCE_SMS;
- 
+
                         if (isGroupChat)
                             _tap2SendAsSMSMessage.Message = AppResources.Send_All_As_SMS_Group;
                         else
                             _tap2SendAsSMSMessage.Message = String.Format(AppResources.Send_All_As_SMS, mContactName);
                     }
- 
+
                     this.ocMessages.Insert(indexToInsert, _tap2SendAsSMSMessage);
- 
-                    if (indexToInsert == ocMessages.Count -  1)
+
+                    if (indexToInsert == ocMessages.Count - 1)
                         ScrollToBottom();
- 
+
                     _isSendAllAsSMSVisible = true;
                 }
             });
