@@ -1002,9 +1002,6 @@ namespace windows_client.View
                 _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
 
                 sendMsgTxtbox.Hint = hintText = ON_GROUP_TEXT;
-
-                if (isGroupAlive)
-                    initBlockUnblockState();
             }
 
             if (!isOnHike)
@@ -1018,6 +1015,8 @@ namespace windows_client.View
                 chatThemeTip.Visibility = Visibility.Visible;
                 sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
             }
+
+            initBlockUnblockState();
 
             Object showNormalFtue;
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.CHAT_FTUE, out showNormalFtue) && ((bool)showNormalFtue))
