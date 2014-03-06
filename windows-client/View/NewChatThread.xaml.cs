@@ -2719,23 +2719,17 @@ namespace windows_client.View
                 {
                     if ((e.Container.Content as ConvMessage).Equals(llsMessages.ItemsSource[0]))
                     {
+                        shellProgress.Visibility = Visibility.Visible;
+
                         BackgroundWorker bw = new BackgroundWorker();
                         bw.DoWork += (s1, ev1) =>
                         {
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                shellProgress.Visibility = Visibility.Visible;
-                            });
-
                             loadMessages(SUBSEQUENT_FETCH_COUNT, false);
                         };
                         bw.RunWorkerAsync();
                         bw.RunWorkerCompleted += (s1, ev1) =>
                         {
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                shellProgress.Visibility = Visibility.Collapsed;
-                            });
+                            shellProgress.Visibility = Visibility.Collapsed;
                         };
                     }
                 }
@@ -4677,16 +4671,16 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
             {
                 List<PhotoClass> listPic = PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] as List<PhotoClass>;
- 
+
                 foreach (PhotoClass pic in listPic)
                 {
                     SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString());
                     pic.Pic.Dispose();
                 }
- 
+
                 PhoneApplicationService.Current.State.Remove(HikeConstants.MULTIPLE_IMAGES);
             }
- 
+
         }
 
         private void FileAttachmentMessage_Tap(object sender, SelectionChangedEventArgs e)

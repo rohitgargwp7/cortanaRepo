@@ -76,6 +76,15 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static List<StatusMessage> GetPaginatedStatusMsgsForMsisdn(string msisdn, long lastStatusId, int count)
+        {
+            List<StatusMessage> res;
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                res = DbCompiledQueries.GetPaginatedStatusMsgsForMsisdn(context, msisdn, lastStatusId, count).ToList<StatusMessage>();
+                return (res == null || res.Count == 0) ? null : res;
+            }
+        }
         public static List<StatusMessage> GetUnReadStatusMsgsForMsisdn(string msisdn, int count)
         {
             List<StatusMessage> res;
@@ -95,6 +104,17 @@ namespace windows_client.DbUtils
                 return (res == null || res.Count == 0) ? null : res;
             }
         }
+
+        public static List<StatusMessage> GetPaginatedStatusMsgsForTimeline(long lastStatusId, int count)
+        {
+            List<StatusMessage> res;
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                res = DbCompiledQueries.GetPaginatedStatusMsgsForTimeline(context, lastStatusId, count).ToList<StatusMessage>();
+                return (res == null || res.Count == 0) ? null : res;
+            }
+        }
+
 
         public static List<StatusMessage> GetUnReadStatusMsgs(int count)
         {
@@ -173,7 +193,7 @@ namespace windows_client.DbUtils
             {
                 lock (readWriteLock)
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         string fileName = LAST_STATUS_FILENAME;
                         try
@@ -216,7 +236,7 @@ namespace windows_client.DbUtils
             int retMoodId = -1;
             lock (readWriteLock)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     try
                     {
@@ -249,7 +269,7 @@ namespace windows_client.DbUtils
         {
             lock (readWriteLock)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     try
                     {
@@ -306,7 +326,7 @@ namespace windows_client.DbUtils
             {
                 lock (refreshLock)
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         string fileName = UNREAD_COUNT_FILE;
                         try
@@ -375,7 +395,7 @@ namespace windows_client.DbUtils
 
             lock (refreshLock)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     try
                     {
@@ -416,7 +436,7 @@ namespace windows_client.DbUtils
         {
             lock (refreshLock)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     try
                     {
