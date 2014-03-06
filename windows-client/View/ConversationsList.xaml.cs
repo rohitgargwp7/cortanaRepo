@@ -958,33 +958,34 @@ namespace windows_client.View
         private List<StatusMessage> GetUnblockedStatusUpdates(int fetchCount)
         {
             List<StatusMessage> statusMessagesFromDBUnblocked = new List<StatusMessage>();
-            hasMoreStatus = false;
             do
             {
                 List<StatusMessage> listStatusUpdate = StatusMsgsTable.GetPaginatedStatusMsgsForTimeline(lastStatusId < 0 ? long.MaxValue : lastStatusId, fetchCount);
 
                 if (listStatusUpdate == null || listStatusUpdate.Count == 0)
                     break;
-                List<StatusMessage> listStatusUpdateCopy = new List<StatusMessage>(listStatusUpdate);
-                for (int i = 0; i < listStatusUpdate.Count; i++)
+                //count-number of status updates required from db
+                int count = fetchCount - statusMessagesFromDBUnblocked.Count;
+                hasMoreStatus = false;
+
+                //no of status update fetched from db is more than required than more status updates exists
+                if (listStatusUpdate.Count > (fetchCount - statusMessagesFromDBUnblocked.Count - 1))
                 {
-                    lastStatusId = listStatusUpdate[i].StatusId;
-                    if (i == (fetchCount - statusMessagesFromDBUnblocked.Count - 1))
-                    {
-                        hasMoreStatus = true;
-                        break;
-                    }
-                    // if this user is blocked dont show his/her statuses
-                    if (App.ViewModel.BlockedHashset.Contains(listStatusUpdate[i].Msisdn))
-                    {
-                        listStatusUpdateCopy.Remove(listStatusUpdate[i]);
-                        continue;
-                    }
-
+                    lastStatusId = listStatusUpdate[--count].StatusId;
+                    hasMoreStatus = true;
                 }
-                statusMessagesFromDBUnblocked.AddRange(listStatusUpdateCopy);
+                else
+                    //no of status update fetched is less than required so update count to number of status updates fetched
+                    count = listStatusUpdate.Count;
 
-            } while (statusMessagesFromDBUnblocked.Count < fetchCount && hasMoreStatus);
+                for (int i = 0; i < count; i++)
+                {
+                    // if this user is blocked dont show his/her statuses
+                    if (!App.ViewModel.BlockedHashset.Contains(listStatusUpdate[i].Msisdn))
+                        statusMessagesFromDBUnblocked.Add(listStatusUpdate[i]);
+                }
+
+            } while (statusMessagesFromDBUnblocked.Count < (fetchCount - 1) && hasMoreStatus);
 
             return statusMessagesFromDBUnblocked;
         }
@@ -994,16 +995,9 @@ namespace windows_client.View
 
             if (statusMessagesFromDB != null)
             {
-                hasMoreStatus = false;
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
                     StatusMessage statusMessage = statusMessagesFromDB[i];
-                    if (i == messageFetchCount - 1)
-                    {
-                        hasMoreStatus = true;
-                        lastStatusId = statusMessage.StatusId;
-                        break;
-                    }
 
                     //handle if total unread status are more than total loaded at first time
                     if (currentlyLoadedStatusCount++ < TotalUnreadStatuses)
