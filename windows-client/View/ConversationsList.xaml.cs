@@ -73,8 +73,9 @@ namespace windows_client.View
             InitializeComponent();
             initAppBar();
             initProfilePage();
-            App.ViewModel.ConversationListPage = this;
-            convListPagePivot.ApplicationBar = appBar;
+
+            ChangeAppBarOnConvSelected();
+            
             _totalUnreadStatuses = StatusMsgsTable.GetUnreadCount(HikeConstants.UNREAD_UPDATES);
             _refreshBarCount = StatusMsgsTable.GetUnreadCount(HikeConstants.REFRESH_BAR);
             _unreadFriendRequests = StatusMsgsTable.GetUnreadCount(HikeConstants.UNREAD_FRIEND_REQUESTS);

@@ -410,6 +410,7 @@ namespace windows_client.Model
                     empImage = null; // reset to null whenever avatar changes
                     NotifyPropertyChanged("Avatar");
                     NotifyPropertyChanged("AvatarImage");
+                    NotifyPropertyChanged("ConvImage");
                 }
             }
         }
@@ -426,8 +427,19 @@ namespace windows_client.Model
                 if (_isSelected != value)
                 {
                     _isSelected = value;
-                    NotifyPropertyChanged("AvatarImage");
+                    NotifyPropertyChanged("ConvImage");
                 }
+            }
+        }
+
+        public BitmapImage ConvImage
+        {
+            get
+            {
+                if (_isSelected)
+                    return UI_Utils.Instance.ProfileTickImage;
+                else
+                    return AvatarImage;
             }
         }
 
@@ -437,9 +449,7 @@ namespace windows_client.Model
             {
                 try
                 {
-                    if (_isSelected)
-                        return UI_Utils.Instance.ProfileTickImage;
-                    else if (empImage != null) // if image is already set return that
+                    if (empImage != null) // if image is already set return that
                         return empImage;
                     else if (_avatar == null)
                     {
