@@ -229,7 +229,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtMessageStatus>
                             <templateSelector:ChatThreadTemplateSelector.DtNotificationBubble>
                                 <DataTemplate x:Name="dtNotificationBubble">
-                                    <Grid Margin="12,10">
+                                    <Grid Margin="12">
                                         <Border BorderThickness="1" Opacity="0.4" Margin="0,-3" Background="{Binding BorderBackgroundColor}" BorderBrush="Black" HorizontalAlignment="Stretch" />
                                         <Grid HorizontalAlignment="Stretch" Margin="12 3">
                                             <Grid.ColumnDefinitions>
@@ -483,7 +483,7 @@
                                                 <Image Width="46" Height="35" Margin="12,12,12,10" HorizontalAlignment="Left" Source="/View/images/nudge_received.png"/>
                                             </Grid>
                                         </Grid>
-                                        <Image Grid.Row="1" HorizontalAlignment="Left" Height="61" Stretch="Uniform" Margin="4,0,0,10" Source="/View/images/heartsNudge.png" Visibility="{Binding SpecialNudgeVisibility}"/>
+                                        <Image Grid.Row="1" HorizontalAlignment="Left" Height="61" Stretch="Uniform" Margin="4,0,0,10" Source="{Binding SpecialNudgeImage}" Visibility="{Binding SpecialNudgeVisibility}"/>
                                     </Grid>
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleNudge>
@@ -798,7 +798,7 @@
                                             </Grid>
                                             <Path Grid.Row="1" Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Stretch="Fill" UseLayoutRounding="False" Width="16" Fill="{Binding BubbleBackGroundColor}"/>
                                         </Grid>
-                                        <Image Grid.Column="1" Height="61" Stretch="Uniform" Margin="0,0,4,10" HorizontalAlignment="Right" Source="/View/images/heartsNudge.png" Visibility="{Binding SpecialNudgeVisibility}"/>
+                                        <Image Grid.Column="1" Height="61" Stretch="Uniform" Margin="0,0,4,10" HorizontalAlignment="Right" Source="{Binding SpecialNudgeImage}" Visibility="{Binding SpecialNudgeVisibility}"/>
                                     </Grid>
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtSentBubbleNudge>

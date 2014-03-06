@@ -5601,7 +5601,7 @@ namespace windows_client.View
 
                 if (App.ViewModel.SelectedBackground.IsTile)
                 {
-                    var iSize = LayoutRoot.ActualHeight > LayoutRoot.ActualWidth ? LayoutRoot.ActualHeight : LayoutRoot.ActualWidth;
+                    var iSize = 800;
 
                     var wb1 = new WriteableBitmap((int)iSize, (int)iSize);
                     wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = (int)iSize, Height = (int)iSize }, null);

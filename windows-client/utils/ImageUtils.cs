@@ -74,6 +74,8 @@ namespace windows_client.utils
         private BitmapImage participantLeft_ct;
         private BitmapImage nudgeSend;
         private BitmapImage nudgeReceived;
+        private BitmapImage heartNudgeSend;
+        private BitmapImage heartNudgeReceived;
         private BitmapImage textStatusImage;
         private BitmapImage friendRequestImage;
         private BitmapImage profilePicStatusImage;
@@ -965,6 +967,26 @@ namespace windows_client.utils
                 if (nudgeReceived == null)
                     nudgeReceived = new BitmapImage(new Uri("/View/images/nudge_received.png", UriKind.Relative));
                 return nudgeReceived;
+            }
+        }
+
+        public BitmapImage HeartNudgeSent
+        {
+            get
+            {
+                if (heartNudgeSend == null)
+                    heartNudgeSend = new BitmapImage(new Uri("/View/images/heartsNudgeSent.png", UriKind.Relative));
+                return heartNudgeSend;
+            }
+        }
+
+        public BitmapImage HeartNudgeReceived
+        {
+            get
+            {
+                if (heartNudgeReceived == null)
+                    heartNudgeReceived = new BitmapImage(new Uri("/View/images/heartsNudgeReceived.png", UriKind.Relative));
+                return heartNudgeReceived;
             }
         }
 
