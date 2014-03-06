@@ -20,9 +20,10 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using windows_client.Misc;
 using System.Threading;
-using System.Windows.Documents;
 using Microsoft.Phone.Shell;
+using System.Windows.Documents;
 using Microsoft.Phone.Tasks;
+using Microsoft.Phone.Shell;
 using System.Windows.Media.Imaging;
 using Microsoft.Xna.Framework.Media;
 
@@ -815,6 +816,104 @@ namespace windows_client.ViewModel
             }
         }
 
+        public void ForwardMessage(List<ContactInfo> contactsForForward)
+        {
+            if (!PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
+                return;
+
+            contactsForForward = contactsForForward.Distinct(new ContactInfo.MsisdnComparer()).ToList();
+
+            if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is string)
+            {
+                foreach (var contact in contactsForForward)
+                {
+                    var msg = (string)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+
+                    var msisdn = contact.Msisdn;
+                    ConvMessage convMessage = new ConvMessage(msg, msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                    convMessage.IsSms = !contact.OnHike;
+                    convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
+
+                    if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == msisdn)
+                        App.newChatThreadPage.AddNewMessageToUI(convMessage, false);
+
+                    App.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, convMessage);
+                }
+            }
+            else if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
+            {
+                object[] attachmentData = (object[])PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                if (attachmentData.Length == 1)
+                {
+                    foreach (var contact in contactsForForward)
+                    {
+                        var msisdn = contact.Msisdn;
+                        ConvMessage convMessage = new ConvMessage(AppResources.Sticker_Txt, msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                        convMessage.IsSms = !contact.OnHike;
+                        convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
+                        convMessage.MetaDataString = attachmentData[0] as string;
+
+                        if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == msisdn)
+                            App.newChatThreadPage.AddNewMessageToUI(convMessage, false);
+
+                        App.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, convMessage);
+                    }
+                }
+                else
+                {
+                    string contentType = (string)attachmentData[0];
+                    string sourceMsisdn = (string)attachmentData[1];
+                    long messageId = (long)attachmentData[2];
+                    string metaDataString = (string)attachmentData[3];
+                    string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn.Replace(":", "_") + "/" + messageId;
+
+                    foreach (var contact in contactsForForward)
+                    {
+                        var msisdn = contact.Msisdn;
+                        ConvMessage convMessage = new ConvMessage("", msisdn,
+                          TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                        convMessage.IsSms = !contact.OnHike;
+                        convMessage.HasAttachment = true;
+                        convMessage.FileAttachment = new Attachment();
+                        convMessage.FileAttachment.ContentType = contentType;
+                        convMessage.FileAttachment.Thumbnail = (byte[])attachmentData[4];
+                        convMessage.FileAttachment.FileName = (string)attachmentData[5];
+                        convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+
+                        if (contentType.Contains(HikeConstants.IMAGE))
+                            convMessage.Message = AppResources.Image_Txt;
+                        else if (contentType.Contains(HikeConstants.AUDIO))
+                        {
+                            convMessage.Message = AppResources.Audio_Txt;
+                            convMessage.MetaDataString = metaDataString;
+                        }
+                        else if (contentType.Contains(HikeConstants.VIDEO))
+                            convMessage.Message = AppResources.Video_Txt;
+                        else if (contentType.Contains(HikeConstants.LOCATION))
+                        {
+                            convMessage.Message = AppResources.Location_Txt;
+                            convMessage.MetaDataString = metaDataString;
+                        }
+                        else if (contentType.Contains(HikeConstants.CT_CONTACT))
+                        {
+                            convMessage.Message = AppResources.ContactTransfer_Text;
+                            convMessage.MetaDataString = metaDataString;
+                        }
+
+                        if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == msisdn)
+                            App.newChatThreadPage.AddNewMessageToUI(convMessage, false);
+
+                        object[] vals = new object[3];
+                        vals[0] = convMessage;
+                        vals[1] = sourceFilePath;
+                        App.HikePubSubInstance.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
+                    }
+                }
+
+                PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+            }
+        }
+       
         public void Hyperlink_Clicked(object sender)
         {
             var obj = sender as object[];

@@ -229,6 +229,7 @@ namespace windows_client.Misc
                                             try
                                             {
                                                 item.Read(reader);
+                                                gpList.Add(item);
                                             }
                                             catch (Exception ex)
                                             {
@@ -454,6 +455,19 @@ namespace windows_client.Misc
                     activeGroupMembers.Add(groupCache[groupId][i]);
             }
             return activeGroupMembers;
+        }
+
+        public Int32 GetSMSParticiantCount(string groupId)
+        {
+            try
+            {
+                return GetParticipantList(groupId).Where(g => g.IsOnHike == false && g.HasLeft == false).Count();
+            }
+            catch
+            {
+                Debug.WriteLine("GetSMSParticiantCount for grpID " + groupId + " is null");
+                return 0;
+            }
         }
 
         public void DeleteAllGroups()
