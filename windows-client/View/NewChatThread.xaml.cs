@@ -1594,6 +1594,10 @@ namespace windows_client.View
                     showOverlay(true);
                     appBar.IsMenuEnabled = false;
                 }
+                else
+                {
+                    showOverlay(false);
+                }
             });
         }
 
