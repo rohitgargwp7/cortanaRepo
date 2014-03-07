@@ -794,7 +794,6 @@ namespace windows_client
             }
             #endregion
             #region TUTORIAL
-            //todo:make it 2.2.0.0
             if (!isNewInstall && Utils.compareVersion("2.2.0.0", _currentVersion) == 1)
             {
                 ps = PageState.TUTORIAL_SCREEN_STICKERS;

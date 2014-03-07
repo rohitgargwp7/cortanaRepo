@@ -558,6 +558,8 @@
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbValentines.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbStarNight.png" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbILoveU.png" />
+    <Content Include="View\images\heartsNudgeReceived.png" />
+    <Content Include="View\images\heartsNudgeSent.png" />
     <Content Include="View\images\hike_toast_image.png" />
     <Content Include="View\images\cancel_black.png" />
     <Content Include="View\images\cancel_white.png" />
@@ -598,6 +600,7 @@
     <Content Include="View\images\group_name_changed_CT.png" />
     <Content Include="View\images\group_pic_changed.png" />
     <Content Include="View\images\group_pic_changed_CT.png" />
+    <Content Include="View\images\icon_delete.png" />
     <Content Include="View\images\icon_sending_CT.png" />
     <Content Include="View\images\ic_delivered_CT.png" />
     <Content Include="View\images\ic_read_CT.png" />
@@ -627,9 +630,9 @@
     <Content Include="View\images\ChatBgFTUE\ribbon3.png" />
     <Content Include="View\images\ChatBgFTUE\snow_flake.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbNight.png" />
+    <Content Include="View\images\Item_Selected.png" />
     <Content Include="View\images\notification_Image.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbOwl.png" />
-    <Content Include="View\images\heartsNudge.png" />
     <Content Include="View\images\stickers\categorySets\angry_active.png" />
     <Content Include="View\images\stickers\categorySets\angry_inactive.png" />
     <Content Include="View\images\stickers\categorySets\hotheads_overlay.png" />

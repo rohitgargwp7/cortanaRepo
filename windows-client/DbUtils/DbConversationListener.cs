@@ -69,7 +69,10 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.FILE_STATE_CHANGED, this);
         }
 
-        //call this from UI thread
+        /// <summary>
+        /// call this from UI thread for outgoing messages. These messages will be added to msgmap on new chat thread page
+        /// </summary>
+        /// <param name="conMessage"></param>
         private void addSentMessageToMsgMap(ConvMessage conMessage)
         {
             NewChatThread currentPage = App.newChatThreadPage;

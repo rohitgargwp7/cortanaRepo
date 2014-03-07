@@ -607,6 +607,11 @@ namespace windows_client.DbUtils
             }
         }
 
+        /// <summary>
+        /// Delete attachment data related to a single message
+        /// </summary>
+        /// <param name="msisdn">user id</param>
+        /// <param name="messageId">message id</param>
         public static void deleteMessageData(string msisdn, long messageId)
         {
             msisdn = msisdn.Replace(":", "_");
@@ -623,6 +628,10 @@ namespace windows_client.DbUtils
             FileTransfers.FileTransferManager.Instance.DeleteTask(messageId.ToString());
         }
 
+        /// <summary>
+        /// Delete all attachments data for given msisdn
+        /// </summary>
+        /// <param name="msisdn">user id</param>
         public static void deleteMsisdnData(string msisdn)
         {
             msisdn = msisdn.Replace(":", "_");
@@ -654,6 +663,9 @@ namespace windows_client.DbUtils
             }
         }
 
+        /// <summary>
+        /// Clear all attachment data
+        /// </summary>
         public static void DeleteAllAttachmentData()
         {
             string[] attachmentPaths = new string[2];
