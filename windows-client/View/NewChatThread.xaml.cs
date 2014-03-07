@@ -1717,14 +1717,19 @@ namespace windows_client.View
 
         void clearChatItem_Click(object sender, EventArgs e)
         {
-            ocMessages.Clear();
+            var result = MessageBox.Show(AppResources.clear_Chat_Body, AppResources.clear_Chat_Header, MessageBoxButton.OKCancel);
 
-            ClearChat();
+            if (result == MessageBoxResult.OK)
+            {
+                ocMessages.Clear();
 
-            ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
-            obj.LastMessage = String.Empty;
-            obj.MessageStatus = ConvMessage.State.UNKNOWN;
-            obj.TimeStamp = 0;
+                ClearChat();
+
+                ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
+                obj.LastMessage = String.Empty;
+                obj.MessageStatus = ConvMessage.State.UNKNOWN;
+                obj.TimeStamp = 0;
+            }
         }
 
         private void addUser_Click(object sender, EventArgs e)
