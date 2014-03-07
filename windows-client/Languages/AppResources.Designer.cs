@@ -484,7 +484,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to delete all messages present in this chat.
+        ///   Looks up a localized string similar to All your messages in this chat would get deleted. Are you sure you want to continue?.
         /// </summary>
         public static string clear_Chat_Body {
             get {

@@ -27,7 +27,7 @@ namespace windows_client.utils
         public static Dictionary<string, List<ContactInfo>> hike_contactsMap = null;
 
         public delegate void contacts_Callback(object sender, ContactsSearchEventArgs e);
-        public delegate void contactSearch_Callback(object sender, SaveContactResult e);
+        public delegate void contactSearch_Callback(object sender, TaskEventArgs e);
 
         private static volatile ContactScanState cState = ContactScanState.ADDBOOK_NOT_SCANNING;
         public static ContactScanState ContactState
@@ -267,12 +267,12 @@ namespace windows_client.utils
 
         public static void saveContact(string phone, contactSearch_Callback callback)
         {
-            SaveContactTask saveContactTask = new SaveContactTask();
-            saveContactTask.Completed += new EventHandler<SaveContactResult>(callback);
-            saveContactTask.MobilePhone = phone;
+            SavePhoneNumberTask task = new SavePhoneNumberTask();
+            task.Completed += new EventHandler<TaskEventArgs>(callback);
+            task.PhoneNumber = phone;
             try
             {
-                saveContactTask.Show();
+                task.Show();
             }
             catch (Exception ex)
             {

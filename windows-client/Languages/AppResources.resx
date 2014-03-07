@@ -2124,7 +2124,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Are you sure about deleting these chats?</value>
   </data>
   <data name="clear_Chat_Body" xml:space="preserve">
-    <value>Are you sure you want to delete all messages present in this chat</value>
+    <value>All your messages in this chat would get deleted. Are you sure you want to continue?</value>
   </data>
   <data name="clear_Chat_Header" xml:space="preserve">
     <value>Confirmation</value>

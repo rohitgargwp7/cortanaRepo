@@ -1214,7 +1214,7 @@ namespace windows_client.View
             ContactUtils.saveContact(msisdn, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
         }
 
-        private void saveContactTask_Completed(object sender, SaveContactResult e)
+        private void saveContactTask_Completed(object sender, TaskEventArgs e)
         {
             switch (e.TaskResult)
             {

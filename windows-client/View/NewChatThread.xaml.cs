@@ -5662,7 +5662,7 @@ namespace windows_client.View
 
         #endregion
 
-        private void saveContactTask_Completed(object sender, SaveContactResult e)
+        private void saveContactTask_Completed(object sender, TaskEventArgs e)
         {
             switch (e.TaskResult)
             {
@@ -7125,6 +7125,9 @@ namespace windows_client.View
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                if (ocMessages == null)
+                    return;
+
                 if (_lastSentMessage != null)
                 {
                     if (_readByMessage == null)
