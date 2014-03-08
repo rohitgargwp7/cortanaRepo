@@ -64,30 +64,37 @@ namespace windows_client.View
 
         public List<AlbumClass> GetAlbums(out List<PhotoClass> listPicture)
         {
-            List<AlbumClass> albumList = new List<AlbumClass>();
+            Dictionary<string, AlbumClass> albumList = new Dictionary<string, AlbumClass>();
             listPicture = new List<PhotoClass>();
-            MediaLibrary lib = new MediaLibrary();
 
-            foreach (PictureAlbum picAlbum in lib.RootPictureAlbum.Albums)
+            try
             {
-                AlbumClass albumObj = new AlbumClass(picAlbum.Name);
-                Picture lastPic = null;
-                foreach (Picture pic in picAlbum.Pictures)
+                MediaLibrary lib = new MediaLibrary();
+                //lib.pictures without ordering was throwing unexpected error exception on non debugger mode
+                foreach (Picture pic in lib.Pictures.OrderBy(x => x.Date))
                 {
                     PhotoClass imageData = new PhotoClass(pic)
                     {
                         Title = pic.Name,
                         TimeStamp = pic.Date
                     };
-                    lastPic = pic;
+                    AlbumClass albumObj;
+                    if (!albumList.TryGetValue(pic.Album.Name, out albumObj))
+                    {
+                        albumObj = new AlbumClass(pic.Album.Name);
+                        albumList.Add(pic.Album.Name, albumObj);
+                    }
                     albumObj.Add(imageData);
+                    albumObj.AlbumPicture = pic;
                     listPicture.Add(imageData);
                 }
-                albumObj.AlbumPicture = lastPic;
-                if (albumObj.Count > 0)
-                    albumList.Add(albumObj);
+
             }
-            return albumList;
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception::ViewPhotoAlbums:GetAlbums," + ex.Message + "---" + ex.StackTrace);
+            }
+            return albumList.Values.ToList();
         }
 
         private void Albums_SelectionChanged(object sender, SelectionChangedEventArgs e)
