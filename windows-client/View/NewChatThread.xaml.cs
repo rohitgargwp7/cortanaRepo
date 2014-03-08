@@ -93,6 +93,7 @@ namespace windows_client.View
         private long lastTextChangedTime;
         private long lastTypingNotificationSentTime;
         private long lastTypingNotificationShownTime;
+        private bool endTypingSent = true;
 
         private HikePubSub mPubSub;
         DispatcherTimer _h2hOfflineTimer;
@@ -1522,8 +1523,11 @@ namespace windows_client.View
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (ss, ee) =>
                 {
-                    MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ, null);
-                    idsToUpdate = null;
+                    if (!isGroupChat)
+                    {
+                        MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ, null);
+                        idsToUpdate = null;
+                    }
                 };
                 bw.RunWorkerAsync();
             }
@@ -2028,10 +2032,6 @@ namespace windows_client.View
                             JObject meataDataJson = JObject.Parse(convMessage.MetaDataString);
                             convMessage.StickerObj = new Sticker((string)meataDataJson[HikeConstants.CATEGORY_ID], (string)meataDataJson[HikeConstants.STICKER_ID], null, true);
                             GetHighResStickerForUi(convMessage);
-                            chatBubble = convMessage;
-                            if (!convMessage.IsSent)
-                                chatBubble.GroupMemberName = isGroupChat ?
-                                   GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                         }
                         else
                         {
@@ -2041,21 +2041,24 @@ namespace windows_client.View
                                 if (message.Length > 0)
                                     convMessage.Message = message;
                             }
-                            if (convMessage.IsSent)
-                            {
-                                chatBubble = convMessage;//todo:split
-                                if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
-                                    || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
-                                    msgMap.Add(convMessage.MessageId, chatBubble);
-                            }
-                            else
-                            {
-                                chatBubble = convMessage;
-                                chatBubble.GroupMemberName = isGroupChat ?
-                                    GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
-                            }
+                        }
+
+                        chatBubble = convMessage;
+                        if (convMessage.IsSent)
+                        {
+                            chatBubble = convMessage;//todo:split
+                            if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                                || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
+                                msgMap.Add(convMessage.MessageId, chatBubble);
+                        }
+                        else
+                        {
+                            chatBubble = convMessage;
+                            chatBubble.GroupMemberName = isGroupChat ?
+                                GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                         }
                     }
+
                     if (!readFromDb)
                         ScheduleMsg(chatBubble);
                     chatBubble.IsSms = !isOnHike;
@@ -2564,6 +2567,7 @@ namespace windows_client.View
             if (message == "" || (!isOnHike && mCredits <= 0))
                 return;
 
+            endTypingSent = true; 
             sendTypingNotification(false);
 
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
@@ -2823,7 +2827,10 @@ namespace windows_client.View
                 Object[] obj = new Object[1];
                 obj[0] = convMessage.MetaDataString;
                 Sticker sticker = new Sticker(convMessage.StickerObj.Category, convMessage.StickerObj.Id, null, false);
-                HikeViewModel.stickerHelper.recentStickerHelper.AddSticker(sticker);
+
+                if (HikeViewModel.stickerHelper.CheckLowResStickerExists(convMessage.StickerObj.Category, convMessage.StickerObj.Id))
+                    HikeViewModel.stickerHelper.recentStickerHelper.AddSticker(sticker);
+                
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = obj;//done this way to distinguish it from message
             }
             else if (convMessage.FileAttachment == null)
@@ -2843,7 +2850,7 @@ namespace windows_client.View
 
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
             }
-            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
 
         }
 
@@ -3666,8 +3673,9 @@ namespace windows_client.View
         private void sendEndTypingNotification()
         {
             long currentTime = TimeUtils.getCurrentTimeStamp();
-            if (currentTime - lastTextChangedTime >= HikeConstants.SEND_END_TYPING_TIMER)
+            if (currentTime - lastTextChangedTime >= HikeConstants.SEND_END_TYPING_TIMER && !endTypingSent)
             {
+                endTypingSent = true;
                 sendTypingNotification(false);
             }
         }
@@ -3676,6 +3684,7 @@ namespace windows_client.View
         {
             if (TimeUtils.getCurrentTimeStamp() - lastTypingNotificationSentTime > HikeConstants.SEND_START_TYPING_TIMER)
             {
+                endTypingSent = false; 
                 lastTypingNotificationSentTime = TimeUtils.getCurrentTimeStamp();
                 sendTypingNotification(true);
             }
@@ -3891,8 +3900,10 @@ namespace windows_client.View
                     {
                         if (msg.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
                             msg.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
-                        else
+                        else if (msg.MessageStatus < ConvMessage.State.SENT_DELIVERED)
                             msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
+                        else
+                            return;
                     }
 
                     UpdateLastSentMessageStatusOnUI();
@@ -3901,17 +3912,15 @@ namespace windows_client.View
                     {
                         if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
                             ocMessages.Remove(_h2hofflineToolTip);
-                    });
 
-                    if (_isSendAllAsSMSVisible && ocMessages != null && msg == _lastUnDeliveredMessage)
-                    {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        if (_isSendAllAsSMSVisible && ocMessages != null && msg == _lastUnDeliveredMessage)
                         {
                             ocMessages.Remove(_tap2SendAsSMSMessage);
                             _isSendAllAsSMSVisible = false;
                             ShowForceSMSOnUI();
-                        });
-                    }
+                        }
+                 
+                    });
                 }
                 catch (Exception ex)
                 {
