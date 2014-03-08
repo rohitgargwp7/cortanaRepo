@@ -1732,7 +1732,6 @@ namespace windows_client.View
                 ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
                 obj.LastMessage = String.Empty;
                 obj.MessageStatus = ConvMessage.State.UNKNOWN;
-                obj.TimeStamp = 0;
             }
         }
 
