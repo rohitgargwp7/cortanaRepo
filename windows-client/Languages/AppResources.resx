@@ -1766,7 +1766,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>{0} is offline, tap to send as hike sms</value>
   </data>
   <data name="H2HOfline_0SMS_Message" xml:space="preserve">
-    <value>Your free SMS balance is zero. You can invite friends to join hike and earn more free SMS</value>
+    <value>Looks like you have exhausted all your Free SMS credits. Invite more friends to hike to earn Free SMS</value>
   </data>
   <data name="H2HOfline_Confirmation_Message" xml:space="preserve">
     <value>Pending messages will be sent as free hike SMS</value>
@@ -2122,5 +2122,11 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Conversations_Delete_MoreThan1Chat_Confirmation" xml:space="preserve">
     <value>Are you sure about deleting these chats?</value>
+  </data>
+  <data name="clear_Chat_Body" xml:space="preserve">
+    <value>All your messages in this chat would get deleted. Are you sure you want to continue?</value>
+  </data>
+  <data name="clear_Chat_Header" xml:space="preserve">
+    <value>Confirmation</value>
   </data>
 </root>

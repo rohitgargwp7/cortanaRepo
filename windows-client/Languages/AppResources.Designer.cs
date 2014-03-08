@@ -484,6 +484,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All your messages in this chat would get deleted. Are you sure you want to continue?.
+        /// </summary>
+        public static string clear_Chat_Body {
+            get {
+                return ResourceManager.GetString("clear_Chat_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirmation.
+        /// </summary>
+        public static string clear_Chat_Header {
+            get {
+                return ResourceManager.GetString("clear_Chat_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to clear chat.
         /// </summary>
         public static string Clear_Chat_Txt {
@@ -1994,7 +2012,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your free SMS balance is zero. You can invite friends to join hike and earn more free SMS.
+        ///   Looks up a localized string similar to Looks like you have exhausted all your Free SMS credits. Invite more friends to hike to earn Free SMS.
         /// </summary>
         public static string H2HOfline_0SMS_Message {
             get {
