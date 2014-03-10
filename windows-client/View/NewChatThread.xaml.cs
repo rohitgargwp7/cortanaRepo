@@ -1590,18 +1590,15 @@ namespace windows_client.View
 
         private void initBlockUnblockState()
         {
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            if (mUserIsBlocked)
             {
-                if (mUserIsBlocked)
-                {
-                    showOverlay(true);
-                    appBar.IsMenuEnabled = false;
-                }
-                else
-                {
-                    showOverlay(false);
-                }
-            });
+                showOverlay(true);
+                appBar.IsMenuEnabled = false;
+            }
+            else
+            {
+                showOverlay(false);
+            }
         }
 
         #region APP BAR
@@ -1726,6 +1723,9 @@ namespace windows_client.View
             if (result == MessageBoxResult.OK)
             {
                 ocMessages.Clear();
+
+                if (JumpToBottomGrid.Visibility == Visibility.Visible)
+                    JumpToBottomGrid.Visibility = Visibility.Collapsed;
 
                 ClearChat();
 
@@ -1964,6 +1964,9 @@ namespace windows_client.View
 
         private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived, bool readFromDb = false)
         {
+            if (ocMessages == null)
+                return;
+
             if (_isSendAllAsSMSVisible && ocMessages != null && convMessage.IsSent)
             {
                 ocMessages.Remove(_tap2SendAsSMSMessage);
@@ -2897,7 +2900,7 @@ namespace windows_client.View
                 _isSendAllAsSMSVisible = false;
                 ShowForceSMSOnUI();
             }
-            else if (msg == _lastSentMessage)
+            else if (msg == _lastReceivedSentMessage)
             {
                 if (_readByMessage != null)
                     ocMessages.Remove(_readByMessage);
@@ -3693,6 +3696,9 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                if (ocMessages == null)
+                    return;
+
                 if (isTypingNotificationEnabled && !isTypingNotificationActive)
                 {
                     if (convTypingNotification == null)
@@ -7112,19 +7118,23 @@ namespace windows_client.View
 
         #region Read By
 
-        ConvMessage _lastSentMessage = null, _readByMessage = null, _previouslastSentMessage = null;
+        ConvMessage _lastReceivedSentMessage = null, _readByMessage = null, _previouslastReceivedSentMessage = null;
 
         void UpdateLastSentMessageStatusOnUI()
         {
-            _lastSentMessage = null;
+            if (!isGroupChat || !isGroupAlive)
+                return;
+
+            _lastReceivedSentMessage = null;
 
             try
             {
                 var msgList = (from message in ocMessages
                                where message.IsSent == true && message.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO
+                               && (message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ || message.MessageStatus == ConvMessage.State.SENT_DELIVERED_READ)
                                select message);
 
-                _lastSentMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
+                _lastReceivedSentMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
             }
             catch
             {
@@ -7136,7 +7146,7 @@ namespace windows_client.View
                 if (ocMessages == null)
                     return;
 
-                if (_lastSentMessage != null)
+                if (_lastReceivedSentMessage != null)
                 {
                     if (_readByMessage == null)
                     {
@@ -7146,21 +7156,23 @@ namespace windows_client.View
                         _readByMessage.MessageStatus = ConvMessage.State.UNKNOWN;
                     }
 
-                    if (isGroupChat)
-                        _readByMessage.Message = Utils.GetMessageStatus(_lastSentMessage.MessageStatus, _lastSentMessage.ReadByArray, _activeUsers, true, mContactNumber);
-                    else
-                        _readByMessage.Message = Utils.GetMessageStatus(_lastSentMessage.MessageStatus, _lastSentMessage.ReadByArray, _activeUsers, false, mContactNumber);
+                    var msg = Utils.GetMessageStatus(_lastReceivedSentMessage.MessageStatus, _lastReceivedSentMessage.ReadByArray, _activeUsers, true, mContactNumber);
+
+                    if (String.IsNullOrEmpty(msg))
+                        return;
+
+                    _readByMessage.Message = msg;
 
                     ocMessages.Remove(_readByMessage);
-                    var indexToInsert = ocMessages.IndexOf(_lastSentMessage) + 1;
+                    var indexToInsert = ocMessages.IndexOf(_lastReceivedSentMessage) + 1;
                     ocMessages.Insert(indexToInsert, _readByMessage);
 
-                    if (_previouslastSentMessage != _lastSentMessage)
+                    if (_previouslastReceivedSentMessage != _lastReceivedSentMessage)
                     {
                         if (indexToInsert == ocMessages.Count - 1)
                             ScrollToBottom();
 
-                        _previouslastSentMessage = _lastSentMessage;
+                        _previouslastReceivedSentMessage = _lastReceivedSentMessage;
                     }
                 }
                 else

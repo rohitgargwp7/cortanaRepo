@@ -582,15 +582,9 @@ namespace windows_client.utils
         {
             switch (state)
             {
-                case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
-                case ConvMessage.State.SENT_CONFIRMED:
-                    return AppResources.MessageStatus_Sent;
-                case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
-                case ConvMessage.State.SENT_DELIVERED:
-                    return AppResources.MessageStatus_Delivered;
                 case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                 case ConvMessage.State.SENT_DELIVERED_READ:
-                    return isGroupChat ? GetReadBy(obj, userCount, id) : AppResources.MessageStatus_Read;
+                    return isGroupChat ? GetReadBy(obj, userCount, id) : String.Empty;
                 default:
                     return String.Empty;
             }
