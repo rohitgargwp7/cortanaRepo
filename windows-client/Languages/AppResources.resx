@@ -2074,12 +2074,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Clear_Chat_Txt" xml:space="preserve">
     <value>clear chat</value>
   </data>
-  <data name="MessageStatus_Delivered" xml:space="preserve">
-    <value>delivered</value>
-  </data>
-  <data name="MessageStatus_Read" xml:space="preserve">
-    <value>read</value>
-  </data>
   <data name="MessageStatus_ReadByEveryone" xml:space="preserve">
     <value>read by everyone</value>
   </data>
@@ -2094,9 +2088,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="MessageStatus_ReadByThree" xml:space="preserve">
     <value>read by {0} and 1 other</value>
     <comment>eg. read by a &amp; b and 1 other</comment>
-  </data>
-  <data name="MessageStatus_Sent" xml:space="preserve">
-    <value>sent</value>
   </data>
   <data name="PreviewImages_Header_txt" xml:space="preserve">
     <value>preview {0} of {1}</value>
