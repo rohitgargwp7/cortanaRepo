@@ -578,16 +578,12 @@ namespace windows_client.utils
             return lastNotificationTime == 0 || ((DateTime.Now.Ticks - lastNotificationTime) / TimeSpan.TicksPerMillisecond > MIN_TIME_BETWEEN_NOTIFICATIONS);
         }
 
-        public static string GetMessageStatus(ConvMessage.State state, JArray obj, int userCount, bool isGroupChat, string id)
+        public static string GetMessageStatus(ConvMessage.State state, JArray obj, int userCount, string id)
         {
-            switch (state)
-            {
-                case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
-                case ConvMessage.State.SENT_DELIVERED_READ:
-                    return isGroupChat ? GetReadBy(obj, userCount, id) : String.Empty;
-                default:
-                    return String.Empty;
-            }
+            if (state == ConvMessage.State.SENT_DELIVERED_READ || state == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
+                return GetReadBy(obj, userCount, id);
+            else
+                return String.Empty;
         }
 
         public static String GetReadBy(JArray obj, int userCount, string id)
