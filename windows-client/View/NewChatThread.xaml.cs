@@ -7156,7 +7156,7 @@ namespace windows_client.View
                         _readByMessage.MessageStatus = ConvMessage.State.UNKNOWN;
                     }
 
-                    var msg = Utils.GetMessageStatus(_lastReceivedSentMessage.MessageStatus, _lastReceivedSentMessage.ReadByArray, _activeUsers, true, mContactNumber);
+                    var msg = Utils.GetMessageStatus(_lastReceivedSentMessage.MessageStatus, _lastReceivedSentMessage.ReadByArray, _activeUsers, mContactNumber);
 
                     if (String.IsNullOrEmpty(msg))
                         return;
