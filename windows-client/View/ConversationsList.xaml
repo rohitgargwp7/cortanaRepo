@@ -1099,28 +1099,23 @@
                                     <templateSelector:StatusTemplateSelector.DTImageStatus>
                                         <DataTemplate>
                                             <Grid HorizontalAlignment="Stretch" Margin="12" Tap="statusItem_Tap" Background="Transparent">
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                </Grid.RowDefinitions>
-                                                <Grid HorizontalAlignment="Left">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <Image Source="{Binding UserImage}" MaxHeight="69" MaxWidth="69" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
-                                                    <Grid Grid.Column="1" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Text="{Binding UserName}" FontSize="30" FontFamily="Segoe WP Semibold"/>
-                                                        <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Column="1" Grid.Row="1" Foreground="#888888"/>
-                                                    </Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Image Source="{Binding UserImage}" MaxHeight="69" MaxWidth="69" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
+                                                <Grid Grid.Column="1" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Text="{Binding UserName}" FontSize="19" FontFamily="Segoe WP Semibold"/>
+                                                    <local:MyRichTextBox Margin="-12,0,0,0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" FontSize="25" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
+                                                    <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Column="1" Grid.Row="2" Foreground="#888888" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                                    <Image Source="{Binding StatusImage}" Margin="0,12,0,10" Grid.Row="3" VerticalAlignment="Top" HorizontalAlignment="Left" MaxWidth="236" Stretch="Uniform" Tap="enlargePic_Tap"/>
                                                 </Grid>
-                                                <local:MyRichTextBox Margin="-12,12,0,0" HorizontalAlignment="Left" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" FontSize="28" Grid.Row="1" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450"  ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
-                                                <Image Source="{Binding StatusImage}" Margin="0,12,0,10" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Height="250" Stretch="UniformToFill" Tap="enlargePic_Tap"/>
                                             </Grid>
                                         </DataTemplate>
                                     </templateSelector:StatusTemplateSelector.DTImageStatus>
@@ -1142,7 +1137,7 @@
                                                             <RowDefinition Height="Auto"/>
                                                             <RowDefinition Height="Auto"/>
                                                         </Grid.RowDefinitions>
-                                                        <TextBlock FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_TeamHike_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18"/>
+                                                        <TextBlock FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_TeamHike_Txt, Source={StaticResource LocalizedStrings}}" FontSize="19"/>
                                                         <StackPanel Grid.Row="1">
                                                             <local:MyRichTextBox Margin="-12,0,0,0" Text="{Binding Text}" FontSize="22" Visibility="{Binding ProTipTextVisibility}" FontFamily="Segoe WP Semibold" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="350" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                                             <local:MyRichTextBox Margin="-12,0,0,0" Text="{Binding Content}" FontSize="20" Visibility="{Binding ProTipContentVisibility}" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="350" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
@@ -1159,26 +1154,21 @@
                                     <templateSelector:StatusTemplateSelector.DTTextStatus>
                                         <DataTemplate>
                                             <Grid HorizontalAlignment="Stretch" Margin="12" Tap="statusItem_Tap" Background="Transparent">
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                </Grid.RowDefinitions>
-                                                <Grid HorizontalAlignment="Left">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <Image Source="{Binding UserImage}" MaxHeight="69" MaxWidth="69" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
-                                                    <Grid Grid.Column="1" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Text="{Binding UserName}" FontSize="30" FontFamily="Segoe WP Semibold"/>
-                                                        <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Column="1" Grid.Row="1" Foreground="#888888"/>
-                                                    </Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Image Source="{Binding UserImage}" MaxHeight="69" MaxWidth="69" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
+                                                <Grid Grid.Column="1" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Text="{Binding UserName}" FontSize="19" FontFamily="Segoe WP Semibold"/>
+                                                    <local:MyRichTextBox Margin="-12,0,0,0" Foreground="{Binding StatusTextForeground}" HorizontalAlignment="Left" Text="{Binding Text}" FontSize="28" Grid.Row="1" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
+                                                    <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Row="2" Foreground="#888888"/>
                                                 </Grid>
-                                                <local:MyRichTextBox Margin="-12,12,0,0" Foreground="{Binding StatusTextForeground}" HorizontalAlignment="Left" Text="{Binding Text}" FontSize="28" Grid.Row="1" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                             </Grid>
                                         </DataTemplate>
                                     </templateSelector:StatusTemplateSelector.DTTextStatus>

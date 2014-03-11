@@ -96,27 +96,23 @@
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid HorizontalAlignment="Left">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Image Source="{Binding UserImage}" MaxHeight="40" MaxWidth="40" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                            <Grid Grid.Column="1" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                </Grid.RowDefinitions>
-                                                <local:MyRichTextBox Margin="-12,0,0,0" HorizontalAlignment="Left" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" FontSize="28" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
-                                                <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Column="1" Grid.Row="1" Foreground="#888888"/>
-                                            </Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Source="{Binding UserImage}" MaxHeight="40" MaxWidth="40" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                        <Grid Grid.Column="1" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="{Binding UserName}" FontSize="19" FontFamily="Segoe WP Semibold"/>
+                                            <local:MyRichTextBox Margin="-12,0,0,0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" FontSize="25" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
+                                            <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Column="1" Grid.Row="2" Foreground="#888888" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                            <Image Source="{Binding StatusImage}" Margin="0,12,0,10" Grid.Row="3" VerticalAlignment="Top" HorizontalAlignment="Left" MaxWidth="236" Stretch="Uniform" Tap="enlargePic_Tap"/>
                                         </Grid>
-                                        <Image Source="{Binding StatusImage}" Margin="0,12,0,0" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Height="250" Stretch="UniformToFill" Tap="enlargePic_Tap" />
                                     </Grid>
                                 </DataTemplate>
                             </templateSelector:StatusTemplateSelector.DTImageStatus>
@@ -132,14 +128,16 @@
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <Image Source="{Binding UserImage}" MaxHeight="40" MaxWidth="40" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                        <Grid Grid.Column="1" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <Image Source="{Binding UserImage}" MaxHeight="40" MaxWidth="40" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                        <Grid Grid.Column="1" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
-                                            <local:MyRichTextBox Margin="-12,0,0,0" Foreground="{Binding StatusTextForeground}" HorizontalAlignment="Left" Text="{Binding Text}" FontSize="28" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
-                                            <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Column="1" Grid.Row="1" Foreground="#888888"/>
+                                            <TextBlock Text="{Binding UserName}" FontSize="19" FontFamily="Segoe WP Semibold"/>
+                                            <local:MyRichTextBox Margin="-12,0,0,0" Foreground="{Binding StatusTextForeground}" HorizontalAlignment="Left" Text="{Binding Text}" FontSize="28" Grid.Row="1" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
+                                            <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Row="2" Foreground="#888888"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
