@@ -141,13 +141,17 @@ namespace windows_client.View
                 if (isStatusMessagesLoaded)
                 {
                     statusLLS.ItemsSource = App.ViewModel.StatusList;
+                    statusLLS.ScrollTo(statusLLS.ItemsSource[0]);
 
-                    if (_statusSelectedIndex >= 0)
-                    {
-                        //retain scroll position
-                        statusLLS.ScrollTo(statusLLS.ItemsSource[_statusSelectedIndex]);
-                        _statusSelectedIndex = -1;
-                    }
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (_statusSelectedIndex >= 0)
+                            {
+                                //retain scroll position
+                                statusLLS.ScrollTo(statusLLS.ItemsSource[_statusSelectedIndex]);
+                                _statusSelectedIndex = -1;
+                            }
+                        });
                 }
             }
 
