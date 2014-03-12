@@ -914,28 +914,23 @@ namespace windows_client.ViewModel
                 PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
             }
         }
-       
+
         public void Hyperlink_Clicked(object sender)
         {
-            var obj = sender as object[];
-            Hyperlink caller = obj[0] as Hyperlink;
-            var val = (bool)obj[1];
+            Hyperlink caller = sender as Hyperlink;
 
-            if (!val)
+            var phoneCallTask = new PhoneCallTask();
+            var targetPhoneNumber = caller.TargetName.Replace("-", "");
+            targetPhoneNumber = targetPhoneNumber.Trim();
+            targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
+            phoneCallTask.PhoneNumber = targetPhoneNumber;
+            try
             {
-                var phoneCallTask = new PhoneCallTask();
-                var targetPhoneNumber = caller.TargetName.Replace("-", "");
-                targetPhoneNumber = targetPhoneNumber.Trim();
-                targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
-                phoneCallTask.PhoneNumber = targetPhoneNumber;
-                try
-                {
-                    phoneCallTask.Show();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
-                }
+                phoneCallTask.Show();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
             }
         }
 
