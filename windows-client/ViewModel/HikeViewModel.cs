@@ -26,6 +26,7 @@ using Microsoft.Phone.Tasks;
 using Microsoft.Phone.Shell;
 using System.Windows.Media.Imaging;
 using Microsoft.Xna.Framework.Media;
+using System.Web;
 
 namespace windows_client.ViewModel
 {
@@ -920,12 +921,7 @@ namespace windows_client.ViewModel
             Hyperlink caller = obj[0] as Hyperlink;
             var val = (bool)obj[1];
 
-            if (val)
-            {
-                var task = new WebBrowserTask() { Uri = new Uri(caller.TargetName) };
-                task.Show();
-            }
-            else
+            if (!val)
             {
                 var phoneCallTask = new PhoneCallTask();
                 var targetPhoneNumber = caller.TargetName.Replace("-", "");
