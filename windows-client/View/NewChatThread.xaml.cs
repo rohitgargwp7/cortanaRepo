@@ -758,6 +758,12 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
+            if (_isContextMenuOpen)
+            {
+                base.OnBackKeyPress(e);
+                return;
+            }
+
             if (gridDownloadStickers.Visibility == Visibility.Visible)
                 ShowDownloadOverlay(false);
             if (emoticonPanel.Visibility == Visibility.Visible)
@@ -785,9 +791,6 @@ namespace windows_client.View
                 mediaElement.Stop();
                 ResumeBackgroundAudio();
             }
-
-            ocMessages.Clear();
-            ocMessages = null;
 
             if (!NavigationService.CanGoBack || App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)// if no page to go back in this case back would go to conversation list
             {
@@ -2813,11 +2816,18 @@ namespace windows_client.View
 
         #region CONTEXT MENU
 
+        bool _isContextMenuOpen = false;
+
         private void ContextMenu_Unloaded(object sender, RoutedEventArgs e)
         {
             ContextMenu contextMenu = sender as ContextMenu;
-
             contextMenu.ClearValue(FrameworkElement.DataContextProperty);
+            _isContextMenuOpen = false;
+        }
+
+        private void ContextMenu_Loaded(object sender, RoutedEventArgs e)
+        {
+            _isContextMenuOpen = true;
         }
 
         private void MenuItem_Click_Forward(object sender, RoutedEventArgs e)
