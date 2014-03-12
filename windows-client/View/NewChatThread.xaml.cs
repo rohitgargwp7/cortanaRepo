@@ -257,7 +257,7 @@ namespace windows_client.View
                         {
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
+                                if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
                                     ocMessages.Remove(_h2hofflineToolTip);
                             });
                         }
@@ -266,6 +266,8 @@ namespace windows_client.View
                         {
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
+                                if (ocMessages == null) return;
+
                                 if (_isSendAllAsSMSVisible)
                                 {
                                     ocMessages.Remove(_tap2SendAsSMSMessage);
@@ -429,7 +431,6 @@ namespace windows_client.View
                         groupCreateCM.CurrentOrientation = this.Orientation;
                         sendMsg(groupCreateCM, true);
                         mPubSub.publish(HikePubSub.MQTT_PUBLISH, groupCreateJson); // inform others about group
-
                     });
 
                 }
@@ -1449,7 +1450,6 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    //messageListBox.Opacity = 1;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     forwardAttachmentMessage();
@@ -1564,11 +1564,10 @@ namespace windows_client.View
             {
                 forwardAttachmentMessage();
                 isMessageLoaded = true;
-                //Scroller.Opacity = 1;
-                //messageListBox.Opacity = 1;
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 NetworkManager.turnOffNetworkManager = false;
+
                 if (_isHikeBot && mContactNumber == HikeConstants.FTUE_HIKEBOT_MSISDN)
                 {
                     if (ocMessages.Count > 0)
@@ -2569,7 +2568,7 @@ namespace windows_client.View
             if (message == "" || (!isOnHike && mCredits <= 0))
                 return;
 
-            endTypingSent = true; 
+            endTypingSent = true;
             sendTypingNotification(false);
 
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
@@ -2832,7 +2831,7 @@ namespace windows_client.View
 
                 if (HikeViewModel.stickerHelper.CheckLowResStickerExists(convMessage.StickerObj.Category, convMessage.StickerObj.Id))
                     HikeViewModel.stickerHelper.recentStickerHelper.AddSticker(sticker);
-                
+
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = obj;//done this way to distinguish it from message
             }
             else if (convMessage.FileAttachment == null)
@@ -3249,33 +3248,10 @@ namespace windows_client.View
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
 
-
         private void shareLocation_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             NavigationService.Navigate(new Uri("/View/ShareLocation.xaml", UriKind.Relative));
             attachmentMenu.Visibility = Visibility.Collapsed;
-
-            //GeoCoordinateWatcher watcher = new GeoCoordinateWatcher(GeoPositionAccuracy.High);
-            //watcher.MovementThreshold = 20;
-            ////watcher.StatusChanged += new EventHandler<GeoPositionStatusChangedEventArgs>(watcher_StatusChanged);
-            //watcher.PositionChanged += new EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>(watcher_PositionChanged);
-            //watcher.Start();
-        }
-
-        void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
-        {
-            Deployment.Current.Dispatcher.BeginInvoke(() => MyPositionChanged(e));
-        }
-
-        void MyPositionChanged(GeoPositionChangedEventArgs<GeoCoordinate> e)
-        {
-            BingMapsTask bingMapsTask = new BingMapsTask();
-            //Omit the Center property to use the user's current location.
-            bingMapsTask.Center = new GeoCoordinate(e.Position.Location.Latitude, e.Position.Location.Longitude);
-            //            bingMapsTask.SearchTerm = "coffee";
-            bingMapsTask.ZoomLevel = 24;
-            bingMapsTask.Show();
-
         }
 
         private void emotListRecent_Tap(object sender, SelectionChangedEventArgs e)
@@ -3686,7 +3662,7 @@ namespace windows_client.View
         {
             if (TimeUtils.getCurrentTimeStamp() - lastTypingNotificationSentTime > HikeConstants.SEND_START_TYPING_TIMER)
             {
-                endTypingSent = false; 
+                endTypingSent = false;
                 lastTypingNotificationSentTime = TimeUtils.getCurrentTimeStamp();
                 sendTypingNotification(true);
             }
@@ -3720,7 +3696,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if ((!isTypingNotificationEnabled || isTypingNotificationActive) && ocMessages.Contains(convTypingNotification))
+                if ((!isTypingNotificationEnabled || isTypingNotificationActive) && ocMessages != null && ocMessages.Contains(convTypingNotification))
                     ocMessages.Remove(convTypingNotification);
                 isTypingNotificationActive = false;
             });
@@ -3915,7 +3891,7 @@ namespace windows_client.View
 
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
+                        if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
                             ocMessages.Remove(_h2hofflineToolTip);
 
                         if (_isSendAllAsSMSVisible && ocMessages != null && msg == _lastUnDeliveredMessage)
@@ -3924,7 +3900,7 @@ namespace windows_client.View
                             _isSendAllAsSMSVisible = false;
                             ShowForceSMSOnUI();
                         }
-                 
+
                     });
                 }
                 catch (Exception ex)
@@ -4047,10 +4023,9 @@ namespace windows_client.View
 
                 UpdateLastSentMessageStatusOnUI();
 
-
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
+                    if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
                         ocMessages.Remove(_h2hofflineToolTip);
                 });
 
@@ -4058,6 +4033,9 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        if (ocMessages == null)
+                            return;
+
                         ocMessages.Remove(_tap2SendAsSMSMessage);
                         _isSendAllAsSMSVisible = false;
                         ShowForceSMSOnUI();
@@ -4199,6 +4177,9 @@ namespace windows_client.View
                             {
                                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                                 {
+                                    if (ocMessages == null)
+                                        return;
+
                                     if (_isSendAllAsSMSVisible)
                                     {
                                         ocMessages.Remove(_tap2SendAsSMSMessage);
@@ -4210,7 +4191,7 @@ namespace windows_client.View
                             {
                                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                                 {
-                                    if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
+                                    if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
                                         ocMessages.Remove(_h2hofflineToolTip);
                                 });
                             }
@@ -5846,12 +5827,10 @@ namespace windows_client.View
             if (e.Orientation == PageOrientation.Portrait || e.Orientation == PageOrientation.PortraitUp || e.Orientation == PageOrientation.PortraitDown)
             {
                 svMessage.MaxHeight = 150;
-                chatThemeTipTxt.MaxWidth = LayoutRoot.ActualWidth - 20;
             }
             else if (e.Orientation == PageOrientation.Landscape || e.Orientation == PageOrientation.LandscapeLeft || e.Orientation == PageOrientation.LandscapeRight)
             {
                 svMessage.MaxHeight = 70;
-                chatThemeTipTxt.MaxWidth = LayoutRoot.ActualWidth - 20;
 
                 App.ViewModel.HideToolTip(LayoutRoot, 0);
                 App.ViewModel.HideToolTip(LayoutRoot, 1);
@@ -6876,6 +6855,9 @@ namespace windows_client.View
             if (!isOnHike || !IsSMSOptionValid || _isSendAllAsSMSVisible || mUserIsBlocked)
                 return;
 
+            if (ocMessages == null)
+                return;
+
             try
             {
                 var msgList = (from message in ocMessages
@@ -6940,6 +6922,9 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 if (lastSeenTxt.Text == AppResources.Online || _isSendAllAsSMSVisible)
+                    return;
+
+                if (ocMessages == null)
                     return;
 
                 _lastUnDeliveredMessage = null;
