@@ -277,7 +277,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
-                                            <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Grid.Row="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
+                                            <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Grid.Row="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                             <TextBlock Grid.Row="2" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="0,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.4"/>
                                         </Grid>
                                     </Grid>
@@ -592,15 +592,13 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="40"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.RowSpan="2" Grid.Column="1" Background="{Binding BubbleBackGroundColor}"/>
-                                            <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"/>
-                                            <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Grid.Row="0" Grid.Column="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" x:Name="MessageText" 
+                                            <Border Grid.RowSpan="2" Background="{Binding BubbleBackGroundColor}"/>
+                                            <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight"
                                                                  LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" />
-                                            <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,24,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" />
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,6">
+                                                <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="15" HorizontalAlignment="Right"/>
+                                                <TextBlock Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" />
+                                            </StackPanel>
                                         </Grid>
                                         <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16" Fill="{Binding BubbleBackGroundColor}"/>
                                     </Grid>
@@ -626,13 +624,8 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="40"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.RowSpan="2" Grid.Column="1" Background="{Binding BubbleBackGroundColor}" />
-                                            <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
-                                            <Grid Grid.Row="0" Grid.Column="1" MaxWidth="400" Margin="12,12,12,0">
+                                            <Border Grid.RowSpan="2" Background="{Binding BubbleBackGroundColor}" />
+                                            <Grid Grid.Row="0" MaxWidth="400" Margin="12,12,12,0">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
@@ -650,7 +643,10 @@
                                                 </Grid>
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>
-                                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6"/>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,6">
+                                                <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="15" HorizontalAlignment="Right"/>
+                                                <TextBlock Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6"/>
+                                            </StackPanel>
                                         </Grid>
                                         <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16" Fill="{Binding BubbleBackGroundColor}"  />
                                     </Grid>
@@ -672,7 +668,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Grid HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Center">
-                                            <Image Source="{Binding SdrImage}" Margin="0,-14,0,0" Visibility="{Binding SdrImageVisibility}" Width="30" VerticalAlignment="Center" Stretch="Uniform"/>
+                                            <Image Source="{Binding FileFailedImage}" Margin="0,-14,0,0" Visibility="{Binding FileFailedImageVisibility}" Width="30" VerticalAlignment="Center" Stretch="Uniform"/>
                                             <Button Style="{StaticResource ButtonNoStyle}" HorizontalAlignment="Right" Margin="-12,-20,2,0" Visibility="{Binding PauseResumeImageVisibility}" Click="PauseResume_Tapped" Tag="{Binding MessageId}">
                                                 <Button.Content>
                                                     <Grid>
@@ -702,7 +698,10 @@
                                                     <Image MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
                                                     <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
                                                 </Grid>
-                                                <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6"/>
+                                                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,6">
+                                                    <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="15" HorizontalAlignment="Right"/>
+                                                    <TextBlock Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6"/>
+                                                </StackPanel>
                                             </Grid>
                                             <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
                                         </Grid>
@@ -725,7 +724,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Grid HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Center">
-                                            <Image Source="{Binding SdrImage}" Margin="0,-14,0,0" Visibility="{Binding SdrImageVisibility}" Width="30" VerticalAlignment="Center" Stretch="Uniform"/>
+                                            <Image Source="{Binding FileFailedImage}" Margin="0,-14,0,0" Visibility="{Binding FileFailedImageVisibility}" Width="30" VerticalAlignment="Center" Stretch="Uniform"/>
                                             <Button Style="{StaticResource ButtonNoStyle}" HorizontalAlignment="Right" Margin="-12,-20,2,0" Visibility="{Binding PauseResumeImageVisibility}" Click="PauseResume_Tapped" Tag="{Binding MessageId}">
                                                 <Button.Content>
                                                     <Grid>
@@ -766,7 +765,10 @@
                                                         <ProgressBar Style="{StaticResource PlayProgressBarStyle}" x:Name="playProgress" Value="{Binding PlayProgressBarValue}" Width="180" Height="45" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100"/>
                                                     </Grid>
                                                 </Grid>
-                                                <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6"/>
+                                                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,6">
+                                                    <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="15" HorizontalAlignment="Right"/>
+                                                    <TextBlock Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6"/>
+                                                </StackPanel>
                                             </Grid>
                                             <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
                                         </Grid>
@@ -822,13 +824,8 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="40"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.RowSpan="2" Grid.Column="2" Background="{Binding BubbleBackGroundColor}" />
-                                            <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
-                                            <Grid Grid.Row="0"  Grid.Column="1">
+                                            <Border Grid.RowSpan="2" Background="{Binding BubbleBackGroundColor}" />
+                                            <Grid Grid.Row="0">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
@@ -843,7 +840,10 @@
                                                 </Grid>
                                                 <ProgressBar Grid.Row="1" x:Name="downloadProgress" Value="{Binding ProgressBarValue}" Visibility="{Binding ProgressBarVisibility}" Margin="0,5,0,0" Height="10" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100" Opacity="1"></ProgressBar>
                                             </Grid>
-                                            <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6"/>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,6">
+                                                <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="15" HorizontalAlignment="Right"/>
+                                                <TextBlock Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6"/>
+                                            </StackPanel>
                                         </Grid>
                                         <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
                                     </Grid>
@@ -864,13 +864,11 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Margin="0,0,10,0" Width="30" Grid.Column="0" HorizontalAlignment="Right" Grid.RowSpan="2"></Image>
-                                            <Image HorizontalAlignment="Right" Source="{Binding MessageImage}" Grid.Row="0" Grid.Column="1" />
-                                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}"/>
+                                            <Image HorizontalAlignment="Right" Stretch="None" Source="{Binding MessageImage}" Grid.Row="0"/>
+                                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,6">
+                                                <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="15" HorizontalAlignment="Right"/>
+                                                <TextBlock  Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}"/>
+                                            </StackPanel>
                                         </Grid>
                                         <Grid Visibility="{Binding IsStickerLoading}">
                                             <Grid.RowDefinitions>

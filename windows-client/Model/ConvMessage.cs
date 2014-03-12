@@ -253,6 +253,7 @@ namespace windows_client.Model
                     NotifyPropertyChanged("SendAsSMSVisibility");
                     NotifyPropertyChanged("BubbleBackGroundColor");
                     NotifyPropertyChanged("MessageTextForeGround");
+                    NotifyPropertyChanged("FileFailedImageVisibility");
                     if (_messageStatus == State.SENT_CONFIRMED)
                     {
                         SdrImageVisibility = Visibility.Visible;
@@ -643,11 +644,6 @@ namespace windows_client.Model
                             return UI_Utils.Instance.Read;
                         else
                             return UI_Utils.Instance.Read_ChatTheme;
-                    case ConvMessage.State.SENT_FAILED:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
-                            return UI_Utils.Instance.HttpFailed;
-                        else
-                            return UI_Utils.Instance.HttpFailed_ChatTheme;
                     case ConvMessage.State.SENT_UNCONFIRMED:
                         if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
                             return UI_Utils.Instance.Trying;
@@ -667,6 +663,29 @@ namespace windows_client.Model
         {
             get;
             set;
+        }
+
+        public BitmapImage FileFailedImage
+        {
+            get
+            {
+                if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                    return UI_Utils.Instance.HttpFailed;
+                else
+                    return UI_Utils.Instance.HttpFailed_ChatTheme;
+            }
+        }
+
+        public Visibility FileFailedImageVisibility
+        {
+            get
+            {
+                return FileAttachment.FileState != Attachment.AttachmentState.STARTED
+                && FileAttachment.FileState != Attachment.AttachmentState.PAUSED
+                && FileAttachment.FileState != Attachment.AttachmentState.MANUAL_PAUSED
+                && FileAttachment.FileState != Attachment.AttachmentState.NOT_STARTED && 
+                MessageStatus == State.SENT_FAILED ? Visibility.Visible : Visibility.Collapsed;
+            }
         }
 
         private PageOrientation _currentOrientation;
@@ -897,6 +916,7 @@ namespace windows_client.Model
                 {
                     SdrImageVisibility = Visibility.Visible;
                     NotifyPropertyChanged("SdrImageVisibility");
+                    NotifyPropertyChanged("FileFailedImageVisibility");
                 }
                 NotifyPropertyChanging("PlayIconVisibility");
                 NotifyPropertyChanging("PlayIconImage");
@@ -1950,6 +1970,7 @@ namespace windows_client.Model
             NotifyPropertyChanged("PauseResumeImage");
             NotifyPropertyChanged("PauseResumeImageVisibility");
             NotifyPropertyChanged("SdrImage");
+            NotifyPropertyChanged("FileFailedImage");
             NotifyPropertyChanged("PlayIconVisibility");
             NotifyPropertyChanged("PlayIconImage");
             NotifyPropertyChanged("FileSizeVisibility");
@@ -1957,11 +1978,12 @@ namespace windows_client.Model
             SdrImageVisibility = attachmentState != Attachment.AttachmentState.STARTED
                 && attachmentState != Attachment.AttachmentState.PAUSED
                 && attachmentState != Attachment.AttachmentState.MANUAL_PAUSED
-                && attachmentState != Attachment.AttachmentState.NOT_STARTED
+                && attachmentState != Attachment.AttachmentState.NOT_STARTED && MessageStatus != State.SENT_FAILED
                 ? Visibility.Visible : Visibility.Collapsed;
 
             NotifyPropertyChanged("SdrImageVisibility");
-
+            NotifyPropertyChanged("FileFailedImageVisibility");
+            
             ChangingState = false;
         }
 
