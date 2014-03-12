@@ -74,6 +74,8 @@ namespace windows_client.utils
         private BitmapImage participantLeft_ct;
         private BitmapImage nudgeSend;
         private BitmapImage nudgeReceived;
+        private BitmapImage heartNudgeSend;
+        private BitmapImage heartNudgeReceived;
         private BitmapImage textStatusImage;
         private BitmapImage friendRequestImage;
         private BitmapImage profilePicStatusImage;
@@ -163,6 +165,8 @@ namespace windows_client.utils
 
         private BitmapImage overlayRupeeImage;
         private BitmapImage overlaySmsImage;
+
+        BitmapImage profileTickImage;
 
         #endregion
 
@@ -966,6 +970,26 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage HeartNudgeSent
+        {
+            get
+            {
+                if (heartNudgeSend == null)
+                    heartNudgeSend = new BitmapImage(new Uri("/View/images/heartsNudgeSent.png", UriKind.Relative));
+                return heartNudgeSend;
+            }
+        }
+
+        public BitmapImage HeartNudgeReceived
+        {
+            get
+            {
+                if (heartNudgeReceived == null)
+                    heartNudgeReceived = new BitmapImage(new Uri("/View/images/heartsNudgeReceived.png", UriKind.Relative));
+                return heartNudgeReceived;
+            }
+        }
+
         public BitmapImage TextStatusImage
         {
             get
@@ -1086,7 +1110,7 @@ namespace windows_client.utils
                 if (userProfileLockImage == null)
                 {
                     if (Utils.isDarkTheme())
-                        userProfileLockImage = new BitmapImage(new Uri("/View/images/user_lock_white.png", UriKind.Relative));//todo:add white image
+                        userProfileLockImage = new BitmapImage(new Uri("/View/images/user_lock_white.png", UriKind.Relative));
                     else
                         userProfileLockImage = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
                 }
@@ -1846,6 +1870,17 @@ namespace windows_client.utils
 
         public Thickness ZeroThickness = new Thickness(0, 0, 0, 0);
         public Thickness NewCategoryThickness = new Thickness(0, 5, 0, 0);
+
+        public BitmapImage ProfileTickImage
+        {
+            get
+            {
+                if (profileTickImage == null)
+                    profileTickImage = new BitmapImage(new Uri("/View/Images/Item_Selected.png", UriKind.Relative));
+
+                return profileTickImage;
+            }
+        }
 
         #endregion
 

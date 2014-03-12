@@ -314,21 +314,7 @@ namespace windows_client.View
 
                     if (Utils.isGroupConversation(cn.Msisdn))
                     {
-                        var gplist = GroupManager.Instance.GetParticipantList(cn.Msisdn);
-
-                        foreach (var gp in gplist)
-                        {
-                            if (gp.HasLeft)
-                                continue;
-
-                            if( gp.Name.ToLower().Contains(charsEntered) || gp.Msisdn.Contains(charsEntered))
-                            {
-                                containsCharacter = true;
-                                break;
-                            }
-                        }
-
-                        containsCharacter = containsCharacter || cn.Name.ToLower().Contains(charsEntered);
+                        containsCharacter = cn.Name.ToLower().Contains(charsEntered);
                     }
                     else
                         containsCharacter = cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered);
@@ -824,7 +810,7 @@ namespace windows_client.View
 
                             if (_smsUserCount > _smsCredits)
                             {
-                                MessageBox.Show(AppResources.H2HOfline_0SMS_Message);
+                                MessageBox.Show(AppResources.H2HOfline_0SMS_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OK);
 
                                 cInfo.IsSelected = false;
                                 _smsUserCount = oldSmsCount;

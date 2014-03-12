@@ -510,7 +510,7 @@
     <comment>NewSelectUserPage (xaml)</comment>
   </data>
   <data name="Block_Txt" xml:space="preserve">
-    <value>Block</value>
+    <value>block</value>
     <comment>this will be used as text</comment>
   </data>
   <data name="Call_Txt" xml:space="preserve">
@@ -698,7 +698,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="UnBlock_Txt" xml:space="preserve">
-    <value>Unblock</value>
+    <value>unblock</value>
     <comment>xaml</comment>
   </data>
   <data name="USER_INVITED" xml:space="preserve">
@@ -1766,7 +1766,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>{0} is offline, tap to send as hike sms</value>
   </data>
   <data name="H2HOfline_0SMS_Message" xml:space="preserve">
-    <value>Your free SMS balance is zero. You can invite friends to join hike and earn more free SMS</value>
+    <value>Looks like you have exhausted all your Free SMS credits. Invite more friends to hike to earn Free SMS</value>
   </data>
   <data name="H2HOfline_Confirmation_Message" xml:space="preserve">
     <value>Pending messages will be sent as free hike SMS</value>
@@ -2071,11 +2071,8 @@ Download it now http://hike.in and join the fun!</value>
   <data name="MicrophoneNotFound_HeaderTxt" xml:space="preserve">
     <value>Unable to record!</value>
   </data>
-  <data name="MessageStatus_Delivered" xml:space="preserve">
-    <value>delivered</value>
-  </data>
-  <data name="MessageStatus_Read" xml:space="preserve">
-    <value>read</value>
+  <data name="Clear_Chat_Txt" xml:space="preserve">
+    <value>clear chat</value>
   </data>
   <data name="MessageStatus_ReadByEveryone" xml:space="preserve">
     <value>read by everyone</value>
@@ -2091,9 +2088,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="MessageStatus_ReadByThree" xml:space="preserve">
     <value>read by {0} and 1 other</value>
     <comment>eg. read by a &amp; b and 1 other</comment>
-  </data>
-  <data name="MessageStatus_Sent" xml:space="preserve">
-    <value>sent</value>
   </data>
   <data name="PreviewImages_Header_txt" xml:space="preserve">
     <value>preview {0} of {1}</value>
@@ -2116,5 +2110,14 @@ Download it now http://hike.in and join the fun!</value>
   <data name="ViewAlbum_AppBar_Select_text" xml:space="preserve">
     <value>select</value>
     <comment>max 10 chars</comment>
+  </data>
+  <data name="Conversations_Delete_MoreThan1Chat_Confirmation" xml:space="preserve">
+    <value>Are you sure about deleting these chats?</value>
+  </data>
+  <data name="clear_Chat_Body" xml:space="preserve">
+    <value>All your messages in this chat would get deleted. Are you sure you want to continue?</value>
+  </data>
+  <data name="clear_Chat_Header" xml:space="preserve">
+    <value>Confirmation</value>
   </data>
 </root>

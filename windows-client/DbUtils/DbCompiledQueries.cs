@@ -214,16 +214,16 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static Func<HikeChatsDb, string, long,int, IQueryable<ConvMessage>> GetMessagesForMsisdnForPaging
+        public static Func<HikeChatsDb, string, long, int, IQueryable<ConvMessage>> GetMessagesForMsisdnForPaging
         {
             get
             {
                 Func<HikeChatsDb, string, long, int, IQueryable<ConvMessage>> q =
                 CompiledQuery.Compile<HikeChatsDb, string, long, int, IQueryable<ConvMessage>>
-                ((HikeChatsDb hdc, string myMsisdn, long lastMessageId,int count) =>
+                ((HikeChatsDb hdc, string myMsisdn, long lastMessageId, int count) =>
                     (from o in hdc.messages
-                    where o.Msisdn == myMsisdn && o.MessageId <= lastMessageId
-                    orderby o.MessageId descending
+                     where o.Msisdn == myMsisdn && o.MessageId <= lastMessageId
+                     orderby o.MessageId descending
                      select o).Take(count));
                 return q;
             }
@@ -288,6 +288,20 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static Func<HikeChatsDb, string, long, int, IQueryable<StatusMessage>> GetPaginatedStatusMsgsForMsisdn
+        {
+            get
+            {
+                Func<HikeChatsDb, string, long, int, IQueryable<StatusMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, string, long, int, IQueryable<StatusMessage>>
+                ((HikeChatsDb hdc, string myMsisdn, long lastStatusId, int count) =>
+                    (from o in hdc.statusMessage
+                     where o.Msisdn == myMsisdn && o.StatusId <= lastStatusId
+                     orderby o.StatusId descending
+                     select o).Take(count));
+                return q;
+            }
+        }
         public static Func<HikeChatsDb, long, IQueryable<StatusMessage>> GetStatusMsgForStatusId
         {
             get
@@ -352,9 +366,25 @@ namespace windows_client.DbUtils
                 Func<HikeChatsDb, IQueryable<StatusMessage>> q =
                 CompiledQuery.Compile<HikeChatsDb, IQueryable<StatusMessage>>
                 ((HikeChatsDb hdc) =>
-                    from o in hdc.statusMessage where o.ShowOnTimeline == true
+                    from o in hdc.statusMessage
+                    where o.ShowOnTimeline == true
                     orderby o.StatusId descending
                     select o);
+                return q;
+            }
+        }
+
+        public static Func<HikeChatsDb, long, int, IQueryable<StatusMessage>> GetPaginatedStatusMsgsForTimeline
+        {
+            get
+            {
+                Func<HikeChatsDb, long, int, IQueryable<StatusMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, long, int, IQueryable<StatusMessage>>
+                ((HikeChatsDb hdc, long lastStatusId, int count) =>
+                   (from o in hdc.statusMessage
+                    where o.ShowOnTimeline == true && o.StatusId <= lastStatusId
+                    orderby o.StatusId descending
+                    select o).Take(count));
                 return q;
             }
         }

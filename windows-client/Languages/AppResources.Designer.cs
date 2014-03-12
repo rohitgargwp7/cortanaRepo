@@ -232,7 +232,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Block.
+        ///   Looks up a localized string similar to block.
         /// </summary>
         public static string Block_Txt {
             get {
@@ -484,6 +484,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All your messages in this chat would get deleted. Are you sure you want to continue?.
+        /// </summary>
+        public static string clear_Chat_Body {
+            get {
+                return ResourceManager.GetString("clear_Chat_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirmation.
+        /// </summary>
+        public static string clear_Chat_Header {
+            get {
+                return ResourceManager.GetString("clear_Chat_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to clear chat.
+        /// </summary>
+        public static string Clear_Chat_Txt {
+            get {
+                return ResourceManager.GetString("Clear_Chat_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You will now be able to see updates from {0} here..
         /// </summary>
         public static string ConfimFriendTimeline_Txt {
@@ -669,6 +696,15 @@ namespace windows_client.Languages {
         public static string Conversations_Delete_Chats_Confirmation {
             get {
                 return ResourceManager.GetString("Conversations_Delete_Chats_Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure about deleting these chats?.
+        /// </summary>
+        public static string Conversations_Delete_MoreThan1Chat_Confirmation {
+            get {
+                return ResourceManager.GetString("Conversations_Delete_MoreThan1Chat_Confirmation", resourceCulture);
             }
         }
         
@@ -1976,7 +2012,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your free SMS balance is zero. You can invite friends to join hike and earn more free SMS.
+        ///   Looks up a localized string similar to Looks like you have exhausted all your Free SMS credits. Invite more friends to hike to earn Free SMS.
         /// </summary>
         public static string H2HOfline_0SMS_Message {
             get {
@@ -2606,24 +2642,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to delivered.
-        /// </summary>
-        public static string MessageStatus_Delivered {
-            get {
-                return ResourceManager.GetString("MessageStatus_Delivered", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to read.
-        /// </summary>
-        public static string MessageStatus_Read {
-            get {
-                return ResourceManager.GetString("MessageStatus_Read", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to read by everyone.
         /// </summary>
         public static string MessageStatus_ReadByEveryone {
@@ -2656,15 +2674,6 @@ namespace windows_client.Languages {
         public static string MessageStatus_ReadByThree {
             get {
                 return ResourceManager.GetString("MessageStatus_ReadByThree", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to sent.
-        /// </summary>
-        public static string MessageStatus_Sent {
-            get {
-                return ResourceManager.GetString("MessageStatus_Sent", resourceCulture);
             }
         }
         
@@ -4721,7 +4730,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unblock.
+        ///   Looks up a localized string similar to unblock.
         /// </summary>
         public static string UnBlock_Txt {
             get {

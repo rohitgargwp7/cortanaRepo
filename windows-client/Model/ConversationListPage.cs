@@ -105,6 +105,8 @@ namespace windows_client.Model
                     _timeStamp = value;
                     NotifyPropertyChanged("TimeStamp");
                     NotifyPropertyChanged("FormattedTimeStamp");
+                    NotifyPropertyChanged("TimeStampVisibility");
+                    NotifyPropertyChanged("MuteIconTimeStampVisibility");
                 }
             }
         }
@@ -212,6 +214,7 @@ namespace windows_client.Model
                     _muteVal = value;
 
                 NotifyPropertyChanged("MuteIconVisibility");
+                NotifyPropertyChanged("MuteIconTimeStampVisibility");
             }
         }
 
@@ -369,11 +372,27 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility TimeStampVisibility
+        {
+            get
+            {
+                return String.IsNullOrEmpty(LastMessage) ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        public Visibility MuteIconTimeStampVisibility
+        {
+            get
+            {
+                return TimeStampVisibility == Visibility.Visible || MuteIconVisibility == Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
         public string FormattedTimeStamp
         {
             get
             {
-                return TimeUtils.getTimeString(_timeStamp);
+                return TimeUtils.getTimeString(TimeStamp);
             }
         }
 
@@ -391,7 +410,36 @@ namespace windows_client.Model
                     empImage = null; // reset to null whenever avatar changes
                     NotifyPropertyChanged("Avatar");
                     NotifyPropertyChanged("AvatarImage");
+                    NotifyPropertyChanged("ConvImage");
                 }
+            }
+        }
+
+        bool _isSelected = false;
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    NotifyPropertyChanged("ConvImage");
+                }
+            }
+        }
+
+        public BitmapImage ConvImage
+        {
+            get
+            {
+                if (_isSelected)
+                    return UI_Utils.Instance.ProfileTickImage;
+                else
+                    return AvatarImage;
             }
         }
 
@@ -639,7 +687,6 @@ namespace windows_client.Model
         }
 
         #endregion
-
 
         public void Write(BinaryWriter writer)
         {

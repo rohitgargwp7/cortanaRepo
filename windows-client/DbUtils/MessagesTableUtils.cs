@@ -507,6 +507,10 @@ namespace windows_client.DbUtils
             }
         }
 
+        /// <summary>
+        /// Delete all messages from db
+        /// </summary>
+        /// <param name="msisdn">user id</param>
         public static void deleteAllMessagesForMsisdn(string msisdn)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
@@ -621,6 +625,10 @@ namespace windows_client.DbUtils
             return message;
         }
 
+        /// <summary>
+        /// delete long messages for given user id
+        /// </summary>
+        /// <param name="msisdn">user id</param>
         public static void DeleteLongMessages(string msisdn)
         {
             lock (lockObj)

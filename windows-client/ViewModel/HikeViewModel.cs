@@ -26,6 +26,7 @@ using Microsoft.Phone.Tasks;
 using Microsoft.Phone.Shell;
 using System.Windows.Media.Imaging;
 using Microsoft.Xna.Framework.Media;
+using System.Web;
 
 namespace windows_client.ViewModel
 {
@@ -913,33 +914,23 @@ namespace windows_client.ViewModel
                 PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
             }
         }
-       
+
         public void Hyperlink_Clicked(object sender)
         {
-            var obj = sender as object[];
-            Hyperlink caller = obj[0] as Hyperlink;
-            var val = (bool)obj[1];
+            Hyperlink caller = sender as Hyperlink;
 
-            if (val)
+            var phoneCallTask = new PhoneCallTask();
+            var targetPhoneNumber = caller.TargetName.Replace("-", "");
+            targetPhoneNumber = targetPhoneNumber.Trim();
+            targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
+            phoneCallTask.PhoneNumber = targetPhoneNumber;
+            try
             {
-                var task = new WebBrowserTask() { Uri = new Uri(caller.TargetName) };
-                task.Show();
+                phoneCallTask.Show();
             }
-            else
+            catch (Exception ex)
             {
-                var phoneCallTask = new PhoneCallTask();
-                var targetPhoneNumber = caller.TargetName.Replace("-", "");
-                targetPhoneNumber = targetPhoneNumber.Trim();
-                targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
-                phoneCallTask.PhoneNumber = targetPhoneNumber;
-                try
-                {
-                    phoneCallTask.Show();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
-                }
+                Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
             }
         }
 

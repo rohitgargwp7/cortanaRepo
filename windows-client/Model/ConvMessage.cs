@@ -554,6 +554,14 @@ namespace windows_client.Model
             get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Visible : Visibility.Collapsed; }
         }
 
+        public BitmapImage SpecialNudgeImage
+        {
+            get
+            {
+                return IsSent ? UI_Utils.Instance.HeartNudgeSent : UI_Utils.Instance.HeartNudgeReceived;
+            }
+        }
+
         bool _changingState;
         public bool ChangingState
         {
