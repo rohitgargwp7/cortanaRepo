@@ -3271,14 +3271,17 @@ namespace windows_client.View
         bool _profileImageTapped = false;
         private void profileImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            _profileImageTapped = true;
-
             var conv = (sender as Grid).DataContext as ConversationListObject;
 
-            if (conv != null)
-                conv.IsSelected = !conv.IsSelected;
+            if (ApplicationBar == deleteAppBar)
+            {
+                _profileImageTapped = true;
 
-            ChangeAppBarOnConvSelected();
+                if (conv != null)
+                    conv.IsSelected = !conv.IsSelected;
+
+                ChangeAppBarOnConvSelected();
+            }
         }
 
         private void ChangeAppBarOnConvSelected()
