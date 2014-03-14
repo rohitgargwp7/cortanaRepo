@@ -4692,6 +4692,7 @@ namespace windows_client.View
 
                 foreach (PhotoClass pic in listPic)
                 {
+                    //Add delay so that each message has different timestamps and equals function for convmessages runs correctly
                     await Task.Delay(1);
                     SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString());
                     pic.Pic.Dispose();
