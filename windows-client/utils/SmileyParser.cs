@@ -594,7 +594,7 @@ namespace windows_client
             {
                 _emoticonImagesForRecent = new List<Emoticon>();
 
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     string fileName = RECENTS_EMOTICONS_FOLDER + "\\" + RECENTS_FILE;
                     if (store.FileExists(fileName))
@@ -624,7 +624,7 @@ namespace windows_client
 
             lock (readWriteLock)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     string fileName = RECENTS_EMOTICONS_FOLDER + "\\" + RECENTS_FILE;
                     if (store.FileExists(fileName))
@@ -659,7 +659,7 @@ namespace windows_client
             {
                 await Task.Delay(1);
 
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     if (!store.DirectoryExists(RECENTS_EMOTICONS_FOLDER))
                     {
@@ -901,12 +901,13 @@ namespace windows_client
                 p.Inlines.Add(new LineBreak());
 
                 Hyperlink MyLink = new Hyperlink();
-
-                MyLink.Foreground = foreground;
+                if (foreground != null)
+                    MyLink.Foreground = foreground;
                 MyLink.TargetName = originalMessage;
                 MyLink.Inlines.Add(AppResources.ViewFullMessage_Txt);
 
-                MyLink.Click += (ss,ee)=>{
+                MyLink.Click += (ss, ee) =>
+                {
                     if (viewMoreClicked != null)
                         viewMoreClicked(ss);
                 };
