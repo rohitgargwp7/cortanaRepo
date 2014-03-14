@@ -885,7 +885,7 @@ namespace windows_client
             return p;
         }
 
-        public Paragraph LinkifyAllPerTextBlock(string originalMessage, SolidColorBrush foreground, ViewMoreEventDelegate viewMoreClicked, HyperLinkEventDelegate hyperlinkClicked)
+        public Paragraph LinkifyAllPerTextBlock(string originalMessage, SolidColorBrush foreground, LinkClickedDelegate viewMoreClicked, LinkClickedDelegate hyperlinkClicked)
         {
             int maxChar = GetMaxCharForBlock(originalMessage);
             bool isMessageExtended = false;
@@ -918,7 +918,7 @@ namespace windows_client
             return p;
         }
 
-        public Paragraph LinkifyAll(string message, SolidColorBrush foreground, HyperLinkEventDelegate hyperlinkClicked)
+        public Paragraph LinkifyAll(string message, SolidColorBrush foreground, LinkClickedDelegate hyperlinkClicked)
         {
             MatchCollection matchCollection = ChatThreadRegex.Matches(message);
             var p = new Paragraph();
@@ -967,20 +967,15 @@ namespace windows_client
                             MyLink.Click += (ss, ee) =>
                             {
                                 if (hyperlinkClicked != null)
-                                    hyperlinkClicked(ss, false);
+                                    hyperlinkClicked(ss);
                             };
 
                             MyLink.TargetName = regexMatch;
                         }
                         else
                         {
-                            MyLink.TargetName = url;
-
-                            MyLink.Click += (ss, ee) =>
-                            {
-                                if (hyperlinkClicked != null)
-                                    hyperlinkClicked(ss, true);
-                            };
+                            MyLink.TargetName = "_blank";
+                            MyLink.NavigateUri = new Uri(url);
                         }
                         MyLink.Inlines.Add(regexMatch);
                         p.Inlines.Add(MyLink);
@@ -1075,7 +1070,6 @@ namespace windows_client
             return charCount;
         }
 
-        public delegate void ViewMoreEventDelegate(object obj);
-        public delegate void HyperLinkEventDelegate(object obj, bool isUrl);
+        public delegate void LinkClickedDelegate(object obj);
     }
 }

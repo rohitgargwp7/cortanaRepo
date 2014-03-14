@@ -795,9 +795,6 @@ namespace windows_client.View
                 {
                     if (!_contactsForForward.Contains(cInfo))
                     {
-                        if (defaultContact == cInfo)
-                            defaultContact = new ContactInfo();
-
                         if (!_isContactShared && _isFreeSmsOn)
                         {
                             if (!Utils.isGroupConversation(cInfo.Msisdn))
@@ -819,6 +816,9 @@ namespace windows_client.View
                             }
                         }
 
+                        if (defaultContact == cInfo)
+                            defaultContact = new ContactInfo();
+                        
                         _contactsForForward.Add(cInfo);
                     }
                 }
