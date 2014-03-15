@@ -17,10 +17,11 @@ namespace windows_client.utils
         private SolidColorBrush lastMsgForeground;
         private SolidColorBrush smsBackground;
         private SolidColorBrush hikeMsgBackground;
-        private SolidColorBrush receivedChatBubbleColor; 
+        private SolidColorBrush receivedChatBubbleColor;
         private SolidColorBrush walkThroughSelectedColumn;
         private SolidColorBrush walkThroughUnselectedColumn;
         private SolidColorBrush transparent;
+        private SolidColorBrush hikeBlue;
         private SolidColorBrush black;
         private SolidColorBrush white;
         private SolidColorBrush black40Opacity;
@@ -73,6 +74,8 @@ namespace windows_client.utils
         private BitmapImage participantLeft_ct;
         private BitmapImage nudgeSend;
         private BitmapImage nudgeReceived;
+        private BitmapImage heartNudgeSend;
+        private BitmapImage heartNudgeReceived;
         private BitmapImage textStatusImage;
         private BitmapImage friendRequestImage;
         private BitmapImage profilePicStatusImage;
@@ -162,6 +165,8 @@ namespace windows_client.utils
 
         private BitmapImage overlayRupeeImage;
         private BitmapImage overlaySmsImage;
+
+        BitmapImage profileTickImage;
 
         #endregion
 
@@ -294,7 +299,7 @@ namespace windows_client.utils
             {
                 if (receiveMessageForeground == null)
                     receiveMessageForeground = new SolidColorBrush(Color.FromArgb(255, 83, 83, 83));
-             
+
                 return receiveMessageForeground;
             }
         }
@@ -326,6 +331,16 @@ namespace windows_client.utils
                 if (transparent == null)
                     transparent = new SolidColorBrush(Colors.Transparent);
                 return transparent;
+            }
+        }
+
+        public SolidColorBrush HikeBlue
+        {
+            get
+            {
+                if (hikeBlue == null)
+                    hikeBlue = new SolidColorBrush(Color.FromArgb(255, 46, 145, 211));
+                return hikeBlue;
             }
         }
 
@@ -568,7 +583,7 @@ namespace windows_client.utils
                 return overlaySmsImage;
             }
         }
-        
+
         public BitmapImage ChatAcceptedImage
         {
             get
@@ -617,7 +632,7 @@ namespace windows_client.utils
             {
                 if (downloadIcon == null)
                     downloadIcon = new BitmapImage(new Uri("/View/images/download_icon.png", UriKind.Relative));
-              
+
                 return downloadIcon;
             }
         }
@@ -641,7 +656,7 @@ namespace windows_client.utils
             {
                 if (httpFailed == null)
                     httpFailed = new BitmapImage(new Uri("/View/images/error_icon.png", UriKind.Relative));
-             
+
                 return httpFailed;
             }
         }
@@ -652,7 +667,7 @@ namespace windows_client.utils
             {
                 if (httpFailed_CT == null)
                     httpFailed_CT = new BitmapImage(new Uri("/View/images/error_icon_CT.png", UriKind.Relative));
-              
+
                 return httpFailed_CT;
             }
         }
@@ -663,7 +678,7 @@ namespace windows_client.utils
             {
                 if (sent == null)
                     sent = new BitmapImage(new Uri("/View/images/ic_sent.png", UriKind.Relative));
-               
+
                 return sent;
             }
         }
@@ -728,7 +743,7 @@ namespace windows_client.utils
             {
                 if (delivered == null)
                     delivered = new BitmapImage(new Uri("/View/images/ic_delivered.png", UriKind.Relative));
-                
+
                 return delivered;
             }
         }
@@ -739,7 +754,7 @@ namespace windows_client.utils
             {
                 if (delivered_ct == null)
                     delivered_ct = new BitmapImage(new Uri("/View/images/ic_delivered_CT.png", UriKind.Relative));
-               
+
                 return delivered_ct;
             }
         }
@@ -750,7 +765,7 @@ namespace windows_client.utils
             {
                 if (read == null)
                     read = new BitmapImage(new Uri("/View/images/ic_read.png", UriKind.Relative));
-                
+
                 return read;
             }
         }
@@ -761,7 +776,7 @@ namespace windows_client.utils
             {
                 if (read_ct == null)
                     read_ct = new BitmapImage(new Uri("/View/images/ic_read_CT.png", UriKind.Relative));
-                
+
                 return read_ct;
             }
         }
@@ -772,11 +787,11 @@ namespace windows_client.utils
             {
                 if (trying_ct == null)
                     trying_ct = new BitmapImage(new Uri("/View/images/icon_sending_CT.png", UriKind.Relative));
-                
+
                 return trying_ct;
             }
         }
-        
+
         public BitmapImage Trying
         {
             get
@@ -805,7 +820,7 @@ namespace windows_client.utils
             {
                 if (waiting_ct == null)
                     waiting_ct = new BitmapImage(new Uri("/View/images/chat_waiting_CT.png", UriKind.Relative));
-                
+
                 return waiting_ct;
             }
         }
@@ -866,11 +881,11 @@ namespace windows_client.utils
             {
                 if (grpNameChanged_ct == null)
                     grpNameChanged_ct = new BitmapImage(new Uri("/View/images/group_name_changed_CT.png", UriKind.Relative));
-                
+
                 return grpNameChanged_ct;
             }
         }
-        
+
         public BitmapImage GrpPicChanged
         {
             get
@@ -919,7 +934,7 @@ namespace windows_client.utils
             {
                 if (participantLeft == null)
                     participantLeft = new BitmapImage(new Uri("/View/images/chat_left.png", UriKind.Relative));
-               
+
                 return participantLeft;
             }
         }
@@ -952,6 +967,26 @@ namespace windows_client.utils
                 if (nudgeReceived == null)
                     nudgeReceived = new BitmapImage(new Uri("/View/images/nudge_received.png", UriKind.Relative));
                 return nudgeReceived;
+            }
+        }
+
+        public BitmapImage HeartNudgeSent
+        {
+            get
+            {
+                if (heartNudgeSend == null)
+                    heartNudgeSend = new BitmapImage(new Uri("/View/images/heartsNudgeSent.png", UriKind.Relative));
+                return heartNudgeSend;
+            }
+        }
+
+        public BitmapImage HeartNudgeReceived
+        {
+            get
+            {
+                if (heartNudgeReceived == null)
+                    heartNudgeReceived = new BitmapImage(new Uri("/View/images/heartsNudgeReceived.png", UriKind.Relative));
+                return heartNudgeReceived;
             }
         }
 
@@ -1075,7 +1110,7 @@ namespace windows_client.utils
                 if (userProfileLockImage == null)
                 {
                     if (Utils.isDarkTheme())
-                        userProfileLockImage = new BitmapImage(new Uri("/View/images/user_lock_white.png", UriKind.Relative));//todo:add white image
+                        userProfileLockImage = new BitmapImage(new Uri("/View/images/user_lock_white.png", UriKind.Relative));
                     else
                         userProfileLockImage = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
                 }
@@ -1128,12 +1163,12 @@ namespace windows_client.utils
             get
             {
                 if (lastSeenClockImageWhite == null)
-                        lastSeenClockImageWhite = new BitmapImage(new Uri("/View/images/last_seen_clock_white.png", UriKind.Relative));
+                    lastSeenClockImageWhite = new BitmapImage(new Uri("/View/images/last_seen_clock_white.png", UriKind.Relative));
 
                 return lastSeenClockImageWhite;
             }
         }
-        
+
         public BitmapImage LastSeenClockImageBlack
         {
             get
@@ -1436,7 +1471,7 @@ namespace windows_client.utils
             {
                 if (indiansOverlay == null)
                     indiansOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/indian_overlay.png", UriKind.Relative));
-                
+
                 return indiansOverlay;
             }
         }
@@ -1836,6 +1871,17 @@ namespace windows_client.utils
         public Thickness ZeroThickness = new Thickness(0, 0, 0, 0);
         public Thickness NewCategoryThickness = new Thickness(0, 5, 0, 0);
 
+        public BitmapImage ProfileTickImage
+        {
+            get
+            {
+                if (profileTickImage == null)
+                    profileTickImage = new BitmapImage(new Uri("/View/Images/Item_Selected.png", UriKind.Relative));
+
+                return profileTickImage;
+            }
+        }
+
         #endregion
 
         #region DEFAULT AVATARS
@@ -2024,25 +2070,30 @@ namespace windows_client.utils
 
             try
             {
-                var aspectratio = (double)bitmapImage.PixelHeight / bitmapImage.PixelWidth;
-                int toWidth = 0;
-
-                if (bitmapImage.PixelWidth > 480 && bitmapImage.PixelHeight > 800)
-                    toWidth = bitmapImage.PixelWidth > bitmapImage.PixelHeight ? 480 : Convert.ToInt32(800 / aspectratio);
-                else if (bitmapImage.PixelWidth > 480)
-                    toWidth = 480;
-                else if (bitmapImage.PixelHeight > 800)
-                    toWidth = Convert.ToInt32(800 / aspectratio);
-
+                int toWidth = GetMaxToWidthForImage(bitmapImage.PixelHeight, bitmapImage.PixelWidth);
                 if (toWidth != 0)
                     return getCompressedImage(imagebytes, toWidth);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine("IMAGE UTILS :: Exception while calculating aspect ratio  for compressed image: " + ex.StackTrace);
             }
 
             return bitmapImage;
+        }
+
+        public int GetMaxToWidthForImage(double height, double width)
+        {
+            var aspectratio = height / width;
+            int toWidth = 0;
+
+            if (width > 480 && height > 800)
+                toWidth = width > height ? 480 : Convert.ToInt32(800 / aspectratio);
+            else if (width > 480)
+                toWidth = 480;
+            else if (height > 800)
+                toWidth = Convert.ToInt32(800 / aspectratio);
+            return toWidth;
         }
 
         BitmapImage getCompressedImage(byte[] imagebytes, int toWidth)

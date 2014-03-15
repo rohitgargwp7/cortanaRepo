@@ -285,6 +285,7 @@ namespace windows_client.View
                 xyz = !xyz;
                 return;
             }
+
             xyz = !xyz;
 
             charsEntered = enterNameTxt.Text.ToLower();
@@ -300,16 +301,19 @@ namespace windows_client.View
             if (groupListDictionary.ContainsKey(charsEntered))
             {
                 List<Group<ContactInfo>> gl = groupListDictionary[charsEntered];
+                
                 if (gl == null)
                 {
                     groupListDictionary.Remove(charsEntered);
                     contactsListBox.ItemsSource = null;
                     return;
                 }
+            
                 if (gl[26].Count > 0 && gl[26][0].Msisdn != null)
                 {
                     gl[26][0].Name = charsEntered;
                     string num = Utils.NormalizeNumber(charsEntered);
+                   
                     if (charsEntered.Length >= 1 && charsEntered.Length <= 15)
                     {
                         gl[26][0].Msisdn = defaultMsg;
@@ -333,17 +337,21 @@ namespace windows_client.View
                 Thread.Sleep(5);
                 return;
             }
-            //glistFiltered = createGroups();
+
             BackgroundWorker bw = new BackgroundWorker();
+            
             bw.DoWork += (s, ev) =>
             {
                 glistFiltered = getFilteredContactsFromNameOrPhoneAsync(charsEntered, 0, 26);
             };
+            
             bw.RunWorkerAsync();
+
             bw.RunWorkerCompleted += (s, ev) =>
             {
                 if (glistFiltered != null)
                     groupListDictionary[charsEntered] = glistFiltered;
+
                 contactsListBox.ItemsSource = glistFiltered;
                 Thread.Sleep(2);
             };
@@ -353,6 +361,7 @@ namespace windows_client.View
         {
             bool areCharsNumber = false;
             bool isPlus = false;
+            
             if (Utils.IsNumber(charsEntered))
             {
                 areCharsNumber = true;
@@ -362,8 +371,10 @@ namespace windows_client.View
                     charsEntered = charsEntered.Substring(1);
                 }
             }
-            List<Group<ContactInfo>> listToIterate = null;
+            
+            List<Group<ContactInfo>> listToIterate = null;            
             int charsLength = charsEntered.Length - 1;
+            
             if (charsLength > 0)
             {
                 if (groupListDictionary.ContainsKey(charsEntered.Substring(0, charsLength)))
@@ -377,21 +388,18 @@ namespace windows_client.View
             }
             else
                 listToIterate = jumpList;
+
             bool createNewFilteredList = true;
+            
             for (int i = start; i < end; i++)
             {
                 int maxJ = listToIterate == null ? 0 : (listToIterate[i] == null ? 0 : listToIterate[i].Count);
+                
                 for (int j = 0; j < maxJ; j++)
                 {
                     ContactInfo cn = listToIterate[i][j];
-                    if (contactsList.ContainsKey(cn.Msisdn))
-                    {
-                        cn.IsFav = true;
-                    }
-                    else
-                    {
-                        cn.IsFav = false;
-                    }
+                    cn.IsFav = contactsList.ContainsKey(cn.Msisdn) ? true : false;
+
                     if (cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered) || cn.PhoneNo.Contains(charsEntered))
                     {
                         if (createNewFilteredList)
@@ -399,19 +407,23 @@ namespace windows_client.View
                             createNewFilteredList = false;
                             glistFiltered = createGroups();
                         }
+            
                         glistFiltered[i].Add(cn);
                     }
                 }
             }
+
             List<Group<ContactInfo>> list = null;
+
             if (areCharsNumber)
             {
-
                 if (glistFiltered == null || createNewFilteredList)
                 {
                     if (defaultJumpList == null)
                         defaultJumpList = createGroups();
+
                     list = defaultJumpList;
+                    
                     if (defaultJumpList[26].Count == 0)
                         defaultJumpList[26].Insert(0, defaultContact);
                 }
@@ -420,8 +432,10 @@ namespace windows_client.View
                     list = glistFiltered;
                     list[26].Insert(0, defaultContact);
                 }
+
                 charsEntered = (isPlus ? "+" : "") + charsEntered;
                 list[26][0].Name = charsEntered;
+                
                 if (Utils.IsNumberValid(charsEntered))
                 {
                     list[26][0].Msisdn = defaultMsg;
@@ -430,12 +444,14 @@ namespace windows_client.View
                 {
                     list[26][0].Msisdn = AppResources.SelectUser_EnterValidNo_Txt;
                 }
-
             }
+            
             if (!areCharsNumber && createNewFilteredList)
                 return null;
+            
             if (areCharsNumber)
                 return list;
+            
             return glistFiltered;
         }
 

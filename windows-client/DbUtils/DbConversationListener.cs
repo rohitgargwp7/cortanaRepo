@@ -69,7 +69,10 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.FILE_STATE_CHANGED, this);
         }
 
-        //call this from UI thread
+        /// <summary>
+        /// call this from UI thread for outgoing messages. These messages will be added to msgmap on new chat thread page
+        /// </summary>
+        /// <param name="conMessage"></param>
         private void addSentMessageToMsgMap(ConvMessage conMessage)
         {
             NewChatThread currentPage = App.newChatThreadPage;
@@ -511,9 +514,14 @@ namespace windows_client.DbUtils
             return obj;
         }
 
+        /// <summary>
+        /// Update messag db with messages as Received Read
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <param name="status"></param>
         private void updateDbBatch(long[] ids, int status)
         {
-            string msisdn = MessagesTableUtils.updateAllMsgStatus(null, ids, status);
+            string msisdn = MessagesTableUtils.updateAllMsgStatus(null, ids, status, null);
             ConversationTableUtils.updateLastMsgStatus(ids[ids.Length - 1], msisdn, status);
         }
     }

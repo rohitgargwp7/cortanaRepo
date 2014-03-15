@@ -69,7 +69,7 @@ namespace windows_client.View
                             {
                                 DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
                                 int version = dbUpdater.DatabaseSchemaVersion;
-                                if (version == 0)
+                                if (version < 1)
                                 {
                                     dbUpdater.AddColumn<ContactInfo>("PhoneNoKind");
                                     dbUpdater.DatabaseSchemaVersion = 1;
@@ -105,6 +105,29 @@ namespace windows_client.View
                     }
                     else
                         App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+
+                    if (Utils.compareVersion("2.5.1.2", App.CURRENT_VERSION) == 1)
+                    {
+                        using (HikeChatsDb db = new HikeChatsDb(App.MsgsDBConnectionstring))
+                        {
+                            if (db.DatabaseExists())
+                            {
+                                DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
+                                int version = dbUpdater.DatabaseSchemaVersion;
+                                if (version < 1)
+                                {
+                                    dbUpdater.AddColumn<ConvMessage>("ReadByInfo");
+                                    dbUpdater.DatabaseSchemaVersion = 1;
+
+                                    try
+                                    {
+                                        dbUpdater.Execute();
+                                    }
+                                    catch { }
+                                }
+                            }
+                        }
+                    }
 
                     Thread.Sleep(2000);//added so that this shows at least for 2 sec
                 };

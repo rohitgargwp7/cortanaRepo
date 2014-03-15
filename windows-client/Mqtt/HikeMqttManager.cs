@@ -245,7 +245,6 @@ namespace windows_client.Mqtt
                 listQos.Add(topics[i].qos);
             }
             mqttConnection.subscribe(listTopics, listQos, new SubscribeCB(this));
-
         }
 
         /*

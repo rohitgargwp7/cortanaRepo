@@ -25,7 +25,6 @@ namespace windows_client.Model
     [Index(Columns = "Msisdn,Timestamp ASC", IsUnique = false, Name = "Msg_Idx")]
     public class ConvMessage : INotifyPropertyChanged, INotifyPropertyChanging
     {
-
         private long _messageId; // this corresponds to msgID stored in sender's DB
         private string _msisdn;
         private string _message;
@@ -42,6 +41,7 @@ namespace windows_client.Model
         private Sticker _stickerObj;
         // private bool _hasFileAttachment = false;
         private bool _hasAttachment = false;
+        private string _readByInfo;
 
         /* Adding entries to the beginning of this list is not backwards compatible */
         public enum State
@@ -58,7 +58,6 @@ namespace windows_client.Model
             FORCE_SMS_SENT_DELIVERED, /* message delivered to client device */
             FORCE_SMS_SENT_DELIVERED_READ, /* message viewed by recipient */
         }
-
 
         public enum ParticipantInfoState
         {
@@ -85,7 +84,8 @@ namespace windows_client.Model
             FORCE_SMS_NOTIFICATION,
             H2H_OFFLINE_IN_APP_TIP,
             CHAT_BACKGROUND_CHANGED,
-            CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED
+            CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED,
+            MESSAGE_STATUS
         }
 
         public enum MessageType
@@ -230,6 +230,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("Message");
                     _message = value;
+                    NotifyPropertyChanged("DispMessage");
                 }
             }
         }
@@ -350,6 +351,46 @@ namespace windows_client.Model
                     NotifyPropertyChanging("HasAttachment");
                     _hasAttachment = value;
                 }
+            }
+        }
+
+        [Column(CanBeNull = true)]
+        public string ReadByInfo
+        {
+            get
+            {
+                return _readByInfo;
+            }
+            set
+            {
+                if (_readByInfo != value)
+                {
+                    NotifyPropertyChanging("ReadByInfo");
+                    _readByInfo = value;
+                    NotifyPropertyChanged("ReadByInfo");
+                }
+            }
+        }
+
+        JArray _readByArray;
+        public JArray ReadByArray
+        {
+            get
+            {
+                if (_readByArray == null)
+                {
+                    if (String.IsNullOrEmpty(_readByInfo))
+                        return null;
+                    else
+                        _readByArray = JArray.Parse(_readByInfo);
+                }
+
+                return _readByArray;
+            }
+            set
+            {
+                if (value != _readByArray)
+                    _readByArray = value;
             }
         }
 
@@ -511,6 +552,14 @@ namespace windows_client.Model
         public Visibility SpecialNudgeVisibility
         {
             get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Visible : Visibility.Collapsed; }
+        }
+
+        public BitmapImage SpecialNudgeImage
+        {
+            get
+            {
+                return IsSent ? UI_Utils.Instance.HeartNudgeSent : UI_Utils.Instance.HeartNudgeReceived;
+            }
         }
 
         bool _changingState;
@@ -1271,7 +1320,10 @@ namespace windows_client.Model
         {
             get
             {
-                if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)) || GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION || GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
+                    || GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION
+                    || GrpParticipantState == ConvMessage.ParticipantInfoState.MESSAGE_STATUS
+                    || GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                     return ChatForegroundColor;
                 else
                 {
@@ -1472,6 +1524,14 @@ namespace windows_client.Model
                 return false;
             ConvMessage other = (ConvMessage)obj;
 
+            //to handle duplicate message check and some other edge cases we cant compare message ids directly
+            //For duplicate messsage we check whether that message exists in db or not, so db object has id greater than 0 and and for other object this is -1
+            //so if both have greater than zero than this check is sufficient
+            if (_messageId > 0 && other.MessageId > 0)
+            {
+                return _messageId == other.MessageId;
+            }
+
             if (IsSent != other.IsSent)
                 return false;
             if (Message == null)
@@ -1491,6 +1551,10 @@ namespace windows_client.Model
             if (MessageStatus.Equals(other.MessageStatus))
                 return false;
             if (Timestamp != other.Timestamp)
+                return false;
+            if (_fileAttachment != null && other.FileAttachment != null
+                && _fileAttachment.FileKey != null && other.FileAttachment.FileKey != null
+                && !_fileAttachment.FileKey.Equals(other.FileAttachment.FileKey))
                 return false;
             return true;
         }

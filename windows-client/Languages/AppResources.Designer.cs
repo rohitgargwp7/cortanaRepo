@@ -232,7 +232,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Block.
+        ///   Looks up a localized string similar to block.
         /// </summary>
         public static string Block_Txt {
             get {
@@ -484,6 +484,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All your messages in this chat would get deleted. Are you sure you want to continue?.
+        /// </summary>
+        public static string clear_Chat_Body {
+            get {
+                return ResourceManager.GetString("clear_Chat_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirmation.
+        /// </summary>
+        public static string clear_Chat_Header {
+            get {
+                return ResourceManager.GetString("clear_Chat_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to clear chat.
+        /// </summary>
+        public static string Clear_Chat_Txt {
+            get {
+                return ResourceManager.GetString("Clear_Chat_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You will now be able to see updates from {0} here..
         /// </summary>
         public static string ConfimFriendTimeline_Txt {
@@ -669,6 +696,15 @@ namespace windows_client.Languages {
         public static string Conversations_Delete_Chats_Confirmation {
             get {
                 return ResourceManager.GetString("Conversations_Delete_Chats_Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure about deleting these chats?.
+        /// </summary>
+        public static string Conversations_Delete_MoreThan1Chat_Confirmation {
+            get {
+                return ResourceManager.GetString("Conversations_Delete_MoreThan1Chat_Confirmation", resourceCulture);
             }
         }
         
@@ -1976,7 +2012,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your free SMS balance is zero. You can invite friends to join hike and earn more free SMS.
+        ///   Looks up a localized string similar to Looks like you have exhausted all your Free SMS credits. Invite more friends to hike to earn Free SMS.
         /// </summary>
         public static string H2HOfline_0SMS_Message {
             get {
@@ -2602,6 +2638,42 @@ namespace windows_client.Languages {
         public static string MessageNonHikeFriends_Blk2_Txt {
             get {
                 return ResourceManager.GetString("MessageNonHikeFriends_Blk2_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to read by everyone.
+        /// </summary>
+        public static string MessageStatus_ReadByEveryone {
+            get {
+                return ResourceManager.GetString("MessageStatus_ReadByEveryone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to read by {0} and {1} others.
+        /// </summary>
+        public static string MessageStatus_ReadByMoreThanThree {
+            get {
+                return ResourceManager.GetString("MessageStatus_ReadByMoreThanThree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to read by {0}.
+        /// </summary>
+        public static string MessageStatus_ReadByOneOrTwo {
+            get {
+                return ResourceManager.GetString("MessageStatus_ReadByOneOrTwo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to read by {0} and 1 other.
+        /// </summary>
+        public static string MessageStatus_ReadByThree {
+            get {
+                return ResourceManager.GetString("MessageStatus_ReadByThree", resourceCulture);
             }
         }
         
@@ -3290,6 +3362,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to preview {0} of {1}.
+        /// </summary>
+        public static string PreviewImages_Header_txt {
+            get {
+                return ResourceManager.GetString("PreviewImages_Header_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to privacy.
         /// </summary>
         public static string Privacy {
@@ -3758,7 +3839,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter Valid Number.
+        ///   Looks up a localized string similar to enter valid number.
         /// </summary>
         public static string SelectUser_EnterValidNo_Txt {
             get {
@@ -3767,7 +3848,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Forward To.
+        ///   Looks up a localized string similar to FORWARD TO.
         /// </summary>
         public static string SelectUser_Forward_To_Txt {
             get {
@@ -4649,7 +4730,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unblock.
+        ///   Looks up a localized string similar to unblock.
         /// </summary>
         public static string UnBlock_Txt {
             get {
@@ -4816,6 +4897,51 @@ namespace windows_client.Languages {
         public static string Video_Txt {
             get {
                 return ResourceManager.GetString("Video_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to select.
+        /// </summary>
+        public static string ViewAlbum_AppBar_Select_text {
+            get {
+                return ResourceManager.GetString("ViewAlbum_AppBar_Select_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT PHOTO.
+        /// </summary>
+        public static string ViewAlbums_Header_txt {
+            get {
+                return ResourceManager.GetString("ViewAlbums_Header_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max {0} photos please!.
+        /// </summary>
+        public static string ViewAlbums_MaxImageSelection {
+            get {
+                return ResourceManager.GetString("ViewAlbums_MaxImageSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to albums.
+        /// </summary>
+        public static string ViewAlbums_Pivot_Album_txt {
+            get {
+                return ResourceManager.GetString("ViewAlbums_Pivot_Album_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to date.
+        /// </summary>
+        public static string ViewAlbums_Pivot_Date_txt {
+            get {
+                return ResourceManager.GetString("ViewAlbums_Pivot_Date_txt", resourceCulture);
             }
         }
         
