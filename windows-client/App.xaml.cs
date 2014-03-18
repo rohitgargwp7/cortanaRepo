@@ -425,7 +425,6 @@ namespace windows_client
                 ConversationTableUtils.saveConvObjectList();
             }
 
-            App.mMqttManager.IsLastSeenPacketSent = false;
             App.mMqttManager.RemoveMqttListener();
             App.mMqttManager.disconnectFromBroker(false);
         }

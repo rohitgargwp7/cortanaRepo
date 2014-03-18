@@ -21,7 +21,6 @@ namespace windows_client.Mqtt
     {
         public volatile MqttConnection mqttConnection;
         private HikePubSub pubSub;
-        public bool IsLastSeenPacketSent = false;
         public bool IsAppStarted = true; // false for resume
         private const int API_VERSION = 2;
         private const bool AUTO_SUBSCRIBE = true;
@@ -434,11 +433,7 @@ namespace windows_client.Mqtt
             //TODO make it async
             List<HikePacket> packets = MqttDBUtils.getAllSentMessages();
 
-            if (!IsLastSeenPacketSent)
-            {
-                IsLastSeenPacketSent = true;
-                sendAppFGStatusToServer();
-            }
+            sendAppFGStatusToServer();
 
             if (packets == null)
                 return;
