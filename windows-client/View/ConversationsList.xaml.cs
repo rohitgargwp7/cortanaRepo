@@ -3135,11 +3135,11 @@ namespace windows_client.View
             ConversationListObject obj = null;
             try
             {
-                var list = App.ViewModel.MessageListPageCollection.Where(f => f.IsFav && f.IsOnhike && !f.IsGroupChat);
+                var list = App.ViewModel.MessageListPageCollection.Where(f => f.IsFav && f.IsOnhike && !f.IsGroupChat && !Utils.IsHikeBotMsg(f.Msisdn));
 
                 if (list.Count() == 0)
                 {
-                    list = App.ViewModel.MessageListPageCollection.Where(f => f.IsOnhike && !f.IsGroupChat);
+                    list = App.ViewModel.MessageListPageCollection.Where(f => f.IsOnhike && !Utils.IsHikeBotMsg(f.Msisdn) && !f.IsGroupChat);
                     if (list.Count() == 0)
                     {
                         if (App.ViewModel.MessageListPageCollection.Count > 0)
