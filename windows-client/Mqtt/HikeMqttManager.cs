@@ -245,7 +245,6 @@ namespace windows_client.Mqtt
                 listQos.Add(topics[i].qos);
             }
             mqttConnection.subscribe(listTopics, listQos, new SubscribeCB(this));
-
         }
 
         /*
@@ -459,6 +458,7 @@ namespace windows_client.Mqtt
         public void onPublish(String topic, byte[] body)
         {
             String receivedMessage = Encoding.UTF8.GetString(body, 0, body.Length);
+            MQttLogging.LogWriter.Instance.WriteToLog(receivedMessage);
             NetworkManager.Instance.onMessage(receivedMessage);
         }
 
@@ -508,6 +508,7 @@ namespace windows_client.Mqtt
                 msgId = -1;
             }
             String msgToPublish = json.ToString(Newtonsoft.Json.Formatting.None);
+            MQttLogging.LogWriter.Instance.WriteToLog(msgToPublish);
             byte[] byteData = Encoding.UTF8.GetBytes(msgToPublish);
             HikePacket packet = new HikePacket(msgId, byteData, TimeUtils.getCurrentTimeTicks());
             send(packet, qos);

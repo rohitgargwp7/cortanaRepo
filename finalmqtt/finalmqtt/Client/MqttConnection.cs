@@ -507,7 +507,7 @@ namespace finalmqtt.Client
 
         public void publish(String topic, byte[][] message, QoS qos, Callback[] cb) //throws IOException 
         {
-
+            
             PublishMessage[] messagesToPublish = new PublishMessage[cb.Length];
             for (int i = 0; i < message.Length; i++)
             {

@@ -2006,7 +2006,7 @@ namespace windows_client.View
                             }
                         }
 
-                        if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.CANCELED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                        if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.CANCELED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.FAILED)
                         {
                             if (!convMessage.IsSent ||
                                 (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ) ||
@@ -3854,12 +3854,19 @@ namespace windows_client.View
                             msg.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
                         }
 
-                        UpdateLastSentMessageStatusOnUI();
-
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
                             if (lastSeenTxt.Text != AppResources.Online)
                             {
+                                if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
+                                    ocMessages.Remove(_h2hofflineToolTip);
+
+                                if (_isSendAllAsSMSVisible && ocMessages != null && msg.MessageId >= _lastUnDeliveredMessage.MessageId)
+                                {
+                                    ocMessages.Remove(_tap2SendAsSMSMessage);
+                                    _isSendAllAsSMSVisible = false;
+                                }
+
                                 var worker = new BackgroundWorker();
 
                                 worker.DoWork += (s, e) =>
@@ -3902,8 +3909,6 @@ namespace windows_client.View
                         else
                             return;
                     }
-
-                    UpdateLastSentMessageStatusOnUI();
 
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -4037,8 +4042,6 @@ namespace windows_client.View
 
                 #endregion
 
-                UpdateLastSentMessageStatusOnUI();
-
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
@@ -4057,6 +4060,8 @@ namespace windows_client.View
                         ShowForceSMSOnUI();
                     });
                 }
+
+                UpdateLastSentMessageStatusOnUI();
             }
 
             #endregion
@@ -4685,7 +4690,7 @@ namespace windows_client.View
             }
         }
 
-        private void MultipleImagesTransfer()
+        private async Task MultipleImagesTransfer()
         {
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
             {
@@ -4693,6 +4698,8 @@ namespace windows_client.View
 
                 foreach (PhotoClass pic in listPic)
                 {
+                    //Add delay so that each message has different timestamps and equals function for convmessages runs correctly
+                    await Task.Delay(1);
                     SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString());
                     pic.Pic.Dispose();
                 }
