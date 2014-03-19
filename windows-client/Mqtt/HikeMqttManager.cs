@@ -386,6 +386,8 @@ namespace windows_client.Mqtt
             PublishCB[] messageCallbacks = new PublishCB[packets.Count];
             for (int i = 0; i < packets.Count; i++)
             {
+                MQttLogging.LogWriter.Instance.WriteToLog("Message read from db for retry,Packet: " + System.Text.Encoding.UTF8.GetString(packets[i].Message, 0, packets[i].Message.Length));
+
                 messageCallbacks[i] = new PublishCB(packets[i], this, 1, true);
                 messagesToSend[i] = packets[i].Message;
             }

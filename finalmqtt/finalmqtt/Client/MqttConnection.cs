@@ -427,6 +427,7 @@ namespace finalmqtt.Client
             Callback cb = MsgCallBacksMapGetValue(messageId);
             if (cb != null)
             {
+                MQttLogging.LogWriter.Instance.WriteToLog("Ack Not recieved for message id:" + messageId);
                 MsgCallbacksMapRemove(messageId);
             }
             ScheduledActionsMapRemove(messageId);
@@ -507,7 +508,7 @@ namespace finalmqtt.Client
 
         public void publish(String topic, byte[][] message, QoS qos, Callback[] cb) //throws IOException 
         {
-            
+
             PublishMessage[] messagesToPublish = new PublishMessage[cb.Length];
             for (int i = 0; i < message.Length; i++)
             {
@@ -600,10 +601,10 @@ namespace finalmqtt.Client
                         Debug.WriteLine("MQTTCONNECTION:: Disposing action for message ID - " + messageId);
                         MsgCallbacksMapRemove(messageId);
                         cb.onSuccess();
+                        MQttLogging.LogWriter.Instance.WriteToLog("Success called for message ID:" + messageId);
                     }
                 }
             }
-
             switch (msg.getType())
             {
                 case MessageType.CONNACK:
@@ -617,6 +618,8 @@ namespace finalmqtt.Client
                     break;
                 case MessageType.PUBACK:
                     handleMessage((PubAckMessage)msg);
+                    PubAckMessage puback = (PubAckMessage)msg;
+                    MQttLogging.LogWriter.Instance.WriteToLog("PubAck recieved for message ID:" + puback.getMessageId());
                     break;
                 case MessageType.SUBACK:
                     handleMessage((SubAckMessage)msg);

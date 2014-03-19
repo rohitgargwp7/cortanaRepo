@@ -461,6 +461,7 @@ namespace windows_client.DbUtils
                                 convMessage.FileAttachment.FileKey = fileKey;
                                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
+                                MQttLogging.LogWriter.Instance.WriteToLog("FIle upload completed, MessageId:" + convMessage.MessageId + " ,Filekey:" + fileKey);
                                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
 
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
