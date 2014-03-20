@@ -598,7 +598,7 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="15" HorizontalAlignment="Right" Opacity="0.5" Margin="5,0"/>
+                                                <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Opacity="0.5" Margin="5,0"/>
                                                 <TextBlock Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" />
                                             </Grid>
                                         </Grid>
@@ -650,7 +650,7 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="15" HorizontalAlignment="Right" Opacity="0.5" Margin="5,0"/>
+                                                <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Opacity="0.5" Margin="5,0"/>
                                                 <TextBlock Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" />
                                             </Grid>
                                         </Grid>
@@ -709,7 +709,7 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="15" HorizontalAlignment="Right" Opacity="0.5" Margin="5,0"/>
+                                                    <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Opacity="0.5" Margin="5,0"/>
                                                     <TextBlock Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" />
                                                 </Grid>
                                             </Grid>
@@ -780,7 +780,7 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="15" HorizontalAlignment="Right" Opacity="0.5" Margin="5,0"/>
+                                                    <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Opacity="0.5" Margin="5,0"/>
                                                     <TextBlock Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" />
                                                 </Grid>
                                             </Grid>
@@ -810,7 +810,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Border Grid.ColumnSpan="2" Background="Black" Opacity="0.4" Margin="-5,-8" Canvas.ZIndex="-1"/>
-                                            <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="15" HorizontalAlignment="Right" Margin="5,0"/>
+                                            <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Margin="5,0"/>
                                             <TextBlock Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0" FontSize="18" Foreground="{Binding MessageTextForeGround}"/>
                                         </Grid>
                                     </Grid>
@@ -857,7 +857,7 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="15" HorizontalAlignment="Right" Opacity="0.5" Margin="5,0"/>
+                                                <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Opacity="0.5" Margin="5,0"/>
                                                 <TextBlock Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" />
                                             </Grid>
                                         </Grid>
@@ -887,7 +887,7 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <Border Grid.ColumnSpan="2" Background="Black" Opacity="0.4" Margin="-5,-8" Canvas.ZIndex="-1"/>
-                                                <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="15" Margin="5,0" HorizontalAlignment="Right"/>
+                                                <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" Margin="5,0" HorizontalAlignment="Right"/>
                                                 <TextBlock Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0" FontSize="18" Foreground="{Binding MessageTextForeGround}"/>
                                             </Grid>
                                         </Grid>
