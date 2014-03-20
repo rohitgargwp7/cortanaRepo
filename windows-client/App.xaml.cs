@@ -1213,7 +1213,12 @@ namespace windows_client
             obj.Add(HikeConstants.STATUS, "bg");
 
             if (App.HikePubSubInstance != null)
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            {
+                Object[] objArr = new object[2];
+                objArr[0] = obj;
+                objArr[1] = 0;
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, objArr);
+            }
         }
 
         public static void SendEnterToSendStatusToServer()
