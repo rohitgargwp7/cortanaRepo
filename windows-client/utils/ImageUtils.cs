@@ -16,7 +16,6 @@ namespace windows_client.utils
         private SolidColorBrush textBoxBackground;
         private SolidColorBrush lastMsgForeground;
         private SolidColorBrush smsBackground;
-        private SolidColorBrush hikeMsgBackground;
         private SolidColorBrush receivedChatBubbleColor;
         private SolidColorBrush walkThroughSelectedColumn;
         private SolidColorBrush walkThroughUnselectedColumn;
@@ -76,6 +75,10 @@ namespace windows_client.utils
         private BitmapImage nudgeReceived;
         private BitmapImage heartNudgeSend;
         private BitmapImage heartNudgeReceived;
+        private BitmapImage whiteSentNudgeImage;
+        private BitmapImage whiteReceivedNudgeImage;
+        private BitmapImage blueSentNudgeImage;
+        private BitmapImage blueReceivedNudgeImage;
         private BitmapImage textStatusImage;
         private BitmapImage friendRequestImage;
         private BitmapImage profilePicStatusImage;
@@ -276,9 +279,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (hikeMsgBackground == null)
-                    hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 47, 152, 218));
-                return hikeMsgBackground;
+                return HikeBlue;
             }
         }
 
@@ -339,7 +340,7 @@ namespace windows_client.utils
             get
             {
                 if (hikeBlue == null)
-                    hikeBlue = new SolidColorBrush(Color.FromArgb(255, 46, 145, 211));
+                    hikeBlue = new SolidColorBrush(Color.FromArgb(255, 15, 143, 225));
                 return hikeBlue;
             }
         }
@@ -2221,6 +2222,50 @@ namespace windows_client.utils
                 wb.SaveJpeg(ms, bitmapImage.PixelWidth, bitmapImage.PixelHeight, 0, 100);
 
                 return ms.ToArray();
+            }
+        }
+
+        public BitmapImage WhiteSentNudgeImage 
+        {
+            get
+            {
+                if (whiteSentNudgeImage == null)
+                    whiteSentNudgeImage = new BitmapImage(new Uri("/View/images/nudge_sent.png", UriKind.Relative));
+
+                return whiteSentNudgeImage;
+            }
+        }
+
+        public BitmapImage WhiteReceivedNudgeImage
+        {
+            get
+            {
+                if (whiteReceivedNudgeImage == null)
+                    whiteReceivedNudgeImage = new BitmapImage(new Uri("/View/images/nudge_received.png", UriKind.Relative));
+
+                return whiteReceivedNudgeImage;
+            }
+        }
+
+        public BitmapImage BlueReceivedNudgeImage
+        {
+            get
+            {
+                if (blueReceivedNudgeImage == null)
+                    blueReceivedNudgeImage = new BitmapImage(new Uri("/View/images/nudge_received_blue.png", UriKind.Relative));
+
+                return blueReceivedNudgeImage;
+            }
+        }
+
+        public BitmapImage BlueSentNudgeImage
+        {
+            get
+            {
+                if (blueSentNudgeImage == null)
+                    blueSentNudgeImage = new BitmapImage(new Uri("/View/images/nudge_sent_blue.png", UriKind.Relative));
+
+                return blueSentNudgeImage;
             }
         }
     }

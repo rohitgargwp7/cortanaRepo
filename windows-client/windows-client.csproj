@@ -633,6 +633,8 @@
     <Content Include="View\images\Item_Selected.png" />
     <Content Include="View\images\notification_Image.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbOwl.png" />
+    <Content Include="View\images\nudge_received_blue.png" />
+    <Content Include="View\images\nudge_sent_blue.png" />
     <Content Include="View\images\stickers\categorySets\angry_active.png" />
     <Content Include="View\images\stickers\categorySets\angry_inactive.png" />
     <Content Include="View\images\stickers\categorySets\hotheads_overlay.png" />
