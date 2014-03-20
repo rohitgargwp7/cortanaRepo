@@ -602,8 +602,11 @@
     <Content Include="View\images\group_pic_changed_CT.png" />
     <Content Include="View\images\icon_delete.png" />
     <Content Include="View\images\icon_sending_CT.png" />
+    <Content Include="View\images\icon_sending_grey.png" />
     <Content Include="View\images\ic_delivered_CT.png" />
+    <Content Include="View\images\ic_delivered_grey.png" />
     <Content Include="View\images\ic_read_CT.png" />
+    <Content Include="View\images\ic_read_grey.png" />
     <Content Include="View\images\ic_sent_CT.png" />
     <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_Box.png" />
     <Content Include="View\images\ChatBgFTUE\chat_bg_ftue_Flip_side_dot.png" />
@@ -630,6 +633,7 @@
     <Content Include="View\images\ChatBgFTUE\ribbon3.png" />
     <Content Include="View\images\ChatBgFTUE\snow_flake.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbNight.png" />
+    <Content Include="View\images\ic_sent_grey.png" />
     <Content Include="View\images\Item_Selected.png" />
     <Content Include="View\images\notification_Image.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbOwl.png" />

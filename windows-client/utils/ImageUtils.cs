@@ -51,12 +51,16 @@ namespace windows_client.utils
         private BitmapImage httpFailed_CT;
         private BitmapImage sent;
         private BitmapImage sent_ct;
+        private BitmapImage sent_Grey;
         private BitmapImage delivered;
         private BitmapImage delivered_ct;
+        private BitmapImage delivered_Grey;
         private BitmapImage read;
         private BitmapImage read_ct;
+        private BitmapImage read_Grey;
         private BitmapImage trying;
         private BitmapImage trying_ct;
+        private BitmapImage trying_Grey;
         private BitmapImage waiting;
         private BitmapImage waiting_ct;
         private BitmapImage reward;
@@ -684,6 +688,17 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage Sent_Grey
+        {
+            get
+            {
+                if (sent_Grey == null)
+                    sent_Grey = new BitmapImage(new Uri("/View/images/ic_sent_grey.png", UriKind.Relative));
+
+                return sent_Grey;
+            }
+        }
+
         public BitmapImage Sent_ChatTheme
         {
             get
@@ -749,6 +764,17 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage Delivered_Grey
+        {
+            get
+            {
+                if (delivered_Grey == null)
+                    delivered_Grey = new BitmapImage(new Uri("/View/images/ic_delivered_grey.png", UriKind.Relative));
+
+                return delivered_Grey;
+            }
+        }
+
         public BitmapImage Delivered_ChatTheme
         {
             get
@@ -771,6 +797,17 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage Read_Grey
+        {
+            get
+            {
+                if (read_Grey == null)
+                    read_Grey = new BitmapImage(new Uri("/View/images/ic_read_grey.png", UriKind.Relative));
+
+                return read_Grey;
+            }
+        }
+        
         public BitmapImage Read_ChatTheme
         {
             get
@@ -802,6 +839,18 @@ namespace windows_client.utils
                     trying = new BitmapImage(new Uri("/View/images/icon_sending.png", UriKind.Relative));
                 }
                 return trying;
+            }
+        }
+
+        public BitmapImage Trying_Grey
+        {
+            get
+            {
+                if (trying_Grey == null)
+                {
+                    trying_Grey = new BitmapImage(new Uri("/View/images/icon_sending_grey.png", UriKind.Relative));
+                }
+                return trying_Grey;
             }
         }
 

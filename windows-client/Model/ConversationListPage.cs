@@ -267,17 +267,17 @@ namespace windows_client.Model
                 {
                     case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
                     case ConvMessage.State.SENT_CONFIRMED:
-                        return UI_Utils.Instance.Sent;
+                        return UI_Utils.Instance.Sent_Grey;
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED:
-                        return UI_Utils.Instance.Delivered;
+                        return UI_Utils.Instance.Delivered_Grey;
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                     case ConvMessage.State.SENT_DELIVERED_READ:
-                        return UI_Utils.Instance.Read;
+                        return UI_Utils.Instance.Read_Grey;
                     case ConvMessage.State.SENT_UNCONFIRMED:
-                        return UI_Utils.Instance.Trying;
+                        return UI_Utils.Instance.Trying_Grey;
                     case ConvMessage.State.SENT_FAILED:
-                        return UI_Utils.Instance.Trying;
+                        return UI_Utils.Instance.Trying_Grey;
                     default:
                         return null;
                 }
