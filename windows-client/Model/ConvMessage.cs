@@ -1340,7 +1340,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)) 
+                if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
                     || GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION
                     || GrpParticipantState == ConvMessage.ParticipantInfoState.MESSAGE_STATUS
                     || GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
@@ -1544,6 +1544,14 @@ namespace windows_client.Model
                 return false;
             ConvMessage other = (ConvMessage)obj;
 
+            //to handle duplicate message check and some other edge cases we cant compare message ids directly
+            //For duplicate messsage we check whether that message exists in db or not, so db object has id greater than 0 and and for other object this is -1
+            //so if both have greater than zero than this check is sufficient
+            if (_messageId > 0 && other.MessageId > 0)
+            {
+                return _messageId == other.MessageId;
+            }
+
             if (IsSent != other.IsSent)
                 return false;
             if (Message == null)
@@ -1563,6 +1571,10 @@ namespace windows_client.Model
             if (MessageStatus.Equals(other.MessageStatus))
                 return false;
             if (Timestamp != other.Timestamp)
+                return false;
+            if (_fileAttachment != null && other.FileAttachment != null
+                && _fileAttachment.FileKey != null && other.FileAttachment.FileKey != null
+                && !_fileAttachment.FileKey.Equals(other.FileAttachment.FileKey))
                 return false;
             return true;
         }

@@ -68,7 +68,6 @@ namespace windows_client.DbUtils
                     if (cm != null)
                         return false;
                 }
-                long currentMessageId = convMessage.MessageId;
                 context.messages.InsertOnSubmit(convMessage);
                 try
                 {

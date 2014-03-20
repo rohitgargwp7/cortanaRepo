@@ -379,7 +379,6 @@ namespace windows_client.View
             if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
             {
                 NetworkManager.turnOffNetworkManager = false;
-                Utils.RequestServerEpochTime();
             }
             App.MqttManagerInstance.connect();
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
@@ -965,7 +964,6 @@ namespace windows_client.View
                         if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                         {
                             NetworkManager.turnOffNetworkManager = false;
-                            Utils.RequestServerEpochTime();
                             PhoneApplicationService.Current.State.Remove("IsStatusPush");
                         }
 
@@ -3135,11 +3133,11 @@ namespace windows_client.View
             ConversationListObject obj = null;
             try
             {
-                var list = App.ViewModel.MessageListPageCollection.Where(f => f.IsFav && f.IsOnhike && !f.IsGroupChat);
+                var list = App.ViewModel.MessageListPageCollection.Where(f => f.IsFav && f.IsOnhike && !f.IsGroupChat && !Utils.IsHikeBotMsg(f.Msisdn));
 
                 if (list.Count() == 0)
                 {
-                    list = App.ViewModel.MessageListPageCollection.Where(f => f.IsOnhike && !f.IsGroupChat);
+                    list = App.ViewModel.MessageListPageCollection.Where(f => f.IsOnhike && !Utils.IsHikeBotMsg(f.Msisdn) && !f.IsGroupChat);
                     if (list.Count() == 0)
                     {
                         if (App.ViewModel.MessageListPageCollection.Count > 0)
@@ -3271,14 +3269,17 @@ namespace windows_client.View
         bool _profileImageTapped = false;
         private void profileImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            _profileImageTapped = true;
-
             var conv = (sender as Grid).DataContext as ConversationListObject;
 
-            if (conv != null)
-                conv.IsSelected = !conv.IsSelected;
+            if (ApplicationBar == deleteAppBar)
+            {
+                _profileImageTapped = true;
 
-            ChangeAppBarOnConvSelected();
+                if (conv != null)
+                    conv.IsSelected = !conv.IsSelected;
+
+                ChangeAppBarOnConvSelected();
+            }
         }
 
         private void ChangeAppBarOnConvSelected()

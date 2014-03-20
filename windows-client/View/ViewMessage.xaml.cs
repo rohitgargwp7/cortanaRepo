@@ -37,14 +37,14 @@ namespace windows_client.View
                     string currentString = tempString.Substring(0, maxChar);
                     tempString = tempString.Substring(maxChar);
                     RichTextBox rtb = new RichTextBox() { TextWrapping = TextWrapping.Wrap };
-                    rtb.Blocks.Add(SmileyParser.Instance.LinkifyAll(currentString, phoneForeground, new SmileyParser.HyperLinkEventDelegate(hyperlink_Click_CallBack)));
+                    rtb.Blocks.Add(SmileyParser.Instance.LinkifyAll(currentString, phoneForeground, new SmileyParser.LinkClickedDelegate(hyperlink_Click_CallBack)));
                     stMessage.Children.Add(rtb);
                 }
             }
 
         }
 
-        void hyperlink_Click_CallBack(object obj, bool val)
+        void hyperlink_Click_CallBack(object obj)
         {
             App.ViewModel.Hyperlink_Clicked(obj);
         }
