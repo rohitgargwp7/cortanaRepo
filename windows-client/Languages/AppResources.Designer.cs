@@ -493,15 +493,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirmation.
-        /// </summary>
-        public static string clear_Chat_Header {
-            get {
-                return ResourceManager.GetString("clear_Chat_Header", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to clear chat.
         /// </summary>
         public static string Clear_Chat_Txt {
@@ -525,6 +516,15 @@ namespace windows_client.Languages {
         public static string ConfimFriendUserProfile_Txt {
             get {
                 return ResourceManager.GetString("ConfimFriendUserProfile_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirmation.
+        /// </summary>
+        public static string Confirmation_HeaderTxt {
+            get {
+                return ResourceManager.GetString("Confirmation_HeaderTxt", resourceCulture);
             }
         }
         
@@ -1891,6 +1891,15 @@ namespace windows_client.Languages {
         public static string GROUP_NAME_TXT {
             get {
                 return ResourceManager.GetString("GROUP_NAME_TXT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This group chat is blocked. Would you like to unblock the group owner?.
+        /// </summary>
+        public static string GroupBlocked_PomptTxt {
+            get {
+                return ResourceManager.GetString("GroupBlocked_PomptTxt", resourceCulture);
             }
         }
         
@@ -4843,6 +4852,15 @@ namespace windows_client.Languages {
         public static string USER_REJOINED_HIKE_TXT {
             get {
                 return ResourceManager.GetString("USER_REJOINED_HIKE_TXT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This user is blocked. Would you like to unblock the user?.
+        /// </summary>
+        public static string UserBlocked_PomptTxt {
+            get {
+                return ResourceManager.GetString("UserBlocked_PomptTxt", resourceCulture);
             }
         }
         

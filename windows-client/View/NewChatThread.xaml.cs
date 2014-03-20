@@ -1720,7 +1720,7 @@ namespace windows_client.View
 
         void clearChatItem_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show(AppResources.clear_Chat_Body, AppResources.clear_Chat_Header, MessageBoxButton.OKCancel);
+            var result = MessageBox.Show(AppResources.clear_Chat_Body, AppResources.Confirmation_HeaderTxt, MessageBoxButton.OKCancel);
 
             if (result == MessageBoxResult.OK)
             {
