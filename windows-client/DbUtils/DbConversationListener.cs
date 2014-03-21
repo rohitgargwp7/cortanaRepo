@@ -76,7 +76,7 @@ namespace windows_client.DbUtils
         private void addSentMessageToMsgMap(ConvMessage conMessage)
         {
             NewChatThread currentPage = App.newChatThreadPage;
-            if (currentPage != null && conMessage != null)
+            if (currentPage != null && conMessage != null && currentPage.mContactNumber == conMessage.Msisdn)
             {
                 currentPage.OutgoingMsgsMap[conMessage.MessageId] = conMessage;
             }
