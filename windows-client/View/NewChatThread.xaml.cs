@@ -1720,7 +1720,7 @@ namespace windows_client.View
 
         void clearChatItem_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show(AppResources.clear_Chat_Body, AppResources.clear_Chat_Header, MessageBoxButton.OKCancel);
+            var result = MessageBox.Show(AppResources.clear_Chat_Body, AppResources.Confirmation_HeaderTxt, MessageBoxButton.OKCancel);
 
             if (result == MessageBoxResult.OK)
             {
@@ -4733,7 +4733,12 @@ namespace windows_client.View
             else if (convMessage.FileAttachment == null || convMessage.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
             {
                 if (convMessage.FileAttachment != null)
-                    PauseTransfer(convMessage);
+                {
+                    if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                        displayAttachment(convMessage);
+                    else
+                        PauseTransfer(convMessage); // only pause for files and not for location/contacts
+                }
             }
             else if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.STARTED)
             {

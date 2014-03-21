@@ -2117,7 +2117,13 @@ Download it now http://hike.in and join the fun!</value>
   <data name="clear_Chat_Body" xml:space="preserve">
     <value>All your messages in this chat would get deleted. Are you sure you want to continue?</value>
   </data>
-  <data name="clear_Chat_Header" xml:space="preserve">
+  <data name="Confirmation_HeaderTxt" xml:space="preserve">
     <value>Confirmation</value>
+  </data>
+  <data name="GroupBlocked_PomptTxt" xml:space="preserve">
+    <value>This group chat is blocked. Would you like to unblock the group owner?</value>
+  </data>
+  <data name="UserBlocked_PomptTxt" xml:space="preserve">
+    <value>This user is blocked. Would you like to unblock the user?</value>
   </data>
 </root>

@@ -39,6 +39,20 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static Func<HikeChatsDb, IQueryable<GroupInfo>> GetAllGroupInfo
+        {
+            get
+            {
+                Func<HikeChatsDb, IQueryable<GroupInfo>> q =
+                     CompiledQuery.Compile<HikeChatsDb, IQueryable<GroupInfo>>
+                     ((HikeChatsDb hdc) =>
+                         from o in hdc.groupInfo
+                         where o.GroupAlive == true
+                         select o);
+                return q;
+            }
+        }
+
         #endregion
 
         #region UsersTable Queries

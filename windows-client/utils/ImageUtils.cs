@@ -16,7 +16,6 @@ namespace windows_client.utils
         private SolidColorBrush textBoxBackground;
         private SolidColorBrush lastMsgForeground;
         private SolidColorBrush smsBackground;
-        private SolidColorBrush hikeMsgBackground;
         private SolidColorBrush receivedChatBubbleColor;
         private SolidColorBrush walkThroughSelectedColumn;
         private SolidColorBrush walkThroughUnselectedColumn;
@@ -24,6 +23,7 @@ namespace windows_client.utils
         private SolidColorBrush hikeBlue;
         private SolidColorBrush black;
         private SolidColorBrush white;
+        private SolidColorBrush lightGray;
         private SolidColorBrush black40Opacity;
         private SolidColorBrush btnGrayBackground;
         private SolidColorBrush btnGrayForeground;
@@ -52,12 +52,16 @@ namespace windows_client.utils
         private BitmapImage httpFailed_CT;
         private BitmapImage sent;
         private BitmapImage sent_ct;
+        private BitmapImage sent_Grey;
         private BitmapImage delivered;
         private BitmapImage delivered_ct;
+        private BitmapImage delivered_Grey;
         private BitmapImage read;
         private BitmapImage read_ct;
+        private BitmapImage read_Grey;
         private BitmapImage trying;
         private BitmapImage trying_ct;
+        private BitmapImage trying_Grey;
         private BitmapImage waiting;
         private BitmapImage waiting_ct;
         private BitmapImage reward;
@@ -76,6 +80,10 @@ namespace windows_client.utils
         private BitmapImage nudgeReceived;
         private BitmapImage heartNudgeSend;
         private BitmapImage heartNudgeReceived;
+        private BitmapImage whiteSentNudgeImage;
+        private BitmapImage whiteReceivedNudgeImage;
+        private BitmapImage blueSentNudgeImage;
+        private BitmapImage blueReceivedNudgeImage;
         private BitmapImage textStatusImage;
         private BitmapImage friendRequestImage;
         private BitmapImage profilePicStatusImage;
@@ -276,9 +284,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (hikeMsgBackground == null)
-                    hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 47, 152, 218));
-                return hikeMsgBackground;
+                return HikeBlue;
             }
         }
 
@@ -339,7 +345,7 @@ namespace windows_client.utils
             get
             {
                 if (hikeBlue == null)
-                    hikeBlue = new SolidColorBrush(Color.FromArgb(255, 46, 145, 211));
+                    hikeBlue = new SolidColorBrush(Color.FromArgb(255, 15, 143, 225));
                 return hikeBlue;
             }
         }
@@ -359,8 +365,18 @@ namespace windows_client.utils
             get
             {
                 if (white == null)
-                    white = new SolidColorBrush(Color.FromArgb(255, 0xff, 0xff, 0xff));
+                    white = new SolidColorBrush(Color.FromArgb(255,  0xff, 0xff, 0xff));
                 return white;
+            }
+        }
+
+        public SolidColorBrush LightGray
+        {
+            get
+            {
+                if (lightGray == null)
+                    lightGray = new SolidColorBrush(Color.FromArgb(255, 0xe5, 0xe5, 0xe2));
+                return lightGray;
             }
         }
 
@@ -683,6 +699,17 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage Sent_Grey
+        {
+            get
+            {
+                if (sent_Grey == null)
+                    sent_Grey = new BitmapImage(new Uri("/View/images/ic_sent_grey.png", UriKind.Relative));
+
+                return sent_Grey;
+            }
+        }
+
         public BitmapImage Sent_ChatTheme
         {
             get
@@ -748,6 +775,17 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage Delivered_Grey
+        {
+            get
+            {
+                if (delivered_Grey == null)
+                    delivered_Grey = new BitmapImage(new Uri("/View/images/ic_delivered_grey.png", UriKind.Relative));
+
+                return delivered_Grey;
+            }
+        }
+
         public BitmapImage Delivered_ChatTheme
         {
             get
@@ -770,6 +808,17 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage Read_Grey
+        {
+            get
+            {
+                if (read_Grey == null)
+                    read_Grey = new BitmapImage(new Uri("/View/images/ic_read_grey.png", UriKind.Relative));
+
+                return read_Grey;
+            }
+        }
+        
         public BitmapImage Read_ChatTheme
         {
             get
@@ -801,6 +850,18 @@ namespace windows_client.utils
                     trying = new BitmapImage(new Uri("/View/images/icon_sending.png", UriKind.Relative));
                 }
                 return trying;
+            }
+        }
+
+        public BitmapImage Trying_Grey
+        {
+            get
+            {
+                if (trying_Grey == null)
+                {
+                    trying_Grey = new BitmapImage(new Uri("/View/images/icon_sending_grey.png", UriKind.Relative));
+                }
+                return trying_Grey;
             }
         }
 
@@ -2221,6 +2282,50 @@ namespace windows_client.utils
                 wb.SaveJpeg(ms, bitmapImage.PixelWidth, bitmapImage.PixelHeight, 0, 100);
 
                 return ms.ToArray();
+            }
+        }
+
+        public BitmapImage WhiteSentNudgeImage 
+        {
+            get
+            {
+                if (whiteSentNudgeImage == null)
+                    whiteSentNudgeImage = new BitmapImage(new Uri("/View/images/nudge_sent.png", UriKind.Relative));
+
+                return whiteSentNudgeImage;
+            }
+        }
+
+        public BitmapImage WhiteReceivedNudgeImage
+        {
+            get
+            {
+                if (whiteReceivedNudgeImage == null)
+                    whiteReceivedNudgeImage = new BitmapImage(new Uri("/View/images/nudge_received.png", UriKind.Relative));
+
+                return whiteReceivedNudgeImage;
+            }
+        }
+
+        public BitmapImage BlueReceivedNudgeImage
+        {
+            get
+            {
+                if (blueReceivedNudgeImage == null)
+                    blueReceivedNudgeImage = new BitmapImage(new Uri("/View/images/nudge_received_blue.png", UriKind.Relative));
+
+                return blueReceivedNudgeImage;
+            }
+        }
+
+        public BitmapImage BlueSentNudgeImage
+        {
+            get
+            {
+                if (blueSentNudgeImage == null)
+                    blueSentNudgeImage = new BitmapImage(new Uri("/View/images/nudge_sent_blue.png", UriKind.Relative));
+
+                return blueSentNudgeImage;
             }
         }
     }
