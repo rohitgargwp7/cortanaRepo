@@ -62,7 +62,7 @@ namespace windows_client.View
         /// </summary>
         Dictionary<string, bool> groupListStateDictionary = new Dictionary<string, bool>();
 
-        Dictionary<string, GroupInfo> groupInfoDictionary = new Dictionary<string, GroupInfo>();
+        Dictionary<string, string> groupInfoDictionary = new Dictionary<string, string>();
 
         ContactInfo defaultContact = new ContactInfo(); // this is used to store default phone number 
 
@@ -646,23 +646,21 @@ namespace windows_client.View
                     }
                 }
 
-                foreach (ConversationListObject convList in App.ViewModel.ConvMap.Values)
+                var gi = GroupTableUtils.getAllGroupInfo();
+
+                foreach (var grp in gi)
                 {
-                    if (convList.IsGroupChat && convList.IsGroupAlive && (!forwardedFromGroupChat || convList.Msisdn != groupId))//handled ended group
+                    if (!forwardedFromGroupChat || grp.GroupId != groupId)//handled ended group
                     {
                         ContactInfo cinfo = new ContactInfo();
-                        cinfo.Name = convList.NameToShow;
+                        cinfo.Name = grp.GroupName ?? App.ViewModel.ConvMap[grp.GroupId].NameToShow;
                         cinfo.ContactListLabel = AppResources.GrpChat_Txt;//to show in tap msg
                         cinfo.OnHike = true;
                         cinfo.HasCustomPhoto = true;//show it is group chat
-                        cinfo.Msisdn = convList.Msisdn;//groupid
+                        cinfo.Msisdn = grp.GroupId;//groupid
                         glist[0].Add(cinfo);
 
-                        var gi = GroupTableUtils.getGroupInfoForId(convList.Msisdn);
-                        if (gi == null)
-                            continue;
-
-                        groupInfoDictionary[convList.Msisdn] = gi;
+                        groupInfoDictionary[grp.GroupId] = grp.GroupOwner;
                     }
                 }
             }
@@ -799,14 +797,14 @@ namespace windows_client.View
                     {
                         if (Utils.isGroupConversation(cInfo.Msisdn))
                         {
-                            if (App.ViewModel.BlockedHashset.Contains(groupInfoDictionary[cInfo.Msisdn].GroupOwner))
+                            if (groupInfoDictionary.ContainsKey(cInfo.Msisdn) && App.ViewModel.BlockedHashset.Contains(groupInfoDictionary[cInfo.Msisdn]))
                             {
                                 var result = MessageBox.Show(AppResources.GroupBlocked_PomptTxt, AppResources.Confirmation_HeaderTxt, MessageBoxButton.OKCancel);
 
                                 if (result == MessageBoxResult.OK)
                                 {
-                                    App.ViewModel.BlockedHashset.Remove(groupInfoDictionary[cInfo.Msisdn].GroupOwner);
-                                    App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupInfoDictionary[cInfo.Msisdn].GroupOwner);
+                                    App.ViewModel.BlockedHashset.Remove(groupInfoDictionary[cInfo.Msisdn]);
+                                    App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupInfoDictionary[cInfo.Msisdn]);
                                 }
                                 else
                                 {
