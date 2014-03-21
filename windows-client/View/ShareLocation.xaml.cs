@@ -331,6 +331,19 @@ namespace windows_client.View
                 // Couldn't get current location - location might be disabled in settings
                 //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
                 System.Diagnostics.Debug.WriteLine("Location exception GetCurrentCoordinate : " + ex.StackTrace);
+
+                _isFetchingCurrentLocation = false;
+                HideProgressIndicator();
+
+                if (_myCoordinate != null)
+                {
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        shareIconButton.IsEnabled = true;
+                        DrawMapMarkers();
+                        MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
+                    });
+                }
             }
             finally
             {

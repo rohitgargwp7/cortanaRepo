@@ -729,10 +729,21 @@ namespace windows_client.Model
             }
         }
 
+        Visibility _sdrImageVisibility = Visibility.Visible;
         public Visibility SdrImageVisibility
         {
-            get;
-            set;
+            get
+            {
+                return FileFailedImageVisibility == Visibility.Visible ? Visibility.Collapsed : _sdrImageVisibility;
+            }
+            set
+            {
+                if (value != _sdrImageVisibility)
+                {
+                    _sdrImageVisibility = value;
+                    NotifyPropertyChanged("SdrImageVisibility");
+                }
+            }
         }
 
         public BitmapImage FileFailedImage
@@ -750,11 +761,10 @@ namespace windows_client.Model
         {
             get
             {
-                return FileAttachment.FileState != Attachment.AttachmentState.STARTED
+                return FileAttachment != null && FileAttachment.FileState != Attachment.AttachmentState.STARTED
                 && FileAttachment.FileState != Attachment.AttachmentState.PAUSED
                 && FileAttachment.FileState != Attachment.AttachmentState.MANUAL_PAUSED
-                && FileAttachment.FileState != Attachment.AttachmentState.NOT_STARTED && 
-                MessageStatus == State.SENT_FAILED ? Visibility.Visible : Visibility.Collapsed;
+                && MessageStatus == State.SENT_FAILED ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -1448,6 +1458,7 @@ namespace windows_client.Model
             NotifyPropertyChanged("NudgeImage");
             NotifyPropertyChanged("SpecialNudgeVisibility");
             NotifyPropertyChanged("NormalNudgeVisibility");
+            NotifyPropertyChanged("FileFailedImage");
         }
 
         public Visibility SendAsSMSVisibility
@@ -2066,7 +2077,7 @@ namespace windows_client.Model
             SdrImageVisibility = attachmentState != Attachment.AttachmentState.STARTED
                 && attachmentState != Attachment.AttachmentState.PAUSED
                 && attachmentState != Attachment.AttachmentState.MANUAL_PAUSED
-                && attachmentState != Attachment.AttachmentState.NOT_STARTED && MessageStatus != State.SENT_FAILED
+                && MessageStatus != State.SENT_FAILED
                 ? Visibility.Visible : Visibility.Collapsed;
 
             NotifyPropertyChanged("SdrImageVisibility");
