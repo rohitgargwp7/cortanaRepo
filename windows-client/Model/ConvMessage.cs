@@ -649,38 +649,82 @@ namespace windows_client.Model
                 {
                     case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
                     case ConvMessage.State.SENT_CONFIRMED:
-                        if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
-                            || (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault))
-                            return UI_Utils.Instance.Sent;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Sent_ChatTheme;
+                            else
+                                return UI_Utils.Instance.Sent;
+                        }
                         else
-                            return UI_Utils.Instance.Sent_ChatTheme;
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Sent;
+                            else
+                                return UI_Utils.Instance.Sent_ChatTheme;
+                        }
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED:
-                        if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
-                            || (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault))
-                            return UI_Utils.Instance.Delivered;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Delivered_ChatTheme;
+                            else
+                                return UI_Utils.Instance.Delivered;
+                        }
                         else
-                            return UI_Utils.Instance.Delivered_ChatTheme;
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Delivered;
+                            else
+                                return UI_Utils.Instance.Delivered_ChatTheme;
+                        }
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                     case ConvMessage.State.SENT_DELIVERED_READ:
-                        if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
-                             || (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault))
-                            return UI_Utils.Instance.Read;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Read_ChatTheme;
+                            else
+                                return UI_Utils.Instance.Read;
+                        }
                         else
-                            return UI_Utils.Instance.Read_ChatTheme;
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Read;
+                            else
+                                return UI_Utils.Instance.Read_ChatTheme;
+                        }
                     case ConvMessage.State.SENT_UNCONFIRMED:
-                        if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
-                            || (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault))
-                            return UI_Utils.Instance.Trying;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Trying_ChatTheme;
+                            else
+                                return UI_Utils.Instance.Trying;
+                        }
                         else
-                            return UI_Utils.Instance.Trying_ChatTheme;
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Trying;
+                            else
+                                return UI_Utils.Instance.Trying_ChatTheme;
+                        }
                     default:
-                        if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
-                            || (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault))
-                            return UI_Utils.Instance.Trying;
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Trying_ChatTheme;
+                            else
+                                return UI_Utils.Instance.Trying;
+                        }
                         else
-                            return UI_Utils.Instance.Trying_ChatTheme;
-
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Trying;
+                            else
+                                return UI_Utils.Instance.Trying_ChatTheme;
+                        }
                 }
             }
         }
@@ -1322,8 +1366,8 @@ namespace windows_client.Model
             {
                 if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
                 {
-                    if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
-                        return App.Current.Resources["PhoneAccentBrush"] as SolidColorBrush;
+                    if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE) || StickerObj!=null)
+                        return UI_Utils.Instance.LightGray;
                     else if (IsSent)
                     {
                         if (IsSms)
@@ -1336,7 +1380,7 @@ namespace windows_client.Model
                 }
                 else
                 {
-                    if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
+                    if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE) || StickerObj != null)
                         return UI_Utils.Instance.Black40Opacity;
                     else if (IsSent)
                         return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.SentBubbleBgColor : UI_Utils.Instance.White;
@@ -1366,9 +1410,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
-                   return UI_Utils.Instance.White;
-                else if(GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION
+                if(GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION
                     || GrpParticipantState == ConvMessage.ParticipantInfoState.MESSAGE_STATUS
                     || GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                     return ChatForegroundColor;
@@ -1376,13 +1418,20 @@ namespace windows_client.Model
                 {
                     if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
                     {
-                        if (IsSent)
+                        if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                            return UI_Utils.Instance.Black;
+                        else if (IsSent)
                             return UI_Utils.Instance.White;
                         else
                             return UI_Utils.Instance.ReceiveMessageForeground;
                     }
                     else
-                        return BubbleForegroundColor;
+                    {
+                        if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                            return UI_Utils.Instance.White;
+                        else
+                            return BubbleForegroundColor;
+                    }
                 }
             }
         }

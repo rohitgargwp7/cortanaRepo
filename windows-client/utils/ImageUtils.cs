@@ -23,6 +23,7 @@ namespace windows_client.utils
         private SolidColorBrush hikeBlue;
         private SolidColorBrush black;
         private SolidColorBrush white;
+        private SolidColorBrush lightGray;
         private SolidColorBrush black40Opacity;
         private SolidColorBrush btnGrayBackground;
         private SolidColorBrush btnGrayForeground;
@@ -364,8 +365,18 @@ namespace windows_client.utils
             get
             {
                 if (white == null)
-                    white = new SolidColorBrush(Color.FromArgb(255, 0xff, 0xff, 0xff));
+                    white = new SolidColorBrush(Color.FromArgb(255,  0xff, 0xff, 0xff));
                 return white;
+            }
+        }
+
+        public SolidColorBrush LightGray
+        {
+            get
+            {
+                if (lightGray == null)
+                    lightGray = new SolidColorBrush(Color.FromArgb(255, 0xe5, 0xe5, 0xe2));
+                return lightGray;
             }
         }
 
