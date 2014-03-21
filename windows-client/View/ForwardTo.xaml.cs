@@ -797,7 +797,7 @@ namespace windows_client.View
                     {
                         if (Utils.isGroupConversation(cInfo.Msisdn))
                         {
-                            if (groupInfoDictionary.ContainsKey(cInfo.Msisdn) && App.ViewModel.BlockedHashset.Contains(groupInfoDictionary[cInfo.Msisdn]))
+                            if (App.ViewModel.BlockedHashset.Contains(groupInfoDictionary[cInfo.Msisdn]))
                             {
                                 var result = MessageBox.Show(AppResources.GroupBlocked_PomptTxt, AppResources.Confirmation_HeaderTxt, MessageBoxButton.OKCancel);
 
