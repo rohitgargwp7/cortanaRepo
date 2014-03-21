@@ -819,7 +819,9 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Border Grid.ColumnSpan="2" Background="{Binding BubbleBackGroundColor}" Margin="-5,-8" Canvas.ZIndex="-1"/>
-                                            <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Margin="5,0"/>
+                                            <Grid Width="32" Margin="5,0" HorizontalAlignment="Right">
+                                                <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Center"/>
+                                            </Grid>
                                             <TextBlock Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0" FontSize="18" FontWeight="Thin" Foreground="{Binding MessageTextForeGround}"/>
                                         </Grid>
                                     </Grid>
@@ -898,7 +900,9 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <Border Grid.ColumnSpan="2" Background="{Binding BubbleBackGroundColor}" Margin="-5,-8" Canvas.ZIndex="-1"/>
-                                                <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" Margin="5,0" HorizontalAlignment="Right"/>
+                                                <Grid Width="32" Margin="5,0" HorizontalAlignment="Right">
+                                                    <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Center"/>
+                                                </Grid>
                                                 <TextBlock Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0" FontSize="18" FontWeight="Thin" Foreground="{Binding MessageTextForeGround}"/>
                                             </Grid>
                                         </Grid>
