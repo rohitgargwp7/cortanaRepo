@@ -286,6 +286,160 @@ namespace windows_client.utils
 
             BackgroundList.Add(new ChatBackground()
             {
+                ID = "25",
+                Background = "#ff94be38",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = false,
+                Position = 20,
+                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbSpring.png",
+                ImagePath = "/View/images/chatBackgrounds/Background/cbSpring.png"
+            });
+
+            BackgroundList.Add(new ChatBackground()
+            {
+                ID = "26",
+                Background = "#ff3c4d4b",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = false,
+                Position = 20,
+                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbMountain.png",
+                ImagePath = "/View/images/chatBackgrounds/Background/cbMountain.png"
+            });
+
+            BackgroundList.Add(new ChatBackground()
+            {
+                ID = "27",
+                Background = "#ff2766ab",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = false,
+                Position = 20,
+                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbBeach2.png",
+                ImagePath = "/View/images/chatBackgrounds/Background/cbBeach2.png"
+            });
+
+            BackgroundList.Add(new ChatBackground()
+            {
+                ID = "28",
+                Background = "#ff8D0000",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = false,
+                Position = 20,
+                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbCricket.png",
+                ImagePath = "/View/images/chatBackgrounds/Background/cbCricket.png"
+            });
+
+            BackgroundList.Add(new ChatBackground()
+            {
+                ID = "29",
+                Background = "#ff295659",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = false,
+                Position = 20,
+                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbFriends.png",
+                ImagePath = "/View/images/chatBackgrounds/Background/cbFriends.png"
+            });
+
+            BackgroundList.Add(new ChatBackground()
+            {
+                ID = "30",
+                Background = "#ff3b6f87",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = false,
+                Position = 20,
+                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbRains.png",
+                ImagePath = "/View/images/chatBackgrounds/Background/cbRains.png"
+            });
+
+            BackgroundList.Add(new ChatBackground()
+            {
+                ID = "31",
+                Background = "#ffc7cad9",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = false,
+                Position = 20,
+                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbMusic.png",
+                ImagePath = "/View/images/chatBackgrounds/Background/cbMusic.png"
+            });
+
+            BackgroundList.Add(new ChatBackground()
+            {
+                ID = "32",
+                Background = "#ff736558",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = false,
+                Position = 20,
+                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbMrRight.png",
+                ImagePath = "/View/images/chatBackgrounds/Background/cbMrRight.png"
+            });
+
+            BackgroundList.Add(new ChatBackground()
+            {
+                ID = "33",
+                Background = "#ffd79a64",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = false,
+                Position = 20,
+                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbHikinCouple.png",
+                ImagePath = "/View/images/chatBackgrounds/Background/cbHikinCouple.png"
+            });
+
+            BackgroundList.Add(new ChatBackground()
+            {
+                ID = "34",
+                Background = "#ff8D0000",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = false,
+                Position = 20,
+                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbExam.png",
+                ImagePath = "/View/images/chatBackgrounds/Background/cbExam.png"
+            });
+
+            BackgroundList.Add(new ChatBackground()
+            {
+                ID = "34",
+                Background = "#ff8D0000",
+                SentBubbleBackground = "#e5ffffff",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = false,
+                Position = 20,
+                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbAnxiety.png",
+                ImagePath = "/View/images/chatBackgrounds/Background/cbAnxiety.png"
+            });
+            
+            BackgroundList.Add(new ChatBackground()
+            {
                 ID = "20",
                 Background = "#ff8D0000",
                 SentBubbleBackground = "#e5ffffff",
