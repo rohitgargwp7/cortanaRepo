@@ -22,6 +22,7 @@ using Facebook;
 using windows_client.ViewModel;
 using System.Net.NetworkInformation;
 using windows_client.FileTransfers;
+using Microsoft.Phone.Shell;
 
 namespace windows_client.View
 {
@@ -37,12 +38,22 @@ namespace windows_client.View
             {
                 this.unlinkAccount.Source = new BitmapImage(new Uri("images/unlink_account_white.png", UriKind.Relative));
                 this.deleteAccount.Source = new BitmapImage(new Uri("images/delete_account_white.png", UriKind.Relative));
+                this.UnlinkFb.Source = new BitmapImage(new Uri("images/fb_white.png", UriKind.Relative));
+                this.UnlinkTwitter.Source = new BitmapImage(new Uri("images/tw_white.png", UriKind.Relative));
             }
             else
             {
                 this.unlinkAccount.Source = new BitmapImage(new Uri("images/unlink_account_black.png", UriKind.Relative));
                 this.deleteAccount.Source = new BitmapImage(new Uri("images/delete_account_black.png", UriKind.Relative));
+                this.UnlinkFb.Source = new BitmapImage(new Uri("images/fb_dark.png", UriKind.Relative));
+                this.UnlinkTwitter.Source = new BitmapImage(new Uri("images/tw_dark.png", UriKind.Relative));
             }
+
+            if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
+                gridFB.Visibility = Visibility.Visible;
+
+            if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN))
+                gridTwitter.Visibility = Visibility.Visible;
 
             RegisterListeners();
         }
@@ -72,6 +83,25 @@ namespace windows_client.View
 
             }
             catch { }
+        }
+
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FROM_SOCIAL_PAGE)) // shows page is navigated from social page
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.FROM_SOCIAL_PAGE);
+                object oo;
+                FreeSMS.SocialState ss = FreeSMS.SocialState.DEFAULT;
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.SOCIAL_STATE, out oo))
+                {
+                    ss = (FreeSMS.SocialState)oo;
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.SOCIAL_STATE);
+
+                    if (ss == FreeSMS.SocialState.FB_LOGOUT)
+                        AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFB), HikeConstants.FACEBOOK, false);
+                }
+            }
         }
 
         private void Unlink_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -227,6 +257,52 @@ namespace windows_client.View
         public void onEventReceived(string type, object obj)
         {
 
+        }
+
+        private void UnlinkFb_tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkFacebook_MsgBxCaptn, MessageBoxButton.OKCancel);
+            if (res != MessageBoxResult.OK)
+                return;
+            shellProgress.IsVisible = true;
+            PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
+            NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+        }
+
+        private void UnlinkTwitter_tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkTwitter_MsgBxCaptn, MessageBoxButton.OKCancel);
+            if (res != MessageBoxResult.OK)
+                return;
+            else
+            {
+                shellProgress.IsVisible = true;
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
+                App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
+                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), HikeConstants.TWITTER, false);
+                return;
+            }
+        }
+
+        public void SocialDeleteTW(JObject obj)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                gridTwitter.Visibility = Visibility.Collapsed;
+                shellProgress.IsVisible = false;
+                MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkTwSuccess_MsgBxCaptn, MessageBoxButton.OK);
+            });
+        }
+
+        public void SocialDeleteFB(JObject obj)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                gridFB.Visibility = Visibility.Collapsed;
+                shellProgress.IsVisible = false;
+                MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, MessageBoxButton.OK);
+            });
         }
     }
 }

@@ -4757,6 +4757,42 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to unlink Facebook.
+        /// </summary>
+        public static string Unlink_Fb_Header_Txt {
+            get {
+                return ResourceManager.GetString("Unlink_Fb_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to unlink your Facebook account from Hike.
+        /// </summary>
+        public static string Unlink_Fb_SubHeader_Txt {
+            get {
+                return ResourceManager.GetString("Unlink_Fb_SubHeader_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to unlink Twitter.
+        /// </summary>
+        public static string Unlink_Twitter_Header_Txt {
+            get {
+                return ResourceManager.GetString("Unlink_Twitter_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to unlink your Twitter account from Hike.
+        /// </summary>
+        public static string Unlink_Twitter_SubHeader_Txt {
+            get {
+                return ResourceManager.GetString("Unlink_Twitter_SubHeader_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Status update notifications are turned ON.
         /// </summary>
         public static string Unmute_Success_Txt {
