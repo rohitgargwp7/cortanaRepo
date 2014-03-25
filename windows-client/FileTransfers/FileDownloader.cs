@@ -100,8 +100,8 @@ namespace windows_client.FileTransfers
             lock (readWriteLock)
             {
                 if (FileState == FileTransferState.CANCELED)
-                    return; 
-                
+                    return;
+
                 try
                 {
                     string fileName = FILE_TRANSFER_DIRECTORY_NAME + "\\" + FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME + "\\" + MessageId;
@@ -247,7 +247,7 @@ namespace windows_client.FileTransfers
                 OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 return;
             }
-            
+
             if (responseStream != null && (responseCode == HttpStatusCode.PartialContent || responseCode == HttpStatusCode.OK))
             {
                 byte[] newBytes = null;

@@ -545,7 +545,7 @@ namespace windows_client
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
-            if (!isNewInstall && Utils.compareVersion("2.5.1.3", _currentVersion) == 1)
+            if (!isNewInstall && Utils.compareVersion("2.5.1.4", _currentVersion) == 1)
             {
                 instantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
@@ -1016,6 +1016,10 @@ namespace windows_client
                         if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
                         {
                             store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
+                        }
+                        if (!store.DirectoryExists(HikeConstants.FILE_TRANSFER_TEMP_LOCATION))
+                        {
+                            store.CreateDirectory(HikeConstants.FILE_TRANSFER_TEMP_LOCATION);
                         }
                     }
                     // Create the database if it does not exist.

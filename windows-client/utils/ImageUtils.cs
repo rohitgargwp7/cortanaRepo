@@ -48,6 +48,8 @@ namespace windows_client.utils
         private BitmapImage playIcon;
         private BitmapImage pauseIcon;
         private BitmapImage downloadIcon;
+        private BitmapImage downloadIconBigger;
+        private BitmapImage fileAttachmnetIcon;
         private BitmapImage httpFailed;
         private BitmapImage httpFailed_CT;
         private BitmapImage sent;
@@ -653,6 +655,27 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage DownloadIconBigger
+        {
+            get
+            {
+                if (downloadIconBigger == null)
+                    downloadIconBigger = new BitmapImage(new Uri("/View/images/download_icon_big.png", UriKind.Relative));
+
+                return downloadIconBigger;
+            }
+        }
+
+        public BitmapImage AttachmentIcon
+        {
+            get
+            {
+                if (fileAttachmnetIcon == null)
+                    fileAttachmnetIcon = new BitmapImage(new Uri("/View/images/icon_file_attachment.png", UriKind.Relative));
+
+                return fileAttachmnetIcon;
+            }
+        }
         public BitmapImage HikeToastImage
         {
             get

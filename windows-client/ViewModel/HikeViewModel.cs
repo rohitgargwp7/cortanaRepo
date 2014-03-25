@@ -27,6 +27,8 @@ using Microsoft.Phone.Shell;
 using System.Windows.Media.Imaging;
 using Microsoft.Xna.Framework.Media;
 using System.Web;
+using System.IO.IsolatedStorage;
+using System.Threading.Tasks;
 
 namespace windows_client.ViewModel
 {
@@ -199,6 +201,7 @@ namespace windows_client.ViewModel
             LoadViewModelObjects();
             LoadToolTipsDict();
             LoadCurrentLocation();
+            ClearTempTransferData();
         }
 
         public HikeViewModel()
@@ -285,6 +288,30 @@ namespace windows_client.ViewModel
 
                 getCoordinateWorker.RunWorkerAsync();
             }
+        }
+
+        public async void ClearTempTransferData()
+        {
+            await Task.Delay(1);
+            try
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (store.DirectoryExists(HikeConstants.FILE_TRANSFER_TEMP_LOCATION))
+                    {
+                        string[] fileNames = store.GetFileNames(HikeConstants.FILE_TRANSFER_TEMP_LOCATION + "/*");
+                        foreach (string fileName in fileNames)
+                        {
+                            store.DeleteFile(HikeConstants.FILE_TRANSFER_TEMP_LOCATION + "/" + fileName);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception,ViewModel:ClearTempTransferData,Message:{0}, Stacktrace:{1}", ex.Message, ex.StackTrace);
+            }
+
         }
 
         public bool Isfavourite(string mContactNumber)
@@ -899,6 +926,10 @@ namespace windows_client.ViewModel
                         {
                             convMessage.Message = AppResources.ContactTransfer_Text;
                             convMessage.MetaDataString = metaDataString;
+                        }
+                        else
+                        {
+                            convMessage.Message = AppResources.UnknownFile_txt;
                         }
 
                         if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == msisdn)

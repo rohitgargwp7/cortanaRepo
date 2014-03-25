@@ -455,6 +455,16 @@ namespace windows_client.DbUtils
                                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + HikeConstants.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
+                                else if (fInfo.ContentType.Contains(HikeConstants.LOCATION))
+                                {
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                        "/" + fileKey;
+                                }
+                                else
+                                {
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                        "/" + fileKey;
+                                }
 
                                 convMessage.FileAttachment.ContentType = fInfo.ContentType;
                                 convMessage.FileAttachment.FileSize = fileSize;
